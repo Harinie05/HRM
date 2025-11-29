@@ -10,6 +10,7 @@ import CompanyProfile from "./CompanyProfile";
 import Branch from "./Branch";
 import DepartmentList from "./DepartmentList";
 import DesignationList from "./Designation";
+import Shifts from "./Shifts";
 
 export default function OrganizationLayout() {
   const [tab, setTab] = useState("Company Profile");
@@ -39,6 +40,7 @@ export default function OrganizationLayout() {
           {tab === "Department" && <DepartmentList />}
 
           {tab === "Designation" && <DesignationList />}
+          {tab === "Shifts" && <Shifts /> }
 
           {/* Future Sections */}
           {tab === "Reporting Structure" && (

@@ -146,3 +146,21 @@ class BranchResponse(BranchBase):
 
     model_config = {"from_attributes": True}
 
+# ------------------------------
+# SHIFT SCHEMAS
+# ------------------------------
+class ShiftBase(BaseModel):
+    name: str
+    start_time: str
+    end_time: str
+
+
+class ShiftCreate(ShiftBase):
+    pass
+
+
+class ShiftResponse(ShiftBase):
+    id: int
+
+    class Config:
+        from_attributes = True

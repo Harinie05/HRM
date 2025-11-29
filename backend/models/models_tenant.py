@@ -80,3 +80,15 @@ class Branch(MasterBase):
     city = Column(String(100))
     state = Column(String(100))
     pincode = Column(String(20))
+
+# ------------------------------
+# SHIFT TABLE
+# ------------------------------
+class Shift(MasterBase):
+    __tablename__ = "shifts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(150), nullable=False)
+    start_time = Column(String(20), nullable=False)
+    end_time = Column(String(20), nullable=False)
+    created_at = Column(DateTime, default=func.now())

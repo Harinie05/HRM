@@ -17,7 +17,7 @@ from routes.roles import router as roles_router
 from routes.users import router as users_router
 from routes.organization.company_profile import router as company_profile_router
 from routes.organization.branch import router as branch_router
-
+from routes.organization.shifts import router as shift_router
 
 # ============================================================
 #  FASTAPI APP
@@ -79,7 +79,7 @@ app.include_router(
 )
 app.include_router(company_profile_router)
 app.include_router(branch_router)
-
+app.include_router(shift_router)
 # ============================================================
 #  ROOT ROUTE
 # ============================================================
