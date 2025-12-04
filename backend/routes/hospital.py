@@ -39,6 +39,7 @@ router = APIRouter()
 # 🔐 JWT AUTH — MUST COME FIRST BEFORE ANY ROUTE USES IT
 # =================================================================
 def get_current_user(Authorization: str = Header(None)):
+    
     if not Authorization:
         raise HTTPException(401, "Token required")
 

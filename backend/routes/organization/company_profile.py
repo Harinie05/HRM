@@ -23,7 +23,7 @@ def get_company_profile(
     tenant: str = Header(...),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print("🔍 GET /company-profile | Tenant:", tenant)
+    print(f"🔍 GET /company-profile | Tenant: {tenant} | User: {user.get('email')} (Role: {user.get('role')})")
     try:
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
@@ -49,7 +49,7 @@ def save_company_profile(
     tenant: str = Header(...),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print("🔍 POST /company-profile | Tenant:", tenant)
+    print(f"🔍 POST /company-profile | Tenant: {tenant} | User: {user.get('email')} (Role: {user.get('role')})")
     print("📥 Incoming data:", data.dict())
 
     try:
@@ -59,11 +59,11 @@ def save_company_profile(
         profile = db.query(CompanyProfile).first()
 
         if profile:
-            print("✏️ Updating profile")
+            print(f"✏️ Updating profile by user {user.get('email')}")
             for key, value in data.dict().items():
                 setattr(profile, key, value)
         else:
-            print("➕ Creating new profile")
+            print(f"➕ Creating new profile by user {user.get('email')}")
             profile = CompanyProfile(**data.dict())
             db.add(profile)
 

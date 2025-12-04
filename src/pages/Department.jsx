@@ -43,6 +43,7 @@ export default function Departments() {
   const fetchDepartments = async () => {
     try {
       const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
+
       setDepartments(res.data.departments || []);
     } catch (err) {
       console.error("List error:", err);
@@ -54,6 +55,7 @@ export default function Departments() {
   }, []);
 
   const addDepartment = async () => {
+    
     if (!canAdd) return alert("You do not have permission to add departments");
 
     if (!name.trim()) {

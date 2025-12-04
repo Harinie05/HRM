@@ -34,6 +34,7 @@ def create_department(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} creating department '{payload.name}' in tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -62,6 +63,7 @@ def list_departments(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} listing departments for tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -83,6 +85,7 @@ def update_department(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} updating department {dept_id} in tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -114,6 +117,7 @@ def delete_department(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} deleting department {dept_id} from tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))

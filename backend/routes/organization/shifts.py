@@ -21,6 +21,7 @@ def create_shift(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
+        print(f"DEBUG: User {user.get('email')} creating shift '{payload.name}' for tenant {tenant}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -49,6 +50,7 @@ def list_shifts(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
+        print(f"DEBUG: User {user.get('email')} listing shifts for tenant {tenant}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 

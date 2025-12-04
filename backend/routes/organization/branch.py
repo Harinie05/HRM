@@ -20,6 +20,7 @@ def get_branch(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
+        print(f"DEBUG: User {user.get('email')} accessing branch info for tenant {tenant}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -43,6 +44,7 @@ def save_branch(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
+        print(f"DEBUG: User {user.get('email')} saving branch data for tenant {tenant}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -50,10 +52,12 @@ def save_branch(
 
         if branch:
             # UPDATE
+            print(f"DEBUG: Updating existing branch for user {user.get('email')}")
             for key, value in data.dict().items():
                 setattr(branch, key, value)
         else:
             # CREATE
+            print(f"DEBUG: Creating new branch for user {user.get('email')}")
             branch = Branch(**data.dict())
             db.add(branch)
 

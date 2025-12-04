@@ -32,6 +32,7 @@ def create_user(
     user = Depends(get_current_user)    # 🔐 Token required
 ):
     try:
+        print(f"DEBUG: Authenticated user: {user.get('email')} (Role: {user.get('role')})")
         print(f"DEBUG: Creating user for tenant '{tenant_db}'")
         print(f"DEBUG: Payload: {payload}")
         
@@ -84,6 +85,7 @@ def list_users(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} listing users for tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -119,6 +121,7 @@ def delete_user(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    print(f"DEBUG: User {user.get('email')} deleting user {user_id} from tenant {tenant_db}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
