@@ -8,6 +8,9 @@ import database
 from models.models_master import Hospital
 from schemas.schemas_tenant import DepartmentBase
 
+# 🔥 added for token protection
+from routes.hospital import get_current_user
+
 router = APIRouter()
 
 
@@ -22,13 +25,14 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 
 
 # --------------------------------------------------------
-# CREATE DEPARTMENT
+# CREATE DEPARTMENT  🔒 Protected
 # --------------------------------------------------------
 @router.post("/departments/{tenant_db}/create")
 def create_department(
     tenant_db: str,
     payload: DepartmentBase,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)
@@ -50,12 +54,13 @@ def create_department(
 
 
 # --------------------------------------------------------
-# LIST DEPARTMENTS
+# LIST DEPARTMENTS  🔒 Protected
 # --------------------------------------------------------
 @router.get("/departments/{tenant_db}/list")
 def list_departments(
     tenant_db: str,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)
@@ -68,14 +73,15 @@ def list_departments(
 
 
 # --------------------------------------------------------
-# UPDATE DEPARTMENT
+# UPDATE DEPARTMENT 🔒 Protected
 # --------------------------------------------------------
 @router.put("/departments/{tenant_db}/update/{dept_id}")
 def update_department(
     tenant_db: str,
     dept_id: int,
     payload: DepartmentBase,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)
@@ -99,13 +105,14 @@ def update_department(
 
 
 # --------------------------------------------------------
-# DELETE DEPARTMENT
+# DELETE DEPARTMENT 🔒 Protected
 # --------------------------------------------------------
 @router.delete("/departments/{tenant_db}/delete/{dept_id}")
 def delete_department(
     tenant_db: str,
     dept_id: int,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)

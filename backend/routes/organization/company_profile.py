@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from database import get_tenant_engine
@@ -9,14 +9,20 @@ from schemas.schemas_tenant import (
     CompanyProfileResponse
 )
 
+# 🔐 added for authentication
+from routes.hospital import get_current_user
+
 router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 
 
 # ---------------------------------------------------
-# GET COMPANY PROFILE (with error printing)
+# GET COMPANY PROFILE 🔒 Protected
 # ---------------------------------------------------
 @router.get("/company-profile", response_model=CompanyProfileResponse | dict)
-def get_company_profile(tenant: str = Header(...)):
+def get_company_profile(
+    tenant: str = Header(...),
+    user = Depends(get_current_user)    # 🔐 Token required
+):
     print("🔍 GET /company-profile | Tenant:", tenant)
     try:
         engine = get_tenant_engine(tenant)
@@ -35,10 +41,14 @@ def get_company_profile(tenant: str = Header(...)):
 
 
 # ---------------------------------------------------
-# CREATE / UPDATE COMPANY PROFILE (with error printing)
+# CREATE / UPDATE COMPANY PROFILE 🔒 Protected
 # ---------------------------------------------------
 @router.post("/company-profile", response_model=CompanyProfileResponse)
-def save_company_profile(data: CompanyProfileBase, tenant: str = Header(...)):
+def save_company_profile(
+    data: CompanyProfileBase,
+    tenant: str = Header(...),
+    user = Depends(get_current_user)    # 🔐 Token required
+):
     print("🔍 POST /company-profile | Tenant:", tenant)
     print("📥 Incoming data:", data.dict())
 

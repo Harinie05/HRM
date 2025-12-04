@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { RotateCcw, RefreshCcw, ChevronDown, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
 
 export default function Header() {
   const [time, setTime] = useState("");
@@ -21,11 +22,15 @@ export default function Header() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  const handleLogout = async () => {
+  try {
+    await api.post("/auth/logout");       // 🔥 clears refresh token cookie backend
+  } catch (e) {}
 
+  // frontend cleanup
+  localStorage.clear();
+  navigate("/login");
+};
   return (
     <header className="w-full bg-[#0D3B66] p-4 flex justify-between items-center text-white shadow-md">
 

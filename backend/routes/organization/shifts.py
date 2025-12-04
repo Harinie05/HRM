@@ -1,17 +1,25 @@
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from database import get_tenant_engine
 from models.models_tenant import Shift
 from schemas.schemas_tenant import ShiftCreate, ShiftResponse
 
+# 🔐 added for login protection
+from routes.hospital import get_current_user
+
 router = APIRouter(prefix="/shifts", tags=["Shifts"])
 
+
 # ------------------------------
-# CREATE SHIFT
+# CREATE SHIFT 🔒 Protected
 # ------------------------------
 @router.post("/{tenant}/create", response_model=ShiftResponse)
-def create_shift(tenant: str, payload: ShiftCreate):
+def create_shift(
+    tenant: str,
+    payload: ShiftCreate,
+    user = Depends(get_current_user)  # 🔐 Token required
+):
     try:
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
@@ -33,10 +41,13 @@ def create_shift(tenant: str, payload: ShiftCreate):
 
 
 # ------------------------------
-# LIST SHIFTS
+# LIST SHIFTS 🔒 Protected
 # ------------------------------
 @router.get("/{tenant}/list")
-def list_shifts(tenant: str):
+def list_shifts(
+    tenant: str,
+    user = Depends(get_current_user)  # 🔐 Token required
+):
     try:
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)

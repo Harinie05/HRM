@@ -21,56 +21,62 @@ export default function Login() {
     });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const res = await api.post("/hospitals/login", form);
-    const data = res.data;
+    try {
+      // 🔗 Backend login API (updated path)
+      const res = await api.post("/auth/login", form);
+      const data = res.data;
 
-    // store basics
-    localStorage.setItem("tenant_db", data.tenant_db);
-    localStorage.setItem("tenant_name", data.tenant_db);
+      // ⭐ store access token for axios auth
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+      }
 
-    localStorage.setItem("email", data.email);
-    localStorage.setItem("login_type", data.login_type || "user");
+      // store basics
+      localStorage.setItem("tenant_db", data.tenant_db);
+      localStorage.setItem("tenant_name", data.tenant_db);
 
-    if (data.login_type === "admin") {
-      // admin: mark as admin (superuser)
-      localStorage.setItem("is_admin", "true");
-      localStorage.setItem("user_name", data.email.split("@")[0]);
-      localStorage.setItem("role_name", "HR Admin");
-      localStorage.setItem("permissions", JSON.stringify([])); // optional
-    } else {
-      // user: store granular info
-      localStorage.setItem("is_admin", "false");
-      localStorage.setItem("user_name", data.user_name || data.email.split("@")[0]);
-      localStorage.setItem("role_name", data.role_name || "Employee");
-      localStorage.setItem("user_id", data.user_id);
-      localStorage.setItem("role_id", data.role_id);
-      localStorage.setItem("department_id", data.department_id);
-      localStorage.setItem("permissions", JSON.stringify(data.permissions || []));
+      localStorage.setItem("email", data.email);
+      localStorage.setItem("login_type", data.login_type || "user");
+
+      if (data.login_type === "admin") {
+        localStorage.setItem("is_admin", "true");
+        localStorage.setItem("user_name", data.email.split("@")[0]);
+        localStorage.setItem("role_name", "HR Admin");
+        localStorage.setItem("permissions", JSON.stringify([]));
+      } else {
+        localStorage.setItem("is_admin", "false");
+        localStorage.setItem(
+          "user_name",
+          data.user_name || data.email.split("@")[0]
+        );
+        localStorage.setItem("role_name", data.role_name || "Employee");
+        localStorage.setItem("user_id", data.user_id);
+        localStorage.setItem("role_id", data.role_id);
+        localStorage.setItem("department_id", data.department_id);
+        localStorage.setItem("permissions", JSON.stringify(data.permissions || []));
+      }
+
+      setPopup({
+        show: true,
+        message: `Login Successful!`,
+        success: true,
+      });
+
+      setTimeout(() => (window.location.href = "/dashboard"), 700);
+    } catch (error) {
+      setPopup({
+        show: true,
+        message: error.response?.data?.detail || "Login Failed",
+        success: false,
+      });
+    } finally {
+      setLoading(false);
     }
-
-    setPopup({
-      show: true,
-      message: `Login Successful!`,
-      success: true,
-    });
-
-    setTimeout(() => (window.location.href = "/dashboard"), 700);
-  } catch (error) {
-    setPopup({
-      show: true,
-      message: error.response?.data?.detail || "Login Failed",
-      success: false,
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center px-4">

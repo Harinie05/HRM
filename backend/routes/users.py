@@ -6,6 +6,9 @@ import schemas.schemas_tenant as schemas_tenant
 import database
 from passlib.context import CryptContext
 
+# 🔐 added for token authentication
+from routes.hospital import get_current_user
+
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -19,13 +22,14 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 
 
 # ============================================================
-# CREATE USER
+# CREATE USER 🔒 Protected
 # ============================================================
 @router.post("/users/{tenant_db}/create")
 def create_user(
     tenant_db: str,
     payload: schemas_tenant.UserCreate,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
     try:
         print(f"DEBUG: Creating user for tenant '{tenant_db}'")
@@ -36,16 +40,13 @@ def create_user(
         tdb = Session(bind=engine)
 
         with tdb:
-            # check duplicate email
             if tdb.query(User).filter(User.email == payload.email).first():
                 raise HTTPException(400, "Email already exists")
 
-            # Verify role exists
             role = tdb.query(Role).filter(Role.id == payload.role_id).first()
             if not role:
                 raise HTTPException(400, f"Role with id {payload.role_id} not found")
 
-            # Verify department exists
             dept = tdb.query(Department).filter(Department.id == payload.department_id).first()
             if not dept:
                 raise HTTPException(400, f"Department with id {payload.department_id} not found")
@@ -75,12 +76,13 @@ def create_user(
 
 
 # ============================================================
-# LIST USERS
+# LIST USERS 🔒 Protected
 # ============================================================
 @router.get("/users/{tenant_db}/list")
 def list_users(
     tenant_db: str,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)
@@ -108,13 +110,14 @@ def list_users(
 
 
 # ============================================================
-# DELETE USER
+# DELETE USER 🔒 Protected
 # ============================================================
 @router.delete("/users/{tenant_db}/delete/{user_id}")
 def delete_user(
     tenant_db: str,
     user_id: int,
-    db: Session = Depends(database.get_master_db)
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
 ):
 
     hospital = get_hospital_by_db(db, tenant_db)

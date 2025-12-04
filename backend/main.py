@@ -30,7 +30,7 @@ app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 # ============================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # later change to domain for security
+    allow_origins=["http://localhost:3000"],   # later change to domain for security
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -54,7 +54,7 @@ def create_master_tables():
 # 1. Hospital Master functions (register, login, tenant create)
 app.include_router(
     hospital_router,
-    prefix="/hospitals",
+    prefix="/auth",
     tags=["Hospitals"]
 )
 
