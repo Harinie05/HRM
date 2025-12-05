@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect
 from passlib.context import CryptContext
 
+# Import shared logger from main.py
+from database import logger
+
 # ------------------- MODELS -------------------
 from models.models_tenant import (
     User as TenantUser,
@@ -36,14 +39,24 @@ router = APIRouter()
 # 🔐 JWT AUTH — MUST COME FIRST
 # =================================================================
 def get_current_user(Authorization: str = Header(None)):
+    logger.info("Validating JWT token...")
+
     if not Authorization:
+        logger.warning("Authorization header missing")
         raise HTTPException(401, "Token required")
 
-    token = Authorization.split(" ")[1]
+    try:
+        token = Authorization.split(" ")[1]
+    except:
+        logger.warning("Malformed Authorization header")
+        raise HTTPException(401, "Invalid token format")
+
     payload = verify_token(token)
     if not payload:
+        logger.warning("Token expired or invalid")
         raise HTTPException(401, "Token expired/invalid")
 
+    logger.info(f"Token validated for user {payload.get('email')}")
     return payload
 
 
@@ -53,9 +66,11 @@ def get_current_user(Authorization: str = Header(None)):
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
+    logger.info("Hashing password")
     return pwd_context.hash(password)
 
 def verify_password(plain: str, hashed: str) -> bool:
+    logger.info("Verifying password")
     return pwd_context.verify(plain, hashed)
 
 
@@ -66,22 +81,29 @@ def verify_password(plain: str, hashed: str) -> bool:
 @router.post("/register", response_model=HospitalOut, status_code=status.HTTP_201_CREATED)
 def register_hospital(payload: HospitalRegister, db: Session = Depends(database.get_master_db)):
 
+    logger.info(f"Starting registration for tenant_id={payload.tenant_id}")
+
     if db.query(Hospital).filter(Hospital.tenant_id == payload.tenant_id).first():
+        logger.warning("tenant_id already exists")
         raise HTTPException(400, "tenant_id already exists")
 
     if db.query(Hospital).filter(Hospital.db_name == payload.tenant_db).first():
+        logger.warning("tenant_db already exists")
         raise HTTPException(400, "tenant_db exists")
 
     if db.query(Hospital).filter(Hospital.email == payload.email).first():
+        logger.warning("email already registered")
         raise HTTPException(400, "email already registered")
 
-    # CREATE TENANT DATABASE
+    logger.info(f"Creating tenant database: {payload.tenant_db}")
     database.create_tenant_database(payload.tenant_db)
 
-    # CREATE TABLES INSIDE TENANT DB
     engine = database.get_tenant_engine(payload.tenant_db)
     MasterBase.metadata.create_all(bind=engine)
+    logger.info("Tenant DB tables created")
+
     seed_tenant(payload.tenant_db)
+    logger.info("Tenant DB seeded successfully")
 
     hospital = Hospital(
         tenant_id=payload.tenant_id,
@@ -98,8 +120,8 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
     db.add(hospital)
     db.commit()
     db.refresh(hospital)
+    logger.info(f"Hospital added to master DB with ID={hospital.id}")
 
-    # ADMIN USER CREATION
     admin = MasterUser(
         hospital_id=hospital.id,
         email=payload.email,
@@ -109,6 +131,7 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 
     db.add(admin)
     db.commit()
+    logger.info(f"Master admin created for hospital={hospital.id}")
 
     return hospital
 
@@ -118,8 +141,11 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 # ADMIN AUTH CHECK
 # =================================================================
 def authenticate_admin(db: Session, tenant_id: str, email: str, password: str):
+    logger.info(f"Authenticating admin for tenant_id={tenant_id}")
+
     hospital = db.query(Hospital).filter(Hospital.tenant_id == tenant_id).first()
     if not hospital:
+        logger.error("Hospital not found")
         raise HTTPException(404, "Hospital not found")
 
     admin = db.query(MasterUser).filter(
@@ -128,9 +154,15 @@ def authenticate_admin(db: Session, tenant_id: str, email: str, password: str):
         MasterUser.is_admin == True
     ).first()
 
-    if not admin or not verify_password(password, str(admin.hashed_password)):
+    if not admin:
+        logger.warning("Admin record not found")
         raise HTTPException(401, "Invalid admin credentials")
 
+    if not verify_password(password, str(admin.hashed_password)):
+        logger.warning("Admin password mismatch")
+        raise HTTPException(401, "Invalid admin credentials")
+
+    logger.info("Admin authenticated successfully")
     return hospital
 
 
@@ -143,8 +175,9 @@ def create_dynamic_table(
     tenant_id: str,
     payload: CreateTablePayload,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user) 
+    user = Depends(get_current_user)
 ):
+    logger.info(f"User {user.get('email')} creating table '{payload.table_name}' in tenant {tenant_id}")
 
     hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
 
@@ -165,12 +198,14 @@ def create_dynamic_table(
         col_sql.append(part)
 
     full_sql = f"CREATE TABLE IF NOT EXISTS `{table_name}` ({', '.join(col_sql)});"
+    logger.info(f"Executing SQL: {full_sql}")
 
     engine = database.get_tenant_engine(str(hospital.db_name))
     with engine.connect() as conn:
         conn.execute(text(full_sql))
         conn.commit()
 
+    logger.info(f"Table '{table_name}' created successfully")
     return {"detail": "Table created", "table": table_name}
 
 
@@ -186,6 +221,8 @@ def add_column(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)
 ):
+    logger.info(f"User {user.get('email')} adding column to '{table_name}' in tenant {tenant_id}")
+
     hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
 
     col = payload.column
@@ -196,12 +233,14 @@ def add_column(
         part += f" DEFAULT '{col.default}'"
 
     alter_sql = f"ALTER TABLE `{table_name}` ADD COLUMN {part};"
+    logger.info(f"Executing SQL: {alter_sql}")
 
     engine = database.get_tenant_engine(str(hospital.db_name))
     with engine.connect() as conn:
         conn.execute(text(alter_sql))
         conn.commit()
 
+    logger.info(f"Column '{col.name}' added to '{table_name}'")
     return {"detail": "Column added", "column": col.name}
 
 
@@ -217,6 +256,8 @@ def insert_row(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)
 ):
+    logger.info(f"User {user.get('email')} inserting row into '{table_name}'")
+
     hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
 
     data = payload.row
@@ -226,6 +267,8 @@ def insert_row(
         valid_cols = {c["name"] for c in inspect(engine).get_columns(table_name)}
         filtered = {k: v for k, v in data.items() if k in valid_cols}
 
+        logger.info(f"Filtered data for insert: {filtered}")
+
         cols = ", ".join(f"`{k}`" for k in filtered)
         vals = ", ".join(f":{k}" for k in filtered)
 
@@ -233,6 +276,7 @@ def insert_row(
         conn.execute(sql, filtered)
         conn.commit()
 
+    logger.info("Row inserted successfully")
     return {"detail": "Row inserted"}
 
 
@@ -248,6 +292,7 @@ def list_rows(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)
 ):
+    logger.info(f"User {user.get('email')} listing rows from '{table_name}'")
 
     hospital = authenticate_admin(db, tenant_id, auth.email, auth.password)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -255,23 +300,27 @@ def list_rows(
     with engine.connect() as conn:
         rows = conn.execute(text(f"SELECT * FROM `{table_name}`")).fetchall()
 
+    logger.info(f"{len(rows)} rows fetched from {table_name}")
     return {"rows": [dict(r._mapping) for r in rows]}
 
 
 
 # =================================================================
-# 6. LOGIN  → RETURN ACCESS + REFRESH TOKEN (COOKIE FIXED)
+# 6. LOGIN → RETURN ACCESS + REFRESH TOKEN
 # =================================================================
 @router.post("/login")
 def login(response: Response, payload: AdminAuth, db: Session = Depends(database.get_master_db)):
 
-    # --- ADMIN LOGIN ---
+    logger.info(f"Login attempt by {payload.email}")
+
     admin = db.query(MasterUser).filter(MasterUser.email == payload.email).first()
 
     if admin and verify_password(payload.password, str(admin.hashed_password)):
+        logger.info("Admin login successful")
 
         hospital = db.query(Hospital).filter(Hospital.id == admin.hospital_id).first()
         if not hospital:
+            logger.error("Hospital not found for admin")
             raise HTTPException(400, "Hospital not found")
 
         access = create_access_token({
@@ -286,7 +335,6 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             "tenant_db": str(hospital.db_name)
         })
 
-        # 🔥 FIXED COOKIE (THIS WAS THE BUG)
         response.set_cookie(
             key="refresh_token",
             value=refresh,
@@ -306,10 +354,12 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             "permissions": []
         }
 
-    # --- USER LOGIN (TENANT) ---
+    # TENANT USER LOGIN
     hospitals = db.query(Hospital).all()
 
     for hosp in hospitals:
+        logger.info(f"Checking tenant DB {hosp.db_name} for user {payload.email}")
+
         engine = database.get_tenant_engine(str(hosp.db_name))
         tdb = Session(bind=engine)
 
@@ -317,8 +367,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             user = tdb.query(TenantUser).filter(TenantUser.email == payload.email).first()
 
             if user and verify_password(payload.password, str(user.password)):
-
-                role = tdb.query(RolePermission).filter(RolePermission.role_id == user.role_id).first()
+                logger.info(f"Tenant user login successful for {payload.email} in DB {hosp.db_name}")
 
                 access = create_access_token({
                     "email": user.email,
@@ -353,27 +402,31 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
         finally:
             tdb.close()
 
+    logger.warning("Invalid login attempt")
     raise HTTPException(400, "Invalid email/password")
 
 
 
 # =================================================================
-# 7. REFRESH TOKEN (COOKIE FIXED)
+# 7. REFRESH TOKEN
 # =================================================================
 @router.post("/refresh")
 def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
 
+    logger.info("Refresh token request received")
+
     if not refresh_token:
+        logger.warning("Refresh token missing")
         raise HTTPException(401, "Refresh missing")
 
     payload = verify_token(refresh_token)
     if not payload:
+        logger.warning("Refresh token expired or invalid")
         raise HTTPException(401, "Expired — login again")
 
     new_access = create_access_token(payload)
     new_refresh = create_refresh_token(payload)
 
-    # 🔥 FIXED COOKIE HERE TOO
     response.set_cookie(
         key="refresh_token",
         value=new_refresh,
@@ -382,6 +435,7 @@ def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
         secure=False
     )
 
+    logger.info("Refresh token regenerated successfully")
     return {"access_token": new_access}
 
 
@@ -391,6 +445,7 @@ def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
 # =================================================================
 @router.get("/seed/{tenant_db}")
 def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
+    logger.info(f"Seeding tenant DB: {tenant_db}")
     seed_tenant(tenant_db)
     return {"message": f"Tenant '{tenant_db}' seeded"}
 
@@ -401,5 +456,6 @@ def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
 # =================================================================
 @router.post("/logout")
 def logout(response: Response):
+    logger.info("Logout request received")
     response.delete_cookie("refresh_token")
     return {"message": "Logged out successfully"}

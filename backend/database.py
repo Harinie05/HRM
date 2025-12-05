@@ -4,6 +4,15 @@ import urllib.parse
 from typing import Generator
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+)
+
+logger = logging.getLogger("HRM")
+
 
 # MASTER DB
 DB_USER = os.getenv("MASTER_DB_USER", "root")
