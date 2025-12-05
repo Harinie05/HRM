@@ -30,7 +30,7 @@ app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 # ============================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],   # later change to domain for security
+    allow_origins=["http://localhost:3000", "http://192.168.1.11:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
