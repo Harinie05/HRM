@@ -6,6 +6,7 @@ from models.models_tenant import Role, Permission, RolePermission
 from .tenant_seed import seed_tenant
 
 import database
+from database import logger
 
 # 🔐 Added import for token protection
 from routes.hospital import get_current_user
@@ -34,10 +35,7 @@ def create_role(
     user = Depends(get_current_user)   # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: Authenticated user: {user}")
-        print(f"DEBUG: User email: {user.get('email')}")
-        print(f"DEBUG: User role: {user.get('role')}")
-        print(f"DEBUG: Received payload: {payload}")
+        logger.info(f"Creating role for tenant {tenant_db} by user {user.get('email')}")
         
         if "name" not in payload or not payload["name"]:
             raise HTTPException(400, "Role name is required")
@@ -66,6 +64,7 @@ def create_role(
                     tdb.add(RolePermission(role_id=new_role.id, permission_id=perm.id))
 
             tdb.commit()
+            logger.info(f"Role '{payload['name']}' created successfully with ID {new_role.id}")
             return {"detail": "Role created", "role_id": new_role.id}
     except HTTPException as he:
         raise
@@ -82,7 +81,7 @@ def list_roles(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
-    print(f"DEBUG: User {user.get('email')} listing roles for tenant {tenant_db}")
+    logger.info(f"Listing roles for tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -125,7 +124,7 @@ def delete_role(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
-    print(f"DEBUG: User {user.get('email')} deleting role {role_id} from tenant {tenant_db}")
+    logger.info(f"Deleting role {role_id} from tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -154,7 +153,7 @@ def update_role(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
-    print(f"DEBUG: User {user.get('email')} updating role {role_id} in tenant {tenant_db}")
+    logger.info(f"Updating role {role_id} in tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -186,7 +185,7 @@ def update_role(
 # ---------------------------------------------------
 @router.get("/roles/{tenant_db}/debug_permissions")
 def debug_permissions(tenant_db: str, db: Session = Depends(database.get_master_db), user = Depends(get_current_user)):
-    print(f"DEBUG: User {user.get('email')} accessing debug permissions for tenant {tenant_db}")
+    logger.info(f"Debug permissions accessed for tenant {tenant_db} by user {user.get('email')}")
     hospital = db.query(Hospital).filter(Hospital.db_name == tenant_db).first()
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found")
@@ -198,12 +197,12 @@ def debug_permissions(tenant_db: str, db: Session = Depends(database.get_master_
 
 @router.post("/roles/{tenant_db}/debug_create")
 def debug_create_role(tenant_db: str, payload: dict, db: Session = Depends(database.get_master_db), user = Depends(get_current_user)):
-    print(f"DEBUG: User {user.get('email')} testing debug create for tenant {tenant_db}")
+    logger.info(f"Debug create role tested for tenant {tenant_db} by user {user.get('email')}")
     return {"received_payload": payload, "tenant_db": tenant_db, "payload_type": str(type(payload))}
 
 @router.get("/roles/{tenant_db}/permissions")
 def get_permissions(tenant_db: str, db: Session = Depends(database.get_master_db), user = Depends(get_current_user)):
-    print(f"DEBUG: User {user.get('email')} getting permissions list for tenant {tenant_db}")
+    logger.info(f"Permissions list requested for tenant {tenant_db} by user {user.get('email')}")
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
     tdb = Session(bind=engine)

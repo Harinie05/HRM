@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException, Depends
 from sqlalchemy.orm import Session
 
-from database import get_tenant_engine
+from database import get_tenant_engine, logger
 from models.models_tenant import Branch
 from schemas.schemas_tenant import BranchBase, BranchResponse
 
@@ -20,7 +20,7 @@ def get_branch(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: User {user.get('email')} accessing branch info for tenant {tenant}")
+        logger.info(f"Getting branch info for tenant {tenant} by user {user.get('email')}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -44,7 +44,7 @@ def save_branch(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: User {user.get('email')} saving branch data for tenant {tenant}")
+        logger.info(f"Saving branch data for tenant {tenant} by user {user.get('email')}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -52,12 +52,12 @@ def save_branch(
 
         if branch:
             # UPDATE
-            print(f"DEBUG: Updating existing branch for user {user.get('email')}")
+            logger.info(f"Updating existing branch for tenant {tenant}")
             for key, value in data.dict().items():
                 setattr(branch, key, value)
         else:
             # CREATE
-            print(f"DEBUG: Creating new branch for user {user.get('email')}")
+            logger.info(f"Creating new branch for tenant {tenant}")
             branch = Branch(**data.dict())
             db.add(branch)
 

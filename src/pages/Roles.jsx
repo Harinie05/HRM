@@ -55,7 +55,9 @@ export default function Roles() {
 
   const fetchPermissions = async () => {
     try {
+      console.log(`Fetching permissions for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/permissions`);
+      console.log('Permissions loaded:', res.data.permissions);
       setPermissions(res.data.permissions);
     } catch (err) {
       console.error("Permission load error:", err);
@@ -64,7 +66,9 @@ export default function Roles() {
 
   const fetchRoles = async () => {
     try {
+      console.log(`Fetching roles for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
+      console.log('Roles loaded:', res.data.roles);
       setRoles(res.data.roles);
     } catch (err) {
       console.error("Role load error:", err);
@@ -91,6 +95,11 @@ export default function Roles() {
     if (!newRoleName.trim()) return alert("Role name required");
 
     try {
+      console.log('Creating role:', {
+        name: newRoleName,
+        description: newRoleDesc,
+        permissions: newRolePerms
+      });
       await api.post(`/hospitals/roles/${tenant_db}/create`, {
         name: newRoleName,
         description: newRoleDesc,
@@ -101,6 +110,7 @@ export default function Roles() {
       setNewRoleDesc("");
       setNewRolePerms([]);
 
+      console.log('Role created successfully');
       fetchRoles();
       alert("Role created!");
     } catch (err) {
@@ -116,9 +126,12 @@ export default function Roles() {
     if (!window.confirm("Delete this role?")) return;
 
     try {
+      console.log(`Deleting role with ID: ${id}`);
       await api.delete(`/hospitals/roles/${tenant_db}/delete/${id}`);
+      console.log('Role deleted successfully');
       fetchRoles();
     } catch (err) {
+      console.error('Delete role failed:', err);
       alert("Delete failed");
     }
   };
@@ -130,11 +143,17 @@ export default function Roles() {
     if (!canEdit) return alert("❌ You do not have permission to edit roles.");
 
     try {
+      console.log('Updating role:', {
+        id: editing.id,
+        name: editRoleName,
+        permissions: editRolePerms
+      });
       await api.put(`/hospitals/roles/${tenant_db}/update/${editing.id}`, {
         name: editRoleName,
         permissions: editRolePerms,
       });
 
+      console.log('Role updated successfully');
       setShowEditModal(false);
       fetchRoles();
       alert("Role updated!");

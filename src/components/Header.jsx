@@ -13,6 +13,8 @@ export default function Header() {
   const userName = localStorage.getItem("user_name") || userEmail.split("@")[0];
   const userRole = localStorage.getItem("role_name") || "Employee";
   const userInitial = userName.charAt(0).toUpperCase();
+  
+  console.log('Header loaded with user info:', { userEmail, userName, userRole });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,10 +26,15 @@ export default function Header() {
 
   const handleLogout = async () => {
   try {
+    console.log('Initiating logout process');
     await api.post("/auth/logout");       // 🔥 clears refresh token cookie backend
-  } catch (e) {}
+    console.log('Logout API call successful');
+  } catch (e) {
+    console.error('Logout API call failed:', e);
+  }
 
   // frontend cleanup
+  console.log('Clearing localStorage and redirecting to login');
   localStorage.clear();
   navigate("/login");
 };
@@ -56,7 +63,10 @@ export default function Header() {
         {/* Profile with Dropdown */}
         <div className="relative">
           <button 
-            onClick={() => setShowDropdown(!showDropdown)}
+            onClick={() => {
+              console.log('Profile dropdown toggled:', !showDropdown);
+              setShowDropdown(!showDropdown);
+            }}
             className="flex items-center space-x-3 hover:bg-blue-700 p-2 rounded-lg transition-colors"
           >
             <div className="bg-white text-[#0D3B66] rounded-full h-10 w-10 flex items-center justify-center font-bold">

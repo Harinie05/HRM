@@ -42,8 +42,9 @@ export default function Departments() {
 
   const fetchDepartments = async () => {
     try {
+      console.log(`Fetching departments for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
-
+      console.log('Departments loaded:', res.data.departments);
       setDepartments(res.data.departments || []);
     } catch (err) {
       console.error("List error:", err);
@@ -66,11 +67,13 @@ export default function Departments() {
     setLoading(true);
 
     try {
+      console.log('Creating department:', { name, description: desc });
       await api.post(`/hospitals/departments/${tenant_db}/create`, {
         name,
         description: desc,
       });
 
+      console.log('Department created successfully');
       setName("");
       setDesc("");
       fetchDepartments();
@@ -90,11 +93,13 @@ export default function Departments() {
     if (!window.confirm("Delete this department?")) return;
 
     try {
+      console.log(`Deleting department with ID: ${id}`);
       await api.delete(`/hospitals/departments/${tenant_db}/delete/${id}`);
+      console.log('Department deleted successfully');
       fetchDepartments();
     } catch (err) {
+      console.error('Delete department failed:', err);
       alert("Delete failed");
-      console.error(err);
     }
   };
 
@@ -264,6 +269,11 @@ export default function Departments() {
                   <button
                     onClick={async () => {
                       try {
+                        console.log('Updating department:', {
+                          id: editing.id,
+                          name: editName,
+                          description: editDesc
+                        });
                         await api.put(
                           `/hospitals/departments/${tenant_db}/update/${editing.id}`,
                           {
@@ -272,12 +282,13 @@ export default function Departments() {
                           }
                         );
 
+                        console.log('Department updated successfully');
                         alert("Updated successfully!");
                         setEditing(null);
                         fetchDepartments();
                       } catch (err) {
+                        console.error('Update department failed:', err);
                         alert("Update failed");
-                        console.error(err);
                       }
                     }}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"

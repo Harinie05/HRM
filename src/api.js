@@ -9,8 +9,11 @@ const api = axios.create({
 // REQUEST INTERCEPTOR
 // ------------------------
 api.interceptors.request.use((config) => {
+  console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+  
   // ⛔ Do NOT attach token when calling /auth/login or /auth/refresh
   if (config.url.includes("/auth/login") || config.url.includes("/auth/refresh")) {
+    console.log('Auth endpoint detected, skipping token attachment');
     return config;
   }
 
@@ -21,10 +24,12 @@ api.interceptors.request.use((config) => {
     null;
 
   if (accessToken) {
+    console.log('Attaching access token to request');
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
   if (tenant) {
+    console.log(`Attaching tenant header: ${tenant}`);
     config.headers["tenant"] = tenant;
   }
 
@@ -38,7 +43,10 @@ let isRefreshing = false;
 let failedRequestsQueue = [];
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`API Response: ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`);
+    return response;
+  },
 
   async (error) => {
     const originalRequest = error.config;
@@ -50,6 +58,7 @@ api.interceptors.response.use(
 
     // Token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log('401 Unauthorized detected, attempting token refresh');
       originalRequest._retry = true;
 
       if (!isRefreshing) {
@@ -65,6 +74,7 @@ api.interceptors.response.use(
           );
 
           const newToken = refreshResponse.data.access_token;
+          console.log('New access token received and stored');
           localStorage.setItem("access_token", newToken);
 
           // Process queued requests
@@ -72,7 +82,7 @@ api.interceptors.response.use(
           failedRequestsQueue = [];
           isRefreshing = false;
         } catch (err) {
-          console.error("❌ Refresh failed. Logging out.");
+          console.error("❌ Refresh failed. Logging out.", err);
           localStorage.removeItem("access_token");
           window.location.href = "/login";
           return Promise.reject(err);

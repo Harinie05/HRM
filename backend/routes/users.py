@@ -4,6 +4,7 @@ from models.models_master import Hospital
 from models.models_tenant import User, Role, Department
 import schemas.schemas_tenant as schemas_tenant
 import database
+from database import logger
 from passlib.context import CryptContext
 
 # 🔐 added for token authentication
@@ -32,9 +33,7 @@ def create_user(
     user = Depends(get_current_user)    # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: Authenticated user: {user.get('email')} (Role: {user.get('role')})")
-        print(f"DEBUG: Creating user for tenant '{tenant_db}'")
-        print(f"DEBUG: Payload: {payload}")
+        logger.info(f"Creating user {payload.email} for tenant {tenant_db} by {user.get('email')}")
         
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
@@ -65,7 +64,7 @@ def create_user(
             tdb.add(new_user)
             tdb.commit()
             tdb.refresh(new_user)
-
+            logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
             return {"detail": "User created", "user_id": new_user.id}
     except HTTPException:
         raise
@@ -85,7 +84,7 @@ def list_users(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print(f"DEBUG: User {user.get('email')} listing users for tenant {tenant_db}")
+    logger.info(f"Listing users for tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -121,7 +120,7 @@ def delete_user(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print(f"DEBUG: User {user.get('email')} deleting user {user_id} from tenant {tenant_db}")
+    logger.info(f"Deleting user {user_id} from tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))

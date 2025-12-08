@@ -16,23 +16,33 @@ export default function CompanyProfile() {
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log('Loading company profile data');
         const res = await api.get("/organization/company-profile");
+        console.log('Company profile loaded:', res.data);
         setForm(res.data);
       } catch (err) {
-        console.log("Company profile not set yet");
+        console.log("Company profile not set yet", err);
       }
     }
     fetchData();
   }, []);
 
   function handleChange(e) {
+    console.log(`Company profile field changed: ${e.target.name} = ${e.target.value}`);
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await api.post("/organization/company-profile", form);
-    alert("Company Profile Saved");
+    try {
+      console.log('Saving company profile:', form);
+      await api.post("/organization/company-profile", form);
+      console.log('Company profile saved successfully');
+      alert("Company Profile Saved");
+    } catch (err) {
+      console.error('Failed to save company profile:', err);
+      alert("Failed to save company profile");
+    }
   }
 
   return (

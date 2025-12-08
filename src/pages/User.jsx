@@ -59,29 +59,34 @@ export default function Users() {
 
   const loadUsers = async () => {
     try {
+      console.log(`Loading users for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/users/${tenant_db}/list`);
-      console.log(res.data,"User List");
+      console.log('Users loaded:', res.data.users);
       setUsers(res.data.users);
     } catch (err) {
-      console.log("User load error:", err);
+      console.error("User load error:", err);
     }
   };
 
   const loadRoles = async () => {
     try {
+      console.log(`Loading roles for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
+      console.log('Roles for user creation loaded:', res.data.roles);
       setRoles(res.data.roles);
     } catch (err) {
-      console.log("Role load error:", err);
+      console.error("Role load error:", err);
     }
   };
 
   const loadDepartments = async () => {
     try {
+      console.log(`Loading departments for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
+      console.log('Departments for user creation loaded:', res.data.departments);
       setDepartments(res.data.departments);
     } catch (err) {
-      console.log("Dept load error:", err);
+      console.error("Dept load error:", err);
     }
   };
 
@@ -95,6 +100,12 @@ export default function Users() {
     }
 
     try {
+      console.log('Creating user:', {
+        name,
+        email,
+        role_id: Number(role),
+        department_id: Number(department)
+      });
       await api.post(`/hospitals/users/${tenant_db}/create`, {
         name,
         email,
@@ -109,6 +120,7 @@ export default function Users() {
       setRole("");
       setDepartment("");
 
+      console.log('User created successfully');
       loadUsers();
       alert("User created!");
     } catch (error) {
@@ -124,9 +136,12 @@ export default function Users() {
     if (!window.confirm("Delete this user?")) return;
 
     try {
+      console.log(`Deleting user with ID: ${id}`);
       await api.delete(`/hospitals/users/${tenant_db}/delete/${id}`);
+      console.log('User deleted successfully');
       loadUsers();
     } catch (error) {
+      console.error('Delete user failed:', error);
       alert("Delete failed");
     }
   };
@@ -136,6 +151,13 @@ export default function Users() {
     if (!canEdit) return alert("❌ You do not have permission to edit users.");
 
     try {
+      console.log('Updating user:', {
+        id: editing.id,
+        name: editName,
+        email: editEmail,
+        role_id: Number(editRole),
+        department_id: Number(editDepartment)
+      });
       await api.put(`/hospitals/users/${tenant_db}/update/${editing.id}`, {
         name: editName,
         email: editEmail,
@@ -143,6 +165,7 @@ export default function Users() {
         department_id: Number(editDepartment),
       });
 
+      console.log('User updated successfully');
       setShowEditModal(false);
       loadUsers();
       alert("Updated!");

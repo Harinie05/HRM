@@ -15,6 +15,7 @@ export default function Login() {
   });
 
   const handleChange = (e) => {
+    console.log(`Login form field changed: ${e.target.name} = ${e.target.value}`);
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -23,19 +24,24 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Login attempt started with form data:', form);
     setLoading(true);
 
     try {
       // 🔗 Backend login API (updated path)
+      console.log('Sending login request to /auth/login');
       const res = await api.post("/auth/login", form);
       const data = res.data;
+      console.log('Login response received:', data);
 
       // ⭐ store access token for axios auth
       if (data.access_token) {
+        console.log('Storing access token in localStorage');
         localStorage.setItem("access_token", data.access_token);
       }
 
       // store basics
+      console.log(`Storing tenant info: ${data.tenant_db}`);
       localStorage.setItem("tenant_db", data.tenant_db);
       localStorage.setItem("tenant_name", data.tenant_db);
 
@@ -43,11 +49,17 @@ export default function Login() {
       localStorage.setItem("login_type", data.login_type || "user");
 
       if (data.login_type === "admin") {
+        console.log('Admin login detected, storing admin data');
         localStorage.setItem("is_admin", "true");
         localStorage.setItem("user_name", data.email.split("@")[0]);
         localStorage.setItem("role_name", "HR Admin");
         localStorage.setItem("permissions", JSON.stringify([]));
       } else {
+        console.log('Regular user login, storing user data:', {
+          user_name: data.user_name,
+          role_name: data.role_name,
+          user_id: data.user_id
+        });
         localStorage.setItem("is_admin", "false");
         localStorage.setItem(
           "user_name",
@@ -66,8 +78,10 @@ export default function Login() {
         success: true,
       });
 
+      console.log('Login successful, redirecting to dashboard in 700ms');
       setTimeout(() => (window.location.href = "/dashboard"), 700);
     } catch (error) {
+      console.error('Login failed:', error.response?.data || error.message);
       setPopup({
         show: true,
         message: error.response?.data?.detail || "Login Failed",

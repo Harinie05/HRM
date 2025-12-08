@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException, Depends
 from sqlalchemy.orm import Session
 
-from database import get_tenant_engine
+from database import get_tenant_engine, logger
 from models.models_tenant import CompanyProfile
 
 from schemas.schemas_tenant import (
@@ -23,7 +23,7 @@ def get_company_profile(
     tenant: str = Header(...),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print(f"🔍 GET /company-profile | Tenant: {tenant} | User: {user.get('email')} (Role: {user.get('role')})")
+    logger.info(f"Getting company profile for tenant {tenant} by user {user.get('email')}")
     try:
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
@@ -36,7 +36,7 @@ def get_company_profile(
         return profile
 
     except Exception as e:
-        print("❌ ERROR in GET /company-profile:", e)
+        logger.error(f"Error getting company profile for tenant {tenant}: {e}")
         raise
 
 
@@ -49,8 +49,7 @@ def save_company_profile(
     tenant: str = Header(...),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    print(f"🔍 POST /company-profile | Tenant: {tenant} | User: {user.get('email')} (Role: {user.get('role')})")
-    print("📥 Incoming data:", data.dict())
+    logger.info(f"Saving company profile for tenant {tenant} by user {user.get('email')}")
 
     try:
         engine = get_tenant_engine(tenant)
@@ -59,11 +58,11 @@ def save_company_profile(
         profile = db.query(CompanyProfile).first()
 
         if profile:
-            print(f"✏️ Updating profile by user {user.get('email')}")
+            logger.info(f"Updating company profile for tenant {tenant}")
             for key, value in data.dict().items():
                 setattr(profile, key, value)
         else:
-            print(f"➕ Creating new profile by user {user.get('email')}")
+            logger.info(f"Creating new company profile for tenant {tenant}")
             profile = CompanyProfile(**data.dict())
             db.add(profile)
 
@@ -72,5 +71,5 @@ def save_company_profile(
         return profile
 
     except Exception as e:
-        print("❌ ERROR in POST /company-profile:", e)
+        logger.error(f"Error saving company profile for tenant {tenant}: {e}")
         raise

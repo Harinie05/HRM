@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException, Depends
 from sqlalchemy.orm import Session
 
-from database import get_tenant_engine
+from database import get_tenant_engine, logger
 from models.models_tenant import Shift
 from schemas.schemas_tenant import ShiftCreate, ShiftResponse
 
@@ -21,7 +21,7 @@ def create_shift(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: User {user.get('email')} creating shift '{payload.name}' for tenant {tenant}")
+        logger.info(f"Creating shift '{payload.name}' for tenant {tenant} by user {user.get('email')}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
@@ -34,7 +34,7 @@ def create_shift(
         db.add(new_shift)
         db.commit()
         db.refresh(new_shift)
-
+        logger.info(f"Shift '{payload.name}' created successfully with ID {new_shift.id}")
         return new_shift
 
     except Exception as e:
@@ -50,7 +50,7 @@ def list_shifts(
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
-        print(f"DEBUG: User {user.get('email')} listing shifts for tenant {tenant}")
+        logger.info(f"Listing shifts for tenant {tenant} by user {user.get('email')}")
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
 
