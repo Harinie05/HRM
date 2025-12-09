@@ -56,24 +56,36 @@ export default function Shift() {
 
   // ---------- FETCH DATA ----------
   const fetchShifts = async () => {
+    console.log('Fetching shifts...');
     try {
       const res = await api.get(`/shifts/${tenant_db}/list`);
+      console.log('Shifts fetched:', res.data);
       setShifts(res.data.shifts || []);
-    } catch {}
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+    }
   };
 
   const fetchEmployees = async () => {
+    console.log('Fetching employees...');
     try {
       const res = await api.get(`/employees/${tenant_db}/list`);
+      console.log('Employees fetched:', res.data);
       setEmployees(res.data.employees || []);
-    } catch {}
+    } catch (err) {
+      console.error('Error fetching employees:', err);
+    }
   };
 
   const fetchEmployeeShifts = async () => {
+    console.log('Fetching employee shift mappings...');
     try {
       const res = await api.get(`/shifts/${tenant_db}/employee-mapping`);
+      console.log('Employee shifts fetched:', res.data);
       setEmployeeShifts(res.data.mappings || []);
-    } catch {}
+    } catch (err) {
+      console.error('Error fetching employee shifts:', err);
+    }
   };
 
   useEffect(() => {
@@ -88,12 +100,14 @@ export default function Shift() {
       return alert("All fields required!");
     }
 
+    console.log('Saving shift:', { name: shiftName, start_time: startTime, end_time: endTime });
     try {
       await api.post(`/shifts/${tenant_db}/create`, {
         name: shiftName,
         start_time: startTime,
         end_time: endTime,
       });
+      console.log('Shift saved successfully');
 
       // Show success popup
       setShowSuccess(true);
@@ -103,7 +117,8 @@ export default function Shift() {
       setStartTime("");
       setEndTime("");
       fetchShifts();
-    } catch {
+    } catch (err) {
+      console.error('Error saving shift:', err);
       alert("Failed to save shift");
     }
   };
@@ -114,6 +129,7 @@ export default function Shift() {
       return alert("All fields required!");
     }
 
+    console.log('Assigning shift:', { employee_id: selectedEmployee, shift_id: selectedShift, from_date: dateFrom, to_date: dateTo });
     try {
       await api.post(`/shifts/${tenant_db}/assign`, {
         employee_id: selectedEmployee,
@@ -121,10 +137,12 @@ export default function Shift() {
         from_date: dateFrom,
         to_date: dateTo,
       });
+      console.log('Shift assigned successfully');
 
       setShowAssignModal(false);
       fetchEmployeeShifts();
-    } catch {
+    } catch (err) {
+      console.error('Error assigning shift:', err);
       alert("Assignment Failed");
     }
   };

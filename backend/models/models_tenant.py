@@ -145,4 +145,79 @@ class Holiday(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
+# ------------------------------
+# HR POLICY TABLE
+# ------------------------------
+class HRPolicy(MasterBase):
+    __tablename__ = "hr_policies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    notice_days = Column(Integer, nullable=True)
+    probation_period = Column(String(100), nullable=True)
+    code_of_conduct = Column(Text, nullable=True)
+    work_week = Column(String(100), default="Mon-Fri")
+    holiday_pattern = Column(String(150), default="Holiday Calendar")
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# LEAVE POLICY TABLE
+# ------------------------------
+class LeavePolicy(MasterBase):
+    __tablename__ = "leave_policies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    annual = Column(Integer, default=0)
+    sick = Column(Integer, default=0)
+    casual = Column(Integer, default=0)
+    carry_forward = Column(Boolean, default=True)
+    max_carry = Column(Integer, nullable=True)
+    encashment = Column(Boolean, default=False)
+    rule = Column(String(100), default="Full Day")
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# ATTENDANCE POLICY TABLE
+# ------------------------------
+class AttendancePolicy(MasterBase):
+    __tablename__ = "attendance_policies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    checkin_start = Column(String(20))
+    checkin_end = Column(String(20))
+    checkout_time = Column(String(20))
+    grace = Column(Integer)
+    lateMax = Column(Integer)
+    lateConvert = Column(String(100))
+    halfHours = Column(Integer)
+    fullHours = Column(Integer)
+    weeklyOff = Column(String(100))
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# OT POLICY TABLE
+# ------------------------------
+class OTPolicy(MasterBase):
+    __tablename__ = "ot_policies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    basis = Column(String(50), default="Hourly")
+    rate = Column(String(50), default="1.5x")
+    minOT = Column(String(50))
+    maxOT = Column(String(50))
+    grades = Column(Text)                # stored as CSV "G1,G2,G3"
+    autoOT = Column(Boolean, default=True)
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+
 

@@ -15,6 +15,7 @@ import GradePayStructure from "./pages/organization/GradePayStructure";
 import HolidayCalender from "./pages/organization/HolidayCalender";
 // ⭐ Added for authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
+import PolicySetup from "./pages/organization/PolicySetup";
 
 function App() {
   return (
@@ -116,7 +117,7 @@ function App() {
             }
           />
            <Route path="holiday-calender" element={<ProtectedRoute> <HolidayCalender /></ProtectedRoute>     } />
-      
+         <Route path="policy-setup" element={<ProtectedRoute> <PolicySetup /></ProtectedRoute>     } />
         </Route>
        
         {/* ----------------------------------------

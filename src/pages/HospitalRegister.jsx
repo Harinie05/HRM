@@ -50,10 +50,12 @@ const HospitalRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Registering hospital:', form);
     setLoading(true);
 
     try {
-      const res = await api.post("/hospitals/register", form);
+      const res = await api.post("/auth/register", form);
+      console.log('Hospital registered successfully:', res.data);
 
       setPopup({
         show: true,
@@ -61,8 +63,8 @@ const HospitalRegister = () => {
         success: true,
       });
 
-      console.log(res.data);
     } catch (error) {
+      console.error('Hospital registration failed:', error);
       setPopup({
         show: true,
         message: error.response?.data?.detail || "Registration failed",

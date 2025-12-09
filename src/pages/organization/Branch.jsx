@@ -16,24 +16,34 @@ export default function Branch() {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('Fetching branch data...');
       try {
         const res = await api.get("/organization/branch");
+        console.log('Branch data fetched:', res.data);
         if (res.data) setForm(res.data);
       } catch (err) {
-        console.log("Branch not set yet");
+        console.log("Branch not set yet", err);
       }
     }
     fetchData();
   }, []);
 
   function handleChange(e) {
+    console.log('Branch field changed:', e.target.name, e.target.value);
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await api.post("/organization/branch", form);
-    alert("Branch / Unit Saved Successfully!");
+    console.log('Saving branch data:', form);
+    try {
+      await api.post("/organization/branch", form);
+      console.log('Branch saved successfully');
+      alert("Branch / Unit Saved Successfully!");
+    } catch (err) {
+      console.error('Error saving branch:', err);
+      alert('Failed to save branch');
+    }
   }
 
   return (

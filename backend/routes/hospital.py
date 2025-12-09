@@ -22,6 +22,10 @@ from models.models_tenant import (
     Shift,
     Grade,
     Holiday,
+    HRPolicy,
+    LeavePolicy,
+    AttendancePolicy,
+    OTPolicy,
 )
 from models.models_master import Hospital, MasterUser
 

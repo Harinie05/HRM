@@ -10,7 +10,11 @@ from models.models_tenant import (
     Permission,
     RolePermission,
     Department,
-    User
+    User,
+    HRPolicy,
+    LeavePolicy,
+    AttendancePolicy,
+    OTPolicy,
 )
 
 tenant = "nutryah"  # Change this to your tenant database name
@@ -34,3 +38,7 @@ print("  - branches")
 print("  - shifts")
 print("  - grades")
 print("  - holidays")
+print("  - hr_policies")
+print("  - leave_policies")
+print("  - attendance_policies")
+print("  - ot_policies")

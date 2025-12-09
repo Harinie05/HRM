@@ -13,6 +13,7 @@ import DesignationList from "./Designation";
 import Shifts from "./Shifts";
 import GradePayStructure from "./GradePayStructure";
 import HolidayCalender from "./HolidayCalender";
+import PolicySetup from "./PolicySetup";
 
 export default function OrganizationLayout() {
   const [tab, setTab] = useState("Company Profile");
@@ -54,9 +55,7 @@ export default function OrganizationLayout() {
           {tab === "Holiday Calendar" &&  <HolidayCalender/>}
           
 
-          {tab === "Policies" && (
-            <div className="text-gray-500">Policies Setup Coming Soon...</div>
-          )}
+          {tab === "Policies" && <PolicySetup/>}
 
         </div>
       </div>

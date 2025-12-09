@@ -128,7 +128,7 @@ class CompanyProfileResponse(CompanyProfileBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BranchBase(BaseModel):
     branch_name: str
@@ -208,7 +208,7 @@ class GradeOut(GradeBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # ------------------------------
@@ -250,6 +250,83 @@ class HolidayBase(BaseModel):
 class HolidayCreate(HolidayBase):
     pass
 
+# ---------------- HR Policy Schema ----------------
+class HRPolicyBase(BaseModel):
+    name: str
+    notice_days: Optional[int]
+    probation_period: Optional[str]
+    code_of_conduct: Optional[str]
+    work_week: Optional[str]
+    holiday_pattern: Optional[str]
+    status: str
+
+class HRPolicyCreate(HRPolicyBase):
+    pass
+
+class HRPolicyOut(HRPolicyBase):
+    id: int
+    class Config: from_attributes = True
+
+
+# ---------------- Leave Policy Schema ----------------
+class LeavePolicyBase(BaseModel):
+    name: str
+    annual: int
+    sick: int
+    casual: int
+    carry_forward: bool
+    max_carry: Optional[int]
+    encashment: bool
+    rule: str
+    status: str
+
+class LeavePolicyCreate(LeavePolicyBase):
+    pass
+
+class LeavePolicyOut(LeavePolicyBase):
+    id: int
+    class Config: from_attributes = True
+
+
+# ---------------- Attendance Policy Schema ----------------
+class AttendancePolicyBase(BaseModel):
+    name: str
+    checkin_start: str
+    checkin_end: str
+    checkout_time: str
+    grace: int
+    lateMax: int
+    lateConvert: str
+    halfHours: int
+    fullHours: int
+    weeklyOff: str
+    status: str
+
+class AttendancePolicyCreate(AttendancePolicyBase):
+    pass
+
+class AttendancePolicyOut(AttendancePolicyBase):
+    id: int
+    class Config: from_attributes = True
+
+
+# ---------------- OT Policy Schema ----------------
+class OTPolicyBase(BaseModel):
+    name: str
+    basis: str
+    rate: str
+    minOT: str
+    maxOT: str
+    grades: List[str]       # UI sends array → backend will convert to text
+    autoOT: bool
+    status: str
+
+class OTPolicyCreate(OTPolicyBase):
+    pass
+
+class OTPolicyOut(OTPolicyBase):
+    id: int
+    class Config: from_attributes = True
 
 # ---------- Output ----------
 class HolidayOut(HolidayBase):
