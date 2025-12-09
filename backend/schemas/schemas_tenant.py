@@ -237,5 +237,23 @@ class GradeUpdate(BaseModel):
     effective_from: Optional[date]
     status: Optional[str]
 
+class HolidayBase(BaseModel):
+    name: str = Field(..., min_length=2)
+    date: date
+    type: str
+    description: Optional[str] = None
+    repeat_yearly: bool = True
+    status: str = "Active"
+
+
+# ---------- Create ----------
+class HolidayCreate(HolidayBase):
+    pass
+
+
+# ---------- Output ----------
+class HolidayOut(HolidayBase):
+    id: int
+
     class Config:
         from_attributes = True

@@ -12,7 +12,7 @@ import OrganizationLayout from "./pages/organization/OrganizationLayout";
 import CompanyProfile from "./pages/organization/CompanyProfile";
 import Branch from "./pages/organization/Branch";
 import GradePayStructure from "./pages/organization/GradePayStructure";
-
+import HolidayCalender from "./pages/organization/HolidayCalender";
 // ⭐ Added for authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
 
@@ -115,11 +115,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-       
-  
+           <Route path="holiday-calender" element={<ProtectedRoute> <HolidayCalender /></ProtectedRoute>     } />
+      
         </Route>
-
+       
         {/* ----------------------------------------
            SECRET HOSPITAL REGISTER PAGE
         ----------------------------------------- */}

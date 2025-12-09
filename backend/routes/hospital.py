@@ -21,6 +21,7 @@ from models.models_tenant import (
     Branch,
     Shift,
     Grade,
+    Holiday,
 )
 from models.models_master import Hospital, MasterUser
 

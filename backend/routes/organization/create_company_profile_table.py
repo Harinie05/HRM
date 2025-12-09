@@ -4,6 +4,7 @@ from models.models_tenant import (
     CompanyProfile,
     Branch,
     Shift,
+    Holiday,
     Grade,
     Role,
     Permission,
@@ -32,3 +33,4 @@ print("  - company_profile")
 print("  - branches")
 print("  - shifts")
 print("  - grades")
+print("  - holidays")

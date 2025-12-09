@@ -13,6 +13,7 @@ from routes.organization.company_profile import router as company_profile_router
 from routes.organization.branch import router as branch_router
 from routes.organization.shifts import router as shift_router
 from routes.organization.grades import router as grade_router
+from routes.organization.holiday import router as holiday_router  # ⬅ import holiday router here
 
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -46,7 +47,7 @@ app.include_router(company_profile_router)
 app.include_router(branch_router)
 app.include_router(shift_router)
 app.include_router(grade_router) 
-
+app.include_router(holiday_router) 
 logger.info("All routers loaded successfully")
 
 

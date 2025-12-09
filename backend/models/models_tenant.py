@@ -131,3 +131,18 @@ class Grade(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
+class Holiday(MasterBase):
+    __tablename__ = "holidays"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    date = Column(Date, nullable=False)                   # YYYY-MM-DD
+    type = Column(String(50), nullable=False)             # National/Festival/Public...
+    description = Column(Text, nullable=True)
+
+    repeat_yearly = Column(Boolean, default=True)
+    status = Column(String(50), default="Active")
+
+    created_at = Column(DateTime, default=func.now())
+
+
