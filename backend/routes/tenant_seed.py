@@ -9,6 +9,11 @@ from models.models_tenant import (
     Permission,
     RolePermission,
     Department,
+    User,
+    CompanyProfile,
+    Branch,
+    Shift,
+    Grade,
 )
 
 import database

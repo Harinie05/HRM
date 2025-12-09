@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean,Text, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Boolean,Text, DateTime,Float,JSON,Date, ForeignKey, func
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
@@ -92,3 +92,42 @@ class Shift(MasterBase):
     start_time = Column(String(20), nullable=False)
     end_time = Column(String(20), nullable=False)
     created_at = Column(DateTime, default=func.now())
+
+# ------------------------------
+# GRADE / PAY STRUCTURE TABLE
+# ------------------------------
+class Grade(MasterBase):
+    __tablename__ = "grades"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    code = Column(String(50), unique=True, nullable=False)
+    name = Column(String(150), nullable=False)
+    description = Column(Text, nullable=True)
+
+    # Salary Range
+    min_salary = Column(Integer, nullable=False)
+    max_salary = Column(Integer, nullable=False)
+
+    # Salary Component Split (%)
+    basic_percent = Column(Float, nullable=False)
+    hra_percent = Column(Float, nullable=False)
+    allowance_percent = Column(Float, nullable=False)
+    special_percent = Column(Float, nullable=False)
+
+    # Compliance
+    pf_applicable = Column(Boolean, default=True)
+    pf_percent = Column(Float, nullable=True)
+    esi_applicable = Column(Boolean, default=True)
+    esi_percent = Column(Float, nullable=True)
+
+    # Department & Roles Mapping (JSON for multiple values)
+    departments = Column(JSON, nullable=True)   # list of dept names
+    roles = Column(JSON, nullable=True)         # list of role names
+
+    # Misc
+    effective_from = Column(Date, nullable=False)
+    status = Column(String(50), default="Active")
+
+    created_at = Column(DateTime, default=func.now())
+

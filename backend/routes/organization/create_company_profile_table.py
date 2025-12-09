@@ -1,10 +1,34 @@
-from database import get_tenant_engine
-from models.models_tenant import MasterBase,Branch
+from database import get_tenant_engine, logger
+from models.models_tenant import (
+    MasterBase,
+    CompanyProfile,
+    Branch,
+    Shift,
+    Grade,
+    Role,
+    Permission,
+    RolePermission,
+    Department,
+    User
+)
 
-tenant = "nutryah"
+tenant = "nutryah"  # Change this to your tenant database name
+
+logger.info(f"Creating tables in tenant DB: {tenant}...")
+print(f"Creating tables in tenant DB: {tenant}...")
 
 engine = get_tenant_engine(tenant)
-
-print(f"🔧 Creating tables in tenant DB: {tenant}...")
 MasterBase.metadata.create_all(bind=engine)
-print("✅ Done. Tables created.")
+
+logger.info("Done. All tables created successfully.")
+print("Done. All tables created successfully.")
+print("\nTables created:")
+print("  - roles")
+print("  - permissions")
+print("  - role_permissions")
+print("  - departments")
+print("  - users")
+print("  - company_profile")
+print("  - branches")
+print("  - shifts")
+print("  - grades")

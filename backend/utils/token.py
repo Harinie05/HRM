@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 SECRET_KEY = "HARU"
 ALGORITHM = "HS256"
 
-ACCESS_EXPIRE_MIN = 15          # Access Token life
+ACCESS_EXPIRE_MIN = 15        # Access Token life
 REFRESH_EXPIRE_DAYS = 7         # Refresh Token life
 
 

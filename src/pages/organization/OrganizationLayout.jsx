@@ -11,6 +11,7 @@ import Branch from "./Branch";
 import DepartmentList from "./DepartmentList";
 import DesignationList from "./Designation";
 import Shifts from "./Shifts";
+import GradePayStructure from "./GradePayStructure";
 
 export default function OrganizationLayout() {
   const [tab, setTab] = useState("Company Profile");
@@ -47,13 +48,7 @@ export default function OrganizationLayout() {
             <div className="text-gray-500">Reporting Structure Coming Soon...</div>
           )}
 
-          {tab === "Shifts" && (
-            <div className="text-gray-500">Shifts Setup Coming Soon...</div>
-          )}
-
-          {tab === "Grades / Pay Structure" && (
-            <div className="text-gray-500">Grades & Pay Structure Coming Soon...</div>
-          )}
+          {tab === "Grades / Pay Structure" && <GradePayStructure />}
 
           {tab === "Holiday Calendar" && (
             <div className="text-gray-500">Holiday Calendar Coming Soon...</div>

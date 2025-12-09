@@ -1,7 +1,7 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict, Any
 from schemas.schemas_master import AdminAuth
-
+from datetime import date
 
 # ---------------------------
 # TENANT: DEPARTMENTS
@@ -161,6 +161,81 @@ class ShiftCreate(ShiftBase):
 
 class ShiftResponse(ShiftBase):
     id: int
+
+# ------------------------------
+# Base shared fields
+# ------------------------------
+class GradeBase(BaseModel):
+    code: str = Field(..., min_length=1)
+    name: str
+    description: Optional[str] = None
+
+    # salary
+    min_salary: int
+    max_salary: int
+
+    basic_percent: float
+    hra_percent: float
+    allowance_percent: float
+    special_percent: float
+
+    # compliance
+    pf_applicable: bool
+    pf_percent: Optional[float] = None
+
+    esi_applicable: bool
+    esi_percent: Optional[float] = None
+
+    # mapping
+    departments: Optional[List[str]] = None
+    roles: Optional[List[str]] = None
+
+    effective_from: date
+    status: str = "Active"
+
+
+# ------------------------------
+# Create Schema
+# ------------------------------
+class GradeCreate(GradeBase):
+    pass
+
+
+# ------------------------------
+# Response Schema
+# ------------------------------
+class GradeOut(GradeBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+# ------------------------------
+# Update Schema (optional)
+# ------------------------------
+class GradeUpdate(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+
+    min_salary: Optional[int]
+    max_salary: Optional[int]
+
+    basic_percent: Optional[float]
+    hra_percent: Optional[float]
+    allowance_percent: Optional[float]
+    special_percent: Optional[float]
+
+    pf_applicable: Optional[bool]
+    pf_percent: Optional[float]
+    esi_applicable: Optional[bool]
+    esi_percent: Optional[float]
+
+    departments: Optional[List[str]]
+    roles: Optional[List[str]]
+
+    effective_from: Optional[date]
+    status: Optional[str]
 
     class Config:
         from_attributes = True

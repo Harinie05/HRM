@@ -11,13 +11,7 @@ import Users from "./pages/User";
 import OrganizationLayout from "./pages/organization/OrganizationLayout";
 import CompanyProfile from "./pages/organization/CompanyProfile";
 import Branch from "./pages/organization/Branch";
-/*import Department from "./pages/organization/Department";
-import Designation from "./pages/organization/Designation";
-import Reporting from "./pages/organization/Reporting";
-import Shifts from "./pages/organization/Shifts";
-import Grades from "./pages/organization/Grades";
-import Holidays from "./pages/organization/Holidays";
-import Policies from "./pages/organization/Policies";*/
+import GradePayStructure from "./pages/organization/GradePayStructure";
 
 // ⭐ Added for authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
@@ -113,14 +107,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+         <Route
+            path="grade"
+            element={
+              <ProtectedRoute>
+                <GradePayStructure />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* <Route path="department" element={<Department />} />
-          <Route path="designation" element={<Designation />} />
-          <Route path="reporting" element={<Reporting />} />
-          <Route path="shifts" element={<Shifts />} />
-          <Route path="grades" element={<Grades />} />
-          <Route path="holidays" element={<Holidays />} />
-          <Route path="policies" element={<Policies />} /> */}
+       
+  
         </Route>
 
         {/* ----------------------------------------

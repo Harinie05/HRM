@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie,
 from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect
 from passlib.context import CryptContext
+import logging
 
-# Import shared logger from main.py
-from database import logger
+# Create logger
+logger = logging.getLogger("HRM")
 
 # ------------------- MODELS -------------------
 from models.models_tenant import (
@@ -14,6 +15,12 @@ from models.models_tenant import (
     RolePermission,
     Permission,
     MasterBase,
+    Role,
+    Department,
+    CompanyProfile,
+    Branch,
+    Shift,
+    Grade,
 )
 from models.models_master import Hospital, MasterUser
 
