@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from database import get_master_db, get_tenant_engine, logger
+import os
+import shutil
+from pathlib import Path
 
 from models.models_master import Hospital
 from models.models_tenant import (
@@ -55,7 +58,15 @@ def create_hr_policy(data: HRPolicyCreate, user=Depends(get_current_user)):
 def list_hr_policies(user=Depends(get_current_user)):
     db = get_tenant_session(user)
     logger.info(f"[HR POLICY LIST] Fetching all HR policies for user {user.get('email')}")
-    return db.query(HRPolicy).order_by(HRPolicy.id.desc()).all()
+    policies = db.query(HRPolicy).order_by(HRPolicy.id.desc()).all()
+    
+    results = []
+    for p in policies:
+        policy_dict = p.__dict__.copy()
+        policy_dict['document_download_url'] = f"/uploads/policies/{p.document}" if p.document else None
+        results.append(HRPolicyOut(**policy_dict))
+    
+    return results
 
 
 @router.put("/hr/update/{id}", response_model=HRPolicyOut)
@@ -91,6 +102,46 @@ def delete_hr_policy(id: int, user=Depends(get_current_user)):
     db.commit()
     logger.info(f"[HR POLICY DELETE] Policy deleted successfully id={id}")
     return {"message": "HR Policy deleted successfully"}
+
+
+@router.post("/hr/upload/{id}")
+async def upload_hr_policy_document(id: int, file: UploadFile = File(...), user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    logger.info(f"[HR POLICY UPLOAD] Uploading document for policy id={id}")
+    
+    policy = db.query(HRPolicy).filter(HRPolicy.id == id).first()
+    if not policy:
+        raise HTTPException(404, "HR Policy not found")
+    
+    upload_dir = Path("uploads/policies")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    file_ext = os.path.splitext(file.filename)[1]
+    filename = f"hr_policy_{id}_{file.filename}"
+    file_path = upload_dir / filename
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    setattr(policy, "document", filename)
+    db.commit()
+    logger.info(f"[HR POLICY UPLOAD] Document uploaded: {filename}")
+    return {"message": "Document uploaded", "filename": filename}
+
+
+@router.get("/hr/view/{id}", response_model=HRPolicyOut)
+def view_hr_policy(id: int, user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    logger.info(f"[HR POLICY VIEW] Viewing policy id={id}")
+    
+    policy = db.query(HRPolicy).filter(HRPolicy.id == id).first()
+    if not policy:
+        raise HTTPException(404, "HR Policy not found")
+    
+    policy_dict = policy.__dict__.copy()
+    policy_dict['document_download_url'] = f"/uploads/policies/{policy.document}" if policy.document else None
+    
+    return HRPolicyOut(**policy_dict)
 
 
 # =================================================================================

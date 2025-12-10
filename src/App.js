@@ -16,6 +16,7 @@ import HolidayCalender from "./pages/organization/HolidayCalender";
 // ⭐ Added for authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
 import PolicySetup from "./pages/organization/PolicySetup";
+import RecruitmentSetup from "./pages/recruitment/Recruitment";
 
 function App() {
   return (
@@ -119,6 +120,11 @@ function App() {
            <Route path="holiday-calender" element={<ProtectedRoute> <HolidayCalender /></ProtectedRoute>     } />
          <Route path="policy-setup" element={<ProtectedRoute> <PolicySetup /></ProtectedRoute>     } />
         </Route>
+
+        {/* ----------------------------------------
+           RECRUITMENT & ONBOARDING MODULE
+        ----------------------------------------- */}
+        <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
        
         {/* ----------------------------------------
            SECRET HOSPITAL REGISTER PAGE

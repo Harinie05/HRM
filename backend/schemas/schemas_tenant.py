@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict, Any
 from schemas.schemas_master import AdminAuth
-from datetime import date
+from datetime import date, datetime
 
 # ---------------------------
 # TENANT: DEPARTMENTS
@@ -253,9 +253,9 @@ class HolidayCreate(HolidayBase):
 # ---------------- HR Policy Schema ----------------
 class HRPolicyBase(BaseModel):
     name: str
+    description: Optional[str]
     notice_days: Optional[int]
     probation_period: Optional[str]
-    code_of_conduct: Optional[str]
     work_week: Optional[str]
     holiday_pattern: Optional[str]
     status: str
@@ -265,6 +265,9 @@ class HRPolicyCreate(HRPolicyBase):
 
 class HRPolicyOut(HRPolicyBase):
     id: int
+    document: Optional[str]
+    document_download_url: Optional[str] = None
+    created_at: Optional[datetime] = None
     class Config: from_attributes = True
 
 
@@ -331,6 +334,35 @@ class OTPolicyOut(OTPolicyBase):
 # ---------- Output ----------
 class HolidayOut(HolidayBase):
     id: int
+
+# ---------------- JOB REQUISITION SCHEMA ----------------
+class JobReqBase(BaseModel):
+    title: str
+    department: str
+    hiring_manager: str
+    openings: int
+    experience: Optional[str]
+    salary_range: Optional[str]
+
+    job_type: str
+    work_mode: str
+    location: str
+
+    skills: List[str]
+    description: Optional[str]
+    deadline: Optional[date]
+
+    attachment: Optional[str]
+    status: str = "Draft"
+
+
+class JobReqCreate(JobReqBase):
+    pass
+
+
+class JobReqOut(JobReqBase):
+    id: int
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

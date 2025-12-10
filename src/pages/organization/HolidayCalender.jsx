@@ -32,21 +32,25 @@ export default function HolidayCalendar() {
       console.log('Fetching holidays list');
       const res = await api.get(`/holidays/list`);
       console.log('Holidays loaded:', res.data);
-      let data = res.data || [];
-
-      // Filter by year
-      data = data.filter(h => h.date.startsWith(yearFilter.toString()));
-
-      // Filter by type
-      if (typeFilter !== "All") data = data.filter(h => h.type === typeFilter);
-
-      // Search filter
-      if (search.trim() !== "")
-        data = data.filter(h => h.name.toLowerCase().includes(search.toLowerCase()));
-
-      setHolidays(data);
-    } catch {}
+      setHolidays(res.data || []);
+    } catch {
+      setHolidays([]);
+    }
   };
+
+  // Filter holidays based on year, type, and search
+  const filteredHolidays = holidays.filter(h => {
+    // Filter by year
+    if (!h.date.startsWith(yearFilter.toString())) return false;
+    
+    // Filter by type
+    if (typeFilter !== "All" && h.type !== typeFilter) return false;
+    
+    // Filter by search
+    if (search.trim() !== "" && !h.name.toLowerCase().includes(search.toLowerCase())) return false;
+    
+    return true;
+  });
 
   // ---------------- SAVE ----------------
   const saveHoliday = async () => {
@@ -219,9 +223,9 @@ export default function HolidayCalendar() {
           </thead>
 
           <tbody>
-            {holidays.length === 0 ? (
+            {filteredHolidays.length === 0 ? (
               <tr><td colSpan="5" className="text-center p-3 text-gray-400">No holidays found</td></tr>
-            ) : holidays.map(h=>(
+            ) : filteredHolidays.map(h=>(
               <tr key={h.id}>
                 <td className="border p-3">{new Date(h.date).toLocaleDateString()}</td>
                 <td className="border p-3">{h.name}</td>

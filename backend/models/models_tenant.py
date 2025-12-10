@@ -153,11 +153,12 @@ class HRPolicy(MasterBase):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
     notice_days = Column(Integer, nullable=True)
     probation_period = Column(String(100), nullable=True)
-    code_of_conduct = Column(Text, nullable=True)
     work_week = Column(String(100), default="Mon-Fri")
     holiday_pattern = Column(String(150), default="Holiday Calendar")
+    document = Column(String(255), nullable=True)
     status = Column(String(50), default="Active")
     created_at = Column(DateTime, default=func.now())
 
@@ -217,6 +218,34 @@ class OTPolicy(MasterBase):
     grades = Column(Text)                # stored as CSV "G1,G2,G3"
     autoOT = Column(Boolean, default=True)
     status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+# ------------------------------
+# JOB REQUISITION TABLE
+# ------------------------------
+class JobRequisition(MasterBase):
+    __tablename__ = "job_requisitions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    department = Column(String(150), nullable=False)
+    hiring_manager = Column(String(150), nullable=False)
+    openings = Column(Integer, default=1)
+    experience = Column(String(50))
+    salary_range = Column(String(100))
+
+    job_type = Column(String(50))       # Full-time / Part-time / Contract
+    work_mode = Column(String(50))      # On-site / Hybrid / Remote
+
+    location = Column(String(150))
+
+    skills = Column(Text)               # CSV: "React,Node,MySQL"
+    description = Column(Text)
+    deadline = Column(Date)
+
+    attachment = Column(String(255), nullable=True)
+
+    status = Column(String(50), default="Draft")  # Draft / Posted
     created_at = Column(DateTime, default=func.now())
 
 

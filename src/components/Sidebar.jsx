@@ -6,11 +6,13 @@ import {
   ChevronDown,
   ChevronRight,
   Building2,
+  UserPlus,
 } from "lucide-react";
 
 export default function Sidebar() {
   const location = useLocation();
   const [openUserMenu, setOpenUserMenu] = useState(true);
+  const [openRecruitmentMenu, setOpenRecruitmentMenu] = useState(false);
 
   return (
     <div className="h-screen w-64 bg-[#F4F8FF] border-r border-gray-200 p-4 sticky top-0">
@@ -96,6 +98,68 @@ export default function Sidebar() {
           <Building2 size={20} />
           <span>Organization Setup</span>
         </Link>
+
+        {/* Recruitment & Onboarding */}
+        <div>
+          <button
+            onClick={() => setOpenRecruitmentMenu(!openRecruitmentMenu)}
+            className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-blue-100"
+          >
+            <span className="flex items-center space-x-3">
+              <UserPlus size={20} />
+              <span>Recruitment & Onboarding</span>
+            </span>
+            {openRecruitmentMenu ? <ChevronDown /> : <ChevronRight />}
+          </button>
+
+          {openRecruitmentMenu && (
+            <div className="ml-10 mt-2 space-y-2">
+              <Link
+                to="/recruitment-setup"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/recruitment-setup"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Recruitment Setup
+              </Link>
+
+              <Link
+                to="/ats"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/ats"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                ATS
+              </Link>
+
+              <Link
+                to="/offers"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/offers"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Offers
+              </Link>
+
+              <Link
+                to="/onboarding"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/onboarding"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Onboarding
+              </Link>
+            </div>
+          )}
+        </div>
 
       </nav>
     </div>

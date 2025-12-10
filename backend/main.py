@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from database import master_engine, logger   # ⬅ import logger here
 
@@ -14,12 +16,19 @@ from routes.organization.branch import router as branch_router
 from routes.organization.shifts import router as shift_router
 from routes.organization.grades import router as grade_router
 from routes.organization.holiday import router as holiday_router 
-from routes.organization.policy import router as policy_router # ⬅ import holiday router here
+from routes.organization.policy import router as policy_router
+from routes.recruitment.recruitment import router as recruitment_router
 
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 
 logger.info("🚀 FastAPI HRM Backend started")
+
+# Create uploads directory if not exists
+Path("uploads/policies").mkdir(parents=True, exist_ok=True)
+
+# Mount static files
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 app.add_middleware(
@@ -50,6 +59,7 @@ app.include_router(shift_router)
 app.include_router(grade_router) 
 app.include_router(holiday_router) 
 app.include_router(policy_router)
+app.include_router(recruitment_router)
 logger.info("All routers loaded successfully")
 
 

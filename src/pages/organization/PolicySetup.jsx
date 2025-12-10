@@ -13,11 +13,12 @@ export default function PolicySetup() {
 
     // ---------------------- HR Policy ----------------------
     const [hrName, setHrName] = useState("");
+    const [description, setDescription] = useState("");
     const [noticeDays, setNoticeDays] = useState("");
     const [probation, setProbation] = useState("");
-    const [conduct, setConduct] = useState("");
     const [workWeek, setWorkWeek] = useState("Mon-Fri");
     const [holidayPattern, setHolidayPattern] = useState("Based on Holiday Calendar");
+    const [policyFile, setPolicyFile] = useState(null);
     const [statusHR, setStatusHR] = useState("Active");
 
     // ---------------------- Leave Policy ----------------------
@@ -102,15 +103,27 @@ const [statusAtt, setStatusAtt] = useState("Active");
         else if(activeTab==="OT Policy") endpoint = editingId ? `/policies/ot/update/${editingId}` : "/policies/ot/create";
 
         try {
+            let policyId = editingId;
             if (editingId) {
                 await api.put(endpoint, payload);
                 console.log(`${activeTab} updated successfully`);
-                alert("Updated Successfully");
             } else {
-                await api.post(endpoint, payload);
+                const res = await api.post(endpoint, payload);
+                policyId = res.data.id;
                 console.log(`${activeTab} created successfully`);
-                alert("Saved Successfully");
             }
+
+            // Upload file for HR Policy
+            if(activeTab==="HR Policy" && policyFile) {
+                const formData = new FormData();
+                formData.append('file', policyFile);
+                await api.post(`/policies/hr/upload/${policyId}`, formData, {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                });
+                console.log('Document uploaded successfully');
+            }
+
+            alert(editingId ? "Updated Successfully" : "Saved Successfully");
             resetForm();
             fetchPolicies();
         } catch (err) {
@@ -122,8 +135,8 @@ const [statusAtt, setStatusAtt] = useState("Active");
     function buildPayload(){
         if(activeTab==="HR Policy"){
             return {
-                name: hrName, notice_days:noticeDays, probation_period:probation,
-                code_of_conduct:conduct, work_week:workWeek, holiday_pattern:holidayPattern, status:statusHR
+                name: hrName, description, notice_days:noticeDays, probation_period:probation,
+                work_week:workWeek, holiday_pattern:holidayPattern, status:statusHR
             }
         }
         if(activeTab==="Leave Policy"){
@@ -152,8 +165,8 @@ const [statusAtt, setStatusAtt] = useState("Active");
     const resetForm = () => {
         setEditingId(null);
         if(activeTab==="HR Policy"){
-            setHrName(""); setNoticeDays(""); setProbation(""); setConduct("");
-            setWorkWeek("Mon-Fri"); setHolidayPattern("Based on Holiday Calendar"); setStatusHR("Active");
+            setHrName(""); setDescription(""); setNoticeDays(""); setProbation("");
+            setWorkWeek("Mon-Fri"); setHolidayPattern("Based on Holiday Calendar"); setPolicyFile(null); setStatusHR("Active");
         }
         else if(activeTab==="Leave Policy"){
             setLeaveName(""); setAnnual(""); setSick(""); setCasual("");
@@ -174,9 +187,9 @@ const [statusAtt, setStatusAtt] = useState("Active");
         console.log(`Loading ${activeTab} for edit:`, policy);
         setEditingId(policy.id);
         if(activeTab==="HR Policy"){
-            setHrName(policy.name||''); setNoticeDays(policy.notice_days||''); setProbation(policy.probation_period||'');
-            setConduct(policy.code_of_conduct||''); setWorkWeek(policy.work_week||'Mon-Fri');
-            setHolidayPattern(policy.holiday_pattern||'Based on Holiday Calendar'); setStatusHR(policy.status||'Active');
+            setHrName(policy.name||''); setDescription(policy.description||''); setNoticeDays(policy.notice_days||''); setProbation(policy.probation_period||'');
+            setWorkWeek(policy.work_week||'Mon-Fri'); setHolidayPattern(policy.holiday_pattern||'Based on Holiday Calendar');
+            setPolicyFile(null); setStatusHR(policy.status||'Active');
         }
         else if(activeTab==="Leave Policy"){
             setLeaveName(policy.name||''); setAnnual(policy.annual||''); setSick(policy.sick||''); setCasual(policy.casual||'');
@@ -221,16 +234,16 @@ const [statusAtt, setStatusAtt] = useState("Active");
     return (
         <div className="p-6 bg-gray-50 min-h-screen space-y-6">
 
-            {/* TABS */}
-            <div className="flex gap-4 mb-5">
-                {tabs.map(t=>(
-                    <button key={t}
-                        onClick={()=>{setActiveTab(t);setEditingId(null)}}
-                        className={`px-4 py-2 rounded border text-sm 
-                        ${activeTab===t?"bg-blue-600 text-white":"bg-white hover:bg-gray-100"}`}>
-                        {t}
-                    </button>
-                ))}
+            {/* POLICY TYPE DROPDOWN */}
+            <div className="mb-5">
+                <select 
+                    value={activeTab} 
+                    onChange={(e)=>{setActiveTab(e.target.value);setEditingId(null);setPolicies([])}}
+                    className="border p-2 rounded w-64 bg-white">
+                    {tabs.map(t=>(
+                        <option key={t} value={t}>{t}</option>
+                    ))}
+                </select>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -239,8 +252,8 @@ const [statusAtt, setStatusAtt] = useState("Active");
                 <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
                     <h2 className="text-xl font-semibold">{editingId?"Edit":"Create"} {activeTab}</h2>
 
-                    {activeTab==="HR Policy" && <HRForm {...{hrName,setHrName,noticeDays,setNoticeDays,probation,setProbation,
-                    conduct,setConduct,workWeek,setWorkWeek,holidayPattern,setHolidayPattern,statusHR,setStatusHR}}/>}
+                    {activeTab==="HR Policy" && <HRForm {...{hrName,setHrName,description,setDescription,noticeDays,setNoticeDays,probation,setProbation,
+                    workWeek,setWorkWeek,holidayPattern,setHolidayPattern,policyFile,setPolicyFile,statusHR,setStatusHR}}/>}
 
                     {activeTab==="Leave Policy" && <LeaveForm {...{leaveName,setLeaveName,annual,setAnnual,sick,setSick,
                     casual,setCasual,carry,setCarry,carryMax,setCarryMax,encash,setEncash,rule,setRule,statusLeave,setStatusLeave}}/>}
@@ -260,7 +273,7 @@ const [statusAtt, setStatusAtt] = useState("Active");
 
                 {/* ---------------- RIGHT: LIST TABLE ---------------- */}
                 <div className="bg-white p-6 rounded-xl shadow-sm">
-                    <PolicyTable policies={policies} onEdit={loadForEdit} onDelete={deletePolicy}/>
+                    <PolicyTable policies={policies} onEdit={loadForEdit} onDelete={deletePolicy} activeTab={activeTab}/>
                 </div>
 
             </div>
@@ -273,20 +286,36 @@ const [statusAtt, setStatusAtt] = useState("Active");
 
 function HRForm(props){
     const {hrName,setHrName,noticeDays,setNoticeDays,probation,setProbation,
-        conduct,setConduct,workWeek,setWorkWeek,holidayPattern,setHolidayPattern,statusHR,setStatusHR}=props
+        workWeek,setWorkWeek,holidayPattern,setHolidayPattern,statusHR,setStatusHR,
+        description,setDescription,policyFile,setPolicyFile}=props
 
     return(<>
         <input className="border p-2 w-full rounded" placeholder="Policy Name" value={hrName} onChange={e=>setHrName(e.target.value)}/>
-        <input className="border p-2 w-full rounded" placeholder="Notice Period Days" type="number" value={noticeDays} onChange={e=>setNoticeDays(e.target.value)}/>
-        <input className="border p-2 w-full rounded" placeholder="Probation Period Days" value={probation} onChange={e=>setProbation(e.target.value)}/>
-        <textarea className="border p-2 w-full rounded" rows="3" placeholder="Code of Conduct / URL"
-            value={conduct} onChange={e=>setConduct(e.target.value)}/>
-        <select className="border p-2 w-full rounded" value={workWeek} onChange={e=>setWorkWeek(e.target.value)}>
-            <option>Mon-Fri</option><option>Mon-Sat</option><option>Custom</option>
-        </select>
-        <select className="border p-2 w-full rounded" value={holidayPattern} onChange={e=>setHolidayPattern(e.target.value)}>
-            <option>Based on Holiday Calendar</option><option>Custom</option>
-        </select>
+        <textarea className="border p-2 w-full rounded" rows="3" placeholder="Policy Description"
+            value={description} onChange={e=>setDescription(e.target.value)}/>
+        <input className="border p-2 w-full rounded" placeholder="Notice Period (Days)" type="number" value={noticeDays} onChange={e=>setNoticeDays(e.target.value)}/>
+        <input className="border p-2 w-full rounded" placeholder="Probation Period (Days)" type="number" value={probation} onChange={e=>setProbation(e.target.value)}/>
+        
+        <div>
+            <label className="block text-sm text-gray-600 mb-1">Work Week</label>
+            <select className="border p-2 w-full rounded" value={workWeek} onChange={e=>setWorkWeek(e.target.value)}>
+                <option>Mon-Fri</option><option>Mon-Sat</option><option>Custom</option>
+            </select>
+        </div>
+        
+        <div>
+            <label className="block text-sm text-gray-600 mb-1">Holiday Pattern</label>
+            <select className="border p-2 w-full rounded" value={holidayPattern} onChange={e=>setHolidayPattern(e.target.value)}>
+                <option>Based on Holiday Calendar</option><option>Custom</option>
+            </select>
+        </div>
+        
+        <div>
+            <label className="block text-sm text-gray-600 mb-1">Upload Policy Document (PDF)</label>
+            <input type="file" accept=".pdf" className="border p-2 w-full rounded" 
+                onChange={e=>setPolicyFile(e.target.files[0])}/>
+        </div>
+        
         <select className="border p-2 w-full rounded" value={statusHR} onChange={e=>setStatusHR(e.target.value)}>
             <option>Active</option><option>Inactive</option>
         </select>
@@ -403,24 +432,35 @@ function OTForm(props){
 
 
 // ---------------- Policy Table ----------------
-function PolicyTable({policies, onEdit, onDelete}){
+function PolicyTable({policies, onEdit, onDelete, activeTab}){
     return (
         <table className="min-w-full text-sm border">
             <thead className="bg-gray-100 text-gray-600">
                 <tr>
                     <th className="border p-3 text-left">Policy Name</th>
                     <th className="border p-3 text-left">Status</th>
+                    {activeTab==="HR Policy" && <th className="border p-3 text-center">Document</th>}
                     <th className="border p-3 text-center">Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 {policies.length===0 ? (
-                    <tr><td colSpan="3" className="text-center p-3 text-gray-400">No records found</td></tr>
+                    <tr><td colSpan={activeTab==="HR Policy"?"4":"3"} className="text-center p-3 text-gray-400">No records found</td></tr>
                 ) : policies.map(p=>(
                     <tr key={p.id}>
                         <td className="border p-3">{p.name}</td>
                         <td className="border p-3">{p.status}</td>
+                        {activeTab==="HR Policy" && (
+                            <td className="border p-3 text-center">
+                                {p.document_download_url ? (
+                                    <a href={`http://localhost:8000${p.document_download_url}`} target="_blank" rel="noreferrer" 
+                                       className="text-blue-600 text-xs hover:underline">Download PDF</a>
+                                ) : (
+                                    <span className="text-gray-400 text-xs">No document</span>
+                                )}
+                            </td>
+                        )}
                         <td className="border p-3 text-center space-x-3">
                             <button onClick={()=>onEdit(p)} className="text-blue-600 text-xs hover:underline">Edit</button>
                             <button onClick={()=>onDelete(p.id)} className="text-red-600 text-xs hover:underline">Delete</button>
