@@ -104,11 +104,11 @@ class UserOut(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    name: Optional[str]
-    email: Optional[EmailStr]
-    password: Optional[str]
-    role_id: Optional[int]
-    department_id: Optional[int]
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role_id: Optional[int] = None
+    department_id: Optional[int] = None
 
 class CompanyProfileBase(BaseModel):
     name: str

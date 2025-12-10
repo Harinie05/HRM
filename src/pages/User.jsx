@@ -158,12 +158,13 @@ export default function Users() {
         role_id: Number(editRole),
         department_id: Number(editDepartment)
       });
-      await api.put(`/hospitals/users/${tenant_db}/update/${editing.id}`, {
+      const updateData = {
         name: editName,
         email: editEmail,
         role_id: Number(editRole),
         department_id: Number(editDepartment),
-      });
+      };
+      await api.put(`/hospitals/users/${tenant_db}/update/${editing.id}`, updateData);
 
       console.log('User updated successfully');
       setShowEditModal(false);
@@ -326,8 +327,11 @@ export default function Users() {
                               setEditing(u);
                               setEditName(u.name);
                               setEditEmail(u.email);
-                              setEditRole(u.role);
-                              setEditDepartment(u.department);
+                              // Find role and department IDs from names
+                              const userRole = roles.find(r => r.name === u.role);
+                              const userDept = departments.find(d => d.name === u.department);
+                              setEditRole(userRole ? userRole.id : "");
+                              setEditDepartment(userDept ? userDept.id : "");
                               setShowEditModal(true);
                             }}
                           >
@@ -378,8 +382,9 @@ export default function Users() {
                   onChange={(e) => setEditRole(e.target.value)}
                   className="border p-3 w-full rounded-xl mb-3"
                 >
+                  <option value="">Select role</option>
                   {roles.map((r) => (
-                    <option key={r.id} value={r.name}>
+                    <option key={r.id} value={r.id}>
                       {r.name}
                     </option>
                   ))}
@@ -390,8 +395,9 @@ export default function Users() {
                   onChange={(e) => setEditDepartment(e.target.value)}
                   className="border p-3 w-full rounded-xl mb-4"
                 >
+                  <option value="">Select department</option>
                   {departments.map((d) => (
-                    <option key={d.id} value={d.name}>
+                    <option key={d.id} value={d.id}>
                       {d.name}
                     </option>
                   ))}

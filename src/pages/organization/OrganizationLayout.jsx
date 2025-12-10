@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -16,7 +17,13 @@ import HolidayCalender from "./HolidayCalender";
 import PolicySetup from "./PolicySetup";
 
 export default function OrganizationLayout() {
-  const [tab, setTab] = useState("Company Profile");
+  const location = useLocation();
+
+  // ✅ DEFAULT TAB IS "Company Profile"
+  // But if dashboard sends "Holiday Calendar", use that
+  const initialTab = location.state?.tab || "Company Profile";
+
+  const [tab, setTab] = useState(initialTab);
 
   return (
     <div className="flex bg-[#F5F7FA] min-h-screen">
@@ -37,26 +44,20 @@ export default function OrganizationLayout() {
         <div className="p-6">
 
           {tab === "Company Profile" && <CompanyProfile />}
-
           {tab === "Branch / Unit" && <Branch />}
-
           {tab === "Department" && <DepartmentList />}
-
           {tab === "Designation" && <DesignationList />}
-          {tab === "Shifts" && <Shifts /> }
+          {tab === "Shifts" && <Shifts />}
 
-          {/* Future Sections */}
           {tab === "Reporting Structure" && (
             <div className="text-gray-500">Reporting Structure Coming Soon...</div>
           )}
 
           {tab === "Grades / Pay Structure" && <GradePayStructure />}
 
-          {tab === "Holiday Calendar" &&  <HolidayCalender/>}
-          
+          {tab === "Holiday Calendar" && <HolidayCalender />}
 
-          {tab === "Policies" && <PolicySetup/>}
-
+          {tab === "Policies" && <PolicySetup />}
         </div>
       </div>
     </div>

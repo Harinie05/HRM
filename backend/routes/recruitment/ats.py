@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Form
 from sqlalchemy.orm import Session
 from database import get_master_db, get_tenant_engine, logger
 
@@ -131,7 +131,91 @@ def candidate_stage_change(id: int, data: StageUpdate, user=Depends(get_current_
         raise HTTPException(status_code=500, detail="Server error while updating candidate stage.")
 
 
-@router.post("/apply", response_model=ApplicationOut)
+@router.get("/job/{job_id}")
+def get_job_details(job_id: int):
+    """Public endpoint to view job description"""
+    try:
+        from database import get_master_db
+        from models.models_master import Hospital
+        
+        master = next(get_master_db())
+        hospital = master.query(Hospital).first()
+        if not hospital:
+            raise HTTPException(status_code=500, detail="No tenant configured")
+        
+        engine = get_tenant_engine(hospital.db_name)
+        db = Session(bind=engine)
+        
+        job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        return {
+            "id": job.id,
+            "title": job.title,
+            "department": job.department,
+            "experience": job.experience,
+            "salary_range": job.salary_range,
+            "job_type": job.job_type,
+            "work_mode": job.work_mode,
+            "location": job.location,
+            "skills": job.skills,
+            "description": job.description,
+            "openings": job.openings
+        }
+    except Exception:
+        tb = traceback.format_exc()
+        logger.exception("[ATS /job/{job_id}] Unexpected error:\n" + tb)
+        raise HTTPException(status_code=500, detail="Server error while loading job details.")
+
+@router.post("/apply")
+def apply_job_public(
+    job_id: str = Form(...),
+    name: str = Form(...),
+    email: str = Form(None),
+    phone: str = Form(None),
+    experience: str = Form("0")
+):
+    """Public endpoint for job applications - no auth required"""
+    try:
+        # Convert string inputs to proper types
+        job_id_int = int(job_id)
+        experience_int = int(experience) if experience else 0
+        
+        # Use a default tenant for public applications - you may need to adjust this
+        from database import get_master_db
+        from models.models_master import Hospital
+        
+        master = next(get_master_db())
+        # Get the first hospital as default tenant for public applications
+        hospital = master.query(Hospital).first()
+        if not hospital:
+            raise HTTPException(status_code=500, detail="No tenant configured")
+        
+        engine = get_tenant_engine(hospital.db_name)
+        db = Session(bind=engine)
+        
+        new_app = JobApplication(
+            job_id=job_id_int,
+            name=name,
+            email=email if email else None,
+            phone=phone if phone else None,
+            experience=experience_int
+        )
+        db.add(new_app)
+        db.commit()
+        db.refresh(new_app)
+        
+        return {"message": "Application submitted successfully", "id": new_app.id}
+    except ValueError as e:
+        logger.error(f"[ATS /apply] Invalid input format: {e}")
+        raise HTTPException(status_code=422, detail="Invalid input format")
+    except Exception:
+        tb = traceback.format_exc()
+        logger.exception("[ATS /apply] Unexpected error:\n" + tb)
+        raise HTTPException(status_code=500, detail="Server error while applying for job.")
+
+@router.post("/apply-auth", response_model=ApplicationOut)
 def apply_job(data: ApplicationCreate, user=Depends(get_current_user)):
     try:
         db = get_tenant_session(user)
@@ -142,5 +226,5 @@ def apply_job(data: ApplicationCreate, user=Depends(get_current_user)):
         return new_app
     except Exception:
         tb = traceback.format_exc()
-        logger.exception("[ATS /apply] Unexpected error:\n" + tb)
+        logger.exception("[ATS /apply-auth] Unexpected error:\n" + tb)
         raise HTTPException(status_code=500, detail="Server error while applying for job.")

@@ -111,6 +111,45 @@ def list_users(
 
 
 # ============================================================
+# UPDATE USER 🔒 Protected
+# ============================================================
+@router.put("/users/{tenant_db}/update/{user_id}")
+def update_user(
+    tenant_db: str,
+    user_id: int,
+    payload: schemas_tenant.UserUpdate,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
+):
+    logger.info(f"Updating user {user_id} in tenant {tenant_db} by user {user.get('email')}")
+
+    hospital = get_hospital_by_db(db, tenant_db)
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+
+    with tdb:
+        existing_user = tdb.query(User).filter(User.id == user_id).first()
+        if not existing_user:
+            raise HTTPException(404, "User not found")
+
+        # Update fields if provided
+        if payload.name is not None:
+            existing_user.name = payload.name
+        if payload.email is not None:
+            existing_user.email = payload.email
+        if payload.role_id is not None:
+            existing_user.role_id = payload.role_id
+        if payload.department_id is not None:
+            existing_user.department_id = payload.department_id
+        if payload.password is not None:
+            existing_user.password = pwd_context.hash(payload.password)
+
+        tdb.commit()
+        logger.info(f"User {user_id} updated successfully")
+        return {"detail": "User updated"}
+
+
+# ============================================================
 # DELETE USER 🔒 Protected
 # ============================================================
 @router.delete("/users/{tenant_db}/delete/{user_id}")

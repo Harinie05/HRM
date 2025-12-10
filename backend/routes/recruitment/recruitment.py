@@ -108,3 +108,25 @@ def post_job(id: int, user=Depends(get_current_user)):
     setattr(job, "status", "Posted")
     db.commit()
     return {"message": "Job Posted Successfully"}
+
+# ================= ONLY POSTED JOBS =================
+@router.get("/jobs/posted", response_model=List[JobReqOut])
+def list_posted_jobs(user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    jobs = (
+        db.query(JobRequisition)
+        .filter(JobRequisition.status == "Posted")
+        .order_by(JobRequisition.id.desc())
+        .all()
+    )
+
+    results = []
+    for j in jobs:
+        skills_value = j.skills
+        skills_list = (
+            skills_value.split(",") if skills_value not in (None, "") else []
+        )
+        results.append(JobReqOut.model_validate(j.__dict__ | {"skills": skills_list}))
+
+    return results
+
