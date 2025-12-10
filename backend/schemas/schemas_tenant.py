@@ -335,7 +335,9 @@ class OTPolicyOut(OTPolicyBase):
 class HolidayOut(HolidayBase):
     id: int
 
-# ---------------- JOB REQUISITION SCHEMA ----------------
+# ================================================================
+#                      JOB REQUISITION SCHEMAS
+# ================================================================
 class JobReqBase(BaseModel):
     title: str
     department: str
@@ -348,12 +350,11 @@ class JobReqBase(BaseModel):
     work_mode: str
     location: str
 
-    skills: List[str]
+    skills: List[str]                      # Accept list
     description: Optional[str]
     deadline: Optional[date]
 
-    attachment: Optional[str]
-    status: str = "Draft"
+    status: str = "Draft"                  # Draft / Posted
 
 
 class JobReqCreate(JobReqBase):
@@ -362,7 +363,48 @@ class JobReqCreate(JobReqBase):
 
 class JobReqOut(JobReqBase):
     id: int
-    created_at: Optional[datetime] = None
+    attachment: Optional[str] = None       # filename if uploaded
+    created_at: Optional[datetime]
 
     class Config:
-        from_attributes = True
+        from_attributes = True             # ORM mode
+
+
+# ================================================================
+#                JOB APPLICATION (Candidate) SCHEMAS
+# ================================================================
+class ApplicationCreate(BaseModel):
+    job_id: int
+    name: str
+    email: Optional[str]
+    phone: Optional[str]
+    experience: Optional[int] = 0
+
+
+class StageUpdate(BaseModel):
+    stage: str
+
+
+class ApplicationOut(BaseModel):
+    id: int
+    name: str
+    experience: int
+    stage: str
+    resume: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class CandidateProfileOut(BaseModel):
+    id: int
+    name: str
+    email: Optional[str]
+    phone: Optional[str]
+    experience: int
+    resume: Optional[str]
+    stage: str
+    applied_on: datetime           # ← FIXED
+
+    class Config:
+        orm_mode = True

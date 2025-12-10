@@ -248,5 +248,36 @@ class JobRequisition(MasterBase):
     status = Column(String(50), default="Draft")  # Draft / Posted
     created_at = Column(DateTime, default=func.now())
 
+# ------------------------------
+# ATS MODELS
+# ------------------------------
+
+class JobApplication(MasterBase):
+    __tablename__ = "job_applications"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    job_id = Column(Integer, nullable=False)  # FK: JobRequisition
+    name = Column(String(150), nullable=False)
+    email = Column(String(150), nullable=True)
+    phone = Column(String(20), nullable=True)
+
+    experience = Column(Integer, default=0)
+    resume = Column(String(255), nullable=True)  # Stored file URL
+
+    stage = Column(String(50), default="New")   # New, Screening, Shortlisted, Interview, Selected, Rejected
+    applied_on = Column(DateTime, default=func.now())
+
+
+class ApplicationStageHistory(MasterBase):
+    __tablename__ = "application_stage_history"
+
+    id = Column(Integer, primary_key=True)
+    application_id = Column(Integer, nullable=False)
+    old_stage = Column(String(50))
+    new_stage = Column(String(50))
+    changed_at = Column(DateTime, default=func.now())
+
+
 
 

@@ -27,6 +27,8 @@ from models.models_tenant import (
     AttendancePolicy,
     JobRequisition,
     OTPolicy,
+     JobApplication,
+    ApplicationStageHistory,
 )
 from models.models_master import Hospital, MasterUser
 

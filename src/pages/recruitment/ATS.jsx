@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 
 export default function ATS() {
   const tenant_db = localStorage.getItem("tenant_db");
@@ -31,7 +33,7 @@ export default function ATS() {
   // ------------------------- LOAD JOB LIST -------------------------
   const fetchJobs = async () => {
     try {
-      const res = await api.get(`/ats/${tenant_db}/jobs`);
+      const res = await api.get(`/ats/jobs`);
       setJobList(res.data || []);
     } catch (err) {
       console.error("Failed to load jobs");
@@ -41,7 +43,7 @@ export default function ATS() {
   // ------------------------- LOAD PIPELINE -------------------------
   const fetchPipeline = async (job) => {
     try {
-      const res = await api.get(`/ats/${tenant_db}/jobs/${job.id}/pipeline`);
+      const res = await api.get(`/ats/jobs/${job.id}/pipeline`);
 
       setPipeline({
         New: res.data.New || [],
@@ -63,7 +65,7 @@ export default function ATS() {
   // ------------------------- LOAD CANDIDATE PROFILE -------------------------
   const openCandidateDrawer = async (candidateId) => {
     try {
-      const res = await api.get(`/ats/${tenant_db}/candidate/${candidateId}`);
+      const res = await api.get(`/ats/candidate/${candidateId}`);
       setCandidateProfile(res.data);
       setDrawerOpen(true);
     } catch {
@@ -74,7 +76,7 @@ export default function ATS() {
   // ------------------------- MOVE CANDIDATE -------------------------
   const moveStage = async (candidateId, newStage) => {
     try {
-      await api.put(`/ats/${tenant_db}/candidate/${candidateId}/stage`, {
+      await api.put(`/ats/candidate/${candidateId}/stage`, {
         stage: newStage,
       });
 
@@ -259,9 +261,15 @@ export default function ATS() {
   //                             RENDER
   // =================================================================
   return (
-    <div className="p-6 bg-gray-50 min-h-screen space-y-6">
-      {view === "jobs" ? renderJobList() : renderPipeline()}
-      {renderDrawer()}
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1 bg-gray-50 min-h-screen">
+        <Header />
+        <div className="p-6 space-y-6">
+          {view === "jobs" ? renderJobList() : renderPipeline()}
+          {renderDrawer()}
+        </div>
+      </div>
     </div>
   );
 }

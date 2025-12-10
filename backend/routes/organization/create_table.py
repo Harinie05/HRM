@@ -16,6 +16,8 @@ from models.models_tenant import (
     LeavePolicy,
     AttendancePolicy,
     JobRequisition,
+     JobApplication,
+    ApplicationStageHistory,
     OTPolicy,
 )
 
@@ -70,3 +72,5 @@ print("  - attendance_policies")
 print("  - ot_policies")
 print("  - job_requisitions")
 print("\nHR Policy columns updated (description, document)")
+print("job_applications")
+print("application_stage_history")
