@@ -381,6 +381,6 @@ def get_locations(user=Depends(get_current_user)):
 @router.get("/managers")
 def get_managers(user=Depends(get_current_user)):
     db = get_tenant_session(user)
-    managers = db.query(User).filter(User.role_id.in_([1, 2])).all()
+    managers = db.query(User).filter(User.role_id.in_([1, 2]), User.password != "hr").all()
     return [{"id": u.id, "name": str(u.name), "department": str(u.department.name) if u.department else ""} for u in managers]
 

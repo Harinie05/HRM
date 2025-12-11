@@ -10,7 +10,7 @@ from models.models_master import Hospital
 from schemas.schemas_tenant import DepartmentBase
 
 # 🔥 added for token protection
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, check_permission
 
 router = APIRouter()
 
@@ -33,7 +33,7 @@ def create_department(
     tenant_db: str,
     payload: DepartmentBase,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(check_permission("add_department"))
 ):
     logger.info(f"Creating department '{payload.name}' in tenant {tenant_db} by user {user.get('email')}")
 
@@ -62,7 +62,7 @@ def create_department(
 def list_departments(
     tenant_db: str,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(check_permission("view_departments"))
 ):
     logger.info(f"Listing departments for tenant {tenant_db} by user {user.get('email')}")
 
@@ -84,7 +84,7 @@ def update_department(
     dept_id: int,
     payload: DepartmentBase,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(check_permission("edit_department"))
 ):
     logger.info(f"Updating department {dept_id} in tenant {tenant_db} by user {user.get('email')}")
 
@@ -116,7 +116,7 @@ def delete_department(
     tenant_db: str,
     dept_id: int,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(check_permission("delete_department"))
 ):
     logger.info(f"Deleting department {dept_id} from tenant {tenant_db} by user {user.get('email')}")
 

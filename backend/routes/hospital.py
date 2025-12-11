@@ -78,6 +78,20 @@ def get_current_user(Authorization: str = Header(None)):
     logger.info(f"Token validated for user {payload.get('email')}")
     return payload
 
+def check_permission(required_permission: str):
+    def permission_checker(user = Depends(get_current_user)):
+        # Admin has all permissions
+        if user.get('role') == 'admin':
+            return user
+        
+        user_permissions = user.get('permissions', [])
+        if required_permission not in user_permissions:
+            logger.warning(f"User {user.get('email')} lacks permission: {required_permission}")
+            raise HTTPException(403, f"Permission denied: {required_permission} required")
+        
+        return user
+    return permission_checker
+
 
 # ---------------------------------------------------------
 # PASSWORD HASH/VERIFY
@@ -388,16 +402,28 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             if user and verify_password(payload.password, str(user.password)):
                 logger.info(f"Tenant user login successful for {payload.email} in DB {hosp.db_name}")
 
+                # Get user permissions
+                role_permissions = tdb.query(RolePermission).filter(RolePermission.role_id == user.role_id).all()
+                permissions = []
+                for rp in role_permissions:
+                    perm = tdb.query(Permission).filter(Permission.id == rp.permission_id).first()
+                    if perm:
+                        permissions.append(str(perm.name))
+
                 access = create_access_token({
                     "email": user.email,
                     "role": "user",
-                    "tenant_db": str(hosp.db_name)
+                    "role_id": user.role_id,
+                    "tenant_db": str(hosp.db_name),
+                    "permissions": permissions
                 })
 
                 refresh = create_refresh_token({
                     "email": user.email,
                     "role": "user",
-                    "tenant_db": str(hosp.db_name)
+                    "role_id": user.role_id,
+                    "tenant_db": str(hosp.db_name),
+                    "permissions": permissions
                 })
 
                 response.set_cookie(
@@ -415,7 +441,8 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "tenant_db": str(hosp.db_name),
                     "email": user.email,
                     "user_name": user.name,
-                    "role_name": "User"
+                    "role_name": "User",
+                    "permissions": permissions
                 }
 
         finally:
