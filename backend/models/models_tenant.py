@@ -48,6 +48,13 @@ class User(MasterBase):
 
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
+    
+    # Employee specific fields
+    employee_code = Column(String(50), nullable=True, unique=True)
+    employee_type = Column(String(50), nullable=True)  # Permanent/Contract/Intern
+    designation = Column(String(150), nullable=True)
+    joining_date = Column(Date, nullable=True)
+    status = Column(String(50), default="Active")  # Active/Inactive
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -326,6 +333,54 @@ class BGV(MasterBase):
     remarks = Column(Text, nullable=True)
     documents = Column(Text, nullable=True)  # CSV: "aadhaar.pdf,pan.pdf"
     updated_at = Column(DateTime, default=func.now())
+
+
+# -------------------------------------------------------------------
+# ONBOARDING TABLES
+# -------------------------------------------------------------------
+class OnboardingCandidate(MasterBase):
+    __tablename__ = "onboarding_candidates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    application_id = Column(Integer, nullable=False)
+    
+    candidate_name = Column(String(150), nullable=False)
+    job_title = Column(String(200), nullable=False)
+    department = Column(String(100), nullable=False)
+    joining_date = Column(Date, nullable=True)
+    
+    work_location = Column(String(150), nullable=True)
+    reporting_manager = Column(String(150), nullable=True)
+    work_shift = Column(String(50), default="General")
+    probation_period = Column(String(50), default="3 Months")
+    
+    status = Column(String(50), default="Pending Docs")
+    # Pending Docs / Docs Submitted / Ready for Joining / Completed
+    
+    appointment_letter = Column(Text, nullable=True)
+    employee_grade = Column(String(50), nullable=True)
+    employee_code = Column(String(50), nullable=True)
+    
+    created_at = Column(DateTime, default=func.now())
+
+
+class DocumentUpload(MasterBase):
+    __tablename__ = "document_uploads"
+
+    id = Column(Integer, primary_key=True, index=True)
+    onboarding_id = Column(Integer, nullable=False)
+    
+    document_type = Column(String(100), nullable=False)
+    # Aadhaar, PAN, Degree, Experience, Photo, Signature, etc.
+    
+    file_name = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    
+    status = Column(String(50), default="Uploaded")
+    # Uploaded / Verified / Rejected
+    
+    remarks = Column(Text, nullable=True)
+    uploaded_at = Column(DateTime, default=func.now())
 
 
 

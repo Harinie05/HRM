@@ -25,6 +25,15 @@ export default function Offer() {
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [generatedOffer, setGeneratedOffer] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [offers, setOffers] = useState([]);
+  const [showBGVModal, setShowBGVModal] = useState(false);
+  const [selectedBGV, setSelectedBGV] = useState(null);
+  const [bgvForm, setBgvForm] = useState({
+    agency_name: '',
+    status: 'Pending',
+    remarks: ''
+  });
 
   // ------------------------------------------------------------
   // FETCH SELECTED CANDIDATES FROM ATS (stage = Selected)
@@ -54,8 +63,21 @@ export default function Offer() {
     }
   };
 
+  // ------------------------------------------------------------
+  // FETCH OFFERS LIST
+  // ------------------------------------------------------------
+  const fetchOffers = async () => {
+    try {
+      const res = await api.get("/offer/list");
+      setOffers(res.data);
+    } catch (err) {
+      console.error("Failed to load offers", err);
+    }
+  };
+
   useEffect(() => {
     fetchCandidates();
+    fetchOffers();
   }, []);
 
   // ------------------------------------------------------------
@@ -97,13 +119,88 @@ export default function Offer() {
   // ------------------------------------------------------------
   const sendOffer = async () => {
     try {
-      const res = await api.post(`/offer/send/${generatedOffer.id}`);
-      alert("Offer sent successfully!\nLink: " + res.data.offer_link);
+      const formData = new FormData();
+      
+      // Add files if any
+      attachments.forEach((file) => {
+        formData.append('files', file);
+      });
+      
+      const res = await api.post(`/offer/send/${generatedOffer.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      alert(`Offer sent successfully to ${res.data.recipient_email}!`);
       setShowPreview(false);
       setShowOfferModal(false);
+      setAttachments([]);
       fetchCandidates();
+      fetchOffers();
     } catch (err) {
+      console.error('Send offer error:', err);
       alert("Failed to send offer");
+    }
+  };
+
+  // ------------------------------------------------------------
+  // MANUAL ACCEPT/REJECT OFFER
+  // ------------------------------------------------------------
+  const handleOfferResponse = async (offerId, action) => {
+    try {
+      await api.post(`/offer/manual-response/${offerId}?action=${action}`);
+      alert(`Offer ${action}ed successfully!`);
+      fetchOffers();
+    } catch (err) {
+      alert(`Failed to ${action} offer`);
+    }
+  };
+
+  // ------------------------------------------------------------
+  // START BGV
+  // ------------------------------------------------------------
+  const startBGV = async (candidateId) => {
+    try {
+      await api.post(`/offer/bgv/start/${candidateId}`);
+      alert("BGV started successfully!");
+      fetchOffers();
+    } catch (err) {
+      alert("Failed to start BGV");
+    }
+  };
+
+  // ------------------------------------------------------------
+  // UPDATE BGV
+  // ------------------------------------------------------------
+  const updateBGV = async () => {
+    try {
+      await api.put(`/offer/bgv/update/${selectedBGV.bgv_id}`, bgvForm);
+      alert("BGV updated successfully!");
+      setShowBGVModal(false);
+      fetchOffers();
+    } catch (err) {
+      alert("Failed to update BGV");
+    }
+  };
+
+  // ------------------------------------------------------------
+  // OPEN BGV MODAL
+  // ------------------------------------------------------------
+  const openBGVModal = async (offer) => {
+    try {
+      if (offer.bgv_id) {
+        const res = await api.get(`/offer/bgv/${offer.bgv_id}`);
+        setBgvForm({
+          agency_name: res.data.agency_name || '',
+          status: res.data.status || 'Pending',
+          remarks: res.data.remarks || ''
+        });
+      }
+      setSelectedBGV(offer);
+      setShowBGVModal(true);
+    } catch (err) {
+      console.error("Failed to load BGV details", err);
     }
   };
 
@@ -119,6 +216,92 @@ export default function Offer() {
         <div className="p-6">
           <h1 className="text-2xl font-semibold mb-4">Offer & Pre-Onboarding</h1>
 
+          {/* ================= OFFERS MANAGEMENT TABLE ================= */}
+          {offers.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-lg font-semibold mb-3">Sent Offers</h2>
+              <table className="min-w-full bg-white rounded-xl shadow mb-6">
+                <thead className="bg-gray-100 text-gray-600 text-sm">
+                  <tr>
+                    <th className="p-3 text-left">Candidate</th>
+                    <th className="p-3 text-left">Job Role</th>
+                    <th className="p-3 text-center">Offer Status</th>
+                    <th className="p-3 text-center">BGV Status</th>
+                    <th className="p-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {offers.map((offer) => (
+                    <tr key={offer.id} className="border-t">
+                      <td className="p-3">{offer.candidate_name}</td>
+                      <td className="p-3">{offer.job_title}</td>
+                      <td className="p-3 text-center">
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          offer.offer_status === 'Accepted' ? 'bg-green-100 text-green-800' :
+                          offer.offer_status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                          offer.offer_status === 'Sent' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {offer.offer_status}
+                        </span>
+                      </td>
+                      <td className="p-3 text-center">
+                        {offer.bgv_status ? (
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            offer.bgv_status === 'Cleared' ? 'bg-green-100 text-green-800' :
+                            offer.bgv_status === 'Failed' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {offer.bgv_status}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400 text-xs">Not Started</span>
+                        )}
+                      </td>
+                      <td className="p-3 text-center">
+                        <div className="flex gap-1 justify-center">
+                          {offer.offer_status === 'Sent' && (
+                            <>
+                              <button
+                                onClick={() => handleOfferResponse(offer.id, 'accept')}
+                                className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() => handleOfferResponse(offer.id, 'reject')}
+                                className="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          {offer.offer_status === 'Accepted' && !offer.bgv_status && (
+                            <button
+                              onClick={() => startBGV(offer.application_id)}
+                              className="px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
+                            >
+                              Start BGV
+                            </button>
+                          )}
+                          {offer.bgv_status && (
+                            <button
+                              onClick={() => openBGVModal(offer)}
+                              className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
+                            >
+                              Manage BGV
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <h2 className="text-lg font-semibold mb-3">Selected Candidates</h2>
           {/* ================= TABLE ================= */}
           <table className="min-w-full bg-white rounded-xl shadow">
             <thead className="bg-gray-100 text-gray-600 text-sm">
@@ -263,6 +446,24 @@ export default function Offer() {
                       setOfferForm({ ...offerForm, terms: e.target.value })
                     }
                   ></textarea>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Attach Documents (Optional)</label>
+                    <input
+                      type="file"
+                      multiple
+                      className="border p-2 rounded w-full"
+                      onChange={(e) => setAttachments(Array.from(e.target.files))}
+                    />
+                    {attachments.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-600">Selected files:</p>
+                        {attachments.map((file, idx) => (
+                          <p key={idx} className="text-xs text-blue-600">• {file.name}</p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* ACTION BUTTONS */}
@@ -314,6 +515,88 @@ export default function Offer() {
                     onClick={sendOffer}
                   >
                     Send Offer
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= BGV MODAL ================= */}
+          {showBGVModal && selectedBGV && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl">
+                <h2 className="text-xl font-semibold mb-4">
+                  Background Verification - {selectedBGV.candidate_name}
+                </h2>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">BGV Type</label>
+                    <select
+                      className="border p-2 rounded w-full"
+                      value={bgvForm.agency_name || 'Internal'}
+                      onChange={(e) => setBgvForm({...bgvForm, agency_name: e.target.value === 'Internal' ? '' : e.target.value})}
+                    >
+                      <option value="Internal">Internal BGV (HR Team)</option>
+                      <option value="External">External Agency</option>
+                    </select>
+                  </div>
+
+                  {bgvForm.agency_name && bgvForm.agency_name !== 'Internal' && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Agency Name</label>
+                      <input
+                        type="text"
+                        className="border p-2 rounded w-full"
+                        placeholder="Enter agency name"
+                        value={bgvForm.agency_name === 'External' ? '' : bgvForm.agency_name}
+                        onChange={(e) => setBgvForm({...bgvForm, agency_name: e.target.value})}
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">BGV Status</label>
+                    <select
+                      className="border p-2 rounded w-full"
+                      value={bgvForm.status}
+                      onChange={(e) => setBgvForm({...bgvForm, status: e.target.value})}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Cleared">Cleared</option>
+                      <option value="Failed">Failed</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Remarks</label>
+                    <textarea
+                      className="border p-2 rounded w-full h-20"
+                      placeholder="Notes about BGV..."
+                      value={bgvForm.remarks}
+                      onChange={(e) => setBgvForm({...bgvForm, remarks: e.target.value})}
+                    ></textarea>
+                  </div>
+
+                  <div className="text-sm text-gray-600">
+                    <p><strong>Documents Required:</strong></p>
+                    <p>✓ Aadhaar ✓ PAN □ Degree Certificate □ Experience Letter</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-6">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded-lg"
+                    onClick={() => setShowBGVModal(false)}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                    onClick={updateBGV}
+                  >
+                    Update BGV
                   </button>
                 </div>
               </div>

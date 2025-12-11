@@ -19,6 +19,7 @@ import PolicySetup from "./pages/organization/PolicySetup";
 import RecruitmentSetup from "./pages/recruitment/Recruitment";
 import ATS from "./pages/recruitment/ATS";
 import Offer from "./pages/recruitment/offer";
+import Onboarding from "./pages/recruitment/Onboarding";
 
 function App() {
   return (
@@ -130,6 +131,7 @@ function App() {
         <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
         <Route path="/ats" element={<ProtectedRoute><ATS /></ProtectedRoute>} />
         <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
        
         {/* ----------------------------------------
            SECRET HOSPITAL REGISTER PAGE

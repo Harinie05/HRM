@@ -16,12 +16,13 @@ from models.models_tenant import (
     LeavePolicy,
     AttendancePolicy,
     JobRequisition,
-     JobApplication,
+    JobApplication,
     ApplicationStageHistory,
     OTPolicy,
     OfferLetter,
     BGV,
-
+    OnboardingCandidate,
+    DocumentUpload
 )
 
 tenant = "nutryah"  # Change this to your tenant database name
@@ -56,6 +57,41 @@ with engine.connect() as conn:
     
     conn.commit()
 
+# Add new columns to users table for employee functionality
+print("\nUpdating users table for employee fields...")
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN employee_code VARCHAR(50) NULL UNIQUE"))
+        print("Added employee_code column")
+    except Exception as e:
+        print(f"employee_code: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN employee_type VARCHAR(50) NULL"))
+        print("Added employee_type column")
+    except Exception as e:
+        print(f"employee_type: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN designation VARCHAR(150) NULL"))
+        print("Added designation column")
+    except Exception as e:
+        print(f"designation: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN joining_date DATE NULL"))
+        print("Added joining_date column")
+    except Exception as e:
+        print(f"joining_date: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN status VARCHAR(50) DEFAULT 'Active'"))
+        print("Added status column")
+    except Exception as e:
+        print(f"status: {e}")
+    
+    conn.commit()
+
 logger.info("Done. All tables created successfully.")
 print("Done. All tables created successfully.")
 print("\nTables created:")
@@ -79,3 +115,5 @@ print("job_applications")
 print("application_stage_history")
 print("offer_letters")
 print("bgv")
+print("onboarding_candidates")
+print("document_uploads")

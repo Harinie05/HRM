@@ -2,6 +2,9 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+from typing import List, Optional
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.office365.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
@@ -10,7 +13,7 @@ SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "Nutryah@123")
 SMTP_FROM = os.getenv("SMTP_FROM", "NUTRYAH <no-reply@nutryah.com>")
 
 
-def send_email(to_email: str, subject: str, html_content: str):
+def send_email(to_email: str, subject: str, html_content: str, attachments: Optional[List[dict]] = None):
     """
     Sends an HTML email using SMTP (Office365 supported)
     """
@@ -22,6 +25,18 @@ def send_email(to_email: str, subject: str, html_content: str):
         msg["Subject"] = subject
 
         msg.attach(MIMEText(html_content, "html"))
+        
+        # Add attachments if provided
+        if attachments:
+            for attachment in attachments:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment['content'])
+                encoders.encode_base64(part)
+                part.add_header(
+                    'Content-Disposition',
+                    f'attachment; filename= {attachment["filename"]}'
+                )
+                msg.attach(part)
 
         # Connect to SMTP server
         server = smtplib.SMTP(SMTP_HOST or "localhost", SMTP_PORT)

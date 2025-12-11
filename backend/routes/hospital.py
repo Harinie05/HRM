@@ -27,11 +27,12 @@ from models.models_tenant import (
     AttendancePolicy,
     JobRequisition,
     OTPolicy,
-     JobApplication,
+    JobApplication,
     ApplicationStageHistory,
     OfferLetter,
     BGV,
-
+    OnboardingCandidate,
+    DocumentUpload
 )
 from models.models_master import Hospital, MasterUser
 
