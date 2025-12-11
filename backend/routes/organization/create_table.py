@@ -19,6 +19,9 @@ from models.models_tenant import (
      JobApplication,
     ApplicationStageHistory,
     OTPolicy,
+    OfferLetter,
+    BGV,
+
 )
 
 tenant = "nutryah"  # Change this to your tenant database name
@@ -74,3 +77,5 @@ print("  - job_requisitions")
 print("\nHR Policy columns updated (description, document)")
 print("job_applications")
 print("application_stage_history")
+print("offer_letters")
+print("bgv")

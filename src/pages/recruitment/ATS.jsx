@@ -27,6 +27,13 @@ export default function ATS() {
   // ------------------------- CANDIDATE DRAWER -------------------------
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [candidateProfile, setCandidateProfile] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    experience: 0
+  });
 
   const stages = ["New", "Screening", "Shortlisted", "Interview", "Selected", "Rejected"];
 
@@ -67,9 +74,33 @@ export default function ATS() {
     try {
       const res = await api.get(`/ats/candidate/${candidateId}`);
       setCandidateProfile(res.data);
+      setEditForm({
+        name: res.data.name,
+        email: res.data.email || "",
+        phone: res.data.phone || "",
+        experience: res.data.experience || 0
+      });
       setDrawerOpen(true);
+      setEditMode(false);
     } catch {
       alert("Failed to load candidate");
+    }
+  };
+
+  const updateCandidate = async () => {
+    try {
+      await api.put(`/ats/candidate/${candidateProfile.id}`, {
+        name: editForm.name,
+        email: editForm.email,
+        phone: editForm.phone,
+        experience: editForm.experience
+      });
+      
+      await openCandidateDrawer(candidateProfile.id);
+      setEditMode(false);
+      alert("Candidate updated successfully!");
+    } catch {
+      alert("Failed to update candidate");
     }
   };
 
@@ -218,7 +249,74 @@ export default function ATS() {
           {candidateProfile && (
             <div className="space-y-4">
 
-              <h2 className="text-lg font-semibold">{candidateProfile.name}</h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold">{candidateProfile.name}</h2>
+                <button
+                  onClick={() => setEditMode(true)}
+                  className="text-blue-600 text-sm hover:underline"
+                >
+                  Edit
+                </button>
+              </div>
+
+              {editMode && (
+                <div className="space-y-3 border-t pt-4">
+                  <h3 className="font-semibold">Edit Candidate</h3>
+                  
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                    className="w-full border p-2 rounded"
+                  />
+                  
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={editForm.email}
+                    onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                    className="w-full border p-2 rounded"
+                  />
+                  
+                  <input
+                    type="tel"
+                    placeholder="Phone"
+                    value={editForm.phone}
+                    onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                    className="w-full border p-2 rounded"
+                  />
+                  
+                  <input
+                    type="number"
+                    placeholder="Experience (years)"
+                    value={editForm.experience}
+                    onChange={(e) => setEditForm({...editForm, experience: parseInt(e.target.value) || 0})}
+                    className="w-full border p-2 rounded"
+                  />
+                  
+                  <div className="flex gap-2">
+                    <button
+                      onClick={updateCandidate}
+                      className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditMode(false)}
+                      className="flex-1 border py-2 rounded hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="text-sm space-y-1">
+                <p><strong>Email:</strong> {candidateProfile.email || "Not provided"}</p>
+                <p><strong>Phone:</strong> {candidateProfile.phone || "Not provided"}</p>
+                <p><strong>Experience:</strong> {candidateProfile.experience} years</p>
+              </div>
 
               <p className="text-sm text-gray-600">
                 {candidateProfile.experience} years experience

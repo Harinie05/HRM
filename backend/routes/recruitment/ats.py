@@ -9,6 +9,7 @@ from schemas.schemas_tenant import (
     ApplicationOut,
     CandidateProfileOut,
     StageUpdate,
+    CandidateUpdate,
 )
 from routes.hospital import get_current_user
 import traceback
@@ -129,6 +130,32 @@ def candidate_stage_change(id: int, data: StageUpdate, user=Depends(get_current_
         tb = traceback.format_exc()
         logger.exception(f"[ATS /candidate/{id}/stage] Unexpected error:\n" + tb)
         raise HTTPException(status_code=500, detail="Server error while updating candidate stage.")
+
+
+@router.put("/candidate/{id}")
+def update_candidate(id: int, data: CandidateUpdate, user=Depends(get_current_user)):
+    try:
+        db = get_tenant_session(user)
+        c = db.query(JobApplication).filter(JobApplication.id == id).first()
+        if not c:
+            raise HTTPException(status_code=404, detail="Candidate not found")
+
+        # Update candidate details
+        setattr(c, 'name', data.name)
+        setattr(c, 'email', data.email)
+        setattr(c, 'phone', data.phone)
+        setattr(c, 'experience', data.experience)
+        db.commit()
+
+        logger.info(f"[ATS] Candidate {id} updated")
+        return {"message": "Candidate updated successfully"}
+
+    except HTTPException:
+        raise
+    except Exception:
+        tb = traceback.format_exc()
+        logger.exception(f"[ATS /candidate/{id}] Unexpected error:\n" + tb)
+        raise HTTPException(status_code=500, detail="Server error while updating candidate.")
 
 
 @router.get("/job/{job_id}")

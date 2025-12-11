@@ -18,6 +18,7 @@ import ProtectedRoute from "./components/ProctectedRoute";
 import PolicySetup from "./pages/organization/PolicySetup";
 import RecruitmentSetup from "./pages/recruitment/Recruitment";
 import ATS from "./pages/recruitment/ATS";
+import Offer from "./pages/recruitment/offer";
 
 function App() {
   return (
@@ -128,6 +129,7 @@ function App() {
         ----------------------------------------- */}
         <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
         <Route path="/ats" element={<ProtectedRoute><ATS /></ProtectedRoute>} />
+        <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
        
         {/* ----------------------------------------
            SECRET HOSPITAL REGISTER PAGE

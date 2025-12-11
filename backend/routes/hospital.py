@@ -29,6 +29,9 @@ from models.models_tenant import (
     OTPolicy,
      JobApplication,
     ApplicationStageHistory,
+    OfferLetter,
+    BGV,
+
 )
 from models.models_master import Hospital, MasterUser
 

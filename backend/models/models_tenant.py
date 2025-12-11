@@ -278,6 +278,55 @@ class ApplicationStageHistory(MasterBase):
     new_stage = Column(String(50))
     changed_at = Column(DateTime, default=func.now())
 
+# -------------------------------------------------------------------
+# OFFER LETTER TABLE
+# -------------------------------------------------------------------
+class OfferLetter(MasterBase):
+    __tablename__ = "offer_letters"
+
+    id = Column(Integer, primary_key=True, index=True)
+    application_id = Column(Integer, nullable=False)  # FK → JobApplication
+
+    candidate_name = Column(String(150), nullable=False)
+    job_title = Column(String(200), nullable=False)
+    department = Column(String(100), nullable=False)
+    location = Column(String(150), nullable=True)
+
+    ctc = Column(Integer, nullable=False)
+    basic_percent = Column(Integer, default=40)
+    hra_percent = Column(Integer, default=20)
+
+    joining_date = Column(Date, nullable=True)
+    probation_period = Column(String(50), default="3 Months")
+    notice_period = Column(String(50), default="30 Days")
+
+    terms = Column(Text, nullable=True)
+    document = Column(String(255), nullable=True)  # PDF file
+
+    offer_status = Column(String(50), default="Draft")  
+    # Draft / Sent / Accepted / Rejected
+
+    token = Column(String(200), nullable=True)  # For email link
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------------------------------------------------
+# BGV TABLE
+# -------------------------------------------------------------------
+class BGV(MasterBase):
+    __tablename__ = "bgv"
+
+    id = Column(Integer, primary_key=True)
+    application_id = Column(Integer, nullable=False)
+
+    agency = Column(String(150), nullable=True)
+    status = Column(String(50), default="Pending")
+    # Pending / In Progress / Cleared / Failed
+
+    remarks = Column(Text, nullable=True)
+    documents = Column(Text, nullable=True)  # CSV: "aadhaar.pdf,pan.pdf"
+    updated_at = Column(DateTime, default=func.now())
+
 
 
 

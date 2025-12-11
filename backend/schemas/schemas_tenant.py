@@ -385,6 +385,13 @@ class StageUpdate(BaseModel):
     stage: str
 
 
+class CandidateUpdate(BaseModel):
+    name: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    experience: Optional[int] = 0
+
+
 class ApplicationOut(BaseModel):
     id: int
     name: str
@@ -405,6 +412,75 @@ class CandidateProfileOut(BaseModel):
     resume: Optional[str]
     stage: str
     applied_on: datetime           # ← FIXED
+
+    class Config:
+        orm_mode = True
+
+# ---------------------------- OFFER SCHEMAS ----------------------------
+class OfferCreate(BaseModel):
+    ctc: Optional[int] = 0
+    basic_percent: Optional[int] = 40
+    hra_percent: Optional[int] = 20
+    location: Optional[str] = None
+    email: Optional[str] = None
+    joining_date: Optional[str] = None
+    probation_period: Optional[str] = "3 Months"
+    notice_period: Optional[str] = "30 Days"
+    terms: Optional[str] = None
+
+
+class OfferUpdate(BaseModel):
+    ctc: int
+    basic_percent: int
+    hra_percent: int
+    joining_date: Optional[date]
+    probation_period: str
+    notice_period: str
+    terms: Optional[str]
+
+
+class OfferStatusUpdate(BaseModel):
+    offer_status: str  # Draft / Sent / Accepted / Rejected
+
+
+class OfferOut(BaseModel):
+    id: int
+    application_id: int
+    candidate_name: str
+    job_title: str
+    department: str
+    location: Optional[str]
+    ctc: int
+    joining_date: Optional[date]
+    terms: Optional[str]
+    offer_status: str
+    document: Optional[str]
+    token: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+# ---------------------------- BGV SCHEMAS ----------------------------
+class BGVCreate(BaseModel):
+    agency: Optional[str] = None
+    status: str = "Pending"
+    remarks: Optional[str] = None
+
+
+class BGVUpdate(BaseModel):
+    agency: Optional[str]
+    status: Optional[str]
+    remarks: Optional[str]
+
+
+class BGVOut(BaseModel):
+    id: int
+    application_id: int
+    agency: Optional[str]
+    status: str
+    remarks: Optional[str]
+    documents: Optional[str]
 
     class Config:
         orm_mode = True
