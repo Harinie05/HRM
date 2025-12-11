@@ -15,6 +15,11 @@ export default function Onboarding() {
   const [locations, setLocations] = useState([]);
   const [managers, setManagers] = useState([]);
   const [grades, setGrades] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedJob, setSelectedJob] = useState("All Jobs");
+  const [selectedStatus, setSelectedStatus] = useState("All Status");
   
   const [onboardingForm, setOnboardingForm] = useState({
     work_location: "",
@@ -37,7 +42,13 @@ export default function Onboarding() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await api.get("/onboarding/candidates");
+      const params = new URLSearchParams();
+      if (searchTerm.trim()) params.append('search', searchTerm.trim());
+      if (selectedJob !== "All Jobs") params.append('job_filter', selectedJob);
+      if (selectedStatus !== "All Status") params.append('status_filter', selectedStatus);
+      
+      const url = `/onboarding/candidates${params.toString() ? '?' + params.toString() : ''}`;
+      const res = await api.get(url);
       setCandidates(res.data);
     } catch (err) {
       console.error("Failed to load candidates", err);
@@ -46,14 +57,18 @@ export default function Onboarding() {
 
   const fetchMasterData = async () => {
     try {
-      const [locRes, mgRes, gradeRes] = await Promise.all([
+      const [locRes, mgRes, gradeRes, jobRes, statusRes] = await Promise.all([
         api.get("/onboarding/locations"),
         api.get("/onboarding/managers"),
-        api.get("/onboarding/grades")
+        api.get("/onboarding/grades"),
+        api.get("/onboarding/jobs"),
+        api.get("/onboarding/statuses")
       ]);
       setLocations(locRes.data);
       setManagers(mgRes.data);
       setGrades(gradeRes.data);
+      setJobs(jobRes.data);
+      setStatuses(statusRes.data);
     } catch (err) {
       console.error("Failed to load master data", err);
     }
@@ -63,6 +78,10 @@ export default function Onboarding() {
     fetchCandidates();
     fetchMasterData();
   }, []);
+  
+  useEffect(() => {
+    fetchCandidates();
+  }, [searchTerm, selectedJob, selectedStatus]);
 
   const startOnboarding = async () => {
     try {
@@ -147,12 +166,28 @@ export default function Onboarding() {
               type="text"
               placeholder="Search Candidate"
               className="border p-2 rounded w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <select className="border p-2 rounded">
-              <option>All Jobs</option>
+            <select 
+              className="border p-2 rounded"
+              value={selectedJob}
+              onChange={(e) => setSelectedJob(e.target.value)}
+            >
+              <option value="All Jobs">All Jobs</option>
+              {jobs.map(job => (
+                <option key={job.value} value={job.value}>{job.label}</option>
+              ))}
             </select>
-            <select className="border p-2 rounded">
-              <option>All Status</option>
+            <select 
+              className="border p-2 rounded"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="All Status">All Status</option>
+              {statuses.map(status => (
+                <option key={status.value} value={status.value}>{status.label}</option>
+              ))}
             </select>
           </div>
 

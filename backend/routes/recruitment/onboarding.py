@@ -4,7 +4,7 @@ from database import get_master_db, get_tenant_engine
 from models.models_master import Hospital
 from models.models_tenant import (
     JobApplication, OfferLetter, BGV, OnboardingCandidate, 
-    DocumentUpload, User, Department, Branch, Grade
+    DocumentUpload, User, Department, Branch, Grade, JobRequisition
 )
 from routes.hospital import get_current_user
 from typing import List, Optional
@@ -25,7 +25,12 @@ def get_tenant_session(user):
     return Session(bind=engine)
 
 @router.get("/candidates")
-def get_onboarding_candidates(user=Depends(get_current_user)):
+def get_onboarding_candidates(
+    search: Optional[str] = None,
+    job_filter: Optional[str] = None, 
+    status_filter: Optional[str] = None,
+    user=Depends(get_current_user)
+):
     db = get_tenant_session(user)
     
     bgv_cleared = db.query(BGV).filter(BGV.status == "Cleared").all()
@@ -37,7 +42,7 @@ def get_onboarding_candidates(user=Depends(get_current_user)):
         onboarding = db.query(OnboardingCandidate).filter(OnboardingCandidate.application_id == bgv.application_id).first()
         
         if candidate and offer:
-            candidates.append({
+            candidate_data = {
                 "id": candidate.id,
                 "name": str(candidate.name),
                 "job_title": str(offer.job_title),
@@ -47,7 +52,29 @@ def get_onboarding_candidates(user=Depends(get_current_user)):
                 "ctc": offer.ctc,
                 "onboarding_status": str(onboarding.status) if onboarding else "Not Started",
                 "onboarding_id": onboarding.id if onboarding else None
-            })
+            }
+            
+            # Apply search filter - search in name, job title, and department
+            if search and search.strip():
+                search_term = search.lower().strip()
+                name_match = search_term in candidate_data["name"].lower()
+                job_match = search_term in candidate_data["job_title"].lower()
+                dept_match = search_term in candidate_data["department"].lower()
+                
+                if not (name_match or job_match or dept_match):
+                    continue
+                
+            # Apply job filter
+            if job_filter and job_filter not in ["All Jobs", "", None]:
+                if job_filter != candidate_data["job_title"]:
+                    continue
+                
+            # Apply status filter
+            if status_filter and status_filter not in ["All Status", "", None]:
+                if status_filter != candidate_data["onboarding_status"]:
+                    continue
+                
+            candidates.append(candidate_data)
     
     return candidates
 
@@ -383,4 +410,64 @@ def get_managers(user=Depends(get_current_user)):
     db = get_tenant_session(user)
     managers = db.query(User).filter(User.role_id.in_([1, 2]), User.password != "hr").all()
     return [{"id": u.id, "name": str(u.name), "department": str(u.department.name) if u.department else ""} for u in managers]
+
+@router.get("/jobs")
+def get_jobs(user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    
+    # Get unique job titles from offers (actual onboarding candidates)
+    bgv_cleared = db.query(BGV).filter(BGV.status == "Cleared").all()
+    job_titles = set()
+    
+    for bgv in bgv_cleared:
+        offer = db.query(OfferLetter).filter(OfferLetter.application_id == bgv.application_id).first()
+        if offer:
+            job_titles.add(str(offer.job_title))
+    
+    return [{"value": title, "label": title} for title in sorted(job_titles)]
+
+@router.get("/statuses")
+def get_statuses(user=Depends(get_current_user)):
+    return [
+        {"value": "Not Started", "label": "Not Started"},
+        {"value": "Pending Docs", "label": "Pending Docs"},
+        {"value": "Docs Submitted", "label": "Docs Submitted"},
+        {"value": "Ready for Joining", "label": "Ready for Joining"},
+        {"value": "Completed", "label": "Completed"}
+    ]
+
+@router.get("/debug")
+def debug_candidates(user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    
+    bgv_cleared = db.query(BGV).filter(BGV.status == "Cleared").all()
+    debug_info = {
+        "total_bgv_cleared": len(bgv_cleared),
+        "candidates": [],
+        "unique_jobs": set(),
+        "unique_statuses": set()
+    }
+    
+    for bgv in bgv_cleared:
+        candidate = db.query(JobApplication).filter(JobApplication.id == bgv.application_id).first()
+        offer = db.query(OfferLetter).filter(OfferLetter.application_id == bgv.application_id).first()
+        onboarding = db.query(OnboardingCandidate).filter(OnboardingCandidate.application_id == bgv.application_id).first()
+        
+        if candidate and offer:
+            job_title = str(offer.job_title)
+            status = str(onboarding.status) if onboarding else "Not Started"
+            
+            debug_info["candidates"].append({
+                "name": str(candidate.name),
+                "job_title": job_title,
+                "status": status
+            })
+            
+            debug_info["unique_jobs"].add(job_title)
+            debug_info["unique_statuses"].add(status)
+    
+    debug_info["unique_jobs"] = list(debug_info["unique_jobs"])
+    debug_info["unique_statuses"] = list(debug_info["unique_statuses"])
+    
+    return debug_info
 
