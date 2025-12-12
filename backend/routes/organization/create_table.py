@@ -1,119 +1,149 @@
-from database import get_tenant_engine, logger
 from sqlalchemy import text
+from database import get_tenant_engine, logger
+
+# ========================= IMPORT ALL TENANT MODELS =========================
 from models.models_tenant import (
     MasterBase,
-    CompanyProfile,
-    Branch,
-    Shift,
-    Holiday,
-    Grade,
+
+    # Core HR
+    User,
     Role,
     Permission,
     RolePermission,
     Department,
-    User,
+    CompanyProfile,
+    Branch,
+    Shift,
+    Grade,
+    Holiday,
     HRPolicy,
     LeavePolicy,
     AttendancePolicy,
-    JobRequisition,
-    JobApplication,
-    ApplicationStageHistory,
     OTPolicy,
+
+    # Recruitment + ATS
+    JobRequisition,
+    Candidate,
+    ApplicationStageHistory,
+    InterviewSchedule,
     OfferLetter,
     BGV,
+
+    # Onboarding
     OnboardingCandidate,
-    DocumentUpload
+    DocumentUpload,
+
+    # Employee Information System
+    Employee,
+    EmployeeFamily,
+    EmployeeEducation,
+    EmployeeExperience,
+    EmployeeMedical,
+    EmployeeIDDocs,
+    EmployeeSkills,
+    EmployeeCertifications,
+    EmployeeSalary,
+    EmployeeDocuments,
+    EmployeeExit
 )
 
-tenant = "nutryah"  # Change this to your tenant database name
-
-logger.info(f"Creating tables in tenant DB: {tenant}...")
-print(f"Creating tables in tenant DB: {tenant}...")
-
+# ========================= CONFIG =========================
+tenant = "nutryah"
 engine = get_tenant_engine(tenant)
+
+print(f"\n🚀 Creating tables for tenant → {tenant}\n")
+
+# ========================= CREATE TABLES =========================
 MasterBase.metadata.create_all(bind=engine)
 
-# Add new columns to hr_policies table
-from sqlalchemy import text
-print("\nUpdating hr_policies table...")
+# ========================= HR POLICY UPDATES =========================
+print("Updating hr_policies...")
 with engine.connect() as conn:
-    try:
-        conn.execute(text("ALTER TABLE hr_policies ADD COLUMN description TEXT NULL"))
-        print("Added description column")
-    except Exception as e:
-        print(f"description: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE hr_policies ADD COLUMN document VARCHAR(255) NULL"))
-        print("Added document column")
-    except Exception as e:
-        print(f"document: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE hr_policies DROP COLUMN code_of_conduct"))
-        print("Removed code_of_conduct column")
-    except Exception as e:
-        print(f"code_of_conduct: {e}")
-    
+    alter_statements = [
+        ("ALTER TABLE hr_policies ADD COLUMN description TEXT", "description"),
+        ("ALTER TABLE hr_policies ADD COLUMN document VARCHAR(255)", "document"),
+        ("ALTER TABLE hr_policies DROP COLUMN code_of_conduct", "code_of_conduct")
+    ]
+
+    for sql, col in alter_statements:
+        try:
+            conn.execute(text(sql))
+            print(f"✔️ Updated: {col}")
+        except Exception as e:
+            print(f"⚠️ {col}: {e}")
+
     conn.commit()
 
-# Add new columns to users table for employee functionality
-print("\nUpdating users table for employee fields...")
+# ========================= USER TABLE UPDATES =========================
+print("\nUpdating users table...")
 with engine.connect() as conn:
-    try:
-        conn.execute(text("ALTER TABLE users ADD COLUMN employee_code VARCHAR(50) NULL UNIQUE"))
-        print("Added employee_code column")
-    except Exception as e:
-        print(f"employee_code: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE users ADD COLUMN employee_type VARCHAR(50) NULL"))
-        print("Added employee_type column")
-    except Exception as e:
-        print(f"employee_type: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE users ADD COLUMN designation VARCHAR(150) NULL"))
-        print("Added designation column")
-    except Exception as e:
-        print(f"designation: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE users ADD COLUMN joining_date DATE NULL"))
-        print("Added joining_date column")
-    except Exception as e:
-        print(f"joining_date: {e}")
-    
-    try:
-        conn.execute(text("ALTER TABLE users ADD COLUMN status VARCHAR(50) DEFAULT 'Active'"))
-        print("Added status column")
-    except Exception as e:
-        print(f"status: {e}")
-    
+    updates = [
+        ("employee_code VARCHAR(50) UNIQUE", "employee_code"),
+        ("employee_type VARCHAR(50)", "employee_type"),
+        ("designation VARCHAR(150)", "designation"),
+        ("joining_date DATE", "joining_date"),
+        ("status VARCHAR(50) DEFAULT 'Active'", "status")
+    ]
+
+    for sql_def, name in updates:
+        try:
+            conn.execute(text(f"ALTER TABLE users ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
     conn.commit()
 
-logger.info("Done. All tables created successfully.")
-print("Done. All tables created successfully.")
-print("\nTables created:")
-print("  - roles")
-print("  - permissions")
-print("  - role_permissions")
-print("  - departments")
-print("  - users")
-print("  - company_profile")
-print("  - branches")
-print("  - shifts")
-print("  - grades")
-print("  - holidays")
-print("  - hr_policies")
-print("  - leave_policies")
-print("  - attendance_policies")
-print("  - ot_policies")
-print("  - job_requisitions")
-print("\nHR Policy columns updated (description, document)")
-print("job_applications")
-print("application_stage_history")
-print("offer_letters")
-print("bgv")
-print("onboarding_candidates")
-print("document_uploads")
+# ========================= OFFER LETTERS TABLE UPDATES =========================
+print("\nUpdating offer_letters table...")
+with engine.connect() as conn:
+    offer_updates = [
+        ("candidate_id INT", "candidate_id"),
+        ("candidate_name VARCHAR(150)", "candidate_name"),
+        ("job_title VARCHAR(200)", "job_title"),
+        ("department VARCHAR(100)", "department"),
+        ("ctc INT", "ctc"),
+        ("basic_percent INT DEFAULT 40", "basic_percent"),
+        ("hra_percent INT DEFAULT 20", "hra_percent"),
+        ("joining_date DATE", "joining_date"),
+        ("probation_period VARCHAR(50) DEFAULT '3 Months'", "probation_period"),
+        ("notice_period VARCHAR(50) DEFAULT '30 Days'", "notice_period"),
+        ("terms TEXT", "terms"),
+        ("document VARCHAR(255)", "document"),
+        ("offer_status VARCHAR(50) DEFAULT 'Draft'", "offer_status"),
+        ("token VARCHAR(200)", "token"),
+        ("created_at DATETIME DEFAULT CURRENT_TIMESTAMP", "created_at")
+    ]
+
+    for sql_def, name in offer_updates:
+        try:
+            conn.execute(text(f"ALTER TABLE offer_letters ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    conn.commit()
+
+# ========================= DOCUMENT UPLOADS TABLE UPDATES =========================
+print("\nUpdating document_uploads table...")
+with engine.connect() as conn:
+    doc_updates = [
+        ("candidate_id INT", "candidate_id"),
+        ("document_type VARCHAR(100)", "document_type"),
+        ("file_name VARCHAR(255)", "file_name"),
+        ("file_path VARCHAR(500)", "file_path"),
+        ("status VARCHAR(50) DEFAULT 'Uploaded'", "status"),
+        ("remarks TEXT", "remarks"),
+        ("uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP", "uploaded_at")
+    ]
+
+    for sql_def, name in doc_updates:
+        try:
+            conn.execute(text(f"ALTER TABLE document_uploads ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    conn.commit()
+
+print("\n🎉 DONE — All tables created and updated successfully!\n")

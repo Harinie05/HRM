@@ -1,132 +1,178 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.orm import Session
-from database import get_master_db, get_tenant_engine, logger
-from models.models_master import Hospital
-from models.models_tenant import JobRequisition
-from schemas.schemas_tenant import JobReqCreate, JobReqOut
-from routes.hospital import get_current_user
 from typing import List
-
+from database import get_tenant_db
+from models.models_tenant import JobRequisition
+from schemas.schemas_tenant import (
+    JobReqCreate,
+    JobReqUpdate,
+    JobReqOut
+)
+import uuid
+import os
+from datetime import datetime
+from database import logger
 
 router = APIRouter(prefix="/recruitment", tags=["Recruitment"])
 
-
-# ---------------- TENANT SESSION ----------------
-def get_tenant_session(user):
-    tenant_db = user.get("tenant_db")
-    master_db = next(get_master_db())
-    hospital = master_db.query(Hospital).filter(Hospital.db_name == tenant_db).first()
-
-    if not hospital:
-        raise HTTPException(404, "Hospital not found")
-
-    engine = get_tenant_engine(str(hospital.db_name))
-    return Session(bind=engine)
+UPLOAD_DIR = "uploads/recruitment"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# ================= CREATE =================
-@router.post("/jobs/create", response_model=JobReqOut)
-def create_job(data: JobReqCreate, user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    logger.info(f"[JOB CREATE] {data.title}")
+# ----------------------------------------------------------
+# Utility: Generate public apply URL
+# ----------------------------------------------------------
+def generate_apply_url(job_id: int):
+    return f"https://yourdomain.com/careers/apply/{job_id}"
+
+
+# ----------------------------------------------------------
+# CREATE JOB REQUISITION
+# ----------------------------------------------------------
+from fastapi import Request
+
+@router.post("/create-debug")
+async def debug_create_job(request: Request):
+    body = await request.body()
+    logger.info(f"Raw request body: {body.decode()}")
+    return {"received": body.decode()}
+
+@router.post("/create", response_model=JobReqOut)
+def create_job(req: JobReqCreate, db: Session = Depends(get_tenant_db)):
+    logger.info(f"Creating job with data: {req.dict()}")
 
     job = JobRequisition(
-        **data.dict(exclude={"skills"}),
-        skills=",".join(data.skills)
+        title=req.title,
+        department=req.department,
+        hiring_manager=req.hiring_manager,
+
+        openings=req.openings,
+        experience=req.experience,
+        salary_range=req.salary_range,
+        job_type=req.job_type,
+        work_mode=req.work_mode,
+        location=req.location,
+
+        rounds=req.rounds,
+        round_names=req.round_names,
+        jd_text=req.jd_text,
+        skills=req.skills,
+
+        description=req.description,
+        deadline=req.deadline,
+        status=req.status,
+
+        created_at=datetime.now(),
     )
 
     db.add(job)
     db.commit()
     db.refresh(job)
 
-    skills_value = job.skills
-    skills_list = skills_value.split(",") if skills_value not in (None, "") else []
-    return JobReqOut.model_validate(job.__dict__ | {"skills": skills_list})
+    # After commit → we now have job.id
+    setattr(job, 'apply_url', generate_apply_url(getattr(job, 'id')))
+    db.commit()
+
+    return job
 
 
-# ================= LIST =================
-@router.get("/jobs/list", response_model=List[JobReqOut])
-def list_jobs(user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    jobs = db.query(JobRequisition).order_by(JobRequisition.id.desc()).all()
+# ----------------------------------------------------------
+# UPDATE JOB REQUISITION
+# ----------------------------------------------------------
+@router.put("/update/{job_id}", response_model=JobReqOut)
+def update_job(job_id: int, req: JobReqUpdate, db: Session = Depends(get_tenant_db)):
 
-    results = []
-    for j in jobs:
-        skills_value = j.skills
-        skills_list = skills_value.split(",") if skills_value not in (None, "") else []
-        results.append(JobReqOut.model_validate(j.__dict__ | {"skills": skills_list}))
-
-    return results
-
-
-# ================= UPDATE =================
-@router.put("/jobs/update/{id}", response_model=JobReqOut)
-def update_job(id: int, data: JobReqCreate, user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    job = db.query(JobRequisition).filter(JobRequisition.id == id).first()
-
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
-        raise HTTPException(404, "Job not found")
+        raise HTTPException(status_code=404, detail="Job not found")
 
-    update = data.dict()
-    update["skills"] = ",".join(update["skills"])
+    update_data = req.dict(exclude_unset=True)
 
-    for k, v in update.items():
-        setattr(job, k, v)
+    for key, val in update_data.items():
+        setattr(job, key, val)
+
+    setattr(job, 'updated_at', datetime.now())
 
     db.commit()
     db.refresh(job)
 
-    skills_value = job.skills
-    skills_list = skills_value.split(",") if skills_value not in (None, "") else []
-    return JobReqOut.model_validate(job.__dict__ | {"skills": skills_list})
+    return job
 
 
-# ================= DELETE =================
-@router.delete("/jobs/delete/{id}")
-def delete_job(id: int, user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    job = db.query(JobRequisition).filter(JobRequisition.id == id).first()
+# ----------------------------------------------------------
+# UPLOAD ATTACHMENT (JD PDF or Job Description File)
+# ----------------------------------------------------------
+@router.post("/upload-attachment/{job_id}")
+def upload_attachment(job_id: int, file: UploadFile = File(...), db: Session = Depends(get_tenant_db)):
 
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
-        raise HTTPException(404, "Job not found")
+        raise HTTPException(status_code=404, detail="Job not found")
 
-    db.delete(job)
+    file_ext = file.filename.split(".")[-1] if file.filename else "txt"
+    filename = f"JD_{job_id}_{uuid.uuid4().hex}.{file_ext}"
+
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    with open(filepath, "wb") as f:
+        f.write(file.file.read())
+
+    setattr(job, 'attachment', filename)
     db.commit()
-    return {"message": "Job Requisition Deleted"}
+
+    return {"message": "Attachment uploaded", "filename": filename}
 
 
-# ================= POST JOB =================
-@router.put("/jobs/post/{id}")
-def post_job(id: int, user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    job = db.query(JobRequisition).filter(JobRequisition.id == id).first()
+# ----------------------------------------------------------
+# GET ALL JOBS
+# ----------------------------------------------------------
+@router.get("/list", response_model=List[JobReqOut])
+def list_jobs(db: Session = Depends(get_tenant_db)):
+    jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
+    return jobs
 
+
+# ----------------------------------------------------------
+# GET SINGLE JOB DETAILS
+# ----------------------------------------------------------
+@router.get("/view/{job_id}", response_model=JobReqOut)
+def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
-        raise HTTPException(404, "Job not found")
+        raise HTTPException(status_code=404, detail="Job not found")
 
-    setattr(job, "status", "Posted")
+    return job
+
+
+# ----------------------------------------------------------
+# UPDATE JOB STATUS ONLY
+# ----------------------------------------------------------
+@router.put("/update-status/{job_id}")
+def update_job_status(job_id: int, status: str, db: Session = Depends(get_tenant_db)):
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    setattr(job, 'status', status)
+    setattr(job, 'updated_at', datetime.now())
     db.commit()
-    return {"message": "Job Posted Successfully"}
+    
+    return {"message": "Status updated successfully", "status": status}
 
-# ================= ONLY POSTED JOBS =================
-@router.get("/jobs/posted", response_model=List[JobReqOut])
-def list_posted_jobs(user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-    jobs = (
-        db.query(JobRequisition)
-        .filter(JobRequisition.status == "Posted")
-        .order_by(JobRequisition.id.desc())
-        .all()
-    )
 
-    results = []
-    for j in jobs:
-        skills_value = j.skills
-        skills_list = (
-            skills_value.split(",") if skills_value not in (None, "") else []
-        )
-        results.append(JobReqOut.model_validate(j.__dict__ | {"skills": skills_list}))
-
-    return results
-
+# ----------------------------------------------------------
+# GENERATE PUBLIC APPLY LINK
+# ----------------------------------------------------------
+@router.post("/generate-link/{job_id}")
+def generate_job_link(job_id: int, db: Session = Depends(get_tenant_db)):
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Generate public apply URL
+    apply_url = f"http://localhost:3000/apply/{job_id}"
+    
+    # Update job with apply URL
+    setattr(job, 'apply_url', apply_url)
+    db.commit()
+    
+    return {"url": apply_url, "message": "Apply link generated successfully"}

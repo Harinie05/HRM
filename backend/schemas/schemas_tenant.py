@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from schemas.schemas_master import AdminAuth
 from datetime import date, datetime
 
@@ -340,34 +340,67 @@ class HolidayOut(HolidayBase):
 # ================================================================
 class JobReqBase(BaseModel):
     title: str
-    department: str
-    hiring_manager: str
-    openings: int
-    experience: Optional[str]
-    salary_range: Optional[str]
+    department: Optional[str] = None
+    hiring_manager: Optional[str] = None
 
-    job_type: str
-    work_mode: str
-    location: str
+    openings: int = 1
+    experience: Optional[str] = None
+    salary_range: Optional[str] = None
 
-    skills: List[str]                      # Accept list
-    description: Optional[str]
-    deadline: Optional[date]
+    job_type: Optional[str] = None
+    work_mode: Optional[str] = None
+    location: Optional[str] = None
 
-    status: str = "Draft"                  # Draft / Posted
+    # 🔥 NEW FIELDS
+    rounds: int = 1                                     # Total rounds
+    round_names: Optional[Union[Dict[int, str], List[Dict[str, str]]]] = None  # Support both formats
+    jd_text: Optional[str] = None                       # Full JD text
+    skills: Optional[List[str]] = []                    # Skill tags
+
+    description: Optional[str] = None
+    deadline: Optional[date] = None
+    status: str = "Draft"                               # Draft / Posted
 
 
 class JobReqCreate(JobReqBase):
+    """Used for creating job requisition"""
     pass
 
 
+class JobReqUpdate(BaseModel):
+    """Used when editing an existing job"""
+    title: Optional[str]
+    department: Optional[str]
+    hiring_manager: Optional[str]
+
+    openings: Optional[int]
+    experience: Optional[str]
+    salary_range: Optional[str]
+
+    job_type: Optional[str]
+    work_mode: Optional[str]
+    location: Optional[str]
+
+    rounds: Optional[int]
+    round_names: Optional[Union[Dict[int, str], List[Dict[str, str]]]]
+    jd_text: Optional[str]
+    skills: Optional[List[str]]
+
+    description: Optional[str]
+    deadline: Optional[date]
+    status: Optional[str]
+
+
 class JobReqOut(JobReqBase):
+    """Used when job details are returned to UI"""
     id: int
-    attachment: Optional[str] = None       # filename if uploaded
+    apply_url: Optional[str] = None
+    attachment: Optional[str] = None
     created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
-        from_attributes = True             # ORM mode
+        from_attributes = True
 
 
 # ================================================================
@@ -415,6 +448,155 @@ class CandidateProfileOut(BaseModel):
 
     class Config:
         orm_mode = True
+# ================================================================
+#                        ONBOARDING SCHEMAS (UPDATED)
+# ================================================================
+class OnboardingBase(BaseModel):
+    candidate_id: int
+
+    candidate_name: str
+    job_title: str
+    department: str
+
+    joining_date: Optional[date]
+    work_location: Optional[str]
+    reporting_manager: Optional[str]
+    work_shift: Optional[str] = "General"
+    probation_period: Optional[str] = "3 Months"
+
+    status: Optional[str] = "Pending Docs"
+
+
+class OnboardingCreate(OnboardingBase):
+    """Used during initial onboarding creation"""
+    pass
+
+
+class OnboardingUpdate(BaseModel):
+    """Used when editing onboarding details"""
+    joining_date: Optional[date]
+    work_location: Optional[str]
+    reporting_manager: Optional[str]
+    work_shift: Optional[str]
+    probation_period: Optional[str]
+    status: Optional[str]
+    employee_grade: Optional[str]
+    employee_code: Optional[str]
+
+
+class OnboardingResponse(OnboardingBase):
+    id: int
+    appointment_letter: Optional[str]
+    employee_grade: Optional[str]
+    employee_code: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ================================================================
+#                     DOCUMENT VIEWER SCHEMAS
+# ================================================================
+
+class DocumentUploadBase(BaseModel):
+    candidate_id: int
+    document_type: str
+    file_name: str
+    file_path: str
+
+
+class DocumentUploadCreate(DocumentUploadBase):
+    pass
+
+
+class DocumentUploadResponse(DocumentUploadBase):
+    id: int
+    status: str
+    remarks: Optional[str]
+    uploaded_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# ================================================================
+#                          ATS SCHEMAS
+# ================================================================
+
+
+class CandidateResponse(BaseModel):
+    id: int
+    job_id: int
+    name: str
+    email: Optional[str]
+    phone: Optional[str]
+    experience: int
+    resume_url: Optional[str]
+
+    stage: str
+    current_round: int
+    completed_rounds: List[int]
+
+    interview_date: Optional[datetime]
+    interview_time: Optional[str]
+
+    score: Optional[int]
+
+    class Config:
+        from_attributes = True
+
+
+# ------------------------------
+# Resume Filter Request/Response
+# ------------------------------
+class ResumeFilterRequest(BaseModel):
+    job_id: int
+    min_experience: Optional[int] = None
+    skills: Optional[List[str]] = None
+
+
+class ResumeFilterResponse(BaseModel):
+    id: int
+    name: str
+    experience: int
+    score: int
+    resume_url: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ------------------------------
+# Move Stage / Round
+# ------------------------------
+class MoveStageRequest(BaseModel):
+    new_stage: str
+    round_number: Optional[int] = None
+    interview_date: Optional[datetime] = None
+    interview_time: Optional[str] = None
+
+
+# ------------------------------
+# Interview Scheduling
+# ------------------------------
+class InterviewScheduleCreate(BaseModel):
+    candidate_id: int
+    job_id: int
+    round_number: int
+    round_name: str
+    interview_date: datetime
+    interview_time: str
+
+
+class InterviewScheduleResponse(InterviewScheduleCreate):
+    id: int
+    status: str
+    email_sent: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 
 # ---------------------------- OFFER SCHEMAS ----------------------------
 class OfferCreate(BaseModel):
@@ -484,3 +666,305 @@ class BGVOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+from pydantic import BaseModel
+from typing import Optional, List
+from datetime import date, datetime
+
+
+# ============================================================
+# EMPLOYEE CORE SCHEMAS
+# ============================================================
+
+class EmployeeBase(BaseModel):
+    name: str
+    gender: Optional[str]
+    dob: Optional[date]
+    contact: Optional[str]
+    email: Optional[str]
+    department: Optional[str]
+    designation: Optional[str]
+    grade: Optional[str]
+    doj: Optional[date]
+    status: Optional[str] = "Active"
+    reporting_manager: Optional[str]
+    work_mode: Optional[str]
+    shift: Optional[str]
+
+
+class EmployeeCreate(EmployeeBase):
+    employee_code: Optional[str]
+    offer_id: Optional[int]
+
+
+class EmployeeOut(EmployeeBase):
+    id: int
+    employee_code: str
+    offer_id: Optional[int]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# FAMILY DETAILS
+# ============================================================
+
+class FamilyBase(BaseModel):
+    name: str
+    relationship: str
+    age: Optional[int]
+    contact: Optional[str]
+    dependent: Optional[bool] = False
+
+
+class FamilyCreate(FamilyBase):
+    employee_id: int
+
+
+class FamilyOut(FamilyBase):
+    id: int
+    employee_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# EDUCATION DETAILS
+# ============================================================
+
+class EducationBase(BaseModel):
+    degree: str
+    university: Optional[str]
+    year: Optional[str]
+
+
+class EducationCreate(EducationBase):
+    employee_id: int
+    file_name: Optional[str]
+
+
+class EducationOut(EducationBase):
+    id: int
+    employee_id: int
+    file_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# EXPERIENCE DETAILS
+# ============================================================
+
+class ExperienceBase(BaseModel):
+    company: str
+    role: str
+    from_year: Optional[str]
+    to_year: Optional[str]
+
+
+class ExperienceCreate(ExperienceBase):
+    employee_id: int
+    file_name: Optional[str]
+
+
+class ExperienceOut(ExperienceBase):
+    id: int
+    employee_id: int
+    file_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# MEDICAL DETAILS
+# ============================================================
+
+class MedicalBase(BaseModel):
+    blood_group: Optional[str]
+    remarks: Optional[str]
+
+
+class MedicalCreate(MedicalBase):
+    employee_id: int
+    file_name: Optional[str]
+
+
+class MedicalOut(MedicalBase):
+    id: int
+    employee_id: int
+    certificate_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# ID DOCUMENTS
+# ============================================================
+
+class IDDocBase(BaseModel):
+    document_type: str
+    status: Optional[str] = "Pending"
+
+
+class IDDocCreate(IDDocBase):
+    employee_id: int
+    file_name: Optional[str]
+
+
+class IDDocOut(IDDocBase):
+    id: int
+    employee_id: int
+    file_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# SKILLS
+# ============================================================
+
+class SkillBase(BaseModel):
+    skill: str
+    rating: int   # 1–5 stars
+
+
+class SkillCreate(SkillBase):
+    employee_id: int
+
+
+class SkillOut(SkillBase):
+    id: int
+    employee_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# CERTIFICATIONS
+# ============================================================
+
+class CertificationBase(BaseModel):
+    name: str
+    issued_by: Optional[str]
+    expiry: Optional[str]
+
+
+class CertificationCreate(CertificationBase):
+    employee_id: int
+    file_name: Optional[str]
+
+
+class CertificationOut(CertificationBase):
+    id: int
+    employee_id: int
+    file_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# SALARY STRUCTURE (AUTO FROM OFFER)
+# ============================================================
+
+class SalaryBase(BaseModel):
+    ctc: float
+    basic_percent: float
+    hra_percent: float
+    allowances_percent: float
+    special_percent: float
+    pf_eligible: bool
+    esi_eligible: bool
+
+
+class SalaryCreate(SalaryBase):
+    employee_id: int
+    grade: Optional[str] = None
+    pf_applicable: Optional[bool] = True
+    pf_percent: Optional[float] = None
+    esi_applicable: Optional[bool] = True
+    esi_percent: Optional[float] = None
+
+
+class SalaryOut(SalaryBase):
+    id: int
+    employee_id: int
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# DOCUMENT VAULT
+# ============================================================
+
+class DocumentCreate(BaseModel):
+    employee_id: int
+    document_name: str
+    file_name: Optional[str]
+
+
+class DocumentOut(BaseModel):
+    id: int
+    employee_id: int
+    doc_name: str
+    file_name: Optional[str]
+    uploaded_on: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# EXIT DETAILS
+# ============================================================
+
+class ExitBase(BaseModel):
+    resignation_date: Optional[date]
+    last_working_day: Optional[date]
+    notes: Optional[str]
+    clearance_status: Optional[str] = "Pending"
+
+
+class ExitCreate(ExitBase):
+    employee_id: int
+
+
+class ExitOut(ExitBase):
+    id: int
+    employee_id: int
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# FULL EMPLOYEE PROFILE RESPONSE
+# (Single API returns entire EIS data)
+# ============================================================
+
+class FullEmployeeProfile(BaseModel):
+    employee: EmployeeOut
+    family: List[FamilyOut] = []
+    education: List[EducationOut] = []
+    experience: List[ExperienceOut] = []
+    medical: Optional[MedicalOut] = None
+    id_docs: List[IDDocOut] = []
+    skills: List[SkillOut] = []
+    certifications: List[CertificationOut] = []
+    salary: Optional[SalaryOut] = None
+    documents: List[DocumentOut] = []
+    exit: Optional[ExitOut]
+
+    class Config:
+        from_attributes = True
+

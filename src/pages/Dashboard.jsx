@@ -7,32 +7,6 @@ export default function Dashboard() {
   const [holidays, setHolidays] = useState([]);
   const [showCalendar, setShowCalendar] = useState(false);
 
-  // Job Apply States
-  const [jobs, setJobs] = useState([]);
-  const [applyModal, setApplyModal] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [jdModal, setJdModal] = useState(false);
-  const [jobDetails, setJobDetails] = useState(null);
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    experience: "",
-    notice_period: "",
-    current_ctc: "",
-    expected_ctc: "",
-    linkedin: "",
-    why_hire: ""
-  });
-
-  const [resume, setResume] = useState(null);
-
-  // Calendar month/year state
-  const today = new Date();
-  const [month, setMonth] = useState(today.getMonth());
-  const [year, setYear] = useState(today.getFullYear());
-
   // ========================= FETCH HOLIDAYS =========================
   const fetchHolidays = async () => {
     try {
@@ -43,22 +17,15 @@ export default function Dashboard() {
     }
   };
 
-  // ========================= FETCH JOBS =========================
-  const fetchJobs = async () => {
-    try {
-      const res = await api.get("/recruitment/jobs/posted");
-      setJobs(res.data || []);
-    } catch {
-      console.error("Failed to load jobs");
-    }
-  };
-
   useEffect(() => {
     fetchHolidays();
-    fetchJobs();
   }, []);
 
-  // Calendar helpers
+  // Calendar Logic
+  const today = new Date();
+  const [month, setMonth] = useState(today.getMonth());
+  const [year, setYear] = useState(today.getFullYear());
+
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
 
@@ -77,41 +44,6 @@ export default function Dashboard() {
     return holidays.find((h) => h.date === dateStr);
   };
 
-  // ========================= VIEW JOB DETAILS =========================
-  const viewJobDetails = async (jobId) => {
-    try {
-      const res = await api.get(`/ats/job/${jobId}`);
-      setJobDetails(res.data);
-      setJdModal(true);
-    } catch {
-      alert("Failed to load job details");
-    }
-  };
-
-  // ========================= APPLY FOR JOB =========================
-  const submitApplication = async () => {
-    try {
-      const fd = new FormData();
-      fd.append("job_id", selectedJob.id);
-      fd.append("name", form.name);
-      fd.append("email", form.email);
-      fd.append("phone", form.phone);
-      fd.append("experience", form.experience);
-      fd.append("resume", resume);
-
-      await api.post("/ats/apply", fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert("Application submitted successfully!");
-      setApplyModal(false);
-      setForm({});
-      fetchJobs();
-    } catch (err) {
-      alert("Failed to submit application");
-    }
-  };
-
   return (
     <div className="flex">
       <Sidebar />
@@ -120,7 +52,7 @@ export default function Dashboard() {
         <Header />
 
         <div className="p-6">
-          <h1 className="text-3xl font-bold text-[#0D3B66] mb-5">
+          <h1 className="text-3xl font-bold text-[#0D3B66] mb-6">
             HRM Dashboard
           </h1>
 
@@ -164,7 +96,9 @@ export default function Dashboard() {
                   ‹
                 </button>
                 <h2 className="text-xl font-semibold">
-                  {new Date(year, month).toLocaleString("en-US", { month: "long" })}{" "}
+                  {new Date(year, month).toLocaleString("en-US", {
+                    month: "long",
+                  })}{" "}
                   {year}
                 </h2>
                 <button
@@ -176,8 +110,13 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-7 text-center font-medium text-gray-600 mb-2">
-                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
-                <div>Thu</div><div>Fri</div><div>Sat</div>
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
               </div>
 
               <div className="grid grid-cols-7 gap-2">
@@ -211,157 +150,7 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
-          {/* ================= JOB OPENINGS SECTION ================= */}
-          <h2 className="text-2xl font-bold mt-10 mb-4 text-[#0D3B66]">
-            Open Positions
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {jobs.map((job) => (
-              <div
-                key={job.id}
-                className="bg-white p-5 shadow rounded-xl border hover:shadow-md"
-              >
-                <h3 className="text-xl font-semibold">{job.title}</h3>
-                <p className="text-gray-600">
-                  {job.experience} yrs | Salary: {job.salary_range}
-                </p>
-                <p className="text-gray-500 mb-3">
-                  Openings: {job.openings}
-                </p>
-
-                <button
-                  onClick={() => {
-                    setSelectedJob(job);
-                    setApplyModal(true);
-                  }}
-                  className="bg-blue-600 text-white px-4 py-1 rounded-lg mr-2"
-                >
-                  Apply
-                </button>
-
-                <button 
-                  onClick={() => viewJobDetails(job.id)}
-                  className="bg-gray-200 px-4 py-1 rounded-lg"
-                >
-                  View JD
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
-
-        {/* ================= JOB DETAILS MODAL ================= */}
-        {jdModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white w-[600px] max-h-[80vh] overflow-y-auto p-6 rounded-xl shadow-xl">
-              <h2 className="text-2xl font-bold mb-4">{jobDetails?.title}</h2>
-              
-              <div className="space-y-4">
-                <div><strong>Department:</strong> {jobDetails?.department}</div>
-                <div><strong>Experience:</strong> {jobDetails?.experience}</div>
-                <div><strong>Salary:</strong> {jobDetails?.salary_range}</div>
-                <div><strong>Job Type:</strong> {jobDetails?.job_type}</div>
-                <div><strong>Work Mode:</strong> {jobDetails?.work_mode}</div>
-                <div><strong>Location:</strong> {jobDetails?.location}</div>
-                <div><strong>Openings:</strong> {jobDetails?.openings}</div>
-                <div><strong>Skills:</strong> {jobDetails?.skills}</div>
-                
-                <div>
-                  <strong>Description:</strong>
-                  <div className="mt-2 p-3 bg-gray-50 rounded">
-                    {jobDetails?.description || "No description available"}
-                  </div>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => setJdModal(false)}
-                className="w-full mt-4 py-2 bg-gray-200 rounded-lg"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ================= APPLY MODAL ================= */}
-        {applyModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white w-[450px] p-6 rounded-xl shadow-xl">
-              <h2 className="text-xl font-bold mb-4">
-                Apply for {selectedJob?.title}
-              </h2>
-
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  className="border w-full p-2 rounded"
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
-                  }
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="border w-full p-2 rounded"
-                  onChange={(e) =>
-                    setForm({ ...form, email: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  placeholder="Phone Number"
-                  className="border w-full p-2 rounded"
-                  onChange={(e) =>
-                    setForm({ ...form, phone: e.target.value })
-                  }
-                />
-
-                <input
-                  type="number"
-                  placeholder="Experience (Years)"
-                  className="border w-full p-2 rounded"
-                  onChange={(e) =>
-                    setForm({ ...form, experience: e.target.value })
-                  }
-                />
-
-                <label className="font-medium">Upload Resume</label>
-                <input
-                  type="file"
-                  className="border w-full p-2 rounded"
-                  onChange={(e) => setResume(e.target.files[0])}
-                />
-
-                <textarea
-                  placeholder="Why should we hire you?"
-                  className="border w-full p-2 rounded h-20"
-                  onChange={(e) =>
-                    setForm({ ...form, why_hire: e.target.value })
-                  }
-                ></textarea>
-
-                <button
-                  onClick={submitApplication}
-                  className="bg-blue-600 text-white w-full py-2 rounded-lg mt-3"
-                >
-                  Submit Application
-                </button>
-
-                <button
-                  className="w-full py-2 text-gray-600"
-                  onClick={() => setApplyModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
     </div>
   );

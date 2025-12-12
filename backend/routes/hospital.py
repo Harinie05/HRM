@@ -10,12 +10,15 @@ import logging
 logger = logging.getLogger("HRM")
 
 # ------------------- MODELS -------------------
+# ========================= TENANT MODELS =========================
 from models.models_tenant import (
-    User as TenantUser,
-    RolePermission,
-    Permission,
     MasterBase,
+
+    # Core HR
+    User as TenantUser,
     Role,
+    Permission,
+    RolePermission,
     Department,
     CompanyProfile,
     Branch,
@@ -25,15 +28,35 @@ from models.models_tenant import (
     HRPolicy,
     LeavePolicy,
     AttendancePolicy,
-    JobRequisition,
     OTPolicy,
-    JobApplication,
+
+    # Recruitment + ATS
+    JobRequisition,
+    Candidate,
     ApplicationStageHistory,
+    InterviewSchedule,
     OfferLetter,
     BGV,
+
+    # Onboarding
     OnboardingCandidate,
-    DocumentUpload
+    DocumentUpload,
+
+    # Employee Information System
+    Employee,
+    EmployeeFamily,
+    EmployeeEducation,
+    EmployeeExperience,
+    EmployeeMedical,
+    EmployeeIDDocs,
+    EmployeeSkills,
+    EmployeeCertifications,
+    EmployeeSalary,
+    EmployeeDocuments,
+    EmployeeExit
 )
+
+
 from models.models_master import Hospital, MasterUser
 
 from .tenant_seed import seed_tenant

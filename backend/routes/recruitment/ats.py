@@ -1,257 +1,494 @@
-from fastapi import APIRouter, HTTPException, Depends, Form
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_master_db, get_tenant_engine, logger
-
-from models.models_master import Hospital
-from models.models_tenant import JobApplication, ApplicationStageHistory, JobRequisition
-from schemas.schemas_tenant import (
-    ApplicationCreate,
-    ApplicationOut,
-    CandidateProfileOut,
-    StageUpdate,
-    CandidateUpdate,
+from sqlalchemy.exc import IntegrityError
+from database import get_tenant_db
+from typing import List, Optional
+from pydantic import BaseModel
+from models.models_tenant import (
+    Candidate,
+    JobRequisition,
+    InterviewSchedule,
+    ApplicationStageHistory,
+    OfferLetter,
+    OnboardingCandidate,
 )
-from routes.hospital import get_current_user
-import traceback
+from schemas.schemas_tenant import (
+    CandidateResponse,
+    ResumeFilterRequest,
+    ResumeFilterResponse,
+    MoveStageRequest,
+    InterviewScheduleCreate,
+    InterviewScheduleResponse
+)
+import os
+import uuid
+from datetime import datetime
 
 router = APIRouter(prefix="/ats", tags=["ATS"])
 
-
-def get_tenant_session(user):
-    """
-    Defensive tenant session getter. Raises clear HTTPException on problems.
-    """
-    if not user:
-        logger.error("[TENANT SESSION] get_current_user returned None or falsy user")
-        raise HTTPException(status_code=401, detail="Authentication required")
-
-    tenant_db = user.get("tenant_db")
-    if not tenant_db:
-        logger.error(f"[TENANT SESSION] No tenant_db in user payload: {user}")
-        raise HTTPException(status_code=400, detail="User missing tenant_db")
-
-    master = next(get_master_db())
-    hospital = master.query(Hospital).filter(Hospital.db_name == str(tenant_db)).first()
-    if not hospital:
-        logger.error(f"[TENANT SESSION] No hospital found for tenant_db: {tenant_db}")
-        raise HTTPException(status_code=404, detail="Hospital (tenant) not found")
-
-    engine = get_tenant_engine(hospital.db_name)
-    return Session(bind=engine)
+UPLOAD_DIR = "uploads/resumes"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# Instrumented endpoints (wrap everything with try/except to log tracebacks)
+# ----------------------------------------------------------
+# HELPER: Calculate Resume Score
+# ----------------------------------------------------------
+def calculate_score(candidate_exp, job_exp, candidate_skills, job_skills):
+    score = 0
+
+    # Experience match
+    if isinstance(job_exp, str):
+        try:
+            job_exp = int(job_exp.split("-")[0])
+        except:
+            job_exp = 0
+
+    if candidate_exp >= job_exp:
+        score += 40
+    else:
+        score += (candidate_exp / job_exp) * 40 if job_exp > 0 else 0
+
+    # Skill match
+    if candidate_skills and job_skills:
+        match = len(set(candidate_skills).intersection(set(job_skills)))
+        total = len(job_skills)
+        score += int((match / total) * 60)
+
+    return min(score, 100)
+
+
+# ----------------------------------------------------------
+# CANDIDATE APPLY (VIA PUBLIC URL)
+# ----------------------------------------------------------
+@router.post("/apply/{job_id}", response_model=CandidateResponse)
+def apply_candidate(
+    job_id: int,
+    name: str,
+    email: Optional[str] = None,
+    phone: Optional[str] = None,
+    experience: int = 0,
+    resume: UploadFile = File(None),
+    db: Session = Depends(get_tenant_db)
+):
+
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    file_path = None
+
+    # Save resume file
+    file_name = None
+    if resume and resume.filename:
+        ext = resume.filename.split(".")[-1] if resume.filename else "txt"
+        file_name = f"{uuid.uuid4().hex}.{ext}"
+        file_path = os.path.join(UPLOAD_DIR, file_name)
+
+        with open(file_path, "wb") as f:
+            f.write(resume.file.read())
+
+    # Create candidate entry
+    candidate = Candidate(
+        job_id=job_id,
+        name=name,
+        email=email or "",
+        phone=phone or "",
+        experience=experience,
+        resume_url=file_name or "",
+        stage="New",
+        current_round=0,
+        completed_rounds=[],
+        created_at=datetime.now()
+    )
+
+    db.add(candidate)
+    db.commit()
+    db.refresh(candidate)
+
+    return candidate
+
+
+# ----------------------------------------------------------
+# FILTER CANDIDATES BASED ON JD + EXPERIENCE + SKILLS
+# ----------------------------------------------------------
+@router.post("/filter", response_model=List[ResumeFilterResponse])
+def filter_resumes(req: ResumeFilterRequest, db: Session = Depends(get_tenant_db)):
+
+    job = db.query(JobRequisition).filter(JobRequisition.id == req.job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    candidates = db.query(Candidate).filter(Candidate.job_id == req.job_id).all()
+
+    results = []
+
+    for c in candidates:
+        candidate_skills = getattr(job, 'skills') or []
+        score = calculate_score(
+            candidate_exp=getattr(c, 'experience'),
+            job_exp=getattr(job, 'experience'),
+            candidate_skills=candidate_skills,
+            job_skills=getattr(job, 'skills')
+        )
+
+        setattr(c, 'score', score)
+        db.commit()
+
+        if req.min_experience is not None and getattr(c, 'experience') < req.min_experience:
+            continue
+
+        results.append(c)
+
+    # Sort by score
+    sorted_list = sorted(results, key=lambda x: x.score, reverse=True)
+
+    return sorted_list
+
+
+# ----------------------------------------------------------
+# MOVE CANDIDATE TO NEXT STAGE
+# ----------------------------------------------------------
+@router.put("/move-stage/{candidate_id}")
+def move_stage(
+    candidate_id: int,
+    req: MoveStageRequest,
+    db: Session = Depends(get_tenant_db)
+):
+
+    c = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    if not c:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+
+    # Record old stage
+    history = ApplicationStageHistory(
+        candidate_id=candidate_id,
+        old_stage=getattr(c, 'stage') or "",
+        new_stage=req.new_stage or ""
+    )
+    db.add(history)
+
+    # Update pipeline
+    setattr(c, 'stage', req.new_stage)
+
+    if req.round_number is not None:
+        setattr(c, 'current_round', req.round_number)
+        completed_rounds = getattr(c, 'completed_rounds') or []
+        if req.round_number not in completed_rounds:
+            completed_rounds.append(req.round_number)
+            setattr(c, 'completed_rounds', completed_rounds)
+
+    # If interview scheduled
+    if req.interview_date is not None:
+        setattr(c, 'interview_date', req.interview_date)
+        setattr(c, 'interview_time', req.interview_time)
+
+    db.commit()
+    db.refresh(c)
+
+    return {"message": "Stage updated", "candidate": c}
+
+
+# ----------------------------------------------------------
+# SCHEDULE INTERVIEW FOR ROUND
+# ----------------------------------------------------------
+@router.post("/schedule-interview", response_model=InterviewScheduleResponse)
+def schedule_interview(
+    req: InterviewScheduleCreate,
+    db: Session = Depends(get_tenant_db)
+):
+
+    candidate = db.query(Candidate).filter(Candidate.id == req.candidate_id).first()
+    job = db.query(JobRequisition).filter(JobRequisition.id == req.job_id).first()
+
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    # Create schedule record
+    schedule = InterviewSchedule(
+        candidate_id=req.candidate_id,
+        job_id=req.job_id,
+        round_number=req.round_number,
+        round_name=req.round_name,
+        interview_date=req.interview_date,
+        interview_time=req.interview_time,
+        email_sent=True,  
+        created_at=datetime.now()
+    )
+
+    db.add(schedule)
+
+    # Update candidate stage
+    setattr(candidate, 'stage', f"Round {req.round_number} Scheduled")
+    setattr(candidate, 'current_round', req.round_number)
+
+    db.commit()
+    db.refresh(schedule)
+
+    return schedule
+
+
+# ----------------------------------------------------------
+# GET ALL JOBS FOR ATS
+# ----------------------------------------------------------
 @router.get("/jobs")
-def ats_job_list(user=Depends(get_current_user)):
+def get_jobs(db: Session = Depends(get_tenant_db)):
+    jobs = db.query(JobRequisition).all()
+    return jobs
+
+
+# ----------------------------------------------------------
+# GET ALL CANDIDATES FOR A JOB
+# ----------------------------------------------------------
+@router.get("/job/{job_id}", response_model=List[CandidateResponse])
+def job_candidates(job_id: int, db: Session = Depends(get_tenant_db)):
+    candidates = db.query(Candidate).filter(Candidate.job_id == job_id).all()
+    return candidates
+
+
+# ----------------------------------------------------------
+# GET SINGLE CANDIDATE PROFILE
+# ----------------------------------------------------------
+@router.get("/candidate/{candidate_id}", response_model=CandidateResponse)
+def candidate_profile(candidate_id: int, db: Session = Depends(get_tenant_db)):
+    candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+    return candidate
+
+
+# ----------------------------------------------------------
+# MOVE CANDIDATE TO NEXT ROUND WITH EMAIL
+# ----------------------------------------------------------
+from utils.email import send_email
+from database import logger
+
+class MoveToNextRoundRequest(BaseModel):
+    candidate_id: int
+    next_round: int
+    interview_date: str
+    interview_time: str
+    action: str  # "selected", "rejected", "next_round"
+
+@router.post("/move-to-next-round")
+def move_to_next_round(
+    req: MoveToNextRoundRequest,
+    db: Session = Depends(get_tenant_db)
+):
+    """Move candidate to next round and send email notification"""
     try:
-        db = get_tenant_session(user)
-
-        jobs = db.query(JobRequisition).order_by(JobRequisition.id.desc()).all()
-
-        results = []
-        for job in jobs:
-            apps = db.query(JobApplication).filter(JobApplication.job_id == job.id).all()
-
-            count = {"New": 0, "Screening": 0, "Shortlisted": 0, "Interview": 0, "Selected": 0, "Rejected": 0}
-            for a in apps:
-                stage = str(a.stage)
-                if stage in count:
-                    count[stage] += 1
-
-            results.append({"id": job.id, "title": job.title, "total": len(apps), **count})
-
-        return results
-
-    except HTTPException:
-        # re-raise known HTTPExceptions so FastAPI returns the proper status code
-        raise
-    except Exception as e:
-        tb = traceback.format_exc()
-        logger.exception("[ATS /jobs] Unexpected error:\n" + tb)
-        # return a helpful error message (avoid leaking sensitive internals)
-        raise HTTPException(status_code=500, detail=f"Server error while loading ATS jobs. Check server logs.")
-
-
-@router.get("/jobs/{job_id}/pipeline")
-def ats_pipeline(job_id: int, user=Depends(get_current_user)):
-    try:
-        db = get_tenant_session(user)
-
-        apps = db.query(JobApplication).filter(JobApplication.job_id == job_id).all()
-        pipeline = {"New": [], "Screening": [], "Shortlisted": [], "Interview": [], "Selected": [], "Rejected": []}
-        for a in apps:
-            pipeline.setdefault(str(a.stage), []).append({"id": a.id, "name": a.name, "experience": a.experience, "resume": a.resume})
-        return pipeline
-
-    except HTTPException:
-        raise
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception("[ATS /jobs/{job_id}/pipeline] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while loading pipeline.")
-
-
-@router.get("/candidate/{id}", response_model=CandidateProfileOut)
-def candidate_profile(id: int, user=Depends(get_current_user)):
-    try:
-        db = get_tenant_session(user)
-        c = db.query(JobApplication).filter(JobApplication.id == id).first()
-        if not c:
+        # Get candidate
+        candidate = db.query(Candidate).filter(Candidate.id == req.candidate_id).first()
+        if not candidate:
             raise HTTPException(status_code=404, detail="Candidate not found")
-        return c
-    except HTTPException:
-        raise
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception(f"[ATS /candidate/{id}] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while loading candidate.")
-
-
-@router.put("/candidate/{id}/stage")
-def candidate_stage_change(id: int, data: StageUpdate, user=Depends(get_current_user)):
-    try:
-        db = get_tenant_session(user)
-        c = db.query(JobApplication).filter(JobApplication.id == id).first()
-        if not c:
-            raise HTTPException(status_code=404, detail="Candidate not found")
-
-        old_stage = str(c.stage)
-        setattr(c, 'stage', data.stage)
-        history = ApplicationStageHistory(application_id=id, old_stage=old_stage, new_stage=data.stage)
-        db.add(history)
-        db.commit()
-
-        logger.info(f"[ATS] Candidate {id} moved from {old_stage} → {data.stage}")
-        return {"message": "Stage updated successfully"}
-
-    except HTTPException:
-        raise
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception(f"[ATS /candidate/{id}/stage] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while updating candidate stage.")
-
-
-@router.put("/candidate/{id}")
-def update_candidate(id: int, data: CandidateUpdate, user=Depends(get_current_user)):
-    try:
-        db = get_tenant_session(user)
-        c = db.query(JobApplication).filter(JobApplication.id == id).first()
-        if not c:
-            raise HTTPException(status_code=404, detail="Candidate not found")
-
-        # Update candidate details
-        setattr(c, 'name', data.name)
-        setattr(c, 'email', data.email)
-        setattr(c, 'phone', data.phone)
-        setattr(c, 'experience', data.experience)
-        db.commit()
-
-        logger.info(f"[ATS] Candidate {id} updated")
-        return {"message": "Candidate updated successfully"}
-
-    except HTTPException:
-        raise
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception(f"[ATS /candidate/{id}] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while updating candidate.")
-
-
-@router.get("/job/{job_id}")
-def get_job_details(job_id: int):
-    """Public endpoint to view job description"""
-    try:
-        from database import get_master_db
-        from models.models_master import Hospital
         
-        master = next(get_master_db())
-        hospital = master.query(Hospital).first()
-        if not hospital:
-            raise HTTPException(status_code=500, detail="No tenant configured")
-        
-        engine = get_tenant_engine(hospital.db_name)
-        db = Session(bind=engine)
-        
-        job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+        # Get job details
+        job = db.query(JobRequisition).filter(JobRequisition.id == candidate.job_id).first()
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
         
-        return {
-            "id": job.id,
-            "title": job.title,
-            "department": job.department,
-            "experience": job.experience,
-            "salary_range": job.salary_range,
-            "job_type": job.job_type,
-            "work_mode": job.work_mode,
-            "location": job.location,
-            "skills": job.skills,
-            "description": job.description,
-            "openings": job.openings
-        }
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception("[ATS /job/{job_id}] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while loading job details.")
+        # Update candidate status
+        if req.action == "selected":
+            setattr(candidate, 'stage', "Selected")
+            round_names = getattr(job, 'round_names') or []
+            setattr(candidate, 'current_round', len(round_names) + 1)
+            
+            # Create offer letter and onboarding record
+            create_offer_and_onboarding(candidate, job, db)
+            
+        elif req.action == "rejected":
+            setattr(candidate, 'stage', "Rejected")
+        elif req.action == "next_round":
+            setattr(candidate, 'stage', f"Round {req.next_round} Scheduled")
+            setattr(candidate, 'current_round', req.next_round)
+            setattr(candidate, 'interview_date', datetime.strptime(f"{req.interview_date} {req.interview_time}", "%Y-%m-%d %H:%M"))
+            setattr(candidate, 'interview_time', req.interview_time)
+        
+        db.commit()
+        
+        # Send email notification
+        if req.action in ["selected", "next_round"]:
+            send_round_notification_email(
+                candidate=candidate,
+                job=job,
+                action=req.action,
+                next_round=req.next_round if req.action == "next_round" else None,
+                interview_date=req.interview_date if req.action == "next_round" else None,
+                interview_time=req.interview_time if req.action == "next_round" else None
+            )
+        
+        return {"message": f"Candidate {req.action} successfully", "candidate": candidate}
+    
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error in move_to_next_round: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process candidate action: {str(e)}")
 
-@router.post("/apply")
-def apply_job_public(
-    job_id: str = Form(...),
-    name: str = Form(...),
-    email: str = Form(None),
-    phone: str = Form(None),
-    experience: str = Form("0")
-):
-    """Public endpoint for job applications - no auth required"""
+
+def create_offer_and_onboarding(candidate, job, db):
+    """Create offer letter and onboarding record for selected candidate"""
     try:
-        # Convert string inputs to proper types
-        job_id_int = int(job_id)
-        experience_int = int(experience) if experience else 0
+        # Ensure department is never None
+        department = "General"
+        if job and job.department and job.department.strip():
+            department = job.department
         
-        # Use a default tenant for public applications - you may need to adjust this
-        from database import get_master_db
-        from models.models_master import Hospital
-        
-        master = next(get_master_db())
-        # Get the first hospital as default tenant for public applications
-        hospital = master.query(Hospital).first()
-        if not hospital:
-            raise HTTPException(status_code=500, detail="No tenant configured")
-        
-        engine = get_tenant_engine(hospital.db_name)
-        db = Session(bind=engine)
-        
-        new_app = JobApplication(
-            job_id=job_id_int,
-            name=name,
-            email=email if email else None,
-            phone=phone if phone else None,
-            experience=experience_int
+        # Create offer letter
+        offer = OfferLetter(
+            candidate_id=candidate.id,
+            candidate_name=candidate.name,
+            job_title=job.title,
+            department=department,
+            ctc=500000,  # Default CTC, can be updated later
+            basic_percent=40,
+            hra_percent=20,
+            probation_period="3 Months",
+            notice_period="30 Days",
+            offer_status="Draft",
+            terms="Standard terms and conditions apply."
         )
-        db.add(new_app)
-        db.commit()
-        db.refresh(new_app)
+        db.add(offer)
+        db.flush()  # Get the offer ID
         
-        return {"message": "Application submitted successfully", "id": new_app.id}
-    except ValueError as e:
-        logger.error(f"[ATS /apply] Invalid input format: {e}")
-        raise HTTPException(status_code=422, detail="Invalid input format")
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception("[ATS /apply] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while applying for job.")
+        # Create onboarding record
+        onboarding = OnboardingCandidate(
+            application_id=candidate.id,
+            candidate_name=candidate.name,
+            job_title=job.title,
+            department=department,
+            work_shift="General",
+            probation_period="3 Months",
+            status="Pending Docs"
+        )
+        db.add(onboarding)
+        
+        logger.info(f"✅ Created offer and onboarding records for {candidate.name}")
+        
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to create offer/onboarding for {candidate.name}: {str(e)}")
 
-@router.post("/apply-auth", response_model=ApplicationOut)
-def apply_job(data: ApplicationCreate, user=Depends(get_current_user)):
+
+def send_round_notification_email(candidate, job, action, next_round=None, interview_date=None, interview_time=None):
+    """Send email notification for round progression"""
     try:
-        db = get_tenant_session(user)
-        new_app = JobApplication(**data.dict())
-        db.add(new_app)
-        db.commit()
-        db.refresh(new_app)
-        return new_app
-    except Exception:
-        tb = traceback.format_exc()
-        logger.exception("[ATS /apply-auth] Unexpected error:\n" + tb)
-        raise HTTPException(status_code=500, detail="Server error while applying for job.")
+        round_names = job.round_names or []
+        
+        if action == "selected":
+            subject = f"🎉 Congratulations! You've been selected for {job.title} position"
+            html_body = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: #28a745; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }}
+        .section {{ margin: 20px 0; padding: 15px; border-left: 4px solid #28a745; background: #f8f9fa; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎉 Congratulations! You've been selected!</h2>
+        </div>
+        
+        <p>Dear <strong>{candidate.name}</strong>,</p>
+        
+        <p>We are delighted to inform you that you have been <strong>selected</strong> for the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong>!</p>
+        
+        <div class="section">
+            <h3>✅ NEXT STEPS:</h3>
+            <p>Our HR team will contact you shortly with the offer details and onboarding process.</p>
+        </div>
+        
+        <p>Welcome to the NUTRYAH family!</p>
+        
+        <p><strong>Best regards,</strong><br>
+        HR Team<br>
+        NUTRYAH</p>
+    </div>
+</body>
+</html>"""
+        
+        elif action == "next_round" and next_round:
+            round_name = "Interview"
+            if isinstance(round_names, list) and len(round_names) >= next_round:
+                if isinstance(round_names[next_round-1], dict):
+                    round_name = round_names[next_round-1].get('name', f'Round {next_round}')
+                else:
+                    round_name = round_names[next_round-1]
+            elif isinstance(round_names, dict) and str(next_round) in round_names:
+                round_name = round_names[str(next_round)]
+            
+            subject = f"🎯 You've been selected for Round {next_round} - {job.title} position"
+            html_body = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: #007bff; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }}
+        .section {{ margin: 20px 0; padding: 15px; border-left: 4px solid #007bff; background: #f8f9fa; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎯 Round {next_round} Interview Scheduled</h2>
+        </div>
+        
+        <p>Dear <strong>{candidate.name}</strong>,</p>
+        
+        <p>Congratulations! You have been selected for <strong>Round {next_round}</strong> of the interview process for the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong>.</p>
+        
+        <div class="section">
+            <h3>📅 ROUND {next_round} INTERVIEW DETAILS:</h3>
+            <p><strong>Round:</strong> {round_name}<br>
+            <strong>Date:</strong> {interview_date}<br>
+            <strong>Time:</strong> {interview_time}<br>
+            <strong>Mode:</strong> We will share the interview link/location details shortly</p>
+        </div>
+        
+        <div class="section">
+            <h3>📞 RESCHEDULING:</h3>
+            <p>If the scheduled time doesn't work for you, please reply to this email with:</p>
+            <ul>
+                <li>Your preferred dates (at least 3 options)</li>
+                <li>Your preferred time slots</li>
+                <li>Any specific requirements</li>
+            </ul>
+        </div>
+        
+        <p>We look forward to meeting you in the next round!</p>
+        
+        <p><strong>Best regards,</strong><br>
+        HR Team<br>
+        NUTRYAH</p>
+    </div>
+</body>
+</html>"""
+        
+        # Send email
+        success = send_email(
+            to_email=candidate.email,
+            subject=subject,
+            html_content=html_body
+        )
+        
+        if success:
+            logger.info(f"✅ Round notification email sent to {candidate.email}")
+        else:
+            logger.error(f"❌ Failed to send round notification to {candidate.email}")
+            
+    except Exception as e:
+        logger.error(f"Failed to send round notification email: {str(e)}")
+
+
+# Complete the incomplete function at the end
+def complete_function():
+    """Placeholder function to complete the file"""
+    pass

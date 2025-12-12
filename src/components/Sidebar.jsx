@@ -115,6 +115,17 @@ export default function Sidebar() {
           {openRecruitmentMenu && (
             <div className="ml-10 mt-2 space-y-2">
               <Link
+                to="/job-requisition"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/job-requisition"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Job Requisition
+              </Link>
+
+              <Link
                 to="/recruitment-setup"
                 className={`block hover:text-blue-700 ${
                   location.pathname === "/recruitment-setup"

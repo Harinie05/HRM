@@ -17,9 +17,13 @@ import HolidayCalender from "./pages/organization/HolidayCalender";
 import ProtectedRoute from "./components/ProctectedRoute";
 import PolicySetup from "./pages/organization/PolicySetup";
 import RecruitmentSetup from "./pages/recruitment/Recruitment";
+import JobRequisition from "./pages/recruitment/JobRequisition";
 import ATS from "./pages/recruitment/ATS";
 import Offer from "./pages/recruitment/offer";
 import Onboarding from "./pages/recruitment/Onboarding";
+import JobApply from "./pages/recruitment/public jobapply";
+import CandidateScreening from "./pages/recruitment/CandidateScreening";
+import DocumentUpload from "./pages/recruitment/DocumentUpload";
 
 function App() {
   return (
@@ -128,11 +132,23 @@ function App() {
         {/* ----------------------------------------
            RECRUITMENT & ONBOARDING MODULE
         ----------------------------------------- */}
+        <Route path="/job-requisition" element={<ProtectedRoute><JobRequisition /></ProtectedRoute>} />
         <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
         <Route path="/ats" element={<ProtectedRoute><ATS /></ProtectedRoute>} />
         <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+        <Route path="/screening" element={<ProtectedRoute><CandidateScreening /></ProtectedRoute>} />
        
+        {/* ----------------------------------------
+           PUBLIC JOB APPLICATION PAGE
+        ----------------------------------------- */}
+        <Route path="/apply/:jobId" element={<JobApply />} />
+        
+        {/* ----------------------------------------
+           PUBLIC DOCUMENT UPLOAD PAGE
+        ----------------------------------------- */}
+        <Route path="/document-upload/:token" element={<DocumentUpload />} />
+        
         {/* ----------------------------------------
            SECRET HOSPITAL REGISTER PAGE
         ----------------------------------------- */}

@@ -1,67 +1,38 @@
-import { useState, useEffect } from "react";
-import api from "../../api";
+import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
+import api from "../../api";
 
 export default function ATS() {
-  const tenant_db = localStorage.getItem("tenant_db");
-
-  // ------------------------- VIEW STATE -------------------------
-  const [view, setView] = useState("jobs"); // jobs | pipeline
+  const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
-
-  // ------------------------- JOB LIST DATA -------------------------
-  const [jobList, setJobList] = useState([]);
-  const [jobSearch, setJobSearch] = useState("");
-
-  // ------------------------- PIPELINE DATA -------------------------
-  const [pipeline, setPipeline] = useState({
-    New: [],
-    Screening: [],
-    Shortlisted: [],
-    Interview: [],
-    Selected: [],
-    Rejected: [],
+  const [candidates, setCandidates] = useState([]);
+  const [showMoveModal, setShowMoveModal] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [moveForm, setMoveForm] = useState({
+    action: "",
+    next_round: 2,
+    interview_date: "",
+    interview_time: ""
   });
 
-  // ------------------------- CANDIDATE DRAWER -------------------------
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [candidateProfile, setCandidateProfile] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [editForm, setEditForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    experience: 0
-  });
-
-  const stages = ["New", "Screening", "Shortlisted", "Interview", "Selected", "Rejected"];
-
-  // ------------------------- LOAD JOB LIST -------------------------
+  // Fetch jobs
   const fetchJobs = async () => {
     try {
-      const res = await api.get(`/ats/jobs`);
-      setJobList(res.data || []);
+      const res = await api.get("/recruitment/ats/jobs");
+      setJobs(res.data || []);
     } catch (err) {
       console.error("Failed to load jobs");
     }
   };
 
-  // ------------------------- LOAD PIPELINE -------------------------
-  const fetchPipeline = async (job) => {
+  // Fetch candidates for selected job
+  const fetchCandidates = async (jobId) => {
     try {
-      const res = await api.get(`/ats/jobs/${job.id}/pipeline`);
-
-      setPipeline({
-        New: res.data.New || [],
-        Screening: res.data.Screening || [],
-        Shortlisted: res.data.Shortlisted || [],
-        Interview: res.data.Interview || [],
-        Selected: res.data.Selected || [],
-        Rejected: res.data.Rejected || [],
-      });
+      const res = await api.get(`/recruitment/ats/job/${jobId}`);
+      setCandidates(res.data || []);
     } catch (err) {
-      console.error("Failed to load pipeline");
+      console.error("Failed to load candidates");
     }
   };
 
@@ -69,303 +40,228 @@ export default function ATS() {
     fetchJobs();
   }, []);
 
-  // ------------------------- LOAD CANDIDATE PROFILE -------------------------
-  const openCandidateDrawer = async (candidateId) => {
+  const handleJobSelect = (job) => {
+    setSelectedJob(job);
+    fetchCandidates(job.id);
+  };
+
+  const handleMoveCandidate = (candidate) => {
+    setSelectedCandidate(candidate);
+    setMoveForm({
+      action: "",
+      next_round: candidate.current_round + 1,
+      interview_date: "",
+      interview_time: ""
+    });
+    setShowMoveModal(true);
+  };
+
+  const submitMove = async () => {
     try {
-      const res = await api.get(`/ats/candidate/${candidateId}`);
-      setCandidateProfile(res.data);
-      setEditForm({
-        name: res.data.name,
-        email: res.data.email || "",
-        phone: res.data.phone || "",
-        experience: res.data.experience || 0
+      await api.post("/recruitment/ats/move-to-next-round", {
+        candidate_id: selectedCandidate.id,
+        ...moveForm
       });
-      setDrawerOpen(true);
-      setEditMode(false);
-    } catch {
-      alert("Failed to load candidate");
+
+      alert(`Candidate ${moveForm.action} successfully!`);
+      setShowMoveModal(false);
+      fetchCandidates(selectedJob.id);
+    } catch (err) {
+      console.error("Failed to move candidate");
+      alert("Failed to move candidate");
     }
   };
 
-  const updateCandidate = async () => {
-    try {
-      await api.put(`/ats/candidate/${candidateProfile.id}`, {
-        name: editForm.name,
-        email: editForm.email,
-        phone: editForm.phone,
-        experience: editForm.experience
-      });
-      
-      await openCandidateDrawer(candidateProfile.id);
-      setEditMode(false);
-      alert("Candidate updated successfully!");
-    } catch {
-      alert("Failed to update candidate");
+  const getRoundNames = (job) => {
+    if (!job.round_names) return [];
+    if (Array.isArray(job.round_names)) {
+      return job.round_names.map(r => typeof r === 'object' ? r.name : r);
+    }
+    if (typeof job.round_names === 'object') {
+      return Object.values(job.round_names);
+    }
+    return [];
+  };
+
+  const getStageColor = (stage) => {
+    switch (stage) {
+      case "Shortlisted": return "bg-blue-100 text-blue-800";
+      case "Selected": return "bg-green-100 text-green-800";
+      case "Rejected": return "bg-red-100 text-red-800";
+      default: return "bg-yellow-100 text-yellow-800";
     }
   };
 
-  // ------------------------- MOVE CANDIDATE -------------------------
-  const moveStage = async (candidateId, newStage) => {
-    try {
-      await api.put(`/ats/candidate/${candidateId}/stage`, {
-        stage: newStage,
-      });
-
-      fetchPipeline(selectedJob); // reload pipeline
-      setDrawerOpen(false);
-
-    } catch {
-      alert("Stage update failed");
-    }
-  };
-
-  // =================================================================
-  //                      VIEW 1 — JOBS LIST PAGE
-  // =================================================================
-  const renderJobList = () => (
-    <div className="bg-white p-6 rounded-xl shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Applicant Tracking System</h2>
-
-      {/* Search */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search Job..."
-          value={jobSearch}
-          onChange={(e) => setJobSearch(e.target.value)}
-          className="border p-2 rounded-lg w-72"
-        />
-      </div>
-
-      {/* Job Table */}
-      <table className="min-w-full text-sm border">
-        <thead className="bg-gray-100 text-gray-600">
-          <tr>
-            <th className="border p-3 text-left">Job Title</th>
-            <th className="border p-3 text-center">Total</th>
-            <th className="border p-3 text-center">New</th>
-            <th className="border p-3 text-center">Screening</th>
-            <th className="border p-3 text-center">Shortlisted</th>
-            <th className="border p-3 text-center">Interview</th>
-            <th className="border p-3 text-center">Selected</th>
-            <th className="border p-3 text-center">Rejected</th>
-            <th className="border p-3 text-center">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {jobList
-            .filter((j) => j.title.toLowerCase().includes(jobSearch.toLowerCase()))
-            .map((job) => (
-              <tr key={job.id}>
-                <td className="border p-3">{job.title}</td>
-                <td className="border p-3 text-center">{job.total}</td>
-                <td className="border p-3 text-center">{job.New}</td>
-                <td className="border p-3 text-center">{job.Screening}</td>
-                <td className="border p-3 text-center">{job.Shortlisted}</td>
-                <td className="border p-3 text-center">{job.Interview}</td>
-                <td className="border p-3 text-center">{job.Selected}</td>
-                <td className="border p-3 text-center">{job.Rejected}</td>
-
-                <td className="border p-3 text-center">
-                  <button
-                    className="bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700"
-                    onClick={() => {
-                      setSelectedJob(job);
-                      setView("pipeline");
-                      fetchPipeline(job);
-                    }}
-                  >
-                    View ATS
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
-  );
-
-  // =================================================================
-  //                     VIEW 2 — PIPELINE PAGE
-  // =================================================================
-  const renderPipeline = () => (
-    <div className="p-4">
-
-      <button
-        className="text-blue-600 mb-4 hover:underline"
-        onClick={() => setView("jobs")}
-      >
-        ← Back to Jobs
-      </button>
-
-      <h2 className="text-xl font-semibold mb-4">
-        {selectedJob?.title} — ATS Pipeline
-      </h2>
-
-      {/* Pipeline Columns */}
-      <div className="grid grid-cols-6 gap-4">
-        {stages.map((stageName) => (
-          <div key={stageName} className="bg-white p-4 rounded-xl shadow-sm">
-            <h3 className="font-semibold mb-2">
-              {stageName} ({pipeline[stageName].length})
-            </h3>
-
-            {/* Candidate Cards */}
-            <div className="space-y-3">
-              {pipeline[stageName].map((c) => (
-                <div
-                  key={c.id}
-                  className="border p-3 rounded-lg cursor-pointer hover:bg-gray-50"
-                  onClick={() => openCandidateDrawer(c.id)}
-                >
-                  <div className="font-medium">{c.name}</div>
-                  <div className="text-xs text-gray-500">{c.experience} yrs exp</div>
-                  <div className="text-xs text-blue-600 underline">View Resume</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // =================================================================
-  //                   RIGHT SIDE CANDIDATE DRAWER
-  // =================================================================
-  const renderDrawer = () => (
-    drawerOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-end z-50">
-        <div className="bg-white w-[380px] h-full p-6 shadow-xl overflow-y-auto">
-
-          <button
-            className="text-gray-500 mb-4 hover:text-black"
-            onClick={() => setDrawerOpen(false)}
-          >
-            ✕ Close
-          </button>
-
-          {candidateProfile && (
-            <div className="space-y-4">
-
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">{candidateProfile.name}</h2>
-                <button
-                  onClick={() => setEditMode(true)}
-                  className="text-blue-600 text-sm hover:underline"
-                >
-                  Edit
-                </button>
-              </div>
-
-              {editMode && (
-                <div className="space-y-3 border-t pt-4">
-                  <h3 className="font-semibold">Edit Candidate</h3>
-                  
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={editForm.name}
-                    onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                    className="w-full border p-2 rounded"
-                  />
-                  
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={editForm.email}
-                    onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-                    className="w-full border p-2 rounded"
-                  />
-                  
-                  <input
-                    type="tel"
-                    placeholder="Phone"
-                    value={editForm.phone}
-                    onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
-                    className="w-full border p-2 rounded"
-                  />
-                  
-                  <input
-                    type="number"
-                    placeholder="Experience (years)"
-                    value={editForm.experience}
-                    onChange={(e) => setEditForm({...editForm, experience: parseInt(e.target.value) || 0})}
-                    className="w-full border p-2 rounded"
-                  />
-                  
-                  <div className="flex gap-2">
-                    <button
-                      onClick={updateCandidate}
-                      className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditMode(false)}
-                      className="flex-1 border py-2 rounded hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="text-sm space-y-1">
-                <p><strong>Email:</strong> {candidateProfile.email || "Not provided"}</p>
-                <p><strong>Phone:</strong> {candidateProfile.phone || "Not provided"}</p>
-                <p><strong>Experience:</strong> {candidateProfile.experience} years</p>
-              </div>
-
-              <p className="text-sm text-gray-600">
-                {candidateProfile.experience} years experience
-              </p>
-
-              <a
-                href={candidateProfile.resume_url}
-                target="_blank"
-                className="text-blue-600 underline text-sm"
-              >
-                View Resume
-              </a>
-
-              <hr />
-
-              <h3 className="font-semibold">Move to Stage</h3>
-
-              <div className="space-y-2">
-                {stages
-                  .filter((s) => s !== candidateProfile.stage)
-                  .map((stage) => (
-                    <button
-                      key={stage}
-                      className="w-full border rounded-lg px-4 py-2 text-left hover:bg-gray-50"
-                      onClick={() => moveStage(candidateProfile.id, stage)}
-                    >
-                      {stage}
-                    </button>
-                ))}
-              </div>
-
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  );
-
-  // =================================================================
-  //                             RENDER
-  // =================================================================
   return (
     <div className="flex">
       <Sidebar />
       <div className="flex-1 bg-gray-50 min-h-screen">
         <Header />
-        <div className="p-6 space-y-6">
-          {view === "jobs" ? renderJobList() : renderPipeline()}
-          {renderDrawer()}
+
+        <div className="p-6">
+          <h1 className="text-2xl font-semibold mb-6">Applicant Tracking System</h1>
+
+          {/* Jobs List */}
+          <div className="bg-white rounded-xl shadow mb-6">
+            <div className="p-4 border-b">
+              <h2 className="text-lg font-medium">Jobs</h2>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {jobs.map((job) => (
+                  <div
+                    key={job.id}
+                    onClick={() => handleJobSelect(job)}
+                    className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                      selectedJob?.id === job.id ? "border-blue-500 bg-blue-50" : "border-gray-200"
+                    }`}
+                  >
+                    <h3 className="font-medium">{job.title}</h3>
+                    <p className="text-sm text-gray-600">{job.department}</p>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Rounds: {getRoundNames(job).join(", ") || "Not specified"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Candidates Table */}
+          {selectedJob && (
+            <div className="bg-white rounded-xl shadow">
+              <div className="p-4 border-b">
+                <h2 className="text-lg font-medium">
+                  Candidates for {selectedJob.title}
+                </h2>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-100 text-gray-600 text-sm">
+                    <tr>
+                      <th className="p-3 text-left">Name</th>
+                      <th className="p-3 text-left">Email</th>
+                      <th className="p-3 text-left">Experience</th>
+                      <th className="p-3 text-left">Current Stage</th>
+                      <th className="p-3 text-left">Current Round</th>
+                      <th className="p-3 text-left">Interview Date</th>
+                      <th className="p-3 text-center">Actions</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {candidates.map((candidate) => (
+                      <tr key={candidate.id} className="border-t">
+                        <td className="p-3">{candidate.name}</td>
+                        <td className="p-3">{candidate.email}</td>
+                        <td className="p-3">{candidate.experience} years</td>
+                        <td className="p-3">
+                          <span className={`px-2 py-1 rounded-full text-xs ${getStageColor(candidate.stage)}`}>
+                            {candidate.stage}
+                          </span>
+                        </td>
+                        <td className="p-3">Round {candidate.current_round}</td>
+                        <td className="p-3">
+                          {candidate.interview_date 
+                            ? new Date(candidate.interview_date).toLocaleDateString()
+                            : "—"
+                          }
+                        </td>
+                        <td className="p-3 text-center">
+                          <button
+                            onClick={() => handleMoveCandidate(candidate)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                          >
+                            Move
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Move Candidate Modal */}
+          {showMoveModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white w-[500px] p-6 rounded-xl shadow-xl">
+                <h2 className="text-xl font-semibold mb-4">
+                  Move Candidate: {selectedCandidate?.name}
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Action</label>
+                    <select
+                      className="border p-2 rounded w-full"
+                      value={moveForm.action}
+                      onChange={(e) => setMoveForm({ ...moveForm, action: e.target.value })}
+                    >
+                      <option value="">Select Action</option>
+                      <option value="next_round">Move to Next Round</option>
+                      <option value="selected">Select Candidate</option>
+                      <option value="rejected">Reject Candidate</option>
+                    </select>
+                  </div>
+
+                  {moveForm.action === "next_round" && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Next Round</label>
+                        <input
+                          type="number"
+                          className="border p-2 rounded w-full"
+                          value={moveForm.next_round}
+                          onChange={(e) => setMoveForm({ ...moveForm, next_round: parseInt(e.target.value) })}
+                          min="1"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Interview Date</label>
+                        <input
+                          type="date"
+                          className="border p-2 rounded w-full"
+                          value={moveForm.interview_date}
+                          onChange={(e) => setMoveForm({ ...moveForm, interview_date: e.target.value })}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Interview Time</label>
+                        <input
+                          type="time"
+                          className="border p-2 rounded w-full"
+                          value={moveForm.interview_time}
+                          onChange={(e) => setMoveForm({ ...moveForm, interview_time: e.target.value })}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex justify-between mt-6">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded-lg"
+                    onClick={() => setShowMoveModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                    onClick={submitMove}
+                    disabled={!moveForm.action}
+                  >
+                    Send Email & Move
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -71,3 +71,17 @@ def get_tenant_engine(db_name: str):
         f"@{DB_HOST}:{DB_PORT}/{db_name}"
     )
     return create_engine(url, pool_pre_ping=True, future=True)
+
+
+# TENANT DB SESSION (for dependency injection)
+def get_tenant_db() -> Generator:
+    # Use the existing nutryah database
+    default_tenant_db = os.getenv("DEFAULT_TENANT_DB", "nutryah")
+    
+    engine = get_tenant_engine(default_tenant_db)
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

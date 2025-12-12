@@ -5,6 +5,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from typing import List, Optional
+import logging
+
+logger = logging.getLogger("HRM")
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.office365.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
@@ -18,6 +21,14 @@ def send_email(to_email: str, subject: str, html_content: str, attachments: Opti
     Sends an HTML email using SMTP (Office365 supported)
     """
     try:
+        logger.info(f"🔄 Attempting to send email to {to_email}")
+        logger.info(f"📧 SMTP Config: {SMTP_HOST}:{SMTP_PORT} | User: {SMTP_USER}")
+        
+        # Validate configuration
+        if not SMTP_USER or not SMTP_PASSWORD:
+            logger.error("❌ Missing SMTP credentials")
+            return False
+        
         # Create message
         msg = MIMEMultipart()
         msg["From"] = SMTP_FROM or SMTP_USER or ""
@@ -39,24 +50,30 @@ def send_email(to_email: str, subject: str, html_content: str, attachments: Opti
                 msg.attach(part)
 
         # Connect to SMTP server
+        logger.info(f"🔗 Connecting to SMTP server...")
         server = smtplib.SMTP(SMTP_HOST or "localhost", SMTP_PORT)
         server.starttls()
+        
+        logger.info(f"🔐 Logging in with user: {SMTP_USER}")
         server.login(SMTP_USER or "", SMTP_PASSWORD or "")
-
-        # Extract email from SMTP_FROM if it contains name format
-        from_email = SMTP_USER
-        if SMTP_FROM and "<" in SMTP_FROM and ">" in SMTP_FROM:
-            # Extract email from "Name <email@domain.com>" format
-            from_email = SMTP_FROM.split("<")[1].split(">")[0]
-        elif SMTP_FROM:
-            from_email = SMTP_FROM
-            
+        
+        logger.info(f"📤 Sending email...")
         server.sendmail(SMTP_USER, to_email, msg.as_string())
         server.quit()
 
-        print(f"📧 Email sent successfully to {to_email}")
+        logger.info(f"✅ Email sent successfully to {to_email}")
         return True
 
+    except smtplib.SMTPAuthenticationError as e:
+        logger.error(f"❌ SMTP Authentication failed: {e}")
+        logger.error(f"🔍 Check SMTP_USER and SMTP_PASSWORD in .env file")
+        return False
+    except smtplib.SMTPRecipientsRefused as e:
+        logger.error(f"❌ Recipient refused: {e}")
+        return False
+    except smtplib.SMTPServerDisconnected as e:
+        logger.error(f"❌ SMTP server disconnected: {e}")
+        return False
     except Exception as e:
-        print("❌ Email sending failed:", e)
+        logger.error(f"❌ Email sending failed: {type(e).__name__}: {e}")
         return False
