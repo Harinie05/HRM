@@ -13,7 +13,8 @@ export default function ATS() {
     action: "",
     next_round: 2,
     interview_date: "",
-    interview_time: ""
+    interview_time: "",
+    custom_round_name: ""
   });
 
   // Fetch jobs
@@ -47,11 +48,13 @@ export default function ATS() {
 
   const handleMoveCandidate = (candidate) => {
     setSelectedCandidate(candidate);
+    const nextRound = candidate.current_round + 1;
     setMoveForm({
       action: "",
-      next_round: candidate.current_round + 1,
+      next_round: nextRound,
       interview_date: "",
-      interview_time: ""
+      interview_time: "",
+      custom_round_name: ""
     });
     setShowMoveModal(true);
   };
@@ -211,14 +214,44 @@ export default function ATS() {
                     <>
                       <div>
                         <label className="block text-sm font-medium mb-2">Next Round</label>
-                        <input
-                          type="number"
+                        <select
                           className="border p-2 rounded w-full"
                           value={moveForm.next_round}
                           onChange={(e) => setMoveForm({ ...moveForm, next_round: parseInt(e.target.value) })}
-                          min="1"
-                        />
+                        >
+                          {getRoundNames(selectedJob).map((roundName, index) => {
+                            const roundNumber = index + 1;
+                            if (roundNumber > selectedCandidate?.current_round) {
+                              return (
+                                <option key={roundNumber} value={roundNumber}>
+                                  Round {roundNumber}: {roundName}
+                                </option>
+                              );
+                            }
+                            return null;
+                          })}
+                          {/* Show option for round beyond configured rounds */}
+                          {selectedCandidate?.current_round >= getRoundNames(selectedJob).length && (
+                            <option value={selectedCandidate.current_round + 1}>
+                              Round {selectedCandidate.current_round + 1}: Additional Round
+                            </option>
+                          )}
+                        </select>
                       </div>
+
+                      {/* Custom round name input for additional rounds */}
+                      {moveForm.next_round > getRoundNames(selectedJob).length && (
+                        <div>
+                          <label className="block text-sm font-medium mb-2">Round Name</label>
+                          <input
+                            type="text"
+                            className="border p-2 rounded w-full"
+                            placeholder="Enter round name (e.g., Final Interview, CEO Round)"
+                            value={moveForm.custom_round_name}
+                            onChange={(e) => setMoveForm({ ...moveForm, custom_round_name: e.target.value })}
+                          />
+                        </div>
+                      )}
 
                       <div>
                         <label className="block text-sm font-medium mb-2">Interview Date</label>

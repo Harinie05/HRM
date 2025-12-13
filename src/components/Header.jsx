@@ -51,12 +51,18 @@ export default function Header() {
         </span>
 
         {/* Sync Button */}
-        <button className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        >
           <RotateCcw size={18} className="mr-2" /> Sync
         </button>
 
         {/* Refresh Button */}
-        <button className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        >
           <RefreshCcw size={18} className="mr-2" /> Refresh
         </button>
 

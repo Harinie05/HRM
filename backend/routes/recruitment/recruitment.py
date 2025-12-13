@@ -60,7 +60,6 @@ def create_job(req: JobReqCreate, db: Session = Depends(get_tenant_db)):
 
         description=req.description,
         deadline=req.deadline,
-        status=req.status,
 
         created_at=datetime.now(),
     )
@@ -127,6 +126,8 @@ def upload_attachment(job_id: int, file: UploadFile = File(...), db: Session = D
 # ----------------------------------------------------------
 @router.get("/list", response_model=List[JobReqOut])
 def list_jobs(db: Session = Depends(get_tenant_db)):
+    # Force refresh from database
+    db.commit()  # Ensure any pending changes are committed
     jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
     return jobs
 
@@ -143,20 +144,7 @@ def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
     return job
 
 
-# ----------------------------------------------------------
-# UPDATE JOB STATUS ONLY
-# ----------------------------------------------------------
-@router.put("/update-status/{job_id}")
-def update_job_status(job_id: int, status: str, db: Session = Depends(get_tenant_db)):
-    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    
-    setattr(job, 'status', status)
-    setattr(job, 'updated_at', datetime.now())
-    db.commit()
-    
-    return {"message": "Status updated successfully", "status": status}
+
 
 
 # ----------------------------------------------------------
@@ -176,3 +164,9 @@ def generate_job_link(job_id: int, db: Session = Depends(get_tenant_db)):
     db.commit()
     
     return {"url": apply_url, "message": "Apply link generated successfully"}
+
+
+
+
+
+

@@ -24,6 +24,7 @@ from routes.recruitment.onboarding import router as onboarding_router
 from routes.recruitment.recruitment_import import router as recruitment_import_router
 from routes.recruitment.recruitment_public import router as public_router
 from routes.recruitment.screening import router as screening_router
+from routes.recruitment.dashboard import router as dashboard_router
 
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -70,9 +71,10 @@ app.include_router(recruitment_router)
 app.include_router(recruitment_import_router)
 app.include_router(ats_router, prefix="/recruitment")
 app.include_router(offer_router, prefix="/recruitment")
-app.include_router(onboarding_router)
+app.include_router(onboarding_router, prefix="/recruitment")
 app.include_router(public_router)
 app.include_router(screening_router)
+app.include_router(dashboard_router)
 logger.info("All routers loaded successfully")
 
 

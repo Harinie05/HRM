@@ -271,6 +271,7 @@ class MoveToNextRoundRequest(BaseModel):
     interview_date: str
     interview_time: str
     action: str  # "selected", "rejected", "next_round"
+    custom_round_name: str = None
 
 @router.post("/move-to-next-round")
 def move_to_next_round(
@@ -300,6 +301,9 @@ def move_to_next_round(
             
         elif req.action == "rejected":
             setattr(candidate, 'stage', "Rejected")
+            
+            # Send rejection email
+            send_rejection_email(candidate, job)
         elif req.action == "next_round":
             setattr(candidate, 'stage', f"Round {req.next_round} Scheduled")
             setattr(candidate, 'current_round', req.next_round)
@@ -414,16 +418,22 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
 </html>"""
         
         elif action == "next_round" and next_round:
-            round_name = "Interview"
+            round_name = f"Round {next_round}"
             if isinstance(round_names, list) and len(round_names) >= next_round:
                 if isinstance(round_names[next_round-1], dict):
-                    round_name = round_names[next_round-1].get('name', f'Round {next_round}')
+                    round_name = f"Round {next_round} - {round_names[next_round-1].get('name', 'Interview')}"
                 else:
-                    round_name = round_names[next_round-1]
+                    round_name = f"Round {next_round} - {round_names[next_round-1]}"
             elif isinstance(round_names, dict) and str(next_round) in round_names:
-                round_name = round_names[str(next_round)]
+                round_name = f"Round {next_round} - {round_names[str(next_round)]}"
+            else:
+                # Check if custom round name is provided for additional rounds
+                if hasattr(req, 'custom_round_name') and req.custom_round_name:
+                    round_name = f"Round {next_round} - {req.custom_round_name}"
+                else:
+                    round_name = f"Round {next_round} - Interview"
             
-            subject = f"🎯 You've been selected for Round {next_round} - {job.title} position"
+            subject = f"🎯 You've been selected for {round_name} - {job.title} position"
             html_body = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -489,6 +499,64 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
 
 
 # Complete the incomplete function at the end
+def send_rejection_email(candidate, job):
+    """Send rejection email to candidate"""
+    try:
+        subject = f"Application Update - {job.title} Position"
+        html_body = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: #dc3545; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }}
+        .section {{ margin: 20px 0; padding: 15px; border-left: 4px solid #dc3545; background: #f8f9fa; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Application Status Update</h2>
+        </div>
+        
+        <p>Dear <strong>{candidate.name}</strong>,</p>
+        
+        <p>Thank you for your interest in the <strong>{job.title}</strong> position at <strong>NUTRYAH</strong> and for taking the time to participate in our interview process.</p>
+        
+        <div class="section">
+            <p>After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current requirements.</p>
+        </div>
+        
+        <p>We were impressed with your background and encourage you to apply for future opportunities that align with your skills and experience.</p>
+        
+        <p>We will keep your resume on file and will reach out if a suitable position becomes available.</p>
+        
+        <p>Thank you again for your time and interest in NUTRYAH.</p>
+        
+        <p><strong>Best regards,</strong><br>
+        HR Team<br>
+        NUTRYAH</p>
+    </div>
+</body>
+</html>"""
+        
+        # Send email
+        success = send_email(
+            to_email=candidate.email,
+            subject=subject,
+            html_content=html_body
+        )
+        
+        if success:
+            logger.info(f"✅ Rejection email sent to {candidate.email}")
+        else:
+            logger.error(f"❌ Failed to send rejection email to {candidate.email}")
+            
+    except Exception as e:
+        logger.error(f"Failed to send rejection email: {str(e)}")
+
+
 def complete_function():
     """Placeholder function to complete the file"""
     pass

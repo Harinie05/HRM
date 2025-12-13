@@ -24,6 +24,7 @@ import Onboarding from "./pages/recruitment/Onboarding";
 import JobApply from "./pages/recruitment/public jobapply";
 import CandidateScreening from "./pages/recruitment/CandidateScreening";
 import DocumentUpload from "./pages/recruitment/DocumentUpload";
+import MasterDashboard from "./pages/recruitment/MasterDashboard";
 
 function App() {
   return (
@@ -132,6 +133,7 @@ function App() {
         {/* ----------------------------------------
            RECRUITMENT & ONBOARDING MODULE
         ----------------------------------------- */}
+        <Route path="/recruitment-master" element={<ProtectedRoute><MasterDashboard /></ProtectedRoute>} />
         <Route path="/job-requisition" element={<ProtectedRoute><JobRequisition /></ProtectedRoute>} />
         <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
         <Route path="/ats" element={<ProtectedRoute><ATS /></ProtectedRoute>} />

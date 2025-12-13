@@ -15,7 +15,7 @@ export default function Sidebar() {
   const [openRecruitmentMenu, setOpenRecruitmentMenu] = useState(false);
 
   return (
-    <div className="h-screen w-64 bg-[#F4F8FF] border-r border-gray-200 p-4 sticky top-0">
+    <div className="h-screen w-64 bg-[#F4F8FF] border-r border-gray-200 p-4 sticky top-0 overflow-y-auto">
 
       {/* Title */}
       <h1 className="text-xl font-bold text-[#0D3B66] mb-6">HRM Standard</h1>
@@ -114,6 +114,17 @@ export default function Sidebar() {
 
           {openRecruitmentMenu && (
             <div className="ml-10 mt-2 space-y-2">
+              <Link
+                to="/recruitment-master"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/recruitment-master"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Master Dashboard
+              </Link>
+
               <Link
                 to="/job-requisition"
                 className={`block hover:text-blue-700 ${

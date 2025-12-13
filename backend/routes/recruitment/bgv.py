@@ -24,7 +24,8 @@ def create_bgv(candidate_id: int, data: BGVCreate, db: Session = Depends(get_mas
 
     bgv = BGV(
         candidate_id=candidate_id,
-        agency=data.agency,
+        verification_type=data.verification_type,
+        agency_name=data.agency_name,
         status=data.status,
         remarks=data.remarks
     )

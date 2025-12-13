@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from pydantic import BaseModel
+from typing import Optional
 from database import get_tenant_db
-from models.models_tenant import Candidate, OfferLetter, JobRequisition
+from models.models_tenant import Candidate, OfferLetter, JobRequisition, BGV
 from schemas.schemas_tenant import OfferCreate, OfferUpdate, OfferStatusUpdate, OfferOut
 from utils.email import send_email
 import uuid, os
@@ -13,6 +15,18 @@ router = APIRouter(prefix="/offer", tags=["Offer Letters"])
 
 UPLOAD_DIR = "uploads/offers"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# BGV Update Request Model
+class BGVUpdateRequest(BaseModel):
+    verification_type: Optional[str] = None
+    agency_name: Optional[str] = None
+    status: Optional[str] = None
+    identity_verified: Optional[bool] = None
+    address_verified: Optional[bool] = None
+    employment_verified: Optional[bool] = None
+    education_verified: Optional[bool] = None
+    criminal_verified: Optional[bool] = None
+    remarks: Optional[str] = None
 
 
 # -----------------------------------------------------------
@@ -30,8 +44,10 @@ def create_offer(candidate_id: int, data: OfferCreate, db: Session = Depends(get
         
         # Ensure department is never None
         department = "General"
-        if job and job.department and job.department.strip():
-            department = job.department
+        if job:
+            job_department = getattr(job, 'department', None)
+            if job_department and job_department.strip():
+                department = job_department
         
         offer = OfferLetter(
             candidate_id=candidate_id,
@@ -119,8 +135,8 @@ def send_offer(offer_id: int, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=404, detail="Candidate not found")
 
     token = str(uuid.uuid4())
-    offer.token = token
-    offer.offer_status = "Sent"
+    setattr(offer, 'token', token)
+    setattr(offer, 'offer_status', "Sent")
 
     # Professional offer email
     subject = f"🎉 Job Offer - {offer.job_title} Position at NUTRYAH"
@@ -191,7 +207,7 @@ def send_offer(offer_id: int, db: Session = Depends(get_tenant_db)):
 </body>
 </html>"""
     
-    success = send_email(candidate.email, subject, email_html)
+    success = send_email(str(candidate.email), subject, email_html)
     
     if success:
         db.commit()
@@ -210,7 +226,7 @@ def update_offer_status(offer_id: int, status: str, db: Session = Depends(get_te
     if not offer:
         raise HTTPException(status_code=404, detail="Offer not found")
 
-    offer.offer_status = status
+    setattr(offer, 'offer_status', status)
     db.commit()
     
     return {"message": f"Offer {status.lower()} successfully", "offer": offer}
@@ -227,8 +243,9 @@ def generate_document_link(offer_id: int, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=404, detail="Offer not found")
     
     # Generate or reuse token
-    if not offer.token:
-        offer.token = str(uuid.uuid4())
+    token_value = getattr(offer, 'token', None)
+    if token_value is None or token_value == "":
+        setattr(offer, 'token', str(uuid.uuid4()))
         db.commit()
     
     upload_url = f"http://localhost:3000/document-upload/{offer.token}"
@@ -258,6 +275,7 @@ def get_document_upload_page(token: str, db: Session = Depends(get_tenant_db)):
 
 
 from fastapi import Form
+from datetime import timedelta
 
 @router.post("/documents/{token}/upload")
 def upload_documents(
@@ -305,7 +323,7 @@ def submit_documents(token: str, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=404, detail="Invalid or expired link")
     
     # Update offer status to indicate documents submitted
-    offer.offer_status = "Documents Submitted"
+    setattr(offer, 'offer_status', "Documents Submitted")
     db.commit()
     
     return {"message": "Documents submitted successfully"}
@@ -355,9 +373,525 @@ def view_uploaded_documents(offer_id: int, db: Session = Depends(get_tenant_db))
 
 
 # -----------------------------------------------------------
-# 6) LIST ALL OFFERS
+# BGV ENDPOINTS - Realistic Company Process
+# -----------------------------------------------------------
+
+# BGV Status Flow: Initiated -> Document Collection -> Agency Assignment -> In Progress -> Completed/Failed
+BGV_STATUSES = {
+    "INITIATED": "BGV Initiated",
+    "DOCUMENT_COLLECTION": "Document Collection", 
+    "AGENCY_ASSIGNED": "Agency Assigned",
+    "IN_PROGRESS": "Verification In Progress",
+    "COMPLETED": "BGV Completed",
+    "FAILED": "BGV Failed",
+    "ON_HOLD": "On Hold"
+}
+
+# BGV Check Types
+BGV_CHECKS = {
+    "IDENTITY": "Identity Verification",
+    "ADDRESS": "Address Verification", 
+    "EDUCATION": "Education Verification",
+    "EMPLOYMENT": "Employment History",
+    "CRIMINAL": "Criminal Background Check",
+    "REFERENCE": "Reference Check"
+}
+
+# Mock BGV storage (in production, this would be in database)
+bgv_records = {}
+
+@router.post("/bgv/start/{candidate_id}")
+def start_bgv(candidate_id: int, db: Session = Depends(get_tenant_db)):
+    """Start comprehensive BGV process for a candidate"""
+    try:
+        candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+        if not candidate:
+            raise HTTPException(status_code=404, detail="Candidate not found")
+        
+        candidate_name = getattr(candidate, 'name', None)
+        candidate_email = getattr(candidate, 'email', None)
+        
+        if not candidate_name or not candidate_email:
+            raise HTTPException(status_code=400, detail="Candidate must have name and email for BGV")
+        
+        # Check if BGV already exists in database
+        existing_bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
+        if existing_bgv:
+            return {
+                "message": "BGV already exists for this candidate",
+                "bgv_id": existing_bgv.id,
+                "status": existing_bgv.status
+            }
+        
+        # Create BGV record in database
+        db_bgv = BGV(
+            candidate_id=candidate_id,
+            verification_type="Internal HR Team",
+            status="Pending",
+            identity_verified=False,
+            address_verified=False,
+            employment_verified=False,
+            education_verified=False,
+            criminal_verified=False,
+            remarks="BGV process initiated. Awaiting document collection."
+        )
+        
+        db.add(db_bgv)
+        db.commit()
+        db.refresh(db_bgv)
+        
+        # Also create in-memory record for compatibility
+        bgv_id = f"BGV_{candidate_id}_{int(datetime.utcnow().timestamp())}"
+        
+        bgv_record = {
+            "id": bgv_id,
+            "candidate_id": candidate_id,
+            "candidate_name": candidate_name,
+            "candidate_email": candidate_email,
+            "status": "INITIATED",
+            "overall_status": "In Progress",
+            "agency": None,
+            "initiated_date": datetime.utcnow(),
+            "expected_completion": datetime.utcnow() + timedelta(days=15),
+            "checks": {
+                "IDENTITY": {"status": "Pending", "result": None, "remarks": ""},
+                "ADDRESS": {"status": "Pending", "result": None, "remarks": ""},
+                "EDUCATION": {"status": "Pending", "result": None, "remarks": ""},
+                "EMPLOYMENT": {"status": "Pending", "result": None, "remarks": ""},
+                "CRIMINAL": {"status": "Pending", "result": None, "remarks": ""},
+                "REFERENCE": {"status": "Pending", "result": None, "remarks": ""}
+            },
+            "documents_required": [
+                "PAN Card", "Aadhaar Card", "Address Proof", 
+                "Educational Certificates", "Experience Letters", "Salary Slips"
+            ],
+            "documents_submitted": [],
+            "timeline": [{
+                "stage": "BGV Initiated",
+                "date": datetime.utcnow(),
+                "remarks": "Background verification process started"
+            }],
+            "remarks": "BGV process initiated. Awaiting document collection."
+        }
+        
+        bgv_records[bgv_id] = bgv_record
+        
+        logger.info(f"BGV started for candidate {candidate_id} - {candidate_name}")
+        
+        return {
+            "message": "BGV process initiated successfully",
+            "bgv_id": db_bgv.id,
+            "status": "Pending",
+            "next_steps": "Candidate will be contacted for document submission",
+            "expected_completion": bgv_record["expected_completion"]
+        }
+    
+    except Exception as e:
+        logger.error(f"Error starting BGV: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to start BGV: {str(e)}")
+
+
+@router.get("/bgv/{bgv_id}")
+def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
+    """Get comprehensive BGV details"""
+    # Try database first
+    db_bgv = db.query(BGV).filter(BGV.id == bgv_id).first()
+    
+    if db_bgv:
+        # Calculate progress from database record
+        checks = [
+            db_bgv.identity_verified,
+            db_bgv.address_verified,
+            db_bgv.employment_verified,
+            db_bgv.education_verified,
+            db_bgv.criminal_verified
+        ]
+        completed_checks = sum(1 for check in checks if check)
+        total_checks = len(checks)
+        progress = (completed_checks / total_checks) * 100
+        
+        return {
+            "verification_type": db_bgv.verification_type,
+            "agency_name": db_bgv.agency_name,
+            "status": db_bgv.status,
+            "identity_verified": db_bgv.identity_verified,
+            "address_verified": db_bgv.address_verified,
+            "employment_verified": db_bgv.employment_verified,
+            "education_verified": db_bgv.education_verified,
+            "criminal_verified": db_bgv.criminal_verified,
+            "remarks": db_bgv.remarks,
+            "progress_percentage": round(progress, 1),
+            "checks_summary": {
+                "total": total_checks,
+                "completed": completed_checks,
+                "pending": total_checks - completed_checks
+            }
+        }
+    
+    # Fallback to in-memory records
+    bgv_id_str = str(bgv_id)
+    if bgv_id_str not in bgv_records:
+        raise HTTPException(status_code=404, detail="BGV record not found")
+    
+    bgv = bgv_records[bgv_id_str]
+    
+    # Calculate progress percentage
+    total_checks = len(bgv["checks"])
+    completed_checks = sum(1 for check in bgv["checks"].values() if check["status"] == "Completed")
+    progress = (completed_checks / total_checks) * 100
+    
+    return {
+        **bgv,
+        "progress_percentage": round(progress, 1),
+        "status_display": BGV_STATUSES.get(bgv["status"], bgv["status"]),
+        "days_elapsed": (datetime.utcnow() - bgv["initiated_date"]).days,
+        "checks_summary": {
+            "total": total_checks,
+            "completed": completed_checks,
+            "pending": total_checks - completed_checks
+        }
+    }
+
+
+@router.put("/bgv/update/{bgv_id}")
+def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, db: Session = Depends(get_tenant_db)):
+    """Update BGV status and progress"""
+    # Try to find BGV in database first
+    db_bgv = db.query(BGV).filter(BGV.id == bgv_id).first()
+    
+    if db_bgv:
+        # Update database record
+        if data.verification_type is not None:
+            db_bgv.verification_type = data.verification_type
+        
+        if data.agency_name is not None:
+            db_bgv.agency_name = data.agency_name
+            if data.agency_name and data.verification_type != "Internal HR Team":
+                db_bgv.verification_type = "Agency"
+        
+        if data.status is not None:
+            db_bgv.status = data.status
+        
+        if data.identity_verified is not None:
+            db_bgv.identity_verified = data.identity_verified
+        
+        if data.address_verified is not None:
+            db_bgv.address_verified = data.address_verified
+        
+        if data.employment_verified is not None:
+            db_bgv.employment_verified = data.employment_verified
+        
+        if data.education_verified is not None:
+            db_bgv.education_verified = data.education_verified
+        
+        if data.criminal_verified is not None:
+            db_bgv.criminal_verified = data.criminal_verified
+        
+        if data.remarks is not None:
+            db_bgv.remarks = data.remarks
+        
+        # Auto-update status based on verification completion
+        all_verified = all([
+            db_bgv.identity_verified,
+            db_bgv.address_verified,
+            db_bgv.employment_verified,
+            db_bgv.education_verified,
+            db_bgv.criminal_verified
+        ])
+        
+        if all_verified and db_bgv.status != "Cleared":
+            db_bgv.status = "Cleared"
+        elif not all_verified and db_bgv.status == "Cleared":
+            db_bgv.status = "In Progress"
+        
+        db.commit()
+        
+        return {
+            "message": "BGV updated successfully",
+            "bgv_id": bgv_id,
+            "status": db_bgv.status
+        }
+    
+    # Fallback to in-memory records
+    bgv_id_str = str(bgv_id)
+    if bgv_id_str not in bgv_records:
+        raise HTTPException(status_code=404, detail="BGV record not found")
+    
+    bgv = bgv_records[bgv_id_str]
+    
+    # Update basic details
+    if data.agency_name:
+        bgv["agency"] = data.agency_name
+        if bgv["status"] == "INITIATED":
+            bgv["status"] = "AGENCY_ASSIGNED"
+            bgv["timeline"].append({
+                "stage": "Agency Assigned",
+                "date": datetime.utcnow(),
+                "remarks": f"BGV assigned to {data.agency_name}"
+            })
+    
+    if data.status:
+        old_status = bgv["status"]
+        bgv["status"] = data.status
+        if old_status != data.status:
+            bgv["timeline"].append({
+                "stage": BGV_STATUSES.get(data.status, data.status),
+                "date": datetime.utcnow(),
+                "remarks": data.remarks or f"Status updated to {data.status}"
+            })
+    
+    if data.remarks:
+        bgv["remarks"] = data.remarks
+    
+    return {
+        "message": "BGV updated successfully",
+        "bgv_id": bgv_id,
+        "status": bgv["status"],
+        "timeline": bgv["timeline"][-3:]  # Return last 3 timeline entries
+    }
+
+
+@router.post("/bgv/{bgv_id}/update-check")
+def update_bgv_check(bgv_id: str, check_type: str, status: str, result: Optional[str] = None, remarks: str = ""):
+    """Update individual BGV check status"""
+    if bgv_id not in bgv_records:
+        raise HTTPException(status_code=404, detail="BGV record not found")
+    
+    if check_type not in BGV_CHECKS:
+        raise HTTPException(status_code=400, detail="Invalid check type")
+    
+    bgv = bgv_records[bgv_id]
+    
+    # Update specific check
+    bgv["checks"][check_type] = {
+        "status": status,
+        "result": result,
+        "remarks": remarks,
+        "updated_at": datetime.utcnow()
+    }
+    
+    # Add to timeline
+    bgv["timeline"].append({
+        "stage": f"{BGV_CHECKS[check_type]} - {status}",
+        "date": datetime.utcnow(),
+        "remarks": remarks or f"{BGV_CHECKS[check_type]} {status.lower()}"
+    })
+    
+    # Check if all verifications are complete
+    all_completed = all(check["status"] == "Completed" for check in bgv["checks"].values())
+    any_failed = any(check["result"] == "Failed" for check in bgv["checks"].values())
+    
+    if all_completed:
+        if any_failed:
+            bgv["status"] = "FAILED"
+            bgv["overall_status"] = "Failed"
+        else:
+            bgv["status"] = "COMPLETED"
+            bgv["overall_status"] = "Completed"
+        
+        bgv["timeline"].append({
+            "stage": "BGV Process Completed",
+            "date": datetime.utcnow(),
+            "remarks": f"All background checks completed. Overall result: {bgv['overall_status']}"
+        })
+    
+    return {
+        "message": f"{BGV_CHECKS[check_type]} updated successfully",
+        "check_status": bgv["checks"][check_type],
+        "overall_status": bgv["overall_status"]
+    }
+
+
+@router.post("/bgv/{bgv_id}/submit-documents")
+def submit_bgv_documents(bgv_id: str, documents: list[str]):
+    """Mark documents as submitted for BGV"""
+    if bgv_id not in bgv_records:
+        raise HTTPException(status_code=404, detail="BGV record not found")
+    
+    bgv = bgv_records[bgv_id]
+    bgv["documents_submitted"] = documents
+    
+    # Update status to document collection if still initiated
+    if bgv["status"] == "INITIATED":
+        bgv["status"] = "DOCUMENT_COLLECTION"
+        bgv["timeline"].append({
+            "stage": "Documents Submitted",
+            "date": datetime.utcnow(),
+            "remarks": f"Candidate submitted {len(documents)} documents"
+        })
+    
+    return {
+        "message": "Documents submitted successfully",
+        "submitted_count": len(documents),
+        "status": bgv["status"]
+    }
+
+
+@router.get("/bgv/list")
+def list_all_bgv(db: Session = Depends(get_tenant_db)):
+    """List all BGV records with summary"""
+    bgv_list = []
+    
+    for bgv_id, bgv in bgv_records.items():
+        total_checks = len(bgv["checks"])
+        completed_checks = sum(1 for check in bgv["checks"].values() if check["status"] == "Completed")
+        progress = (completed_checks / total_checks) * 100
+        
+        bgv_list.append({
+            "bgv_id": bgv_id,
+            "candidate_id": bgv["candidate_id"],
+            "candidate_name": bgv["candidate_name"],
+            "status": bgv["status"],
+            "status_display": BGV_STATUSES.get(bgv["status"], bgv["status"]),
+            "overall_status": bgv["overall_status"],
+            "agency": bgv["agency"],
+            "progress_percentage": round(progress, 1),
+            "initiated_date": bgv["initiated_date"],
+            "expected_completion": bgv["expected_completion"],
+            "days_elapsed": (datetime.utcnow() - bgv["initiated_date"]).days
+        })
+    
+    return {"bgv_records": bgv_list, "total_count": len(bgv_list)}
+
+
+# -----------------------------------------------------------
+# MANUAL BGV COMPLETION FOR ONBOARDED CANDIDATES
+# -----------------------------------------------------------
+@router.post("/bgv/complete/{candidate_id}")
+def complete_bgv_for_candidate(candidate_id: int, db: Session = Depends(get_tenant_db)):
+    """Mark BGV as completed for candidates who have started onboarding"""
+    try:
+        # Check if candidate exists
+        candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+        if not candidate:
+            raise HTTPException(status_code=404, detail="Candidate not found")
+        
+        # Find or create BGV record
+        db_bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
+        
+        if not db_bgv:
+            # Create new BGV record if it doesn't exist
+            db_bgv = BGV(
+                candidate_id=candidate_id,
+                verification_type="Internal HR Team",
+                status="Cleared",
+                identity_verified=True,
+                address_verified=True,
+                employment_verified=True,
+                education_verified=True,
+                criminal_verified=True,
+                remarks="BGV completed successfully. All verifications cleared."
+            )
+            db.add(db_bgv)
+        else:
+            # Update existing BGV record
+            db_bgv.status = "Cleared"
+            db_bgv.identity_verified = True
+            db_bgv.address_verified = True
+            db_bgv.employment_verified = True
+            db_bgv.education_verified = True
+            db_bgv.criminal_verified = True
+            db_bgv.remarks = "BGV completed successfully. All verifications cleared."
+        
+        db.commit()
+        
+        logger.info(f"BGV marked as completed for candidate {candidate_id}")
+        
+        return {
+            "message": "BGV marked as completed successfully",
+            "candidate_id": candidate_id,
+            "bgv_status": "Cleared"
+        }
+    
+    except Exception as e:
+        logger.error(f"Error completing BGV: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to complete BGV: {str(e)}")
+
+
+# -----------------------------------------------------------
+# LIST ALL OFFERS WITH BGV STATUS
 # -----------------------------------------------------------
 @router.get("/list")
 def list_offers(db: Session = Depends(get_tenant_db)):
     offers = db.query(OfferLetter).all()
-    return offers
+    
+    # Enrich offers with BGV information from database
+    enriched_offers = []
+    for offer in offers:
+        # Get BGV record from database first
+        db_bgv = db.query(BGV).filter(BGV.candidate_id == offer.candidate_id).first()
+        
+        # Check if candidate has started onboarding
+        from models.models_tenant import OnboardingCandidate
+        onboarding_record = db.query(OnboardingCandidate).filter(
+            OnboardingCandidate.application_id == offer.candidate_id
+        ).first()
+        
+        # Fallback to in-memory records if no database record
+        candidate_bgv = None
+        bgv_id_found = None
+        
+        if db_bgv:
+            # Use database BGV record
+            bgv_status = db_bgv.status
+            # Map database status to display status
+            if bgv_status == "Cleared":
+                display_status = "Cleared"
+            elif bgv_status == "Pending":
+                display_status = "Pending"
+            elif bgv_status == "In Progress":
+                display_status = "In Progress"
+            elif bgv_status == "Failed":
+                display_status = "Failed"
+            else:
+                display_status = bgv_status
+        else:
+            # If candidate has onboarding record but no BGV, assume BGV is cleared
+            if onboarding_record:
+                display_status = "Cleared"
+            else:
+                # Fallback to in-memory records
+                for bgv_id, bgv in bgv_records.items():
+                    if bgv["candidate_id"] == offer.candidate_id:
+                        candidate_bgv = bgv
+                        bgv_id_found = bgv_id
+                        break
+                
+                if candidate_bgv:
+                    # Map in-memory status to display status
+                    if candidate_bgv["overall_status"] == "Completed":
+                        display_status = "Cleared"
+                    elif candidate_bgv["status"] == "COMPLETED":
+                        display_status = "Cleared"
+                    else:
+                        display_status = candidate_bgv.get("overall_status", candidate_bgv.get("status", None))
+                else:
+                    display_status = None
+        
+        offer_dict = {
+            "id": offer.id,
+            "candidate_id": offer.candidate_id,
+            "candidate_name": offer.candidate_name,
+            "job_title": offer.job_title,
+            "department": offer.department,
+            "ctc": offer.ctc,
+            "basic_percent": offer.basic_percent,
+            "hra_percent": offer.hra_percent,
+            "joining_date": offer.joining_date,
+            "probation_period": offer.probation_period,
+            "notice_period": offer.notice_period,
+            "terms": offer.terms,
+            "document": offer.document,
+            "offer_status": offer.offer_status,
+            "token": offer.token,
+            "created_at": offer.created_at,
+            "application_id": offer.candidate_id,
+            "bgv_status": display_status,
+            "bgv_overall_status": display_status,
+            "bgv_id": db_bgv.id if db_bgv else bgv_id_found,
+            "bgv_agency": db_bgv.agency_name if db_bgv else (candidate_bgv["agency"] if candidate_bgv else None)
+        }
+        
+        enriched_offers.append(offer_dict)
+    
+    return enriched_offers

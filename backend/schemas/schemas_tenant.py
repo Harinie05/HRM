@@ -467,9 +467,16 @@ class OnboardingBase(BaseModel):
     status: Optional[str] = "Pending Docs"
 
 
-class OnboardingCreate(OnboardingBase):
+class OnboardingCreate(BaseModel):
     """Used during initial onboarding creation"""
-    pass
+    job_title: str
+    department: str
+    joining_date: Optional[date] = None
+    work_location: Optional[str] = None
+    reporting_manager: Optional[str] = None
+    work_shift: Optional[str] = "General"
+    probation_period: Optional[str] = "3 Months"
+    employee_id: Optional[str] = None
 
 
 class OnboardingUpdate(BaseModel):
@@ -484,11 +491,22 @@ class OnboardingUpdate(BaseModel):
     employee_code: Optional[str]
 
 
-class OnboardingResponse(OnboardingBase):
+class OnboardingResponse(BaseModel):
     id: int
+    application_id: int
+    candidate_name: str
+    job_title: str
+    department: str
+    joining_date: Optional[date]
+    work_location: Optional[str]
+    reporting_manager: Optional[str]
+    work_shift: Optional[str]
+    probation_period: Optional[str]
+    status: Optional[str]
     appointment_letter: Optional[str]
     employee_grade: Optional[str]
     employee_code: Optional[str]
+    employee_id: Optional[str]
     created_at: datetime
 
     class Config:
@@ -645,27 +663,52 @@ class OfferOut(BaseModel):
 
 # ---------------------------- BGV SCHEMAS ----------------------------
 class BGVCreate(BaseModel):
-    agency: Optional[str] = None
+    verification_type: str = "Internal HR Team"  # "Agency" or "Internal HR Team"
+    agency_name: Optional[str] = None  # Only required if verification_type is "Agency"
     status: str = "Pending"
+    
+    # BGV Verification Checkboxes
+    identity_verified: Optional[bool] = False
+    address_verified: Optional[bool] = False
+    employment_verified: Optional[bool] = False
+    education_verified: Optional[bool] = False
+    criminal_verified: Optional[bool] = False
+    
     remarks: Optional[str] = None
 
 
 class BGVUpdate(BaseModel):
-    agency: Optional[str]
-    status: Optional[str]
-    remarks: Optional[str]
+    verification_type: Optional[str] = None
+    agency_name: Optional[str] = None
+    status: Optional[str] = None
+    
+    identity_verified: Optional[bool] = None
+    address_verified: Optional[bool] = None
+    employment_verified: Optional[bool] = None
+    education_verified: Optional[bool] = None
+    criminal_verified: Optional[bool] = None
+    
+    remarks: Optional[str] = None
 
 
 class BGVOut(BaseModel):
     id: int
     application_id: int
-    agency: Optional[str]
+    verification_type: str
+    agency_name: Optional[str]
     status: str
+    
+    identity_verified: Optional[bool]
+    address_verified: Optional[bool]
+    employment_verified: Optional[bool]
+    education_verified: Optional[bool]
+    criminal_verified: Optional[bool]
+    
     remarks: Optional[str]
     documents: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 from pydantic import BaseModel
 from typing import Optional, List

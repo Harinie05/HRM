@@ -50,26 +50,7 @@ export default function JobRequisition() {
     setShowForm(true);
   };
 
-  // ---------------------- APPROVE / REJECT ----------------------
-  const approveReq = async (req) => {
-    try {
-      await api.put(`/recruitment/update/${req.id}`, { status: "Approved" });
-      alert("Requisition Approved!");
-      fetchRequisitions();
-    } catch {
-      alert("Failed to approve");
-    }
-  };
 
-  const rejectReq = async (req) => {
-    try {
-      await api.put(`/recruitment/update/${req.id}`, { status: "Rejected" });
-      alert("Requisition Rejected!");
-      fetchRequisitions();
-    } catch {
-      alert("Failed to reject");
-    }
-  };
 
   // ======================================================================
   // UI RENDER
@@ -110,7 +91,6 @@ export default function JobRequisition() {
                 <th className="p-3 text-left">Department</th>
                 <th className="p-3 text-center">Openings</th>
                 <th className="p-3 text-center">Experience</th>
-                <th className="p-3 text-center">Status</th>
                 <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -128,22 +108,6 @@ export default function JobRequisition() {
                     <td className="p-3 text-center">{req.experience}</td>
 
                     <td className="p-3 text-center">
-                      {req.status === "Approved" ? (
-                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-                          Approved
-                        </span>
-                      ) : req.status === "Rejected" ? (
-                        <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">
-                          Rejected
-                        </span>
-                      ) : (
-                        <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
-                          Pending
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="p-3 text-center">
                       <div className="flex justify-center gap-2">
                         <button
                           className="px-3 py-1 bg-gray-200 rounded"
@@ -158,23 +122,6 @@ export default function JobRequisition() {
                         >
                           Edit
                         </button>
-
-                        {req.status === "Pending" && (
-                          <>
-                            <button
-                              className="px-3 py-1 bg-green-600 text-white rounded"
-                              onClick={() => approveReq(req)}
-                            >
-                              Approve
-                            </button>
-                            <button
-                              className="px-3 py-1 bg-red-600 text-white rounded"
-                              onClick={() => rejectReq(req)}
-                            >
-                              Reject
-                            </button>
-                          </>
-                        )}
                       </div>
                     </td>
                   </tr>
@@ -226,7 +173,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
     skills: [],
     description: "",
     deadline: "",
-    status: "Draft"
+
   });
 
   useEffect(() => {
@@ -257,7 +204,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         skills: Array.isArray(form.skills) ? form.skills : [],
         description: form.description || null,
         deadline: form.deadline || null,
-        status: form.status || "Draft"
+
       };
 
       if (mode === "create") {

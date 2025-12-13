@@ -410,10 +410,20 @@ class BGV(MasterBase):
     id = Column(Integer, primary_key=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"))
 
-    agency = Column(String(150))
+    verification_type = Column(String(50), default="Internal HR Team")
+    agency_name = Column(String(150), nullable=True)
     status = Column(String(50), default="Pending")
+    
+    # BGV Verification Checkboxes
+    identity_verified = Column(Boolean, default=False)
+    address_verified = Column(Boolean, default=False)
+    employment_verified = Column(Boolean, default=False)
+    education_verified = Column(Boolean, default=False)
+    criminal_verified = Column(Boolean, default=False)
+    
     remarks = Column(Text)
     documents = Column(Text)  # CSV
+    created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
 # -------------------------------------------------------------------
 # ONBOARDING TABLES
@@ -440,6 +450,7 @@ class OnboardingCandidate(MasterBase):
     appointment_letter = Column(Text, nullable=True)
     employee_grade = Column(String(50), nullable=True)
     employee_code = Column(String(50), nullable=True)
+    employee_id = Column(String(50), nullable=True)
     
     created_at = Column(DateTime, default=func.now())
 
