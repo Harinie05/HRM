@@ -2,6 +2,7 @@
 import os
 import urllib.parse
 from typing import Generator
+from fastapi import Header
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 import logging
@@ -74,11 +75,28 @@ def get_tenant_engine(db_name: str):
 
 
 # TENANT DB SESSION (for dependency injection)
-def get_tenant_db() -> Generator:
-    # Use the existing nutryah database
-    default_tenant_db = os.getenv("DEFAULT_TENANT_DB", "nutryah")
+def get_tenant_db(Authorization: str = Header(None)) -> Generator:
+    from utils.token import verify_token
     
-    engine = get_tenant_engine(default_tenant_db)
+    # Try to get tenant DB from Authorization header
+    tenant_db_name = os.getenv("DEFAULT_TENANT_DB", "nutryah")  # Default fallback
+    
+    if Authorization:
+        try:
+            # Extract token from "Bearer <token>" format
+            token = Authorization.split(" ")[1] if " " in Authorization else Authorization
+            payload = verify_token(token)
+            if payload and "tenant_db" in payload:
+                tenant_db_name = payload["tenant_db"]
+                logger.info(f"Using tenant DB from token: {tenant_db_name}")
+            else:
+                logger.warning(f"No tenant_db in token payload, using default: {tenant_db_name}")
+        except Exception as e:
+            logger.warning(f"Error parsing Authorization header, using default tenant DB: {tenant_db_name}. Error: {str(e)}")
+    else:
+        logger.info(f"No Authorization header provided, using default tenant DB: {tenant_db_name}")
+    
+    engine = get_tenant_engine(tenant_db_name)
     SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
     db = SessionLocal()
     try:
