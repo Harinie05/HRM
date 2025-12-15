@@ -90,7 +90,22 @@ export default function Offer() {
   const fetchOffers = async () => {
     try {
       const res = await api.get("/recruitment/offer/list");
-      setOffers(res.data);
+      
+      // Remove duplicates by keeping only the latest offer per candidate
+      const uniqueOffers = [];
+      const seenCandidates = new Set();
+      
+      // Sort by created_at descending to get latest offers first
+      const sortedOffers = res.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      for (const offer of sortedOffers) {
+        if (!seenCandidates.has(offer.candidate_id)) {
+          uniqueOffers.push(offer);
+          seenCandidates.add(offer.candidate_id);
+        }
+      }
+      
+      setOffers(uniqueOffers);
     } catch (err) {
       console.error("Failed to load offers", err);
     }
@@ -204,6 +219,12 @@ export default function Offer() {
         `/recruitment/offer/bgv/update/${selectedBGV.bgv_id}`,
         bgvForm
       );
+      
+      // If BGV status is set to Cleared, update offer status
+      if (bgvForm.status === "Cleared") {
+        await api.post(`/recruitment/offer/${selectedBGV.id}/status?status=BGV Cleared`);
+      }
+      
       alert("BGV Updated!");
       setShowBGVModal(false);
       fetchOffers();
@@ -354,8 +375,7 @@ export default function Offer() {
                   <tr>
                     <th className="p-3 text-left">Candidate</th>
                     <th className="p-3 text-left">Job</th>
-                    <th className="p-3 text-center">Offer Status</th>
-                    <th className="p-3 text-center">BGV</th>
+                    <th className="p-3 text-center">Status</th>
                     <th className="p-3 text-center">Actions</th>
                   </tr>
                 </thead>
@@ -366,7 +386,7 @@ export default function Offer() {
                       <td className="p-3">{o.candidate_name}</td>
                       <td className="p-3">{o.job_title}</td>
 
-                      {/* Offer Status */}
+                      {/* Status */}
                       <td className="p-3 text-center">
                         <span
                           className={`px-2 py-1 text-xs rounded ${
@@ -376,32 +396,13 @@ export default function Offer() {
                               ? "bg-red-100 text-red-700"
                               : o.offer_status === "Documents Submitted"
                               ? "bg-blue-100 text-blue-700"
+                              : o.offer_status === "BGV Cleared"
+                              ? "bg-green-100 text-green-700"
                               : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {o.offer_status}
                         </span>
-                      </td>
-
-                      {/* BGV Status */}
-                      <td className="p-3 text-center">
-                        {o.bgv_status ? (
-                          <span
-                            className={`px-2 py-1 text-xs rounded ${
-                              o.bgv_status === "Cleared"
-                                ? "bg-green-100 text-green-700"
-                                : o.bgv_status === "Failed"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-blue-100 text-blue-700"
-                            }`}
-                          >
-                            {o.bgv_status}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400 text-xs">
-                            Not Started
-                          </span>
-                        )}
                       </td>
 
                       {/* Actions */}
@@ -426,8 +427,8 @@ export default function Offer() {
                           </>
                         )}
 
-                        {/* Generate Link */}
-                        {o.offer_status === "Accepted" && (
+                        {/* Step 1: Generate Document Upload Link (for Draft/Accepted offers) */}
+                        {(o.offer_status === "Accepted" || (o.offer_status === "Draft" && o.bgv_status === "Cleared")) && (
                           <button
                             className="px-2 py-1 bg-orange-600 text-white rounded text-xs mr-1"
                             onClick={() => generateDocumentLink(o.id)}
@@ -436,8 +437,8 @@ export default function Offer() {
                           </button>
                         )}
 
-                        {/* View Documents */}
-                        {(o.offer_status === "Accepted" || o.offer_status === "Documents Submitted") && (
+                        {/* Step 2: View Documents (after documents uploaded) */}
+                        {o.offer_status === "Documents Submitted" && (
                           <button
                             className="px-2 py-1 bg-blue-600 text-white rounded text-xs mr-1"
                             onClick={() => viewDocuments(o.id)}
@@ -446,28 +447,24 @@ export default function Offer() {
                           </button>
                         )}
 
-                        {/* Start BGV */}
-                        {(o.offer_status === "Accepted" || o.offer_status === "Documents Submitted") && !o.bgv_status && (
+                        {/* Step 3: Manage BGV (only after documents submitted) */}
+                        {o.offer_status === "Documents Submitted" && (
                           <button
-                            className="px-2 py-1 bg-purple-600 text-white rounded text-xs"
-                            onClick={() => startBGV(o.candidate_id)}
+                            className="px-2 py-1 bg-purple-600 text-white rounded text-xs mr-1"
+                            onClick={() => {
+                              if (!o.bgv_id) {
+                                startBGV(o.candidate_id);
+                              } else {
+                                openBGVModal(o);
+                              }
+                            }}
                           >
-                            Start BGV
+                            Manage BGV
                           </button>
                         )}
 
-                        {/* Manage BGV */}
-                        {o.bgv_status && o.bgv_status !== "Cleared" && (
-                          <button
-                            className="px-2 py-1 bg-blue-600 text-white rounded text-xs"
-                            onClick={() => openBGVModal(o)}
-                          >
-                            Manage
-                          </button>
-                        )}
-
-                        {/* Start Onboarding */}
-                        {o.bgv_status === "Cleared" && o.offer_status !== "Onboarding Started" && (
+                        {/* Step 4: Start Onboarding (only after BGV cleared) */}
+                        {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && (
                           <button
                             className="px-2 py-1 bg-green-600 text-white rounded text-xs"
                             onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}

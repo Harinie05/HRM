@@ -498,6 +498,16 @@ def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
     db_bgv = db.query(BGV).filter(BGV.id == bgv_id).first()
     
     if db_bgv:
+        # Reset status to Pending if it was auto-set to Cleared
+        if db_bgv.status == "Cleared" and not all([
+            db_bgv.identity_verified,
+            db_bgv.address_verified,
+            db_bgv.employment_verified,
+            db_bgv.education_verified,
+            db_bgv.criminal_verified
+        ]):
+            db_bgv.status = "Pending"
+            db.commit()
         # Calculate progress from database record
         checks = [
             db_bgv.identity_verified,
@@ -590,19 +600,8 @@ def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, db: Session = Depends
         if data.remarks is not None:
             db_bgv.remarks = data.remarks
         
-        # Auto-update status based on verification completion
-        all_verified = all([
-            db_bgv.identity_verified,
-            db_bgv.address_verified,
-            db_bgv.employment_verified,
-            db_bgv.education_verified,
-            db_bgv.criminal_verified
-        ])
-        
-        if all_verified and db_bgv.status != "Cleared":
-            db_bgv.status = "Cleared"
-        elif not all_verified and db_bgv.status == "Cleared":
-            db_bgv.status = "In Progress"
+        # Status is only updated when explicitly set through the form
+        # No automatic status changes based on checkboxes
         
         db.commit()
         
@@ -807,6 +806,25 @@ def complete_bgv_for_candidate(candidate_id: int, db: Session = Depends(get_tena
         logger.error(f"Error completing BGV: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to complete BGV: {str(e)}")
 
+
+# -----------------------------------------------------------
+# RESET BGV STATUS (FOR TESTING)
+# -----------------------------------------------------------
+@router.post("/bgv/reset/{candidate_id}")
+def reset_bgv_status(candidate_id: int, db: Session = Depends(get_tenant_db)):
+    """Reset BGV status to Pending for testing"""
+    db_bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
+    if db_bgv:
+        db_bgv.status = "Pending"
+        db_bgv.identity_verified = False
+        db_bgv.address_verified = False
+        db_bgv.employment_verified = False
+        db_bgv.education_verified = False
+        db_bgv.criminal_verified = False
+        db_bgv.remarks = "BGV reset to pending status"
+        db.commit()
+        return {"message": "BGV status reset to Pending"}
+    return {"message": "No BGV record found"}
 
 # -----------------------------------------------------------
 # LIST ALL OFFERS WITH BGV STATUS
