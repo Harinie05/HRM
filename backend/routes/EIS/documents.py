@@ -1,9 +1,8 @@
 # routes/EIS/documents.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from typing import List
-from datetime import datetime
+from typing import List, Optional
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
@@ -26,90 +25,63 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
+router = APIRouter(prefix="/employee/documents", tags=["Employee Documents"])
 
-router = APIRouter(prefix="/employee/documents", tags=["Employee Documents Vault"])
 
 
 # -------------------------------------------------------------------------
 # 1. UPLOAD DOCUMENT
 # -------------------------------------------------------------------------
-@router.post("/upload", response_model=DocumentOut)
+@router.post("/upload")
 async def upload_document(
-    employee_id: int,
-    document_name: str,
+    employee_id: int = Form(...),
+    document_name: str = Form(...),
     file: UploadFile = File(...),
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
-
-    file_bytes = await file.read()
-
-    new_doc = EmployeeDocuments(
+    
+    file_content = await file.read()
+    
+    document = EmployeeDocuments(
         employee_id=employee_id,
         doc_name=document_name,
-        file_name=file.filename,
-        file=file_bytes,
-        uploaded_on=datetime.utcnow()
+        file=file_content,
+        file_name=file.filename
     )
 
-    db.add(new_doc)
+    db.add(document)
     db.commit()
-    db.refresh(new_doc)
+    db.refresh(document)
 
-    return new_doc
-
+    return document
 
 # -------------------------------------------------------------------------
-# 2. LIST DOCUMENTS
+# 2. GET DOCUMENTS
 # -------------------------------------------------------------------------
-@router.get("/{employee_id}", response_model=List[DocumentOut])
+@router.get("/{employee_id}")
 def get_documents(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     return (
         db.query(EmployeeDocuments)
         .filter(EmployeeDocuments.employee_id == employee_id)
-        .order_by(EmployeeDocuments.id.desc())
+        .order_by(EmployeeDocuments.uploaded_on.desc())
         .all()
     )
 
-
 # -------------------------------------------------------------------------
-# 3. DOWNLOAD / VIEW DOCUMENT
+# 3. DELETE DOCUMENT
 # -------------------------------------------------------------------------
-@router.get("/view/{doc_id}")
-def view_document(doc_id: int, user=Depends(get_current_user)):
+@router.delete("/{document_id}")
+def delete_document(document_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
-    doc = db.query(EmployeeDocuments).filter(EmployeeDocuments.id == doc_id).first()
-    if not doc:
+    document = db.query(EmployeeDocuments).filter(EmployeeDocuments.id == document_id).first()
+    if not document:
         raise HTTPException(404, "Document not found")
 
-    # Auto-set mime type
-    mime = "application/octet-stream"
-    file_name = str(doc.file_name)
-    if file_name.endswith(".pdf"):
-        mime = "application/pdf"
-    elif file_name.endswith(".jpg") or file_name.endswith(".jpeg"):
-        mime = "image/jpeg"
-    elif file_name.endswith(".png"):
-        mime = "image/png"
-
-    return Response(content=doc.file, media_type=mime)
-
-
-# -------------------------------------------------------------------------
-# 4. DELETE DOCUMENT
-# -------------------------------------------------------------------------
-@router.delete("/{doc_id}")
-def delete_document(doc_id: int, user=Depends(get_current_user)):
-    db = get_tenant_session(user)
-
-    doc = db.query(EmployeeDocuments).filter(EmployeeDocuments.id == doc_id).first()
-    if not doc:
-        raise HTTPException(404, "Document not found")
-
-    db.delete(doc)
+    db.delete(document)
     db.commit()
 
     return {"message": "Document deleted successfully"}

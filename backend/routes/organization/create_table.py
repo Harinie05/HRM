@@ -350,6 +350,120 @@ with engine.connect() as conn:
         print(f"⚠️ Error updating employee IDs: {e}")
         conn.rollback()
 
+# ========================= UPDATE MEDICAL TABLE STRUCTURE =========================
+print("\nUpdating employee_medical table structure...")
+with engine.connect() as conn:
+    medical_columns = [
+        ("height VARCHAR(10)", "height"),
+        ("weight VARCHAR(10)", "weight"),
+        ("allergies TEXT", "allergies"),
+        ("chronic_conditions TEXT", "chronic_conditions"),
+        ("medications TEXT", "medications"),
+        ("emergency_contact_name VARCHAR(150)", "emergency_contact_name"),
+        ("emergency_contact_phone VARCHAR(20)", "emergency_contact_phone"),
+        ("emergency_contact_relation VARCHAR(50)", "emergency_contact_relation"),
+        ("medical_insurance_provider VARCHAR(200)", "medical_insurance_provider"),
+        ("medical_insurance_number VARCHAR(100)", "medical_insurance_number")
+    ]
+    
+    for sql_def, name in medical_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_medical ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
+
+# ========================= UPDATE EXIT TABLE STRUCTURE =========================
+print("\nUpdating employee_exit table structure...")
+with engine.connect() as conn:
+    exit_columns = [
+        ("reason VARCHAR(100)", "reason"),
+        ("notice_period VARCHAR(10) DEFAULT '30'", "notice_period"),
+        ("exit_interview_date DATE", "exit_interview_date"),
+        ("handover_status VARCHAR(50) DEFAULT 'Pending'", "handover_status"),
+        ("asset_return_status VARCHAR(50) DEFAULT 'Pending'", "asset_return_status"),
+        ("final_settlement VARCHAR(50) DEFAULT 'Pending'", "final_settlement")
+    ]
+    
+    for sql_def, name in exit_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_exit ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
+
+# ========================= UPDATE EDUCATION TABLE STRUCTURE =========================
+print("\nUpdating employee_education table structure...")
+with engine.connect() as conn:
+    education_columns = [
+        ("specialization VARCHAR(200)", "specialization"),
+        ("board_university VARCHAR(200)", "board_university"),
+        ("start_year VARCHAR(10)", "start_year"),
+        ("end_year VARCHAR(10)", "end_year"),
+        ("percentage_cgpa VARCHAR(20)", "percentage_cgpa"),
+        ("education_type VARCHAR(50)", "education_type"),
+        ("country VARCHAR(100)", "country"),
+        ("state VARCHAR(100)", "state"),
+        ("city VARCHAR(100)", "city")
+    ]
+    
+    for sql_def, name in education_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_education ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    # Rename year to end_year for consistency
+    try:
+        conn.execute(text("ALTER TABLE employee_education CHANGE year end_year_old VARCHAR(10)"))
+        print(f"✔️ Renamed year column")
+    except Exception as e:
+        print(f"⚠️ year rename: {e}")
+    
+    conn.commit()
+
+# ========================= UPDATE EXPERIENCE TABLE STRUCTURE =========================
+print("\nUpdating employee_experience table structure...")
+with engine.connect() as conn:
+    experience_columns = [
+        ("job_title VARCHAR(150)", "job_title"),
+        ("department VARCHAR(150)", "department"),
+        ("employment_type VARCHAR(50)", "employment_type"),
+        ("start_date DATE", "start_date"),
+        ("end_date DATE", "end_date"),
+        ("current_job BOOLEAN DEFAULT FALSE", "current_job"),
+        ("salary VARCHAR(50)", "salary"),
+        ("location VARCHAR(200)", "location"),
+        ("job_description TEXT", "job_description"),
+        ("achievements TEXT", "achievements"),
+        ("reason_for_leaving VARCHAR(200)", "reason_for_leaving"),
+        ("reporting_manager VARCHAR(150)", "reporting_manager"),
+        ("manager_contact VARCHAR(50)", "manager_contact")
+    ]
+    
+    for sql_def, name in experience_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_experience ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    # Rename old columns for consistency
+    try:
+        conn.execute(text("ALTER TABLE employee_experience CHANGE role job_title_old VARCHAR(150)"))
+        conn.execute(text("ALTER TABLE employee_experience CHANGE from_year start_year_old VARCHAR(10)"))
+        conn.execute(text("ALTER TABLE employee_experience CHANGE to_year end_year_old VARCHAR(10)"))
+        print(f"✔️ Renamed old columns")
+    except Exception as e:
+        print(f"⚠️ column rename: {e}")
+    
+    conn.commit()
+
 # ========================= UPDATE JOB STATUS TO FILLED =========================
 print("\nUpdating job status to 'Filled' for completed positions...")
 with engine.connect() as conn:

@@ -544,10 +544,18 @@ class EmployeeEducation(MasterBase):
     employee_id = Column(Integer, nullable=False)
 
     degree = Column(String(150))
+    specialization = Column(String(200))
     university = Column(String(200))
-    year = Column(String(10))
-
-    certificate = Column(LargeBinary)   # File stored in DB
+    board_university = Column(String(200))
+    start_year = Column(String(10))
+    end_year = Column(String(10))
+    percentage_cgpa = Column(String(20))
+    education_type = Column(String(50))  # Full-time, Part-time, Distance
+    country = Column(String(100))
+    state = Column(String(100))
+    city = Column(String(100))
+    
+    certificate = Column(Text)   # Base64 encoded file
     file_name = Column(String(255))
 
 
@@ -559,11 +567,21 @@ class EmployeeExperience(MasterBase):
     employee_id = Column(Integer, nullable=False)
 
     company = Column(String(200))
-    role = Column(String(150))
-    from_year = Column(String(10))
-    to_year = Column(String(10))
-
-    relieving_doc = Column(LargeBinary)
+    job_title = Column(String(150))
+    department = Column(String(150))
+    employment_type = Column(String(50))  # Full-time, Part-time, Contract, Internship
+    start_date = Column(Date)
+    end_date = Column(Date)
+    current_job = Column(Boolean, default=False)
+    salary = Column(String(50))
+    location = Column(String(200))
+    job_description = Column(Text)
+    achievements = Column(Text)
+    reason_for_leaving = Column(String(200))
+    reporting_manager = Column(String(150))
+    manager_contact = Column(String(50))
+    
+    relieving_doc = Column(Text)
     file_name = Column(String(255))
 
 
@@ -574,10 +592,30 @@ class EmployeeMedical(MasterBase):
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, nullable=False)
 
+    # Basic Health Information
     blood_group = Column(String(10))
+    height = Column(String(10))
+    weight = Column(String(10))
+    
+    # Medical History
+    allergies = Column(Text)
+    chronic_conditions = Column(Text)
+    medications = Column(Text)
+    
+    # Emergency Contact
+    emergency_contact_name = Column(String(150))
+    emergency_contact_phone = Column(String(20))
+    emergency_contact_relation = Column(String(50))
+    
+    # Insurance Information
+    medical_insurance_provider = Column(String(200))
+    medical_insurance_number = Column(String(100))
+    
+    # Additional Notes
     remarks = Column(Text)
 
-    medical_certificate = Column(LargeBinary)
+    # Medical Certificate
+    medical_certificate = Column(Text)  # File path
     certificate_name = Column(String(255))
 
 
@@ -589,7 +627,7 @@ class EmployeeIDDocs(MasterBase):
     employee_id = Column(Integer, nullable=False)
 
     document_type = Column(String(100))  # Aadhaar, PAN, Passport
-    file = Column(LargeBinary)
+    file = Column(Text)
     file_name = Column(String(255))
 
     status = Column(String(50), default="Pending")
@@ -618,7 +656,7 @@ class EmployeeCertifications(MasterBase):
     issued_by = Column(String(200))
     expiry_date = Column(Date)
 
-    certificate_file = Column(LargeBinary)
+    certificate_file = Column(Text)
     file_name = Column(String(255))
 
 
@@ -647,7 +685,7 @@ class EmployeeDocuments(MasterBase):
     employee_id = Column(Integer, nullable=False)
 
     doc_name = Column(String(200))
-    file = Column(LargeBinary)
+    file = Column(Text)
     file_name = Column(String(255))
 
     uploaded_on = Column(DateTime, default=func.now())
@@ -662,11 +700,16 @@ class EmployeeExit(MasterBase):
 
     resignation_date = Column(Date)
     last_working_day = Column(Date)
-    notes = Column(Text)
-
+    reason = Column(String(100))
+    notice_period = Column(String(10), default="30")
+    exit_interview_date = Column(Date)
+    
+    handover_status = Column(String(50), default="Pending")
+    asset_return_status = Column(String(50), default="Pending")
+    final_settlement = Column(String(50), default="Pending")
     clearance_status = Column(String(50), default="Pending")
-    # Pending / In Progress / Completed
-
+    
+    notes = Column(Text)
     updated_at = Column(DateTime, default=func.now())
 
 

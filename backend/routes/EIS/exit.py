@@ -46,8 +46,14 @@ def add_exit(data: ExitCreate, user=Depends(get_current_user)):
         employee_id=data.employee_id,
         resignation_date=data.resignation_date,
         last_working_day=data.last_working_day,
-        notes=data.notes,
-        clearance_status=data.clearance_status or "Pending"
+        reason=data.reason,
+        notice_period=data.notice_period or "30",
+        exit_interview_date=data.exit_interview_date,
+        handover_status=data.handover_status or "Pending",
+        asset_return_status=data.asset_return_status or "Pending",
+        final_settlement=data.final_settlement or "Pending",
+        clearance_status=data.clearance_status or "Pending",
+        notes=data.notes
     )
 
     db.add(exit_record)
@@ -84,8 +90,14 @@ def update_exit(employee_id: int, data: ExitCreate, user=Depends(get_current_use
 
     setattr(exit_data, 'resignation_date', data.resignation_date)
     setattr(exit_data, 'last_working_day', data.last_working_day)
-    setattr(exit_data, 'notes', data.notes)
+    setattr(exit_data, 'reason', data.reason)
+    setattr(exit_data, 'notice_period', data.notice_period)
+    setattr(exit_data, 'exit_interview_date', data.exit_interview_date)
+    setattr(exit_data, 'handover_status', data.handover_status)
+    setattr(exit_data, 'asset_return_status', data.asset_return_status)
+    setattr(exit_data, 'final_settlement', data.final_settlement)
     setattr(exit_data, 'clearance_status', data.clearance_status)
+    setattr(exit_data, 'notes', data.notes)
 
     # Update employee status based on clearance
     emp = db.query(Employee).filter(Employee.id == employee_id).first()

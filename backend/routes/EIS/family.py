@@ -35,21 +35,27 @@ router = APIRouter(prefix="/employee/family", tags=["Employee Family Details"])
 @router.post("/add", response_model=FamilyOut)
 def add_family_member(data: FamilyCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        new_member = EmployeeFamily(
+            employee_id=data.employee_id,
+            name=data.name,
+            relationship=data.relationship,
+            age=data.age,
+            contact=data.contact,
+            dependent=data.dependent
+        )
 
-    new_member = EmployeeFamily(
-        employee_id=data.employee_id,
-        name=data.name,
-        relationship=data.relationship,
-        age=data.age,
-        contact=data.contact,
-        dependent=data.dependent
-    )
+        db.add(new_member)
+        db.commit()
+        db.refresh(new_member)
 
-    db.add(new_member)
-    db.commit()
-    db.refresh(new_member)
-
-    return new_member
+        return new_member
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to add family member: {str(e)}")
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -58,13 +64,15 @@ def add_family_member(data: FamilyCreate, user=Depends(get_current_user)):
 @router.get("/{employee_id}", response_model=List[FamilyOut])
 def get_family_list(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
-
-    return (
-        db.query(EmployeeFamily)
-        .filter(EmployeeFamily.employee_id == employee_id)
-        .order_by(EmployeeFamily.id.asc())
-        .all()
-    )
+    try:
+        return (
+            db.query(EmployeeFamily)
+            .filter(EmployeeFamily.employee_id == employee_id)
+            .order_by(EmployeeFamily.id.asc())
+            .all()
+        )
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -73,21 +81,30 @@ def get_family_list(employee_id: int, user=Depends(get_current_user)):
 @router.put("/{family_id}", response_model=FamilyOut)
 def update_family_member(family_id: int, data: FamilyCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        member = db.query(EmployeeFamily).filter(EmployeeFamily.id == family_id).first()
+        if not member:
+            raise HTTPException(404, "Family member not found")
 
-    member = db.query(EmployeeFamily).filter(EmployeeFamily.id == family_id).first()
-    if not member:
-        raise HTTPException(404, "Family member not found")
+        setattr(member, 'name', data.name)
+        setattr(member, 'relationship', data.relationship)
+        setattr(member, 'age', data.age)
+        setattr(member, 'contact', data.contact)
+        setattr(member, 'dependent', data.dependent)
 
-    setattr(member, 'name', data.name)
-    setattr(member, 'relationship', data.relationship)
-    setattr(member, 'age', data.age)
-    setattr(member, 'contact', data.contact)
-    setattr(member, 'dependent', data.dependent)
+        db.commit()
+        db.refresh(member)
 
-    db.commit()
-    db.refresh(member)
-
-    return member
+        return member
+        
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to update family member: {str(e)}")
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -96,12 +113,21 @@ def update_family_member(family_id: int, data: FamilyCreate, user=Depends(get_cu
 @router.delete("/{family_id}")
 def delete_family_member(family_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        member = db.query(EmployeeFamily).filter(EmployeeFamily.id == family_id).first()
+        if not member:
+            raise HTTPException(404, "Family member not found")
 
-    member = db.query(EmployeeFamily).filter(EmployeeFamily.id == family_id).first()
-    if not member:
-        raise HTTPException(404, "Family member not found")
+        db.delete(member)
+        db.commit()
 
-    db.delete(member)
-    db.commit()
-
-    return {"message": "Family member removed successfully"}
+        return {"message": "Family member removed successfully"}
+        
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to delete family member: {str(e)}")
+    finally:
+        db.close()

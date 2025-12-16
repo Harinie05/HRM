@@ -479,16 +479,7 @@ class OnboardingCreate(BaseModel):
     employee_id: Optional[str] = None
 
 
-class OnboardingUpdate(BaseModel):
-    """Used when editing onboarding details"""
-    joining_date: Optional[date]
-    work_location: Optional[str]
-    reporting_manager: Optional[str]
-    work_shift: Optional[str]
-    probation_period: Optional[str]
-    status: Optional[str]
-    employee_grade: Optional[str]
-    employee_code: Optional[str]
+
 
 
 class OnboardingResponse(BaseModel):
@@ -780,8 +771,16 @@ class FamilyOut(FamilyBase):
 
 class EducationBase(BaseModel):
     degree: str
+    specialization: Optional[str]
     university: Optional[str]
-    year: Optional[str]
+    board_university: Optional[str]
+    start_year: Optional[str]
+    end_year: Optional[str]
+    percentage_cgpa: Optional[str]
+    education_type: Optional[str]
+    country: Optional[str]
+    state: Optional[str]
+    city: Optional[str]
 
 
 class EducationCreate(EducationBase):
@@ -804,9 +803,19 @@ class EducationOut(EducationBase):
 
 class ExperienceBase(BaseModel):
     company: str
-    role: str
-    from_year: Optional[str]
-    to_year: Optional[str]
+    job_title: str
+    department: Optional[str]
+    employment_type: Optional[str]
+    start_date: Optional[date]
+    end_date: Optional[date]
+    current_job: Optional[bool] = False
+    salary: Optional[str]
+    location: Optional[str]
+    job_description: Optional[str]
+    achievements: Optional[str]
+    reason_for_leaving: Optional[str]
+    reporting_manager: Optional[str]
+    manager_contact: Optional[str]
 
 
 class ExperienceCreate(ExperienceBase):
@@ -840,6 +849,16 @@ class MedicalCreate(MedicalBase):
 class MedicalOut(MedicalBase):
     id: int
     employee_id: int
+    height: Optional[str]
+    weight: Optional[str]
+    allergies: Optional[str]
+    chronic_conditions: Optional[str]
+    medications: Optional[str]
+    emergency_contact_name: Optional[str]
+    emergency_contact_phone: Optional[str]
+    emergency_contact_relation: Optional[str]
+    medical_insurance_provider: Optional[str]
+    medical_insurance_number: Optional[str]
     certificate_name: Optional[str]
 
     class Config:
@@ -973,8 +992,14 @@ class DocumentOut(BaseModel):
 class ExitBase(BaseModel):
     resignation_date: Optional[date]
     last_working_day: Optional[date]
-    notes: Optional[str]
+    reason: Optional[str]
+    notice_period: Optional[str] = "30"
+    exit_interview_date: Optional[date]
+    handover_status: Optional[str] = "Pending"
+    asset_return_status: Optional[str] = "Pending"
+    final_settlement: Optional[str] = "Pending"
     clearance_status: Optional[str] = "Pending"
+    notes: Optional[str]
 
 
 class ExitCreate(ExitBase):

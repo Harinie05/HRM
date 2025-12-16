@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+import io
 from database import get_tenant_db
 from models.models_tenant import Candidate, OnboardingCandidate, DocumentUpload, Employee, BGV
-from schemas.schemas_tenant import OnboardingCreate, OnboardingUpdate, OnboardingResponse, DocumentUploadResponse
+from schemas.schemas_tenant import OnboardingCreate, OnboardingResponse, DocumentUploadResponse
 from datetime import datetime
 import uuid, os
 from utils.email import send_email
@@ -104,27 +106,41 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, db: Session = D
     return record
 
 
+
+
+
+
+
 # -----------------------------------------------------------
-# 2) UPDATE ONBOARDING ENTRY
+# 4) UPLOAD DOCUMENTS
 # -----------------------------------------------------------
-@router.put("/update/{onboard_id}", response_model=OnboardingResponse)
-def update_onboarding(onboard_id: int, data: OnboardingUpdate, db: Session = Depends(get_tenant_db)):
+@router.post("/upload-document")
+def upload_document_form(
+    candidate_id: int = Form(...),
+    document_type: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_tenant_db)
+):
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    path = os.path.join(UPLOAD_DIR, filename)
 
-    record = db.query(OnboardingCandidate).filter(OnboardingCandidate.id == onboard_id).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="Onboarding record not found")
+    with open(path, "wb") as f:
+        f.write(file.file.read())
 
-    for key, value in data.dict(exclude_unset=True).items():
-        setattr(record, key, value)
+    doc = DocumentUpload(
+        candidate_id=candidate_id,
+        document_type=document_type,
+        file_name=filename,
+        file_path=path,
+        status="Uploaded",
+        uploaded_at=datetime.utcnow()
+    )
 
+    db.add(doc)
     db.commit()
-    db.refresh(record)
-    return record
+    db.refresh(doc)
+    return {"message": "Document uploaded successfully", "document_id": doc.id}
 
-
-# -----------------------------------------------------------
-# 3) UPLOAD DOCUMENTS
-# -----------------------------------------------------------
 @router.post("/{candidate_id}/upload-document", response_model=DocumentUploadResponse)
 def upload_document(
     candidate_id: int,
@@ -155,7 +171,7 @@ def upload_document(
 
 
 # -----------------------------------------------------------
-# 4) VIEW ALL DOCUMENTS OF A CANDIDATE
+# 5) VIEW ALL DOCUMENTS OF A CANDIDATE
 # -----------------------------------------------------------
 @router.get("/{candidate_id}/documents", response_model=list[DocumentUploadResponse])
 def get_documents(candidate_id: int, db: Session = Depends(get_tenant_db)):
@@ -164,7 +180,7 @@ def get_documents(candidate_id: int, db: Session = Depends(get_tenant_db)):
 
 
 # -----------------------------------------------------------
-# 5) LIST ALL ONBOARDING CANDIDATES
+# 6) LIST ALL ONBOARDING CANDIDATES
 # -----------------------------------------------------------
 @router.get("/candidates")
 def list_onboarding_candidates(db: Session = Depends(get_tenant_db)):
@@ -173,7 +189,100 @@ def list_onboarding_candidates(db: Session = Depends(get_tenant_db)):
 
 
 # -----------------------------------------------------------
-# 6) GET MASTER DATA FOR DROPDOWNS
+# 7) LIST ALL ONBOARDED EMPLOYEES FOR EIS
+# -----------------------------------------------------------
+@router.get("/list")
+def list_onboarded_employees(db: Session = Depends(get_tenant_db)):
+    """Get all onboarded employees with their details for EIS"""
+    try:
+        employees = db.query(OnboardingCandidate).all()
+        
+        # Get candidate email from Candidate table
+        enriched_employees = []
+        for emp in employees:
+            candidate = db.query(Candidate).filter(Candidate.id == emp.application_id).first()
+            
+            employee_data = {
+                "id": emp.id,
+                "application_id": emp.application_id,
+                "candidate_name": emp.candidate_name,
+                "candidate_email": candidate.email if candidate else None,
+                "job_title": emp.job_title,
+                "department": emp.department,
+                "employee_id": emp.employee_id,
+                "joining_date": emp.joining_date,
+                "work_location": emp.work_location,
+                "reporting_manager": emp.reporting_manager,
+                "work_shift": emp.work_shift,
+                "probation_period": emp.probation_period,
+                "status": emp.status,
+                "created_at": emp.created_at
+            }
+            enriched_employees.append(employee_data)
+        
+        return enriched_employees
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch employees: {str(e)}")
+
+
+# -----------------------------------------------------------
+# 8) VIEW DOCUMENT FROM DATABASE
+# -----------------------------------------------------------
+@router.get("/document/{doc_id}/view")
+def view_document(doc_id: int, db: Session = Depends(get_tenant_db)):
+    doc = db.query(DocumentUpload).filter(DocumentUpload.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    try:
+        with open(doc.file_path, "rb") as f:
+            file_content = f.read()
+        
+        # Determine content type based on file extension
+        file_ext = doc.file_name.split('.')[-1].lower()
+        content_type = "application/octet-stream"
+        
+        if file_ext in ['jpg', 'jpeg']:
+            content_type = "image/jpeg"
+        elif file_ext == 'png':
+            content_type = "image/png"
+        elif file_ext == 'pdf':
+            content_type = "application/pdf"
+        elif file_ext in ['doc', 'docx']:
+            content_type = "application/msword"
+        
+        return StreamingResponse(
+            io.BytesIO(file_content),
+            media_type=content_type,
+            headers={"Content-Disposition": f"inline; filename={doc.file_name}"}
+        )
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="File not found on disk")
+
+# -----------------------------------------------------------
+# 9) DELETE DOCUMENT
+# -----------------------------------------------------------
+@router.delete("/document/{doc_id}")
+def delete_document(doc_id: int, db: Session = Depends(get_tenant_db)):
+    doc = db.query(DocumentUpload).filter(DocumentUpload.id == doc_id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Delete file from disk
+    try:
+        if os.path.exists(doc.file_path):
+            os.remove(doc.file_path)
+    except Exception as e:
+        print(f"Failed to delete file from disk: {e}")
+    
+    # Delete record from database
+    db.delete(doc)
+    db.commit()
+    
+    return {"message": "Document deleted successfully"}
+
+# -----------------------------------------------------------
+# 10) GET MASTER DATA FOR DROPDOWNS
 # -----------------------------------------------------------
 @router.get("/locations")
 def get_locations(db: Session = Depends(get_tenant_db)):

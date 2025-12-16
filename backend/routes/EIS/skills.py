@@ -35,18 +35,30 @@ router = APIRouter(prefix="/employee/skills", tags=["Employee Skills & Competenc
 @router.post("/add", response_model=SkillOut)
 def add_skill(data: SkillCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        new_skill = EmployeeSkills(
+            employee_id=data.employee_id,
+            skill_name=data.skill,
+            rating=data.rating
+        )
 
-    new_skill = EmployeeSkills(
-        employee_id=data.employee_id,
-        skill_name=data.skill,
-        rating=data.rating  # Rating: 1–5 stars
-    )
+        db.add(new_skill)
+        db.commit()
+        db.refresh(new_skill)
 
-    db.add(new_skill)
-    db.commit()
-    db.refresh(new_skill)
-
-    return new_skill
+        # Convert to response format
+        return SkillOut(
+            id=getattr(new_skill, 'id'),
+            employee_id=getattr(new_skill, 'employee_id'),
+            skill=getattr(new_skill, 'skill_name'),
+            rating=getattr(new_skill, 'rating')
+        )
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to add skill: {str(e)}")
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -55,13 +67,24 @@ def add_skill(data: SkillCreate, user=Depends(get_current_user)):
 @router.get("/{employee_id}", response_model=List[SkillOut])
 def get_skills(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
-
-    return (
-        db.query(EmployeeSkills)
-        .filter(EmployeeSkills.employee_id == employee_id)
-        .order_by(EmployeeSkills.id.asc())
-        .all()
-    )
+    try:
+        skills = (
+            db.query(EmployeeSkills)
+            .filter(EmployeeSkills.employee_id == employee_id)
+            .order_by(EmployeeSkills.id.asc())
+            .all()
+        )
+        
+        return [
+            SkillOut(
+                id=getattr(skill, 'id'),
+                employee_id=getattr(skill, 'employee_id'),
+                skill=getattr(skill, 'skill_name'),
+                rating=getattr(skill, 'rating')
+            ) for skill in skills
+        ]
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -70,18 +93,32 @@ def get_skills(employee_id: int, user=Depends(get_current_user)):
 @router.put("/{skill_id}", response_model=SkillOut)
 def update_skill(skill_id: int, data: SkillCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
+        if not sk:
+            raise HTTPException(404, "Skill not found")
 
-    sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
-    if not sk:
-        raise HTTPException(404, "Skill not found")
+        setattr(sk, 'skill_name', data.skill)
+        setattr(sk, 'rating', data.rating)
 
-    setattr(sk, 'skill_name', data.skill)
-    setattr(sk, 'rating', data.rating)
+        db.commit()
+        db.refresh(sk)
 
-    db.commit()
-    db.refresh(sk)
-
-    return sk
+        return SkillOut(
+            id=getattr(sk, 'id'),
+            employee_id=getattr(sk, 'employee_id'),
+            skill=getattr(sk, 'skill_name'),
+            rating=getattr(sk, 'rating')
+        )
+        
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to update skill: {str(e)}")
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
@@ -90,12 +127,21 @@ def update_skill(skill_id: int, data: SkillCreate, user=Depends(get_current_user
 @router.delete("/{skill_id}")
 def delete_skill(skill_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
+    try:
+        sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
+        if not sk:
+            raise HTTPException(404, "Skill not found")
 
-    sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
-    if not sk:
-        raise HTTPException(404, "Skill not found")
+        db.delete(sk)
+        db.commit()
 
-    db.delete(sk)
-    db.commit()
-
-    return {"message": "Skill deleted successfully"}
+        return {"message": "Skill deleted successfully"}
+        
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to delete skill: {str(e)}")
+    finally:
+        db.close()

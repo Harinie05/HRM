@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Building2,
   UserPlus,
+  UserCheck,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -182,6 +183,19 @@ export default function Sidebar() {
             </div>
           )}
         </div>
+
+        {/* EIS (Employee Information System) */}
+        <Link
+          to="/eis"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname === "/eis"
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <UserCheck size={20} />
+          <span>EIS (Employee Information System)</span>
+        </Link>
 
       </nav>
     </div>

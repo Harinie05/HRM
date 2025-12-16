@@ -25,6 +25,20 @@ import JobApply from "./pages/recruitment/public jobapply";
 import CandidateScreening from "./pages/recruitment/CandidateScreening";
 import DocumentUpload from "./pages/recruitment/DocumentUpload";
 import MasterDashboard from "./pages/recruitment/MasterDashboard";
+import EmployeeListPage from "./pages/EIS/EmployeeListPage";
+import EmployeeProfile from "./pages/EIS/EmployeeProfile";
+import EmployeeEducation from "./pages/EIS/EmployeeEducation";
+import EmployeeExperience from "./pages/EIS/EmployeeExperience";
+import EmployeeSkills from "./pages/EIS/EmployeeSkills";
+import EmployeeCertifications from "./pages/EIS/EmployeeCertifications";
+import EmployeeFamily from "./pages/EIS/EmployeeFamily";
+import EmployeeMedical from "./pages/EIS/EmployeeMedical";
+import EmployeeDocuments from "./pages/EIS/EmployeeDocuments";
+import EmployeeIDDocs from "./pages/EIS/EmployeeIDDocs";
+import EmployeeSalary from "./pages/EIS/EmployeeSalary";
+import EmployeeExit from "./pages/EIS/EmployeeExit";
+
+
 
 function App() {
   return (
@@ -140,7 +154,20 @@ function App() {
         <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
         <Route path="/screening" element={<ProtectedRoute><CandidateScreening /></ProtectedRoute>} />
-       
+        {/* EIS - Employee Information System */}
+        <Route path="/eis" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+        <Route path="/eis/:id" element={<ProtectedRoute><EmployeeProfile /></ProtectedRoute>} />
+        <Route path="/eis/:id/education" element={<ProtectedRoute><EmployeeEducation /></ProtectedRoute>} />
+        <Route path="/eis/:id/experience" element={<ProtectedRoute><EmployeeExperience /></ProtectedRoute>} />
+        <Route path="/eis/:id/skills" element={<ProtectedRoute><EmployeeSkills /></ProtectedRoute>} />
+        <Route path="/eis/:id/certifications" element={<ProtectedRoute><EmployeeCertifications /></ProtectedRoute>} />
+        <Route path="/eis/:id/family" element={<ProtectedRoute><EmployeeFamily /></ProtectedRoute>} />
+        <Route path="/eis/:id/medical" element={<ProtectedRoute><EmployeeMedical /></ProtectedRoute>} />
+        <Route path="/eis/:id/documents" element={<ProtectedRoute><EmployeeDocuments /></ProtectedRoute>} />
+        <Route path="/eis/:id/id-docs" element={<ProtectedRoute><EmployeeIDDocs /></ProtectedRoute>} />
+        <Route path="/eis/:id/salary" element={<ProtectedRoute><EmployeeSalary /></ProtectedRoute>} />
+        <Route path="/eis/:id/exit" element={<ProtectedRoute><EmployeeExit /></ProtectedRoute>} />
+
         {/* ----------------------------------------
            PUBLIC JOB APPLICATION PAGE
         ----------------------------------------- */}

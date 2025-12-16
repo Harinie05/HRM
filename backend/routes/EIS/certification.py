@@ -1,8 +1,11 @@
 # routes/EIS/certifications.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+import os
+import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
@@ -32,44 +35,62 @@ router = APIRouter(prefix="/employee/certifications", tags=["Employee Certificat
 # -------------------------------------------------------------------------
 # 1. ADD CERTIFICATION + OPTIONAL FILE
 # -------------------------------------------------------------------------
-@router.post("/add", response_model=CertificationOut)
+@router.post("/add")
 async def add_certification(
-    employee_id: int,
-    name: str,
-    issued_by: str = None,
-    expiry: str = None,
-    file: UploadFile = File(None),
+    employee_id: int = Form(...),
+    name: str = Form(...),
+    issued_by: Optional[str] = Form(None),
+    expiry: Optional[str] = Form(None),
+    file: Optional[UploadFile] = File(None),
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
+    try:
+        file_path = None
+        file_name = None
 
-    file_bytes = None
-    file_name = None
+        if file:
+            # Create uploads directory if it doesn't exist
+            os.makedirs("uploads", exist_ok=True)
+            
+            # Generate unique filename
+            file_extension = os.path.splitext(file.filename)[1]
+            unique_filename = f"{uuid.uuid4()}_{file.filename}"
+            file_path = f"uploads/{unique_filename}"
+            
+            # Save file to disk
+            with open(file_path, "wb") as f:
+                content = await file.read()
+                f.write(content)
+            
+            file_name = file.filename
 
-    if file:
-        file_bytes = await file.read()
-        file_name = file.filename
+        cert = EmployeeCertifications(
+            employee_id=employee_id,
+            certification=name,
+            issued_by=issued_by,
+            expiry_date=expiry,
+            certificate_file=file_path,
+            file_name=file_name
+        )
 
-    cert = EmployeeCertifications(
-        employee_id=employee_id,
-        certification=name,
-        issued_by=issued_by,
-        expiry_date=expiry,
-        certificate_file=file_bytes,
-        file_name=file_name
-    )
+        db.add(cert)
+        db.commit()
+        db.refresh(cert)
 
-    db.add(cert)
-    db.commit()
-    db.refresh(cert)
-
-    return cert
+        return cert
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Failed to add certification: {str(e)}")
+    finally:
+        db.close()
 
 
 # -------------------------------------------------------------------------
 # 2. LIST CERTIFICATIONS
 # -------------------------------------------------------------------------
-@router.get("/{employee_id}", response_model=List[CertificationOut])
+@router.get("/{employee_id}")
 def get_certifications(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -84,13 +105,13 @@ def get_certifications(employee_id: int, user=Depends(get_current_user)):
 # -------------------------------------------------------------------------
 # 3. UPDATE CERTIFICATION
 # -------------------------------------------------------------------------
-@router.put("/{cert_id}", response_model=CertificationOut)
+@router.put("/{cert_id}")
 async def update_certification(
     cert_id: int,
-    name: str,
-    issued_by: str = None,
-    expiry: str = None,
-    file: UploadFile = File(None),
+    name: str = Form(...),
+    issued_by: Optional[str] = Form(None),
+    expiry: Optional[str] = Form(None),
+    file: Optional[UploadFile] = File(None),
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -100,21 +121,75 @@ async def update_certification(
         raise HTTPException(404, "Certification not found")
 
     cert.certification = name
-    cert.issued_by = issued_by
+    cert.issued_by = issued_by or ''
     cert.expiry_date = expiry
 
     if file:
-        cert.certificate_file = await file.read()
+        # Create uploads directory if it doesn't exist
+        os.makedirs("uploads", exist_ok=True)
+        
+        # Generate unique filename
+        file_extension = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}_{file.filename}"
+        file_path = f"uploads/{unique_filename}"
+        
+        # Save file to disk
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        
+        cert.certificate_file = file_path
         cert.file_name = file.filename
 
     db.commit()
     db.refresh(cert)
 
-    return cert
+    return {"message": "Certification updated successfully"}
 
 
 # -------------------------------------------------------------------------
-# 4. DELETE CERTIFICATION
+# 4. VIEW CERTIFICATION CERTIFICATE
+# -------------------------------------------------------------------------
+@router.get("/certificate/{cert_id}")
+def view_certificate(cert_id: int, token: str = Query(None)):
+    if not token:
+        raise HTTPException(401, "Token required")
+    
+    from utils.token import verify_token
+    user = verify_token(token)
+    if not user:
+        raise HTTPException(401, "Invalid or expired token")
+    
+    db = get_tenant_session(user)
+    
+    cert = db.query(EmployeeCertifications).filter(EmployeeCertifications.id == cert_id).first()
+    if not cert or not cert.certificate_file:
+        raise HTTPException(404, "Certificate not found")
+    
+    file_path = cert.certificate_file
+    if not os.path.exists(file_path):
+        raise HTTPException(404, "File not found")
+    
+    # Determine media type for inline viewing
+    file_ext = os.path.splitext(cert.file_name)[1].lower() if cert.file_name else ''
+    
+    if file_ext == '.pdf':
+        media_type = 'application/pdf'
+    elif file_ext in ['.jpg', '.jpeg']:
+        media_type = 'image/jpeg'
+    elif file_ext == '.png':
+        media_type = 'image/png'
+    else:
+        media_type = 'application/octet-stream'
+    
+    return FileResponse(
+        path=file_path,
+        media_type=media_type,
+        headers={"Content-Disposition": "inline"}
+    )
+
+# -------------------------------------------------------------------------
+# 5. DELETE CERTIFICATION
 # -------------------------------------------------------------------------
 @router.delete("/{cert_id}")
 def delete_certification(cert_id: int, user=Depends(get_current_user)):

@@ -13,8 +13,10 @@ export default function Onboarding() {
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
+  const [showDocumentsModal, setShowDocumentsModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [onboardingDetails, setOnboardingDetails] = useState(null);
+  const [candidateDocuments, setCandidateDocuments] = useState([]);
 
   const [locations, setLocations] = useState([]);
   const [managers, setManagers] = useState([]);
@@ -95,6 +97,7 @@ export default function Onboarding() {
         
         return {
           id: offer.id,
+          candidate_id: offer.candidate_id,
           name: offer.candidate_name,
           job_title: offer.job_title,
           department: offer.department,
@@ -106,6 +109,20 @@ export default function Onboarding() {
       setCandidates(candidatesWithEmployeeIds);
     } catch (err) {
       console.error("Failed to load onboarded candidates", err);
+    }
+  };
+
+  // ===============================================================
+  // FETCH CANDIDATE DOCUMENTS
+  // ===============================================================
+  const fetchCandidateDocuments = async (candidateId) => {
+    try {
+      const res = await api.get(`/recruitment/onboarding/${candidateId}/documents`);
+      setCandidateDocuments(res.data);
+      setShowDocumentsModal(true);
+    } catch (err) {
+      console.error("Failed to load documents", err);
+      alert("Failed to load documents");
     }
   };
 
@@ -351,6 +368,7 @@ export default function Onboarding() {
                 <th className="p-3 text-left">Job Role</th>
                 <th className="p-3 text-center">Employee ID</th>
                 <th className="p-3 text-center">Status</th>
+                <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
 
@@ -375,6 +393,14 @@ export default function Onboarding() {
                       {c.status}
                     </span>
                   </td>
+                  <td className="p-3 text-center">
+                    <button
+                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                      onClick={() => fetchCandidateDocuments(c.candidate_id)}
+                    >
+                      View Documents
+                    </button>
+                  </td>
                 </tr>
               ))}
               
@@ -384,7 +410,7 @@ export default function Onboarding() {
                 c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
               ).length === 0 && (
                 <tr>
-                  <td colSpan="4" className="p-8 text-center text-gray-500">
+                  <td colSpan="5" className="p-8 text-center text-gray-500">
                     {searchTerm ? "No matching onboarded candidates found" : "No onboarded candidates yet"}
                   </td>
                 </tr>
@@ -966,6 +992,69 @@ export default function Onboarding() {
                     onClick={createEmployee}
                   >
                     Create
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Documents Modal */}
+          {showDocumentsModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white p-6 w-[800px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-semibold">Uploaded Documents</h2>
+                  <button
+                    className="text-gray-500 hover:text-gray-700 text-2xl"
+                    onClick={() => setShowDocumentsModal(false)}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {candidateDocuments.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {candidateDocuments.map((doc) => (
+                      <div key={doc.id} className="border rounded-lg p-4 bg-gray-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold text-gray-800 capitalize">
+                            {doc.document_type.replace('_', ' ')}
+                          </h3>
+                          <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
+                            {doc.status}
+                          </span>
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 mb-2">
+                          📎 {doc.file_name}
+                        </p>
+                        
+                        <p className="text-xs text-gray-500 mb-3">
+                          Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
+                        </p>
+                        
+                        <button
+                          className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                          onClick={() => window.open(`http://localhost:8000/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
+                        >
+                          View Document
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 text-6xl mb-4">📄</div>
+                    <p className="text-gray-500">No documents uploaded yet</p>
+                  </div>
+                )}
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    onClick={() => setShowDocumentsModal(false)}
+                  >
+                    Close
                   </button>
                 </div>
               </div>
