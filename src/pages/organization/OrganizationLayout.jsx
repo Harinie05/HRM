@@ -11,6 +11,7 @@ import CompanyProfile from "./CompanyProfile";
 import Branch from "./Branch";
 import DepartmentList from "./DepartmentList";
 import DesignationList from "./Designation";
+import ReportingStructure from "./ReportingStructure";
 import Shifts from "./Shifts";
 import GradePayStructure from "./GradePayStructure";
 import HolidayCalender from "./HolidayCalender";
@@ -49,9 +50,7 @@ export default function OrganizationLayout() {
           {tab === "Designation" && <DesignationList />}
           {tab === "Shifts" && <Shifts />}
 
-          {tab === "Reporting Structure" && (
-            <div className="text-gray-500">Reporting Structure Coming Soon...</div>
-          )}
+          {tab === "Reporting Structure" && <ReportingStructure />}
 
           {tab === "Grades / Pay Structure" && <GradePayStructure />}
 

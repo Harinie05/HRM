@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Calendar, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Calendar, Download, Copy, Save, Plus } from "lucide-react";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 
-export default function Shift() {
-  console.log("Shift component loaded!");
+export default function ShiftRoster() {
   const [shifts, setShifts] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [rosterData, setRosterData] = useState([]);
@@ -16,11 +17,18 @@ export default function Shift() {
   const [allocatedUsers, setAllocatedUsers] = useState([]);
   const [editingCell, setEditingCell] = useState(null);
   const [bulkShift, setBulkShift] = useState("");
-  const [viewMode, setViewMode] = useState("week");
+  const [viewMode, setViewMode] = useState("week"); // week or month
   const [currentDate, setCurrentDate] = useState(new Date());
   const [bulkDateRange, setBulkDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  });
+  const [nightShiftRules, setNightShiftRules] = useState({
+    applicable_shifts: [],
+    punch_out_rule: "Same day",
+    minimum_hours: 6,
+    night_ot_rate: "1.5x",
+    grace_minutes: 15
   });
   const [showCreateShift, setShowCreateShift] = useState(false);
   const [newShift, setNewShift] = useState({ name: "", start_time: "", end_time: "" });
@@ -29,6 +37,7 @@ export default function Shift() {
   useEffect(() => {
     fetchShifts();
     fetchEmployees();
+    fetchNightShiftRules();
     fetchDepartments();
     fetchRoles();
     fetchUsers();
@@ -38,20 +47,44 @@ export default function Shift() {
     fetchRosterData();
   }, [currentDate, viewMode, selectedDepartment]);
 
+  useEffect(() => {
+    // Load all users by default to show in calendar
+    fetchUsers();
+  }, []);
+
   const fetchShifts = async () => {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      if (!tenant || !token) return;
+      if (!tenant || !token) {
+        console.error("Missing authentication data:", { tenant, token: !!token });
+        return;
+      }
       
+      console.log("Fetching shifts for tenant:", tenant);
       const response = await fetch(`http://localhost:8000/shifts/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      if (response.ok) {
-        const data = await response.json();
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers.get('content-type'));
+      
+      const responseText = await response.text();
+      console.log("Raw response:", responseText.substring(0, 200));
+      
+      if (!response.ok) {
+        console.error("API Error - Full response:", responseText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      try {
+        const data = JSON.parse(responseText);
+        console.log("Shifts data received:", data);
         setShifts(data.shifts || []);
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError);
+        console.error("Response was not JSON:", responseText.substring(0, 500));
       }
     } catch (error) {
       console.error("Error fetching shifts:", error);
@@ -94,8 +127,10 @@ export default function Shift() {
       
       if (response.ok) {
         const data = await response.json();
+        console.log("Roster data received:", data);
         setRosterData(data.roster || []);
         
+        // Auto-populate allocated users from roster data
         if (data.roster && data.roster.length > 0) {
           const uniqueUsers = data.roster.reduce((acc, entry) => {
             if (!acc.find(u => u.id === entry.employee_id)) {
@@ -110,6 +145,7 @@ export default function Shift() {
             return acc;
           }, []);
           
+          // Populate roster data from schedule
           data.roster.forEach(empData => {
             const user = uniqueUsers.find(u => u.id === empData.employee_id);
             if (user && empData.schedule) {
@@ -121,16 +157,10 @@ export default function Shift() {
             }
           });
           
-          // Merge with existing allocated users to preserve locally added users
-          setAllocatedUsers(prevUsers => {
-            const existingIds = prevUsers.map(u => u.id);
-            const newUsers = uniqueUsers.filter(u => !existingIds.includes(u.id));
-            return [...prevUsers.map(prevUser => {
-              const dbUser = uniqueUsers.find(u => u.id === prevUser.id);
-              return dbUser ? { ...prevUser, roster: dbUser.roster } : prevUser;
-            }), ...newUsers];
-          });
+          setAllocatedUsers(uniqueUsers);
         }
+      } else {
+        console.error("Failed to fetch roster data:", await response.text());
       }
     } catch (error) {
       console.error("Error fetching roster data:", error);
@@ -142,24 +172,56 @@ export default function Shift() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      if (!tenant || !token) return;
+      if (!tenant || !token) {
+        console.log("Missing auth for departments:", { tenant, token: !!token });
+        return;
+      }
       
+      console.log("Fetching departments for tenant:", tenant);
       const response = await fetch(`http://localhost:8000/hospitals/departments/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log("Departments response status:", response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log("Departments data:", data);
         setDepartments(data.departments || []);
+      } else {
+        const errorText = await response.text();
+        console.error("Departments API error:", errorText);
       }
     } catch (error) {
       console.error("Error fetching departments:", error);
     }
   };
 
+  const fetchNightShiftRules = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+      
+      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.rules) {
+          setNightShiftRules(data.rules);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching night shift rules:", error);
+    }
+  };
+
   const saveRosterEntry = async (employeeId, date, shiftId, status = "Scheduled") => {
     try {
       const token = localStorage.getItem("access_token");
+      console.log("Attempting to save roster entry:", { employeeId, date, shiftId, status });
+      console.log("Using token:", token ? "Token exists" : "No token");
       
       const response = await fetch("http://localhost:8000/api/roster/save", {
         method: "POST",
@@ -175,8 +237,14 @@ export default function Shift() {
         })
       });
       
+      console.log("Response status:", response.status);
+      
       if (response.ok) {
-        console.log("Roster entry saved successfully");
+        const result = await response.json();
+        console.log("Roster entry saved successfully:", result);
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to save roster entry:", errorText);
       }
     } catch (error) {
       console.error("Error saving roster:", error);
@@ -224,46 +292,43 @@ export default function Shift() {
   };
 
   const getFilteredUsers = () => {
-    return users.filter(user => {
+    const filtered = users.filter(user => {
       const matchesDept = !selectedDepartment || user.department_id === parseInt(selectedDepartment);
       const matchesRole = !selectedRole || user.role_id === parseInt(selectedRole);
-      const notAlreadyInRoster = !allocatedUsers.find(allocated => allocated.id === user.id);
-      console.log("Filtering user:", { user: user.name, userDeptId: user.department_id, selectedDept: selectedDepartment, userRoleId: user.role_id, selectedRole: selectedRole, notAlreadyInRoster });
-      return matchesDept && matchesRole && notAlreadyInRoster;
+      const notAllocated = !allocatedUsers.find(allocated => allocated.id === user.id);
+      
+      console.log('Filtering user:', {
+        user: user.name,
+        userDeptId: user.department_id,
+        selectedDept: selectedDepartment,
+        userRoleId: user.role_id,
+        selectedRole: selectedRole,
+        matchesDept,
+        matchesRole,
+        notAllocated,
+        finalResult: matchesDept && matchesRole
+      });
+      
+      return matchesDept && matchesRole;
     });
+    
+    console.log('All users:', users);
+    console.log('Selected department:', selectedDepartment);
+    console.log('Selected role:', selectedRole);
+    console.log('Filtered users:', filtered);
+    return filtered;
   };
 
-  const addUserToRoster = async () => {
-    if (!selectedUser) {
-      alert("Please select a user first");
-      return;
-    }
+  const addUserToRoster = () => {
+    if (!selectedUser) return;
     
     const user = users.find(u => u.id == selectedUser);
-    if (!user) {
-      alert("User not found");
-      return;
+    if (user && !allocatedUsers.find(allocated => allocated.id === user.id)) {
+      setAllocatedUsers([...allocatedUsers, { ...user, roster: {} }]);
+      setSelectedUser("");
+      setSelectedDepartment("");
+      setSelectedRole("");
     }
-    
-    const alreadyAllocated = allocatedUsers.find(allocated => allocated.id === user.id);
-    if (alreadyAllocated) {
-      alert("User already in roster");
-      return;
-    }
-    
-    // Add to local state immediately
-    setAllocatedUsers([...allocatedUsers, { ...user, roster: {} }]);
-    
-    // Save a placeholder entry to database
-    const today = new Date().toISOString().split('T')[0];
-    await saveRosterEntry(user.id, today, null, "Unscheduled");
-    
-    // Clear selections
-    setSelectedUser("");
-    setSelectedDepartment("");
-    setSelectedRole("");
-    
-    alert(`${user.name} added to roster successfully!`);
   };
 
   const bulkAllocateShifts = async () => {
@@ -276,6 +341,7 @@ export default function Shift() {
     const end = new Date(bulkDateRange.end);
     const updatedUsers = [...allocatedUsers];
     
+    // Save each entry to database
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const dateStr = new Date(d).toISOString().split('T')[0];
       
@@ -284,6 +350,7 @@ export default function Shift() {
           if (!user.roster) user.roster = {};
           user.roster[dateStr] = bulkShift;
           
+          // Save to database
           const shiftId = bulkShift === "OFF" ? null : parseInt(bulkShift);
           const status = bulkShift === "OFF" ? "OFF" : "Scheduled";
           await saveRosterEntry(user.id, dateStr, shiftId, status);
@@ -294,6 +361,8 @@ export default function Shift() {
     setAllocatedUsers(updatedUsers);
     setBulkShift("");
     setSelectedUsersForBulk([]);
+    
+    // Refresh roster data to show updated entries
     fetchRosterData();
   };
 
@@ -346,6 +415,31 @@ export default function Shift() {
     }
   };
 
+  const saveNightShiftRules = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(nightShiftRules)
+      });
+      
+      if (response.ok) {
+        alert("Night shift rules saved successfully!");
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to save night shift rules:", errorText);
+        alert("Failed to save night shift rules");
+      }
+    } catch (error) {
+      console.error("Error saving night shift rules:", error);
+      alert("Error saving night shift rules");
+    }
+  };
+
   const getDayName = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -356,11 +450,13 @@ export default function Shift() {
     let start, end;
     
     if (viewMode === "week") {
+      // Get current week (Monday to Sunday)
       const curr = new Date(currentDate);
-      const first = curr.getDate() - curr.getDay() + 1;
+      const first = curr.getDate() - curr.getDay() + 1; // Monday
       start = new Date(curr.setDate(first));
-      end = new Date(curr.setDate(first + 6));
+      end = new Date(curr.setDate(first + 6)); // Sunday
     } else {
+      // Get current month
       start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
       end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     }
@@ -394,16 +490,20 @@ export default function Shift() {
   };
 
   return (
-    <div className="space-y-6 w-full max-w-full">
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header />
+        <div className="flex-1 overflow-y-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">Shift & Roster Management</h1>
+        <p className="text-gray-600 mt-1">Manage employee shift assignments and roster planning</p>
+      </div>
 
-
-      {/* Shift Management */}
-      <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold">Shift & Roster Management</h2>
-            <p className="text-gray-500 text-sm">Create shifts and manage employee roster assignments.</p>
-          </div>
+      {/* Section 1: Shift Planning Overview */}
+      <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-800"> Shift Planning Overview</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowCreateShift(!showCreateShift)}
@@ -421,9 +521,9 @@ export default function Shift() {
         </div>
 
         {showCreateShift && (
-          <div className="p-4 bg-gray-50 rounded-lg border">
-            <h3 className="font-semibold mb-3">Create New Shift</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+            <h3 className="text-md font-semibold mb-4">Create New Shift</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shift Name</label>
                 <input
@@ -488,7 +588,13 @@ export default function Shift() {
                     <td colSpan="5" className="border border-gray-300 px-4 py-8 text-center text-gray-500">
                       <div className="flex flex-col items-center gap-2">
                         <p>No shifts found</p>
-                        <p className="text-sm">Create shifts above to get started</p>
+                        <p className="text-sm">Please create shifts in Organization Setup → Shifts first</p>
+                        <button
+                          onClick={() => navigate('/organization/shifts')}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                        >
+                          Go to Shifts Setup
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -498,7 +604,7 @@ export default function Shift() {
                       const startTime = new Date(`2000-01-01 ${start}`);
                       const endTime = new Date(`2000-01-01 ${end}`);
                       let diff = endTime - startTime;
-                      if (diff < 0) diff += 24 * 60 * 60 * 1000;
+                      if (diff < 0) diff += 24 * 60 * 60 * 1000; // Handle overnight shifts
                       const hours = Math.floor(diff / (1000 * 60 * 60));
                       return `${hours} hours`;
                     };
@@ -526,10 +632,11 @@ export default function Shift() {
         )}
       </div>
 
-      {/* Roster Management */}
-      <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
-        <h2 className="text-xl font-semibold">Roster Management</h2>
+      {/* Section 2: Roster Allocation */}
+      <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4"> Roster Allocation</h2>
         
+        {/* User Allocation */}
         <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
           <h3 className="text-md font-semibold mb-4">Add User to Roster</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -569,12 +676,7 @@ export default function Shift() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select User</option>
-                {users.filter(user => {
-                  const matchesDept = !selectedDepartment || user.department_id === parseInt(selectedDepartment);
-                  const matchesRole = !selectedRole || user.role_id === parseInt(selectedRole);
-                  const notAlreadyInRoster = !allocatedUsers.find(allocated => allocated.id === user.id);
-                  return matchesDept && matchesRole && notAlreadyInRoster;
-                }).map((user) => (
+                {getFilteredUsers().map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.name} - {user.department_name}
                   </option>
@@ -584,28 +686,9 @@ export default function Shift() {
             
             <div className="flex items-end">
               <button
-                onClick={async () => {
-                  if (!selectedUser) {
-                    alert("Please select a user first");
-                    return;
-                  }
-                  
-                  const user = users.find(u => u.id == selectedUser);
-                  if (user) {
-                    // Add to UI immediately
-                    setAllocatedUsers([...allocatedUsers, { ...user, roster: {} }]);
-                    
-                    // Save to database
-                    const today = new Date().toISOString().split('T')[0];
-                    await saveRosterEntry(user.id, today, null, "Unscheduled");
-                    
-                    setSelectedUser("");
-                    setSelectedDepartment("");
-                    setSelectedRole("");
-                    alert(`${user.name} added to roster and saved to database!`);
-                  }
-                }}
-                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                onClick={addUserToRoster}
+                disabled={!selectedUser}
+                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-300"
               >
                 Add to Roster
               </button>
@@ -613,6 +696,7 @@ export default function Shift() {
           </div>
         </div>
 
+        {/* Bulk Shift Allocation */}
         {allocatedUsers.length > 0 && (
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <h3 className="text-md font-semibold mb-4 text-blue-800">Bulk Shift Allocation</h3>
@@ -665,7 +749,8 @@ export default function Shift() {
           </div>
         )}
 
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+        {/* Calendar Navigation */}
+        <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-lg border">
           <div className="flex items-center gap-4">
             <div className="flex bg-white rounded-lg border">
               <button
@@ -715,8 +800,11 @@ export default function Shift() {
           </button>
         </div>
 
-        <div className="border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-gray-100 border-b">
+
+
+        {/* Elegant Roster Calendar */}
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
             <h3 className="font-semibold text-gray-800">
               {viewMode === "week" ? "Weekly" : "Monthly"} Roster Calendar
               {allocatedUsers.length > 0 && (
@@ -724,11 +812,11 @@ export default function Shift() {
               )}
             </h3>
           </div>
-          <div className="overflow-x-auto max-w-full">
-            <table className="w-full border-collapse table-fixed">
-              <thead className="bg-gray-100">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
                 <tr>
-                  <th className="px-2 py-3 text-center font-semibold text-gray-800 w-12 border-r border-gray-300">
+                  <th className="px-2 py-4 text-center font-semibold text-gray-800 w-12 border-r border-gray-200">
                     <input
                       type="checkbox"
                       checked={selectedUsersForBulk.length === allocatedUsers.length && allocatedUsers.length > 0}
@@ -742,7 +830,7 @@ export default function Shift() {
                       className="rounded"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800 min-w-[180px] border-r border-gray-300">
+                  <th className="px-6 py-4 text-left font-semibold text-gray-800 min-w-[200px] border-r border-gray-200">
                     Employee
                   </th>
                   {getDateRange().map((date) => {
@@ -751,19 +839,19 @@ export default function Shift() {
                     const isWeekend = ['Sat', 'Sun'].includes(dayName);
                     
                     return (
-                      <th key={date} className={`px-3 py-3 text-center min-w-[100px] border-r border-gray-300 ${
+                      <th key={date} className={`px-3 py-4 text-center min-w-[130px] border-r border-gray-200 ${
                         isWeekend ? 'bg-red-50' : ''
                       }`}>
-                        <div className={`font-semibold text-sm ${
+                        <div className={`font-semibold ${
                           isWeekend ? 'text-red-600' : 'text-gray-800'
                         }`}>{dayName}</div>
-                        <div className={`text-xs ${
+                        <div className={`text-sm ${
                           isWeekend ? 'text-red-500' : 'text-gray-500'
                         }`}>{dayNum}</div>
                       </th>
                     );
                   })}
-                  <th className="px-4 py-3 text-center font-semibold text-gray-800">Action</th>
+                  <th className="px-4 py-4 text-center font-semibold text-gray-800">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -780,7 +868,7 @@ export default function Shift() {
                 ) : (
                   allocatedUsers.map((user, index) => (
                     <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                      <td className="px-2 py-3 text-center border-r border-gray-300">
+                      <td className="px-2 py-4 text-center border-r border-gray-200">
                         <input
                           type="checkbox"
                           checked={selectedUsersForBulk.includes(user.id)}
@@ -794,14 +882,14 @@ export default function Shift() {
                           className="rounded"
                         />
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      <td className="px-6 py-4 border-r border-gray-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
                             {user.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-medium text-gray-800 text-sm">{user.name}</div>
-                            <div className="text-xs text-gray-500">{user.department_name}</div>
+                            <div className="font-semibold text-gray-800">{user.name}</div>
+                            <div className="text-sm text-gray-500">{user.department_name} • {user.role_name}</div>
                           </div>
                         </div>
                       </td>
@@ -812,7 +900,7 @@ export default function Shift() {
                         const shift = shifts.find(s => s.id == shiftValue);
                         
                         return (
-                          <td key={date} className={`px-2 py-3 border-r border-gray-300 text-center ${
+                          <td key={date} className={`px-3 py-4 border-r border-gray-200 ${
                             isWeekend ? 'bg-red-25' : ''
                           }`}>
                             {editingCell === `${user.id}-${date}` ? (
@@ -821,6 +909,7 @@ export default function Shift() {
                                 onChange={async (e) => {
                                   const shiftId = e.target.value ? parseInt(e.target.value) : null;
                                   const status = e.target.value === "OFF" ? "OFF" : "Scheduled";
+                                  console.log('Saving roster:', { userId: user.id, date, shiftId, status });
                                   updateUserRoster(user.id, date, e.target.value);
                                   await saveRosterEntry(user.id, date, shiftId, status);
                                   setEditingCell(null);
@@ -839,13 +928,18 @@ export default function Shift() {
                               <div className="text-center">
                                 <div 
                                   onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                  className={`px-2 py-1 text-xs rounded font-medium cursor-pointer hover:opacity-80 ${
+                                  className={`px-3 py-2 text-sm rounded-lg font-medium cursor-pointer hover:opacity-80 ${
                                     shiftValue === "OFF" ? 'bg-red-100 text-red-700' :
                                     'bg-green-100 text-green-700'
                                   }`}
                                 >
                                   {shiftValue === "OFF" ? "OFF" : shift?.name || "Unknown"}
                                 </div>
+                                {shift && (
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    {shift.start_time} - {shift.end_time}
+                                  </div>
+                                )}
                                 <button
                                   onClick={async () => {
                                     updateUserRoster(user.id, date, "");
@@ -859,7 +953,7 @@ export default function Shift() {
                             ) : (
                               <div 
                                 onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                className="text-gray-400 text-xs cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-1 rounded"
+                                className="text-center text-gray-400 text-sm cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-2 rounded"
                               >
                                 + Add
                               </div>
@@ -867,10 +961,10 @@ export default function Shift() {
                           </td>
                         );
                       })}
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-4 py-4 text-center">
                         <button 
                           onClick={() => removeUserFromRoster(user.id)}
-                          className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                          className="px-3 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
                         >
                           Remove
                         </button>
@@ -881,6 +975,96 @@ export default function Shift() {
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      {/* Section 3: Night Shift Rules */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4"> Night Shift Rules</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Night shift applicable for Shifts:
+            </label>
+            <select
+              value={(nightShiftRules.applicable_shifts && nightShiftRules.applicable_shifts[0]) || ""}
+              onChange={(e) => {
+                const value = e.target.value ? [parseInt(e.target.value)] : [];
+                setNightShiftRules({...nightShiftRules, applicable_shifts: value});
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Shift</option>
+              {shifts.map((shift) => (
+                <option key={shift.id} value={shift.id}>{shift.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Punch Out after midnight counts as:
+            </label>
+            <select
+              value={nightShiftRules.punch_out_rule}
+              onChange={(e) => setNightShiftRules({...nightShiftRules, punch_out_rule: e.target.value})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Same day">Same day</option>
+              <option value="Next day">Next day</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Minimum hours for night shift credit:
+            </label>
+            <input
+              type="number"
+              value={nightShiftRules.minimum_hours}
+              onChange={(e) => setNightShiftRules({...nightShiftRules, minimum_hours: parseInt(e.target.value)})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Night OT bonus rate:
+            </label>
+            <select
+              value={nightShiftRules.night_ot_rate}
+              onChange={(e) => setNightShiftRules({...nightShiftRules, night_ot_rate: e.target.value})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="1.25x">1.25x</option>
+              <option value="1.5x">1.5x</option>
+              <option value="2x">2x</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Grace time for night login (minutes):
+            </label>
+            <input
+              type="number"
+              value={nightShiftRules.grace_minutes}
+              onChange={(e) => setNightShiftRules({...nightShiftRules, grace_minutes: parseInt(e.target.value)})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <button
+            onClick={saveNightShiftRules}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Save Night Shift Rules
+          </button>
+        </div>
+      </div>
         </div>
       </div>
     </div>

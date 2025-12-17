@@ -8,12 +8,14 @@ import {
   Building2,
   UserPlus,
   UserCheck,
+  Clock,
 } from "lucide-react";
 
 export default function Sidebar() {
   const location = useLocation();
   const [openUserMenu, setOpenUserMenu] = useState(true);
   const [openRecruitmentMenu, setOpenRecruitmentMenu] = useState(false);
+  const [openAttendanceMenu, setOpenAttendanceMenu] = useState(false);
 
   return (
     <div className="h-screen w-64 bg-[#F4F8FF] border-r border-gray-200 p-4 sticky top-0 overflow-y-auto">
@@ -196,6 +198,68 @@ export default function Sidebar() {
           <UserCheck size={20} />
           <span>EIS (Employee Information System)</span>
         </Link>
+
+        {/* Attendance & Biometric */}
+        <div>
+          <button
+            onClick={() => setOpenAttendanceMenu(!openAttendanceMenu)}
+            className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-blue-100"
+          >
+            <span className="flex items-center space-x-3">
+              <Clock size={20} />
+              <span>Attendance & Biometric</span>
+            </span>
+            {openAttendanceMenu ? <ChevronDown /> : <ChevronRight />}
+          </button>
+
+          {openAttendanceMenu && (
+            <div className="ml-10 mt-2 space-y-2">
+              <Link
+                to="/shift-roster"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/shift-roster"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Shift & Roster
+              </Link>
+
+              <Link
+                to="/logs-authentication"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/logs-authentication"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Logs & Authentication
+              </Link>
+
+              <Link
+                to="/attendance-rules"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/attendance-rules"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Attendance Rules
+              </Link>
+
+              <Link
+                to="/devices-location"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/devices-location"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Devices & Location
+              </Link>
+            </div>
+          )}
+        </div>
 
       </nav>
     </div>

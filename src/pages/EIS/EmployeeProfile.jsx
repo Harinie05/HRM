@@ -263,6 +263,24 @@ export default function EmployeeProfile() {
               </Link>
               
               <Link
+                to={`/eis/${employee.application_id}/bank-details`}
+                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
+              >
+                <div className="text-2xl mb-2">🏦</div>
+                <div className="font-medium">Bank Details</div>
+                <div className="text-xs text-gray-500">Banking Info</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/reporting`}
+                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
+              >
+                <div className="text-2xl mb-2">📈</div>
+                <div className="font-medium">Reporting</div>
+                <div className="text-xs text-gray-500">Manager & Hierarchy</div>
+              </Link>
+              
+              <Link
                 to={`/eis/${employee.application_id}/exit`}
                 className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
               >

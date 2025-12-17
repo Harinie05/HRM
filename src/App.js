@@ -36,7 +36,11 @@ import EmployeeMedical from "./pages/EIS/EmployeeMedical";
 import EmployeeDocuments from "./pages/EIS/EmployeeDocuments";
 import EmployeeIDDocs from "./pages/EIS/EmployeeIDDocs";
 import EmployeeSalary from "./pages/EIS/EmployeeSalary";
+import EmployeeBankDetails from "./pages/EIS/EmployeeBankDetails";
+import EmployeeReporting from "./pages/EIS/EmployeeReporting";
 import EmployeeExit from "./pages/EIS/EmployeeExit";
+import ReportingStructure from "./pages/organization/ReportingStructure";
+import ShiftRoster from "./pages/attendance/ShiftRoster";
 
 
 
@@ -141,6 +145,7 @@ function App() {
           />
            <Route path="holiday-calender" element={<ProtectedRoute> <HolidayCalender /></ProtectedRoute>     } />
          <Route path="policy-setup" element={<ProtectedRoute> <PolicySetup /></ProtectedRoute>     } />
+         <Route path="reporting" element={<ProtectedRoute> <ReportingStructure /></ProtectedRoute>     } />
         </Route>
        
 
@@ -166,7 +171,14 @@ function App() {
         <Route path="/eis/:id/documents" element={<ProtectedRoute><EmployeeDocuments /></ProtectedRoute>} />
         <Route path="/eis/:id/id-docs" element={<ProtectedRoute><EmployeeIDDocs /></ProtectedRoute>} />
         <Route path="/eis/:id/salary" element={<ProtectedRoute><EmployeeSalary /></ProtectedRoute>} />
+        <Route path="/eis/:id/bank-details" element={<ProtectedRoute><EmployeeBankDetails /></ProtectedRoute>} />
+        <Route path="/eis/:id/reporting" element={<ProtectedRoute><EmployeeReporting /></ProtectedRoute>} />
         <Route path="/eis/:id/exit" element={<ProtectedRoute><EmployeeExit /></ProtectedRoute>} />
+
+        {/* ----------------------------------------
+           ATTENDANCE & BIOMETRIC MODULE
+        ----------------------------------------- */}
+        <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
 
         {/* ----------------------------------------
            PUBLIC JOB APPLICATION PAGE

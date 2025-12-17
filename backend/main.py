@@ -43,7 +43,14 @@ from routes.EIS.medical import router as medical_router
 from routes.EIS.salary import router as salary_router
 from routes.EIS.documents import router as documents_router
 from routes.EIS.exit import router as exit_router
-# ===================================================================
+from routes.EIS.bank_details import router as bank_details_router
+
+# ======================= 🔥 ATTENDANCE ROUTERS =======================
+from routes.attendance.roster import router as roster_router
+
+# ======================= 🔥 ORGANIZATION ROUTERS =======================
+from routes.organization.reporting import router as reporting_router
+# =====================================================================
 
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -110,6 +117,11 @@ app.include_router(medical_router)
 app.include_router(salary_router)
 app.include_router(documents_router)
 app.include_router(exit_router)
+app.include_router(bank_details_router)
+app.include_router(reporting_router)
+
+# ======================= 🔥 ATTENDANCE MODULE =======================
+app.include_router(roster_router, prefix="/api")
 # ============================================================
 
 logger.info("All routers loaded successfully")

@@ -677,6 +677,32 @@ class EmployeeSalary(MasterBase):
     esi_eligible = Column(Boolean, default=True)
 
 
+# ========================= BANK DETAILS =========================
+class EmployeeBankDetails(MasterBase):
+    __tablename__ = "employee_bank_details"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+
+    account_holder_name = Column(String(200))
+    bank_name = Column(String(200))
+    account_number = Column(String(50))
+    ifsc_code = Column(String(20))
+    branch_name = Column(String(200))
+    account_type = Column(String(50))  # Savings/Current
+    
+    # Additional bank details
+    swift_code = Column(String(20))
+    bank_address = Column(Text)
+    
+    # Document
+    bank_document = Column(Text)  # Base64 encoded file
+    document_name = Column(String(255))
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+
 # ========================= DOCUMENT VAULT =========================
 class EmployeeDocuments(MasterBase):
     __tablename__ = "employee_documents"
@@ -712,7 +738,73 @@ class EmployeeExit(MasterBase):
     notes = Column(Text)
     updated_at = Column(DateTime, default=func.now())
 
+# ================================================================
+#  🔥 ATTENDANCE & BIOMETRIC MODELS
+# ================================================================
+
+# ------------------------------
+# EMPLOYEE ROSTER
+# ------------------------------
+class EmployeeRoster(MasterBase):
+    __tablename__ = "employee_roster"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+    shift_id = Column(Integer, nullable=False)  # References organization shifts
+    date = Column(Date, nullable=False)
+    status = Column(String(50), default="Scheduled")  # Scheduled/Holiday/Leave/OFF
+    created_at = Column(DateTime, default=func.now())
+
+# ------------------------------
+# NIGHT SHIFT RULES
+# ------------------------------
+class NightShiftRule(MasterBase):
+    __tablename__ = "night_shift_rules"
+
+    id = Column(Integer, primary_key=True, index=True)
+    applicable_shifts = Column(JSON, nullable=True)  # List of shift IDs
+    punch_out_rule = Column(String(50), default="Same day")  # Same day/Next day
+    minimum_hours = Column(Integer, default=6)
+    night_ot_rate = Column(String(10), default="1.5x")  # 1.25x/1.5x/2x
+    grace_minutes = Column(Integer, default=15)
+    created_at = Column(DateTime, default=func.now())
 
 
+# ========================= REPORTING STRUCTURE =========================
+class ReportingLevel(MasterBase):
+    __tablename__ = "reporting_levels"
+
+    id = Column(Integer, primary_key=True, index=True)
+    level_name = Column(String(100), nullable=False)  # CEO, Manager, Team Lead, Executive
+    level_order = Column(Integer, nullable=False)  # 1=highest, 2=next level down
+    description = Column(Text)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
 
 
+class ReportingHierarchy(MasterBase):
+    __tablename__ = "reporting_hierarchy"
+
+    id = Column(Integer, primary_key=True, index=True)
+    parent_level_id = Column(Integer, nullable=True)  # References reporting_levels.id
+    child_level_id = Column(Integer, nullable=False)  # References reporting_levels.id
+    department_id = Column(Integer, nullable=True)  # Optional: department-specific hierarchy
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+
+
+# ========================= EMPLOYEE REPORTING =========================
+class EmployeeReporting(MasterBase):
+    __tablename__ = "employee_reporting"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+    reporting_to_id = Column(Integer, nullable=True)  # Employee ID of manager
+    alternate_supervisor_id = Column(Integer, nullable=True)  # Alternate supervisor ID
+    level_id = Column(Integer, nullable=False)  # From reporting_levels
+    department_id = Column(Integer, nullable=True)
+    effective_from = Column(Date, nullable=False)
+    effective_to = Column(Date, nullable=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())

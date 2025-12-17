@@ -102,8 +102,12 @@ def list_users(
                 "id": u.id,
                 "name": u.name,
                 "email": u.email,
+                "role_id": u.role_id,
                 "role": role_name,
+                "role_name": role_name,
+                "department_id": u.department_id,
                 "department": dept_name,
+                "department_name": dept_name,
                 "created_at": str(u.created_at)
             })
 

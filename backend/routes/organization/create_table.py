@@ -43,8 +43,14 @@ from models.models_tenant import (
     EmployeeSkills,
     EmployeeCertifications,
     EmployeeSalary,
+    EmployeeBankDetails,
     EmployeeDocuments,
-    EmployeeExit
+    EmployeeExit,
+    
+    # Reporting Structure
+    ReportingLevel,
+    ReportingHierarchy,
+    EmployeeReporting
 )
 
 # ========================= CONFIG =========================
@@ -526,5 +532,21 @@ with engine.connect() as conn:
     except Exception as e:
         print(f"⚠️ Job status update error: {e}")
         conn.rollback()
+
+# ========================= UPDATE EMPLOYEE REPORTING TABLE =========================
+print("\nUpdating employee_reporting table...")
+with engine.connect() as conn:
+    reporting_columns = [
+        ("alternate_supervisor_id INT", "alternate_supervisor_id")
+    ]
+    
+    for sql_def, name in reporting_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_reporting ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
 
 print("\n🎉 DONE — All tables created and updated successfully!\n")
