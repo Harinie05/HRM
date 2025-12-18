@@ -13,8 +13,10 @@ import CompanyProfile from "./pages/organization/CompanyProfile";
 import Branch from "./pages/organization/Branch";
 import GradePayStructure from "./pages/organization/GradePayStructure";
 import HolidayCalender from "./pages/organization/HolidayCalender";
-// ⭐ Added for authentication protection
+
+// ⭐ Authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
+
 import PolicySetup from "./pages/organization/PolicySetup";
 import RecruitmentSetup from "./pages/recruitment/Recruitment";
 import JobRequisition from "./pages/recruitment/JobRequisition";
@@ -25,6 +27,8 @@ import JobApply from "./pages/recruitment/public jobapply";
 import CandidateScreening from "./pages/recruitment/CandidateScreening";
 import DocumentUpload from "./pages/recruitment/DocumentUpload";
 import MasterDashboard from "./pages/recruitment/MasterDashboard";
+
+// EIS
 import EmployeeListPage from "./pages/EIS/EmployeeListPage";
 import EmployeeProfile from "./pages/EIS/EmployeeProfile";
 import EmployeeEducation from "./pages/EIS/EmployeeEducation";
@@ -39,25 +43,27 @@ import EmployeeSalary from "./pages/EIS/EmployeeSalary";
 import EmployeeBankDetails from "./pages/EIS/EmployeeBankDetails";
 import EmployeeReporting from "./pages/EIS/EmployeeReporting";
 import EmployeeExit from "./pages/EIS/EmployeeExit";
+
 import ReportingStructure from "./pages/organization/ReportingStructure";
+
+// Attendance
 import ShiftRoster from "./pages/attendance/ShiftRoster";
-
-
+import AttendanceLogs from "./pages/attendance/AttendanceLogs";
+import Regularization from "./pages/attendance/Regularization";
+import AttendanceReports from "./pages/attendance/AttendanceReports";
+import AttendanceRules from "./pages/attendance/AttendanceRules";
+import AttendanceLocations from "./pages/attendance/AttendanceLocations";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* ----------------------------------------
-           DEFAULT ROUTE → LOGIN
-        ----------------------------------------- */}
+        {/* DEFAULT ROUTE */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        {/* ----------------------------------------
-           DASHBOARD (After Login)
-        ----------------------------------------- */}
+        {/* DASHBOARD */}
         <Route
           path="/dashboard"
           element={
@@ -67,39 +73,12 @@ function App() {
           }
         />
 
-        {/* ----------------------------------------
-           USER MANAGEMENT
-        ----------------------------------------- */}
-        <Route
-          path="/departments"
-          element={
-            <ProtectedRoute>
-              <Departments />
-            </ProtectedRoute>
-          }
-        />
+        {/* USER MANAGEMENT */}
+        <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
+        <Route path="/roles" element={<ProtectedRoute><Roles /></ProtectedRoute>} />
+        <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
 
-        <Route
-          path="/roles"
-          element={
-            <ProtectedRoute>
-              <Roles />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute>
-              <Users />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ----------------------------------------
-           ORGANIZATION SETUP MODULE
-        ----------------------------------------- */}
+        {/* ORGANIZATION SETUP */}
         <Route
           path="/organization"
           element={
@@ -108,50 +87,16 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* DEFAULT PAGE → COMPANY PROFILE */}
-          <Route
-            index
-            element={
-              <ProtectedRoute>
-                <CompanyProfile />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="company-profile"
-            element={
-              <ProtectedRoute>
-                <CompanyProfile />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="branch"
-            element={
-              <ProtectedRoute>
-                <Branch />
-              </ProtectedRoute>
-            }
-          />
-         <Route
-            path="grade"
-            element={
-              <ProtectedRoute>
-                <GradePayStructure />
-              </ProtectedRoute>
-            }
-          />
-           <Route path="holiday-calender" element={<ProtectedRoute> <HolidayCalender /></ProtectedRoute>     } />
-         <Route path="policy-setup" element={<ProtectedRoute> <PolicySetup /></ProtectedRoute>     } />
-         <Route path="reporting" element={<ProtectedRoute> <ReportingStructure /></ProtectedRoute>     } />
+          <Route index element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
+          <Route path="company-profile" element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
+          <Route path="branch" element={<ProtectedRoute><Branch /></ProtectedRoute>} />
+          <Route path="grade" element={<ProtectedRoute><GradePayStructure /></ProtectedRoute>} />
+          <Route path="holiday-calender" element={<ProtectedRoute><HolidayCalender /></ProtectedRoute>} />
+          <Route path="policy-setup" element={<ProtectedRoute><PolicySetup /></ProtectedRoute>} />
+          <Route path="reporting" element={<ProtectedRoute><ReportingStructure /></ProtectedRoute>} />
         </Route>
-       
 
-        {/* ----------------------------------------
-           RECRUITMENT & ONBOARDING MODULE
-        ----------------------------------------- */}
+        {/* RECRUITMENT */}
         <Route path="/recruitment-master" element={<ProtectedRoute><MasterDashboard /></ProtectedRoute>} />
         <Route path="/job-requisition" element={<ProtectedRoute><JobRequisition /></ProtectedRoute>} />
         <Route path="/recruitment-setup" element={<ProtectedRoute><RecruitmentSetup /></ProtectedRoute>} />
@@ -159,7 +104,8 @@ function App() {
         <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
         <Route path="/screening" element={<ProtectedRoute><CandidateScreening /></ProtectedRoute>} />
-        {/* EIS - Employee Information System */}
+
+        {/* EIS */}
         <Route path="/eis" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
         <Route path="/eis/:id" element={<ProtectedRoute><EmployeeProfile /></ProtectedRoute>} />
         <Route path="/eis/:id/education" element={<ProtectedRoute><EmployeeEducation /></ProtectedRoute>} />
@@ -175,26 +121,19 @@ function App() {
         <Route path="/eis/:id/reporting" element={<ProtectedRoute><EmployeeReporting /></ProtectedRoute>} />
         <Route path="/eis/:id/exit" element={<ProtectedRoute><EmployeeExit /></ProtectedRoute>} />
 
-        {/* ----------------------------------------
-           ATTENDANCE & BIOMETRIC MODULE
-        ----------------------------------------- */}
+        {/* ATTENDANCE MODULE */}
         <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
+        <Route path="/attendance/logs" element={<ProtectedRoute><AttendanceLogs /></ProtectedRoute>} />
+        <Route path="/attendance/regularization" element={<ProtectedRoute><Regularization /></ProtectedRoute>} />
+        <Route path="/attendance/reports" element={<ProtectedRoute><AttendanceReports /></ProtectedRoute>} />
+        <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
+        <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />
 
-        {/* ----------------------------------------
-           PUBLIC JOB APPLICATION PAGE
-        ----------------------------------------- */}
+        {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />
-        
-        {/* ----------------------------------------
-           PUBLIC DOCUMENT UPLOAD PAGE
-        ----------------------------------------- */}
         <Route path="/document-upload/:token" element={<DocumentUpload />} />
-        
-        {/* ----------------------------------------
-           SECRET HOSPITAL REGISTER PAGE
-        ----------------------------------------- */}
         <Route path="/register-hospital" element={<HospitalRegister />} />
-        
+
       </Routes>
     </BrowserRouter>
   );

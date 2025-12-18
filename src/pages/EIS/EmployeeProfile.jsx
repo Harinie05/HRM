@@ -31,41 +31,86 @@ export default function EmployeeProfile() {
   // ---------------- FETCH EMPLOYEE PROFILE ----------------
   const fetchEmployee = async () => {
     try {
-      // Get all onboarded employees and find the one with matching application_id
-      const res = await api.get('/recruitment/onboarding/list');
-      const employees = res.data || [];
-      const emp = employees.find(e => e.application_id.toString() === id);
+      const tenant = localStorage.getItem("tenant_db");
+      const token = localStorage.getItem("access_token");
+      
+      // Try to find employee in onboarding first
+      let emp = null;
+      try {
+        const res = await api.get('/recruitment/onboarding/list');
+        const employees = res.data || [];
+        emp = employees.find(e => e.application_id.toString() === id);
+      } catch (err) {
+        console.log('No onboarding data found');
+      }
+      
+      // If not found in onboarding, check user management
+      if (!emp) {
+        try {
+          const usersRes = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (usersRes.ok) {
+            const userData = await usersRes.json();
+            // Handle prefixed user IDs
+            const actualUserId = id.startsWith('user_') ? id.replace('user_', '') : id;
+            const user = userData.users.find(u => u.id.toString() === actualUserId && u.employee_code);
+            if (user) {
+              // Convert user to employee format
+              emp = {
+                application_id: id, // Use the original ID (with prefix if applicable)
+                candidate_name: user.name,
+                candidate_email: user.email,
+                job_title: user.designation || 'N/A',
+                department: user.department_name,
+                employee_id: user.employee_code,
+                joining_date: user.joining_date,
+                work_location: 'N/A',
+                reporting_manager: 'N/A',
+                work_shift: 'General',
+                probation_period: '3 Months',
+                status: user.status || 'Active',
+                source: 'user_management'
+              };
+            }
+          }
+        } catch (err) {
+          console.error('Error fetching user data:', err);
+        }
+      }
       
       if (emp) {
         setEmployee(emp);
-        // Fetch documents for this employee
-        try {
-          const docsRes = await api.get(`/recruitment/onboarding/${emp.application_id}/documents`);
-          const docs = docsRes.data || [];
-          setDocuments(docs);
+        // Fetch documents for this employee (only for onboarding employees)
+        if (emp.source !== 'user_management') {
+          try {
+            const docsRes = await api.get(`/recruitment/onboarding/${emp.application_id}/documents`);
+            const docs = docsRes.data || [];
+            setDocuments(docs);
           
-          // Find the most recent photo document (latest uploaded)
-          const photoDocs = docs.filter(doc => doc.document_type === 'photo');
-          if (photoDocs.length > 0) {
-            // Get the most recent photo by uploaded_at date
-            const latestPhoto = photoDocs.reduce((latest, current) => 
-              new Date(current.uploaded_at) > new Date(latest.uploaded_at) ? current : latest
-            );
-            
-            // Try authenticated URL first, fallback to direct URL
-            try {
-              const imageUrl = await getAuthenticatedImageUrl(latestPhoto.id);
-              if (imageUrl) {
-                setPhotoUrl(imageUrl);
+            // Find the most recent photo document (latest uploaded)
+            const photoDocs = docs.filter(doc => doc.document_type === 'photo');
+            if (photoDocs.length > 0) {
+              // Get the most recent photo by uploaded_at date
+              const latestPhoto = photoDocs.reduce((latest, current) => 
+                new Date(current.uploaded_at) > new Date(latest.uploaded_at) ? current : latest
+              );
+              
+              // Try authenticated URL first, fallback to direct URL
+              try {
+                const imageUrl = await getAuthenticatedImageUrl(latestPhoto.id);
+                if (imageUrl) {
+                  setPhotoUrl(imageUrl);
+                }
+              } catch {
+                // Fallback to direct URL with token
+                const token = localStorage.getItem('token');
+                setPhotoUrl(`http://localhost:8000/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`);
               }
-            } catch {
-              // Fallback to direct URL with token
-              const token = localStorage.getItem('token');
-              setPhotoUrl(`http://localhost:8000/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`);
             }
+          } catch (docErr) {
+            console.log('No documents found for employee');
           }
-        } catch (docErr) {
-          console.log('No documents found for employee');
         }
       } else {
         console.error('Employee not found');

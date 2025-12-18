@@ -59,3 +59,32 @@ def list_shifts(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ------------------------------
+# DELETE SHIFT 🔒 Protected
+# ------------------------------
+@router.delete("/{tenant}/{shift_id}")
+def delete_shift(
+    tenant: str,
+    shift_id: int,
+    user = Depends(get_current_user)  # 🔐 Token required
+):
+    try:
+        logger.info(f"Deleting shift {shift_id} for tenant {tenant} by user {user.get('email')}")
+        engine = get_tenant_engine(tenant)
+        db = Session(bind=engine)
+
+        shift = db.query(Shift).filter(Shift.id == shift_id).first()
+        if not shift:
+            raise HTTPException(status_code=404, detail="Shift not found")
+
+        db.delete(shift)
+        db.commit()
+        logger.info(f"Shift {shift_id} deleted successfully")
+        return {"message": "Shift deleted successfully"}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -226,37 +226,27 @@ export default function Sidebar() {
               </Link>
 
               <Link
-                to="/logs-authentication"
+                to="/attendance/logs"
                 className={`block hover:text-blue-700 ${
-                  location.pathname === "/logs-authentication"
+                  location.pathname === "/attendance/logs"
                     ? "font-bold text-blue-700"
                     : ""
                 }`}
               >
-                Logs & Authentication
+                Attendance Capture & Logs
               </Link>
 
               <Link
-                to="/attendance-rules"
+                to="/attendance/rules"
                 className={`block hover:text-blue-700 ${
-                  location.pathname === "/attendance-rules"
+                  location.pathname === "/attendance/rules"
                     ? "font-bold text-blue-700"
                     : ""
                 }`}
               >
-                Attendance Rules
+              Attendance Rules, Policy & Locations
               </Link>
 
-              <Link
-                to="/devices-location"
-                className={`block hover:text-blue-700 ${
-                  location.pathname === "/devices-location"
-                    ? "font-bold text-blue-700"
-                    : ""
-                }`}
-              >
-                Devices & Location
-              </Link>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict, Any, Union
 from schemas.schemas_master import AdminAuth
-from datetime import date, datetime
+from datetime import date, datetime,time
 
 # ---------------------------
 # TENANT: DEPARTMENTS
@@ -1032,6 +1032,80 @@ class FullEmployeeProfile(BaseModel):
     salary: Optional[SalaryOut] = None
     documents: List[DocumentOut] = []
     exit: Optional[ExitOut]
+
+    class Config:
+        from_attributes = True
+
+# =====================================================
+# ATTENDANCE PUNCH SCHEMAS
+# =====================================================
+class AttendancePunchCreate(BaseModel):
+    employee_id: int
+    date: date
+    in_time: Optional[time] = None
+    out_time: Optional[time] = None
+    location: Optional[str] = None
+    source: str = "WEB"
+    status: Optional[str] = "Present"
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    device_info: Optional[str] = None
+
+
+class AttendancePunchOut(AttendancePunchCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+# =====================================================
+# ATTENDANCE REGULARIZATION SCHEMAS
+# =====================================================
+class AttendanceRegularizationCreate(BaseModel):
+    employee_id: int
+    punch_date: date
+    issue_type: str
+    reason: Optional[str] = None
+
+
+class AttendanceRegularizationOut(AttendanceRegularizationCreate):
+    id: int
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# =====================================================
+# ATTENDANCE RULE SCHEMAS
+# =====================================================
+class AttendanceRuleCreate(BaseModel):
+    rule_name: str
+    rule_type: str   # Late / Early / OT
+    value: int       # minutes / hours
+
+
+class AttendanceRuleOut(AttendanceRuleCreate):
+    id: int
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
+
+# =====================================================
+# ATTENDANCE LOCATION SCHEMAS
+# =====================================================
+class AttendanceLocationCreate(BaseModel):
+    location_name: str
+    grace_time: int = 10
+    ot_rule: Optional[str] = None
+
+
+class AttendanceLocationOut(AttendanceLocationCreate):
+    id: int
+    is_active: bool
 
     class Config:
         from_attributes = True

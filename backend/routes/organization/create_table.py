@@ -50,7 +50,15 @@ from models.models_tenant import (
     # Reporting Structure
     ReportingLevel,
     ReportingHierarchy,
-    EmployeeReporting
+    EmployeeReporting,
+    
+    # Attendance Models
+    EmployeeRoster,
+    NightShiftRule,
+    AttendanceRegularization,
+    AttendanceRule,
+    AttendanceLocation,
+    AttendancePunch
 )
 
 # ========================= CONFIG =========================
@@ -548,5 +556,106 @@ with engine.connect() as conn:
             print(f"⚠️ {name}: {e}")
     
     conn.commit()
+
+# ========================= UPDATE ATTENDANCE PUNCHES TABLE =========================
+print("\nUpdating attendance_punches table structure...")
+with engine.connect() as conn:
+    attendance_columns = [
+        ("latitude FLOAT", "latitude"),
+        ("longitude FLOAT", "longitude"),
+        ("device_info VARCHAR(200)", "device_info")
+    ]
+    
+    for sql_def, name in attendance_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE attendance_punches ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    # Update location column size for GPS data
+    try:
+        conn.execute(text("ALTER TABLE attendance_punches MODIFY COLUMN location VARCHAR(500)"))
+        print(f"✔️ Updated location column size")
+    except Exception as e:
+        print(f"⚠️ location column update: {e}")
+    
+    conn.commit()
+
+# ========================= ENSURE ATTENDANCE LOCATIONS TABLE EXISTS =========================
+print("\nEnsuring attendance_locations table structure...")
+with engine.connect() as conn:
+    try:
+        # Check if table exists and has correct structure
+        check_table = text("""
+            CREATE TABLE IF NOT EXISTS attendance_locations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(200) NOT NULL,
+                description TEXT,
+                address TEXT,
+                latitude FLOAT,
+                longitude FLOAT,
+                radius INT DEFAULT 100,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute(check_table)
+        print("✅ Attendance locations table structure verified")
+        
+        # Add unique constraint to prevent duplicate attendance per employee per day
+        try:
+            add_constraint = text("""
+                ALTER TABLE attendance_punches 
+                ADD CONSTRAINT unique_employee_date 
+                UNIQUE (employee_id, date)
+            """)
+            conn.execute(add_constraint)
+            print("✅ Added unique constraint for employee attendance per day")
+        except Exception as e:
+            print(f"ℹ️ Unique constraint: {e}")
+        
+        conn.commit()
+    except Exception as e:
+        print(f"⚠️ Attendance locations table error: {e}")
+
+# ========================= ADD DEFAULT ATTENDANCE LOCATIONS =========================
+print("\nAdding default attendance locations...")
+with engine.connect() as conn:
+    try:
+        # Check if locations already exist
+        check_locations = text("SELECT COUNT(*) FROM attendance_locations")
+        count = conn.execute(check_locations).scalar()
+        
+        if count == 0:
+            # Insert default locations
+            default_locations = [
+                ("Office - Main Building", "Main office building", True),
+                ("Office - Branch 1", "Branch office location 1", True),
+                ("Office - Branch 2", "Branch office location 2", True),
+                ("Remote Work", "Work from home/remote location", True)
+            ]
+            
+            for name, description, is_active in default_locations:
+                insert_location = text("""
+                    INSERT INTO attendance_locations (name, description, is_active, created_at)
+                    VALUES (:name, :description, :is_active, CURRENT_TIMESTAMP)
+                """)
+                conn.execute(insert_location, {
+                    "name": name,
+                    "description": description,
+                    "is_active": is_active
+                })
+                print(f"  ✅ Added location: {name}")
+            
+            conn.commit()
+            print(f"\n🎉 Successfully added {len(default_locations)} default locations!")
+        else:
+            print(f"  ℹ️ Found {count} existing locations, skipping default creation")
+            
+    except Exception as e:
+        print(f"⚠️ Error adding default locations: {e}")
+        conn.rollback()
 
 print("\n🎉 DONE — All tables created and updated successfully!\n")

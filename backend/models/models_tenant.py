@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean,Text, DateTime,Float,JSON,Date, ForeignKey, func, LargeBinary
+from sqlalchemy import Column, Integer, String, Boolean,Text, DateTime,Float,JSON,Date, Time, ForeignKey, func, LargeBinary
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
@@ -808,3 +808,76 @@ class EmployeeReporting(MasterBase):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
+
+# =====================================================
+# ATTENDANCE REGULARIZATION
+# =====================================================
+class AttendanceRegularization(MasterBase):
+    __tablename__ = "attendance_regularizations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    punch_date = Column(Date, nullable=False)
+    issue_type = Column(String(50), nullable=False)  # Missed IN / Missed OUT / Wrong Punch
+    reason = Column(String(500), nullable=True)
+    attachment = Column(String(255), nullable=True)
+
+    status = Column(String(50), default="Pending")  # Pending / Approved / Rejected
+    created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
+# ATTENDANCE RULES (Late / Early / OT)
+# =====================================================
+class AttendanceRule(MasterBase):
+    __tablename__ = "attendance_rules"
+
+    id = Column(Integer, primary_key=True, index=True)
+    rule_name = Column(String(100), nullable=False)
+    rule_type = Column(String(50), nullable=False)  # Late / Early / OT
+    value = Column(Integer, nullable=False)     # Minutes / Hours
+
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
+# ATTENDANCE LOCATIONS (NO DEVICES)
+# =====================================================
+class AttendanceLocation(MasterBase):
+    __tablename__ = "attendance_locations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    location_name = Column(String(200), unique=True, nullable=False)
+
+    grace_time = Column(Integer, default=10)   # Late grace minutes
+    ot_rule = Column(String(100), nullable=True)    # e.g. OT > 30 mins
+    punch_mode = Column(String(50), default="WEB_MOBILE")
+
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+# =====================================================
+# ATTENDANCE PUNCH LOGS
+# =====================================================
+class AttendancePunch(MasterBase):
+    __tablename__ = "attendance_punches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    date = Column(Date, nullable=False)
+    in_time = Column(Time, nullable=True)
+    out_time = Column(Time, nullable=True)
+
+    location = Column(String(500), nullable=True)
+    source = Column(String(20), default="WEB")  # WEB / MOBILE
+    status = Column(String(50), default="Present")  # Present / Late / Absent
+    
+    # GPS and device tracking
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    device_info = Column(String(200), nullable=True)
+
+    created_at = Column(DateTime, server_default=func.now())

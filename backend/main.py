@@ -6,6 +6,7 @@ from pathlib import Path
 from database import master_engine, logger
 
 import models.models_master as models_master
+import models.models_tenant as models_tenant
 
 # ---------------- CORE ROUTERS ----------------
 from routes.hospital import router as hospital_router
@@ -47,6 +48,11 @@ from routes.EIS.bank_details import router as bank_details_router
 
 # ======================= 🔥 ATTENDANCE ROUTERS =======================
 from routes.attendance.roster import router as roster_router
+from routes.attendance.punch_logs import router as attendance_punch_router
+from routes.attendance.regularization import router as attendance_regularization_router
+from routes.attendance.rules import router as attendance_rules_router
+from routes.attendance.locations import router as attendance_locations_router
+from routes.attendance.reports import router as attendance_reports_router
 
 # ======================= 🔥 ORGANIZATION ROUTERS =======================
 from routes.organization.reporting import router as reporting_router
@@ -77,10 +83,35 @@ logger.info("CORS Configured")
 
 # ---------------- STARTUP ----------------
 @app.on_event("startup")
-def create_master_tables():
+def create_tables():
     logger.info("Creating master database tables...")
     models_master.MasterBase.metadata.create_all(bind=master_engine)
     logger.info("Master tables created.")
+    
+    # Create tenant databases that are referenced in master DB
+    try:
+        from database import create_tenant_database, get_tenant_engine, get_master_db
+        
+        # Get all existing hospitals from master DB
+        master_db = next(get_master_db())
+        hospitals = master_db.query(models_master.Hospital).all()
+        
+        for hospital in hospitals:
+            try:
+                logger.info(f"Ensuring tenant database exists: {hospital.db_name}")
+                create_tenant_database(hospital.db_name)
+                
+                tenant_engine = get_tenant_engine(hospital.db_name)
+                models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
+                logger.info(f"Tenant tables created/verified for {hospital.db_name}")
+                
+            except Exception as e:
+                logger.error(f"Error creating tenant DB {hospital.db_name}: {str(e)}")
+        
+        master_db.close()
+        
+    except Exception as e:
+        logger.error(f"Error during tenant database setup: {str(e)}")
 
 # ---------------- REGISTER ROUTERS ----------------
 app.include_router(hospital_router, prefix="/auth", tags=["Hospitals"])
@@ -95,7 +126,7 @@ app.include_router(grade_router)
 app.include_router(holiday_router)
 app.include_router(policy_router)
 
-# Recruitment
+# ---------------- RECRUITMENT ----------------
 app.include_router(recruitment_router)
 app.include_router(recruitment_import_router)
 app.include_router(ats_router, prefix="/recruitment")
@@ -122,6 +153,11 @@ app.include_router(reporting_router)
 
 # ======================= 🔥 ATTENDANCE MODULE =======================
 app.include_router(roster_router, prefix="/api")
+app.include_router(attendance_punch_router, prefix="/api")
+app.include_router(attendance_regularization_router, prefix="/api")
+app.include_router(attendance_rules_router, prefix="/api")
+app.include_router(attendance_locations_router, prefix="/api")
+app.include_router(attendance_reports_router, prefix="/api")
 # ============================================================
 
 logger.info("All routers loaded successfully")
@@ -132,24 +168,4 @@ def root():
     logger.info("Root endpoint hit")
     return {"message": "Nutryah HRM Backend Running 🚀"}
 
-# ---------------- DEBUG ----------------
-@app.get("/debug/public-candidates")
-def debug_public_candidates():
-    from database import get_tenant_db
-    from models.models_tenant import PublicCandidate
-    
-    db = next(get_tenant_db())
-    candidates = db.query(PublicCandidate).all()
-    
-    return {
-        "count": len(candidates),
-        "candidates": [
-            {
-                "id": c.id,
-                "name": c.name,
-                "email": c.email,
-                "job_id": c.job_id,
-                "applied_at": str(c.applied_at)
-            } for c in candidates
-        ]
-    }
+

@@ -108,10 +108,28 @@ def list_users(
                 "department_id": u.department_id,
                 "department": dept_name,
                 "department_name": dept_name,
+                "employee_code": getattr(u, 'employee_code', None),
+                "employee_type": getattr(u, 'employee_type', None),
+                "designation": getattr(u, 'designation', None),
+                "joining_date": str(getattr(u, 'joining_date', None)) if getattr(u, 'joining_date', None) else None,
+                "status": getattr(u, 'status', 'Active'),
+                "is_employee": bool(getattr(u, 'employee_code', None)),
                 "created_at": str(u.created_at)
             })
 
         return {"users": output}
+
+
+# ============================================================
+# LIST USERS (hospitals endpoint) 🔒 Protected
+# ============================================================
+@router.get("/hospitals/users/{tenant_db}/list")
+def list_users_hospitals(
+    tenant_db: str,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
+):
+    return list_users(tenant_db, db, user)
 
 
 # ============================================================
