@@ -21,11 +21,14 @@ export default function EmployeeReporting() {
   const [departments, setDepartments] = useState([]);
   const [validManagers, setValidManagers] = useState([]);
 
+
   const fetchData = async () => {
     try {
       // Fetch current reporting
       const reportingRes = await api.get(`/reporting/employees/${id}`).catch(() => ({ data: {} }));
       setCurrentReporting(reportingRes.data);
+      
+
       
       // Fetch levels
       const levelsRes = await api.get("/reporting/levels");
@@ -44,6 +47,8 @@ export default function EmployeeReporting() {
       const deptsRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
       const deptsData = deptsRes.data?.departments || [];
       setDepartments(deptsData);
+      
+
       
 
       
@@ -329,6 +334,7 @@ export default function EmployeeReporting() {
                       onChange={(e) => setForm({ ...form, effective_from: e.target.value })}
                     />
                   </div>
+
                 </div>
                 
                 <div className="flex gap-3 mt-6">

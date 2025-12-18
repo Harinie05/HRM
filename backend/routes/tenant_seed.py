@@ -82,6 +82,39 @@ def seed_tenant(tenant_db: str):
             total_perms = db.query(Permission).count()
             print(f"✓ Total permissions in database: {total_perms}")
 
+            # Clean up any unwanted records that might have been created
+            unwanted_names = ['app apollo', 'apollo', 'test app', 'dummy']
+            
+            # Clean up any tables that might have unwanted records
+            try:
+                from models.models_tenant import LeaveType, Role, Department
+                
+                # Remove unwanted leave types
+                for name in unwanted_names:
+                    unwanted_leave = db.query(LeaveType).filter(LeaveType.name.ilike(f"%{name}%")).all()
+                    for leave in unwanted_leave:
+                        db.delete(leave)
+                        print(f"  - Removed unwanted leave type: {leave.name}")
+                
+                # Remove unwanted roles
+                for name in unwanted_names:
+                    unwanted_roles = db.query(Role).filter(Role.name.ilike(f"%{name}%")).all()
+                    for role in unwanted_roles:
+                        db.delete(role)
+                        print(f"  - Removed unwanted role: {role.name}")
+                
+                # Remove unwanted departments
+                for name in unwanted_names:
+                    unwanted_depts = db.query(Department).filter(Department.name.ilike(f"%{name}%")).all()
+                    for dept in unwanted_depts:
+                        db.delete(dept)
+                        print(f"  - Removed unwanted department: {dept.name}")
+                
+                db.commit()
+                print("✓ Cleanup completed")
+            except Exception as cleanup_error:
+                print(f"⚠️ Cleanup warning: {str(cleanup_error)}")
+
         print(f"🌱 Tenant seeding completed for: {tenant_db}\n")
     except Exception as e:
         print(f"❌ Error seeding tenant {tenant_db}: {str(e)}")

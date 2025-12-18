@@ -298,6 +298,85 @@ def save_night_shift_rules(
     finally:
         db.close()
 
+@router.get("/night-shift-rules/list")
+def list_night_shift_rules(user=Depends(get_current_user)):
+    """Get all night shift rules"""
+    db = get_tenant_session(user)
+    try:
+        rules = db.query(NightShiftRule).all()
+        return {"rules": rules}
+    except Exception as e:
+        raise HTTPException(500, f"Error fetching night shift rules: {str(e)}")
+    finally:
+        db.close()
+
+@router.get("/night-shift-rules/{rule_id}")
+def get_night_shift_rule(rule_id: int, user=Depends(get_current_user)):
+    """Get specific night shift rule by ID"""
+    db = get_tenant_session(user)
+    try:
+        rule = db.query(NightShiftRule).filter(NightShiftRule.id == rule_id).first()
+        if not rule:
+            raise HTTPException(404, "Night shift rule not found")
+        return {"rule": rule}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Error fetching night shift rule: {str(e)}")
+    finally:
+        db.close()
+
+@router.put("/night-shift-rules/{rule_id}")
+def update_night_shift_rule(
+    rule_id: int,
+    request: NightShiftRulesRequest,
+    user=Depends(get_current_user)
+):
+    """Update specific night shift rule"""
+    db = get_tenant_session(user)
+    try:
+        rule = db.query(NightShiftRule).filter(NightShiftRule.id == rule_id).first()
+        if not rule:
+            raise HTTPException(404, "Night shift rule not found")
+        
+        rule.applicable_shifts = request.applicable_shifts
+        rule.punch_out_rule = request.punch_out_rule
+        rule.minimum_hours = request.minimum_hours
+        rule.night_ot_rate = request.night_ot_rate
+        rule.grace_minutes = request.grace_minutes
+        
+        db.commit()
+        return {"message": "Night shift rule updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error updating night shift rule: {str(e)}")
+    finally:
+        db.close()
+
+@router.delete("/night-shift-rules/{rule_id}")
+def delete_night_shift_rule(rule_id: int, user=Depends(get_current_user)):
+    """Delete specific night shift rule"""
+    db = get_tenant_session(user)
+    try:
+        rule = db.query(NightShiftRule).filter(NightShiftRule.id == rule_id).first()
+        if not rule:
+            raise HTTPException(404, "Night shift rule not found")
+        
+        db.delete(rule)
+        db.commit()
+        return {"message": "Night shift rule deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error deleting night shift rule: {str(e)}")
+    finally:
+        db.close()
+
 # -------------------------------------------------------------------------
 # DEBUG: CHECK ROSTER TABLE
 # -------------------------------------------------------------------------

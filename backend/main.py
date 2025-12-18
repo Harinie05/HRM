@@ -32,7 +32,7 @@ from routes.recruitment.recruitment_public import router as public_router
 from routes.recruitment.screening import router as screening_router
 from routes.recruitment.dashboard import router as dashboard_router
 
-# ======================= 🔥 EIS ROUTERS (NEW) =======================
+# ======================= 🔥 EIS ROUTERS =======================
 from routes.EIS.employee import router as employee_router
 from routes.EIS.family import router as family_router
 from routes.EIS.education import router as education_router
@@ -54,10 +54,16 @@ from routes.attendance.rules import router as attendance_rules_router
 from routes.attendance.locations import router as attendance_locations_router
 from routes.attendance.reports import router as attendance_reports_router
 
+# ======================= 🔥 LEAVE ROUTERS =======================
+from routes.leave.leave_types import router as leave_types_router
+from routes.leave.leave_rules import router as leave_rules_router
+from routes.leave.leave_applications import router as leave_applications_router
+from routes.leave.leave_balances import router as leave_balances_router
+from routes.leave.leave_reports import router as leave_reports_router
+
 # ======================= 🔥 ORGANIZATION ROUTERS =======================
 from routes.organization.reporting import router as reporting_router
-# =====================================================================
-
+# ============================================================
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 
@@ -88,11 +94,9 @@ def create_tables():
     models_master.MasterBase.metadata.create_all(bind=master_engine)
     logger.info("Master tables created.")
     
-    # Create tenant databases that are referenced in master DB
     try:
         from database import create_tenant_database, get_tenant_engine, get_master_db
         
-        # Get all existing hospitals from master DB
         master_db = next(get_master_db())
         hospitals = master_db.query(models_master.Hospital).all()
         
@@ -104,12 +108,10 @@ def create_tables():
                 tenant_engine = get_tenant_engine(hospital.db_name)
                 models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
                 logger.info(f"Tenant tables created/verified for {hospital.db_name}")
-                
             except Exception as e:
                 logger.error(f"Error creating tenant DB {hospital.db_name}: {str(e)}")
         
         master_db.close()
-        
     except Exception as e:
         logger.error(f"Error during tenant database setup: {str(e)}")
 
@@ -158,6 +160,13 @@ app.include_router(attendance_regularization_router, prefix="/api")
 app.include_router(attendance_rules_router, prefix="/api")
 app.include_router(attendance_locations_router, prefix="/api")
 app.include_router(attendance_reports_router, prefix="/api")
+
+# ======================= 🔥 LEAVE MODULE =======================
+app.include_router(leave_types_router, prefix="/api")
+app.include_router(leave_rules_router, prefix="/api")
+app.include_router(leave_applications_router, prefix="/api")
+app.include_router(leave_balances_router, prefix="/api")
+app.include_router(leave_reports_router, prefix="/api")
 # ============================================================
 
 logger.info("All routers loaded successfully")
@@ -167,5 +176,3 @@ logger.info("All routers loaded successfully")
 def root():
     logger.info("Root endpoint hit")
     return {"message": "Nutryah HRM Backend Running 🚀"}
-
-

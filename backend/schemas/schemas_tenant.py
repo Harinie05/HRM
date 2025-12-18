@@ -284,10 +284,11 @@ class LeavePolicyBase(BaseModel):
     status: str
 
 class LeavePolicyCreate(LeavePolicyBase):
-    pass
+    leave_allocations: Optional[dict] = None
 
 class LeavePolicyOut(LeavePolicyBase):
     id: int
+    leave_allocations: Optional[dict] = None
     class Config: from_attributes = True
 
 
@@ -1109,4 +1110,171 @@ class AttendanceLocationOut(AttendanceLocationCreate):
 
     class Config:
         from_attributes = True
+# =====================================================
+# LEAVE MANAGEMENT SCHEMAS  
+# =====================================================
+
+class LeaveTypeCreate(BaseModel):
+    name: str
+    code: str
+    category: Optional[str] = None
+    is_paid: bool = True
+
+    annual_limit: int = 0
+    carry_forward: bool = False
+    max_carry_forward: Optional[int] = None
+
+    attachment_required: bool = False
+    auto_approve_days: int = 0
+
+
+class LeaveTypeUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    category: Optional[str] = None
+    is_paid: Optional[bool] = None
+
+    annual_limit: Optional[int] = None
+    carry_forward: Optional[bool] = None
+    max_carry_forward: Optional[int] = None
+
+    attachment_required: Optional[bool] = None
+    auto_approve_days: Optional[int] = None
+
+    status: Optional[str] = None
+
+
+class LeaveTypeOut(BaseModel):
+    id: int
+    name: str
+    code: str
+    category: Optional[str]
+    is_paid: bool
+
+    annual_limit: int
+    carry_forward: bool
+    max_carry_forward: Optional[int]
+
+    attachment_required: bool
+    auto_approve_days: int
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class LeaveRuleCreate(BaseModel):
+    accrual_frequency: str          # Monthly / Quarterly / Yearly
+    accrual_method: str             # Fixed / Pro-rata / Attendance
+
+    carry_forward_limit: Optional[int]
+    encashment_allowed: bool = False
+    encashment_rate: Optional[float]
+
+    auto_deduct_lop: bool = True
+
+
+class LeaveRuleUpdate(BaseModel):
+    accrual_frequency: Optional[str] = None
+    accrual_method: Optional[str] = None
+
+    carry_forward_limit: Optional[int] = None
+    encashment_allowed: Optional[bool] = None
+    encashment_rate: Optional[float] = None
+
+    auto_deduct_lop: Optional[bool] = None
+    status: Optional[str] = None
+
+
+class LeaveRuleOut(BaseModel):
+    id: int
+    accrual_frequency: str
+    accrual_method: str
+    carry_forward_limit: Optional[int]
+
+    encashment_allowed: bool
+    encashment_rate: Optional[float]
+
+    auto_deduct_lop: bool
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+class LeaveApply(BaseModel):
+    leave_type_id: int
+    from_date: date
+    to_date: date
+    total_days: float
+    reason: Optional[str] = None
+    policy_id: Optional[int] = None  # Optional policy override
+
+class LeaveApplicationUpdate(BaseModel):
+    from_date: Optional[date] = None
+    to_date: Optional[date] = None
+    total_days: Optional[float] = None
+    reason: Optional[str] = None
+    attachment: Optional[str] = None
+
+class LeaveApproval(BaseModel):
+    status: str                    # Approved / Rejected
+    approver_comment: Optional[str] = None
+
+class LeaveApplicationOut(BaseModel):
+    id: int
+    employee_id: int
+    leave_type_id: int
+
+    from_date: date
+    to_date: date
+    total_days: float
+
+    reason: Optional[str]
+    attachment: Optional[str]
+
+    status: str
+    approver_id: Optional[int]
+    approver_comment: Optional[str]
+
+    applied_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class LeaveBalanceCreate(BaseModel):
+    employee_id: int
+    leave_type_id: int
+    total_allocated: float
+class LeaveBalanceUpdate(BaseModel):
+    used: Optional[float]
+    balance: Optional[float]
+class LeaveBalanceOut(BaseModel):
+    id: int
+    employee_id: int
+    leave_type_id: int
+
+    total_allocated: float
+    used: float
+    balance: float
+
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+class LeaveApprovalHistoryCreate(BaseModel):
+    leave_application_id: int
+    action: str                # Approved / Rejected
+    action_by: int
+    comments: Optional[str] = None
+class LeaveApprovalHistoryOut(BaseModel):
+    id: int
+    leave_application_id: int
+    action: str
+    action_by: int
+    comments: Optional[str]
+    action_at: datetime
+
+    class Config:
+        from_attributes = True
+
 

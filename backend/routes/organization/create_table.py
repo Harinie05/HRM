@@ -658,4 +658,146 @@ with engine.connect() as conn:
         print(f"⚠️ Error adding default locations: {e}")
         conn.rollback()
 
+# ========================= ADD LEAVE_ALLOCATIONS COLUMN TO ALL TENANTS =========================
+print("\nAdding leave_allocations column to all tenant databases...")
+
+# Import required modules for multi-tenant migration
+import pymysql
+from database import get_master_db
+from models.models_master import Hospital
+
+# Get all hospitals from master database
+master_db = next(get_master_db())
+hospitals = master_db.query(Hospital).all()
+
+for hospital in hospitals:
+    try:
+        # Connect to tenant database
+        connection = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database=hospital.db_name,
+            charset='utf8mb4'
+        )
+        
+        with connection.cursor() as cursor:
+            # Check if column exists
+            cursor.execute("""
+                SELECT COUNT(*) 
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = %s 
+                AND TABLE_NAME = 'leave_policies' 
+                AND COLUMN_NAME = 'leave_allocations'
+            """, (hospital.db_name,))
+            
+            column_exists = cursor.fetchone()[0] > 0
+            
+            if not column_exists:
+                # Add the column
+                cursor.execute("""
+                    ALTER TABLE leave_policies 
+                    ADD COLUMN leave_allocations JSON NULL
+                """)
+                connection.commit()
+                print(f"✅ Added leave_allocations column to {hospital.db_name}")
+            else:
+                print(f"ℹ️  Column already exists in {hospital.db_name}")
+        
+        connection.close()
+        
+    except Exception as e:
+        print(f"❌ Error updating {hospital.db_name}: {e}")
+
+master_db.close()
+print("🎉 Leave allocations migration completed for all tenants!")
+
+# Also add to current tenant for immediate use
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE leave_policies ADD COLUMN leave_allocations JSON NULL"))
+        print("✅ Added leave_allocations column to current tenant")
+        conn.commit()
+    except Exception as e:
+        print(f"⚠️ leave_allocations current tenant: {e}")
+
+# ========================= ADD LEAVE_POLICY_ID COLUMNS =========================
+print("\nAdding leave_policy_id columns...")
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN leave_policy_id INT NULL"))
+        print("✅ Added leave_policy_id to users")
+    except Exception as e:
+        print(f"⚠️ users leave_policy_id: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE employees ADD COLUMN leave_policy_id INT NULL"))
+        print("✅ Added leave_policy_id to employees")
+    except Exception as e:
+        print(f"⚠️ employees leave_policy_id: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE leave_applications ADD COLUMN policy_id INT NULL"))
+        print("✅ Added policy_id to leave_applications")
+    except Exception as e:
+        print(f"⚠️ leave_applications policy_id: {e}")
+    
+    conn.commit()
+
+# ========================= CREATE MISSING LEAVE BALANCES FOR TESTING =========================
+print("\nCreating missing leave balances for policy testing...")
+with engine.connect() as conn:
+    try:
+        # Get employee 1234
+        employee_query = text("SELECT id FROM users WHERE employee_code = '1234'")
+        employee_result = conn.execute(employee_query).fetchone()
+        
+        if employee_result:
+            employee_id = employee_result[0]
+            print(f"Found employee 1234 with ID: {employee_id}")
+            
+            # Create missing balances for policy testing
+            # AL (Annual Leave) - 10 days for policy 1
+            al_query = text("SELECT id FROM leave_types WHERE code = 'AL'")
+            al_result = conn.execute(al_query).fetchone()
+            
+            if al_result:
+                al_type_id = al_result[0]
+                # Check if AL balance exists
+                al_balance_check = text("SELECT id FROM leave_balances WHERE employee_id = :emp_id AND leave_type_id = :type_id")
+                al_exists = conn.execute(al_balance_check, {"emp_id": employee_id, "type_id": al_type_id}).fetchone()
+                
+                if not al_exists:
+                    al_insert = text("""
+                        INSERT INTO leave_balances (employee_id, leave_type_id, total_allocated, used, balance)
+                        VALUES (:emp_id, :type_id, 10, 0, 10)
+                    """)
+                    conn.execute(al_insert, {"emp_id": employee_id, "type_id": al_type_id})
+                    print("  ✅ Created Annual Leave balance: 10 days")
+            
+            # ML (Maternity Leave) - 12 days for policy 1
+            ml_query = text("SELECT id FROM leave_types WHERE code = 'ML'")
+            ml_result = conn.execute(ml_query).fetchone()
+            
+            if ml_result:
+                ml_type_id = ml_result[0]
+                # Check if ML balance exists
+                ml_balance_check = text("SELECT id FROM leave_balances WHERE employee_id = :emp_id AND leave_type_id = :type_id")
+                ml_exists = conn.execute(ml_balance_check, {"emp_id": employee_id, "type_id": ml_type_id}).fetchone()
+                
+                if not ml_exists:
+                    ml_insert = text("""
+                        INSERT INTO leave_balances (employee_id, leave_type_id, total_allocated, used, balance)
+                        VALUES (:emp_id, :type_id, 12, 0, 12)
+                    """)
+                    conn.execute(ml_insert, {"emp_id": employee_id, "type_id": ml_type_id})
+                    print("  ✅ Created Maternity Leave balance: 12 days")
+        
+        conn.commit()
+        print("🎉 Leave balances created successfully!")
+        
+    except Exception as e:
+        print(f"⚠️ Error creating leave balances: {e}")
+        conn.rollback()
+
 print("\n🎉 DONE — All tables created and updated successfully!\n")

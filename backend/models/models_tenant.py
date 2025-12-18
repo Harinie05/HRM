@@ -55,6 +55,7 @@ class User(MasterBase):
     designation = Column(String(150), nullable=True)
     joining_date = Column(Date, nullable=True)
     status = Column(String(50), default="Active")  # Active/Inactive
+    leave_policy_id = Column(Integer, nullable=True)  # Assigned leave policy
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -181,6 +182,8 @@ class LeavePolicy(MasterBase):
     annual = Column(Integer, default=0)
     sick = Column(Integer, default=0)
     casual = Column(Integer, default=0)
+    # Dynamic leave allocations for future leave types
+    leave_allocations = Column(JSON, nullable=True)  # {"MAT": 90, "PAT": 15, "STU": 5}
     carry_forward = Column(Boolean, default=True)
     max_carry = Column(Integer, nullable=True)
     encashment = Column(Boolean, default=False)
@@ -501,6 +504,7 @@ class Employee(MasterBase):
     shift = Column(String(50))       # General / Rotational
 
     offer_id = Column(Integer)       # Link to Offer Letter ID
+    leave_policy_id = Column(Integer, nullable=True)  # Assigned leave policy
 
     created_at = Column(DateTime, default=func.now())
 
@@ -881,3 +885,107 @@ class AttendancePunch(MasterBase):
     device_info = Column(String(200), nullable=True)
 
     created_at = Column(DateTime, server_default=func.now())
+
+# =========================
+# LEAVE MANAGEMENT TABLES
+# =========================
+
+# ------------------------------
+# LEAVE TYPES & POLICIES
+# ------------------------------
+class LeaveType(MasterBase):
+    __tablename__ = "leave_types"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(150), nullable=False)           # Casual Leave, Sick Leave
+    code = Column(String(20), unique=True, nullable=False)  # CL, SL, EL
+
+    category = Column(String(100))                       # General / Medical / Earned
+    is_paid = Column(Boolean, default=True)
+
+    annual_limit = Column(Integer, default=0)
+    carry_forward = Column(Boolean, default=False)
+    max_carry_forward = Column(Integer, nullable=True)
+
+    attachment_required = Column(Boolean, default=False)
+    auto_approve_days = Column(Integer, default=0)
+
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+# ------------------------------
+# LEAVE RULES (ACCRUAL / ENCASH)
+# ------------------------------
+class LeaveRule(MasterBase):
+    __tablename__ = "leave_rules"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    accrual_frequency = Column(String(50))   # Monthly / Quarterly / Yearly
+    accrual_method = Column(String(50))      # Fixed / Pro-rata / Attendance based
+
+    carry_forward_limit = Column(Integer)
+    encashment_allowed = Column(Boolean, default=False)
+    encashment_rate = Column(Float, nullable=True)
+
+    auto_deduct_lop = Column(Boolean, default=True)
+
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+# ------------------------------
+# LEAVE APPLICATION
+# ------------------------------
+class LeaveApplication(MasterBase):
+    __tablename__ = "leave_applications"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    leave_type_id = Column(Integer, ForeignKey("leave_types.id"), nullable=False)
+    policy_id = Column(Integer, nullable=True)  # Optional policy override
+
+    from_date = Column(Date, nullable=False)
+    to_date = Column(Date, nullable=False)
+    total_days = Column(Float, nullable=False)
+
+    reason = Column(Text, nullable=True)
+    attachment = Column(String(500), nullable=True)
+
+    status = Column(String(50), default="Pending")  # Pending / Approved / Rejected
+
+    approver_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    approver_comment = Column(Text, nullable=True)
+
+    applied_at = Column(DateTime, default=func.now())
+# ------------------------------
+# LEAVE BALANCE
+# ------------------------------
+class LeaveBalance(MasterBase):
+    __tablename__ = "leave_balances"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    leave_type_id = Column(Integer, ForeignKey("leave_types.id"), nullable=False)
+
+    total_allocated = Column(Float, default=0)
+    used = Column(Float, default=0)
+    balance = Column(Float, default=0)
+
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+# ------------------------------
+# LEAVE APPROVAL HISTORY (OPTIONAL BUT PRO)
+# ------------------------------
+class LeaveApprovalHistory(MasterBase):
+    __tablename__ = "leave_approval_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    leave_application_id = Column(Integer, ForeignKey("leave_applications.id"))
+    action = Column(String(50))   # Approved / Rejected
+    action_by = Column(Integer)   # User ID
+    comments = Column(Text)
+
+    action_at = Column(DateTime, default=func.now())

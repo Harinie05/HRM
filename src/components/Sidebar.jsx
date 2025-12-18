@@ -251,6 +251,19 @@ export default function Sidebar() {
           )}
         </div>
 
+        {/* Leave Management */}
+        <Link
+          to="/leave"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/leave")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <Clock size={20} />
+          <span>Leave Management</span>
+        </Link>
+
       </nav>
     </div>
   );

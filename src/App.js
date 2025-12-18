@@ -54,6 +54,14 @@ import AttendanceReports from "./pages/attendance/AttendanceReports";
 import AttendanceRules from "./pages/attendance/AttendanceRules";
 import AttendanceLocations from "./pages/attendance/AttendanceLocations";
 
+// Leave Management
+import LeaveLayout from "./pages/leaves/LeaveLayout";
+import LeaveTypes from "./pages/leaves/LeaveTypes";
+import LeaveRules from "./pages/leaves/LeaveRules";
+import LeaveApplications from "./pages/leaves/LeaveApplications";
+import LeaveCalendar from "./pages/leaves/LeaveCalendar";
+import LeaveReports from "./pages/leaves/LeaveReports";
+
 function App() {
   return (
     <BrowserRouter>
@@ -128,6 +136,9 @@ function App() {
         <Route path="/attendance/reports" element={<ProtectedRoute><AttendanceReports /></ProtectedRoute>} />
         <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
         <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />
+
+        {/* LEAVE MANAGEMENT */}
+        <Route path="/leave" element={<ProtectedRoute><LeaveLayout /></ProtectedRoute>} />
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

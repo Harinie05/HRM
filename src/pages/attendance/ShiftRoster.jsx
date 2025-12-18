@@ -31,6 +31,9 @@ export default function ShiftRoster() {
     night_ot_rate: "1.5x",
     grace_minutes: 15
   });
+  const [allNightShiftRules, setAllNightShiftRules] = useState([]);
+  const [showNightShiftRulesList, setShowNightShiftRulesList] = useState(false);
+  const [editingNightShiftRule, setEditingNightShiftRule] = useState(null);
   const [showCreateShift, setShowCreateShift] = useState(false);
   const [newShift, setNewShift] = useState({ name: "", start_time: "", end_time: "" });
   const [selectedUsersForBulk, setSelectedUsersForBulk] = useState([]);
@@ -277,6 +280,86 @@ export default function ShiftRoster() {
       }
     } catch (error) {
       console.error("Error fetching night shift rules:", error);
+    }
+  };
+
+  const fetchAllNightShiftRules = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+      
+      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules/list", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAllNightShiftRules(data.rules || []);
+      }
+    } catch (error) {
+      console.error("Error fetching all night shift rules:", error);
+    }
+  };
+
+  const editNightShiftRule = async (ruleId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+      
+      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setEditingNightShiftRule(data.rule);
+        setNightShiftRules(data.rule);
+      }
+    } catch (error) {
+      console.error("Error fetching night shift rule:", error);
+    }
+  };
+
+  const updateNightShiftRule = async (ruleId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(nightShiftRules)
+      });
+      
+      if (response.ok) {
+        alert("Night shift rule updated successfully!");
+        setEditingNightShiftRule(null);
+        fetchAllNightShiftRules();
+      }
+    } catch (error) {
+      console.error("Error updating night shift rule:", error);
+    }
+  };
+
+  const deleteNightShiftRule = async (ruleId) => {
+    if (!confirm("Are you sure you want to delete this night shift rule?")) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        alert("Night shift rule deleted successfully!");
+        fetchAllNightShiftRules();
+      }
+    } catch (error) {
+      console.error("Error deleting night shift rule:", error);
     }
   };
 
@@ -1021,7 +1104,76 @@ export default function ShiftRoster() {
 
       {/* Section 3: Night Shift Rules */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4"> Night Shift Rules</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-800"> Night Shift Rules</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                fetchAllNightShiftRules();
+                setShowNightShiftRulesList(!showNightShiftRulesList);
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              {showNightShiftRulesList ? 'Hide' : 'View All Rules'}
+            </button>
+          </div>
+        </div>
+
+        {showNightShiftRulesList && (
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+            <h3 className="text-md font-semibold mb-4">All Night Shift Rules</h3>
+            {allNightShiftRules.length === 0 ? (
+              <p className="text-gray-500">No night shift rules found</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Applicable Shifts</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Punch Out Rule</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Min Hours</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">OT Rate</th>
+                      <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allNightShiftRules.map((rule) => (
+                      <tr key={rule.id}>
+                        <td className="border border-gray-300 px-4 py-2">{rule.id}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {rule.applicable_shifts?.map(shiftId => {
+                            const shift = shifts.find(s => s.id === shiftId);
+                            return shift ? shift.name : `Shift ${shiftId}`;
+                          }).join(', ') || 'None'}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">{rule.punch_out_rule}</td>
+                        <td className="border border-gray-300 px-4 py-2">{rule.minimum_hours} hrs</td>
+                        <td className="border border-gray-300 px-4 py-2">{rule.night_ot_rate}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => editNightShiftRule(rule.id)}
+                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => deleteNightShiftRule(rule.id)}
+                              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -1097,13 +1249,30 @@ export default function ShiftRoster() {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 flex gap-4">
           <button
-            onClick={saveNightShiftRules}
+            onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
-            Save Night Shift Rules
+            {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
           </button>
+          {editingNightShiftRule && (
+            <button
+              onClick={() => {
+                setEditingNightShiftRule(null);
+                setNightShiftRules({
+                  applicable_shifts: [],
+                  punch_out_rule: "Same day",
+                  minimum_hours: 6,
+                  night_ot_rate: "1.5x",
+                  grace_minutes: 15
+                });
+              }}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+            >
+              Cancel Edit
+            </button>
+          )}
         </div>
       </div>
         </div>

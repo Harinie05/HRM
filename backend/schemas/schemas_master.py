@@ -38,3 +38,4 @@ class HospitalOut(BaseModel):
 class AdminAuth(BaseModel):
     email: EmailStr
     password: str
+

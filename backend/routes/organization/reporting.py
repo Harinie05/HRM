@@ -203,6 +203,7 @@ def assign_employee_reporting(
                 "department_id": payload.get("department_id"),
                 "effective_from": payload.get("effective_from")
             })
+            
             conn.commit()
             
         return {"message": "Employee reporting assigned successfully"}
