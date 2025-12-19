@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Text, JSON, Text, JSON
 from sqlalchemy.orm import declarative_base, relationship
 
 MasterBase = declarative_base()
@@ -32,3 +32,35 @@ class MasterUser(MasterBase):
     created_at = Column(DateTime, default=func.now())
 
     hospital = relationship("Hospital", back_populates="users")
+
+
+class AuditLog(MasterBase):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True)
+    tenant_id = Column(String(50), nullable=False)
+    user_id = Column(Integer, nullable=True)
+    action = Column(String(100), nullable=False)
+    table_name = Column(String(100), nullable=False)
+    record_id = Column(String(50), nullable=True)
+    old_values = Column(JSON, nullable=True)
+    new_values = Column(JSON, nullable=True)
+    ip_address = Column(String(45), nullable=True)
+    user_agent = Column(String(500), nullable=True)
+    created_at = Column(DateTime, default=func.now())
+
+
+class ErrorLog(MasterBase):
+    __tablename__ = "error_logs"
+
+    id = Column(Integer, primary_key=True)
+    tenant_id = Column(String(50), nullable=True)
+    error_type = Column(String(100), nullable=False)
+    error_message = Column(Text, nullable=False)
+    stack_trace = Column(Text, nullable=True)
+    request_url = Column(String(500), nullable=True)
+    request_method = Column(String(10), nullable=True)
+    request_data = Column(JSON, nullable=True)
+    user_id = Column(Integer, nullable=True)
+    ip_address = Column(String(45), nullable=True)
+    created_at = Column(DateTime, default=func.now())

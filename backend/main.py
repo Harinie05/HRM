@@ -1,9 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 from pathlib import Path
 
 from database import master_engine, logger
+from utils.audit_logger import log_audit, log_error
 
 import models.models_master as models_master
 import models.models_tenant as models_tenant
@@ -61,6 +63,14 @@ from routes.leave.leave_applications import router as leave_applications_router
 from routes.leave.leave_balances import router as leave_balances_router
 from routes.leave.leave_reports import router as leave_reports_router
 
+# ======================= 🔥 PAYROLL ROUTERS (NEW) =======================
+from routes.payroll.salary_structure import router as salary_structure_router
+from routes.payroll.statutory_rules import router as statutory_rules_router
+from routes.payroll.payroll_run import router as payroll_run_router
+from routes.payroll.adjustments import router as payroll_adjustments_router
+from routes.payroll.payslip import router as payroll_payslip_router
+from routes.payroll.reports import router as payroll_reports_router
+
 # ======================= 🔥 ORGANIZATION ROUTERS =======================
 from routes.organization.reporting import router as reporting_router
 # ============================================================
@@ -68,6 +78,37 @@ from routes.organization.reporting import router as reporting_router
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 
 logger.info("🚀 FastAPI HRM Backend started")
+
+# ---------------- AUDIT MIDDLEWARE ----------------
+class AuditMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        try:
+            tenant_id = request.headers.get("tenant-id") or request.cookies.get("tenant_db")
+            user_id = request.headers.get("user-id")
+            ip_address = request.client.host if request.client else None
+            user_agent = request.headers.get("user-agent")
+            
+            request.state.tenant_id = tenant_id
+            request.state.user_id = user_id
+            request.state.ip_address = ip_address
+            request.state.user_agent = user_agent
+            
+            response = await call_next(request)
+            return response
+            
+        except Exception as e:
+            log_error(
+                tenant_id=getattr(request.state, 'tenant_id', None),
+                error_type="RequestError",
+                error_message=str(e),
+                request_url=str(request.url),
+                request_method=request.method,
+                user_id=getattr(request.state, 'user_id', None),
+                ip_address=getattr(request.state, 'ip_address', None)
+            )
+            raise
+
+app.add_middleware(AuditMiddleware)
 
 # ---------------- DIRECTORIES ----------------
 Path("uploads/policies").mkdir(parents=True, exist_ok=True)
@@ -167,6 +208,14 @@ app.include_router(leave_rules_router, prefix="/api")
 app.include_router(leave_applications_router, prefix="/api")
 app.include_router(leave_balances_router, prefix="/api")
 app.include_router(leave_reports_router, prefix="/api")
+
+# ======================= 🔥 PAYROLL MODULE (NEW) =======================
+app.include_router(salary_structure_router, prefix="/api")
+app.include_router(statutory_rules_router, prefix="/api")
+app.include_router(payroll_run_router, prefix="/api")
+app.include_router(payroll_adjustments_router, prefix="/api")
+app.include_router(payroll_payslip_router, prefix="/api")
+app.include_router(payroll_reports_router, prefix="/api")
 # ============================================================
 
 logger.info("All routers loaded successfully")

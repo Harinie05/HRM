@@ -1,0 +1,341 @@
+import { useEffect, useState } from "react";
+import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
+import api from "../../api";
+
+export default function PayrollAdjustments() {
+  const [adjustments, setAdjustments] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editingAdjustment, setEditingAdjustment] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    employee_id: "",
+    month: "",
+    adjustment_type: "",
+    amount: 0,
+    description: ""
+  });
+
+  useEffect(() => {
+    fetchAdjustments();
+    fetchEmployees();
+  }, []);
+
+  const fetchAdjustments = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/api/payroll/adjustments");
+      setAdjustments(res.data || []);
+    } catch (error) {
+      console.error("Error fetching adjustments:", error);
+      setAdjustments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchEmployees = async () => {
+    try {
+      const tenantDb = localStorage.getItem('tenant_db');
+      const res = await api.get(`/api/users/${tenantDb}/list`);
+      setEmployees(res.data?.users?.filter(u => u.is_employee) || []);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      setEmployees([]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const payload = {
+        ...formData,
+        employee_id: parseInt(formData.employee_id),
+        amount: parseFloat(formData.amount)
+      };
+      
+      if (editingAdjustment) {
+        await api.put(`/api/payroll/adjustments/${editingAdjustment.id}`, payload);
+      } else {
+        await api.post("/api/payroll/adjustments", payload);
+      }
+      await fetchAdjustments();
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error saving adjustment:", error);
+      alert('Failed to save adjustment. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this adjustment?")) {
+      try {
+        await api.delete(`/api/payroll/adjustments/${id}`);
+        fetchAdjustments();
+      } catch (error) {
+        console.error("Error deleting adjustment:", error);
+      }
+    }
+  };
+
+  const handleOpenModal = (adjustment = null) => {
+    if (adjustment) {
+      setEditingAdjustment(adjustment);
+      setFormData({
+        employee_id: adjustment.employee_id || "",
+        month: adjustment.month || "",
+        adjustment_type: adjustment.adjustment_type || "",
+        amount: adjustment.amount || 0,
+        description: adjustment.description || ""
+      });
+    } else {
+      setEditingAdjustment(null);
+      setFormData({
+        employee_id: "",
+        month: "",
+        adjustment_type: "",
+        amount: 0,
+        description: ""
+      });
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingAdjustment(null);
+  };
+
+  const filteredAdjustments = adjustments.filter(adjustment => {
+    const employee = employees.find(emp => emp.id === adjustment.employee_id);
+    const employeeName = employee ? employee.name : '';
+    
+    return adjustment.employee_id?.toString().includes(searchTerm) ||
+           adjustment.month?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           adjustment.adjustment_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           employeeName.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const getEmployeeName = (employeeId) => {
+    const employee = employees.find(emp => emp.id === employeeId);
+    return employee ? employee.name : `Employee #${employeeId}`;
+  };
+
+  const adjustmentTypes = ["Bonus", "Arrears", "Medical", "Overtime", "Deduction", "Other"];
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Payroll Adjustments</h2>
+            <p className="text-gray-600 mt-1">Manage arrears, bonuses and one-time adjustments</p>
+          </div>
+          <button 
+            onClick={() => handleOpenModal()}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus size={16} />
+            Add Adjustment
+          </button>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+          <input
+            type="text"
+            placeholder="Search adjustments..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredAdjustments.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  {searchTerm ? "No adjustments found matching your search." : "No payroll adjustments added yet."}
+                </td>
+              </tr>
+            ) : (
+              filteredAdjustments.map((adjustment) => (
+                <tr key={adjustment.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
+                    <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{adjustment.month}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      adjustment.adjustment_type === "Bonus" ? "bg-green-100 text-green-800" :
+                      adjustment.adjustment_type === "Deduction" ? "bg-red-100 text-red-800" :
+                      "bg-blue-100 text-blue-800"
+                    }`}>
+                      {adjustment.adjustment_type}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className={`text-sm font-medium ${
+                      adjustment.adjustment_type === "Deduction" ? "text-red-600" : "text-green-600"
+                    }`}>
+                      {adjustment.adjustment_type === "Deduction" ? "-" : "+"}₹{adjustment.amount?.toLocaleString()}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 max-w-xs truncate">{adjustment.description}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center gap-2">
+                      <button className="text-blue-600 hover:text-blue-900 p-1 rounded">
+                        <Eye size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleOpenModal(adjustment)}
+                        className="text-indigo-600 hover:text-indigo-900 p-1 rounded"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(adjustment.id)}
+                        className="text-red-600 hover:text-red-900 p-1 rounded"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Stats Footer */}
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <div className="flex justify-between items-center text-sm text-gray-600">
+          <span>Total Adjustments: {adjustments.length}</span>
+          <span>This Month: {adjustments.filter(a => a.month === new Date().toLocaleString('default', { month: 'long' })).length}</span>
+          <span>Total Amount: ₹{adjustments.reduce((sum, adj) => sum + (adj.amount || 0), 0).toLocaleString()}</span>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">
+              {editingAdjustment ? "Edit Adjustment" : "Add Adjustment"}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <select
+                  value={formData.employee_id}
+                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map(employee => (
+                    <option key={employee.id} value={employee.id}>
+                      {employee.name} ({employee.employee_code || employee.id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                <select
+                  value={formData.month}
+                  onChange={(e) => setFormData({...formData, month: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="">Select Month</option>
+                  {["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"].map(month => (
+                    <option key={month} value={month}>{month} {new Date().getFullYear()}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Adjustment Type</label>
+                <select
+                  value={formData.adjustment_type}
+                  onChange={(e) => setFormData({...formData, adjustment_type: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="">Select Type</option>
+                  {adjustmentTypes.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value) || 0})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  rows="3"
+                />
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Saving..." : (editingAdjustment ? "Update" : "Create")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

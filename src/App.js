@@ -56,11 +56,9 @@ import AttendanceLocations from "./pages/attendance/AttendanceLocations";
 
 // Leave Management
 import LeaveLayout from "./pages/leaves/LeaveLayout";
-import LeaveTypes from "./pages/leaves/LeaveTypes";
-import LeaveRules from "./pages/leaves/LeaveRules";
-import LeaveApplications from "./pages/leaves/LeaveApplications";
-import LeaveCalendar from "./pages/leaves/LeaveCalendar";
-import LeaveReports from "./pages/leaves/LeaveReports";
+
+// ✅ PAYROLL
+import PayrollLayout from "./pages/payroll/PayrollLayout";
 
 function App() {
   return (
@@ -72,14 +70,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* DASHBOARD */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
         {/* USER MANAGEMENT */}
         <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
@@ -87,14 +78,7 @@ function App() {
         <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
 
         {/* ORGANIZATION SETUP */}
-        <Route
-          path="/organization"
-          element={
-            <ProtectedRoute>
-              <OrganizationLayout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/organization" element={<ProtectedRoute><OrganizationLayout /></ProtectedRoute>}>
           <Route index element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
           <Route path="company-profile" element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
           <Route path="branch" element={<ProtectedRoute><Branch /></ProtectedRoute>} />
@@ -129,7 +113,7 @@ function App() {
         <Route path="/eis/:id/reporting" element={<ProtectedRoute><EmployeeReporting /></ProtectedRoute>} />
         <Route path="/eis/:id/exit" element={<ProtectedRoute><EmployeeExit /></ProtectedRoute>} />
 
-        {/* ATTENDANCE MODULE */}
+        {/* ATTENDANCE */}
         <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
         <Route path="/attendance/logs" element={<ProtectedRoute><AttendanceLogs /></ProtectedRoute>} />
         <Route path="/attendance/regularization" element={<ProtectedRoute><Regularization /></ProtectedRoute>} />
@@ -137,8 +121,11 @@ function App() {
         <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
         <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />
 
-        {/* LEAVE MANAGEMENT */}
+        {/* LEAVE */}
         <Route path="/leave" element={<ProtectedRoute><LeaveLayout /></ProtectedRoute>} />
+
+        {/* ✅ PAYROLL */}
+        <Route path="/payroll" element={<ProtectedRoute><PayrollLayout /></ProtectedRoute>} />
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

@@ -12,11 +12,17 @@ router = APIRouter(prefix="/bank-details", tags=["Bank Details"])
 # ------------------------------
 @router.get("/{employee_id}")
 def get_bank_details(
-    employee_id: int,
+    employee_id: str,
     user = Depends(get_current_user)
 ):
     try:
-        logger.info(f"Fetching bank details for employee {employee_id}")
+        # Extract numeric ID from employee_id (handles both "16" and "user_16" formats)
+        if isinstance(employee_id, str) and employee_id.startswith('user_'):
+            emp_id = int(employee_id.replace('user_', ''))
+        else:
+            emp_id = int(employee_id)
+        
+        logger.info(f"Fetching bank details for employee {emp_id}")
         tenant = user.get('tenant_db')
         engine = get_tenant_engine(tenant)
         
@@ -24,7 +30,7 @@ def get_bank_details(
             result = conn.execute(text("""
                 SELECT * FROM employee_bank_details 
                 WHERE employee_id = :employee_id
-            """), {"employee_id": employee_id}).fetchone()
+            """), {"employee_id": emp_id}).fetchone()
             
             if result:
                 return dict(result._mapping)
@@ -40,7 +46,7 @@ def get_bank_details(
 # ------------------------------
 @router.post("/{employee_id}")
 def save_bank_details(
-    employee_id: int,
+    employee_id: str,
     account_holder_name: str = Form(""),
     bank_name: str = Form(""),
     account_number: str = Form(""),
@@ -54,7 +60,13 @@ def save_bank_details(
     user = Depends(get_current_user)
 ):
     try:
-        logger.info(f"Saving bank details for employee {employee_id}")
+        # Extract numeric ID from employee_id (handles both "16" and "user_16" formats)
+        if isinstance(employee_id, str) and employee_id.startswith('user_'):
+            emp_id = int(employee_id.replace('user_', ''))
+        else:
+            emp_id = int(employee_id)
+        
+        logger.info(f"Saving bank details for employee {emp_id}")
         tenant = user.get('tenant_db')
         engine = get_tenant_engine(tenant)
         
@@ -63,7 +75,7 @@ def save_bank_details(
             existing = conn.execute(text("""
                 SELECT id FROM employee_bank_details 
                 WHERE employee_id = :employee_id
-            """), {"employee_id": employee_id}).fetchone()
+            """), {"employee_id": emp_id}).fetchone()
             
             if existing:
                 # Update existing record
@@ -82,7 +94,7 @@ def save_bank_details(
                         updated_at = NOW()
                     WHERE employee_id = :employee_id
                 """), {
-                    "employee_id": employee_id,
+                    "employee_id": emp_id,
                     "account_holder_name": account_holder_name,
                     "bank_name": bank_name,
                     "account_number": account_number,
@@ -107,7 +119,7 @@ def save_bank_details(
                         :bank_document, :document_name
                     )
                 """), {
-                    "employee_id": employee_id,
+                    "employee_id": emp_id,
                     "account_holder_name": account_holder_name,
                     "bank_name": bank_name,
                     "account_number": account_number,

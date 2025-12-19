@@ -58,7 +58,13 @@ from models.models_tenant import (
     AttendanceRegularization,
     AttendanceRule,
     AttendanceLocation,
-    AttendancePunch
+    AttendancePunch,
+    
+    # Payroll Models
+    SalaryStructure,
+    StatutoryRule,
+    PayrollRun,
+    PayrollAdjustment
 )
 
 # ========================= CONFIG =========================
@@ -798,6 +804,116 @@ with engine.connect() as conn:
         
     except Exception as e:
         print(f"⚠️ Error creating leave balances: {e}")
+        conn.rollback()
+
+# ========================= CREATE PAYROLL TABLES =========================
+print("\nCreating payroll tables...")
+with engine.connect() as conn:
+    try:
+        # Create salary_structures table if not exists
+        create_salary_structure = text("""
+            CREATE TABLE IF NOT EXISTS salary_structures (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                ctc FLOAT NOT NULL,
+                basic_percent FLOAT NOT NULL,
+                hra_percent FLOAT NOT NULL,
+                allowances TEXT,
+                deductions TEXT,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute(create_salary_structure)
+        print("✅ Created salary_structures table")
+        
+        # Create statutory_rules table if not exists
+        create_statutory_rules = text("""
+            CREATE TABLE IF NOT EXISTS statutory_rules (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                pf_enabled BOOLEAN DEFAULT TRUE,
+                pf_percent FLOAT DEFAULT 12.0,
+                pf_apply_on VARCHAR(50) DEFAULT 'Basic',
+                esi_enabled BOOLEAN DEFAULT TRUE,
+                esi_threshold FLOAT DEFAULT 21000.0,
+                esi_percent FLOAT DEFAULT 1.75,
+                pt_enabled BOOLEAN DEFAULT TRUE,
+                pt_amount FLOAT DEFAULT 200.0,
+                tds_enabled BOOLEAN DEFAULT TRUE,
+                tds_percent FLOAT DEFAULT 10.0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute(create_statutory_rules)
+        print("✅ Created statutory_rules table")
+        
+        # Update existing statutory_rules table structure
+        statutory_updates = [
+            ("pf_apply_on VARCHAR(50) DEFAULT 'Basic'", "pf_apply_on"),
+            ("esi_threshold FLOAT DEFAULT 21000.0", "esi_threshold"),
+            ("pt_enabled BOOLEAN DEFAULT TRUE", "pt_enabled"),
+            ("tds_percent FLOAT DEFAULT 10.0", "tds_percent"),
+            ("updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", "updated_at")
+        ]
+        
+        for sql_def, name in statutory_updates:
+            try:
+                conn.execute(text(f"ALTER TABLE statutory_rules ADD COLUMN {sql_def}"))
+                print(f"  ✅ Added: {name}")
+            except Exception as e:
+                print(f"  ⚠️ {name}: {e}")
+        
+        # Update default values for existing columns
+        try:
+            conn.execute(text("UPDATE statutory_rules SET pf_percent = 12.0 WHERE pf_percent != 12.0"))
+            conn.execute(text("UPDATE statutory_rules SET esi_enabled = TRUE WHERE esi_enabled = FALSE"))
+            conn.execute(text("UPDATE statutory_rules SET pt_amount = 200.0 WHERE pt_amount = 0"))
+            conn.execute(text("UPDATE statutory_rules SET tds_enabled = TRUE WHERE tds_enabled = FALSE"))
+            print("  ✅ Updated default values")
+        except Exception as e:
+            print(f"  ⚠️ Default values update: {e}")
+        
+        # Create payroll_runs table if not exists
+        create_payroll_runs = text("""
+            CREATE TABLE IF NOT EXISTS payroll_runs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                month VARCHAR(255) NOT NULL,
+                employee_id INT,
+                present_days INT,
+                lop_days INT,
+                ot_hours FLOAT,
+                gross_salary FLOAT,
+                net_salary FLOAT,
+                status VARCHAR(255) DEFAULT 'Pending',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (employee_id) REFERENCES users(id)
+            )
+        """)
+        conn.execute(create_payroll_runs)
+        print("✅ Created payroll_runs table")
+        
+        # Create payroll_adjustments table if not exists
+        create_payroll_adjustments = text("""
+            CREATE TABLE IF NOT EXISTS payroll_adjustments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                employee_id INT,
+                month VARCHAR(255),
+                adjustment_type VARCHAR(255),
+                amount FLOAT,
+                description VARCHAR(255),
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (employee_id) REFERENCES users(id)
+            )
+        """)
+        conn.execute(create_payroll_adjustments)
+        print("✅ Created payroll_adjustments table")
+        
+        conn.commit()
+        print("🎉 All payroll tables created and updated successfully!")
+        
+    except Exception as e:
+        print(f"⚠️ Error creating payroll tables: {e}")
         conn.rollback()
 
 print("\n🎉 DONE — All tables created and updated successfully!\n")

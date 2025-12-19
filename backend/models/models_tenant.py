@@ -989,3 +989,90 @@ class LeaveApprovalHistory(MasterBase):
     comments = Column(Text)
 
     action_at = Column(DateTime, default=func.now())
+
+# =====================================================
+# SALARY STRUCTURE
+# =====================================================
+class SalaryStructure(MasterBase):
+    __tablename__ = "salary_structures"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    ctc = Column(Float, nullable=False)
+
+    basic_percent = Column(Float, nullable=False)
+    hra_percent = Column(Float, nullable=False)
+
+    allowances = Column(Text)   # JSON string
+    deductions = Column(Text)   # JSON string
+
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
+# STATUTORY RULES
+# =====================================================
+class StatutoryRule(MasterBase):
+    __tablename__ = "statutory_rules"
+
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # PF Configuration
+    pf_enabled = Column(Boolean, default=True)
+    pf_percent = Column(Float, default=12.0)
+    pf_apply_on = Column(String(50), default="Basic")  # Basic/Gross
+    
+    # ESI Configuration
+    esi_enabled = Column(Boolean, default=True)
+    esi_threshold = Column(Float, default=21000.0)
+    esi_percent = Column(Float, default=1.75)
+    
+    # Professional Tax
+    pt_enabled = Column(Boolean, default=True)
+    pt_amount = Column(Float, default=200.0)
+    
+    # TDS Configuration
+    tds_enabled = Column(Boolean, default=True)
+    tds_percent = Column(Float, default=10.0)
+
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+
+# =====================================================
+# PAYROLL RUN
+# =====================================================
+class PayrollRun(MasterBase):
+    __tablename__ = "payroll_runs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    month = Column(String(50), nullable=False)
+    employee_id = Column(Integer, ForeignKey("users.id"))
+
+    present_days = Column(Integer)
+    lop_days = Column(Integer)
+    ot_hours = Column(Float)
+
+    gross_salary = Column(Float)
+    net_salary = Column(Float)
+
+    status = Column(String(50), default="Pending")
+    created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
+# SALARY ADJUSTMENTS
+# =====================================================
+class PayrollAdjustment(MasterBase):
+    __tablename__ = "payroll_adjustments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"))
+    month = Column(String(50))
+
+    adjustment_type = Column(String(100))  # Bonus / Arrears / Medical
+    amount = Column(Float)
+    description = Column(String(255))
+
+    created_at = Column(DateTime, server_default=func.now())

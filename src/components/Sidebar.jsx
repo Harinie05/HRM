@@ -9,6 +9,7 @@ import {
   UserPlus,
   UserCheck,
   Clock,
+  DollarSign,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -262,6 +263,19 @@ export default function Sidebar() {
         >
           <Clock size={20} />
           <span>Leave Management</span>
+        </Link>
+
+        {/* Payroll Management */}
+        <Link
+          to="/payroll"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/payroll")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <DollarSign size={20} />
+          <span>Payroll Management</span>
         </Link>
 
       </nav>

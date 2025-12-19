@@ -1277,4 +1277,60 @@ class LeaveApprovalHistoryOut(BaseModel):
     class Config:
         from_attributes = True
 
+# ---------------- SALARY STRUCTURE ----------------
+class SalaryStructureCreate(BaseModel):
+    name: str
+    ctc: float
+    basic_percent: float
+    hra_percent: float
+    allowances: Optional[str]
+    deductions: Optional[str]
+
+
+class SalaryStructureOut(SalaryStructureCreate):
+    id: int
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
+
+# ---------------- STATUTORY RULES ----------------
+class StatutoryRuleCreate(BaseModel):
+    pf_enabled: bool
+    pf_percent: float
+    esi_enabled: bool
+    esi_percent: float
+    pt_amount: float
+    tds_enabled: bool
+
+
+class StatutoryRuleOut(StatutoryRuleCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+# ---------------- PAYROLL RUN ----------------
+class PayrollRunOut(BaseModel):
+    id: int
+    employee_id: int
+    month: str
+    gross_salary: float
+    net_salary: float
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# ---------------- ADJUSTMENTS ----------------
+class PayrollAdjustmentCreate(BaseModel):
+    employee_id: int
+    month: str
+    adjustment_type: str
+    amount: float
+    description: Optional[str]
+
 
