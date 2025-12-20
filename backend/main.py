@@ -23,6 +23,7 @@ from routes.organization.shifts import router as shift_router
 from routes.organization.grades import router as grade_router
 from routes.organization.holiday import router as holiday_router
 from routes.organization.policy import router as policy_router
+from routes.organization.reporting import router as reporting_router
 
 # ---------------- RECRUITMENT ----------------
 from routes.recruitment.recruitment import router as recruitment_router
@@ -63,7 +64,7 @@ from routes.leave.leave_applications import router as leave_applications_router
 from routes.leave.leave_balances import router as leave_balances_router
 from routes.leave.leave_reports import router as leave_reports_router
 
-# ======================= 🔥 PAYROLL ROUTERS (NEW) =======================
+# ======================= 🔥 PAYROLL ROUTERS =======================
 from routes.payroll.salary_structure import router as salary_structure_router
 from routes.payroll.statutory_rules import router as statutory_rules_router
 from routes.payroll.payroll_run import router as payroll_run_router
@@ -71,8 +72,13 @@ from routes.payroll.adjustments import router as payroll_adjustments_router
 from routes.payroll.payslip import router as payroll_payslip_router
 from routes.payroll.reports import router as payroll_reports_router
 
-# ======================= 🔥 ORGANIZATION ROUTERS =======================
-from routes.organization.reporting import router as reporting_router
+# ======================= 🔥 HR OPERATIONS ROUTERS =======================
+from routes.hr.lifecycle import router as hr_lifecycle_router
+from routes.hr.communication import router as hr_communication_router
+from routes.hr.grievances import router as hr_grievances_router
+from routes.hr.assets import router as hr_assets_router
+from routes.hr.insurance import router as hr_insurance_router
+
 # ============================================================
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -87,24 +93,24 @@ class AuditMiddleware(BaseHTTPMiddleware):
             user_id = request.headers.get("user-id")
             ip_address = request.client.host if request.client else None
             user_agent = request.headers.get("user-agent")
-            
+
             request.state.tenant_id = tenant_id
             request.state.user_id = user_id
             request.state.ip_address = ip_address
             request.state.user_agent = user_agent
-            
+
             response = await call_next(request)
             return response
-            
+
         except Exception as e:
             log_error(
-                tenant_id=getattr(request.state, 'tenant_id', None),
+                tenant_id=getattr(request.state, "tenant_id", None),
                 error_type="RequestError",
                 error_message=str(e),
                 request_url=str(request.url),
                 request_method=request.method,
-                user_id=getattr(request.state, 'user_id', None),
-                ip_address=getattr(request.state, 'ip_address', None)
+                user_id=getattr(request.state, "user_id", None),
+                ip_address=getattr(request.state, "ip_address", None)
             )
             raise
 
@@ -134,24 +140,24 @@ def create_tables():
     logger.info("Creating master database tables...")
     models_master.MasterBase.metadata.create_all(bind=master_engine)
     logger.info("Master tables created.")
-    
+
     try:
         from database import create_tenant_database, get_tenant_engine, get_master_db
-        
+
         master_db = next(get_master_db())
         hospitals = master_db.query(models_master.Hospital).all()
-        
+
         for hospital in hospitals:
             try:
                 logger.info(f"Ensuring tenant database exists: {hospital.db_name}")
                 create_tenant_database(hospital.db_name)
-                
+
                 tenant_engine = get_tenant_engine(hospital.db_name)
                 models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
                 logger.info(f"Tenant tables created/verified for {hospital.db_name}")
             except Exception as e:
                 logger.error(f"Error creating tenant DB {hospital.db_name}: {str(e)}")
-        
+
         master_db.close()
     except Exception as e:
         logger.error(f"Error during tenant database setup: {str(e)}")
@@ -168,6 +174,7 @@ app.include_router(shift_router)
 app.include_router(grade_router)
 app.include_router(holiday_router)
 app.include_router(policy_router)
+app.include_router(reporting_router)
 
 # ---------------- RECRUITMENT ----------------
 app.include_router(recruitment_router)
@@ -192,7 +199,6 @@ app.include_router(salary_router)
 app.include_router(documents_router)
 app.include_router(exit_router)
 app.include_router(bank_details_router)
-app.include_router(reporting_router)
 
 # ======================= 🔥 ATTENDANCE MODULE =======================
 app.include_router(roster_router, prefix="/api")
@@ -209,14 +215,20 @@ app.include_router(leave_applications_router, prefix="/api")
 app.include_router(leave_balances_router, prefix="/api")
 app.include_router(leave_reports_router, prefix="/api")
 
-# ======================= 🔥 PAYROLL MODULE (NEW) =======================
+# ======================= 🔥 PAYROLL MODULE =======================
 app.include_router(salary_structure_router, prefix="/api")
 app.include_router(statutory_rules_router, prefix="/api")
 app.include_router(payroll_run_router, prefix="/api")
 app.include_router(payroll_adjustments_router, prefix="/api")
 app.include_router(payroll_payslip_router, prefix="/api")
 app.include_router(payroll_reports_router, prefix="/api")
-# ============================================================
+
+# ======================= 🔥 HR OPERATIONS MODULE =======================
+app.include_router(hr_lifecycle_router)
+app.include_router(hr_communication_router)
+app.include_router(hr_grievances_router)
+app.include_router(hr_assets_router)
+app.include_router(hr_insurance_router)
 
 logger.info("All routers loaded successfully")
 

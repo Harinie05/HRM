@@ -1076,3 +1076,146 @@ class PayrollAdjustment(MasterBase):
     description = Column(String(255))
 
     created_at = Column(DateTime, server_default=func.now())
+
+# =========================
+# EMPLOYEE LIFECYCLE ACTIONS
+# =========================
+class EmployeeLifecycleAction(MasterBase):
+    __tablename__ = "employee_lifecycle_actions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    action_type = Column(String(50), nullable=False)
+    # Promotion / Transfer / Increment
+
+    old_department = Column(String(150), nullable=True)
+    new_department = Column(String(150), nullable=True)
+
+    old_role = Column(String(150), nullable=True)
+    new_role = Column(String(150), nullable=True)
+
+    old_ctc = Column(Float, nullable=True)
+    new_ctc = Column(Float, nullable=True)
+
+    effective_from = Column(Date, nullable=True)
+    reason = Column(Text, nullable=True)
+
+    status = Column(String(50), default="Pending")
+    # Pending / Approved / Rejected / Completed
+
+    approved_at = Column(DateTime, nullable=True)
+
+    created_at = Column(DateTime, default=func.now())# =========================
+# HR LETTERS & COMMUNICATION
+# =========================
+class HRCommunication(MasterBase):
+    __tablename__ = "hr_communications"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    letter_type = Column(String(50), nullable=False)
+    # Warning / Memo / Notice / Official Letter / Announcement
+
+    subject = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
+
+    sent_to_type = Column(String(50), nullable=False)
+    # Single / Multiple / All
+
+    sent_to_ids = Column(JSON, nullable=True)
+    # List of employee IDs if not ALL
+
+    attachment = Column(String(500), nullable=True)
+
+    status = Column(String(50), default="Sent")
+    created_by = Column(Integer, nullable=True)
+
+    created_at = Column(DateTime, default=func.now())
+
+# =========================
+# COMPLAINTS & GRIEVANCES
+# =========================
+class GrievanceTicket(MasterBase):
+    __tablename__ = "grievance_tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_code = Column(String(50), unique=True, nullable=False)
+
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    category = Column(String(100), nullable=False)
+    # Harassment / Payroll / IT / Facilities / General
+
+    description = Column(Text, nullable=False)
+    attachment = Column(String(500), nullable=True)
+
+    priority = Column(String(50), default="Medium")
+    # Low / Medium / High
+
+    status = Column(String(50), default="Open")
+    # Open / In Review / Resolved / Closed
+
+    assigned_to = Column(String(150), nullable=True)
+
+    resolution_notes = Column(Text, nullable=True)
+    resolved_at = Column(DateTime, nullable=True)
+
+    created_at = Column(DateTime, default=func.now())
+
+# =========================
+# ASSET MANAGEMENT
+# =========================
+class AssetAssignment(MasterBase):
+    __tablename__ = "asset_assignments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    asset_type = Column(String(100), nullable=False)
+    # Laptop / ID Card / Phone / Keyboard etc.
+
+    asset_name = Column(String(150), nullable=True)
+    asset_id = Column(String(150), nullable=True)
+    brand = Column(String(150), nullable=True)
+    model = Column(String(150), nullable=True)
+    serial_number = Column(String(150), nullable=True)
+    condition = Column(String(50), nullable=True)
+    location = Column(String(150), nullable=True)
+    cost = Column(Float, nullable=True)
+
+    issue_date = Column(Date, nullable=False)
+    expected_return_date = Column(Date, nullable=True)
+    actual_return_date = Column(Date, nullable=True)
+
+    terms = Column(Text, nullable=True)
+
+    status = Column(String(50), default="Active")
+    # Active / Returned / Lost / Damaged
+
+    created_at = Column(DateTime, default=func.now())
+# =========================
+# INSURANCE & BENEFITS
+# =========================
+class EmployeeInsurance(MasterBase):
+    __tablename__ = "employee_insurance"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    policy_type = Column(String(100), nullable=False)
+    # Medical / Accident / Life / Mediclaim
+
+    policy_number = Column(String(150), nullable=True)
+    provider = Column(String(150), nullable=True)
+
+    coverage_amount = Column(Float, nullable=False)
+
+    start_date = Column(Date, nullable=False)
+    expiry_date = Column(Date, nullable=False)
+
+    status = Column(String(50), default="Active")
+    # Active / Expired / Cancelled
+
+    created_at = Column(DateTime, default=func.now())
+

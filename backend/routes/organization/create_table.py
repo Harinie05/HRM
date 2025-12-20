@@ -916,4 +916,26 @@ with engine.connect() as conn:
         print(f"⚠️ Error creating payroll tables: {e}")
         conn.rollback()
 
+# ========================= UPDATE ASSET ASSIGNMENTS TABLE =========================
+print("\nUpdating asset_assignments table structure...")
+with engine.connect() as conn:
+    asset_columns = [
+        ("asset_id VARCHAR(150)", "asset_id"),
+        ("brand VARCHAR(150)", "brand"),
+        ("model VARCHAR(150)", "model"),
+        ("condition VARCHAR(50)", "condition"),
+        ("location VARCHAR(150)", "location"),
+        ("cost FLOAT", "cost")
+    ]
+    
+    for sql_def, name in asset_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE asset_assignments ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
+    print("🎉 Asset assignments table updated successfully!")
+
 print("\n🎉 DONE — All tables created and updated successfully!\n")

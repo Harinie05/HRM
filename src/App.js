@@ -60,6 +60,9 @@ import LeaveLayout from "./pages/leaves/LeaveLayout";
 // ✅ PAYROLL
 import PayrollLayout from "./pages/payroll/PayrollLayout";
 
+// HR Operations & Workforce Management
+import HROperations from "./pages/hr/HROperations";
+
 function App() {
   return (
     <BrowserRouter>
@@ -126,6 +129,9 @@ function App() {
 
         {/* ✅ PAYROLL */}
         <Route path="/payroll" element={<ProtectedRoute><PayrollLayout /></ProtectedRoute>} />
+
+        {/* HR OPERATIONS & WORKFORCE MANAGEMENT */}
+        <Route path="/hr" element={<ProtectedRoute><HROperations /></ProtectedRoute>} />
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

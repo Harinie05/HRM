@@ -278,6 +278,19 @@ export default function Sidebar() {
           <span>Payroll Management</span>
         </Link>
 
+        {/* HR Operations & Workforce Management */}
+        <Link
+          to="/hr"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/hr")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <Users size={20} />
+          <span>HR Operations & Workforce Management</span>
+        </Link>
+
       </nav>
     </div>
   );

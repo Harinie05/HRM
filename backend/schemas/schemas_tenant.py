@@ -1333,4 +1333,165 @@ class PayrollAdjustmentCreate(BaseModel):
     amount: float
     description: Optional[str]
 
+# ============================================================
+# EMPLOYEE LIFECYCLE ACTION SCHEMAS
+# ============================================================
+
+class LifecycleActionBase(BaseModel):
+    employee_id: int
+    action_type: str                      # Promotion / Transfer / Increment
+
+    old_department: Optional[str] = None
+    new_department: Optional[str] = None
+
+    old_role: Optional[str] = None
+    new_role: Optional[str] = None
+
+    old_ctc: Optional[float] = None
+    new_ctc: Optional[float] = None
+
+    effective_from: date
+    reason: Optional[str] = None
+
+
+class LifecycleActionCreate(LifecycleActionBase):
+    pass
+
+
+class LifecycleActionUpdate(BaseModel):
+    status: Optional[str] = None          # Approved / Rejected / Completed
+    approved_by: Optional[int] = None
+
+
+class LifecycleActionOut(LifecycleActionBase):
+    id: int
+    status: str
+    approved_by: Optional[int]
+    approved_at: Optional[datetime]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+# ============================================================
+# HR COMMUNICATION SCHEMAS
+# ============================================================
+
+class HRCommunicationBase(BaseModel):
+    letter_type: str                      # Warning / Memo / Notice / Announcement
+    subject: str
+    content: str
+
+    sent_to_type: str                     # Single / Multiple / All
+    sent_to_ids: Optional[List[int]] = None
+
+    attachment: Optional[str] = None
+
+
+class HRCommunicationCreate(HRCommunicationBase):
+    created_by: Optional[int] = None
+
+
+class HRCommunicationOut(HRCommunicationBase):
+    id: int
+    status: str
+    created_by: Optional[int]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+# ============================================================
+# GRIEVANCE & HELP DESK SCHEMAS
+# ============================================================
+
+class GrievanceBase(BaseModel):
+    employee_id: int
+    category: str                         # Harassment / Payroll / IT / General
+    description: str
+
+    priority: Optional[str] = "Medium"    # Low / Medium / High
+    assigned_to: Optional[str] = None
+    attachment: Optional[str] = None
+
+
+class GrievanceCreate(GrievanceBase):
+    pass
+
+
+class GrievanceUpdate(BaseModel):
+    status: Optional[str] = None          # Open / In Review / Resolved / Closed
+    resolution_notes: Optional[str] = None
+
+
+class GrievanceOut(GrievanceBase):
+    id: int
+    ticket_code: str
+    status: str
+    resolution_notes: Optional[str]
+    resolved_at: Optional[datetime]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+# ============================================================
+# ASSET MANAGEMENT SCHEMAS
+# ============================================================
+
+class AssetBase(BaseModel):
+    employee_id: int
+    asset_type: str                       # Laptop / ID Card / Phone
+    asset_name: Optional[str] = None
+    serial_number: Optional[str] = None
+
+    issue_date: date
+    expected_return_date: Optional[date] = None
+    terms: Optional[str] = None
+
+
+class AssetCreate(AssetBase):
+    pass
+
+
+class AssetUpdate(BaseModel):
+    status: Optional[str] = None          # Active / Returned / Lost / Damaged
+    actual_return_date: Optional[date] = None
+
+
+class AssetOut(AssetBase):
+    id: int
+    status: str
+    actual_return_date: Optional[date]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+# ============================================================
+# INSURANCE & BENEFITS SCHEMAS
+# ============================================================
+
+class InsuranceBase(BaseModel):
+    employee_id: int
+    policy_type: str                      # Medical / Accident / Life
+    policy_number: Optional[str] = None
+    provider: Optional[str] = None
+
+    coverage_amount: float
+    start_date: date
+    expiry_date: date
+
+
+class InsuranceCreate(InsuranceBase):
+    pass
+
+
+class InsuranceUpdate(BaseModel):
+    status: Optional[str] = None          # Active / Expired / Cancelled
+
+
+class InsuranceOut(InsuranceBase):
+    id: int
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
 
