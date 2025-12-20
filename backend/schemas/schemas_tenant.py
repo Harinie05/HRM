@@ -1495,3 +1495,94 @@ class InsuranceOut(InsuranceBase):
     class Config:
         from_attributes = True
 
+# =====================================================
+# PMS SCHEMAS
+# =====================================================
+
+# ---------- GOALS ----------
+class PMSGoalCreate(BaseModel):
+    employee_id: Optional[int]
+    department: Optional[str]
+    title: str
+    goal_type: str
+    weightage: float
+    measurement_method: str
+    target: str
+    start_date: date
+    end_date: date
+
+
+class PMSGoalOut(PMSGoalCreate):
+    id: int
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- REVIEW ----------
+class PMSReviewCreate(BaseModel):
+    employee_id: int
+    cycle: str
+    review_type: str  # Mid-Year / Annual
+    self_score: Optional[float] = None
+    self_comments: Optional[str] = None
+
+
+class PMSReviewUpdate(BaseModel):
+    manager_score: Optional[float]
+    manager_comments: Optional[str]
+    status: Optional[str]
+
+
+class PMSReviewOut(BaseModel):
+    id: int
+    employee_id: int
+    cycle: str
+    review_type: str
+    self_score: Optional[float]
+    manager_score: Optional[float]
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- FEEDBACK ----------
+class PMSFeedbackCreate(BaseModel):
+    from_employee_id: int
+    to_employee_id: int
+    relationship: str
+    cycle: str
+    rating: float
+    comments: Optional[str]
+
+
+class PMSFeedbackOut(PMSFeedbackCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- APPRAISAL ----------
+class PMSAppraisalCreate(BaseModel):
+    employee_id: int
+    cycle: str
+    kpi_score: float
+    feedback_score: float
+    final_rating: float
+    recommendation: str
+    increment_percent: Optional[float]
+    recommended_role: Optional[str]
+    effective_from: Optional[date]
+
+
+class PMSAppraisalOut(PMSAppraisalCreate):
+    id: int
+    status: str
+
+    class Config:
+        from_attributes = True
+
+

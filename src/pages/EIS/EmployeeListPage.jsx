@@ -37,6 +37,9 @@ export default function EmployeeListPage() {
       const onboardedEmployees = onboardingRes.data || [];
       const userEmployees = usersRes.users || [];
       
+      console.log('EIS Debug - Onboarded employees:', onboardedEmployees.length);
+      console.log('EIS Debug - User employees:', userEmployees.length);
+      
 
       
       // Process onboarded employees

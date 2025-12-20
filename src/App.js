@@ -63,6 +63,9 @@ import PayrollLayout from "./pages/payroll/PayrollLayout";
 // HR Operations & Workforce Management
 import HROperations from "./pages/hr/HROperations";
 
+// ======================= 🔥 PMS IMPORTS =======================
+import PMSManagement from "./pages/pms/pmsmanagement";
+
 function App() {
   return (
     <BrowserRouter>
@@ -73,7 +76,14 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* DASHBOARD */}
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
         {/* USER MANAGEMENT */}
         <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
@@ -127,11 +137,14 @@ function App() {
         {/* LEAVE */}
         <Route path="/leave" element={<ProtectedRoute><LeaveLayout /></ProtectedRoute>} />
 
-        {/* ✅ PAYROLL */}
+        {/* PAYROLL */}
         <Route path="/payroll" element={<ProtectedRoute><PayrollLayout /></ProtectedRoute>} />
 
-        {/* HR OPERATIONS & WORKFORCE MANAGEMENT */}
+        {/* HR OPERATIONS */}
         <Route path="/hr" element={<ProtectedRoute><HROperations /></ProtectedRoute>} />
+
+        {/* ======================= 🔥 PMS ROUTES ======================= */}
+        <Route path="/pms" element={<ProtectedRoute><PMSManagement /></ProtectedRoute>} />
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

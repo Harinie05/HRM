@@ -64,7 +64,20 @@ from models.models_tenant import (
     SalaryStructure,
     StatutoryRule,
     PayrollRun,
-    PayrollAdjustment
+    PayrollAdjustment,
+    
+    # HR Operations Models
+    EmployeeLifecycleAction,
+    HRCommunication,
+    GrievanceTicket,
+    AssetAssignment,
+    EmployeeInsurance,
+    
+    # PMS Models
+    PMSGoal,
+    PMSReview,
+    PMSFeedback,
+    PMSAppraisal
 )
 
 # ========================= CONFIG =========================
@@ -697,9 +710,10 @@ for hospital in hospitals:
                 AND COLUMN_NAME = 'leave_allocations'
             """, (hospital.db_name,))
             
-            column_exists = cursor.fetchone()[0] > 0
-            
-            if not column_exists:
+            column_exists = cursor.fetchone()
+            if column_exists and column_exists[0] > 0:
+                print(f"ℹ️  Column already exists in {hospital.db_name}")
+            else:
                 # Add the column
                 cursor.execute("""
                     ALTER TABLE leave_policies 
@@ -707,8 +721,6 @@ for hospital in hospitals:
                 """)
                 connection.commit()
                 print(f"✅ Added leave_allocations column to {hospital.db_name}")
-            else:
-                print(f"ℹ️  Column already exists in {hospital.db_name}")
         
         connection.close()
         
@@ -937,5 +949,61 @@ with engine.connect() as conn:
     
     conn.commit()
     print("🎉 Asset assignments table updated successfully!")
+
+# ========================= PMS GOALS TABLE UPDATES =========================
+print("\nUpdating pms_goals table...")
+with engine.connect() as conn:
+    pms_updates = [
+        ("description TEXT", "description"),
+        ("priority VARCHAR(50) DEFAULT 'Medium'", "priority"),
+        ("current_value VARCHAR(100) DEFAULT '0'", "current_value"),
+        ("unit VARCHAR(50)", "unit")
+    ]
+
+    for sql_def, name in pms_updates:
+        try:
+            conn.execute(text(f"ALTER TABLE pms_goals ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    conn.commit()
+
+# ========================= PMS FEEDBACK TABLE UPDATES =========================
+print("\nUpdating pms_feedback table...")
+with engine.connect() as conn:
+    feedback_updates = [
+        ("strengths TEXT", "strengths"),
+        ("improvements TEXT", "improvements"),
+        ("goals TEXT", "goals")
+    ]
+
+    for sql_def, name in feedback_updates:
+        try:
+            conn.execute(text(f"ALTER TABLE pms_feedback ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    conn.commit()
+
+# ========================= PMS APPRAISAL TABLE UPDATES =========================
+print("\nUpdating pms_appraisal table...")
+with engine.connect() as conn:
+    appraisal_updates = [
+        ("strengths TEXT", "strengths"),
+        ("improvements TEXT", "improvements"),
+        ("development_plan TEXT", "development_plan"),
+        ("comments TEXT", "comments")
+    ]
+
+    for sql_def, name in appraisal_updates:
+        try:
+            conn.execute(text(f"ALTER TABLE pms_appraisal ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    conn.commit()
 
 print("\n🎉 DONE — All tables created and updated successfully!\n")

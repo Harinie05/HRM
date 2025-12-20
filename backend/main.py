@@ -79,6 +79,12 @@ from routes.hr.grievances import router as hr_grievances_router
 from routes.hr.assets import router as hr_assets_router
 from routes.hr.insurance import router as hr_insurance_router
 
+# ======================= 🔥 PMS ROUTERS =======================
+from routes.pms.goals import router as pms_goals_router
+from routes.pms.review import router as pms_review_router
+from routes.pms.feedback import router as pms_feedback_router
+from routes.pms.appraisal import router as pms_appraisal_router
+
 # ============================================================
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -114,15 +120,6 @@ class AuditMiddleware(BaseHTTPMiddleware):
             )
             raise
 
-app.add_middleware(AuditMiddleware)
-
-# ---------------- DIRECTORIES ----------------
-Path("uploads/policies").mkdir(parents=True, exist_ok=True)
-Path("uploads/resumes").mkdir(parents=True, exist_ok=True)
-
-# ---------------- STATIC FILES ----------------
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
 # ---------------- CORS ----------------
 app.add_middleware(
     CORSMiddleware,
@@ -132,7 +129,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-logger.info("CORS Configured")
+app.add_middleware(AuditMiddleware)
+
+# ---------------- DIRECTORIES ----------------
+Path("uploads/policies").mkdir(parents=True, exist_ok=True)
+Path("uploads/resumes").mkdir(parents=True, exist_ok=True)
+
+# ---------------- STATIC FILES ----------------
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # ---------------- STARTUP ----------------
 @app.on_event("startup")
@@ -229,6 +233,12 @@ app.include_router(hr_communication_router)
 app.include_router(hr_grievances_router)
 app.include_router(hr_assets_router)
 app.include_router(hr_insurance_router)
+
+# ======================= 🔥 PMS MODULE =======================
+app.include_router(pms_goals_router, prefix="/pms")
+app.include_router(pms_review_router, prefix="/pms")
+app.include_router(pms_feedback_router, prefix="/pms")
+app.include_router(pms_appraisal_router, prefix="/pms")
 
 logger.info("All routers loaded successfully")
 

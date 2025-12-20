@@ -36,7 +36,7 @@ def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_ten
             employee_id_value = user.id
         
         lifecycle_action = EmployeeLifecycleAction(
-            employee_id=employee_id_value if employee_id_value else 1,
+            employee_id=employee_id_value if employee_id_value is not None else 1,
             action_type=payload.get('actionType'),
             old_role=payload.get('currentRole'),
             new_role=payload.get('newRole'),
@@ -44,7 +44,7 @@ def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_ten
             new_department=payload.get('newDepartment'),
             old_ctc=float(payload.get('currentSalary', 0)) if payload.get('currentSalary') else None,
             new_ctc=float(payload.get('newSalary', 0)) if payload.get('newSalary') else None,
-            effective_from=datetime.strptime(payload.get('effectiveDate'), '%Y-%m-%d').date() if payload.get('effectiveDate') else None,
+            effective_from=datetime.strptime(str(payload.get('effectiveDate')), '%Y-%m-%d').date() if payload.get('effectiveDate') and str(payload.get('effectiveDate')).strip() else None,
             reason=payload.get('reason'),
             status='Pending'
         )
@@ -93,7 +93,7 @@ def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db)):
                 "action": action.action_type,
                 "from": action.old_role,
                 "to": action.new_role,
-                "date": str(action.effective_from) if action.effective_from else None,
+                "date": str(action.effective_from) if action.effective_from is not None else None,
                 "status": action.status
             })
         
@@ -109,6 +109,9 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
         action_id = approval_data.get('actionId')
         approved = approval_data.get('approved')
         employee_email = approval_data.get('employeeEmail')
+        
+        # Convert to boolean to avoid SQLAlchemy column evaluation issues
+        is_approved = bool(approved)
         
         logger.info(f"🔍 Looking for action ID: {action_id}")
         
@@ -127,18 +130,22 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
         
         logger.info(f"✅ Found action: {action.action_type} for employee {employee_name}")
         
-        if approved:
-            action.status = 'Approved'
-            action.approved_at = datetime.now()
+        if is_approved:
+            db.query(EmployeeLifecycleAction).filter(
+                EmployeeLifecycleAction.id == action_id
+            ).update({"status": "Approved", "approved_at": datetime.now()})
         else:
-            action.status = 'Rejected'
+            db.query(EmployeeLifecycleAction).filter(
+                EmployeeLifecycleAction.id == action_id
+            ).update({"status": "Rejected"})
         
         db.commit()
         
         # Professional email content
-        if approved:
+        if is_approved:
             subject = f"Lifecycle Action Approved - {action.action_type.title()}"
-            if action.action_type == 'promotion':
+            action_type_str = str(action.action_type)
+            if action_type_str == 'promotion':
                 html_content = f"""
                 <html>
                 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -170,7 +177,7 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
                 </body>
                 </html>
                 """
-            elif action.action_type == 'transfer':
+            elif action_type_str == 'transfer':
                 html_content = f"""
                 <html>
                 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -268,7 +275,7 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
                 logger.error(f"Email error: {e}")
         
         return {
-            "message": f"Action {'approved' if approved else 'rejected'} successfully",
+            "message": f"Action {'approved' if is_approved else 'rejected'} successfully",
             "email_sent": email_sent,
             "data": {"id": action.id, "status": action.status}
         }
@@ -308,7 +315,7 @@ def list_lifecycle_actions(db: Session = Depends(get_tenant_db)):
                 "action": action.action_type,
                 "from": action.old_role,
                 "to": action.new_role,
-                "date": str(action.effective_from) if action.effective_from else None,
+                "date": str(action.effective_from) if action.effective_from is not None else None,
                 "status": action.status
             })
         

@@ -1219,3 +1219,105 @@ class EmployeeInsurance(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
+# =====================================================
+# PERFORMANCE MANAGEMENT SYSTEM (PMS)
+# =====================================================
+
+# -------------------------
+# 1. GOALS & KPI / KRA
+# -------------------------
+class PMSGoal(MasterBase):
+    __tablename__ = "pms_goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+
+    title = Column(String(255), nullable=False)
+    goal_type = Column(String(50))  # Category field
+    target = Column(String(100))  # Target value
+    current_value = Column(String(100), default="0")  # Current progress value
+    measurement_method = Column(String(50), nullable=True)  # Unit field
+    weightage = Column(Integer, default=0)  # Weightage field
+    department = Column(String(100), nullable=True)  # Department field
+
+    start_date = Column(Date)
+    end_date = Column(Date)
+
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 2. PERFORMANCE REVIEW CYCLE
+# -------------------------
+class PMSReview(MasterBase):
+    __tablename__ = "pms_reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"))
+
+    cycle = Column(String(50))  # 2024-2025
+    review_type = Column(String(50))  # Mid-Year / Annual
+
+    self_score = Column(Float, nullable=True)
+    manager_score = Column(Float, nullable=True)
+
+    self_comments = Column(Text, nullable=True)
+    manager_comments = Column(Text, nullable=True)
+
+    status = Column(String(50), default="Pending")
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 3. 360 DEGREE FEEDBACK
+# -------------------------
+class PMSFeedback(MasterBase):
+    __tablename__ = "pms_feedback"
+
+    id = Column(Integer, primary_key=True, index=True)
+    from_employee_id = Column(Integer, ForeignKey("users.id"))
+    to_employee_id = Column(Integer, ForeignKey("users.id"))
+
+    relationship = Column(String(50))  # Peer / Manager / Subordinate
+    cycle = Column(String(50))
+
+    rating = Column(Float)
+    comments = Column(Text)
+    strengths = Column(Text)
+    improvements = Column(Text)
+    goals = Column(Text)
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 4. APPRAISAL & PROMOTION
+# -------------------------
+class PMSAppraisal(MasterBase):
+    __tablename__ = "pms_appraisal"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"))
+
+    cycle = Column(String(50))
+    kpi_score = Column(Float)
+    feedback_score = Column(Float)
+    final_rating = Column(Float)
+
+    recommendation = Column(String(100))  # Promotion / Normal / PIP
+    increment_percent = Column(Float, nullable=True)
+    recommended_role = Column(String(150), nullable=True)
+    
+    # Additional fields for detailed appraisal
+    strengths = Column(Text, nullable=True)
+    improvements = Column(Text, nullable=True)
+    development_plan = Column(Text, nullable=True)
+    comments = Column(Text, nullable=True)
+
+    effective_from = Column(Date, nullable=True)
+    status = Column(String(50), default="Proposed")
+
+    created_at = Column(DateTime, default=func.now())
+
+

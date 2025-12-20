@@ -10,6 +10,7 @@ import {
   UserCheck,
   Clock,
   DollarSign,
+  Target,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -289,6 +290,19 @@ export default function Sidebar() {
         >
           <Users size={20} />
           <span>HR Operations & Workforce Management</span>
+        </Link>
+
+        {/* Performance Management (PMS) */}
+        <Link
+          to="/pms"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/pms")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <Target size={20} />
+          <span>Performance Management (PMS)</span>
         </Link>
 
       </nav>
