@@ -85,6 +85,12 @@ from routes.pms.review import router as pms_review_router
 from routes.pms.feedback import router as pms_feedback_router
 from routes.pms.appraisal import router as pms_appraisal_router
 
+# ======================= 🔥 TRAINING & DEVELOPMENT ROUTERS =======================
+from routes.training.programs import router as training_programs_router
+from routes.training.requests import router as training_requests_router
+from routes.training.attendance import router as training_attendance_router
+from routes.training.certificates import router as training_certificates_router
+
 # ============================================================
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -120,6 +126,8 @@ class AuditMiddleware(BaseHTTPMiddleware):
             )
             raise
 
+app.add_middleware(AuditMiddleware)
+
 # ---------------- CORS ----------------
 app.add_middleware(
     CORSMiddleware,
@@ -128,8 +136,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.add_middleware(AuditMiddleware)
 
 # ---------------- DIRECTORIES ----------------
 Path("uploads/policies").mkdir(parents=True, exist_ok=True)
@@ -235,10 +241,16 @@ app.include_router(hr_assets_router)
 app.include_router(hr_insurance_router)
 
 # ======================= 🔥 PMS MODULE =======================
-app.include_router(pms_goals_router, prefix="/pms")
-app.include_router(pms_review_router, prefix="/pms")
-app.include_router(pms_feedback_router, prefix="/pms")
-app.include_router(pms_appraisal_router, prefix="/pms")
+app.include_router(pms_goals_router, prefix="/api/pms")
+app.include_router(pms_review_router, prefix="/api/pms")
+app.include_router(pms_feedback_router, prefix="/api/pms")
+app.include_router(pms_appraisal_router, prefix="/api/pms")
+
+# ======================= 🔥 TRAINING & DEVELOPMENT MODULE =======================
+app.include_router(training_programs_router, prefix="/api/training")
+app.include_router(training_requests_router, prefix="/api/training")
+app.include_router(training_attendance_router, prefix="/api/training")
+app.include_router(training_certificates_router, prefix="/api/training")
 
 logger.info("All routers loaded successfully")
 

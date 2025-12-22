@@ -77,7 +77,13 @@ from models.models_tenant import (
     PMSGoal,
     PMSReview,
     PMSFeedback,
-    PMSAppraisal
+    PMSAppraisal,
+    
+    # Training Models
+    TrainingProgram,
+    TrainingRequest,
+    TrainingAttendance,
+    TrainingCertificate
 )
 
 # ========================= CONFIG =========================
@@ -1007,3 +1013,140 @@ with engine.connect() as conn:
     conn.commit()
 
 print("\n🎉 DONE — All tables created and updated successfully!\n")
+
+# ========================= FIX TRAINING PROGRAMS TABLE =========================
+print("\nFixing training_programs table structure...")
+with engine.connect() as conn:
+    try:
+        # Add missing 'type' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN type VARCHAR(50)"))
+        print("✅ Added 'type' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding type column: {e}")
+    
+    try:
+        # Add missing 'department' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN department VARCHAR(100)"))
+        print("✅ Added 'department' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding department column: {e}")
+    
+    try:
+        # Add missing 'description' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN description TEXT"))
+        print("✅ Added 'description' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding description column: {e}")
+    
+    try:
+        # Add missing 'start_date' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN start_date DATE"))
+        print("✅ Added 'start_date' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding start_date column: {e}")
+    
+    try:
+        # Add missing 'end_date' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN end_date DATE"))
+        print("✅ Added 'end_date' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding end_date column: {e}")
+    
+    try:
+        # Add missing 'max_participants' column to training_programs table
+        conn.execute(text("ALTER TABLE training_programs ADD COLUMN max_participants INT"))
+        print("✅ Added 'max_participants' column to training_programs table")
+    except Exception as e:
+        print(f"⚠️ Error adding max_participants column: {e}")
+    
+    conn.commit()
+
+print("\n🎉 Training table fix completed!")
+
+# ========================= FIX TRAINING REQUESTS TABLE =========================
+print("\nFixing training_requests table structure...")
+with engine.connect() as conn:
+    try:
+        # Add missing 'training_program_id' column
+        conn.execute(text("ALTER TABLE training_requests ADD COLUMN training_program_id INT"))
+        print("✅ Added 'training_program_id' column to training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error adding training_program_id column: {e}")
+    
+    try:
+        # Add missing 'requested_training' column
+        conn.execute(text("ALTER TABLE training_requests ADD COLUMN requested_training VARCHAR(255)"))
+        print("✅ Added 'requested_training' column to training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error adding requested_training column: {e}")
+    
+    try:
+        # Add missing 'justification' column
+        conn.execute(text("ALTER TABLE training_requests ADD COLUMN justification TEXT"))
+        print("✅ Added 'justification' column to training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error adding justification column: {e}")
+    
+    try:
+        # Add missing 'priority' column
+        conn.execute(text("ALTER TABLE training_requests ADD COLUMN priority VARCHAR(50) DEFAULT 'Medium'"))
+        print("✅ Added 'priority' column to training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error adding priority column: {e}")
+    
+    # Remove old columns that are no longer needed
+    try:
+        conn.execute(text("ALTER TABLE training_requests DROP COLUMN training_title"))
+        print("✅ Removed 'training_title' column from training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error removing training_title column: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE training_requests DROP COLUMN reason"))
+        print("✅ Removed 'reason' column from training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error removing reason column: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE training_requests DROP COLUMN preferred_date"))
+        print("✅ Removed 'preferred_date' column from training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error removing preferred_date column: {e}")
+    
+    try:
+        conn.execute(text("ALTER TABLE training_requests DROP COLUMN attachment"))
+        print("✅ Removed 'attachment' column from training_requests table")
+    except Exception as e:
+        print(f"⚠️ Error removing attachment column: {e}")
+    
+    conn.commit()
+
+print("\n🎉 Training requests table fix completed!")
+
+# ========================= FIX TRAINING CERTIFICATES TABLE =========================
+print("\nFixing training_certificates table structure...")
+with engine.connect() as conn:
+    try:
+        # Add missing 'certificate_number' column
+        conn.execute(text("ALTER TABLE training_certificates ADD COLUMN certificate_number VARCHAR(100) UNIQUE"))
+        print("✅ Added 'certificate_number' column to training_certificates table")
+    except Exception as e:
+        print(f"⚠️ Error adding certificate_number column: {e}")
+    
+    try:
+        # Add missing 'issued_date' column
+        conn.execute(text("ALTER TABLE training_certificates ADD COLUMN issued_date DATETIME DEFAULT CURRENT_TIMESTAMP"))
+        print("✅ Added 'issued_date' column to training_certificates table")
+    except Exception as e:
+        print(f"⚠️ Error adding issued_date column: {e}")
+    
+    try:
+        # Add missing 'expiry_date' column
+        conn.execute(text("ALTER TABLE training_certificates ADD COLUMN expiry_date DATETIME"))
+        print("✅ Added 'expiry_date' column to training_certificates table")
+    except Exception as e:
+        print(f"⚠️ Error adding expiry_date column: {e}")
+    
+    conn.commit()
+
+print("\n🎉 Training certificates table fix completed!")

@@ -1062,20 +1062,26 @@ class PayrollRun(MasterBase):
 
 
 # =====================================================
-# SALARY ADJUSTMENTS
+# PAYROLL ADJUSTMENTS
 # =====================================================
 class PayrollAdjustment(MasterBase):
     __tablename__ = "payroll_adjustments"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("users.id"))
-    month = Column(String(50))
-
-    adjustment_type = Column(String(100))  # Bonus / Arrears / Medical
-    amount = Column(Float)
-    description = Column(String(255))
-
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    month = Column(String(50), nullable=False)
+    
+    adjustment_type = Column(String(50), nullable=False)  # Bonus, Deduction, Allowance
+    amount = Column(Float, nullable=False)
+    description = Column(Text, nullable=True)
+    
+    status = Column(String(50), default="Active")
     created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
+# TRAINING & DEVELOPMENT TABLES
+# =====================================================
 
 # =========================
 # EMPLOYEE LIFECYCLE ACTIONS
@@ -1319,5 +1325,102 @@ class PMSAppraisal(MasterBase):
     status = Column(String(50), default="Proposed")
 
     created_at = Column(DateTime, default=func.now())
+
+# =====================================================
+# TRAINING & DEVELOPMENT (T&D)
+# =====================================================
+
+# -------------------------
+# 1. TRAINING PROGRAMS & CALENDAR
+# -------------------------
+class TrainingProgram(MasterBase):
+    __tablename__ = "training_programs"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    title = Column(String(255), nullable=False)
+    category = Column(String(100))  # Leadership, Technical, etc.
+    type = Column(String(50))       # Internal, External, etc.
+    trainer = Column(String(150))   # Trainer name
+    department = Column(String(100), nullable=True)  # Target department
+
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
+    max_participants = Column(Integer, nullable=True)
+
+    description = Column(Text, nullable=True)
+    status = Column(String(50), default="Draft")
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 2. TRAINING REQUESTS & WORKFLOW
+# -------------------------
+class TrainingRequest(MasterBase):
+    __tablename__ = "training_requests"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    employee_id = Column(Integer, ForeignKey("users.id"))
+    training_program_id = Column(Integer, ForeignKey("training_programs.id"), nullable=True)
+    requested_training = Column(String(255))
+
+    justification = Column(Text, nullable=True)
+    priority = Column(String(50), default="Medium")
+
+    status = Column(String(50), default="Pending")  # Pending / Approved / Rejected
+    approver = Column(String(150), nullable=True)
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 3. ATTENDANCE & SKILL ASSESSMENT
+# -------------------------
+class TrainingAttendance(MasterBase):
+    __tablename__ = "training_attendance"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    training_id = Column(Integer, ForeignKey("training_programs.id"))
+    employee_id = Column(Integer, ForeignKey("users.id"))
+
+    present = Column(Boolean, default=False)
+
+    pre_score = Column(Float, nullable=True)
+    post_score = Column(Float, nullable=True)
+
+    result = Column(String(50), nullable=True)  # Pass / Fail
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# -------------------------
+# 4. CERTIFICATES & COMPLIANCE
+# -------------------------
+class TrainingCertificate(MasterBase):
+    __tablename__ = "training_certificates"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    training_id = Column(Integer, ForeignKey("training_programs.id"))
+    employee_id = Column(Integer, ForeignKey("users.id"))
+
+    score = Column(Float)
+    certificate_file = Column(String(255), nullable=True)
+    certificate_number = Column(String(100), unique=True, nullable=True)
+    issued_date = Column(DateTime, default=func.now())
+    expiry_date = Column(DateTime, nullable=True)
+
+    compliance_type = Column(String(100), nullable=True)
+    status = Column(String(50), default="Issued")  # Issued / Pending
+
+    issued_at = Column(DateTime, default=func.now())
+
 
 

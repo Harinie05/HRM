@@ -66,6 +66,14 @@ import HROperations from "./pages/hr/HROperations";
 // ======================= 🔥 PMS IMPORTS =======================
 import PMSManagement from "./pages/pms/pmsmanagement";
 
+// ======================= 🔥 TRAINING IMPORTS =======================
+import TrainingLayout from "./pages/training/TrainingLayout";
+import TrainingPrograms from "./pages/training/TrainingPrograms";
+import TrainingCalendar from "./pages/training/TrainingCalendar";
+import TrainingRequests from "./pages/training/TrainingRequests";
+import TrainingAttendance from "./pages/training/TrainingAttendance";
+import TrainingCertificates from "./pages/training/TrainingCertificates";
+
 function App() {
   return (
     <BrowserRouter>
@@ -143,8 +151,18 @@ function App() {
         {/* HR OPERATIONS */}
         <Route path="/hr" element={<ProtectedRoute><HROperations /></ProtectedRoute>} />
 
-        {/* ======================= 🔥 PMS ROUTES ======================= */}
+        {/* PMS */}
         <Route path="/pms" element={<ProtectedRoute><PMSManagement /></ProtectedRoute>} />
+
+        {/* ======================= 🔥 TRAINING & DEVELOPMENT ======================= */}
+        <Route path="/training" element={<ProtectedRoute><TrainingLayout /></ProtectedRoute>}>
+          <Route index element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
+          <Route path="programs" element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
+          <Route path="calendar" element={<ProtectedRoute><TrainingCalendar /></ProtectedRoute>} />
+          <Route path="requests" element={<ProtectedRoute><TrainingRequests /></ProtectedRoute>} />
+          <Route path="attendance" element={<ProtectedRoute><TrainingAttendance /></ProtectedRoute>} />
+          <Route path="certificates" element={<ProtectedRoute><TrainingCertificates /></ProtectedRoute>} />
+        </Route>
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

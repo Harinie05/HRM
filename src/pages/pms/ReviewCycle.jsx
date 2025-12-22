@@ -32,7 +32,7 @@ export default function ReviewCycle() {
 
   const fetchCycles = async () => {
     try {
-      const response = await api.get('/pms/reviews');
+      const response = await api.get('/api/pms/reviews');
       setCycles(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching review cycles:', error);
@@ -141,10 +141,10 @@ export default function ReviewCycle() {
       };
       
       if (editingCycle) {
-        await api.put(`/pms/reviews/${editingCycle}`, cycleData);
+        await api.put(`/api/pms/reviews/${editingCycle}`, cycleData);
         alert('Review cycle updated successfully!');
       } else {
-        await api.post('/pms/reviews', cycleData);
+        await api.post('/api/pms/reviews', cycleData);
         alert('Review cycle created successfully!');
       }
       fetchCycles();
@@ -169,7 +169,7 @@ export default function ReviewCycle() {
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this review cycle?")) {
       try {
-        await api.delete(`/pms/reviews/${id}`);
+        await api.delete(`/api/pms/reviews/${id}`);
         alert('Review cycle deleted successfully!');
         fetchCycles();
       } catch (error) {
@@ -181,7 +181,7 @@ export default function ReviewCycle() {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await api.put(`/pms/reviews/${id}`, { status: newStatus });
+      await api.put(`/api/pms/reviews/${id}`, { status: newStatus });
       fetchCycles();
     } catch (error) {
       console.error('Error updating review cycle status:', error);
@@ -211,7 +211,7 @@ export default function ReviewCycle() {
     const managerScore = formData.get('managerScore');
     
     try {
-      await api.put(`/pms/reviews/${progressCycle.id}`, {
+      await api.put(`/api/pms/reviews/${progressCycle.id}`, {
         self_score: selfScore ? parseFloat(selfScore) : null,
         manager_score: managerScore ? parseFloat(managerScore) : null
       });

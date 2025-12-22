@@ -52,7 +52,7 @@ export default function Feedback() {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await api.get('/pms/feedback');
+      const response = await api.get('/api/pms/feedback');
       setFeedbacks(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
@@ -170,10 +170,10 @@ export default function Feedback() {
       };
       
       if (editingFeedback) {
-        await api.put(`/pms/feedback/${editingFeedback}`, feedbackData);
+        await api.put(`/api/pms/feedback/${editingFeedback}`, feedbackData);
         alert('Feedback updated successfully!');
       } else {
-        await api.post('/pms/feedback', feedbackData);
+        await api.post('/api/pms/feedback', feedbackData);
         alert('Feedback submitted successfully!');
       }
       fetchFeedbacks();
@@ -203,7 +203,7 @@ export default function Feedback() {
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this feedback?")) {
       try {
-        await api.delete(`/pms/feedback/${id}`);
+        await api.delete(`/api/pms/feedback/${id}`);
         alert('Feedback deleted successfully!');
         fetchFeedbacks();
       } catch (error) {

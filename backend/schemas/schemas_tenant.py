@@ -1584,5 +1584,88 @@ class PMSAppraisalOut(PMSAppraisalCreate):
 
     class Config:
         from_attributes = True
+# =====================================================
+# TRAINING & DEVELOPMENT SCHEMAS
+# =====================================================
+
+# ---------- TRAINING PROGRAM ----------
+class TrainingProgramCreate(BaseModel):
+    title: str
+    category: str
+    trainer: str
+    start_datetime: datetime
+    duration: str
+    max_participants: int
+    mode: str
+    description: Optional[str]
+    mandatory: Optional[bool] = False
+    compliance_type: Optional[str] = None
+
+
+class TrainingProgramOut(TrainingProgramCreate):
+    id: int
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- TRAINING REQUEST ----------
+class TrainingRequestCreate(BaseModel):
+    employee_id: int
+    training_program_id: Optional[int] = None
+    requested_training: str
+    justification: Optional[str] = None
+    priority: Optional[str] = "Medium"
+
+
+class TrainingRequestUpdate(BaseModel):
+    status: str                 # Approved / Rejected
+    approver: Optional[str]
+
+
+class TrainingRequestOut(TrainingRequestCreate):
+    id: int
+    status: str
+    approver: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- ATTENDANCE & ASSESSMENT ----------
+class TrainingAttendanceCreate(BaseModel):
+    training_id: int
+    employee_id: int
+    present: bool
+    pre_score: Optional[float]
+    post_score: Optional[float]
+
+
+class TrainingAttendanceOut(TrainingAttendanceCreate):
+    id: int
+    result: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# ---------- CERTIFICATE ----------
+class TrainingCertificateCreate(BaseModel):
+    training_id: int
+    employee_id: int
+    score: float
+    compliance_type: Optional[str]
+
+
+class TrainingCertificateOut(TrainingCertificateCreate):
+    id: int
+    certificate_file: Optional[str]
+    status: str
+
+    class Config:
+        from_attributes = True
+
 
 

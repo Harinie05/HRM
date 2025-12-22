@@ -130,7 +130,7 @@ export default function GoalsKPI() {
     const currentValue = formData.get('currentValue');
     
     try {
-      await api.put(`/pms/goals/${progressGoal.id}`, {
+      await api.put(`/api/pms/goals/${progressGoal.id}`, {
         current_value: currentValue
       });
       alert('Progress updated successfully!');
@@ -167,7 +167,7 @@ export default function GoalsKPI() {
   const fetchGoals = async () => {
     try {
       console.log('Fetching PMS goals...');
-      const response = await api.get('/pms/goals');
+      const response = await api.get('/api/pms/goals');
       console.log('PMS Goals API Response:', response.data);
       setGoals(response.data?.data || []);
     } catch (error) {
@@ -195,10 +195,10 @@ export default function GoalsKPI() {
       };
 
       if (editingGoal) {
-        await api.put(`/pms/goals/${editingGoal}`, goalData);
+        await api.put(`/api/pms/goals/${editingGoal}`, goalData);
         alert('Goal updated successfully!');
       } else {
-        await api.post('/pms/goals', goalData);
+        await api.post('/api/pms/goals', goalData);
         alert('Goal created successfully!');
       }
       
@@ -228,7 +228,7 @@ export default function GoalsKPI() {
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this goal?")) {
       try {
-        await api.delete(`/pms/goals/${id}`);
+        await api.delete(`/api/pms/goals/${id}`);
         alert('Goal deleted successfully!');
         fetchGoals();
       } catch (error) {

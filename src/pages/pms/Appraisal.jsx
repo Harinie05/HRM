@@ -39,7 +39,7 @@ export default function Appraisal() {
 
   const fetchAppraisals = async () => {
     try {
-      const response = await api.get('/pms/appraisals');
+      const response = await api.get('/api/pms/appraisals');
       setAppraisals(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching appraisals:', error);
@@ -173,7 +173,7 @@ Generated on: ${new Date().toLocaleDateString()}`;
 
   const handleStatusUpdate = async (appraisalId, newStatus) => {
     try {
-      await api.put(`/pms/appraisals/${appraisalId}`, { status: newStatus });
+      await api.put(`/api/pms/appraisals/${appraisalId}`, { status: newStatus });
       alert(`Appraisal status updated to ${newStatus}!`);
       fetchAppraisals();
     } catch (error) {
@@ -207,10 +207,10 @@ Generated on: ${new Date().toLocaleDateString()}`;
       };
       
       if (editingAppraisal) {
-        await api.put(`/pms/appraisals/${editingAppraisal}`, appraisalData);
+        await api.put(`/api/pms/appraisals/${editingAppraisal}`, appraisalData);
         alert('Appraisal updated successfully!');
       } else {
-        await api.post('/pms/appraisals', appraisalData);
+        await api.post('/api/pms/appraisals', appraisalData);
         alert('Appraisal created successfully!');
       }
       fetchAppraisals();
@@ -245,7 +245,7 @@ Generated on: ${new Date().toLocaleDateString()}`;
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this appraisal?")) {
       try {
-        await api.delete(`/pms/appraisals/${id}`);
+        await api.delete(`/api/pms/appraisals/${id}`);
         alert('Appraisal deleted successfully!');
         fetchAppraisals();
       } catch (error) {

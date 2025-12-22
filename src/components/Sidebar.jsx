@@ -11,6 +11,7 @@ import {
   Clock,
   DollarSign,
   Target,
+  GraduationCap,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -303,6 +304,19 @@ export default function Sidebar() {
         >
           <Target size={20} />
           <span>Performance Management (PMS)</span>
+        </Link>
+
+        {/* Training & Development */}
+        <Link
+          to="/training"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/training")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <GraduationCap size={20} />
+          <span>Training & Development</span>
         </Link>
 
       </nav>
