@@ -7,6 +7,13 @@ export default function PayrollReports() {
   const [payrollRuns, setPayrollRuns] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState("current-month");
   const [loading, setLoading] = useState(true);
+  const [summaryData, setSummaryData] = useState({
+    totalGross: 0,
+    totalDeductions: 0,
+    netPayable: 0,
+    payrollRuns: 0,
+    period: 'CURRENT MONTH'
+  });
   const [stats, setStats] = useState({
     totalEmployees: 0,
     totalPayroll: 0,
@@ -24,18 +31,41 @@ export default function PayrollReports() {
     try {
       setLoading(true);
       
+      // Fetch payroll summary from new endpoint
+      const summaryRes = await api.get("/api/payroll/reports/summary");
+      const summaryData = summaryRes.data;
+      
+      setStats({
+        totalEmployees: summaryData.employee_count,
+        totalPayroll: summaryData.total_payroll,
+        avgSalary: summaryData.avg_salary,
+        pfContribution: summaryData.pf_contribution,
+        esiContribution: summaryData.esi_contribution,
+        tdsDeducted: summaryData.tds_deducted
+      });
+      
+      // Set additional summary data
+      setSummaryData({
+        totalGross: summaryData.total_gross,
+        totalDeductions: summaryData.total_deductions,
+        netPayable: summaryData.net_payable,
+        payrollRuns: summaryData.payroll_runs,
+        period: summaryData.period
+      });
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Fallback to existing logic if API fails
       const tenantDb = localStorage.getItem('tenant_db');
       const empRes = await api.get(`/api/users/${tenantDb}/list`);
       const activeEmployees = empRes.data?.users?.filter(u => u.is_employee && u.status === 'Active') || [];
       setEmployees(activeEmployees);
       
-      const payrollRes = await api.get("/api/payroll/run");
+      const payrollRes = await api.get("/api/payroll/runs");
       const runs = payrollRes.data || [];
       setPayrollRuns(runs);
       
       calculateStats(activeEmployees, runs);
-    } catch (error) {
-      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -80,8 +110,58 @@ export default function PayrollReports() {
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadReport = (reportType) => {
-    alert(`Downloading ${reportType} report. This feature will be implemented with actual report generation.`);
+  const handleDownloadReport = async (reportType) => {
+    try {
+      let endpoint = '';
+      let filename = '';
+      
+      switch(reportType) {
+        case 'pf-challan':
+          endpoint = '/api/payroll/reports/pf-challan/pdf';
+          filename = 'pf-challan-report.html';
+          break;
+        case 'esi-challan':
+          endpoint = '/api/payroll/reports/esi-challan/pdf';
+          filename = 'esi-challan-report.html';
+          break;
+        case 'tds':
+          endpoint = '/api/payroll/reports/tds/pdf';
+          filename = 'tds-report.html';
+          break;
+        case 'bank-transfer':
+          endpoint = '/api/payroll/reports/bank-transfer/pdf';
+          filename = 'bank-transfer-report.html';
+          break;
+        case 'department-wise':
+          endpoint = '/api/payroll/reports/department-wise/pdf';
+          filename = 'department-wise-report.html';
+          break;
+        case 'grade-wise':
+          endpoint = '/api/payroll/reports/grade-wise/pdf';
+          filename = 'grade-wise-report.html';
+          break;
+        case 'attendance-payroll':
+          endpoint = '/api/payroll/reports/attendance-payroll/pdf';
+          filename = 'attendance-payroll-report.html';
+          break;
+        default:
+          alert(`${reportType} report generation is under development.`);
+          return;
+      }
+      
+      // Download HTML report
+      const downloadUrl = `${api.defaults.baseURL}${endpoint}`;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      alert('Failed to download report. Please try again.');
+    }
   };
 
   return (
@@ -191,7 +271,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">PF Challan Report</p>
                   <p className="text-sm text-gray-500">Monthly PF contribution summary</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('pf-challan')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -200,7 +283,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">ESI Challan Report</p>
                   <p className="text-sm text-gray-500">Monthly ESI contribution summary</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('esi-challan')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -209,7 +295,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">TDS Report</p>
                   <p className="text-sm text-gray-500">Tax deduction summary</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('tds')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -218,7 +307,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Form 16 Generation</p>
                   <p className="text-sm text-gray-500">Annual tax certificate</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('form16')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -237,7 +329,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Department-wise Report</p>
                   <p className="text-sm text-gray-500">Payroll breakdown by department</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('department-wise')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -246,7 +341,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Grade-wise Report</p>
                   <p className="text-sm text-gray-500">Salary distribution by grade</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('grade-wise')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -255,7 +353,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Bank Transfer Report</p>
                   <p className="text-sm text-gray-500">Salary transfer summary</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('bank-transfer')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -264,7 +365,10 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Attendance vs Payroll</p>
                   <p className="text-sm text-gray-500">Attendance impact analysis</p>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800">
+                <button 
+                  onClick={() => handleDownloadReport('attendance-payroll')}
+                  className="text-blue-600 hover:text-blue-800"
+                >
                   <Download size={16} />
                 </button>
               </div>
@@ -279,13 +383,13 @@ export default function PayrollReports() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
                 <p><strong>Active Employees:</strong> {stats.totalEmployees}</p>
-                <p><strong>Payroll Runs:</strong> {payrollRuns.length}</p>
-                <p><strong>Period:</strong> {selectedPeriod.replace('-', ' ').toUpperCase()}</p>
+                <p><strong>Payroll Runs:</strong> {summaryData.payrollRuns}</p>
+                <p><strong>Period:</strong> {summaryData.period}</p>
               </div>
               <div>
-                <p><strong>Total Gross:</strong> ₹{stats.totalPayroll.toLocaleString()}</p>
-                <p><strong>Total Deductions:</strong> ₹{(stats.pfContribution + stats.esiContribution + stats.tdsDeducted).toLocaleString()}</p>
-                <p><strong>Net Payable:</strong> ₹{(stats.totalPayroll - stats.pfContribution - stats.esiContribution - stats.tdsDeducted).toLocaleString()}</p>
+                <p><strong>Total Gross:</strong> ₹{summaryData.totalGross.toLocaleString()}</p>
+                <p><strong>Total Deductions:</strong> ₹{summaryData.totalDeductions.toLocaleString()}</p>
+                <p><strong>Net Payable:</strong> ₹{summaryData.netPayable.toLocaleString()}</p>
               </div>
             </div>
           </div>

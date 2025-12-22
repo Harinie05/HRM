@@ -9,6 +9,11 @@ export default function Payslips() {
   const [employees, setEmployees] = useState([]);
   const [payrollRuns, setPayrollRuns] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedPayslip, setSelectedPayslip] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
+  const [emailForm, setEmailForm] = useState({ email: '', payslip: null });
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -43,21 +48,54 @@ export default function Payslips() {
   const fetchPayrollRuns = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/api/payroll/run");
+      const res = await api.get("/api/payroll/runs");
       setPayrollRuns(res.data || []);
-      // Convert payroll runs to payslips format
-      const generatedPayslips = (res.data || []).map(run => ({
-        id: run.id,
-        employee_id: run.employee_id,
-        employee_name: getEmployeeName(run.employee_id),
-        month: run.month,
-        year: run.year || new Date().getFullYear(),
-        gross_salary: run.gross_salary,
-        net_salary: run.net_salary,
-        status: run.status === 'Completed' ? 'Generated' : 'Pending',
-        generated_at: run.created_at
-      }));
-      setPayslips(generatedPayslips);
+      
+      // Get adjustments to calculate final net salary
+      const adjRes = await api.get(`/api/payroll/adjustments`);
+      const adjustments = adjRes.data || [];
+      
+      // Convert payroll runs to payslips format with adjusted net salary
+      const generatedPayslips = (res.data || []).map(run => {
+        // Find adjustments for this employee and month
+        const empAdjustments = adjustments.filter(adj => 
+          adj.employee_id == run.employee_id && 
+          adj.month === run.month && 
+          adj.status === 'Active'
+        );
+        
+        // Calculate adjustment totals
+        const additions = empAdjustments.filter(adj => adj.adjustment_type !== 'Deduction')
+          .reduce((sum, adj) => sum + (adj.amount || 0), 0);
+        const deductions = empAdjustments.filter(adj => adj.adjustment_type === 'Deduction')
+          .reduce((sum, adj) => sum + (adj.amount || 0), 0);
+        
+        // Calculate final net salary with adjustments
+        const finalNetSalary = (run.net_salary || 0) + additions - deductions;
+        
+        return {
+          id: run.id,
+          employee_id: run.employee_id,
+          employee_name: run.employee_name || getEmployeeName(run.employee_id),
+          month: run.month,
+          year: run.year || new Date().getFullYear(),
+          gross_salary: run.gross_salary,
+          net_salary: finalNetSalary, // Use adjusted net salary
+          status: run.status === 'Completed' ? 'Generated' : 'Pending',
+          generated_at: run.created_at
+        };
+      });
+      
+      // Remove duplicates based on employee_id and month
+      const uniquePayslips = generatedPayslips.filter((payslip, index, self) => 
+        index === self.findIndex(p => 
+          p.employee_id === payslip.employee_id && 
+          p.month === payslip.month && 
+          p.year === payslip.year
+        )
+      );
+      
+      setPayslips(uniquePayslips);
     } catch (error) {
       console.error("Error fetching payroll runs:", error);
       setPayrollRuns([]);
@@ -104,17 +142,58 @@ export default function Payslips() {
         return;
       }
       
-      // In a real implementation, this would call an email API
-      alert(`Sent ${generatedPayslips.length} payslips via email successfully!`);
+      const payslipIds = generatedPayslips.map(p => p.id);
+      const res = await api.post('/api/payroll/payslips/send-bulk-email', {
+        payslip_ids: payslipIds
+      });
       
-      // Update status to 'Sent'
-      const updatedPayslips = payslips.map(p => 
-        p.status === 'Generated' ? {...p, status: 'Sent'} : p
-      );
-      setPayslips(updatedPayslips);
+      if (res.data.success_count > 0) {
+        alert(`Email sending completed. Sent: ${res.data.success_count}, Failed: ${res.data.failed_count}`);
+        
+        // Update status to 'Sent' for successful sends
+        const updatedPayslips = payslips.map(p => 
+          p.status === 'Generated' ? {...p, status: 'Sent'} : p
+        );
+        setPayslips(updatedPayslips);
+      } else {
+        alert('No emails were sent. Please check employee email addresses.');
+      }
     } catch (error) {
       console.error("Error sending payslips:", error);
-      alert('Failed to send payslips. Please try again.');
+      alert('Failed to send payslips. Please check your email configuration.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailSubmit = async () => {
+    if (!emailForm.email) {
+      alert('Please enter an email address');
+      return;
+    }
+    
+    // Show confirmation modal instead of sending directly
+    setShowEmailModal(false);
+    setShowEmailConfirmModal(true);
+  };
+
+  const handleConfirmSendEmail = async () => {
+    try {
+      setLoading(true);
+      const res = await api.post(`/api/payroll/payslip/${emailForm.payslip.id}/send-email`, {
+        email: emailForm.email
+      });
+      
+      // Update payslip status to 'Sent'
+      const updatedPayslips = payslips.map(p => 
+        p.id === emailForm.payslip.id ? {...p, status: 'Sent'} : p
+      );
+      setPayslips(updatedPayslips);
+      setShowEmailConfirmModal(false);
+      alert(`Payslip sent to ${emailForm.email} successfully!`);
+    } catch (error) {
+      console.error('Error sending payslip:', error);
+      alert('Failed to send payslip. Please check your email configuration.');
     } finally {
       setLoading(false);
     }
@@ -122,40 +201,95 @@ export default function Payslips() {
 
   const handleViewPayslip = async (payslip) => {
     try {
-      // Generate complete payslip using workflow API
-      const monthStr = `${payslip.year}-${String(months.indexOf(payslip.month) + 1).padStart(2, '0')}`;
-      const res = await api.post(`/api/payroll/payslips/generate/${payslip.employee_id}`, null, {
-        params: { month: monthStr }
-      });
+      // Get full payroll run data
+      const fullPayrollData = payrollRuns.find(run => run.id === payslip.id);
       
-      const fullPayslip = res.data;
-      alert(`Complete Payslip (Workflow Generated):\n\nEmployee: ${fullPayslip.employee_name}\nCode: ${fullPayslip.employee_code}\nMonth: ${fullPayslip.month}\n\n--- ATTENDANCE ---\nPresent Days: ${fullPayslip.attendance.present_days}\nLOP Days: ${fullPayslip.attendance.lop_days}\n\n--- EARNINGS ---\nBasic: ₹${fullPayslip.earnings.basic.toLocaleString()}\nHRA: ₹${fullPayslip.earnings.hra.toLocaleString()}\nAllowances: ₹${fullPayslip.earnings.allowances.toLocaleString()}\nGross: ₹${fullPayslip.earnings.gross.toLocaleString()}\n\n--- DEDUCTIONS ---\nPF: ₹${fullPayslip.deductions.pf.toLocaleString()}\nESI: ₹${fullPayslip.deductions.esi.toLocaleString()}\nPT: ₹${fullPayslip.deductions.pt.toLocaleString()}\nTotal: ₹${fullPayslip.deductions.total.toLocaleString()}\n\n--- NET SALARY ---\n₹${fullPayslip.net_salary.toLocaleString()}`);
+      // Get adjustments for this employee and month
+      const adjRes = await api.get(`/api/payroll/adjustments`);
+      const adjustments = adjRes.data.filter(adj => 
+        adj.employee_id == payslip.employee_id && 
+        adj.month === payslip.month
+      );
+      
+      // Calculate adjustment totals
+      const additions = adjustments.filter(adj => adj.adjustment_type !== 'Deduction')
+        .reduce((sum, adj) => sum + (adj.amount || 0), 0);
+      const deductions = adjustments.filter(adj => adj.adjustment_type === 'Deduction')
+        .reduce((sum, adj) => sum + (adj.amount || 0), 0);
+      
+      // Use the stored calculations from payroll run
+      const totalEarnings = (fullPayrollData?.gross_salary || 0) + additions;
+      const pfDeduction = (fullPayrollData?.basic_salary || 0) * 0.12;
+      const esiDeduction = (fullPayrollData?.gross_salary || 0) * 0.0175;
+      const totalDeductions = (fullPayrollData?.lop_deduction || 0) + pfDeduction + esiDeduction + deductions;
+      
+      // Use the net salary from database which already accounts for adjustments
+      const finalNetSalary = (fullPayrollData?.net_salary || 0) + additions - deductions;
+      
+      setSelectedPayslip({
+        ...payslip,
+        ...fullPayrollData,
+        adjustments,
+        totalEarnings,
+        totalDeductions,
+        finalNetSalary,
+        pfDeduction,
+        esiDeduction
+      });
+      setShowViewModal(true);
     } catch (error) {
-      alert(`Payslip Details:\n\nEmployee: ${payslip.employee_name}\nMonth: ${payslip.month} ${payslip.year}\nGross Salary: ₹${payslip.gross_salary?.toLocaleString()}\nNet Salary: ₹${payslip.net_salary?.toLocaleString()}\nStatus: ${payslip.status}`);
+      console.error('Error fetching payslip details:', error);
+      alert(`Error loading payslip details`);
     }
   };
 
   const handleDownloadPayslip = async (payslip) => {
     try {
-      // Generate bank file for this employee
-      const monthStr = `${payslip.year}-${String(months.indexOf(payslip.month) + 1).padStart(2, '0')}`;
-      const res = await api.get(`/api/payroll/payslips/bank-file/${monthStr}`);
+      // Create download URL
+      const downloadUrl = `${api.defaults.baseURL}/api/payroll/payslip/${payslip.id}/download`;
       
-      const employee = employees.find(e => e.id === payslip.employee_id);
-      const bankRecord = res.data.bank_records.find(r => r.employee_code === employee?.employee_code);
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `payslip_${payslip.employee_name}_${payslip.month}_${payslip.year}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
-      if (bankRecord) {
-        alert(`Bank Transfer File Generated:\n\nEmployee: ${bankRecord.employee_name}\nCode: ${bankRecord.employee_code}\nAccount: ${bankRecord.account_number}\nAmount: ₹${bankRecord.amount.toLocaleString()}\nIFSC: ${bankRecord.ifsc}\n\nFile ready for bank upload!`);
-      } else {
-        alert(`Downloading payslip for ${payslip.employee_name} - ${payslip.month} ${payslip.year}`);
-      }
     } catch (error) {
-      alert(`Downloading payslip for ${payslip.employee_name} - ${payslip.month} ${payslip.year}`);
+      console.error('Download error:', error);
+      alert(`Error downloading payslip for ${payslip.employee_name}`);
     }
   };
 
-  const handleSendIndividual = (payslip) => {
-    alert(`Sending payslip to ${payslip.employee_name} via email`);
+  const handleSendIndividual = async (payslip) => {
+    try {
+      // Try to fetch employee email from database
+      const empRes = await api.get('/api/employees/list');
+      const employee = empRes.data?.find(emp => emp.id == payslip.employee_id);
+      
+      let defaultEmail = '';
+      if (employee?.email) {
+        defaultEmail = employee.email;
+      } else {
+        // Fallback to users table
+        try {
+          const tenantDb = localStorage.getItem('tenant_db');
+          const userRes = await api.get(`/api/users/${tenantDb}/list`);
+          const user = userRes.data?.users?.find(u => u.id == payslip.employee_id);
+          if (user?.email) defaultEmail = user.email;
+        } catch (e) {
+          console.log('Could not fetch user email');
+        }
+      }
+      
+      setEmailForm({ email: defaultEmail, payslip });
+      setShowEmailModal(true);
+    } catch (error) {
+      console.error('Error preparing email:', error);
+      setEmailForm({ email: '', payslip });
+      setShowEmailModal(true);
+    }
   };
 
   const filteredPayslips = payslips.filter(payslip => {
@@ -369,6 +503,274 @@ export default function Payslips() {
           <span>Sent: {payslips.filter(p => p.status === 'Sent').length}</span>
         </div>
       </div>
+
+      {/* Payslip View Modal */}
+      {showViewModal && selectedPayslip && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">Payslip Details - {selectedPayslip.employee_name}</h3>
+              <button 
+                onClick={() => setShowViewModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Employee Info */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Employee Information</h4>
+                <div className="space-y-2 text-sm">
+                  <div><span className="text-gray-500">Name:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_name}</span></div>
+                  <div><span className="text-gray-500">Code:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_code}</span></div>
+                  <div><span className="text-gray-500">Month:</span> <span className="ml-2 font-medium">{selectedPayslip.month} {selectedPayslip.year}</span></div>
+                </div>
+              </div>
+
+              {/* Attendance */}
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Attendance Summary</h4>
+                <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-blue-600">{selectedPayslip.present_days}</div>
+                    <div className="text-gray-500">Present</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-green-600">{selectedPayslip.leave_days}</div>
+                    <div className="text-gray-500">Leave</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-red-600">{selectedPayslip.lop_days}</div>
+                    <div className="text-gray-500">LOP</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {/* Earnings */}
+              <div className="bg-green-50 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Earnings</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Basic Salary</span>
+                    <span>₹{selectedPayslip.basic_salary?.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>HRA</span>
+                    <span>₹{selectedPayslip.hra_salary?.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Allowances</span>
+                    <span>₹{selectedPayslip.allowances?.toLocaleString()}</span>
+                  </div>
+                  {selectedPayslip.adjustments?.filter(adj => adj.adjustment_type !== 'Deduction').map((adj, idx) => (
+                    <div key={idx} className="flex justify-between text-green-600">
+                      <span>{adj.adjustment_type} - {adj.description}</span>
+                      <span>+₹{adj.amount?.toLocaleString()}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between font-bold border-t pt-2">
+                    <span>Total Earnings</span>
+                    <span className="text-green-600">₹{selectedPayslip.totalEarnings?.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Deductions */}
+              <div className="bg-red-50 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Deductions</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>LOP Deduction</span>
+                    <span>₹{selectedPayslip.lop_deduction?.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>PF (12%)</span>
+                    <span>₹{selectedPayslip.pfDeduction?.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ESI (1.75%)</span>
+                    <span>₹{selectedPayslip.esiDeduction?.toLocaleString()}</span>
+                  </div>
+                  {selectedPayslip.adjustments?.filter(adj => adj.adjustment_type === 'Deduction').map((adj, idx) => (
+                    <div key={idx} className="flex justify-between text-red-600">
+                      <span>{adj.adjustment_type} - {adj.description}</span>
+                      <span>-₹{adj.amount?.toLocaleString()}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between font-bold border-t pt-2">
+                    <span>Total Deductions</span>
+                    <span className="text-red-600">₹{selectedPayslip.totalDeductions?.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Net Salary */}
+            <div className="mt-6 text-center">
+              <div className="bg-green-100 border-2 border-green-500 rounded-lg p-4 inline-block">
+                <h3 className="text-lg font-bold text-green-700">NET SALARY: ₹{selectedPayslip.finalNetSalary?.toLocaleString()}</h3>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={() => handleDownloadPayslip(selectedPayslip)}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+              >
+                <Download size={16} />
+                Download Payslip
+              </button>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Email Modal */}
+      {showEmailModal && emailForm.payslip && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Send Payslip via Email</h3>
+              <button 
+                onClick={() => setShowEmailModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">
+                Sending payslip for <strong>{emailForm.payslip.employee_name}</strong>
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                Month: <strong>{emailForm.payslip.month} {emailForm.payslip.year}</strong>
+              </p>
+              
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address *
+              </label>
+              <input
+                type="email"
+                value={emailForm.email}
+                onChange={(e) => setEmailForm({...emailForm, email: e.target.value})}
+                placeholder="Enter employee email address"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={handleEmailSubmit}
+                disabled={loading || !emailForm.email}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Send size={16} />
+                Continue
+              </button>
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Email Confirmation Modal */}
+      {showEmailConfirmModal && emailForm.payslip && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-orange-600">Confirm Email Sending</h3>
+              <button 
+                onClick={() => {
+                  setShowEmailConfirmModal(false);
+                  setShowEmailModal(true);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center mb-2">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-yellow-600 font-bold">!</span>
+                  </div>
+                  <h4 className="font-medium text-yellow-800">Email Confirmation</h4>
+                </div>
+                <p className="text-yellow-700 text-sm ml-11">
+                  You are about to send a payslip email. Please confirm the details below.
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600 font-medium">Employee:</span>
+                  <span className="font-semibold">{emailForm.payslip.employee_name}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600 font-medium">Month:</span>
+                  <span className="font-semibold">{emailForm.payslip.month} {emailForm.payslip.year}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600 font-medium">Net Salary:</span>
+                  <span className="font-semibold text-green-600">₹{emailForm.payslip.net_salary?.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-gray-600 font-medium">Send to:</span>
+                  <span className="font-semibold text-blue-600">{emailForm.email}</span>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  <strong>Email Subject:</strong> Payslip for {emailForm.payslip.month} {emailForm.payslip.year} - {emailForm.payslip.employee_name}
+                </p>
+                <p className="text-sm text-blue-700 mt-1">
+                  <strong>Content:</strong> Professional HTML payslip with salary breakdown and company branding
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowEmailConfirmModal(false);
+                  setShowEmailModal(true);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Edit Email
+              </button>
+              <button
+                onClick={handleConfirmSendEmail}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Send size={16} />
+                {loading ? 'Sending...' : 'Confirm & Send'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
