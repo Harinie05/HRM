@@ -10,7 +10,9 @@ import {
   UserPlus,
   TrendingUp,
   Calendar,
-  Clock
+  Clock,
+  Building,
+  CheckCircle
 } from "lucide-react";
 
 export default function MasterDashboard() {
@@ -24,6 +26,7 @@ export default function MasterDashboard() {
     completedJobs: 0,
     pendingInterviews: 0
   });
+  
   const [loading, setLoading] = useState(true);
   const [debugData, setDebugData] = useState(null);
 
@@ -190,14 +193,14 @@ export default function MasterDashboard() {
         <div className="p-6">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-[#0D3B66] mb-2">
-              Recruitment & Onboarding Master Dashboard
+              Recruitment & Onboarding Pipeline
             </h1>
             <p className="text-gray-600">
-              Overview of all recruitment activities and candidate pipeline
+              Overview of recruitment activities and candidate pipeline
             </p>
           </div>
 
-          {/* Main Metrics Grid */}
+          {/* Recruitment Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <MetricCard
               title="Job Requisitions"
@@ -229,7 +232,7 @@ export default function MasterDashboard() {
             <MetricCard
               title="Completed Jobs"
               value={metrics.completedJobs}
-              icon={Calendar}
+              icon={CheckCircle}
               color="text-indigo-600"
               bgColor="bg-white"
               description="Filled positions"

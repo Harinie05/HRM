@@ -13,6 +13,8 @@ import {
   Target,
   GraduationCap,
   Shield,
+  LogOut,
+  BarChart3,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -20,6 +22,8 @@ export default function Sidebar() {
   const [openUserMenu, setOpenUserMenu] = useState(true);
   const [openRecruitmentMenu, setOpenRecruitmentMenu] = useState(false);
   const [openAttendanceMenu, setOpenAttendanceMenu] = useState(false);
+  const [openPayrollMenu, setOpenPayrollMenu] = useState(false);
+  const [openAnalyticsMenu, setOpenAnalyticsMenu] = useState(false);
 
   return (
     <div className="h-screen w-64 bg-[#F4F8FF] border-r border-gray-200 p-4 sticky top-0 overflow-y-auto">
@@ -219,6 +223,17 @@ export default function Sidebar() {
           {openAttendanceMenu && (
             <div className="ml-10 mt-2 space-y-2">
               <Link
+                to="/attendance/dashboard"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/attendance/dashboard"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Attendance Dashboard
+              </Link>
+
+              <Link
                 to="/shift-roster"
                 className={`block hover:text-blue-700 ${
                   location.pathname === "/shift-roster"
@@ -269,17 +284,44 @@ export default function Sidebar() {
         </Link>
 
         {/* Payroll Management */}
-        <Link
-          to="/payroll"
-          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
-            location.pathname.startsWith("/payroll")
-              ? "bg-blue-100 font-semibold text-blue-700"
-              : ""
-          }`}
-        >
-          <DollarSign size={20} />
-          <span>Payroll Management</span>
-        </Link>
+        <div>
+          <button
+            onClick={() => setOpenPayrollMenu(!openPayrollMenu)}
+            className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-blue-100"
+          >
+            <span className="flex items-center space-x-3">
+              <DollarSign size={20} />
+              <span>Payroll Management</span>
+            </span>
+            {openPayrollMenu ? <ChevronDown /> : <ChevronRight />}
+          </button>
+
+          {openPayrollMenu && (
+            <div className="ml-10 mt-2 space-y-2">
+              <Link
+                to="/payroll/dashboard"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/payroll/dashboard"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Payroll Dashboard
+              </Link>
+
+              <Link
+                to="/payroll"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/payroll"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Payroll Management
+              </Link>
+            </div>
+          )}
+        </div>
 
         {/* HR Operations & Workforce Management */}
         <Link
@@ -320,6 +362,46 @@ export default function Sidebar() {
           <span>Training & Development</span>
         </Link>
 
+        {/* Analytics & Reports */}
+        <div>
+          <button
+            onClick={() => setOpenAnalyticsMenu(!openAnalyticsMenu)}
+            className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-blue-100"
+          >
+            <span className="flex items-center space-x-3">
+              <BarChart3 size={20} />
+              <span>Analytics & Reports</span>
+            </span>
+            {openAnalyticsMenu ? <ChevronDown /> : <ChevronRight />}
+          </button>
+
+          {openAnalyticsMenu && (
+            <div className="ml-10 mt-2 space-y-2">
+              <Link
+                to="/analytics/attrition"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/analytics/attrition"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Attrition Analysis
+              </Link>
+
+              <Link
+                to="/analytics/manpower"
+                className={`block hover:text-blue-700 ${
+                  location.pathname === "/analytics/manpower"
+                    ? "font-bold text-blue-700"
+                    : ""
+                }`}
+              >
+                Manpower Planning Compliance
+              </Link>
+            </div>
+          )}
+        </div>
+
         {/* Compliance Module */}
         <Link
           to="/compliance"
@@ -331,6 +413,19 @@ export default function Sidebar() {
         >
           <Shield size={20} />
           <span>Compliance Module</span>
+        </Link>
+
+        {/* Exit Management */}
+        <Link
+          to="/exit"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/exit")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <LogOut size={20} />
+          <span>Exit Management</span>
         </Link>
 
       </nav>

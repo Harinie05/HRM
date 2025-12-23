@@ -41,8 +41,7 @@ def create_nabh_compliance(data: NABHComplianceRequest, db: Session = Depends(ge
             credentialing_done=data.credentialing_done,
             fire_safety_training_done=data.fire_safety_training_done,
             performance_monitoring_done=data.performance_monitoring_done,
-            remarks=data.remarks,
-            last_audit_date=datetime.now().date()
+            remarks=data.remarks
         )
         
         db.add(record)
@@ -90,7 +89,7 @@ def get_nabh_compliance(db: Session = Depends(get_tenant_db)):
                 "performance_monitoring_done": record.performance_monitoring_done,
                 "compliance_percentage": 85.0,
                 "overall_compliance_status": "Compliant",
-                "last_audit_date": str(record.last_audit_date) if record.last_audit_date else None,
+                "last_audit_date": str(record.created_at.date()) if record.created_at else None,
                 "next_audit_due": None,
                 "remarks": record.remarks or ""
             })

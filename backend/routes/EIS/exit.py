@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
-from models.models_tenant import EmployeeExit, Employee
+from models.models_tenant import EmployeeExit, User
 from schemas.schemas_tenant import ExitCreate, ExitOut
 
 
@@ -35,7 +35,7 @@ router = APIRouter(prefix="/employee/exit", tags=["Employee Exit & Separation"])
 def add_exit(data: ExitCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
-    emp = db.query(Employee).filter(Employee.id == data.employee_id).first()
+    emp = db.query(User).filter(User.id == data.employee_id).first()
     if not emp:
         raise HTTPException(404, "Employee not found")
 
@@ -100,7 +100,7 @@ def update_exit(employee_id: int, data: ExitCreate, user=Depends(get_current_use
     setattr(exit_data, 'notes', data.notes)
 
     # Update employee status based on clearance
-    emp = db.query(Employee).filter(Employee.id == employee_id).first()
+    emp = db.query(User).filter(User.id == employee_id).first()
     if emp:
         if data.clearance_status == "Completed":
             setattr(emp, 'status', "Inactive")
@@ -126,7 +126,7 @@ def update_clearance(employee_id: int, status: str, user=Depends(get_current_use
 
     setattr(exit_data, 'clearance_status', status)
 
-    emp = db.query(Employee).filter(Employee.id == employee_id).first()
+    emp = db.query(User).filter(User.id == employee_id).first()
     if emp:
         setattr(emp, 'status', "Inactive" if status == "Completed" else "Resigned")
 

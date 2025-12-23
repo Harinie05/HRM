@@ -6,6 +6,11 @@ import api from "../api";
 export default function Dashboard() {
   const [holidays, setHolidays] = useState([]);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [dashboardData, setDashboardData] = useState({
+    totalEmployees: 0,
+    totalDepartments: 0,
+    totalRoles: 0
+  });
 
   // ========================= FETCH HOLIDAYS =========================
   const fetchHolidays = async () => {
@@ -17,8 +22,54 @@ export default function Dashboard() {
     }
   };
 
+  // ========================= FETCH DASHBOARD DATA =========================
+  const fetchDashboardData = async () => {
+    try {
+      const tenant_db = 'nutryah'; // Default tenant database name
+      
+      // Fetch employees from users endpoint
+      let totalEmployees = 0;
+      try {
+        const usersRes = await api.get(`/hospitals/users/${tenant_db}/list`);
+        totalEmployees = (usersRes.data?.users || []).length;
+      } catch {
+        console.log('No employee data found');
+      }
+      
+      // Fetch departments
+      let totalDepartments = 0;
+      try {
+        const deptRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
+        totalDepartments = (deptRes.data?.departments || []).length;
+      } catch {
+        console.log('No department data found');
+      }
+      
+      // Fetch roles
+      let totalRoles = 0;
+      try {
+        const rolesRes = await api.get(`/hospitals/roles/${tenant_db}/list`);
+        totalRoles = (rolesRes.data?.roles || []).length;
+      } catch {
+        console.log('No roles data found');
+      }
+      
+      console.log('Dashboard data:', { totalEmployees, totalDepartments, totalRoles });
+      
+      setDashboardData({
+        totalEmployees,
+        totalDepartments,
+        totalRoles
+      });
+      
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    }
+  };
+
   useEffect(() => {
     fetchHolidays();
+    fetchDashboardData();
   }, []);
 
   // Calendar Logic
@@ -57,22 +108,18 @@ export default function Dashboard() {
           </h1>
 
           {/* ================== TOP CARDS ================== */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
               <p className="text-gray-500">TOTAL EMPLOYEES</p>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{dashboardData.totalEmployees}</p>
             </div>
             <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">DEPARTMENTS</p>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-gray-500">TOTAL DEPARTMENTS</p>
+              <p className="text-3xl font-bold">{dashboardData.totalDepartments}</p>
             </div>
             <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">ACTIVE USERS</p>
-              <p className="text-3xl font-bold">0</p>
-            </div>
-            <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">PENDING APPROVALS</p>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-gray-500">TOTAL ROLES</p>
+              <p className="text-3xl font-bold">{dashboardData.totalRoles}</p>
             </div>
           </div>
 

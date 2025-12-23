@@ -1,11 +1,19 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from pathlib import Path
+from pydantic import BaseModel
+from typing import List, Optional
+import base64
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from io import BytesIO
 
 from database import master_engine, logger
 from utils.audit_logger import log_audit, log_error
+from utils.email import send_email
 
 import models.models_master as models_master
 import models.models_tenant as models_tenant
@@ -48,6 +56,8 @@ from routes.EIS.salary import router as salary_router
 from routes.EIS.documents import router as documents_router
 from routes.EIS.exit import router as exit_router
 from routes.EIS.bank_details import router as bank_details_router
+from routes.EIS.resignation_tracking import router as resignation_tracking_router
+from routes.exit.settlement_documents import router as settlement_documents_router
 
 # ======================= 🔥 ATTENDANCE ROUTERS =======================
 from routes.attendance.roster import router as roster_router
@@ -96,6 +106,9 @@ from routes.compliance.statutory import router as statutory_router
 from routes.compliance.labour_register import router as labour_register_router
 from routes.compliance.leave_compliance import router as leave_compliance_router
 from routes.compliance.nabh_compliance import router as nabh_compliance_router
+
+# ======================= 🔥 EXIT MANAGEMENT ROUTERS =======================
+from routes.exit.exit_management import router as exit_management_router
 
 # ============================================================
 
@@ -215,6 +228,8 @@ app.include_router(salary_router)
 app.include_router(documents_router)
 app.include_router(exit_router)
 app.include_router(bank_details_router)
+app.include_router(resignation_tracking_router, prefix="/api")
+app.include_router(settlement_documents_router, prefix="/api")
 
 # ======================= 🔥 ATTENDANCE MODULE =======================
 app.include_router(roster_router, prefix="/api")
@@ -264,7 +279,283 @@ app.include_router(labour_register_router, prefix="/api")
 app.include_router(leave_compliance_router, prefix="/api")
 app.include_router(nabh_compliance_router, prefix="/api")
 
+# ======================= 🔥 EXIT MANAGEMENT MODULE =======================
+app.include_router(exit_management_router, prefix="/api")
+
 logger.info("All routers loaded successfully")
+
+# ======================= 📧 EMAIL ENDPOINT =======================
+class EmailRequest(BaseModel):
+    to: str
+    subject: str
+    body: str
+    attachment: Optional[dict] = None
+    employee_data: Optional[dict] = None
+
+class PDFRequest(BaseModel):
+    employee_name: str
+    employee_code: str
+    company_name: str
+    designation: str
+    department: str
+    joining_date: str
+    last_working_day: str
+    place: str = "Bangalore"
+    issued_by: str = "HR Department"
+    authorized_signatory: str = "HR Manager"
+    issued_date: str
+
+@app.post("/api/generate-experience-pdf")
+def generate_experience_pdf(pdf_request: PDFRequest):
+    try:
+        from datetime import datetime
+        
+        buffer = BytesIO()
+        
+        # Create PDF using canvas
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+        
+        # Title
+        p.setFont("Helvetica-Bold", 18)
+        title_text = "EXPERIENCE CERTIFICATE"
+        title_width = p.stringWidth(title_text, "Helvetica-Bold", 18)
+        p.drawString((width - title_width) / 2, height-100, title_text)
+        
+        # Content
+        p.setFont("Helvetica", 12)
+        y_position = height - 180
+        line_height = 20
+        
+        # Format dates
+        joining_date = datetime.strptime(pdf_request.joining_date, '%Y-%m-%d').strftime('%d/%m/%Y')
+        last_working_day = datetime.strptime(pdf_request.last_working_day, '%Y-%m-%d').strftime('%d/%m/%Y')
+        issued_date = datetime.strptime(pdf_request.issued_date, '%Y-%m-%d').strftime('%d/%m/%Y')
+        
+        # Paragraph 1
+        text1 = f"This is to certify that {pdf_request.employee_name} (Employee Code: {pdf_request.employee_code})"
+        p.drawString(50, y_position, text1)
+        y_position -= line_height
+        
+        text2 = f"was employed with {pdf_request.company_name} as {pdf_request.designation}"
+        p.drawString(50, y_position, text2)
+        y_position -= line_height
+        
+        text3 = f"in the {pdf_request.department}."
+        p.drawString(50, y_position, text3)
+        y_position -= line_height * 2
+        
+        # Paragraph 2
+        text4 = f"The period of employment was from {joining_date} to {last_working_day}."
+        p.drawString(50, y_position, text4)
+        y_position -= line_height * 2
+        
+        # Paragraph 3
+        text5 = f"During the tenure with our organization, {pdf_request.employee_name} demonstrated"
+        p.drawString(50, y_position, text5)
+        y_position -= line_height
+        
+        text6 = "professionalism and contributed effectively to the team. The employee's conduct"
+        p.drawString(50, y_position, text6)
+        y_position -= line_height
+        
+        text7 = "and performance were satisfactory throughout the employment period."
+        p.drawString(50, y_position, text7)
+        y_position -= line_height * 2
+        
+        # Paragraph 4
+        text8 = f"We wish {pdf_request.employee_name} all the best for future endeavors."
+        p.drawString(50, y_position, text8)
+        y_position -= line_height * 3
+        
+        # Signature section
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y_position, f"For {pdf_request.company_name}")
+        y_position -= line_height * 3
+        
+        # Signature line
+        p.line(50, y_position, 200, y_position)
+        y_position -= line_height
+        
+        p.setFont("Helvetica", 10)
+        p.drawString(50, y_position, pdf_request.authorized_signatory)
+        y_position -= 15
+        p.drawString(50, y_position, pdf_request.issued_by)
+        
+        # Date and place (right aligned)
+        date_text = f"Date: {issued_date}"
+        place_text = f"Place: {pdf_request.place}"
+        p.drawString(width-200, y_position + 30, date_text)
+        p.drawString(width-200, y_position + 15, place_text)
+        
+        p.save()
+        buffer.seek(0)
+        
+        return Response(
+            content=buffer.getvalue(),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=Experience_Certificate_{pdf_request.employee_code}.pdf",
+                "Content-Type": "application/pdf"
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"PDF generation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/send-email")
+def send_email_endpoint(email_request: EmailRequest):
+    try:
+        attachments = None
+        if email_request.attachment and email_request.attachment.get('filename'):
+            # Generate real PDF content for email attachment
+            if 'Experience_Certificate_' in email_request.attachment['filename']:
+                # Extract employee data from the request (assuming it's passed in attachment content)
+                try:
+                    # Create a proper PDF for the email attachment
+                    from datetime import datetime
+                    
+                    buffer = BytesIO()
+                    p = canvas.Canvas(buffer, pagesize=letter)
+                    width, height = letter
+                    
+                    # Title
+                    p.setFont("Helvetica-Bold", 18)
+                    title_text = "EXPERIENCE CERTIFICATE"
+                    title_width = p.stringWidth(title_text, "Helvetica-Bold", 18)
+                    p.drawString((width - title_width) / 2, height-100, title_text)
+                    
+                    # Generate complete experience certificate PDF
+                    if email_request.employee_data:
+                        emp_data = email_request.employee_data
+                        
+                        # Format dates
+                        joining_date = datetime.strptime(emp_data.get('joining_date', '2022-03-15'), '%Y-%m-%d').strftime('%d/%m/%Y')
+                        last_working_day = datetime.strptime(emp_data.get('last_working_day', '2025-12-26'), '%Y-%m-%d').strftime('%d/%m/%Y')
+                        issued_date = datetime.strptime(emp_data.get('issued_date', datetime.now().strftime('%Y-%m-%d')), '%Y-%m-%d').strftime('%d/%m/%Y')
+                        
+                        # Content with employee details
+                        p.setFont("Helvetica", 12)
+                        y_position = height - 180
+                        line_height = 20
+                        
+                        # Paragraph 1
+                        text1 = f"This is to certify that {emp_data.get('employee_name', 'Unknown')} (Employee Code: {emp_data.get('employee_code', 'EMP001')})"
+                        p.drawString(50, y_position, text1)
+                        y_position -= line_height
+                        
+                        text2 = f"was employed with {emp_data.get('company_name', 'Nutryah Healthcare Solutions')} as {emp_data.get('designation', 'Software Developer')}"
+                        p.drawString(50, y_position, text2)
+                        y_position -= line_height
+                        
+                        text3 = f"in the {emp_data.get('department', 'IT Department')}."
+                        p.drawString(50, y_position, text3)
+                        y_position -= line_height * 2
+                        
+                        # Paragraph 2
+                        text4 = f"The period of employment was from {joining_date} to {last_working_day}."
+                        p.drawString(50, y_position, text4)
+                        y_position -= line_height * 2
+                        
+                        # Paragraph 3
+                        text5 = f"During the tenure with our organization, {emp_data.get('employee_name', 'Unknown')} demonstrated"
+                        p.drawString(50, y_position, text5)
+                        y_position -= line_height
+                        
+                        text6 = "professionalism and contributed effectively to the team. The employee's conduct"
+                        p.drawString(50, y_position, text6)
+                        y_position -= line_height
+                        
+                        text7 = "and performance were satisfactory throughout the employment period."
+                        p.drawString(50, y_position, text7)
+                        y_position -= line_height * 2
+                        
+                        # Paragraph 4
+                        text8 = f"We wish {emp_data.get('employee_name', 'Unknown')} all the best for future endeavors."
+                        p.drawString(50, y_position, text8)
+                        y_position -= line_height * 3
+                        
+                        # Signature section
+                        p.setFont("Helvetica-Bold", 12)
+                        p.drawString(50, y_position, f"For {emp_data.get('company_name', 'Nutryah Healthcare Solutions')}")
+                        y_position -= line_height * 3
+                        
+                        # Signature line
+                        p.line(50, y_position, 200, y_position)
+                        y_position -= line_height
+                        
+                        p.setFont("Helvetica", 10)
+                        p.drawString(50, y_position, emp_data.get('authorized_signatory', 'HR Manager'))
+                        y_position -= 15
+                        p.drawString(50, y_position, emp_data.get('issued_by', 'HR Department'))
+                        
+                        # Date and place
+                        p.drawString(width-200, y_position + 30, f"Date: {issued_date}")
+                        p.drawString(width-200, y_position + 15, f"Place: {emp_data.get('place', 'Bangalore')}")
+                    else:
+                        # Basic content for email attachment
+                        p.setFont("Helvetica", 12)
+                        y_position = height - 180
+                        
+                        p.drawString(50, y_position, "This is to certify that the employee was employed with our organization.")
+                        y_position -= 40
+                        p.drawString(50, y_position, "We wish them all the best for future endeavors.")
+                        y_position -= 80
+                        
+                        p.setFont("Helvetica-Bold", 12)
+                        p.drawString(50, y_position, "For Nutryah Healthcare Solutions")
+                        y_position -= 60
+                        
+                        p.line(50, y_position, 200, y_position)
+                        y_position -= 20
+                        p.setFont("Helvetica", 10)
+                        p.drawString(50, y_position, "HR Manager")
+                        p.drawString(50, y_position-15, "HR Department")
+                        
+                        current_date = datetime.now().strftime('%d/%m/%Y')
+                        p.drawString(width-200, y_position, f"Date: {current_date}")
+                        p.drawString(width-200, y_position-15, "Place: Bangalore")
+                    
+                    p.save()
+                    buffer.seek(0)
+                    attachment_bytes = buffer.getvalue()
+                    
+                except Exception as pdf_error:
+                    logger.error(f"PDF generation for email failed: {pdf_error}")
+                    # Fallback to a simple text-based PDF
+                    attachment_bytes = b'%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n>>\nendobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \ntrailer\n<<\n/Size 4\n/Root 1 0 R\n>>\nstartxref\n174\n%%EOF'
+            else:
+                # Handle other attachment types
+                attachment_content = email_request.attachment.get('content', '')
+                if attachment_content and attachment_content != 'base64_pdf_content':
+                    try:
+                        attachment_bytes = base64.b64decode(attachment_content)
+                    except:
+                        attachment_bytes = b'Invalid attachment content'
+                else:
+                    attachment_bytes = b'No attachment content provided'
+            
+            attachments = [{
+                'content': attachment_bytes,
+                'filename': email_request.attachment['filename']
+            }]
+        
+        success = send_email(
+            to_email=email_request.to,
+            subject=email_request.subject,
+            html_content=email_request.body.replace('\n', '<br>'),
+            attachments=attachments
+        )
+        
+        if success:
+            return {"message": "Email sent successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to send email")
+            
+    except Exception as e:
+        logger.error(f"Email endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ---------------- ROOT ----------------
 @app.get("/")

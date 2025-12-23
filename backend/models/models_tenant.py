@@ -1508,8 +1508,74 @@ class NABHHRMCompliance(MasterBase):
     performance_monitoring_done = Column(Boolean, default=False)
 
     remarks = Column(Text)
-    last_audit_date = Column(Date)
-
     created_at = Column(DateTime, default=func.now())
 
+# ========================= SETTLEMENT & DOCUMENTS =========================
+class EmployeeSettlement(MasterBase):
+    __tablename__ = "employee_settlements"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+    resignation_id = Column(Integer, ForeignKey("employee_exit.id"), nullable=False)
+
+    # Settlement Breakdown
+    pending_salary = Column(Float, default=0.0)
+    leave_encashment = Column(Float, default=0.0)
+    bonus = Column(Float, default=0.0)
+    
+    # Deductions
+    tds = Column(Float, default=0.0)
+    pf = Column(Float, default=0.0)
+    professional_tax = Column(Float, default=0.0)
+    advance_recovery = Column(Float, default=0.0)
+    loan_recovery = Column(Float, default=0.0)
+    
+    # Totals
+    gross_amount = Column(Float, nullable=False)
+    total_deductions = Column(Float, nullable=False)
+    net_payable = Column(Float, nullable=False)
+    
+    # Status
+    payment_status = Column(String(50), default="Pending")
+    payment_mode = Column(String(50), default="Bank Transfer")
+    calculated_on = Column(Date, nullable=False)
+    calculated_by = Column(String(150), nullable=False)
+    paid_on = Column(Date, nullable=True)
+    remarks = Column(Text, nullable=True)
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class ExperienceLetter(MasterBase):
+    __tablename__ = "experience_letters"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+    resignation_id = Column(Integer, ForeignKey("employee_exit.id"), nullable=False)
+    
+    # Employee Details
+    employee_name = Column(String(150), nullable=False)
+    employee_code = Column(String(50), nullable=False)
+    company_name = Column(String(200), nullable=False)
+    designation = Column(String(150), nullable=False)
+    department = Column(String(150), nullable=False)
+    
+    # Employment Period
+    joining_date = Column(Date, nullable=False)
+    last_working_day = Column(Date, nullable=False)
+    
+    # Certificate Details
+    place = Column(String(100), default="Bangalore")
+    issued_by = Column(String(150), default="HR Department")
+    authorized_signatory = Column(String(150), default="HR Manager")
+    issued_date = Column(Date, nullable=False)
+    
+    # Status
+    status = Column(String(50), default="Generated")
+    email_sent = Column(Boolean, default=False)
+    email_sent_to = Column(String(150), nullable=True)
+    email_sent_at = Column(DateTime, nullable=True)
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 

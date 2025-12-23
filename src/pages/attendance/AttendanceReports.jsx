@@ -1,5 +1,7 @@
 import { useState } from "react";
 import api from "../../api";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 
 export default function AttendanceReports() {
   const [report, setReport] = useState([]);
@@ -15,23 +17,30 @@ export default function AttendanceReports() {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">
-        Attendance → Attendance Reports
-      </h2>
+    <div className="flex bg-[#F5F7FA] min-h-screen">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Header />
+        
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Attendance → Attendance Reports
+          </h2>
 
-      <div className="flex gap-2 mb-4">
-        <button onClick={loadDaily} className="btn-primary">
-          Daily Report
-        </button>
-        <button onClick={loadMonthly} className="btn-secondary">
-          Monthly Report
-        </button>
+          <div className="flex gap-2 mb-4">
+            <button onClick={loadDaily} className="btn-primary">
+              Daily Report
+            </button>
+            <button onClick={loadMonthly} className="btn-secondary">
+              Monthly Report
+            </button>
+          </div>
+
+          <pre className="bg-gray-100 p-4 rounded text-sm">
+            {JSON.stringify(report, null, 2)}
+          </pre>
+        </div>
       </div>
-
-      <pre className="bg-gray-100 p-4 rounded text-sm">
-        {JSON.stringify(report, null, 2)}
-      </pre>
     </div>
   );
 }

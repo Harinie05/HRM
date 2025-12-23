@@ -40,18 +40,33 @@ def send_email(to_email: str, subject: str, html_content: str, attachments: Opti
         # Add attachments if provided
         if attachments:
             for attachment in attachments:
-                part = MIMEBase('application', 'octet-stream')
-                part.set_payload(attachment['content'])
-                encoders.encode_base64(part)
-                part.add_header(
-                    'Content-Disposition',
-                    f'attachment; filename= {attachment["filename"]}'
-                )
-                msg.attach(part)
+                try:
+                    part = MIMEBase('application', 'octet-stream')
+                    # Handle both binary content and file paths
+                    if isinstance(attachment.get('content'), bytes):
+                        part.set_payload(attachment['content'])
+                    elif 'file_path' in attachment:
+                        with open(attachment['file_path'], 'rb') as f:
+                            part.set_payload(f.read())
+                    else:
+                        logger.error(f"❌ Invalid attachment format: {attachment}")
+                        continue
+                    
+                    encoders.encode_base64(part)
+                    part.add_header(
+                        'Content-Disposition',
+                        f'attachment; filename="{attachment["filename"]}"'
+                    )
+                    msg.attach(part)
+                    logger.info(f"📎 Attached file: {attachment['filename']}")
+                except Exception as attach_error:
+                    logger.error(f"❌ Failed to attach {attachment.get('filename', 'unknown')}: {attach_error}")
+                    continue
 
-        # Connect to SMTP server
+        # Connect to SMTP server with timeout
         logger.info(f"🔗 Connecting to SMTP server...")
-        server = smtplib.SMTP(SMTP_HOST or "localhost", SMTP_PORT)
+        server = smtplib.SMTP(SMTP_HOST or "localhost", SMTP_PORT, timeout=30)
+        server.set_debuglevel(0)  # Disable debug for cleaner logs
         server.starttls()
         
         logger.info(f"🔐 Logging in with user: {SMTP_USER}")
@@ -67,12 +82,16 @@ def send_email(to_email: str, subject: str, html_content: str, attachments: Opti
     except smtplib.SMTPAuthenticationError as e:
         logger.error(f"❌ SMTP Authentication failed: {e}")
         logger.error(f"🔍 Check SMTP_USER and SMTP_PASSWORD in .env file")
+        logger.error(f"💡 For Office365: Enable 'App passwords' or use OAuth2")
         return False
     except smtplib.SMTPRecipientsRefused as e:
         logger.error(f"❌ Recipient refused: {e}")
         return False
     except smtplib.SMTPServerDisconnected as e:
         logger.error(f"❌ SMTP server disconnected: {e}")
+        return False
+    except smtplib.SMTPConnectError as e:
+        logger.error(f"❌ Cannot connect to SMTP server: {e}")
         return False
     except Exception as e:
         logger.error(f"❌ Email sending failed: {type(e).__name__}: {e}")

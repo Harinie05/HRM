@@ -53,12 +53,14 @@ import Regularization from "./pages/attendance/Regularization";
 import AttendanceReports from "./pages/attendance/AttendanceReports";
 import AttendanceRules from "./pages/attendance/AttendanceRules";
 import AttendanceLocations from "./pages/attendance/AttendanceLocations";
+import AttendanceDashboard from "./pages/attendance/AttendanceDashboard";
 
 // Leave Management
 import LeaveLayout from "./pages/leaves/LeaveLayout";
 
 // ✅ PAYROLL
 import PayrollLayout from "./pages/payroll/PayrollLayout";
+import PayrollDashboard from "./pages/payroll/PayrollDashboard";
 
 // HR Operations & Workforce Management
 import HROperations from "./pages/hr/HROperations";
@@ -80,6 +82,16 @@ import Statutory from "./pages/compliance/Statutory";
 import LabourRegister from "./pages/compliance/LabourRegister";
 import LeaveCompliance from "./pages/compliance/LeaveCompliance";
 import NABHCompliance from "./pages/compliance/NABHCompliance";
+
+// ======================= 🔥 ANALYTICS IMPORTS =======================
+import AttritionDashboard from "./pages/analytics/AttritionDashboard";
+import ManpowerComplianceDashboard from "./pages/analytics/ManpowerComplianceDashboard";
+
+// ======================= 🔥 EXIT MANAGEMENT IMPORTS =======================
+import ExitLayout from "./pages/exit/ExitLayout";
+import ResignationNotice from "./pages/exit/ResignationNotice";
+import ClearanceWorkflow from "./pages/exit/ClearanceWorkflow";
+import SettlementDocuments from "./pages/exit/SettlementDocuments";
 
 function App() {
   return (
@@ -142,6 +154,7 @@ function App() {
         <Route path="/eis/:id/exit" element={<ProtectedRoute><EmployeeExit /></ProtectedRoute>} />
 
         {/* ATTENDANCE */}
+        <Route path="/attendance/dashboard" element={<ProtectedRoute><AttendanceDashboard /></ProtectedRoute>} />
         <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
         <Route path="/attendance/logs" element={<ProtectedRoute><AttendanceLogs /></ProtectedRoute>} />
         <Route path="/attendance/regularization" element={<ProtectedRoute><Regularization /></ProtectedRoute>} />
@@ -153,6 +166,7 @@ function App() {
         <Route path="/leave" element={<ProtectedRoute><LeaveLayout /></ProtectedRoute>} />
 
         {/* PAYROLL */}
+        <Route path="/payroll/dashboard" element={<ProtectedRoute><PayrollDashboard /></ProtectedRoute>} />
         <Route path="/payroll" element={<ProtectedRoute><PayrollLayout /></ProtectedRoute>} />
 
         {/* HR OPERATIONS */}
@@ -178,6 +192,18 @@ function App() {
           <Route path="labour" element={<ProtectedRoute><LabourRegister /></ProtectedRoute>} />
           <Route path="leave" element={<ProtectedRoute><LeaveCompliance /></ProtectedRoute>} />
           <Route path="nabh" element={<ProtectedRoute><NABHCompliance /></ProtectedRoute>} />
+        </Route>
+
+        {/* ======================= 🔥 ANALYTICS MODULE ======================= */}
+        <Route path="/analytics/attrition" element={<ProtectedRoute><AttritionDashboard /></ProtectedRoute>} />
+        <Route path="/analytics/manpower" element={<ProtectedRoute><ManpowerComplianceDashboard /></ProtectedRoute>} />
+
+        {/* ======================= 🔥 EXIT MANAGEMENT MODULE ======================= */}
+        <Route path="/exit" element={<ProtectedRoute><ExitLayout /></ProtectedRoute>}>
+          <Route index element={<ProtectedRoute><ResignationNotice /></ProtectedRoute>} />
+          <Route path="resignation" element={<ProtectedRoute><ResignationNotice /></ProtectedRoute>} />
+          <Route path="clearance" element={<ProtectedRoute><ClearanceWorkflow /></ProtectedRoute>} />
+          <Route path="settlement" element={<ProtectedRoute><SettlementDocuments /></ProtectedRoute>} />
         </Route>
 
         {/* PUBLIC */}
