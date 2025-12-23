@@ -25,45 +25,63 @@ export default function Dashboard() {
   // ========================= FETCH DASHBOARD DATA =========================
   const fetchDashboardData = async () => {
     try {
-      const tenant_db = 'nutryah'; // Default tenant database name
+      // Use the new dashboard stats API endpoint
+      const res = await api.get('/dashboard/stats');
+      const data = res.data;
       
-      // Fetch employees from users endpoint
-      let totalEmployees = 0;
-      try {
-        const usersRes = await api.get(`/hospitals/users/${tenant_db}/list`);
-        totalEmployees = (usersRes.data?.users || []).length;
-      } catch {
-        console.log('No employee data found');
-      }
-      
-      // Fetch departments
-      let totalDepartments = 0;
-      try {
-        const deptRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
-        totalDepartments = (deptRes.data?.departments || []).length;
-      } catch {
-        console.log('No department data found');
-      }
-      
-      // Fetch roles
-      let totalRoles = 0;
-      try {
-        const rolesRes = await api.get(`/hospitals/roles/${tenant_db}/list`);
-        totalRoles = (rolesRes.data?.roles || []).length;
-      } catch {
-        console.log('No roles data found');
-      }
-      
-      console.log('Dashboard data:', { totalEmployees, totalDepartments, totalRoles });
+      console.log('Dashboard data from API:', data);
       
       setDashboardData({
-        totalEmployees,
-        totalDepartments,
-        totalRoles
+        totalEmployees: data.totalEmployees || 0,
+        totalDepartments: data.totalDepartments || 0,
+        totalRoles: data.totalRoles || 0
       });
       
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      
+      // Fallback to individual API calls if the new endpoint fails
+      try {
+        const tenant_db = localStorage.getItem('tenant_db') || 'nutryah';
+        
+        // Fetch employees from users endpoint
+        let totalEmployees = 0;
+        try {
+          const usersRes = await api.get(`/hospitals/users/${tenant_db}/list`);
+          totalEmployees = (usersRes.data?.users || []).length;
+        } catch {
+          console.log('No employee data found');
+        }
+        
+        // Fetch departments
+        let totalDepartments = 0;
+        try {
+          const deptRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
+          totalDepartments = (deptRes.data?.departments || []).length;
+        } catch {
+          console.log('No department data found');
+        }
+        
+        // Fetch roles
+        let totalRoles = 0;
+        try {
+          const rolesRes = await api.get(`/hospitals/roles/${tenant_db}/list`);
+          totalRoles = (rolesRes.data?.roles || []).length;
+        } catch {
+          console.log('No roles data found');
+        }
+        
+        console.log('Dashboard data for tenant:', tenant_db, { totalEmployees, totalDepartments, totalRoles });
+        
+        setDashboardData({
+          totalEmployees,
+          totalDepartments,
+          totalRoles
+        });
+        
+      } catch (fallbackError) {
+        console.error('Fallback dashboard data fetch also failed:', fallbackError);
+      }
     }
   };
 

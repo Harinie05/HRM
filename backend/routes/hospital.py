@@ -73,6 +73,7 @@ from schemas.schemas_tenant import (
 # ------------------- DB & TOKEN -------------------
 import database
 from utils.token import create_access_token, create_refresh_token, verify_token
+from utils.audit_logger import log_error
 
 router = APIRouter()
 
@@ -139,57 +140,88 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 
     logger.info(f"Starting registration for tenant_id={payload.tenant_id}")
 
-    if db.query(Hospital).filter(Hospital.tenant_id == payload.tenant_id).first():
-        logger.warning("tenant_id already exists")
-        raise HTTPException(400, "tenant_id already exists")
+    try:
+        if db.query(Hospital).filter(Hospital.tenant_id == payload.tenant_id).first():
+            logger.warning("tenant_id already exists")
+            raise HTTPException(400, "tenant_id already exists")
 
-    if db.query(Hospital).filter(Hospital.db_name == payload.tenant_db).first():
-        logger.warning("tenant_db already exists")
-        raise HTTPException(400, "tenant_db exists")
+        if db.query(Hospital).filter(Hospital.db_name == payload.tenant_db).first():
+            logger.warning("tenant_db already exists")
+            raise HTTPException(400, "tenant_db exists")
 
-    if db.query(Hospital).filter(Hospital.email == payload.email).first():
-        logger.warning("email already registered")
-        raise HTTPException(400, "email already registered")
+        if db.query(Hospital).filter(Hospital.email == payload.email).first():
+            logger.warning("email already registered")
+            raise HTTPException(400, "email already registered")
 
-    logger.info(f"Creating tenant database: {payload.tenant_db}")
-    database.create_tenant_database(payload.tenant_db)
+        logger.info(f"Creating tenant database: {payload.tenant_db}")
+        database.create_tenant_database(payload.tenant_db)
 
-    engine = database.get_tenant_engine(payload.tenant_db)
-    MasterBase.metadata.create_all(bind=engine)
-    logger.info("Tenant DB tables created")
+        engine = database.get_tenant_engine(payload.tenant_db)
+        MasterBase.metadata.create_all(bind=engine)
+        logger.info("Tenant DB tables created")
 
-    seed_tenant(payload.tenant_db)
-    logger.info("Tenant DB seeded successfully")
+        seed_tenant(payload.tenant_db)
+        logger.info("Tenant DB seeded successfully")
 
-    hospital = Hospital(
-        tenant_id=payload.tenant_id,
-        db_name=payload.tenant_db,
-        name=payload.name,
-        email=payload.email,
-        phone=payload.phone,
-        license_number=payload.license_number,
-        contact_person=payload.contact_person,
-        logo=payload.logo,
-        pincode=payload.pincode,
-    )
+        # Calculate license end date based on subscription plan
+        from datetime import datetime, timedelta
+        start_date = datetime.now().date()
+        
+        if payload.subscription_plan == "Basic":
+            end_date = start_date + timedelta(days=30)
+        elif payload.subscription_plan == "Standard":
+            end_date = start_date + timedelta(days=180)  # 6 months
+        elif payload.subscription_plan == "Premium":
+            end_date = start_date + timedelta(days=365)  # 1 year
+        else:
+            end_date = start_date + timedelta(days=180)  # Default to Standard
 
-    db.add(hospital)
-    db.commit()
-    db.refresh(hospital)
-    logger.info(f"Hospital added to master DB with ID={hospital.id}")
+        hospital = Hospital(
+            tenant_id=payload.tenant_id,
+            db_name=payload.tenant_db,
+            name=payload.name,
+            email=payload.email,
+            phone=payload.phone,
+            license_number=payload.license_number,
+            contact_person=payload.contact_person,
+            logo=payload.logo,
+            pincode=payload.pincode,
+            subscription_plan=payload.subscription_plan,
+            license_start_date=start_date,
+            license_end_date=end_date,
+        )
 
-    admin = MasterUser(
-        hospital_id=hospital.id,
-        email=payload.email,
-        hashed_password=hash_password(payload.password),
-        is_admin=True,
-    )
+        db.add(hospital)
+        db.commit()
+        db.refresh(hospital)
+        logger.info(f"Hospital added to master DB with ID={hospital.id}")
 
-    db.add(admin)
-    db.commit()
-    logger.info(f"Master admin created for hospital={hospital.id}")
+        admin = MasterUser(
+            hospital_id=hospital.id,
+            email=payload.email,
+            hashed_password=hash_password(payload.password),
+            is_admin=True,
+        )
 
-    return hospital
+        db.add(admin)
+        db.commit()
+        logger.info(f"Master admin created for hospital={hospital.id}")
+
+        return hospital
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Hospital registration failed: {str(e)}")
+        log_error(
+            tenant_id=payload.tenant_id,
+            error_type=type(e).__name__,
+            error_message=str(e),
+            request_url="/auth/register",
+            request_method="POST",
+            request_data=payload.dict(exclude={"password"})
+        )
+        raise HTTPException(500, f"Registration failed: {str(e)}")
 
 
 

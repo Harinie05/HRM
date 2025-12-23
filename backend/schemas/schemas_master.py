@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import date
 
 
 # ---------------------------
@@ -16,6 +17,7 @@ class HospitalRegister(BaseModel):
     logo: Optional[str] = None
     pincode: Optional[str] = None
     password: str
+    subscription_plan: Optional[str] = "Standard"
 
 
 # ---------------------------
@@ -27,6 +29,9 @@ class HospitalOut(BaseModel):
     db_name: str
     name: str
     email: EmailStr
+    subscription_plan: Optional[str] = None
+    license_start_date: Optional[date] = None
+    license_end_date: Optional[date] = None
 
     class Config:
         from_attributes = True

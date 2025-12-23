@@ -86,6 +86,9 @@ from models.models_tenant import (
     TrainingCertificate
 )
 
+# Import master models for subscription migration
+from models.models_master import MasterBase as MasterDBBase
+
 # ========================= CONFIG =========================
 tenant = "nutryah"
 engine = get_tenant_engine(tenant)
@@ -94,6 +97,31 @@ print(f"\n🚀 Creating tables for tenant → {tenant}\n")
 
 # ========================= CREATE TABLES =========================
 MasterBase.metadata.create_all(bind=engine)
+
+# ========================= ADD SUBSCRIPTION COLUMNS TO MASTER DB =========================
+print("\nAdding subscription columns to master database...")
+from database import get_master_db
+master_db_session = next(get_master_db())
+master_engine = master_db_session.bind
+
+with master_engine.connect() as conn:
+    subscription_columns = [
+        ("subscription_plan VARCHAR(50) DEFAULT 'Standard'", "subscription_plan"),
+        ("license_start_date DATE DEFAULT (CURRENT_DATE)", "license_start_date"),
+        ("license_end_date DATE", "license_end_date")
+    ]
+    
+    for sql_def, name in subscription_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE hospitals ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
+    print("🎉 Master database subscription columns added!")
+
+master_db_session.close()
 
 # ========================= HR POLICY UPDATES =========================
 print("Updating hr_policies...")

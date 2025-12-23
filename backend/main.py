@@ -23,6 +23,7 @@ from routes.hospital import router as hospital_router
 from routes.department import router as department_router
 from routes.roles import router as roles_router
 from routes.users import router as users_router
+from routes.dashboard import router as main_dashboard_router
 
 # ---------------- ORGANIZATION ----------------
 from routes.organization.company_profile import router as company_profile_router
@@ -196,6 +197,7 @@ app.include_router(hospital_router, prefix="/auth", tags=["Hospitals"])
 app.include_router(department_router, prefix="/hospitals", tags=["Departments"])
 app.include_router(roles_router, prefix="/hospitals", tags=["Roles"])
 app.include_router(users_router, prefix="/hospitals", tags=["Users"])
+app.include_router(main_dashboard_router)
 
 app.include_router(company_profile_router)
 app.include_router(branch_router)

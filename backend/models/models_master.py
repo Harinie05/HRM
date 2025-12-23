@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Text, JSON, Text, JSON
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func, Text, JSON, Text, JSON, Date
 from sqlalchemy.orm import declarative_base, relationship
+from datetime import datetime, timedelta
 
 MasterBase = declarative_base()
 
@@ -16,6 +17,9 @@ class Hospital(MasterBase):
     contact_person = Column(String(150))
     logo = Column(String(512))
     pincode = Column(String(20))
+    subscription_plan = Column(String(50), default="Standard")
+    license_start_date = Column(Date, default=func.current_date())
+    license_end_date = Column(Date)
     created_at = Column(DateTime, default=func.now())
 
     users = relationship("MasterUser", back_populates="hospital")
