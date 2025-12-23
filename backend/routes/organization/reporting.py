@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_engine, logger
+from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/reporting", tags=["Reporting Structure"])
@@ -35,6 +36,7 @@ def get_reporting_levels(user = Depends(get_current_user)):
 @router.post("/levels")
 def create_reporting_level(
     payload: dict,
+    request: Request,
     user = Depends(get_current_user)
 ):
     try:
@@ -55,6 +57,7 @@ def create_reporting_level(
                 "is_active": payload.get("is_active", True)
             })
             conn.commit()
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "reporting_levels", None, None, payload)
             
         return {"message": "Reporting level created successfully"}
         
@@ -100,6 +103,7 @@ def get_reporting_hierarchy(user = Depends(get_current_user)):
 @router.post("/hierarchy")
 def create_hierarchy_rule(
     payload: dict,
+    request: Request,
     user = Depends(get_current_user)
 ):
     try:
@@ -120,6 +124,7 @@ def create_hierarchy_rule(
                 "is_active": payload.get("is_active", True)
             })
             conn.commit()
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "reporting_hierarchy", None, None, payload)
             
         return {"message": "Hierarchy rule created successfully"}
         
@@ -172,6 +177,7 @@ def get_employee_reporting(
 def assign_employee_reporting(
     employee_id: int,
     payload: dict,
+    request: Request,
     user = Depends(get_current_user)
 ):
     try:
@@ -205,6 +211,7 @@ def assign_employee_reporting(
             })
             
             conn.commit()
+            audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_reporting", employee_id, None, payload)
             
         return {"message": "Employee reporting assigned successfully"}
         

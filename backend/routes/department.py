@@ -1,6 +1,6 @@
 # routes/department.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -8,6 +8,7 @@ import database
 from database import logger
 from models.models_master import Hospital
 from schemas.schemas_tenant import DepartmentBase
+from utils.audit_logger import audit_crud
 
 # 🔥 added for token protection
 from routes.hospital import get_current_user, check_permission
@@ -32,6 +33,7 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 def create_department(
     tenant_db: str,
     payload: DepartmentBase,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(check_permission("add_department"))
 ):
@@ -46,11 +48,15 @@ def create_department(
     """)
 
     with engine.connect() as conn:
-        conn.execute(sql, {
+        result = conn.execute(sql, {
             "name": payload.name,
             "description": payload.description
         })
         conn.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "CREATE_DEPARTMENT", "departments", "", {}, {"name": payload.name, "description": payload.description})
+        
     logger.info(f"Department '{payload.name}' created successfully")
     return {"detail": "Department added successfully"}
 
@@ -83,6 +89,7 @@ def update_department(
     tenant_db: str,
     dept_id: int,
     payload: DepartmentBase,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(check_permission("edit_department"))
 ):
@@ -90,6 +97,11 @@ def update_department(
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
+
+    # Get old values for audit
+    with engine.connect() as conn:
+        old_dept = conn.execute(text("SELECT name, description FROM departments WHERE id = :id"), {"id": dept_id}).fetchone()
+        old_values = dict(old_dept._mapping) if old_dept else None
 
     sql = text("""
         UPDATE departments
@@ -104,6 +116,9 @@ def update_department(
             "id": dept_id
         })
         conn.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "UPDATE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {"name": payload.name, "description": payload.description})
 
     return {"detail": "Department updated successfully"}
 
@@ -115,6 +130,7 @@ def update_department(
 def delete_department(
     tenant_db: str,
     dept_id: int,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(check_permission("delete_department"))
 ):
@@ -123,10 +139,18 @@ def delete_department(
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
 
+    # Get old values for audit
+    with engine.connect() as conn:
+        old_dept = conn.execute(text("SELECT name, description FROM departments WHERE id = :id"), {"id": dept_id}).fetchone()
+        old_values = dict(old_dept._mapping) if old_dept else None
+
     sql = text("DELETE FROM departments WHERE id = :id")
 
     with engine.connect() as conn:
         conn.execute(sql, {"id": dept_id})
         conn.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "DELETE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {})
 
     return {"detail": "Department deleted successfully"}

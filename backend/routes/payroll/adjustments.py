@@ -14,6 +14,7 @@ async def add_adjustment(
     db: Session = Depends(get_tenant_db)
 ):
     try:
+        from utils.audit_logger import audit_crud
         data = await request.json()
         print(f"Raw adjustment data: {data}")
         
@@ -53,6 +54,7 @@ async def add_adjustment(
         })
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payroll_adjustments", None, None, data)
         print("Adjustment created successfully")
         return {"message": "Adjustment created successfully"}
     except Exception as e:
@@ -113,6 +115,7 @@ async def update_adjustment(
     db: Session = Depends(get_tenant_db)
 ):
     try:
+        from utils.audit_logger import audit_crud
         data = await request.json()
         
         db.execute(text("""
@@ -130,6 +133,7 @@ async def update_adjustment(
         })
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "payroll_adjustments", adjustment_id, None, data)
         return {"message": "Adjustment updated successfully"}
     except Exception as e:
         db.rollback()
@@ -138,11 +142,14 @@ async def update_adjustment(
 @router.delete("/adjustments/{adjustment_id}")
 def delete_adjustment(
     adjustment_id: int,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
+        from utils.audit_logger import audit_crud
         db.execute(text("DELETE FROM payroll_adjustments WHERE id = :id"), {"id": adjustment_id})
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "payroll_adjustments", adjustment_id, None, None)
         return {"message": "Adjustment deleted successfully"}
     except Exception as e:
         db.rollback()

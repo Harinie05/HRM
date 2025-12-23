@@ -1,6 +1,6 @@
 # routes/EIS/education.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -9,6 +9,7 @@ import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeEducation
 from schemas.schemas_tenant import EducationCreate, EducationOut
 # ---------------------- TENANT SESSION ----------------------
@@ -47,6 +48,7 @@ async def add_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -90,6 +92,8 @@ async def add_education(
     db.add(education)
     db.commit()
     db.refresh(education)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_education", education.id, None, education.__dict__)
 
     return education
 
@@ -165,6 +169,7 @@ async def update_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -205,6 +210,8 @@ async def update_education(
 
     db.commit()
     db.refresh(education)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_education", education_id, None, education.__dict__)
 
     return education
 
@@ -275,14 +282,16 @@ def debug_education(education_id: int, user=Depends(get_current_user)):
 # 5. DELETE EDUCATION RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{education_id}")
-def delete_education(education_id: int, user=Depends(get_current_user)):
+def delete_education(education_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     education = db.query(EmployeeEducation).filter(EmployeeEducation.id == education_id).first()
     if not education:
         raise HTTPException(404, "Education record not found")
 
+    old_values = education.__dict__.copy()
     db.delete(education)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_education", education_id, old_values, None)
 
     return {"message": "Education record deleted successfully"}

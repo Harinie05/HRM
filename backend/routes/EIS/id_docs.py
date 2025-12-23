@@ -1,6 +1,6 @@
 # routes/EIS/id_docs.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -9,6 +9,7 @@ import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeIDDocs
 from schemas.schemas_tenant import IDDocCreate, IDDocOut
 
@@ -40,6 +41,7 @@ async def upload_id_doc(
     employee_id: int = Form(...),
     document_type: str = Form(...),
     file: UploadFile = File(...),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -68,6 +70,8 @@ async def upload_id_doc(
         db.add(new_doc)
         db.commit()
         db.refresh(new_doc)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_id_docs", new_doc.id, None, new_doc.__dict__)
 
         return {"message": "ID document uploaded successfully", "id": new_doc.id}
         
@@ -100,6 +104,7 @@ def get_id_docs(employee_id: int, user=Depends(get_current_user)):
 async def update_id_doc(
     doc_id: int,
     file: UploadFile = File(...),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -127,6 +132,8 @@ async def update_id_doc(
 
     db.commit()
     db.refresh(doc)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_id_docs", doc_id, None, doc.__dict__)
 
     return {"message": "ID document updated successfully"}
 
@@ -176,7 +183,7 @@ def view_document(doc_id: int, token: str = Query(None)):
 # 5. VERIFY / REJECT DOCUMENT
 # -------------------------------------------------------------------------
 @router.post("/verify/{doc_id}")
-def verify_doc(doc_id: int, action: str, user=Depends(get_current_user)):
+def verify_doc(doc_id: int, action: str, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     doc = db.query(EmployeeIDDocs).filter(EmployeeIDDocs.id == doc_id).first()
@@ -188,6 +195,7 @@ def verify_doc(doc_id: int, action: str, user=Depends(get_current_user)):
 
     setattr(doc, 'status', action)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_id_docs", doc_id, None, {"status": action})
 
     return {"message": f"Document {action} successfully"}
 
@@ -196,14 +204,16 @@ def verify_doc(doc_id: int, action: str, user=Depends(get_current_user)):
 # 6. DELETE DOCUMENT
 # -------------------------------------------------------------------------
 @router.delete("/{doc_id}")
-def delete_id_doc(doc_id: int, user=Depends(get_current_user)):
+def delete_id_doc(doc_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     doc = db.query(EmployeeIDDocs).filter(EmployeeIDDocs.id == doc_id).first()
     if not doc:
         raise HTTPException(404, "Document not found")
 
+    old_values = doc.__dict__.copy()
     db.delete(doc)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_id_docs", doc_id, old_values, None)
 
     return {"message": "ID document deleted successfully"}

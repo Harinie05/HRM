@@ -1,8 +1,9 @@
 # routes/EIS/employee.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
+from utils.audit_logger import audit_crud
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
@@ -65,7 +66,7 @@ def get_employee_profile(employee_id: int, user=Depends(get_current_user)):
 # 2. ADD EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.post("/exit/add")
-def add_exit_details(data: ExitCreate, user=Depends(get_current_user)):
+def add_exit_details(data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     
     from models.models_tenant import EmployeeExit
@@ -96,6 +97,9 @@ def add_exit_details(data: ExitCreate, user=Depends(get_current_user)):
     db.commit()
     db.refresh(exit_record)
     
+    # Audit log
+    audit_crud(request, user.get("tenant_db"), user, "CREATE_EXIT_RECORD", "employee_exits", str(exit_record.id), None, {"employee_id": data.employee_id, "reason": data.reason})
+    
     return {"message": "Exit process initiated successfully", "id": exit_record.id}
 
 # -------------------------------------------------------------------------
@@ -124,6 +128,7 @@ def get_exit_details(employee_id: int, user=Depends(get_current_user)):
 def convert_user_to_employee(
     user_id: int,
     payload: dict,
+    request: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -171,6 +176,9 @@ def convert_user_to_employee(
     existing_user.status = payload.get('status', 'Active')
 
     db.commit()
+    
+    # Audit log
+    audit_crud(request, user.get("tenant_db"), user, "CONVERT_USER_TO_EMPLOYEE", "users", str(user_id), None, {"employee_code": existing_user.employee_code, "employee_type": payload.get('employee_type')})
     
     return {
         "message": "User converted to employee successfully", 

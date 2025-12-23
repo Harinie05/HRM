@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends, Form
+from fastapi import APIRouter, HTTPException, Depends, Form, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_engine, logger
+from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
 from typing import Optional
 
@@ -57,6 +58,7 @@ def save_bank_details(
     bank_address: Optional[str] = Form(""),
     bank_document: Optional[str] = Form(""),
     document_name: Optional[str] = Form(""),
+    request: Request = None,
     user = Depends(get_current_user)
 ):
     try:
@@ -133,6 +135,12 @@ def save_bank_details(
                 })
             
             conn.commit()
+            if request:
+                audit_crud(request, user.get("tenant_db"), user, "UPDATE" if existing else "CREATE", "employee_bank_details", emp_id, None, {
+                    "account_holder_name": account_holder_name,
+                    "bank_name": bank_name,
+                    "account_number": account_number
+                })
             
         return {"message": "Bank details saved successfully"}
         

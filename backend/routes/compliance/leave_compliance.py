@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import LeaveWorkingCompliance, User
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/compliance/leave", tags=["Compliance"])
 
@@ -19,7 +21,7 @@ class LeaveComplianceRequest(BaseModel):
     year: str = ""
 
 @router.post("/")
-def create_leave_compliance(data: LeaveComplianceRequest, db: Session = Depends(get_tenant_db)):
+def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
         user = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -52,6 +54,9 @@ def create_leave_compliance(data: LeaveComplianceRequest, db: Session = Depends(
         db.add(record)
         db.commit()
         db.refresh(record)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_LEAVE_COMPLIANCE", "leave_working_compliance", str(record.id), None, data.dict())
         
         return {"message": "Leave compliance record saved to database successfully"}
         

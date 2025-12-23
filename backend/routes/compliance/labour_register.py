@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import LabourLawRegister, User
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/compliance/labour", tags=["Compliance"])
 
@@ -24,7 +26,7 @@ class LabourRegisterRequest(BaseModel):
     remarks: Optional[str] = None
 
 @router.post("/")
-def create_register(data: LabourRegisterRequest, db: Session = Depends(get_tenant_db)):
+def create_register(data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
         user = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -50,6 +52,9 @@ def create_register(data: LabourRegisterRequest, db: Session = Depends(get_tenan
         db.add(record)
         db.commit()
         db.refresh(record)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_LABOUR_REGISTER", "labour_law_registers", str(record.id), {}, data.dict())
         
         return {"message": "Labour register added successfully"}
         
@@ -84,11 +89,14 @@ def get_registers(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/{record_id}")
-def update_register(record_id: int, data: LabourRegisterRequest, db: Session = Depends(get_tenant_db)):
+def update_register(record_id: int, data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         record = db.query(LabourLawRegister).filter(LabourLawRegister.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
+        
+        # Store old values for audit
+        old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "month": record.month, "year": record.year}
         
         # Find user by employee_code
         user = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -107,20 +115,29 @@ def update_register(record_id: int, data: LabourRegisterRequest, db: Session = D
         
         db.commit()
         
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, data.dict())
+        
         return {"message": "Record updated successfully"}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/{record_id}")
-def delete_register(record_id: int, db: Session = Depends(get_tenant_db)):
+def delete_register(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         record = db.query(LabourLawRegister).filter(LabourLawRegister.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
         
+        # Store old values for audit
+        old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "month": record.month, "year": record.year}
+        
         db.delete(record)
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "DELETE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {})
         
         return {"message": "Record deleted successfully"}
         

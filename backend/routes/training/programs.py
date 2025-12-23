@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import TrainingProgram, User
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter()
 
@@ -20,7 +22,7 @@ class TrainingProgramCreate(BaseModel):
     status: str = "Draft"
 
 @router.post("/programs")
-async def create_training_program(program: dict, db: Session = Depends(get_tenant_db)):
+async def create_training_program(program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Parse dates
         start_date = None
@@ -54,6 +56,10 @@ async def create_training_program(program: dict, db: Session = Depends(get_tenan
         db.add(db_program)
         db.commit()
         db.refresh(db_program)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_TRAINING_PROGRAM", "training_programs", str(db_program.id), None, program)
+        
         return {"message": "Training program created successfully", "id": db_program.id}
     except Exception as e:
         db.rollback()
@@ -87,11 +93,14 @@ async def get_training_programs(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching training programs: {str(e)}")
 
 @router.put("/programs/{program_id}")
-async def update_training_program(program_id: int, program: dict, db: Session = Depends(get_tenant_db)):
+async def update_training_program(program_id: int, program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
         if not db_program:
             raise HTTPException(status_code=404, detail="Training program not found")
+        
+        # Store old values for audit
+        old_values = {"title": db_program.title, "category": db_program.category, "type": db_program.type, "status": db_program.status}
         
         # Parse dates
         if program.get('startDate'):
@@ -118,6 +127,10 @@ async def update_training_program(program_id: int, program: dict, db: Session = 
             db_program.status = program['status']
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, program)
+        
         return {"message": "Training program updated successfully"}
     except Exception as e:
         db.rollback()
@@ -125,14 +138,21 @@ async def update_training_program(program_id: int, program: dict, db: Session = 
         raise HTTPException(status_code=422, detail=f"Error updating training program: {str(e)}")
 
 @router.delete("/programs/{program_id}")
-async def delete_training_program(program_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
         if not db_program:
             raise HTTPException(status_code=404, detail="Training program not found")
         
+        # Store old values for audit
+        old_values = {"title": db_program.title, "category": db_program.category, "type": db_program.type}
+        
         db.delete(db_program)
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "DELETE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, None)
+        
         return {"message": "Training program deleted successfully"}
     except Exception as e:
         db.rollback()

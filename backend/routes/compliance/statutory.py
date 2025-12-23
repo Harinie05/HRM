@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import EmployeeStatutory, User
@@ -6,6 +6,8 @@ from schemas.schemas_tenant import StatutoryCreate
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/compliance/statutory", tags=["Compliance"])
 
@@ -28,7 +30,7 @@ class StatutoryDeductionRequest(BaseModel):
     designation: Optional[str] = None
 
 @router.post("/calculate")
-def calculate_statutory(data: StatutoryDeductionRequest, db: Session = Depends(get_tenant_db)):
+def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Calculate deductions
         pf_employee = data.basic_salary * (data.pf_percentage / 100) if data.pf_enabled else 0
@@ -66,6 +68,9 @@ def calculate_statutory(data: StatutoryDeductionRequest, db: Session = Depends(g
         db.add(record)
         db.commit()
         db.refresh(record)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_STATUTORY_CALCULATION", "employee_statutory", str(record.id), None, data.dict())
         
         return {
             "message": "Statutory deductions calculated and saved successfully",
@@ -117,11 +122,14 @@ def get_statutory_calculations(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/{record_id}")
-def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest, db: Session = Depends(get_tenant_db)):
+def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         record = db.query(EmployeeStatutory).filter(EmployeeStatutory.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
+        
+        # Store old values for audit
+        old_values = {"employee_id": record.employee_id, "basic_salary": record.basic_salary, "pf_employee": record.pf_employee}
         
         # Find user by employee_code, fallback to raw employee_id
         user = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -145,20 +153,29 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         
         db.commit()
         
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, data.dict())
+        
         return {"message": "Record updated successfully"}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/{record_id}")
-def delete_statutory_calculation(record_id: int, db: Session = Depends(get_tenant_db)):
+def delete_statutory_calculation(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         record = db.query(EmployeeStatutory).filter(EmployeeStatutory.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
         
+        # Store old values for audit
+        old_values = {"employee_id": record.employee_id, "basic_salary": record.basic_salary, "pf_employee": record.pf_employee}
+        
         db.delete(record)
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "DELETE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, None)
         
         return {"message": "Record deleted successfully"}
         

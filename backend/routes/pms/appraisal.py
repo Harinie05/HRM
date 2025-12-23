@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import PMSAppraisal, User
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter()
 
@@ -21,7 +23,7 @@ class AppraisalCreate(BaseModel):
     status: str = "Proposed"
 
 @router.post("/appraisals")
-async def create_appraisal(appraisal: dict, db: Session = Depends(get_tenant_db)):
+async def create_appraisal(appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Parse date if provided
         effective_from = None
@@ -48,6 +50,10 @@ async def create_appraisal(appraisal: dict, db: Session = Depends(get_tenant_db)
         db.add(db_appraisal)
         db.commit()
         db.refresh(db_appraisal)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_APPRAISAL", "pms_appraisals", str(db_appraisal.id), None, appraisal)
+        
         return {"message": "Appraisal created successfully", "id": db_appraisal.id}
     except Exception as e:
         db.rollback()
@@ -137,17 +143,23 @@ async def get_appraisals(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching appraisals: {str(e)}")
 
 @router.put("/appraisals/{appraisal_id}")
-async def update_appraisal(appraisal_id: int, appraisal: dict, db: Session = Depends(get_tenant_db)):
+async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
         if not db_appraisal:
             raise HTTPException(status_code=404, detail="Appraisal not found")
+        
+        # Store old values for audit
+        old_values = {field: getattr(db_appraisal, field) for field in appraisal.keys() if hasattr(db_appraisal, field)}
         
         for field, value in appraisal.items():
             if hasattr(db_appraisal, field):
                 setattr(db_appraisal, field, value)
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, appraisal)
         return {"message": "Appraisal updated successfully"}
     except Exception as e:
         db.rollback()
@@ -155,11 +167,17 @@ async def update_appraisal(appraisal_id: int, appraisal: dict, db: Session = Dep
         raise HTTPException(status_code=422, detail=f"Error updating appraisal: {str(e)}")
 
 @router.delete("/appraisals/{appraisal_id}")
-async def delete_appraisal(appraisal_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
     if not db_appraisal:
         raise HTTPException(status_code=404, detail="Appraisal not found")
     
+    # Store old values for audit
+    old_values = {"employee_id": db_appraisal.employee_id, "cycle": db_appraisal.cycle, "final_rating": db_appraisal.final_rating}
+    
     db.delete(db_appraisal)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, "tenant", user, "DELETE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, None)
     return {"message": "Appraisal deleted successfully"}

@@ -1,15 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import TrainingCertificate, TrainingProgram, User
 from schemas.schemas_tenant import TrainingCertificateCreate, TrainingCertificateOut
 from datetime import datetime, timedelta
 import uuid
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/certificates", tags=["Training Certificates"])
 
 @router.post("/")
-def generate_certificate(data: dict, db: Session = Depends(get_tenant_db)):
+def generate_certificate(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Handle employee_id conversion
         employee_id_raw = data.get('employee_id')
@@ -34,6 +36,10 @@ def generate_certificate(data: dict, db: Session = Depends(get_tenant_db)):
         db.add(cert)
         db.commit()
         db.refresh(cert)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_TRAINING_CERTIFICATE", "training_certificates", str(cert.id), None, data)
+        
         return {"message": "Certificate generated", "id": cert.id, "certificate_number": cert_number}
     except Exception as e:
         db.rollback()

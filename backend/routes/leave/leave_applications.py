@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from datetime import datetime, date
+from utils.audit_logger import audit_crud
 
 from models.models_tenant import LeaveApplication, LeavePolicy, LeaveType, LeaveBalance, User
 from schemas.schemas_tenant import (
@@ -19,6 +20,7 @@ router = APIRouter(
 @router.post("/", response_model=LeaveApplicationOut)
 def apply_leave(
     data: LeaveApply,
+    request: Request,
     employee_id: int = Query(...),
     db: Session = Depends(get_tenant_db)
 ):
@@ -117,6 +119,10 @@ def apply_leave(
         
         db.commit()
         db.refresh(leave)
+        
+        # Audit log
+        audit_crud(request, "nutryah", {"id": employee_id}, "CREATE_LEAVE_APPLICATION", "leave_applications", str(leave.id), None, leave_data)
+        
         return leave
     
     except Exception as e:
@@ -135,17 +141,25 @@ def list_leave_applications(db: Session = Depends(get_tenant_db)):
 def update_leave_application(
     leave_id: int,
     data: LeaveApplicationUpdate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     leave = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()  # type: ignore
     if not leave:
         raise HTTPException(status_code=404, detail="Leave application not found")
     
+    # Store old values for audit
+    old_values = {"status": leave.status, "from_date": str(leave.from_date), "to_date": str(leave.to_date)}
+    
     for key, value in data.dict(exclude_unset=True).items():
         setattr(leave, key, value)
 
     db.commit()
     db.refresh(leave)
+    
+    # Audit log
+    audit_crud(request, "nutryah", {"id": 1}, "UPDATE_LEAVE_APPLICATION", "leave_applications", str(leave_id), old_values, data.dict(exclude_unset=True))
+    
     return leave
 
 
@@ -153,6 +167,7 @@ def update_leave_application(
 def approve_or_reject_leave(
     leave_id: int,
     data: LeaveApproval,
+    request: Request,
     approver_id: int = Query(...),
     db: Session = Depends(get_tenant_db)
 ):
@@ -175,6 +190,10 @@ def approve_or_reject_leave(
 
     db.commit()
     db.refresh(leave)
+    
+    # Audit log
+    audit_crud(request, "nutryah", {"id": approver_id}, "APPROVE_LEAVE_APPLICATION", "leave_applications", str(leave_id), {"old_status": old_status}, {"status": data.status, "approver_comment": data.approver_comment})
+    
     return leave
 
 @router.post("/initialize-balances/{employee_id}")

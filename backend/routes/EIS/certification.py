@@ -1,6 +1,6 @@
 # routes/EIS/certifications.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -9,6 +9,7 @@ import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeCertifications
 from schemas.schemas_tenant import CertificationCreate, CertificationOut
 
@@ -42,6 +43,7 @@ async def add_certification(
     issued_by: Optional[str] = Form(None),
     expiry: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -77,6 +79,8 @@ async def add_certification(
         db.add(cert)
         db.commit()
         db.refresh(cert)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_certifications", cert.id, None, cert.__dict__)
 
         return cert
         
@@ -112,6 +116,7 @@ async def update_certification(
     issued_by: Optional[str] = Form(None),
     expiry: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -143,6 +148,8 @@ async def update_certification(
 
     db.commit()
     db.refresh(cert)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_certifications", cert_id, None, cert.__dict__)
 
     return {"message": "Certification updated successfully"}
 
@@ -192,14 +199,16 @@ def view_certificate(cert_id: int, token: str = Query(None)):
 # 5. DELETE CERTIFICATION
 # -------------------------------------------------------------------------
 @router.delete("/{cert_id}")
-def delete_certification(cert_id: int, user=Depends(get_current_user)):
+def delete_certification(cert_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     cert = db.query(EmployeeCertifications).filter(EmployeeCertifications.id == cert_id).first()
     if not cert:
         raise HTTPException(404, "Certification not found")
 
+    old_values = cert.__dict__.copy()
     db.delete(cert)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_certifications", cert_id, old_values, None)
 
     return {"message": "Certification deleted successfully"}

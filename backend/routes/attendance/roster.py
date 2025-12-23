@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date, datetime, timedelta
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeRoster, NightShiftRule, Shift, Employee, User
 
 router = APIRouter(prefix="/roster", tags=["Roster Management"])
@@ -151,6 +152,7 @@ class NightShiftRulesRequest(BaseModel):
 @router.post("/save")
 def save_roster_entry(
     request: RosterEntryRequest,
+    req: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -187,6 +189,7 @@ def save_roster_entry(
                 print(f"DEBUG: Created new roster entry: {new_roster.__dict__}")
         
         db.commit()
+        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "employee_roster", request.employee_id, None, request.dict())
         print("DEBUG: Transaction committed successfully")
         return {"message": "Roster saved successfully"}
         
@@ -202,6 +205,7 @@ def save_roster_entry(
 @router.post("/copy-last-week")
 def copy_last_week_roster(
     start_date: str,
+    request: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -236,6 +240,7 @@ def copy_last_week_roster(
                 db.add(new_entry)
         
         db.commit()
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_roster", None, None, {"action": "copy_last_week", "start_date": start_date})
         return {"message": "Last week roster copied successfully"}
         
     except Exception as e:
@@ -268,6 +273,7 @@ def get_night_shift_rules(user=Depends(get_current_user)):
 @router.post("/night-shift-rules")
 def save_night_shift_rules(
     request: NightShiftRulesRequest,
+    req: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -290,6 +296,7 @@ def save_night_shift_rules(
             db.add(rules)
         
         db.commit()
+        audit_crud(req, user.get("tenant_db"), user, "UPDATE" if rules else "CREATE", "night_shift_rules", getattr(rules, 'id', None), None, request.dict())
         return {"message": "Night shift rules saved successfully"}
         
     except Exception as e:
@@ -330,6 +337,7 @@ def get_night_shift_rule(rule_id: int, user=Depends(get_current_user)):
 def update_night_shift_rule(
     rule_id: int,
     request: NightShiftRulesRequest,
+    req: Request,
     user=Depends(get_current_user)
 ):
     """Update specific night shift rule"""
@@ -346,6 +354,7 @@ def update_night_shift_rule(
         rule.grace_minutes = request.grace_minutes
         
         db.commit()
+        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "night_shift_rules", rule_id, None, request.dict())
         return {"message": "Night shift rule updated successfully"}
         
     except HTTPException:
@@ -357,7 +366,7 @@ def update_night_shift_rule(
         db.close()
 
 @router.delete("/night-shift-rules/{rule_id}")
-def delete_night_shift_rule(rule_id: int, user=Depends(get_current_user)):
+def delete_night_shift_rule(rule_id: int, request: Request, user=Depends(get_current_user)):
     """Delete specific night shift rule"""
     db = get_tenant_session(user)
     try:
@@ -365,8 +374,10 @@ def delete_night_shift_rule(rule_id: int, user=Depends(get_current_user)):
         if not rule:
             raise HTTPException(404, "Night shift rule not found")
         
+        old_values = rule.__dict__.copy()
         db.delete(rule)
         db.commit()
+        audit_crud(request, user.get("tenant_db"), user, "DELETE", "night_shift_rules", rule_id, old_values, None)
         return {"message": "Night shift rule deleted successfully"}
         
     except HTTPException:

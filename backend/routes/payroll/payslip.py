@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from datetime import datetime
 from sqlalchemy import func
 
@@ -19,6 +20,7 @@ router = APIRouter(
 def generate_payslip(
     employee_id: int,
     month: str,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     """Generate complete payslip with full workflow"""
@@ -49,6 +51,7 @@ def generate_payslip(
         
         # Step 7: Generate Payslip
         payslip = create_payslip_data(employee, final_payroll, month)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payslips", employee_id, None, {"month": month, "net_salary": payslip["net_salary"]})
         
         return payslip
         

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from sqlalchemy import text
 from utils.email import send_email
+from utils.audit_logger import audit_crud
 from datetime import datetime
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -97,6 +98,10 @@ async def create_payroll_run(
                 "net_salary": float(data.get('net_salary', 0)),
                 "status": str(data.get('status', 'Completed'))
             })
+            
+            # Audit log for update
+            audit_crud(request, "nutryah", {"id": 1}, "UPDATE_PAYROLL_RUN", "payroll_runs", str(existing.id), None, data)
+            
             message = "Payroll run updated successfully"
         else:
             # Insert new record
@@ -112,7 +117,7 @@ async def create_payroll_run(
                 )
             """)
             
-            db.execute(query, {
+            result = db.execute(query, {
                 "employee_id": str(data.get('employee_id', '')),
                 "employee_name": str(data.get('employee_name', '')),
                 "employee_code": str(data.get('employee_code', '')),
@@ -129,6 +134,10 @@ async def create_payroll_run(
                 "net_salary": float(data.get('net_salary', 0)),
                 "status": str(data.get('status', 'Completed'))
             })
+            
+            # Audit log for create
+            audit_crud(request, "nutryah", {"id": 1}, "CREATE_PAYROLL_RUN", "payroll_runs", str(result.lastrowid), None, data)
+            
             message = "Payroll run created successfully"
         
         db.commit()

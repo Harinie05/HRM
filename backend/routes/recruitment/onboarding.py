@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 import io
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import Candidate, OnboardingCandidate, DocumentUpload, Employee, BGV
 from schemas.schemas_tenant import OnboardingCreate, OnboardingResponse, DocumentUploadResponse
 from datetime import datetime
@@ -19,7 +20,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # 1) CREATE ONBOARDING ENTRY
 # -----------------------------------------------------------
 @router.post("/create/{candidate_id}", response_model=OnboardingResponse)
-def create_onboarding(candidate_id: int, data: OnboardingCreate, db: Session = Depends(get_tenant_db)):
+def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Request, db: Session = Depends(get_tenant_db)):
 
     candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
     if not candidate:
@@ -50,6 +51,7 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, db: Session = D
     db.add(record)
     db.commit()
     db.refresh(record)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "onboarding_candidates", record.id, None, record.__dict__)
     
     # Send joining formalities email
     try:
@@ -119,6 +121,7 @@ def upload_document_form(
     candidate_id: int = Form(...),
     document_type: str = Form(...),
     file: UploadFile = File(...),
+    request: Request = None,
     db: Session = Depends(get_tenant_db)
 ):
     filename = f"{uuid.uuid4()}_{file.filename}"
@@ -139,6 +142,8 @@ def upload_document_form(
     db.add(doc)
     db.commit()
     db.refresh(doc)
+    if request:
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "document_uploads", doc.id, None, doc.__dict__)
     return {"message": "Document uploaded successfully", "document_id": doc.id}
 
 @router.post("/{candidate_id}/upload-document", response_model=DocumentUploadResponse)
@@ -146,6 +151,7 @@ def upload_document(
     candidate_id: int,
     document_type: str,
     file: UploadFile = File(...),
+    request: Request = None,
     db: Session = Depends(get_tenant_db)
 ):
 
@@ -167,6 +173,8 @@ def upload_document(
     db.add(doc)
     db.commit()
     db.refresh(doc)
+    if request:
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "document_uploads", doc.id, None, doc.__dict__)
     return doc
 
 
@@ -263,7 +271,7 @@ def view_document(doc_id: int, db: Session = Depends(get_tenant_db)):
 # 9) DELETE DOCUMENT
 # -----------------------------------------------------------
 @router.delete("/document/{doc_id}")
-def delete_document(doc_id: int, db: Session = Depends(get_tenant_db)):
+def delete_document(doc_id: int, request: Request, db: Session = Depends(get_tenant_db)):
     doc = db.query(DocumentUpload).filter(DocumentUpload.id == doc_id).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
@@ -276,8 +284,10 @@ def delete_document(doc_id: int, db: Session = Depends(get_tenant_db)):
         print(f"Failed to delete file from disk: {e}")
     
     # Delete record from database
+    old_values = doc.__dict__.copy()
     db.delete(doc)
     db.commit()
+    audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "document_uploads", doc_id, old_values, None)
     
     return {"message": "Document deleted successfully"}
 

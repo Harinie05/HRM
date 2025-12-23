@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from models.models_tenant import HRCommunication
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 import logging
 from datetime import datetime
 
@@ -13,6 +14,7 @@ router = APIRouter(prefix="/hr/communication", tags=["HR Communication"])
 @router.post("/", response_model=dict)
 def create_communication(
     payload: dict,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -31,6 +33,7 @@ def create_communication(
         db.add(record)
         db.commit()
         db.refresh(record)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "hr_communications", record.id, None, record.__dict__)
         
         logger.info(f"✅ Communication created with ID: {record.id}")
         return {"message": "Communication sent", "id": record.id}
@@ -43,6 +46,7 @@ def create_communication(
 @router.post("/draft", response_model=dict)
 def save_draft(
     payload: dict,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -61,6 +65,7 @@ def save_draft(
         db.add(record)
         db.commit()
         db.refresh(record)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "hr_communications", record.id, None, record.__dict__)
         
         logger.info(f"✅ Draft saved with ID: {record.id}")
         return {"message": "Draft saved", "id": record.id}
@@ -100,6 +105,7 @@ def get_communication(
 def update_communication(
     communication_id: int,
     payload: dict,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -118,6 +124,7 @@ def update_communication(
         communication.status = payload.get("status", communication.status)
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "hr_communications", communication_id, None, communication.__dict__)
         
         logger.info(f"✅ Communication {communication_id} updated successfully")
         return {"message": "Communication updated successfully", "id": communication.id}
@@ -155,6 +162,7 @@ def send_draft_communication(
 @router.delete("/{communication_id}", response_model=dict)
 def delete_communication(
     communication_id: int,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -165,8 +173,10 @@ def delete_communication(
         if not communication:
             raise HTTPException(status_code=404, detail="Communication not found")
         
+        old_values = communication.__dict__.copy()
         db.delete(communication)
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "hr_communications", communication_id, old_values, None)
         
         logger.info(f"✅ Communication {communication_id} deleted successfully")
         return {"message": "Communication deleted successfully"}

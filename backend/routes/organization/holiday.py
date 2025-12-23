@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from database import get_master_db, get_tenant_engine, logger
+from utils.audit_logger import audit_crud
 
 from models.models_master import Hospital
 from models.models_tenant import Holiday
@@ -21,7 +22,7 @@ def get_tenant_session(user):
 
 # ---------------- CREATE ----------------
 @router.post("/create", response_model=HolidayOut)
-def create_holiday(data: HolidayCreate, user = Depends(get_current_user)):
+def create_holiday(data: HolidayCreate, request: Request, user = Depends(get_current_user)):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY CREATE] User:{user.get('email')} - {data.name}")
 
@@ -35,6 +36,7 @@ def create_holiday(data: HolidayCreate, user = Depends(get_current_user)):
     db.add(holiday)
     db.commit()
     db.refresh(holiday)
+    audit_crud(request, user.get("tenant_db"), user, "CREATE", "holidays", str(holiday.id), {}, holiday.__dict__)
     return holiday
 
 
@@ -48,7 +50,7 @@ def list_holidays(user = Depends(get_current_user)):
 
 # ---------------- DELETE ----------------
 @router.delete("/delete/{id}")
-def delete_holiday(id: int, user = Depends(get_current_user)):
+def delete_holiday(id: int, request: Request, user = Depends(get_current_user)):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY DELETE] ID:{id} User:{user.get('email')}")
 
@@ -56,14 +58,16 @@ def delete_holiday(id: int, user = Depends(get_current_user)):
     if not holiday:
         raise HTTPException(status_code=404, detail="Holiday not found")
 
+    old_values = holiday.__dict__.copy()
     db.delete(holiday)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "holidays", str(id), old_values, {})
     return {"message": "Holiday deleted successfully"}
 
 
 # ---------------- UPDATE (For Edit Later) ----------------
 @router.put("/update/{id}", response_model=HolidayOut)
-def update_holiday(id: int, data: HolidayCreate, user = Depends(get_current_user)):
+def update_holiday(id: int, data: HolidayCreate, request: Request, user = Depends(get_current_user)):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY UPDATE] ID:{id} User:{user.get('email')}")
 
@@ -71,9 +75,11 @@ def update_holiday(id: int, data: HolidayCreate, user = Depends(get_current_user
     if not holiday:
         raise HTTPException(status_code=404, detail="Holiday not found")
 
+    old_values = holiday.__dict__.copy()
     for key, value in data.dict().items():
         setattr(holiday, key, value)
 
     db.commit()
     db.refresh(holiday)
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "holidays", str(id), old_values, holiday.__dict__)
     return holiday

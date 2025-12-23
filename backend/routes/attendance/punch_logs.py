@@ -1,9 +1,10 @@
 # type: ignore[misc]
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from datetime import datetime, time
 from typing import Optional
+from utils.audit_logger import audit_crud
 
 from models.models_tenant import AttendancePunch, AttendanceRule, Shift, EmployeeRoster
 from schemas.schemas_tenant import AttendancePunchCreate, AttendancePunchOut
@@ -77,6 +78,7 @@ def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time
 @router.post("/", response_model=AttendancePunchOut)
 def create_punch(
     data: AttendancePunchCreate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -100,6 +102,10 @@ def create_punch(
         db.add(punch)
         db.commit()
         db.refresh(punch)
+        
+        # Audit log
+        audit_crud(request, "nutryah", {"id": 1}, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), None, punch_data)
+        
         return punch
     
     except HTTPException:
@@ -131,11 +137,15 @@ def get_all_punches(
 def update_punch(
     punch_id: int,
     data: AttendancePunchCreate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     punch = db.query(AttendancePunch).filter(AttendancePunch.id == punch_id).first()
     if not punch:
         raise HTTPException(status_code=404, detail="Punch record not found")
+    
+    # Store old values for audit
+    old_values = {"in_time": str(punch.in_time), "out_time": str(punch.out_time), "status": punch.status}
     
     update_data = data.dict(exclude_unset=True)
     
@@ -158,4 +168,8 @@ def update_punch(
     
     db.commit()
     db.refresh(punch)
+    
+    # Audit log
+    audit_crud(request, "nutryah", {"id": 1}, "UPDATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch_id), old_values, update_data)
+    
     return punch

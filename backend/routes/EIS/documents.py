@@ -1,11 +1,12 @@
 # routes/EIS/documents.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeDocuments
 from schemas.schemas_tenant import DocumentCreate, DocumentOut
 
@@ -37,6 +38,7 @@ async def upload_document(
     employee_id: int = Form(...),
     document_name: str = Form(...),
     file: UploadFile = File(...),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -53,6 +55,8 @@ async def upload_document(
     db.add(document)
     db.commit()
     db.refresh(document)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_documents", document.id, None, document.__dict__)
 
     return document
 
@@ -74,14 +78,16 @@ def get_documents(employee_id: int, user=Depends(get_current_user)):
 # 3. DELETE DOCUMENT
 # -------------------------------------------------------------------------
 @router.delete("/{document_id}")
-def delete_document(document_id: int, user=Depends(get_current_user)):
+def delete_document(document_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     document = db.query(EmployeeDocuments).filter(EmployeeDocuments.id == document_id).first()
     if not document:
         raise HTTPException(404, "Document not found")
 
+    old_values = document.__dict__.copy()
     db.delete(document)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_documents", document_id, old_values, None)
 
     return {"message": "Document deleted successfully"}

@@ -1,10 +1,11 @@
 # routes/EIS/exit.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExit, User
 from schemas.schemas_tenant import ExitCreate, ExitOut
 
@@ -32,7 +33,7 @@ router = APIRouter(prefix="/employee/exit", tags=["Employee Exit & Separation"])
 # 1. ADD EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=ExitOut)
-def add_exit(data: ExitCreate, user=Depends(get_current_user)):
+def add_exit(data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     emp = db.query(User).filter(User.id == data.employee_id).first()
@@ -59,6 +60,7 @@ def add_exit(data: ExitCreate, user=Depends(get_current_user)):
     db.add(exit_record)
     db.commit()
     db.refresh(exit_record)
+    audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_exit", exit_record.id, None, exit_record.__dict__)
 
     return exit_record
 
@@ -81,7 +83,7 @@ def get_exit(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}", response_model=ExitOut)
-def update_exit(employee_id: int, data: ExitCreate, user=Depends(get_current_user)):
+def update_exit(employee_id: int, data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     exit_data = db.query(EmployeeExit).filter(EmployeeExit.employee_id == employee_id).first()
@@ -109,6 +111,7 @@ def update_exit(employee_id: int, data: ExitCreate, user=Depends(get_current_use
 
     db.commit()
     db.refresh(exit_data)
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_exit", employee_id, None, exit_data.__dict__)
 
     return exit_data
 
@@ -117,7 +120,7 @@ def update_exit(employee_id: int, data: ExitCreate, user=Depends(get_current_use
 # 4. CHANGE CLEARANCE STATUS ONLY
 # -------------------------------------------------------------------------
 @router.post("/clearance/{employee_id}")
-def update_clearance(employee_id: int, status: str, user=Depends(get_current_user)):
+def update_clearance(employee_id: int, status: str, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     exit_data = db.query(EmployeeExit).filter(EmployeeExit.employee_id == employee_id).first()
@@ -131,5 +134,6 @@ def update_clearance(employee_id: int, status: str, user=Depends(get_current_use
         setattr(emp, 'status', "Inactive" if status == "Completed" else "Resigned")
 
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_exit", employee_id, None, {"clearance_status": status})
 
     return {"message": f"Clearance updated to {status}"}

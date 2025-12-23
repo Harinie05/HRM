@@ -1,6 +1,6 @@
 # routes/EIS/medical.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 import os
@@ -8,6 +8,7 @@ import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeMedical
 from schemas.schemas_tenant import MedicalCreate, MedicalOut
 
@@ -50,6 +51,7 @@ async def add_medical(
     medical_insurance_number: str = Form(None),
     remarks: str = Form(None),
     file: UploadFile = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -94,6 +96,8 @@ async def add_medical(
         db.add(med)
         db.commit()
         db.refresh(med)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_medical", med.id, None, med.__dict__)
 
         return {"message": "Medical details added successfully", "id": med.id}
         
@@ -137,6 +141,7 @@ async def update_medical(
     medical_insurance_number: str = Form(None),
     remarks: str = Form(None),
     file: UploadFile = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -177,6 +182,8 @@ async def update_medical(
 
     db.commit()
     db.refresh(med)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_medical", employee_id, None, med.__dict__)
 
     return {"message": "Medical details updated successfully"}
 
@@ -226,14 +233,16 @@ def view_certificate(employee_id: int, token: str = Query(None)):
 # 5. DELETE MEDICAL RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{employee_id}")
-def delete_medical(employee_id: int, user=Depends(get_current_user)):
+def delete_medical(employee_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id).first()
     if not med:
         raise HTTPException(404, "Medical record not found")
 
+    old_values = med.__dict__.copy()
     db.delete(med)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_medical", employee_id, old_values, None)
 
     return {"message": "Medical record removed successfully"}

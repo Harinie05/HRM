@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 
 from models.models_tenant import LeaveBalance
 from schemas.schemas_tenant import (
@@ -15,7 +16,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=LeaveBalanceOut)
-def create_balance(data: LeaveBalanceCreate, db: Session = Depends(get_tenant_db)):
+def create_balance(data: LeaveBalanceCreate, request: Request, db: Session = Depends(get_tenant_db)):
     balance = LeaveBalance(
         employee_id=data.employee_id,
         leave_type_id=data.leave_type_id,
@@ -26,6 +27,7 @@ def create_balance(data: LeaveBalanceCreate, db: Session = Depends(get_tenant_db
     db.add(balance)
     db.commit()
     db.refresh(balance)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "leave_balances", balance.id, None, balance.__dict__)
     return balance
 
 

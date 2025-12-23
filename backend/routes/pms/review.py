@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import PMSReview, User
 from pydantic import BaseModel
 from typing import Optional
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter()
 
@@ -18,7 +20,7 @@ class ReviewCreate(BaseModel):
     status: str = "Pending"
 
 @router.post("/reviews")
-async def create_review(review: dict, db: Session = Depends(get_tenant_db)):
+async def create_review(review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_review = PMSReview(
             employee_id=review.get('employee_id'),
@@ -33,6 +35,10 @@ async def create_review(review: dict, db: Session = Depends(get_tenant_db)):
         db.add(db_review)
         db.commit()
         db.refresh(db_review)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_REVIEW", "pms_reviews", str(db_review.id), None, review)
+        
         return {"message": "Review created successfully", "id": db_review.id}
     except Exception as e:
         db.rollback()
@@ -83,11 +89,14 @@ async def get_reviews(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching reviews: {str(e)}")
 
 @router.put("/reviews/{review_id}")
-async def update_review(review_id: int, review: dict, db: Session = Depends(get_tenant_db)):
+async def update_review(review_id: int, review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_review = db.query(PMSReview).filter(PMSReview.id == review_id).first()
         if not db_review:
             raise HTTPException(status_code=404, detail="Review not found")
+        
+        # Store old values for audit
+        old_values = {field: getattr(db_review, field) for field in review.keys() if hasattr(db_review, field)}
         
         # Update fields
         for field, value in review.items():
@@ -95,6 +104,9 @@ async def update_review(review_id: int, review: dict, db: Session = Depends(get_
                 setattr(db_review, field, value)
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_REVIEW", "pms_reviews", str(review_id), old_values, review)
         return {"message": "Review updated successfully"}
     except Exception as e:
         db.rollback()
@@ -102,11 +114,17 @@ async def update_review(review_id: int, review: dict, db: Session = Depends(get_
         raise HTTPException(status_code=422, detail=f"Error updating review: {str(e)}")
 
 @router.delete("/reviews/{review_id}")
-async def delete_review(review_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_review = db.query(PMSReview).filter(PMSReview.id == review_id).first()
     if not db_review:
         raise HTTPException(status_code=404, detail="Review not found")
     
+    # Store old values for audit
+    old_values = {"employee_id": db_review.employee_id, "cycle": db_review.cycle, "review_type": db_review.review_type}
+    
     db.delete(db_review)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, "tenant", user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, None)
     return {"message": "Review deleted successfully"}

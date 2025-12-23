@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from typing import Optional
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import Candidate, OfferLetter, JobRequisition, BGV
 from schemas.schemas_tenant import OfferCreate, OfferUpdate, OfferStatusUpdate, OfferOut
 from utils.email import send_email
@@ -33,7 +34,7 @@ class BGVUpdateRequest(BaseModel):
 # 1) CREATE OFFER LETTER DRAFT
 # -----------------------------------------------------------
 @router.post("/{candidate_id}/create")
-def create_offer(candidate_id: int, data: OfferCreate, db: Session = Depends(get_tenant_db)):
+def create_offer(candidate_id: int, data: OfferCreate, request: Request, db: Session = Depends(get_tenant_db)):
     try:
         candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
         if not candidate:
@@ -68,6 +69,7 @@ def create_offer(candidate_id: int, data: OfferCreate, db: Session = Depends(get
         db.add(offer)
         db.commit()
         db.refresh(offer)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "offer_letters", offer.id, None, offer.__dict__)
 
         return offer
     
@@ -81,16 +83,18 @@ def create_offer(candidate_id: int, data: OfferCreate, db: Session = Depends(get
 # 2) UPDATE OFFER CONTENT
 # -----------------------------------------------------------
 @router.put("/{offer_id}/update", response_model=OfferOut)
-def update_offer(offer_id: int, data: OfferUpdate, db: Session = Depends(get_tenant_db)):
+def update_offer(offer_id: int, data: OfferUpdate, request: Request, db: Session = Depends(get_tenant_db)):
     offer = db.query(OfferLetter).filter(OfferLetter.id == offer_id).first()
     if not offer:
         raise HTTPException(status_code=404, detail="Offer not found")
 
+    old_values = offer.__dict__.copy()
     for key, value in data.dict(exclude_unset=True).items():
         setattr(offer, key, value)
 
     db.commit()
     db.refresh(offer)
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, old_values, offer.__dict__)
     return offer
 
 
@@ -123,7 +127,7 @@ def upload_offer_document(
 # 4) SEND OFFER MAIL (WITH TOKEN)
 # -----------------------------------------------------------
 @router.post("/{offer_id}/send")
-def send_offer(offer_id: int, db: Session = Depends(get_tenant_db)):
+def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant_db)):
 
     offer = db.query(OfferLetter).filter(OfferLetter.id == offer_id).first()
     if not offer:
@@ -211,6 +215,7 @@ def send_offer(offer_id: int, db: Session = Depends(get_tenant_db)):
     
     if success:
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, None, {"offer_status": "Sent"})
         logger.info(f"✅ Offer letter sent to {candidate.email}")
         return {"message": "Offer letter sent successfully", "offer": offer}
     else:
@@ -221,13 +226,14 @@ def send_offer(offer_id: int, db: Session = Depends(get_tenant_db)):
 # 5) UPDATE ACCEPT / REJECT STATUS
 # -----------------------------------------------------------
 @router.post("/{offer_id}/status")
-def update_offer_status(offer_id: int, status: str, db: Session = Depends(get_tenant_db)):
+def update_offer_status(offer_id: int, status: str, request: Request, db: Session = Depends(get_tenant_db)):
     offer = db.query(OfferLetter).filter(OfferLetter.id == offer_id).first()
     if not offer:
         raise HTTPException(status_code=404, detail="Offer not found")
 
     setattr(offer, 'offer_status', status)
     db.commit()
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, None, {"offer_status": status})
     
     return {"message": f"Offer {status.lower()} successfully", "offer": offer}
 
@@ -401,7 +407,7 @@ BGV_CHECKS = {
 bgv_records = {}
 
 @router.post("/bgv/start/{candidate_id}")
-def start_bgv(candidate_id: int, db: Session = Depends(get_tenant_db)):
+def start_bgv(candidate_id: int, request: Request, db: Session = Depends(get_tenant_db)):
     """Start comprehensive BGV process for a candidate"""
     try:
         candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
@@ -439,6 +445,7 @@ def start_bgv(candidate_id: int, db: Session = Depends(get_tenant_db)):
         db.add(db_bgv)
         db.commit()
         db.refresh(db_bgv)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "bgv", db_bgv.id, None, db_bgv.__dict__)
         
         # Also create in-memory record for compatibility
         bgv_id = f"BGV_{candidate_id}_{int(datetime.utcnow().timestamp())}"
@@ -564,7 +571,7 @@ def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
 
 
 @router.put("/bgv/update/{bgv_id}")
-def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, db: Session = Depends(get_tenant_db)):
+def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db: Session = Depends(get_tenant_db)):
     """Update BGV status and progress"""
     # Try to find BGV in database first
     db_bgv = db.query(BGV).filter(BGV.id == bgv_id).first()
@@ -604,6 +611,7 @@ def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, db: Session = Depends
         # No automatic status changes based on checkboxes
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "bgv", bgv_id, None, db_bgv.__dict__)
         
         return {
             "message": "BGV updated successfully",

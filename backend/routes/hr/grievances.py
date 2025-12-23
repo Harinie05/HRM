@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from models.models_tenant import GrievanceTicket
@@ -8,6 +8,7 @@ from schemas.schemas_tenant import (
     GrievanceOut
 )
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 import logging
 from datetime import datetime
 
@@ -19,6 +20,7 @@ router = APIRouter(prefix="/hr/grievances", tags=["HR Grievances"])
 @router.post("/", response_model=dict)
 def create_grievance(
     payload: dict,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     try:
@@ -58,6 +60,7 @@ def create_grievance(
         db.add(ticket)
         db.commit()
         db.refresh(ticket)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "grievance_tickets", ticket.id, None, ticket.__dict__)
         logger.info(f"✅ Grievance created: {ticket.ticket_code}")
         return {"message": "Grievance created", "ticket_code": ticket.ticket_code}
     except HTTPException:
@@ -136,7 +139,7 @@ def get_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
 
 
 @router.delete("/{ticket_id}", response_model=dict)
-def delete_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
+def delete_grievance(ticket_id: int, request: Request, db: Session = Depends(get_tenant_db)):
     try:
         grievance = db.query(GrievanceTicket).filter(
             GrievanceTicket.id == ticket_id
@@ -145,8 +148,10 @@ def delete_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
         if not grievance:
             raise HTTPException(status_code=404, detail="Grievance not found")
         
+        old_values = grievance.__dict__.copy()
         db.delete(grievance)
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "grievance_tickets", ticket_id, old_values, None)
         
         logger.info(f"✅ Grievance {grievance.ticket_code} deleted")
         return {"message": "Grievance deleted successfully"}
@@ -159,7 +164,7 @@ def delete_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
 
 
 @router.post("/{ticket_id}/complete", response_model=dict)
-def complete_investigation(ticket_id: int, db: Session = Depends(get_tenant_db)):
+def complete_investigation(ticket_id: int, request: Request, db: Session = Depends(get_tenant_db)):
     try:
         grievance = db.query(GrievanceTicket).filter(
             GrievanceTicket.id == ticket_id
@@ -172,6 +177,7 @@ def complete_investigation(ticket_id: int, db: Session = Depends(get_tenant_db))
         grievance.resolved_at = datetime.now()
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "grievance_tickets", ticket_id, None, {"status": "Resolved"})
         
         logger.info(f"✅ Grievance {grievance.ticket_code} marked as Investigation Completed")
         return {"message": "Investigation marked as completed"}

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from typing import List, Optional
 from pydantic import BaseModel
 from models.models_tenant import (
@@ -68,6 +69,7 @@ def apply_candidate(
     phone: Optional[str] = None,
     experience: int = 0,
     resume: UploadFile = File(None),
+    request: Request = None,
     db: Session = Depends(get_tenant_db)
 ):
 
@@ -104,6 +106,8 @@ def apply_candidate(
     db.add(candidate)
     db.commit()
     db.refresh(candidate)
+    if request:
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "candidates", candidate.id, None, candidate.__dict__)
 
     return candidate
 
@@ -152,6 +156,7 @@ def filter_resumes(req: ResumeFilterRequest, db: Session = Depends(get_tenant_db
 def move_stage(
     candidate_id: int,
     req: MoveStageRequest,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
 
@@ -184,6 +189,7 @@ def move_stage(
 
     db.commit()
     db.refresh(c)
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "candidates", candidate_id, None, c.__dict__)
 
     return {"message": "Stage updated", "candidate": c}
 
@@ -194,6 +200,7 @@ def move_stage(
 @router.post("/schedule-interview", response_model=InterviewScheduleResponse)
 def schedule_interview(
     req: InterviewScheduleCreate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
 
@@ -226,6 +233,7 @@ def schedule_interview(
 
     db.commit()
     db.refresh(schedule)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "interview_schedules", schedule.id, None, schedule.__dict__)
 
     return schedule
 
@@ -276,6 +284,7 @@ class MoveToNextRoundRequest(BaseModel):
 @router.post("/move-to-next-round")
 def move_to_next_round(
     req: MoveToNextRoundRequest,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     """Move candidate to next round and send email notification"""

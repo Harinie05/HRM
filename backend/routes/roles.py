@@ -1,9 +1,10 @@
 # routes/roles.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from models.models_master import Hospital
 from models.models_tenant import Role, Permission, RolePermission
 from .tenant_seed import seed_tenant
+from utils.audit_logger import audit_crud
 
 import database
 from database import logger
@@ -31,6 +32,7 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 def create_role(
     tenant_db: str,
     payload: dict,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
@@ -64,6 +66,10 @@ def create_role(
                     tdb.add(RolePermission(role_id=new_role.id, permission_id=perm.id))
 
             tdb.commit()
+            
+            # Audit log
+            audit_crud(request, tenant_db, user, "CREATE_ROLE", "roles", str(new_role.id), {}, {"name": payload["name"], "permissions": permission_names})
+            
             logger.info(f"Role '{payload['name']}' created successfully with ID {new_role.id}")
             return {"detail": "Role created", "role_id": new_role.id}
     except HTTPException as he:
@@ -121,6 +127,7 @@ def list_roles(
 def delete_role(
     tenant_db: str,
     role_id: int,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
@@ -135,9 +142,15 @@ def delete_role(
         if not role:
             raise HTTPException(404, "Role not found")
 
+        # Store old values for audit
+        old_values = {"name": role.name, "description": role.description}
+
         tdb.query(RolePermission).filter(RolePermission.role_id == role_id).delete()
         tdb.delete(role)
         tdb.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
 
         return {"detail": "Role deleted"}
 
@@ -150,6 +163,7 @@ def update_role(
     tenant_db: str,
     role_id: int,
     payload: dict,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)   # 🔐 Token required
 ):
@@ -164,6 +178,9 @@ def update_role(
         if not role:
             raise HTTPException(404, "Role not found")
 
+        # Store old values for audit
+        old_values = {"name": role.name}
+
         role.name = payload["name"]
         tdb.commit()
 
@@ -176,6 +193,9 @@ def update_role(
                 tdb.add(RolePermission(role_id=role.id, permission_id=perm.id))
 
         tdb.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "UPDATE_ROLE", "roles", str(role_id), old_values, {"name": payload["name"], "permissions": payload.get("permissions", [])})
 
         return {"detail": "Role updated"}
 

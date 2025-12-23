@@ -60,6 +60,7 @@ async def add_salary(
     special_percent: str = Form("20"),
     pf_eligible: str = Form("true"),
     esi_eligible: str = Form("true"),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = None
@@ -121,6 +122,8 @@ async def add_salary(
         db.commit()
         print(f"DEBUG: Refreshing salary object")
         db.refresh(salary)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "CREATE" if not existing else "UPDATE", "employee_salary", salary.id, None, salary.__dict__)
         print(f"DEBUG: Salary saved successfully with ID: {salary.id}")
 
         result = {"message": "Salary structure saved successfully", "id": salary.id}
@@ -171,7 +174,7 @@ def get_salary(employee_id: str, user=Depends(get_current_user)):
 # 3. UPDATE SALARY STRUCTURE
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}", response_model=SalaryOut)
-def update_salary(employee_id: int, data: SalaryCreate, user=Depends(get_current_user)):
+def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
         sal = db.query(EmployeeSalary).filter(EmployeeSalary.employee_id == employee_id).first()
@@ -195,6 +198,7 @@ def update_salary(employee_id: int, data: SalaryCreate, user=Depends(get_current
 
         db.commit()
         db.refresh(sal)
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_salary", employee_id, None, sal.__dict__)
 
         return sal
         

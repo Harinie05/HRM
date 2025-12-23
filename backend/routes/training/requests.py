@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import TrainingRequest
@@ -7,11 +7,13 @@ from schemas.schemas_tenant import (
     TrainingRequestUpdate,
     TrainingRequestOut
 )
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/requests", tags=["Training Requests"])
 
 @router.post("/")
-def create_request(data: dict, db: Session = Depends(get_tenant_db)):
+def create_request(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Handle employee_id - extract actual ID from user_ prefix
         employee_id_raw = data.get('employee_id')
@@ -39,6 +41,10 @@ def create_request(data: dict, db: Session = Depends(get_tenant_db)):
         db.add(req)
         db.commit()
         db.refresh(req)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_TRAINING_REQUEST", "training_requests", str(req.id), None, data)
+        
         return {"message": "Training request submitted", "id": req.id}
     except Exception as e:
         db.rollback()
@@ -46,15 +52,19 @@ def create_request(data: dict, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=422, detail=f"Error creating training request: {str(e)}")
 
 @router.put("/{request_id}")
-def update_request(request_id: int, data: TrainingRequestUpdate, db: Session = Depends(get_tenant_db)):
+def update_request(request_id: int, data: TrainingRequestUpdate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     req = db.query(TrainingRequest).get(request_id)
+    old_values = {k: getattr(req, k) for k in data.dict(exclude_unset=True).keys()}
     for k, v in data.dict(exclude_unset=True).items():
         setattr(req, k, v)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, "tenant", user, "UPDATE_TRAINING_REQUEST", "training_requests", str(request_id), old_values, data.dict(exclude_unset=True))
     return {"message": "Request updated"}
 
 @router.put("/{request_id}/approve")
-def approve_request(request_id: int, data: dict, db: Session = Depends(get_tenant_db)):
+def approve_request(request_id: int, data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         req = db.query(TrainingRequest).filter(TrainingRequest.id == request_id).first()
         if not req:
@@ -72,6 +82,10 @@ def approve_request(request_id: int, data: dict, db: Session = Depends(get_tenan
         
         setattr(req, 'approver', comment)
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "APPROVE_TRAINING_REQUEST", "training_requests", str(request_id), {"status": "Pending"}, {"status": req.status, "action": action})
+        
         return {"message": f"Request {action}d successfully"}
     except HTTPException:
         raise

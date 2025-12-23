@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import NABHHRMCompliance, User
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/compliance/nabh", tags=["Compliance"])
 
@@ -21,7 +23,7 @@ class NABHComplianceRequest(BaseModel):
     remarks: Optional[str] = None
 
 @router.post("/")
-def create_nabh_compliance(data: NABHComplianceRequest, db: Session = Depends(get_tenant_db)):
+def create_nabh_compliance(data: NABHComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
         user = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -47,6 +49,9 @@ def create_nabh_compliance(data: NABHComplianceRequest, db: Session = Depends(ge
         db.add(record)
         db.commit()
         db.refresh(record)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), None, data.dict())
         
         return {"message": "NABH compliance record saved successfully"}
         

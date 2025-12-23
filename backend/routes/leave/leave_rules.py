@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 
 from models.models_tenant import LeaveRule
 from schemas.schemas_tenant import (
@@ -15,11 +16,12 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=LeaveRuleOut)
-def create_leave_rule(data: LeaveRuleCreate, db: Session = Depends(get_tenant_db)):
+def create_leave_rule(data: LeaveRuleCreate, request: Request, db: Session = Depends(get_tenant_db)):
     rule = LeaveRule(**data.dict())
     db.add(rule)
     db.commit()
     db.refresh(rule)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "leave_rules", rule.id, None, rule.__dict__)
     return rule
 
 
@@ -32,6 +34,7 @@ def list_leave_rules(db: Session = Depends(get_tenant_db)):
 def update_leave_rule(
     rule_id: int,
     data: LeaveRuleUpdate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     rule = db.query(LeaveRule).filter(LeaveRule.id == rule_id).first()
@@ -43,4 +46,5 @@ def update_leave_rule(
 
     db.commit()
     db.refresh(rule)
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "leave_rules", rule_id, None, rule.__dict__)
     return rule

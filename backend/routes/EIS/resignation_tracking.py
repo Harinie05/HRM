@@ -1,12 +1,13 @@
 # routes/EIS/resignation_tracking.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session, joinedload
 from typing import List
 from datetime import date
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExit, User
 from schemas.schemas_tenant import ExitOut, ExitCreate
 
@@ -72,7 +73,7 @@ def list_resignations(user=Depends(get_current_user)):
 # 2. APPLY RESIGNATION
 # -------------------------------------------------------------------------
 @router.post("/apply")
-def apply_resignation(data: ExitCreate, user=Depends(get_current_user)):
+def apply_resignation(data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     
     try:
@@ -113,6 +114,7 @@ def apply_resignation(data: ExitCreate, user=Depends(get_current_user)):
         db.add(resignation)
         db.commit()
         db.refresh(resignation)
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_exit", resignation.id, None, resignation.__dict__)
 
         return {"message": "Resignation applied successfully", "id": resignation.id}
         
@@ -130,6 +132,7 @@ def update_resignation_status(
     resignation_id: int,
     status_field: str,
     status_value: str,
+    request: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -155,6 +158,7 @@ def update_resignation_status(
                 emp.status = "Inactive"
     
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_exit", resignation_id, None, {status_field: status_value})
     return {"message": f"{status_field} updated to {status_value}"}
 
 # -------------------------------------------------------------------------
@@ -164,6 +168,7 @@ def update_resignation_status(
 def conduct_exit_interview(
     resignation_id: int,
     interview_data: dict,
+    request: Request,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -180,4 +185,5 @@ def conduct_exit_interview(
         resignation.notes = interview_notes
     
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_exit", resignation_id, None, {"interview_completed": True})
     return {"message": "Exit interview completed successfully"}

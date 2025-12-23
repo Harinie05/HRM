@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import PublicCandidate, Candidate, JobRequisition
 from datetime import datetime
 from database import logger
@@ -63,6 +64,7 @@ class InterviewSchedule(BaseModel):
 @router.post("/shortlist-with-interviews")
 def shortlist_candidates_with_interviews(
     schedules: List[InterviewSchedule],
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     """Shortlist candidates with interview scheduling and email notifications"""
@@ -140,6 +142,7 @@ def shortlist_candidates_with_interviews(
         shortlisted_count += 1
     
     db.commit()
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "candidate_shortlist", None, None, {"count": shortlisted_count})
     
     logger.info(f"Shortlisted {shortlisted_count} candidates with interviews scheduled")
     

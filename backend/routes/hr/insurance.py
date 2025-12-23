@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import logging
 from datetime import datetime, date, timedelta
 
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeInsurance
 
 logger = logging.getLogger("HRM")
@@ -12,7 +13,7 @@ logger = logging.getLogger("HRM")
 router = APIRouter(prefix="/hr/insurance", tags=["HR Insurance"])
 
 @router.post("/")
-async def create_insurance_policy(policy_data: dict, db: Session = Depends(get_tenant_db)):
+async def create_insurance_policy(policy_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Create a new insurance policy"""
     try:
         # Find user by employee_code
@@ -40,6 +41,7 @@ async def create_insurance_policy(policy_data: dict, db: Session = Depends(get_t
         db.add(insurance)
         db.commit()
         db.refresh(insurance)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "employee_insurance", insurance.id, None, insurance.__dict__)
         
         logger.info(f"✅ Insurance policy created with ID: {insurance.id}")
         return {"message": "Insurance policy created successfully", "data": {
@@ -116,7 +118,7 @@ async def get_insurance_policies(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{policy_id}")
-async def delete_insurance_policy(policy_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_insurance_policy(policy_id: int, request: Request, db: Session = Depends(get_tenant_db)):
     """Delete an insurance policy"""
     try:
         policy = db.query(EmployeeInsurance).filter(EmployeeInsurance.id == policy_id).first()
@@ -124,8 +126,10 @@ async def delete_insurance_policy(policy_id: int, db: Session = Depends(get_tena
         if not policy:
             raise HTTPException(status_code=404, detail="Policy not found")
         
+        old_values = policy.__dict__.copy()
         db.delete(policy)
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "employee_insurance", policy_id, old_values, None)
         
         return {"message": "Insurance policy deleted successfully"}
     except Exception as e:

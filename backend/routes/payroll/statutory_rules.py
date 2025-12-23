@@ -1,9 +1,10 @@
 # routes/payroll/statutory_rules.py
 
-from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, HTTPException, Form, Request
 from sqlalchemy.orm import Session
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import StatutoryRule
 from pydantic import BaseModel
 from typing import Optional
@@ -58,6 +59,7 @@ def update_statutory_rules(
     pt_amount: str = Form("200"),
     tds_enabled: str = Form("true"),
     tds_percent: str = Form("10"),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -82,6 +84,8 @@ def update_statutory_rules(
 
         db.commit()
         db.refresh(rules)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "UPDATE", "statutory_rules", getattr(rules, 'id', None), None, rules.__dict__)
         
         return {"message": "Statutory rules updated successfully", "rules": rules}
     except Exception as e:

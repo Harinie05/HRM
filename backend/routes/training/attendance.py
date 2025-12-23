@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import TrainingAttendance, TrainingProgram, User
 from schemas.schemas_tenant import TrainingAttendanceCreate, TrainingAttendanceOut
 from sqlalchemy import func
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/attendance", tags=["Training Attendance"])
 
 @router.post("/")
-def mark_attendance(data: dict, db: Session = Depends(get_tenant_db)):
+def mark_attendance(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Handle employee_id conversion
         employee_id_raw = data.get('employee_id')
@@ -35,6 +37,10 @@ def mark_attendance(data: dict, db: Session = Depends(get_tenant_db)):
         db.add(record)
         db.commit()
         db.refresh(record)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_TRAINING_ATTENDANCE", "training_attendance", str(record.id), None, data)
+        
         return {"message": "Attendance & assessment saved", "id": record.id}
     except Exception as e:
         db.rollback()

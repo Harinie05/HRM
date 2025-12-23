@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import logging
 from datetime import datetime
 
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import AssetAssignment
 from utils.email import send_email
 
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/hr/assets", tags=["HR Assets"])
 
 
 @router.post("/pending")
-async def create_pending_asset(asset_data: dict, db: Session = Depends(get_tenant_db)):
+async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Create a pending asset assignment request"""
     try:
         # Find user by employee_code
@@ -48,6 +49,7 @@ async def create_pending_asset(asset_data: dict, db: Session = Depends(get_tenan
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
         
         logger.info(f"✅ Pending asset created with ID: {asset_assignment.id}")
         return {"message": "Pending asset created successfully", "data": {
@@ -115,7 +117,7 @@ async def get_pending_assets(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/approve")
-async def approve_asset(approval_data: dict, db: Session = Depends(get_tenant_db)):
+async def approve_asset(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Approve or reject asset assignment"""
     try:
         from models.models_tenant import User
@@ -153,6 +155,7 @@ async def approve_asset(approval_data: dict, db: Session = Depends(get_tenant_db
             logger.info(f"❌ Asset rejected: {asset.asset_name} for {employee_name}")
         
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "asset_assignments", asset_id, None, {"status": asset.status})
         
         status = "approved" if approved else "rejected"
         return {"message": f"Asset {status} successfully"}
@@ -202,7 +205,7 @@ async def get_approved_assets(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/")
-async def create_asset(asset_data: dict, db: Session = Depends(get_tenant_db)):
+async def create_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Create asset directly (legacy endpoint)"""
     try:
         asset_assignment = AssetAssignment(
@@ -224,6 +227,7 @@ async def create_asset(asset_data: dict, db: Session = Depends(get_tenant_db)):
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
         
         logger.info(f"✅ Asset created directly: {asset_assignment.asset_name}")
         return {"message": "Asset created successfully", "data": {

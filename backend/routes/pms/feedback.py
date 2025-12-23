@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import PMSFeedback, User
 from pydantic import BaseModel
 from typing import Optional
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter()
 
@@ -16,7 +18,7 @@ class FeedbackCreate(BaseModel):
     comments: str
 
 @router.post("/feedback")
-async def create_feedback(feedback: dict, db: Session = Depends(get_tenant_db)):
+async def create_feedback(feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_feedback = PMSFeedback(
             from_employee_id=feedback.get('from_employee_id'),
@@ -32,6 +34,10 @@ async def create_feedback(feedback: dict, db: Session = Depends(get_tenant_db)):
         db.add(db_feedback)
         db.commit()
         db.refresh(db_feedback)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_FEEDBACK", "pms_feedback", str(db_feedback.id), None, feedback)
+        
         return {"message": "Feedback created successfully", "id": db_feedback.id}
     except Exception as e:
         db.rollback()
@@ -94,17 +100,23 @@ async def get_feedback(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching feedback: {str(e)}")
 
 @router.put("/feedback/{feedback_id}")
-async def update_feedback(feedback_id: int, feedback: dict, db: Session = Depends(get_tenant_db)):
+async def update_feedback(feedback_id: int, feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id).first()
         if not db_feedback:
             raise HTTPException(status_code=404, detail="Feedback not found")
+        
+        # Store old values for audit
+        old_values = {field: getattr(db_feedback, field) for field in feedback.keys() if hasattr(db_feedback, field)}
         
         for field, value in feedback.items():
             if hasattr(db_feedback, field):
                 setattr(db_feedback, field, value)
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, feedback)
         return {"message": "Feedback updated successfully"}
     except Exception as e:
         db.rollback()
@@ -112,11 +124,17 @@ async def update_feedback(feedback_id: int, feedback: dict, db: Session = Depend
         raise HTTPException(status_code=422, detail=f"Error updating feedback: {str(e)}")
 
 @router.delete("/feedback/{feedback_id}")
-async def delete_feedback(feedback_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id).first()
     if not db_feedback:
         raise HTTPException(status_code=404, detail="Feedback not found")
     
+    # Store old values for audit
+    old_values = {"from_employee_id": db_feedback.from_employee_id, "to_employee_id": db_feedback.to_employee_id, "rating": db_feedback.rating}
+    
     db.delete(db_feedback)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, "tenant", user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, None)
     return {"message": "Feedback deleted successfully"}

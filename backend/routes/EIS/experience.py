@@ -1,6 +1,6 @@
 # routes/EIS/experience.py
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Header
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Header, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -9,6 +9,7 @@ import uuid
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExperience
 from schemas.schemas_tenant import ExperienceCreate, ExperienceOut
 
@@ -57,6 +58,7 @@ async def add_experience(
     from_year: str = Form(""),
     to_year: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -104,6 +106,8 @@ async def add_experience(
         db.add(new_exp)
         db.commit()
         db.refresh(new_exp)
+        if request:
+            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_experience", new_exp.id, None, new_exp.__dict__)
 
         return new_exp
         
@@ -194,6 +198,7 @@ async def update_experience(
     reporting_manager: str = Form(""),
     manager_contact: str = Form(""),
     file: Optional[UploadFile] = File(None),
+    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -237,6 +242,8 @@ async def update_experience(
 
     db.commit()
     db.refresh(exp)
+    if request:
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_experience", experience_id, None, exp.__dict__)
 
     return exp
 
@@ -306,14 +313,16 @@ def view_document(experience_id: int, token: Optional[str] = Query(None), Author
 # 5. DELETE EXPERIENCE RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{experience_id}")
-def delete_experience(experience_id: int, user=Depends(get_current_user)):
+def delete_experience(experience_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     exp = db.query(EmployeeExperience).filter(EmployeeExperience.id == experience_id).first()
     if not exp:
         raise HTTPException(404, "Experience record not found")
 
+    old_values = exp.__dict__.copy()
     db.delete(exp)
     db.commit()
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_experience", experience_id, old_values, None)
 
     return {"message": "Experience record deleted successfully"}

@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Header, HTTPException, Depends
+from fastapi import APIRouter, Header, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
+from utils.audit_logger import audit_crud
 
 from database import get_tenant_engine, logger
 from models.models_tenant import CompanyProfile
@@ -46,6 +47,7 @@ def get_company_profile(
 @router.post("/company-profile", response_model=CompanyProfileResponse)
 def save_company_profile(
     data: CompanyProfileBase,
+    request: Request,
     tenant: str = Header(...),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
@@ -59,12 +61,17 @@ def save_company_profile(
 
         if profile:
             logger.info(f"Updating company profile for tenant {tenant}")
+            old_values = {key: getattr(profile, key) for key in data.dict().keys()}
             for key, value in data.dict().items():
                 setattr(profile, key, value)
+            audit_crud(request, tenant, user, "UPDATE_COMPANY_PROFILE", "company_profiles", str(profile.id), old_values, data.dict())
         else:
             logger.info(f"Creating new company profile for tenant {tenant}")
             profile = CompanyProfile(**data.dict())
             db.add(profile)
+            db.commit()
+            db.refresh(profile)
+            audit_crud(request, tenant, user, "CREATE_COMPANY_PROFILE", "company_profiles", str(profile.id), {}, data.dict())
 
         db.commit()
         db.refresh(profile)

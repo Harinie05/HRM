@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Header, HTTPException, Depends
+from fastapi import APIRouter, Header, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 
 from database import get_tenant_engine, logger
+from utils.audit_logger import audit_crud
 from models.models_tenant import Shift
 from schemas.schemas_tenant import ShiftCreate, ShiftResponse
 
@@ -18,6 +19,7 @@ router = APIRouter(prefix="/shifts", tags=["Shifts"])
 def create_shift(
     tenant: str,
     payload: ShiftCreate,
+    request: Request,
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
@@ -34,6 +36,7 @@ def create_shift(
         db.add(new_shift)
         db.commit()
         db.refresh(new_shift)
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "shifts", new_shift.id, None, new_shift.__dict__)
         logger.info(f"Shift '{payload.name}' created successfully with ID {new_shift.id}")
         return new_shift
 
@@ -68,6 +71,7 @@ def list_shifts(
 def delete_shift(
     tenant: str,
     shift_id: int,
+    request: Request,
     user = Depends(get_current_user)  # 🔐 Token required
 ):
     try:
@@ -79,8 +83,10 @@ def delete_shift(
         if not shift:
             raise HTTPException(status_code=404, detail="Shift not found")
 
+        old_values = shift.__dict__.copy()
         db.delete(shift)
         db.commit()
+        audit_crud(request, user.get("tenant_db"), user, "DELETE", "shifts", shift_id, old_values, None)
         logger.info(f"Shift {shift_id} deleted successfully")
         return {"message": "Shift deleted successfully"}
 

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 
 from models.models_tenant import SalaryStructure
 from schemas.schemas_tenant import (
@@ -17,12 +18,14 @@ router = APIRouter(
 @router.post("/", response_model=SalaryStructureOut)
 def create_salary_structure(
     data: SalaryStructureCreate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     structure = SalaryStructure(**data.dict())
     db.add(structure)
     db.commit()
     db.refresh(structure)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "salary_structures", structure.id, None, structure.__dict__)
     return structure
 
 
@@ -47,6 +50,7 @@ def get_salary_structure(
 def update_salary_structure(
     structure_id: int,
     data: SalaryStructureCreate,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     structure = db.query(SalaryStructure).filter(
@@ -60,6 +64,7 @@ def update_salary_structure(
             setattr(structure, key, value)
         db.commit()
         db.refresh(structure)
+        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "salary_structures", structure_id, None, structure.__dict__)
         return structure
     except Exception as e:
         db.rollback()
@@ -68,6 +73,7 @@ def update_salary_structure(
 @router.delete("/{structure_id}")
 def delete_salary_structure(
     structure_id: int,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     structure = db.query(SalaryStructure).filter(
@@ -77,8 +83,10 @@ def delete_salary_structure(
         raise HTTPException(status_code=404, detail="Salary structure not found")
 
     try:
+        old_values = structure.__dict__.copy()
         db.delete(structure)
         db.commit()
+        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "salary_structures", structure_id, old_values, None)
         return {"message": "Salary structure deleted"}
     except Exception as e:
         db.rollback()

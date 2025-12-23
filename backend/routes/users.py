@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from models.models_master import Hospital
 from models.models_tenant import User, Role, Department
@@ -6,6 +6,7 @@ import schemas.schemas_tenant as schemas_tenant
 import database
 from database import logger
 from passlib.context import CryptContext
+from utils.audit_logger import audit_crud
 
 # 🔐 added for token authentication
 from routes.hospital import get_current_user
@@ -29,6 +30,7 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 def create_user(
     tenant_db: str,
     payload: schemas_tenant.UserCreate,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
@@ -64,6 +66,10 @@ def create_user(
             tdb.add(new_user)
             tdb.commit()
             tdb.refresh(new_user)
+            
+            # Audit log
+            audit_crud(request, tenant_db, user, "CREATE_USER", "users", str(new_user.id), {}, {"name": payload.name, "email": payload.email})
+            
             logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
             return {"detail": "User created", "user_id": new_user.id}
     except HTTPException:
@@ -140,6 +146,7 @@ def update_user(
     tenant_db: str,
     user_id: int,
     payload: schemas_tenant.UserUpdate,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
@@ -154,19 +161,26 @@ def update_user(
         if not existing_user:
             raise HTTPException(404, "User not found")
 
+        # Store old values for audit
+        old_values = {"name": existing_user.name, "email": existing_user.email}
+
         # Update fields if provided
         if payload.name is not None:
-            existing_user.name = payload.name
+            setattr(existing_user, 'name', payload.name)
         if payload.email is not None:
-            existing_user.email = payload.email
+            setattr(existing_user, 'email', payload.email)
         if payload.role_id is not None:
-            existing_user.role_id = payload.role_id
+            setattr(existing_user, 'role_id', payload.role_id)
         if payload.department_id is not None:
-            existing_user.department_id = payload.department_id
+            setattr(existing_user, 'department_id', payload.department_id)
         if payload.password is not None:
-            existing_user.password = pwd_context.hash(payload.password)
+            setattr(existing_user, 'password', pwd_context.hash(payload.password))
 
         tdb.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "UPDATE_USER", "users", str(user_id), old_values, payload.dict(exclude_unset=True))
+        
         logger.info(f"User {user_id} updated successfully")
         return {"detail": "User updated"}
 
@@ -178,6 +192,7 @@ def update_user(
 def delete_user(
     tenant_db: str,
     user_id: int,
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
@@ -188,11 +203,17 @@ def delete_user(
     tdb = Session(bind=engine)
 
     with tdb:
-        user = tdb.query(User).filter(User.id == user_id).first()
-        if not user:
+        user_to_delete = tdb.query(User).filter(User.id == user_id).first()
+        if not user_to_delete:
             raise HTTPException(404, "User not found")
 
-        tdb.delete(user)
+        # Store old values for audit
+        old_values = {"name": user_to_delete.name, "email": user_to_delete.email}
+
+        tdb.delete(user_to_delete)
         tdb.commit()
+        
+        # Audit log
+        audit_crud(request, tenant_db, user, "DELETE_USER", "users", str(user_id), old_values, {})
 
         return {"detail": "User deleted"}

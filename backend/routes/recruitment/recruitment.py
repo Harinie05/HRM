@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import JobRequisition
 from schemas.schemas_tenant import (
     JobReqCreate,
@@ -38,7 +39,7 @@ async def debug_create_job(request: Request):
     return {"received": body.decode()}
 
 @router.post("/create", response_model=JobReqOut)
-def create_job(req: JobReqCreate, db: Session = Depends(get_tenant_db)):
+def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_tenant_db)):
     logger.info(f"Creating job with data: {req.dict()}")
 
     job = JobRequisition(
@@ -67,6 +68,7 @@ def create_job(req: JobReqCreate, db: Session = Depends(get_tenant_db)):
     db.add(job)
     db.commit()
     db.refresh(job)
+    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "job_requisitions", job.id, None, job.__dict__)
 
     # After commit → we now have job.id
     setattr(job, 'apply_url', generate_apply_url(getattr(job, 'id')))
@@ -79,13 +81,14 @@ def create_job(req: JobReqCreate, db: Session = Depends(get_tenant_db)):
 # UPDATE JOB REQUISITION
 # ----------------------------------------------------------
 @router.put("/update/{job_id}", response_model=JobReqOut)
-def update_job(job_id: int, req: JobReqUpdate, db: Session = Depends(get_tenant_db)):
+def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db)):
 
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
     update_data = req.dict(exclude_unset=True)
+    old_values = job.__dict__.copy()
 
     for key, val in update_data.items():
         setattr(job, key, val)
@@ -94,6 +97,7 @@ def update_job(job_id: int, req: JobReqUpdate, db: Session = Depends(get_tenant_
 
     db.commit()
     db.refresh(job)
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "job_requisitions", job_id, old_values, job.__dict__)
 
     return job
 

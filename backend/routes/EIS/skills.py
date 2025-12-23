@@ -1,11 +1,12 @@
 # routes/EIS/skills.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeSkills
 from schemas.schemas_tenant import SkillCreate, SkillOut
 
@@ -33,7 +34,7 @@ router = APIRouter(prefix="/employee/skills", tags=["Employee Skills & Competenc
 # 1. ADD SKILL
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=SkillOut)
-def add_skill(data: SkillCreate, user=Depends(get_current_user)):
+def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
         new_skill = EmployeeSkills(
@@ -45,6 +46,7 @@ def add_skill(data: SkillCreate, user=Depends(get_current_user)):
         db.add(new_skill)
         db.commit()
         db.refresh(new_skill)
+        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_skills", new_skill.id, None, new_skill.__dict__)
 
         # Convert to response format
         return SkillOut(
@@ -91,7 +93,7 @@ def get_skills(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE SKILL
 # -------------------------------------------------------------------------
 @router.put("/{skill_id}", response_model=SkillOut)
-def update_skill(skill_id: int, data: SkillCreate, user=Depends(get_current_user)):
+def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
         sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
@@ -103,6 +105,7 @@ def update_skill(skill_id: int, data: SkillCreate, user=Depends(get_current_user
 
         db.commit()
         db.refresh(sk)
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_skills", skill_id, None, sk.__dict__)
 
         return SkillOut(
             id=getattr(sk, 'id'),
@@ -125,15 +128,17 @@ def update_skill(skill_id: int, data: SkillCreate, user=Depends(get_current_user
 # 4. DELETE SKILL
 # -------------------------------------------------------------------------
 @router.delete("/{skill_id}")
-def delete_skill(skill_id: int, user=Depends(get_current_user)):
+def delete_skill(skill_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
         sk = db.query(EmployeeSkills).filter(EmployeeSkills.id == skill_id).first()
         if not sk:
             raise HTTPException(404, "Skill not found")
 
+        old_values = sk.__dict__.copy()
         db.delete(sk)
         db.commit()
+        audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_skills", skill_id, old_values, None)
 
         return {"message": "Skill deleted successfully"}
         

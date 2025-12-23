@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
@@ -6,6 +6,8 @@ from models.models_tenant import PMSGoal, User
 from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import date
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter()
 
@@ -62,7 +64,7 @@ async def test_response(db: Session = Depends(get_tenant_db)):
         return {"error": str(e)}
 
 @router.post("/goals")
-async def create_goal(goal: dict, db: Session = Depends(get_tenant_db)):
+async def create_goal(goal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         print(f"Received goal data: {goal}")
         
@@ -110,6 +112,9 @@ async def create_goal(goal: dict, db: Session = Depends(get_tenant_db)):
         db.add(new_goal)
         db.commit()
         db.refresh(new_goal)
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "CREATE_GOAL", "pms_goals", str(new_goal.id), None, goal)
         
         print(f"Goal created successfully with ID: {new_goal.id}")
         return {"message": "Goal created successfully", "id": new_goal.id}
@@ -187,11 +192,14 @@ async def get_goals(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching goals: {str(e)}")
 
 @router.put("/goals/{goal_id}")
-async def update_goal(goal_id: int, goal: dict, db: Session = Depends(get_tenant_db)):
+async def update_goal(goal_id: int, goal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id).first()
         if not db_goal:
             raise HTTPException(status_code=404, detail="Goal not found")
+        
+        # Store old values for audit
+        old_values = {"title": db_goal.title, "goal_type": db_goal.goal_type, "target": db_goal.target, "status": db_goal.status}
         
         # Extract employee ID - handle both string and integer formats
         employee_id = None
@@ -240,6 +248,10 @@ async def update_goal(goal_id: int, goal: dict, db: Session = Depends(get_tenant
             db_goal.status = goal['status']
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "UPDATE_GOAL", "pms_goals", str(goal_id), old_values, goal)
+        
         return {"message": "Goal updated successfully"}
     except Exception as e:
         db.rollback()
@@ -247,14 +259,21 @@ async def update_goal(goal_id: int, goal: dict, db: Session = Depends(get_tenant
         raise HTTPException(status_code=422, detail=f"Error updating goal: {str(e)}")
 
 @router.delete("/goals/{goal_id}")
-async def delete_goal(goal_id: int, db: Session = Depends(get_tenant_db)):
+async def delete_goal(goal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id).first()
         if not db_goal:
             raise HTTPException(status_code=404, detail="Goal not found")
         
+        # Store old values for audit
+        old_values = {"title": db_goal.title, "goal_type": db_goal.goal_type, "target": db_goal.target}
+        
         db.delete(db_goal)
         db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "DELETE_GOAL", "pms_goals", str(goal_id), old_values, None)
+        
         return {"message": "Goal deleted successfully"}
     except Exception as e:
         db.rollback()
