@@ -12,6 +12,7 @@ import {
   DollarSign,
   Target,
   GraduationCap,
+  Shield,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -317,6 +318,19 @@ export default function Sidebar() {
         >
           <GraduationCap size={20} />
           <span>Training & Development</span>
+        </Link>
+
+        {/* Compliance Module */}
+        <Link
+          to="/compliance"
+          className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-100 ${
+            location.pathname.startsWith("/compliance")
+              ? "bg-blue-100 font-semibold text-blue-700"
+              : ""
+          }`}
+        >
+          <Shield size={20} />
+          <span>Compliance Module</span>
         </Link>
 
       </nav>

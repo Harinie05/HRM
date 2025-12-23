@@ -63,7 +63,7 @@ def list_hr_policies(user=Depends(get_current_user)):
     results = []
     for p in policies:
         policy_dict = p.__dict__.copy()
-        policy_dict['document_download_url'] = f"/uploads/policies/{p.document}" if p.document else None
+        policy_dict['document_download_url'] = f"/uploads/policies/{p.document}" if getattr(p, 'document', None) else None
         results.append(HRPolicyOut(**policy_dict))
     
     return results
@@ -116,6 +116,9 @@ async def upload_hr_policy_document(id: int, file: UploadFile = File(...), user=
     upload_dir = Path("uploads/policies")
     upload_dir.mkdir(parents=True, exist_ok=True)
     
+    if not file.filename:
+        raise HTTPException(400, "No filename provided")
+    
     file_ext = os.path.splitext(file.filename)[1]
     filename = f"hr_policy_{id}_{file.filename}"
     file_path = upload_dir / filename
@@ -139,7 +142,7 @@ def view_hr_policy(id: int, user=Depends(get_current_user)):
         raise HTTPException(404, "HR Policy not found")
     
     policy_dict = policy.__dict__.copy()
-    policy_dict['document_download_url'] = f"/uploads/policies/{policy.document}" if policy.document else None
+    policy_dict['document_download_url'] = f"/uploads/policies/{policy.document}" if getattr(policy, 'document', None) else None
     
     return HRPolicyOut(**policy_dict)
 

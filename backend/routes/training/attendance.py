@@ -12,10 +12,12 @@ def mark_attendance(data: dict, db: Session = Depends(get_tenant_db)):
     try:
         # Handle employee_id conversion
         employee_id_raw = data.get('employee_id')
-        if str(employee_id_raw).startswith('user_'):
-            employee_id = int(employee_id_raw.replace('user_', ''))
-        else:
+        if employee_id_raw and str(employee_id_raw).startswith('user_'):
+            employee_id = int(str(employee_id_raw).replace('user_', ''))
+        elif employee_id_raw:
             employee_id = int(employee_id_raw)
+        else:
+            raise HTTPException(status_code=400, detail="Employee ID is required")
         
         record = TrainingAttendance(
             training_id=data.get('training_id'),
@@ -26,8 +28,9 @@ def mark_attendance(data: dict, db: Session = Depends(get_tenant_db)):
         )
         
         # Auto-calculate result based on post_score
-        if data.get('post_score'):
-            record.result = "Pass" if float(data.get('post_score')) >= 60 else "Fail"
+        post_score = data.get('post_score')
+        if post_score is not None:
+            setattr(record, 'result', "Pass" if float(post_score) >= 60 else "Fail")
         
         db.add(record)
         db.commit()

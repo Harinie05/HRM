@@ -91,6 +91,12 @@ from routes.training.requests import router as training_requests_router
 from routes.training.attendance import router as training_attendance_router
 from routes.training.certificates import router as training_certificates_router
 
+# ======================= 🔥 COMPLIANCE ROUTERS =======================
+from routes.compliance.statutory import router as statutory_router
+from routes.compliance.labour_register import router as labour_register_router
+from routes.compliance.leave_compliance import router as leave_compliance_router
+from routes.compliance.nabh_compliance import router as nabh_compliance_router
+
 # ============================================================
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
@@ -251,6 +257,12 @@ app.include_router(training_programs_router, prefix="/api/training")
 app.include_router(training_requests_router, prefix="/api/training")
 app.include_router(training_attendance_router, prefix="/api/training")
 app.include_router(training_certificates_router, prefix="/api/training")
+
+# ======================= 🔥 COMPLIANCE MODULE =======================
+app.include_router(statutory_router, prefix="/api")
+app.include_router(labour_register_router, prefix="/api")
+app.include_router(leave_compliance_router, prefix="/api")
+app.include_router(nabh_compliance_router, prefix="/api")
 
 logger.info("All routers loaded successfully")
 

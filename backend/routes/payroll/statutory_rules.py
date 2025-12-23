@@ -69,16 +69,16 @@ def update_statutory_rules(
             db.add(rules)
 
         # Update values
-        rules.pf_enabled = pf_enabled.lower() == 'true'
-        rules.pf_percent = float(pf_percent)
-        rules.pf_apply_on = pf_apply_on
-        rules.esi_enabled = esi_enabled.lower() == 'true'
-        rules.esi_threshold = float(esi_threshold)
-        rules.esi_percent = float(esi_percent)
-        rules.pt_enabled = pt_enabled.lower() == 'true'
-        rules.pt_amount = float(pt_amount)
-        rules.tds_enabled = tds_enabled.lower() == 'true'
-        rules.tds_percent = float(tds_percent)
+        setattr(rules, 'pf_enabled', pf_enabled.lower() == 'true')
+        setattr(rules, 'pf_percent', float(pf_percent))
+        setattr(rules, 'pf_apply_on', pf_apply_on)
+        setattr(rules, 'esi_enabled', esi_enabled.lower() == 'true')
+        setattr(rules, 'esi_threshold', float(esi_threshold))
+        setattr(rules, 'esi_percent', float(esi_percent))
+        setattr(rules, 'pt_enabled', pt_enabled.lower() == 'true')
+        setattr(rules, 'pt_amount', float(pt_amount))
+        setattr(rules, 'tds_enabled', tds_enabled.lower() == 'true')
+        setattr(rules, 'tds_percent', float(tds_percent))
 
         db.commit()
         db.refresh(rules)

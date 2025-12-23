@@ -1667,5 +1667,43 @@ class TrainingCertificateOut(TrainingCertificateCreate):
     class Config:
         from_attributes = True
 
+# =====================================================
+# COMPLIANCE SCHEMAS
+# =====================================================
+
+class StatutoryCreate(BaseModel):
+    employee_id: int
+    basic_salary: float
+    month: str
+    year: int
+
+
+class LabourRegisterCreate(BaseModel):
+    employee_id: int
+    register_type: str
+    month: str
+    year: int
+    remarks: Optional[str] = None
+
+
+class LeaveComplianceCreate(BaseModel):
+    employee_id: int
+    total_working_days: int
+    leaves_taken: int
+    overtime_hours: float
+    month: str
+    year: int
+
+
+class NABHCreate(BaseModel):
+    employee_id: int
+    staff_qualification_verified: bool
+    medical_fitness_done: bool
+    credentialing_done: bool
+    fire_safety_training_done: bool
+    performance_monitoring_done: bool
+    remarks: Optional[str] = None
+
+
 
 

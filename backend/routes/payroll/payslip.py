@@ -133,7 +133,7 @@ def get_salary_structure(db: Session, employee_id: int):
     
     # Then try employee grade-based salary
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
-    if employee and employee.grade:
+    if employee and getattr(employee, 'grade', None):
         grade = db.query(Grade).filter(Grade.code == employee.grade).first()
         if grade:
             return {
@@ -207,9 +207,9 @@ def apply_deductions(db: Session, payroll: dict):
     statutory = db.query(StatutoryRule).first()
     
     # Calculate deductions
-    pf = payroll["basic"] * 0.12 if statutory and statutory.pf_enabled else 0
-    esi = payroll["gross_salary"] * 0.0175 if statutory and statutory.esi_enabled else 0
-    pt = 200 if statutory and statutory.pt_amount else 0
+    pf = payroll["basic"] * 0.12 if statutory and getattr(statutory, 'pf_enabled', False) else 0
+    esi = payroll["gross_salary"] * 0.0175 if statutory and getattr(statutory, 'esi_enabled', False) else 0
+    pt = 200 if statutory and getattr(statutory, 'pt_amount', False) else 0
     
     total_deductions = pf + esi + pt
     net_salary = payroll["gross_salary"] - total_deductions
@@ -290,7 +290,7 @@ def generate_bank_file(
             if not employee:
                 employee = db.query(User).filter(User.id == payroll.employee_id).first()
             
-            if employee and payroll.net_salary:
+            if employee is not None and getattr(payroll, 'net_salary', None):
                 # Get actual bank details from employee bank details
                 bank_details = db.query(EmployeeBankDetails).filter(
                     EmployeeBankDetails.employee_id == payroll.employee_id

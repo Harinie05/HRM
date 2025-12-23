@@ -74,6 +74,13 @@ import TrainingRequests from "./pages/training/TrainingRequests";
 import TrainingAttendance from "./pages/training/TrainingAttendance";
 import TrainingCertificates from "./pages/training/TrainingCertificates";
 
+// ======================= 🔥 COMPLIANCE IMPORTS =======================
+import ComplianceLayout from "./pages/compliance/ComplianceLayout";
+import Statutory from "./pages/compliance/Statutory";
+import LabourRegister from "./pages/compliance/LabourRegister";
+import LeaveCompliance from "./pages/compliance/LeaveCompliance";
+import NABHCompliance from "./pages/compliance/NABHCompliance";
+
 function App() {
   return (
     <BrowserRouter>
@@ -154,7 +161,7 @@ function App() {
         {/* PMS */}
         <Route path="/pms" element={<ProtectedRoute><PMSManagement /></ProtectedRoute>} />
 
-        {/* ======================= 🔥 TRAINING & DEVELOPMENT ======================= */}
+        {/* TRAINING */}
         <Route path="/training" element={<ProtectedRoute><TrainingLayout /></ProtectedRoute>}>
           <Route index element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
           <Route path="programs" element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
@@ -162,6 +169,15 @@ function App() {
           <Route path="requests" element={<ProtectedRoute><TrainingRequests /></ProtectedRoute>} />
           <Route path="attendance" element={<ProtectedRoute><TrainingAttendance /></ProtectedRoute>} />
           <Route path="certificates" element={<ProtectedRoute><TrainingCertificates /></ProtectedRoute>} />
+        </Route>
+
+        {/* ======================= 🔥 COMPLIANCE MODULE ======================= */}
+        <Route path="/compliance" element={<ProtectedRoute><ComplianceLayout /></ProtectedRoute>}>
+          <Route index element={<ProtectedRoute><Statutory /></ProtectedRoute>} />
+          <Route path="statutory" element={<ProtectedRoute><Statutory /></ProtectedRoute>} />
+          <Route path="labour" element={<ProtectedRoute><LabourRegister /></ProtectedRoute>} />
+          <Route path="leave" element={<ProtectedRoute><LeaveCompliance /></ProtectedRoute>} />
+          <Route path="nabh" element={<ProtectedRoute><NABHCompliance /></ProtectedRoute>} />
         </Route>
 
         {/* PUBLIC */}

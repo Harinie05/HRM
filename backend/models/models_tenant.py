@@ -1422,5 +1422,94 @@ class TrainingCertificate(MasterBase):
 
     issued_at = Column(DateTime, default=func.now())
 
+# =====================================================
+# COMPLIANCE MODULE
+# =====================================================
+
+# ------------------------------
+# STATUTORY COMPLIANCE (PF / ESI / PT)
+# ------------------------------
+class EmployeeStatutory(MasterBase):
+    __tablename__ = "employee_statutory"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    month = Column(String(20), nullable=False)
+    year = Column(Integer, nullable=False)
+
+    basic_salary = Column(Float, nullable=False)
+
+    pf_employee = Column(Float, default=0.0)
+    pf_employer = Column(Float, default=0.0)
+
+    esi_employee = Column(Float, default=0.0)
+    esi_employer = Column(Float, default=0.0)
+
+    professional_tax = Column(Float, default=0.0)
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# LABOUR LAW REGISTERS
+# ------------------------------
+class LabourLawRegister(MasterBase):
+    __tablename__ = "labour_law_registers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    register_type = Column(String(100), nullable=False)
+    # Muster Roll / Wage Register / OT Register
+
+    month = Column(String(20), nullable=False)
+    year = Column(Integer, nullable=False)
+
+    remarks = Column(Text)
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# LEAVE & WORKING HOURS COMPLIANCE
+# ------------------------------
+class LeaveWorkingCompliance(MasterBase):
+    __tablename__ = "leave_working_compliance"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    total_working_days = Column(Integer, nullable=True)
+    leaves_taken = Column(Integer, nullable=True)
+    overtime_hours = Column(Float, nullable=True)
+
+    compliance_status = Column(String(50), nullable=True)
+    # Compliant / Non-Compliant
+
+    month = Column(String(20), nullable=True)
+    year = Column(Integer, nullable=True)
+
+    created_at = Column(DateTime, default=func.now())
+
+
+# ------------------------------
+# NABH HRM COMPLIANCE (HOSPITAL)
+# ------------------------------
+class NABHHRMCompliance(MasterBase):
+    __tablename__ = "nabh_hrm_compliance"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    staff_qualification_verified = Column(Boolean, default=False)
+    medical_fitness_done = Column(Boolean, default=False)
+    credentialing_done = Column(Boolean, default=False)
+    fire_safety_training_done = Column(Boolean, default=False)
+    performance_monitoring_done = Column(Boolean, default=False)
+
+    remarks = Column(Text)
+    last_audit_date = Column(Date)
+
+    created_at = Column(DateTime, default=func.now())
 
 

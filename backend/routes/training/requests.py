@@ -15,10 +15,12 @@ def create_request(data: dict, db: Session = Depends(get_tenant_db)):
     try:
         # Handle employee_id - extract actual ID from user_ prefix
         employee_id_raw = data.get('employee_id')
-        if str(employee_id_raw).startswith('user_'):
-            employee_id = int(employee_id_raw.replace('user_', ''))
-        else:
+        if employee_id_raw and str(employee_id_raw).startswith('user_'):
+            employee_id = int(str(employee_id_raw).replace('user_', ''))
+        elif employee_id_raw:
             employee_id = int(employee_id_raw)
+        else:
+            raise HTTPException(status_code=400, detail="Employee ID is required")
         
         # Handle training_program_id
         training_program_id = data.get('training_program_id')
@@ -62,13 +64,13 @@ def approve_request(request_id: int, data: dict, db: Session = Depends(get_tenan
         comment = data.get('comment', '')
         
         if action == 'approve':
-            req.status = "HR Approved"
+            setattr(req, 'status', "HR Approved")
         elif action == 'reject':
-            req.status = "Rejected"
+            setattr(req, 'status', "Rejected")
         else:
             raise HTTPException(status_code=400, detail="Invalid action")
         
-        req.approver = comment
+        setattr(req, 'approver', comment)
         db.commit()
         return {"message": f"Request {action}d successfully"}
     except HTTPException:
