@@ -16,6 +16,15 @@ export default function JobApply() {
   });
 
   const [resume, setResume] = useState(null);
+  const [isReferral, setIsReferral] = useState(false);
+  const [referralData, setReferralData] = useState({
+    employee_code: "",
+    employee_name: "",
+    department: "",
+    role: ""
+  });
+  const [referralValidated, setReferralValidated] = useState(false);
+  const [validatingReferral, setValidatingReferral] = useState(false);
   
   // Debug: Log resume state changes
   useEffect(() => {
@@ -37,9 +46,41 @@ export default function JobApply() {
     fetchJob();
   }, []);
 
+  // -------------------- VALIDATE REFERRAL --------------------
+  const validateReferral = async (employeeCode) => {
+    if (!employeeCode.trim()) {
+      setReferralValidated(false);
+      return;
+    }
+
+    setValidatingReferral(true);
+    try {
+      const response = await api.get(`/employee/validate/${employeeCode}`);
+      if (response.data.exists) {
+        setReferralValidated(true);
+      } else {
+        setReferralValidated(false);
+        alert("Employee code not found in EIS system.");
+      }
+    } catch (error) {
+      setReferralValidated(false);
+      alert("Failed to validate employee code.");
+    } finally {
+      setValidatingReferral(false);
+    }
+  };
+
   // -------------------- FIELD UPDATE -------------------------
   const updateField = (key, value) =>
     setForm({ ...form, [key]: value });
+
+  // -------------------- REFERRAL FIELD UPDATE ----------------
+  const updateReferralField = (key, value) => {
+    setReferralData({ ...referralData, [key]: value });
+    if (key === 'employee_code') {
+      setReferralValidated(false);
+    }
+  };
 
   // -------------------- SUBMIT APPLICATION --------------------
   const submitApplication = async () => {
@@ -51,6 +92,12 @@ export default function JobApply() {
       return;
     }
 
+    // Validate referral if checkbox is checked
+    if (isReferral && !referralValidated) {
+      alert("Please provide a valid employee code for referral");
+      return;
+    }
+
     const data = new FormData();
     data.append("name", form.name);
     data.append("email", form.email);
@@ -58,13 +105,25 @@ export default function JobApply() {
     data.append("experience", form.experience);
     data.append("skills", form.skills);
     data.append("resume", resume);
+    
+    // Add referral data if applicable
+    if (isReferral && referralValidated) {
+      data.append("is_referral", "true");
+      data.append("referral_employee_code", referralData.employee_code);
+    }
 
     try {
       await api.post(`/recruitment/public/apply/${jobId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Application submitted successfully!");
+      const successMessage = isReferral && referralValidated
+        ? `Application submitted successfully via employee referral!`
+        : "Application submitted successfully!";
+      
+      alert(successMessage);
+      
+      // Reset form
       setForm({
         name: "",
         email: "",
@@ -73,6 +132,9 @@ export default function JobApply() {
         skills: "",
       });
       setResume(null);
+      setIsReferral(false);
+      setReferralData({ employee_code: "", employee_name: "", department: "", role: "" });
+      setReferralValidated(false);
     } catch (err) {
       console.error("Application failed", err);
       alert("Failed to submit application");
@@ -144,6 +206,69 @@ export default function JobApply() {
             className="border p-2 rounded w-full h-24"
           ></textarea>
 
+          {/* Referral Section */}
+          <div className="border-t pt-4">
+            <div className="flex items-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                id="referral-checkbox"
+                checked={isReferral}
+                onChange={(e) => {
+                  setIsReferral(e.target.checked);
+                  if (!e.target.checked) {
+                    setReferralData({ employee_code: "", employee_name: "", department: "", role: "" });
+                    setReferralValidated(false);
+                  }
+                }}
+                className="w-4 h-4 text-blue-600"
+              />
+              <label htmlFor="referral-checkbox" className="text-sm font-medium text-gray-700">
+                🔗 I was referred by an employee
+              </label>
+            </div>
+
+            {isReferral && (
+              <div className="bg-blue-50 p-4 rounded-lg space-y-3">
+                <h4 className="font-medium text-blue-800">Referral Information</h4>
+                <p className="text-sm text-blue-600">
+                  Please provide the employee code of the person who referred you.
+                </p>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Employee Code *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Enter employee code (e.g., EMP001, 1234)"
+                      value={referralData.employee_code}
+                      onChange={(e) => updateReferralField("employee_code", e.target.value)}
+                      className={`border p-2 rounded w-full ${
+                        referralValidated ? 'border-green-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {validatingReferral && (
+                      <div className="text-sm text-blue-600 mt-1">Validating...</div>
+                    )}
+                    {referralValidated && (
+                      <div className="text-sm text-green-600 mt-1">✓ Valid employee code</div>
+                    )}
+                  </div>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => validateReferral(referralData.employee_code.trim())}
+                  disabled={!referralData.employee_code.trim() || validatingReferral}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                  {validatingReferral ? 'Validating...' : 'Validate Employee'}
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* Resume Upload */}
           <div>
             <label className="block mb-1 text-sm font-medium">
@@ -154,13 +279,8 @@ export default function JobApply() {
               accept=".pdf,.doc,.docx"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                console.log("File input changed:", file);
-                console.log("Files array:", e.target.files);
                 if (file) {
-                  console.log("Setting resume to:", file.name);
                   setResume(file);
-                } else {
-                  console.log("No file selected");
                 }
               }}
               className="border p-2 w-full rounded"

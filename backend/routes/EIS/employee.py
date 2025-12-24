@@ -122,8 +122,30 @@ def get_exit_details(employee_id: int, user=Depends(get_current_user)):
 
 
 # -------------------------------------------------------------------------
-# 4. CONVERT USER TO EMPLOYEE
+# 5. VALIDATE EMPLOYEE CODE
 # -------------------------------------------------------------------------
+@router.get("/validate/{employee_code}")
+def validate_employee_code(employee_code: str, user=Depends(get_current_user)):
+    db = get_tenant_session(user)
+    
+    from models.models_tenant import User, OnboardingCandidate
+    
+    # Check in user management
+    user_exists = db.query(User).filter(
+        User.employee_code == employee_code
+    ).first()
+    
+    # Check in onboarding records
+    onboarding_exists = db.query(OnboardingCandidate).filter(
+        OnboardingCandidate.employee_id == employee_code
+    ).first()
+    
+    exists = user_exists is not None or onboarding_exists is not None
+    
+    return {
+        "exists": exists,
+        "employee_code": employee_code
+    }
 @router.put("/convert-user-to-employee/{user_id}")
 def convert_user_to_employee(
     user_id: int,
