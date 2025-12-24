@@ -181,10 +181,16 @@ export default function SalaryStructure() {
 
   const handleOpenLinkModal = (structure) => {
     setLinkingStructure(structure);
-    // Get currently linked employees from localStorage
-    const existingLinks = JSON.parse(localStorage.getItem('employee_salary_links') || '{}');
-    const linkedEmployeeIds = existingLinks[structure.id] || [];
-    setSelectedEmployees(linkedEmployeeIds);
+    // Get currently linked employees from database
+    const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id.trim()) : [];
+    console.log('Opening link modal - stored employee IDs:', linkedEmployeeIds);
+    console.log('Available employee IDs:', employees.map(emp => emp.id));
+    // Convert stored IDs to match employee ID types
+    const normalizedIds = linkedEmployeeIds.map(id => {
+      const numId = parseInt(id);
+      return isNaN(numId) ? id : numId;
+    });
+    setSelectedEmployees(normalizedIds);
     setShowLinkModal(true);
   };
 
@@ -198,25 +204,16 @@ export default function SalaryStructure() {
     try {
       setLoading(true);
       
-      // For now, store the linking in localStorage until backend endpoint is ready
-      const existingLinks = JSON.parse(localStorage.getItem('employee_salary_links') || '{}');
+      console.log('Linking employees - Selected IDs:', selectedEmployees);
+      console.log('Available employees for reference:', employees.map(emp => ({ id: emp.id, name: emp.name, code: emp.employee_code })));
       
-      // Remove employees from other structures first
-      Object.keys(existingLinks).forEach(structureId => {
-        if (structureId !== linkingStructure.id.toString()) {
-          existingLinks[structureId] = existingLinks[structureId]?.filter(empId => 
-            !selectedEmployees.includes(empId)
-          ) || [];
-        }
+      // Save to database instead of localStorage
+      await api.post(`/api/payroll/salary-structures/${linkingStructure.id}/link-employees`, {
+        employee_ids: selectedEmployees
       });
       
-      // Add employees to current structure
-      existingLinks[linkingStructure.id] = selectedEmployees;
-      
-      localStorage.setItem('employee_salary_links', JSON.stringify(existingLinks));
-      
       alert(`Successfully linked ${selectedEmployees.length} employee(s) to ${linkingStructure.name}`);
-      await fetchEmployees();
+      await fetchStructures();
       handleCloseLinkModal();
     } catch (error) {
       console.error("Error linking employees:", error);
@@ -303,9 +300,10 @@ export default function SalaryStructure() {
                 </tr>
               ) : (
                 filteredStructures.map((structure) => {
-                  // Get linked employees from localStorage
-                  const existingLinks = JSON.parse(localStorage.getItem('employee_salary_links') || '{}');
-                  const linkedEmployeeIds = existingLinks[structure.id] || [];
+                  // Get linked employees from database
+                  const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id) : [];
+                  console.log(`Structure ${structure.name} - Stored IDs:`, linkedEmployeeIds);
+                  console.log('Available employees:', employees.map(emp => ({ id: emp.id, name: emp.name })));
                   const employeeCount = linkedEmployeeIds.length;
                   
                   return (
@@ -479,17 +477,20 @@ export default function SalaryStructure() {
               ) : (
                 employees.map((employee) => {
                   // Check if employee is linked to another structure
-                  const existingLinks = JSON.parse(localStorage.getItem('employee_salary_links') || '{}');
-                  const isLinkedToOther = Object.keys(existingLinks).some(structureId => 
-                    structureId !== linkingStructure.id.toString() && 
-                    existingLinks[structureId]?.includes(employee.id)
+                  const isLinkedToOther = structures.some(s => 
+                    s.id !== linkingStructure.id && 
+                    s.employee_ids && 
+                    s.employee_ids.split(',').includes(employee.id)
                   );
+                  
+                  const isCurrentlySelected = selectedEmployees.includes(employee.id);
+                  console.log(`Employee ${employee.name} (ID: ${employee.id}) - Selected: ${isCurrentlySelected}`);
                   
                   return (
                     <div key={employee.id} className="flex items-center p-3 border rounded-lg hover:bg-gray-50">
                       <input
                         type="checkbox"
-                        checked={selectedEmployees.includes(employee.id)}
+                        checked={isCurrentlySelected}
                         onChange={() => toggleEmployeeSelection(employee.id)}
                         className="mr-3"
                       />
@@ -517,10 +518,16 @@ export default function SalaryStructure() {
               </button>
               <button
                 onClick={handleLinkEmployees}
-                disabled={loading || selectedEmployees.length === 0}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading}
+                className={`flex-1 px-4 py-2 rounded-lg text-white ${
+                  selectedEmployees.length === 0 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-green-600 hover:bg-green-700'
+                }`}
               >
-                {loading ? "Linking..." : `Link ${selectedEmployees.length} Employee(s)`}
+                {loading ? "Linking..." : 
+                 selectedEmployees.length === 0 ? "Select Employees" : 
+                 `Link ${selectedEmployees.length} Employee(s)`}
               </button>
             </div>
           </div>

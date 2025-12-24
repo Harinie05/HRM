@@ -67,6 +67,7 @@ from routes.attendance.regularization import router as attendance_regularization
 from routes.attendance.rules import router as attendance_rules_router
 from routes.attendance.locations import router as attendance_locations_router
 from routes.attendance.reports import router as attendance_reports_router
+from routes.attendance.od_applications import router as od_applications_router
 
 # ======================= 🔥 LEAVE ROUTERS =======================
 from routes.leave.leave_types import router as leave_types_router
@@ -82,6 +83,7 @@ from routes.payroll.payroll_run import router as payroll_run_router
 from routes.payroll.adjustments import router as payroll_adjustments_router
 from routes.payroll.payslip import router as payroll_payslip_router
 from routes.payroll.reports import router as payroll_reports_router
+from routes.payroll.validation import router as payroll_validation_router
 
 # ======================= 🔥 HR OPERATIONS ROUTERS =======================
 from routes.hr.lifecycle import router as hr_lifecycle_router
@@ -240,6 +242,7 @@ app.include_router(attendance_regularization_router, prefix="/api")
 app.include_router(attendance_rules_router, prefix="/api")
 app.include_router(attendance_locations_router, prefix="/api")
 app.include_router(attendance_reports_router, prefix="/api")
+app.include_router(od_applications_router, prefix="/api")
 
 # ======================= 🔥 LEAVE MODULE =======================
 app.include_router(leave_types_router, prefix="/api")
@@ -255,6 +258,7 @@ app.include_router(payroll_run_router, prefix="/api")
 app.include_router(payroll_adjustments_router, prefix="/api")
 app.include_router(payroll_payslip_router, prefix="/api")
 app.include_router(payroll_reports_router, prefix="/api")
+app.include_router(payroll_validation_router, prefix="/api")
 
 # ======================= 🔥 HR OPERATIONS MODULE =======================
 app.include_router(hr_lifecycle_router)

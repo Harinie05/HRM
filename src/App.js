@@ -49,11 +49,11 @@ import ReportingStructure from "./pages/organization/ReportingStructure";
 // Attendance
 import ShiftRoster from "./pages/attendance/ShiftRoster";
 import AttendanceLogs from "./pages/attendance/AttendanceLogs";
-import Regularization from "./pages/attendance/Regularization";
 import AttendanceReports from "./pages/attendance/AttendanceReports";
 import AttendanceRules from "./pages/attendance/AttendanceRules";
 import AttendanceLocations from "./pages/attendance/AttendanceLocations";
 import AttendanceDashboard from "./pages/attendance/AttendanceDashboard";
+import ODApplications from "./pages/attendance/ODApplications";
 
 // Leave Management
 import LeaveLayout from "./pages/leaves/LeaveLayout";
@@ -157,7 +157,6 @@ function App() {
         <Route path="/attendance/dashboard" element={<ProtectedRoute><AttendanceDashboard /></ProtectedRoute>} />
         <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
         <Route path="/attendance/logs" element={<ProtectedRoute><AttendanceLogs /></ProtectedRoute>} />
-        <Route path="/attendance/regularization" element={<ProtectedRoute><Regularization /></ProtectedRoute>} />
         <Route path="/attendance/reports" element={<ProtectedRoute><AttendanceReports /></ProtectedRoute>} />
         <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
         <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />

@@ -51,10 +51,22 @@ const PayrollDashboard = () => {
       const totalEmployees = users.length;
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
       
-      // Use summary data if available, otherwise use your specified values
-      const totalPayroll = summary.total_payroll || 0;
-      const totalDeductions = summary.total_deductions || 0;
-      const netPayable = summary.net_payable || 0;
+      // Use summary data if available, otherwise calculate from payroll runs
+      const totalPayroll = summary.total_payroll || payrollRuns.reduce((sum, run) => sum + (run.gross_salary || 0), 0);
+      const totalDeductions = summary.total_deductions || payrollRuns.reduce((sum, run) => sum + (run.lop_deduction || 0) + (run.basic_salary || 0) * 0.12 + (run.gross_salary || 0) * 0.0175, 0);
+      const netPayable = summary.net_payable || payrollRuns.reduce((sum, run) => sum + (run.net_salary || 0), 0);
+      
+      // Calculate salary components from actual payroll data
+      const totalBasic = payrollRuns.reduce((sum, run) => sum + (run.basic_salary || 0), 0);
+      const totalHRA = payrollRuns.reduce((sum, run) => sum + (run.hra_salary || 0), 0);
+      const totalAllowances = payrollRuns.reduce((sum, run) => sum + (run.allowances || 0), 0);
+      const totalGross = payrollRuns.reduce((sum, run) => sum + (run.gross_salary || 0), 0);
+      
+      // Calculate deduction components
+      const totalPF = payrollRuns.reduce((sum, run) => sum + (run.basic_salary || 0) * 0.12, 0);
+      const totalESI = payrollRuns.reduce((sum, run) => sum + (run.gross_salary || 0) * 0.0175, 0);
+      const totalLOP = payrollRuns.reduce((sum, run) => sum + (run.lop_deduction || 0), 0);
+      const totalTDS = payrollRuns.reduce((sum, run) => sum + (run.gross_salary || 0) * 0.10, 0);
       
       // Calculate department-wise payroll from actual payroll runs
       const departmentPayroll = deptData.map(dept => {
@@ -108,7 +120,20 @@ const PayrollDashboard = () => {
         netPayable: `₹${(netPayable / 10000000).toFixed(1)}Cr`,
         processed,
         pending,
-        onHold
+        onHold,
+        // Add salary component data
+        salaryComponents: {
+          basic: { amount: totalBasic, percentage: totalGross > 0 ? Math.round((totalBasic / totalGross) * 100) : 0 },
+          hra: { amount: totalHRA, percentage: totalGross > 0 ? Math.round((totalHRA / totalGross) * 100) : 0 },
+          allowances: { amount: totalAllowances, percentage: totalGross > 0 ? Math.round((totalAllowances / totalGross) * 100) : 0 },
+          special: { amount: 0, percentage: 0 }
+        },
+        deductionComponents: {
+          pf: { amount: totalPF, percentage: totalDeductions > 0 ? Math.round((totalPF / totalDeductions) * 100) : 0 },
+          esi: { amount: totalESI, percentage: totalDeductions > 0 ? Math.round((totalESI / totalDeductions) * 100) : 0 },
+          lop: { amount: totalLOP, percentage: totalDeductions > 0 ? Math.round((totalLOP / totalDeductions) * 100) : 0 },
+          tds: { amount: totalTDS, percentage: totalDeductions > 0 ? Math.round((totalTDS / totalDeductions) * 100) : 0 }
+        }
       });
       
       setDepartments(departmentPayroll);
@@ -214,19 +239,27 @@ const PayrollDashboard = () => {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Basic Salary</span>
-                  <span className="font-semibold">₹1.2Cr (49%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.salaryComponents?.basic?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.basic?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">HRA</span>
-                  <span className="font-semibold">₹60L (24%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.salaryComponents?.hra?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.hra?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Allowances</span>
-                  <span className="font-semibold">₹40L (16%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.salaryComponents?.allowances?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.allowances?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Special Allowance</span>
-                  <span className="font-semibold">₹25L (11%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.salaryComponents?.special?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.special?.percentage || 0}%)
+                  </span>
                 </div>
               </div>
             </div>
@@ -236,19 +269,27 @@ const PayrollDashboard = () => {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">PF Contribution</span>
-                  <span className="font-semibold">₹18L (40%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.deductionComponents?.pf?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.pf?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">TDS</span>
-                  <span className="font-semibold">₹15L (33%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.deductionComponents?.tds?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.tds?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">ESI</span>
-                  <span className="font-semibold">₹8L (18%)</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.deductionComponents?.esi?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.esi?.percentage || 0}%)
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Professional Tax</span>
-                  <span className="font-semibold">₹4L (9%)</span>
+                  <span className="text-gray-600">LOP Deduction</span>
+                  <span className="font-semibold">
+                    ₹{((payrollData.deductionComponents?.lop?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.lop?.percentage || 0}%)
+                  </span>
                 </div>
               </div>
             </div>

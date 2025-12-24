@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from models.models_tenant import TrainingCertificate, TrainingProgram, User
@@ -7,6 +7,12 @@ from datetime import datetime, timedelta
 import uuid
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from io import BytesIO
 
 router = APIRouter(prefix="/certificates", tags=["Training Certificates"])
 
@@ -98,48 +104,107 @@ def download_certificate(certificate_id: int, db: Session = Depends(get_tenant_d
         
         certificate, program_title, employee_name = certificate_data
         
-        # Generate PDF content (simple HTML template)
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Training Certificate</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; text-align: center; padding: 50px; }}
-                .certificate {{ border: 5px solid #0066cc; padding: 50px; margin: 20px; }}
-                .title {{ font-size: 36px; color: #0066cc; margin-bottom: 30px; }}
-                .content {{ font-size: 18px; line-height: 1.6; }}
-                .signature {{ margin-top: 50px; }}
-            </style>
-        </head>
-        <body>
-            <div class="certificate">
-                <h1 class="title">CERTIFICATE OF COMPLETION</h1>
-                <div class="content">
-                    <p>This is to certify that</p>
-                    <h2>{employee_name or 'Unknown Employee'}</h2>
-                    <p>has successfully completed the training program</p>
-                    <h3>{program_title or 'Unknown Program'}</h3>
-                    <p>with a score of <strong>{certificate.score}%</strong></p>
-                    <p>Certificate Number: <strong>{getattr(certificate, 'certificate_number', f'CERT-{certificate.id:06d}')}</strong></p>
-                    <p>Issued on: <strong>{certificate.issued_at.strftime('%B %d, %Y') if certificate.issued_at else 'N/A'}</strong></p>
-                    {f'<p>Valid until: <strong>{certificate.expiry_date.strftime("%B %d, %Y")}</strong></p>' if getattr(certificate, 'expiry_date', None) else ''}                    
-                </div>
-                <div class="signature">
-                    <p>_________________________</p>
-                    <p>Authorized Signature</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
+        # Generate PDF using ReportLab
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        styles = getSampleStyleSheet()
+        story = []
         
-        from fastapi.responses import Response
+        # Title with certificate styling
+        title_style = ParagraphStyle(
+            'CertificateTitle',
+            parent=styles['Title'],
+            fontSize=24,
+            textColor=colors.blue,
+            alignment=1,  # Center alignment
+            spaceAfter=30
+        )
+        
+        title = Paragraph("CERTIFICATE OF COMPLETION", title_style)
+        story.append(title)
+        story.append(Spacer(1, 20))
+        
+        # Certificate content
+        content_style = ParagraphStyle(
+            'CertificateContent',
+            parent=styles['Normal'],
+            fontSize=14,
+            alignment=1,  # Center alignment
+            spaceAfter=12
+        )
+        
+        name_style = ParagraphStyle(
+            'EmployeeName',
+            parent=styles['Normal'],
+            fontSize=18,
+            textColor=colors.darkblue,
+            alignment=1,
+            spaceAfter=12,
+            fontName='Helvetica-Bold'
+        )
+        
+        program_style = ParagraphStyle(
+            'ProgramTitle',
+            parent=styles['Normal'],
+            fontSize=16,
+            textColor=colors.darkgreen,
+            alignment=1,
+            spaceAfter=12,
+            fontName='Helvetica-Bold'
+        )
+        
+        # Certificate content
+        story.append(Paragraph("This is to certify that", content_style))
+        story.append(Paragraph(employee_name or 'Unknown Employee', name_style))
+        story.append(Paragraph("has successfully completed the training program", content_style))
+        story.append(Paragraph(program_title or 'Unknown Program', program_style))
+        story.append(Paragraph(f"with a score of <b>{certificate.score}%</b>", content_style))
+        
+        story.append(Spacer(1, 20))
+        
+        # Certificate details
+        details_style = ParagraphStyle(
+            'CertificateDetails',
+            parent=styles['Normal'],
+            fontSize=12,
+            alignment=1,
+            spaceAfter=8
+        )
+        
+        cert_number = getattr(certificate, 'certificate_number', f'CERT-{certificate.id:06d}')
+        story.append(Paragraph(f"Certificate Number: <b>{cert_number}</b>", details_style))
+        
+        issued_date = certificate.issued_at.strftime('%B %d, %Y') if certificate.issued_at else 'N/A'
+        story.append(Paragraph(f"Issued on: <b>{issued_date}</b>", details_style))
+        
+        if getattr(certificate, 'expiry_date', None):
+            expiry_date = certificate.expiry_date.strftime('%B %d, %Y')
+            story.append(Paragraph(f"Valid until: <b>{expiry_date}</b>", details_style))
+        
+        story.append(Spacer(1, 40))
+        
+        # Signature section
+        signature_style = ParagraphStyle(
+            'Signature',
+            parent=styles['Normal'],
+            fontSize=12,
+            alignment=1,
+            spaceAfter=8
+        )
+        
+        story.append(Paragraph("_________________________", signature_style))
+        story.append(Paragraph("Authorized Signature", signature_style))
+        
+        # Build PDF
+        doc.build(story)
+        buffer.seek(0)
+        
+        filename = f"certificate_{certificate_id}.pdf"
+        
         return Response(
-            content=html_content,
-            media_type="text/html",
-            headers={"Content-Disposition": f"attachment; filename=certificate_{certificate_id}.html"}
+            content=buffer.getvalue(),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
         
     except HTTPException:

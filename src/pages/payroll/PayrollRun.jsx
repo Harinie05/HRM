@@ -5,6 +5,7 @@ import api from "../../api";
 export default function PayrollRun() {
   const [runs, setRuns] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [structures, setStructures] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [showRunModal, setShowRunModal] = useState(false);
@@ -15,11 +16,25 @@ export default function PayrollRun() {
     month: "",
     year: new Date().getFullYear()
   });
+  const [validationResult, setValidationResult] = useState(null);
+  const [showValidationModal, setShowValidationModal] = useState(false);
+  const [validationChecked, setValidationChecked] = useState(false);
 
   useEffect(() => {
     fetchRuns();
     fetchEmployees();
+    fetchStructures();
   }, []);
+
+  const fetchStructures = async () => {
+    try {
+      const res = await api.get("/api/payroll/salary-structures");
+      setStructures(res.data || []);
+    } catch (error) {
+      console.error("Error fetching salary structures:", error);
+      setStructures([]);
+    }
+  };
 
   const fetchRuns = async () => {
     try {
@@ -94,41 +109,98 @@ export default function PayrollRun() {
     }
   };
 
+  const checkPayrollValidation = async (month, year) => {
+    try {
+      const monthMap = {
+        'January': 1, 'February': 2, 'March': 3, 'April': 4,
+        'May': 5, 'June': 6, 'July': 7, 'August': 8,
+        'September': 9, 'October': 10, 'November': 11, 'December': 12
+      };
+      const monthNum = monthMap[month];
+      
+      const response = await api.post(`/api/payroll/validation/check/${monthNum}/${year}`);
+      return response.data;
+    } catch (error) {
+      console.error('Validation check failed:', error);
+      throw error;
+    }
+  };
+
   const handleRunPayroll = async (e) => {
     e.preventDefault();
+    
+    if (!runData.month || !runData.year) {
+      alert('Please select month and year');
+      return;
+    }
+    
     try {
       setLoading(true);
       
-      const activeEmployees = employees.filter(emp => emp.status === 'Active' || !emp.status);
+      // First check validation
+      const validation = await checkPayrollValidation(runData.month, runData.year);
       
-      if (activeEmployees.length === 0) {
-        alert('No active employees found to process payroll.');
+      if (!validation.can_run_payroll && !runData.force_run) {
+        setValidationResult(validation);
+        setShowValidationModal(true);
+        setLoading(false);
         return;
       }
       
-      // Get salary structure links from localStorage
-      const salaryLinks = JSON.parse(localStorage.getItem('employee_salary_links') || '{}');
+      // If validation passes, proceed with payroll
       
-      console.log('Active employees:', activeEmployees.map(e => ({ id: e.id, name: e.name, employee_code: e.employee_code })));
-      console.log('Salary links:', salaryLinks);
+      const employeesWithSalary = employees.filter(employee => {
+        // Check if employee is linked to any salary structure in database
+        const linkedStructure = structures.find(structure => {
+          if (!structure.employee_ids) return false;
+          const storedIds = structure.employee_ids.split(',').filter(id => id.trim());
+          // Convert stored IDs to match employee ID types
+          const normalizedIds = storedIds.map(id => {
+            const numId = parseInt(id);
+            return isNaN(numId) ? id : numId;
+          });
+          return normalizedIds.includes(employee.id);
+        });
+        return linkedStructure;
+      });
       
-      const payrollPromises = activeEmployees.map(async (employee) => {
+      if (employeesWithSalary.length === 0) {
+        alert('No employees with salary structures found to process payroll.');
+        return;
+      }
+      
+      console.log('Employees with salary structures:', employeesWithSalary.map(e => ({ id: e.id, name: e.name, employee_code: e.employee_code })));
+      
+      const payrollPromises = employeesWithSalary.map(async (employee) => {
         try {
-          // Find employee's salary structure
-          const linkedStructureId = Object.keys(salaryLinks).find(structureId => 
-            salaryLinks[structureId]?.includes(employee.id)
-          );
+          console.log(`\n=== Processing Employee: ${employee.name} ===`);
+          console.log(`Employee data:`, {
+            id: employee.id,
+            original_user_id: employee.original_user_id,
+            employee_code: employee.employee_code,
+            name: employee.name
+          });
           
-          console.log(`Employee ${employee.name} (ID: ${employee.id}) - Linked structure: ${linkedStructureId}`);
+          // Find employee's salary structure from database
+          const linkedStructure = structures.find(structure => {
+            if (!structure.employee_ids) return false;
+            const storedIds = structure.employee_ids.split(',').filter(id => id.trim());
+            // Convert stored IDs to match employee ID types
+            const normalizedIds = storedIds.map(id => {
+              const numId = parseInt(id);
+              return isNaN(numId) ? id : numId;
+            });
+            return normalizedIds.includes(employee.id);
+          });
           
-          if (!linkedStructureId) {
-            console.warn(`No salary structure linked for employee ${employee.name}`);
+          if (!linkedStructure) {
+            console.warn(`❌ No salary structure linked for employee ${employee.name}`);
             return null;
           }
           
-          // Get salary structure details
-          const structureRes = await api.get(`/api/payroll/salary-structures/${linkedStructureId}`);
-          const salaryStructure = structureRes.data;
+          console.log(`✅ Found salary structure ${linkedStructure.id} for ${employee.name}`);
+          
+          const salaryStructure = linkedStructure;
           
           // Calculate attendance data
           const attendanceRes = await api.get(`/api/attendance/punches/`, {
@@ -243,7 +315,20 @@ export default function PayrollRun() {
       alert(`Payroll processed successfully for ${validResults.length} employees!`);
     } catch (error) {
       console.error("Error running payroll:", error);
-      alert('Failed to process payroll. Please try again.');
+      
+      // Check if it's a validation error
+      if (error.response?.status === 400 && error.response?.data?.detail?.validation_required) {
+        const validationError = error.response.data.detail;
+        setValidationResult({
+          can_run_payroll: false,
+          total_issues: validationError.total_issues,
+          critical_issues: validationError.critical_issues,
+          issues: validationError.issues || []
+        });
+        setShowValidationModal(true);
+      } else {
+        alert('Failed to process payroll. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -257,12 +342,12 @@ export default function PayrollRun() {
   };
 
   const handleDownloadPayslip = (run) => {
-    // Use the new HTML payslip download endpoint
+    // Use the PDF payslip download endpoint
     const downloadUrl = `${api.defaults.baseURL}/api/payroll/payslip/${run.id}/download`;
     
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.download = `payslip_${run.employee_code}_${run.month}_${run.year}.html`;
+    link.download = `payslip_${run.employee_code}_${run.month}_${run.year}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -292,7 +377,27 @@ export default function PayrollRun() {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const activeEmployeesCount = employees.filter(e => e.status === 'Active' || !e.status).length;
+  // Get employees with salary structures from database
+  console.log('Structures:', structures);
+  console.log('All employees:', employees.map(e => ({ id: e.id, original_user_id: e.original_user_id, name: e.name, employee_code: e.employee_code })));
+  
+  const employeesWithSalary = employees.filter(employee => {
+    // Check if employee is linked to any salary structure in database
+    const linkedStructure = structures.find(structure => {
+      if (!structure.employee_ids) return false;
+      const storedIds = structure.employee_ids.split(',').filter(id => id.trim());
+      // Convert stored IDs to match employee ID types
+      const normalizedIds = storedIds.map(id => {
+        const numId = parseInt(id);
+        return isNaN(numId) ? id : numId;
+      });
+      return normalizedIds.includes(employee.id);
+    });
+    return linkedStructure;
+  });
+  
+  console.log('Employees with salary structures:', employeesWithSalary.map(e => ({ id: e.id, name: e.name })));
+  const activeEmployeesCount = employeesWithSalary.length;
   const completedRunsCount = runs.filter(r => r.status === 'Completed').length;
   const thisMonthCount = runs.filter(r => r.month === months[new Date().getMonth()]).length;
   const totalRunsCount = runs.length;
@@ -560,10 +665,159 @@ export default function PayrollRun() {
         </div>
       )}
 
+      {/* Validation Issues Modal */}
+      {showValidationModal && validationResult && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className={`text-lg font-semibold ${
+                validationResult.critical_issues > 0 
+                  ? 'text-red-600' 
+                  : 'text-yellow-600'
+              }`}>
+                {validationResult.critical_issues > 0 
+                  ? '❌ Cannot Run Payroll' 
+                  : '⚠️ Payroll Validation Results'
+                }
+              </h3>
+              <button 
+                onClick={() => setShowValidationModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Summary */}
+              <div className={`border rounded-lg p-4 ${
+                validationResult.critical_issues > 0 
+                  ? 'bg-red-50 border-red-200' 
+                  : 'bg-yellow-50 border-yellow-200'
+              }`}>
+                <h4 className={`font-medium mb-2 ${
+                  validationResult.critical_issues > 0 
+                    ? 'text-red-800' 
+                    : 'text-yellow-800'
+                }`}>
+                  {validationResult.critical_issues > 0 
+                    ? 'Critical Issues Found' 
+                    : 'Validation Warnings'
+                  }
+                </h4>
+                <div className={`text-sm ${
+                  validationResult.critical_issues > 0 
+                    ? 'text-red-700' 
+                    : 'text-yellow-700'
+                }`}>
+                  {validationResult.critical_issues > 0 && (
+                    <>
+                      <p><strong>Critical Issues:</strong> {validationResult.critical_issues}</p>
+                      <p className="mt-2">Please resolve all critical issues before running payroll.</p>
+                    </>
+                  )}
+                  {validationResult.warning_issues > 0 && (
+                    <p><strong>Warnings:</strong> {validationResult.warning_issues} (absent days will result in LOP deductions)</p>
+                  )}
+                  <p><strong>Total Issues:</strong> {validationResult.total_issues}</p>
+                </div>
+              </div>
+
+              {/* Issues List */}
+              {validationResult.issues && validationResult.issues.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-4">Issues Details:</h4>
+                  
+                  {/* Critical Issues */}
+                  {validationResult.issues.filter(issue => issue.severity === 'critical').length > 0 && (
+                    <div className="mb-6">
+                      <h5 className="font-medium text-red-800 mb-3">🚨 Critical Issues (Must be resolved):</h5>
+                      <div className="space-y-3">
+                        {validationResult.issues
+                          .filter(issue => issue.severity === 'critical')
+                          .map((issue, index) => (
+                          <div key={index} className="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="font-medium text-gray-900">
+                                  {issue.employee_name} ({issue.employee_id})
+                                </div>
+                                <div className="text-sm mt-1 text-red-700">
+                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
+                                </div>
+                                <div className="text-xs text-gray-600 mt-2">
+                                  <strong>Action Required:</strong> {issue.action_required}
+                                </div>
+                              </div>
+                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                CRITICAL
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Warning Issues */}
+                  {validationResult.issues.filter(issue => issue.severity === 'warning').length > 0 && (
+                    <div>
+                      <h5 className="font-medium text-yellow-800 mb-3">⚠️ Warnings (Payroll can run with LOP deductions):</h5>
+                      <div className="space-y-3">
+                        {validationResult.issues
+                          .filter(issue => issue.severity === 'warning')
+                          .map((issue, index) => (
+                          <div key={index} className="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-r-lg">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="font-medium text-gray-900">
+                                  {issue.employee_name} ({issue.employee_id})
+                                </div>
+                                <div className="text-sm mt-1 text-yellow-700">
+                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
+                                </div>
+                                <div className="text-xs text-gray-600 mt-2">
+                                  <strong>Action Required:</strong> {issue.action_required}
+                                </div>
+                              </div>
+                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                WARNING
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={() => setShowValidationModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowValidationModal(false);
+                  // Optionally navigate to relevant sections to fix issues
+                }}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Go Fix Issues
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Run Payroll Modal */}
       {showRunModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Run Payroll</h3>
             <form onSubmit={handleRunPayroll} className="space-y-4">
               <div>
@@ -590,6 +844,92 @@ export default function PayrollRun() {
                   required
                 />
               </div>
+              
+              {/* Validation Check Button */}
+              {runData.month && runData.year && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const validation = await checkPayrollValidation(runData.month, runData.year);
+                        setValidationResult(validation);
+                        setValidationChecked(true);
+                      } catch (error) {
+                        alert('🔴 Validation check failed. Please try again.');
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                  >
+                    🔍 Check Validation First
+                  </button>
+                  <p className="text-xs text-blue-600 mt-1 text-center">
+                    Recommended: Check for issues before running payroll
+                  </p>
+                </div>
+              )}
+              
+              {/* Validation Results */}
+              {validationChecked && validationResult && (
+                <div className="mt-4">
+                  {validationResult.can_run_payroll ? (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center">
+                        <span className="text-green-600 text-xl mr-2">✅</span>
+                        <div>
+                          <h4 className="font-medium text-green-800">Validation Passed!</h4>
+                          <p className="text-sm text-green-700">No critical issues found. You can run payroll safely.</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <div className="flex items-start">
+                        <span className="text-red-600 text-xl mr-2">❌</span>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-red-800">Cannot Run Payroll</h4>
+                          <p className="text-sm text-red-700 mb-3">
+                            Found {validationResult.critical_issues} critical issues that must be resolved.
+                          </p>
+                          
+                          {/* Critical Issues Only */}
+                          <div className="space-y-2">
+                            {validationResult.issues
+                              .filter(issue => issue.severity === 'critical')
+                              .map((issue, index) => (
+                              <div key={index} className="bg-white border border-red-200 rounded p-2 text-xs">
+                                <div className="font-medium text-red-800">
+                                  {issue.employee_name} ({issue.employee_id})
+                                </div>
+                                <div className="text-red-700">
+                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Show warning count if any - only if critical issues exist */}
+                          {validationResult.critical_issues > 0 && validationResult.warning_issues > 0 && (
+                            <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
+                              <div className="text-yellow-700">
+                                <strong>Note:</strong> {validationResult.warning_issues} absent days (LOP deductions)
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Validation Scenarios Info */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <h5 className="font-medium text-gray-800 mb-2">📋 Checks:</h5>
+                <div className="text-xs text-gray-600 space-y-1">
+                  <div>• Pending approvals • Missing punches • Absent days</div>
+                </div>
+              </div>
               <div className="flex gap-4 pt-4">
                 <button
                   type="button"
@@ -600,8 +940,12 @@ export default function PayrollRun() {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading || (validationChecked && validationResult && !validationResult.can_run_payroll)}
+                  className={`flex-1 px-4 py-2 rounded-lg ${
+                    loading || (validationChecked && validationResult && !validationResult.can_run_payroll)
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-green-600 hover:bg-green-700'
+                  } text-white`}
                 >
                   {loading ? "Processing..." : "Run Payroll"}
                 </button>

@@ -11,11 +11,25 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from io import BytesIO
+from .validation import validate_payroll_readiness
 
 router = APIRouter(
     prefix="/payroll",
     tags=["Payroll - Payroll Run"]
 )
+
+@router.post("/validate/{month}/{year}")
+def validate_before_payroll_run(
+    month: int,
+    year: int,
+    db: Session = Depends(get_tenant_db)
+):
+    """Validate payroll readiness before running payroll"""
+    try:
+        validation_result = validate_payroll_readiness(month, year, db)
+        return validation_result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")
 
 @router.post("/runs")
 async def create_payroll_run(
@@ -26,6 +40,72 @@ async def create_payroll_run(
         data = await request.json()
         print(f"Raw payroll data: {data}")
         
+        # Extract month and year for validation
+        month_name = data.get('month', '')
+        year = int(data.get('year', 0))
+        # Convert month name to number for validation
+        month_map = {
+            'January': 1, 'February': 2, 'March': 3, 'April': 4,
+            'May': 5, 'June': 6, 'July': 7, 'August': 8,
+            'September': 9, 'October': 10, 'November': 11, 'December': 12
+        }
+        month_num = month_map.get(month_name, datetime.now().month)
+        
+        # Validate payroll readiness before processing
+        validation_result = validate_payroll_readiness(month_num, year, db)
+        
+        if not validation_result.can_run_payroll:
+            critical_issues = [issue for issue in validation_result.issues if issue.severity == "critical"]
+            warning_issues = [issue for issue in validation_result.issues if issue.severity == "warning"]
+            
+            issue_summary = "; ".join([f"{issue.employee_name}: {issue.issue_description}" for issue in critical_issues[:3]])
+            if len(critical_issues) > 3:
+                issue_summary += f" and {len(critical_issues) - 3} more critical issues"
+            
+            # Add warning summary if there are warnings
+            if warning_issues:
+                if issue_summary:
+                    issue_summary += f"; {len(warning_issues)} absent days (warnings)"
+                else:
+                    issue_summary = f"{len(warning_issues)} absent days (warnings)"
+            
+            # Create proper error message based on issue types
+            if validation_result.critical_issues > 0:
+                error_message = f"Cannot run payroll due to {validation_result.critical_issues} critical issues that must be resolved."
+            else:
+                error_message = f"Payroll validation completed with {validation_result.warning_issues} warnings (absent days will result in LOP deductions)."
+            
+            raise HTTPException(
+                status_code=400, 
+                detail={
+                    "message": error_message,
+                    "critical_issues": validation_result.critical_issues,
+                    "warning_issues": validation_result.warning_issues,
+                    "total_issues": validation_result.total_issues,
+                    "summary": issue_summary,
+                    "validation_required": True,
+                    "issues": [{
+                        "employee_id": issue.employee_id,
+                        "employee_name": issue.employee_name,
+                        "issue_type": issue.issue_type,
+                        "issue_description": issue.issue_description,
+                        "severity": issue.severity,
+                        "action_required": issue.action_required
+                    } for issue in validation_result.issues]
+                }
+            )
+        
+        # If validation passes, proceed with payroll creation
+        return await create_payroll_run_internal(data, request, db)
+        
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating payroll run: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def create_payroll_run_internal(data: dict, request: Request, db: Session):
+    """Internal function to handle payroll creation logic"""
+    try:
         create_table_query = text("""
             CREATE TABLE IF NOT EXISTS payroll_runs (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,6 +117,7 @@ async def create_payroll_run(
                 present_days INT DEFAULT 0,
                 leave_days INT DEFAULT 0,
                 lop_days INT DEFAULT 0,
+                ot_hours FLOAT DEFAULT 0,
                 basic_salary DECIMAL(15,2) DEFAULT 0,
                 hra_salary DECIMAL(15,2) DEFAULT 0,
                 allowances DECIMAL(15,2) DEFAULT 0,
@@ -100,7 +181,7 @@ async def create_payroll_run(
             })
             
             # Audit log for update
-            audit_crud(request, "nutryah", {"id": 1}, "UPDATE_PAYROLL_RUN", "payroll_runs", str(existing.id), None, data)
+            audit_crud(request, "nutryah", {"id": 1}, "UPDATE_PAYROLL_RUN", "payroll_runs", str(existing.id), {}, data)
             
             message = "Payroll run updated successfully"
         else:
@@ -135,8 +216,21 @@ async def create_payroll_run(
                 "status": str(data.get('status', 'Completed'))
             })
             
+            # Get the inserted ID using a separate query
+            id_query = text("""
+                SELECT id FROM payroll_runs 
+                WHERE employee_id = :employee_id AND month = :month AND year = :year
+            """)
+            inserted_record = db.execute(id_query, {
+                "employee_id": str(data.get('employee_id', '')),
+                "month": str(data.get('month', '')),
+                "year": int(data.get('year', 0))
+            }).fetchone()
+            
+            record_id = str(inserted_record.id) if inserted_record else "unknown"
+            
             # Audit log for create
-            audit_crud(request, "nutryah", {"id": 1}, "CREATE_PAYROLL_RUN", "payroll_runs", str(result.lastrowid), None, data)
+            audit_crud(request, "nutryah", {"id": 1}, "CREATE_PAYROLL_RUN", "payroll_runs", record_id, {}, data)
             
             message = "Payroll run created successfully"
         
@@ -144,8 +238,9 @@ async def create_payroll_run(
         return {"message": message}
     except Exception as e:
         db.rollback()
-        print(f"Error creating payroll run: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
+
+
 
 @router.get("/runs")
 def get_payroll_runs(
@@ -163,6 +258,7 @@ def get_payroll_runs(
                 present_days INT DEFAULT 0,
                 leave_days INT DEFAULT 0,
                 lop_days INT DEFAULT 0,
+                ot_hours FLOAT DEFAULT 0,
                 basic_salary DECIMAL(15,2) DEFAULT 0,
                 hra_salary DECIMAL(15,2) DEFAULT 0,
                 allowances DECIMAL(15,2) DEFAULT 0,
@@ -247,20 +343,15 @@ def download_payslip(
         # Calculate adjustment totals
         total_additions = 0
         total_adjustment_deductions = 0
-        earnings_adjustments = ""
-        deduction_adjustments = ""
         
         for adj in adjustments:
             adj_type = adj.adjustment_type
             adj_amount = float(adj.amount) if adj.amount else 0
-            adj_desc = adj.description or ""
             
             if adj_type == "Deduction":
                 total_adjustment_deductions += adj_amount
-                deduction_adjustments += f"<tr><td>{adj_type} - {adj_desc}</td><td>Rs.{adj_amount:,.2f}</td></tr>"
             else:
                 total_additions += adj_amount
-                earnings_adjustments += f"<tr><td>{adj_type} - {adj_desc}</td><td>Rs.{adj_amount:,.2f}</td></tr>"
         
         # Calculate statutory deductions
         pf_deduction = basic_salary * 0.12
@@ -269,89 +360,139 @@ def download_payslip(
         # Calculate final totals
         total_earnings = gross_salary + total_additions
         total_deductions = lop_deduction + pf_deduction + esi_deduction + total_adjustment_deductions
-        # Use stored net salary and adjust for new adjustments
         final_net_salary = net_salary + total_additions - total_adjustment_deductions
         
-        html_content = f"""<!DOCTYPE html>
-<html>
-<head>
-    <title>Payslip - {result.employee_name}</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-        .header {{ text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }}
-        .section {{ margin: 20px 0; }}
-        .earnings, .deductions {{ width: 48%; display: inline-block; vertical-align: top; }}
-        table {{ width: 100%; border-collapse: collapse; margin: 10px 0; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-        th {{ background-color: #f2f2f2; }}
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>SALARY SLIP</h1>
-        <h2>{result.month} {result.year}</h2>
-    </div>
-    
-    <div class="section">
-        <h3>Employee Information</h3>
-        <table>
-            <tr><td><strong>Name:</strong></td><td>{result.employee_name}</td></tr>
-            <tr><td><strong>Employee Code:</strong></td><td>{result.employee_code}</td></tr>
-            <tr><td><strong>Month:</strong></td><td>{result.month} {result.year}</td></tr>
-        </table>
-    </div>
-    
-    <div class="section">
-        <h3>Attendance Summary</h3>
-        <table>
-            <tr><td><strong>Present Days:</strong></td><td>{result.present_days}</td></tr>
-            <tr><td><strong>Leave Days:</strong></td><td>{result.leave_days}</td></tr>
-            <tr><td><strong>LOP Days:</strong></td><td>{result.lop_days}</td></tr>
-        </table>
-    </div>
-    
-    <div class="section">
-        <div class="earnings">
-            <h3>Earnings</h3>
-            <table>
-                <tr><td>Basic Salary</td><td>Rs.{basic_salary:,.2f}</td></tr>
-                <tr><td>HRA</td><td>Rs.{hra_salary:,.2f}</td></tr>
-                <tr><td>Allowances</td><td>Rs.{allowances:,.2f}</td></tr>
-                {earnings_adjustments}
-                <tr><td><strong>Gross Salary</strong></td><td><strong>Rs.{total_earnings:,.2f}</strong></td></tr>
-            </table>
-        </div>
+        # Generate PDF using ReportLab
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        styles = getSampleStyleSheet()
+        story = []
         
-        <div class="deductions">
-            <h3>Deductions</h3>
-            <table>
-                <tr><td>LOP Deduction</td><td>Rs.{lop_deduction:,.2f}</td></tr>
-                <tr><td>PF (12%)</td><td>Rs.{pf_deduction:,.2f}</td></tr>
-                <tr><td>ESI (1.75%)</td><td>Rs.{esi_deduction:,.2f}</td></tr>
-                {deduction_adjustments}
-                <tr><td><strong>Total Deductions</strong></td><td><strong>Rs.{total_deductions:,.2f}</strong></td></tr>
-            </table>
-        </div>
-    </div>
-    
-    <div style="text-align: center; margin-top: 30px;">
-        <h2 style="color: #16a34a; border: 2px solid #16a34a; padding: 15px; display: inline-block;">
-            NET SALARY: Rs.{final_net_salary:,.2f}
-        </h2>
-    </div>
-    
-    <div style="margin-top: 40px; text-align: center; color: #666; font-size: 12px;">
-        Generated on: {result.created_at}<br>
-        This is a computer-generated payslip and does not require a signature.
-    </div>
-</body>
-</html>"""
+        # Title
+        title = Paragraph("SALARY SLIP", styles['Title'])
+        subtitle = Paragraph(f"{result.month} {result.year}", styles['Heading2'])
+        story.extend([title, subtitle, Spacer(1, 12)])
         
-        filename = f"payslip_{result.employee_code}_{result.month}_{result.year}.html"
+        # Employee Information
+        emp_info = Paragraph("<b>Employee Information</b>", styles['Heading3'])
+        story.append(emp_info)
+        
+        emp_data = [
+            ['Name:', result.employee_name],
+            ['Employee Code:', result.employee_code],
+            ['Month:', f"{result.month} {result.year}"]
+        ]
+        
+        emp_table = Table(emp_data, colWidths=[2*inch, 4*inch])
+        emp_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.extend([emp_table, Spacer(1, 12)])
+        
+        # Attendance Summary
+        att_info = Paragraph("<b>Attendance Summary</b>", styles['Heading3'])
+        story.append(att_info)
+        
+        att_data = [
+            ['Present Days:', str(result.present_days)],
+            ['Leave Days:', str(result.leave_days)],
+            ['LOP Days:', str(result.lop_days)]
+        ]
+        
+        att_table = Table(att_data, colWidths=[2*inch, 4*inch])
+        att_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.extend([att_table, Spacer(1, 12)])
+        
+        # Earnings and Deductions Table
+        earnings_deductions = Paragraph("<b>Salary Breakdown</b>", styles['Heading3'])
+        story.append(earnings_deductions)
+        
+        # Create side-by-side earnings and deductions
+        salary_data = [
+            ['EARNINGS', '', 'DEDUCTIONS', ''],
+            ['Basic Salary', f'Rs.{basic_salary:,.2f}', 'LOP Deduction', f'Rs.{lop_deduction:,.2f}'],
+            ['HRA', f'Rs.{hra_salary:,.2f}', 'PF (12%)', f'Rs.{pf_deduction:,.2f}'],
+            ['Allowances', f'Rs.{allowances:,.2f}', 'ESI (1.75%)', f'Rs.{esi_deduction:,.2f}'],
+        ]
+        
+        # Add adjustments if any
+        for adj in adjustments:
+            adj_amount = float(adj.amount) if adj.amount else 0
+            adj_desc = adj.description or ""
+            if adj.adjustment_type == "Deduction":
+                salary_data.append(['', '', f'{adj.adjustment_type} - {adj_desc}', f'Rs.{adj_amount:,.2f}'])
+            else:
+                salary_data.append([f'{adj.adjustment_type} - {adj_desc}', f'Rs.{adj_amount:,.2f}', '', ''])
+        
+        # Add totals
+        salary_data.extend([
+            ['', '', '', ''],
+            ['GROSS SALARY', f'Rs.{total_earnings:,.2f}', 'TOTAL DEDUCTIONS', f'Rs.{total_deductions:,.2f}']
+        ])
+        
+        salary_table = Table(salary_data, colWidths=[2.5*inch, 1.5*inch, 2.5*inch, 1.5*inch])
+        salary_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (1, 0), colors.grey),
+            ('BACKGROUND', (2, 0), (3, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (3, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('ALIGN', (3, 0), (3, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BACKGROUND', (0, -1), (-1, -1), colors.lightgrey),
+        ]))
+        story.extend([salary_table, Spacer(1, 20)])
+        
+        # Net Salary
+        net_salary_para = Paragraph(
+            f"<b>NET SALARY: Rs.{final_net_salary:,.2f}</b>",
+            ParagraphStyle(
+                'NetSalary',
+                parent=styles['Normal'],
+                fontSize=16,
+                textColor=colors.green,
+                alignment=1,  # Center alignment
+                borderWidth=2,
+                borderColor=colors.green,
+                borderPadding=10
+            )
+        )
+        story.append(net_salary_para)
+        
+        # Footer
+        story.append(Spacer(1, 30))
+        footer = Paragraph(
+            f"Generated on: {result.created_at}<br/>This is a computer-generated payslip and does not require a signature.",
+            ParagraphStyle(
+                'Footer',
+                parent=styles['Normal'],
+                fontSize=8,
+                textColor=colors.grey,
+                alignment=1  # Center alignment
+            )
+        )
+        story.append(footer)
+        
+        doc.build(story)
+        buffer.seek(0)
+        
+        filename = f"payslip_{result.employee_code}_{result.month}_{result.year}.pdf"
         
         return Response(
-            content=html_content,
-            media_type="text/html",
+            content=buffer.getvalue(),
+            media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
         

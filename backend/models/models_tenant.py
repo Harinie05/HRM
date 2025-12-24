@@ -832,6 +832,23 @@ class AttendanceRegularization(MasterBase):
 
 
 # =====================================================
+# OD APPLICATIONS
+# =====================================================
+class ODApplication(MasterBase):
+    __tablename__ = "od_applications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    od_date = Column(Date, nullable=False)
+    purpose = Column(String(500), nullable=False)
+    from_time = Column(String(10), default="09:00")
+    to_time = Column(String(10), default="18:00")
+    location = Column(String(200), nullable=True)
+    status = Column(String(50), default="pending")  # pending/approved/rejected
+    created_at = Column(DateTime, server_default=func.now())
+
+
+# =====================================================
 # ATTENDANCE RULES (Late / Early / OT)
 # =====================================================
 class AttendanceRule(MasterBase):

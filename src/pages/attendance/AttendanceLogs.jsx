@@ -33,12 +33,22 @@ export default function AttendanceLogs() {
     employeeId: ''
   });
   const [reportData, setReportData] = useState([]);
+  const [odApplications, setOdApplications] = useState([]);
+  const [odForm, setOdForm] = useState({
+    employee_id: "",
+    od_date: "",
+    purpose: "",
+    from_time: "",
+    to_time: "",
+    location: ""
+  });
 
   useEffect(() => {
     fetchEmployees();
     fetchLogs();
     fetchOfficeLocations();
     fetchRegularizationRequests();
+    fetchOdApplications();
     checkTodayStatus();
   }, []);
 
@@ -415,6 +425,73 @@ export default function AttendanceLogs() {
     }
   };
 
+  const fetchOdApplications = async () => {
+    try {
+      const res = await api.get('/api/attendance/od-applications/');
+      const applications = res.data.map(app => {
+        const employee = employees.find(e => e.id == app.employee_id || `user_${e.original_user_id}` == `user_${app.employee_id}`);
+        return {
+          ...app,
+          employee: employee ? `${employee.employee_code} - ${employee.name}` : `Employee ${app.employee_id}`
+        };
+      });
+      setOdApplications(applications);
+    } catch (err) {
+      console.error('Failed to fetch OD applications:', err);
+    }
+  };
+
+  const handleOdSubmit = async () => {
+    if (!odForm.employee_id || !odForm.od_date || !odForm.purpose.trim()) {
+      alert('Please fill all required fields');
+      return;
+    }
+    
+    try {
+      const actualEmployeeId = odForm.employee_id.startsWith('user_') 
+        ? parseInt(odForm.employee_id.replace('user_', '')) 
+        : parseInt(odForm.employee_id);
+      
+      await api.post('/api/attendance/od-applications/', {
+        employee_id: actualEmployeeId,
+        od_date: odForm.od_date,
+        purpose: odForm.purpose,
+        from_time: odForm.from_time,
+        to_time: odForm.to_time,
+        location: odForm.location
+      });
+      
+      setOdForm({ employee_id: "", od_date: "", purpose: "", from_time: "", to_time: "", location: "" });
+      fetchOdApplications();
+      alert('OD application submitted successfully!');
+    } catch (err) {
+      console.error('Failed to submit OD application:', err);
+      alert('Failed to submit application. Please try again.');
+    }
+  };
+
+  const handleOdApprove = async (id) => {
+    try {
+      await api.patch(`/api/attendance/od-applications/${id}/approve`);
+      fetchOdApplications();
+      alert('OD application approved successfully!');
+    } catch (err) {
+      console.error('Failed to approve OD application:', err);
+      alert('Failed to approve application.');
+    }
+  };
+
+  const handleOdReject = async (id) => {
+    try {
+      await api.patch(`/api/attendance/od-applications/${id}/reject`);
+      fetchOdApplications();
+      alert('OD application rejected!');
+    } catch (err) {
+      console.error('Failed to reject OD application:', err);
+      alert('Failed to reject application.');
+    }
+  };
+
   useEffect(() => {
     checkTodayStatus();
   }, [logs, selectedEmployee]);
@@ -422,6 +499,7 @@ export default function AttendanceLogs() {
   useEffect(() => {
     if (employees.length > 0) {
       fetchRegularizationRequests();
+      fetchOdApplications();
     }
   }, [employees]);
 
@@ -454,6 +532,7 @@ export default function AttendanceLogs() {
   const tabs = [
     { id: 'logs', label: 'Punch Logs' },
     { id: 'regularization', label: 'Regularization' },
+    { id: 'od', label: 'OD Applications' },
     { id: 'reports', label: 'Reports' },
   ];
 
@@ -983,6 +1062,154 @@ export default function AttendanceLogs() {
                                         className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                                       >
                                         Reject
+                                      </button>
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {activeTab === 'od' && (
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Submit OD Application</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Employee *</label>
+                        <select 
+                          value={odForm.employee_id}
+                          onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        >
+                          <option value="">Choose Employee</option>
+                          {employees.map((employee) => (
+                            <option key={employee.id} value={employee.id}>
+                              {employee.employee_code} - {employee.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">OD Date *</label>
+                        <input 
+                          type="date" 
+                          value={odForm.od_date}
+                          onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Purpose *</label>
+                        <textarea 
+                          value={odForm.purpose}
+                          onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          rows="3" 
+                          placeholder="Purpose of OD"
+                        ></textarea>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">From Time</label>
+                          <input 
+                            type="time" 
+                            value={odForm.from_time}
+                            onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">To Time</label>
+                          <input 
+                            type="time" 
+                            value={odForm.to_time}
+                            onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input 
+                          type="text" 
+                          value={odForm.location}
+                          onChange={(e) => setOdForm({...odForm, location: e.target.value})}
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          placeholder="OD Location"
+                        />
+                      </div>
+                      <button 
+                        onClick={handleOdSubmit}
+                        className="bg-[#0A2540] text-white py-2 px-4 rounded-lg hover:bg-[#061829] transition"
+                      >
+                        Submit Application
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">OD Applications</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm border rounded-lg">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="p-3 text-left">Employee</th>
+                            <th className="p-3 text-left">Date</th>
+                            <th className="p-3 text-left">Purpose</th>
+                            <th className="p-3 text-left">Status</th>
+                            <th className="p-3 text-left">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {odApplications.length === 0 ? (
+                            <tr className="border-t">
+                              <td colSpan="5" className="p-4 text-center text-gray-500">
+                                No OD applications yet
+                              </td>
+                            </tr>
+                          ) : (
+                            odApplications.map((application) => (
+                              <tr key={application.id} className="border-t">
+                                <td className="p-3">{application.employee}</td>
+                                <td className="p-3">{application.od_date}</td>
+                                <td className="p-3" title={application.purpose}>
+                                  {application.purpose.length > 30 ? 
+                                    `${application.purpose.substring(0, 30)}...` : 
+                                    application.purpose
+                                  }
+                                </td>
+                                <td className="p-3">
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                    application.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                    'bg-red-100 text-red-800'
+                                  }`}>
+                                    {application.status}
+                                  </span>
+                                </td>
+                                <td className="p-3">
+                                  {application.status === 'pending' && (
+                                    <div className="flex gap-2">
+                                      <button 
+                                        onClick={() => handleOdApprove(application.id)}
+                                        className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                                      >
+                                        ✓
+                                      </button>
+                                      <button 
+                                        onClick={() => handleOdReject(application.id)}
+                                        className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                                      >
+                                        ✖
                                       </button>
                                     </div>
                                   )}
