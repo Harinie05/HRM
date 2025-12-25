@@ -643,18 +643,25 @@ export default function ShiftRoster() {
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <div className="flex-1 overflow-y-auto p-6">
-      <div className="mb-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-blue-100">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
-              <Calendar className="h-8 w-8 text-white" />
+        <div className="flex-1 overflow-y-auto p-6 pt-24">
+      <div className="mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-100 rounded-xl">
+                <Calendar className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Shift & Roster Management</h1>
+                <p className="text-gray-600 mt-1">Advanced shift planning and employee roster management system</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Shift & Roster Management
-              </h1>
-              <p className="text-gray-600 mt-1">Advanced shift planning and employee roster management system</p>
+            
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{shifts.length}</div>
+                <div className="text-sm text-gray-500">Active Shifts</div>
+              </div>
             </div>
           </div>
         </div>

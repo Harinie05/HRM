@@ -169,180 +169,189 @@ export default function TrainingCertificates() {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Training Certificates</h2>
-            <p className="text-gray-600 mt-1">Manage and download training certificates</p>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <Award className="w-6 h-6 text-blue-600" />
           </div>
-          <button 
-            onClick={() => setShowModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Plus size={16} />
-            Generate Certificate
-          </button>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-          <input
-            type="text"
-            placeholder="Search certificates..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
-          />
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Training Certificates</h2>
+            <p className="text-gray-600 mt-1">Manage and download training certificates for completed programs</p>
+          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Award className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600">Total Certificates</p>
-                <p className="text-2xl font-semibold text-blue-900">{certificates.length}</p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Award className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Certificates</p>
+              <p className="text-2xl font-semibold text-blue-900">{certificates.length}</p>
             </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Award className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600">Active</p>
-                <p className="text-2xl font-semibold text-green-900">{certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Award className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Active</p>
+              <p className="text-2xl font-semibold text-green-900">{certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</p>
             </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Award className="h-8 w-8 text-yellow-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600">Expiring Soon</p>
-                <p className="text-2xl font-semibold text-yellow-900">
-                  {certificates.filter(c => {
-                    if (!c.expiry_date) return false;
-                    const expiryDate = new Date(c.expiry_date);
-                    const thirtyDaysFromNow = new Date();
-                    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-                    return expiryDate <= thirtyDaysFromNow && expiryDate > new Date();
-                  }).length}
-                </p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Award className="h-8 w-8 text-yellow-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-yellow-600">Expiring Soon</p>
+              <p className="text-2xl font-semibold text-yellow-900">
+                {certificates.filter(c => {
+                  if (!c.expiry_date) return false;
+                  const expiryDate = new Date(c.expiry_date);
+                  const thirtyDaysFromNow = new Date();
+                  thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+                  return expiryDate <= thirtyDaysFromNow && expiryDate > new Date();
+                }).length}
+              </p>
             </div>
           </div>
-          <div className="bg-red-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Award className="h-8 w-8 text-red-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-600">Expired</p>
-                <p className="text-2xl font-semibold text-red-900">{certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Award className="h-8 w-8 text-red-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-600">Expired</p>
+              <p className="text-2xl font-semibold text-red-900">{certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="overflow-x-auto">
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="bg-white rounded-lg shadow-sm">
+        {/* Header Actions */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-end">
+            <button 
+              onClick={() => setShowModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <Plus size={16} />
+              Generate Certificate
+            </button>
           </div>
-        ) : filteredCertificates.length === 0 ? (
-          <div className="text-center py-12">
-            <Award className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No certificates found</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {searchTerm ? "No certificates match your search criteria." : "Certificates will appear here when training programs are completed."}
-            </p>
-          </div>
-        ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Program</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCertificates.map((certificate) => {
-                const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
-                const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-                
-                return (
-                  <tr key={certificate.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{certificate.program_title}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        isExpired ? 'bg-red-100 text-red-800' :
-                        isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {isExpired ? 'Expired' : isExpiringSoon ? 'Expiring Soon' : 'Active'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => handleView(certificate)}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                          title="View Details"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button 
-                          onClick={() => handleDownload(certificate)}
-                          className="text-green-600 hover:text-green-900 p-1 rounded"
-                          title="Download Certificate"
-                        >
-                          <Download size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
+        </div>
 
-      {/* Stats Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <span>Total Certificates: {certificates.length}</span>
-          <span>Active: {certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</span>
-          <span>Expired: {certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</span>
+        {/* Search */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search certificates..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-x-auto">
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : filteredCertificates.length === 0 ? (
+            <div className="text-center py-12">
+              <Award className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No certificates found</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                {searchTerm ? "No certificates match your search criteria." : "Certificates will appear here when training programs are completed."}
+              </p>
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Program</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certificate ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issued Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredCertificates.map((certificate) => {
+                  const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
+                  const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                  
+                  return (
+                    <tr key={certificate.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{certificate.program_title}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          isExpired ? 'bg-red-100 text-red-800' :
+                          isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {isExpired ? 'Expired' : isExpiringSoon ? 'Expiring Soon' : 'Active'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => handleView(certificate)}
+                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
+                            title="View Details"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDownload(certificate)}
+                            className="text-green-600 hover:text-green-900 p-1 rounded"
+                            title="Download Certificate"
+                          >
+                            <Download size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Stats Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <span>Total Certificates: {certificates.length}</span>
+            <span>Active: {certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</span>
+            <span>Expired: {certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</span>
+          </div>
         </div>
       </div>
 

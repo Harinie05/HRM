@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Calendar, Users, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import api from "../../api";
 
 export default function LeaveCompliance() {
@@ -32,8 +33,6 @@ export default function LeaveCompliance() {
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log('Loading leave compliance data');
-        
         const tenant = localStorage.getItem("tenant_db");
         const token = localStorage.getItem("access_token");
         
@@ -89,7 +88,6 @@ export default function LeaveCompliance() {
         
         try {
           const rulesRes = await api.get("/api/leave/leave-rules");
-          console.log('Leave rules loaded:', rulesRes.data);
           setLeaveRules(rulesRes.data);
         } catch (rulesErr) {
           console.log('Failed to load leave rules:', rulesErr);
@@ -98,7 +96,6 @@ export default function LeaveCompliance() {
         
         try {
           const complianceRes = await api.get("/api/compliance/leave");
-          console.log('Leave compliance records loaded:', complianceRes.data);
           setComplianceRecords(complianceRes.data || []);
         } catch (complianceErr) {
           console.log('Failed to load compliance records:', complianceErr);
@@ -112,16 +109,13 @@ export default function LeaveCompliance() {
   }, []);
 
   function handleChange(e) {
-    console.log(`Leave compliance field changed: ${e.target.name} = ${e.target.value}`);
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      console.log('Checking leave compliance:', form);
       const res = await api.post("/api/compliance/leave", form);
-      console.log('Leave compliance check completed:', res.data);
       alert("Leave Compliance Check Completed Successfully");
       
       // Reset form
@@ -150,7 +144,6 @@ export default function LeaveCompliance() {
       try {
         // Refresh compliance records
         const complianceRes = await api.get("/api/compliance/leave");
-        console.log('Refreshed compliance records:', complianceRes.data);
         setComplianceRecords(complianceRes.data || []);
       } catch (refreshErr) {
         console.log('Failed to refresh compliance records:', refreshErr);
@@ -183,435 +176,420 @@ export default function LeaveCompliance() {
   const compliance = calculateCompliance();
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Leave & Working Hours Compliance</h2>
-
-      {/* Leave Rules Display */}
-      {leaveRules && (
-        <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <h3 className="text-lg font-medium mb-2">Current Leave Rules</h3>
-          <div className="grid grid-cols-4 gap-4 text-sm">
-            <div>Max Casual Leave: {leaveRules.max_casual_leave || 12} days</div>
-            <div>Max Sick Leave: {leaveRules.max_sick_leave || 12} days</div>
-            <div>Max Earned Leave: {leaveRules.max_earned_leave || 21} days</div>
-            <div>Min Attendance: {leaveRules.min_attendance || 75}%</div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <Calendar className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Leave & Working Hours Compliance</h2>
+            <p className="text-gray-600 mt-1">Monitor and ensure compliance with leave policies and working hour regulations</p>
           </div>
         </div>
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
-
-        {/* Employee ID */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee ID <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_id"
-            value={form.employee_id}
-            onChange={(e) => {
-              const selectedId = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_id: selectedId });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee ID</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.employee_id}>
-                {employee.employee_id}
-              </option>
-            ))}
-          </select>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Records</p>
+              <p className="text-2xl font-semibold text-blue-900">{complianceRecords.length}</p>
+            </div>
+          </div>
         </div>
-
-        {/* Employee Name */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee Name <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_name"
-            value={form.employee_name}
-            onChange={(e) => {
-              const selectedName = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.name === selectedName);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_name: selectedName });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee Name</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.name}>
-                {employee.name}
-              </option>
-            ))}
-          </select>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Compliant</p>
+              <p className="text-2xl font-semibold text-green-900">{complianceRecords.filter(r => r.compliance_status === 'Compliant').length}</p>
+            </div>
+          </div>
         </div>
-
-        {/* Total Working Days */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Total Working Days <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            required
-            name="total_working_days"
-            value={form.total_working_days}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Total Working Days"
-            min="0"
-            max="31"
-          />
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <TrendingUp className="h-8 w-8 text-orange-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-orange-600">Avg Attendance</p>
+              <p className="text-2xl font-semibold text-orange-900">
+                {complianceRecords.length > 0 
+                  ? (complianceRecords.reduce((sum, r) => sum + ((r.actual_working_days / r.total_working_days) * 100), 0) / complianceRecords.length).toFixed(1)
+                  : 0}%
+              </p>
+            </div>
+          </div>
         </div>
-
-        {/* Actual Working Days */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Actual Working Days <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            required
-            name="actual_working_days"
-            value={form.actual_working_days}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Actual Working Days"
-            min="0"
-            max="31"
-          />
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Clock className="h-8 w-8 text-purple-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-purple-600">Total OT Hours</p>
+              <p className="text-2xl font-semibold text-purple-900">{complianceRecords.reduce((sum, r) => sum + (r.overtime_hours || 0), 0)}</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Total Leaves Taken */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Total Leaves Taken <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            required
-            name="leaves_taken"
-            value={form.leaves_taken}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Total Leaves Taken"
-            min="0"
-          />
-        </div>
-
-        {/* Paid Leaves */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Paid Leaves</label>
-          <input
-            type="number"
-            name="paid_leaves"
-            value={form.paid_leaves}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Paid Leaves"
-            min="0"
-          />
-        </div>
-
-        {/* Unpaid Leaves */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Unpaid Leaves</label>
-          <input
-            type="number"
-            name="unpaid_leaves"
-            value={form.unpaid_leaves}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Unpaid Leaves"
-            min="0"
-          />
-        </div>
-
-        {/* Sick Leaves */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Sick Leaves</label>
-          <input
-            type="number"
-            name="sick_leaves"
-            value={form.sick_leaves}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Sick Leaves"
-            min="0"
-          />
-        </div>
-
-        {/* Casual Leaves */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Casual Leaves</label>
-          <input
-            type="number"
-            name="casual_leaves"
-            value={form.casual_leaves}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Casual Leaves"
-            min="0"
-          />
-        </div>
-
-        {/* Earned Leaves */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Earned Leaves</label>
-          <input
-            type="number"
-            name="earned_leaves"
-            value={form.earned_leaves}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Earned Leaves"
-            min="0"
-          />
-        </div>
-
-        {/* Overtime Hours */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Overtime Hours</label>
-          <input
-            type="number"
-            name="overtime_hours"
-            value={form.overtime_hours}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Overtime Hours"
-            min="0"
-            step="0.5"
-          />
-        </div>
-
-        {/* Weekly Off Days */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Weekly Off Days</label>
-          <input
-            type="number"
-            name="weekly_off_days"
-            value={form.weekly_off_days}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Weekly Off Days"
-            min="0"
-          />
-        </div>
-
-        {/* Public Holidays */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Public Holidays</label>
-          <input
-            type="number"
-            name="public_holidays"
-            value={form.public_holidays}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Public Holidays"
-            min="0"
-          />
-        </div>
-
-        {/* Month */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Month</label>
-          <select
-            name="month"
-            value={form.month}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-
-        {/* Year */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Year</label>
-          <input
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Year"
-            min="2020"
-            max="2030"
-          />
-        </div>
-
-        {/* Department */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Department</label>
-          <input
-            type="text"
-            name="department"
-            value={form.department}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Department"
-          />
-        </div>
-
-        {/* Designation */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Designation</label>
-          <input
-            type="text"
-            name="designation"
-            value={form.designation}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Designation"
-          />
-        </div>
-
-        {/* Compliance Status */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Compliance Status</label>
-          <select
-            name="compliance_status"
-            value={form.compliance_status}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="Compliant">Compliant</option>
-            <option value="Non-Compliant">Non-Compliant</option>
-            <option value="Under Review">Under Review</option>
-            <option value="Exempted">Exempted</option>
-          </select>
-        </div>
-
-        {/* Remarks */}
-        <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1">Remarks</label>
-          <textarea
-            name="remarks"
-            value={form.remarks}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50 h-24"
-            placeholder="Enter any compliance notes or remarks"
-          />
-        </div>
-
-        {/* Real-time Compliance Display */}
-        {(form.total_working_days && form.actual_working_days) && (
-          <div className={`col-span-2 p-4 rounded-lg ${
-            compliance.isCompliant ? 'bg-green-50' : 'bg-red-50'
-          }`}>
-            <h4 className="font-medium mb-2">Compliance Metrics</h4>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* Leave Rules Display */}
+        {leaveRules && (
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <h3 className="text-lg font-medium mb-2">Current Leave Rules</h3>
             <div className="grid grid-cols-4 gap-4 text-sm">
-              <div>Attendance: {compliance.attendancePercentage}%</div>
-              <div>Leave Utilization: {compliance.leaveUtilization}%</div>
-              <div>Overtime Days: {compliance.overtimeDays}</div>
-              <div className={`font-semibold ${
-                compliance.isCompliant ? 'text-green-600' : 'text-red-600'
-              }`}>
-                Status: {compliance.isCompliant ? 'Compliant' : 'Non-Compliant'}
-              </div>
+              <div>Max Casual Leave: {leaveRules.max_casual_leave || 12} days</div>
+              <div>Max Sick Leave: {leaveRules.max_sick_leave || 12} days</div>
+              <div>Max Earned Leave: {leaveRules.max_earned_leave || 21} days</div>
+              <div>Min Attendance: {leaveRules.min_attendance || 75}%</div>
             </div>
           </div>
         )}
 
-        {/* Submit */}
-        <div className="col-span-2">
-          <button
-            type="submit"
-            className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
-          >
-            Check Leave Compliance
-          </button>
-        </div>
-
-      </form>
-
-      {/* Display compliance records */}
-      {complianceRecords.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Leave Compliance Records</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Employee</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Working Days</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Leaves Taken</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Attendance %</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">OT Hours</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Status</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Period</th>
-                </tr>
-              </thead>
-              <tbody>
-                {complianceRecords.map((record, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div>
-                        <div className="font-medium">{record.employee_name}</div>
-                        <div className="text-gray-500 text-xs">{record.employee_id}</div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{record.actual_working_days}/{record.total_working_days}</td>
-                    <td className="px-4 py-2 border-b text-sm">{record.leaves_taken}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      {((record.actual_working_days / record.total_working_days) * 100).toFixed(1)}%
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{record.overtime_hours}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
-                        record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
-                        record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {record.compliance_status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{record.month}/{record.year}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
+          {/* Employee ID */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee ID <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_id"
+              value={form.employee_id}
+              onChange={(e) => {
+                const selectedId = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_id: selectedId });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Employee ID</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.employee_id}>
+                  {employee.employee_id}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
-      )}
+
+          {/* Employee Name */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee Name <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_name"
+              value={form.employee_name}
+              onChange={(e) => {
+                const selectedName = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.name === selectedName);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_name: selectedName });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Employee Name</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.name}>
+                  {employee.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Total Working Days */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Total Working Days <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              name="total_working_days"
+              value={form.total_working_days}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Total Working Days"
+              min="0"
+              max="31"
+            />
+          </div>
+
+          {/* Actual Working Days */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Actual Working Days <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              name="actual_working_days"
+              value={form.actual_working_days}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Actual Working Days"
+              min="0"
+              max="31"
+            />
+          </div>
+
+          {/* Total Leaves Taken */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Total Leaves Taken <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              name="leaves_taken"
+              value={form.leaves_taken}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Total Leaves Taken"
+              min="0"
+            />
+          </div>
+
+          {/* Paid Leaves */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Paid Leaves</label>
+            <input
+              type="number"
+              name="paid_leaves"
+              value={form.paid_leaves}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Paid Leaves"
+              min="0"
+            />
+          </div>
+
+          {/* Unpaid Leaves */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Unpaid Leaves</label>
+            <input
+              type="number"
+              name="unpaid_leaves"
+              value={form.unpaid_leaves}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Unpaid Leaves"
+              min="0"
+            />
+          </div>
+
+          {/* Sick Leaves */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Sick Leaves</label>
+            <input
+              type="number"
+              name="sick_leaves"
+              value={form.sick_leaves}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Sick Leaves"
+              min="0"
+            />
+          </div>
+
+          {/* Casual Leaves */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Casual Leaves</label>
+            <input
+              type="number"
+              name="casual_leaves"
+              value={form.casual_leaves}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Casual Leaves"
+              min="0"
+            />
+          </div>
+
+          {/* Earned Leaves */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Earned Leaves</label>
+            <input
+              type="number"
+              name="earned_leaves"
+              value={form.earned_leaves}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Earned Leaves"
+              min="0"
+            />
+          </div>
+
+          {/* Overtime Hours */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Overtime Hours</label>
+            <input
+              type="number"
+              name="overtime_hours"
+              value={form.overtime_hours}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Overtime Hours"
+              min="0"
+              step="0.5"
+            />
+          </div>
+
+          {/* Month */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Month</label>
+            <select
+              name="month"
+              value={form.month}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Month</option>
+              <option value="01">January</option>
+              <option value="02">February</option>
+              <option value="03">March</option>
+              <option value="04">April</option>
+              <option value="05">May</option>
+              <option value="06">June</option>
+              <option value="07">July</option>
+              <option value="08">August</option>
+              <option value="09">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+
+          {/* Year */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Year</label>
+            <input
+              type="number"
+              name="year"
+              value={form.year}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Year"
+              min="2020"
+              max="2030"
+            />
+          </div>
+
+          {/* Remarks */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Remarks</label>
+            <textarea
+              name="remarks"
+              value={form.remarks}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              placeholder="Enter any compliance notes or remarks"
+            />
+          </div>
+
+          {/* Real-time Compliance Display */}
+          {(form.total_working_days && form.actual_working_days) && (
+            <div className={`col-span-2 p-4 rounded-lg ${
+              compliance.isCompliant ? 'bg-green-50' : 'bg-red-50'
+            }`}>
+              <h4 className="font-medium mb-2">Compliance Metrics</h4>
+              <div className="grid grid-cols-4 gap-4 text-sm">
+                <div>Attendance: {compliance.attendancePercentage}%</div>
+                <div>Leave Utilization: {compliance.leaveUtilization}%</div>
+                <div>Overtime Days: {compliance.overtimeDays}</div>
+                <div className={`font-semibold ${
+                  compliance.isCompliant ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  Status: {compliance.isCompliant ? 'Compliant' : 'Non-Compliant'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Submit */}
+          <div className="col-span-2">
+            <button
+              type="submit"
+              className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
+            >
+              Check Leave Compliance
+            </button>
+          </div>
+        </form>
+
+        {/* Display compliance records */}
+        {complianceRecords.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Leave Compliance Records</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Working Days</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leaves Taken</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OT Hours</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {complianceRecords.map((record, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-sm">
+                        <div>
+                          <div className="font-medium">{record.employee_name}</div>
+                          <div className="text-gray-500 text-xs">{record.employee_id}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm">{record.actual_working_days}/{record.total_working_days}</td>
+                      <td className="px-4 py-2 text-sm">{record.leaves_taken}</td>
+                      <td className="px-4 py-2 text-sm">
+                        {((record.actual_working_days / record.total_working_days) * 100).toFixed(1)}%
+                      </td>
+                      <td className="px-4 py-2 text-sm">{record.overtime_hours}</td>
+                      <td className="px-4 py-2 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                          record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                          record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {record.compliance_status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-sm">{record.month}/{record.year}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

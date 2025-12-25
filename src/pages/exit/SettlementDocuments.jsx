@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DollarSign, FileText, Download, Mail, CheckCircle, Clock } from "lucide-react";
 import api from "../../api";
 
 export default function SettlementDocuments() {
@@ -343,69 +344,111 @@ export default function SettlementDocuments() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Full & Final Settlement & Documents</h1>
-      </div>
-
-      {/* Summary Cards - Top Position */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-blue-600">{exits.length}</div>
-          <div className="text-sm text-gray-600">Ready for Settlement</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-green-600">
-            {exits.filter(e => e.final_settlement_status === 'Completed').length}
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-emerald-700 text-sm font-medium">Ready for Settlement</p>
+              <p className="text-3xl font-bold text-emerald-800 mt-2">{exits.length}</p>
+            </div>
+            <div className="p-3 bg-emerald-200 rounded-xl">
+              <CheckCircle className="h-6 w-6 text-emerald-700" />
+            </div>
           </div>
-          <div className="text-sm text-gray-600">Settlements Completed</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-yellow-600">
-            {exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}
+        
+        <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Settlements Completed</p>
+              <p className="text-3xl font-bold text-slate-700 mt-2">
+                {exits.filter(e => e.final_settlement_status === 'Completed').length}
+              </p>
+            </div>
+            <div className="p-3 bg-slate-200 rounded-xl">
+              <DollarSign className="h-6 w-6 text-slate-600" />
+            </div>
           </div>
-          <div className="text-sm text-gray-600">Pending Settlements</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-purple-600">
-            {exits.filter(e => {
-              const handover = e.handover_status || 'Pending';
-              const clearance = e.clearance_status || 'Pending';
-              const assets = e.asset_return_status || 'Pending';
-              const settlement = e.final_settlement_status || 'Pending';
-              return handover === 'Completed' && clearance === 'Completed' && assets === 'Completed' && settlement === 'Completed';
-            }).length}
+        
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-amber-700 text-sm font-medium">Pending Settlements</p>
+              <p className="text-3xl font-bold text-amber-800 mt-2">
+                {exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}
+              </p>
+            </div>
+            <div className="p-3 bg-amber-200 rounded-xl">
+              <Clock className="h-6 w-6 text-amber-700" />
+            </div>
           </div>
-          <div className="text-sm text-gray-600">Fully Processed</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-indigo-700 text-sm font-medium">Fully Processed</p>
+              <p className="text-3xl font-bold text-indigo-800 mt-2">
+                {exits.filter(e => {
+                  const handover = e.handover_status || 'Pending';
+                  const clearance = e.clearance_status || 'Pending';
+                  const assets = e.asset_return_status || 'Pending';
+                  const settlement = e.final_settlement_status || 'Pending';
+                  return handover === 'Completed' && clearance === 'Completed' && assets === 'Completed' && settlement === 'Completed';
+                }).length}
+              </p>
+            </div>
+            <div className="p-3 bg-indigo-200 rounded-xl">
+              <FileText className="h-6 w-6 text-indigo-700" />
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-medium mb-4">Ready for Settlement</h3>
-          <div className="space-y-3">
-            {exits.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
-                <div className="text-sm">No employees ready for settlement.</div>
-                <div className="text-xs mt-1">Complete exit interviews first.</div>
-              </div>
-            ) : (
-              exits.map((exit) => (
-                <div
-                  key={exit.id}
-                  onClick={() => setSelectedExit(exit)}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedExit?.id === exit.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="font-medium">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
-                  <div className="text-sm text-gray-500">Code: {exit.employee_code || 'N/A'}</div>
-                  <div className="text-sm text-gray-500">Last Working: {exit.last_working_day || 'N/A'}</div>
-                  <div className="text-sm text-gray-500">Notice: {exit.notice_period || '30'} days</div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-green-50">
+            <h3 className="text-xl font-bold text-gray-900">Ready for Settlement</h3>
+            <p className="text-gray-600 text-sm mt-1">Employees with completed exit interviews</p>
+          </div>
+          
+          <div className="p-6">
+            <div className="space-y-4">
+              {exits.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-400 mb-4">
+                    <CheckCircle className="w-12 h-12 mx-auto" />
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
+                  <p className="text-gray-500 text-sm">Complete exit interviews first.</p>
                 </div>
-              ))
-            )}
+              ) : (
+                exits.map((exit) => {
+                  const isSelected = selectedExit?.id === exit.id;
+                  
+                  return (
+                    <div
+                      key={exit.id}
+                      onClick={() => setSelectedExit(exit)}
+                      className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                        isSelected 
+                          ? 'border-red-500 bg-red-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
+                      <div className="text-sm text-gray-500 mt-1">Code: {exit.employee_code || 'N/A'}</div>
+                      <div className="text-sm text-gray-500">Last Working: {exit.last_working_day || 'N/A'}</div>
+                      <div className="text-sm text-gray-500">Notice: {exit.notice_period || '30'} days</div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
 

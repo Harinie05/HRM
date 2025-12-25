@@ -273,43 +273,43 @@ export default function LeaveTypes() {
       {activeTab === "types" ? (
         /* Leave Types Table */
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="min-w-full table-fixed">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leave Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Limit Source</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carry Forward</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Leave Type</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Code</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Category</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Limit Source</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Carry Forward</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTypes.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-4 py-8 text-center text-gray-500">
                     {searchTerm ? "No leave types found matching your search." : "No leave types configured yet."}
                   </td>
                 </tr>
               ) : (
                 filteredTypes.map((type) => (
                   <tr key={type.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{type.name}</div>
-                        <div className="text-sm text-gray-500">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
+                        <div className="text-sm font-medium text-gray-900 truncate">{type.name}</div>
+                        <div className="text-sm text-gray-500 truncate">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <td className="px-4 py-4">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate">
                         {type.code}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-4 py-4 text-sm text-gray-900 truncate">
                       {type.category || "General"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       {(() => {
                         const isFixedPolicyType = ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(type.code?.toUpperCase());
                         const isDynamicPolicyType = leavePolicies.some(policy => 
@@ -327,36 +327,36 @@ export default function LeaveTypes() {
                         );
                       })()} 
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         type.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {type.carry_forward ? "Yes" : "No"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                       }`}>
                         {type.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
+                    <td className="px-4 py-4 text-sm font-medium">
+                      <div className="flex items-center gap-1">
                         <button className="text-blue-600 hover:text-blue-900 p-1 rounded">
-                          <Eye size={16} />
+                          <Eye size={14} />
                         </button>
                         <button 
                           onClick={() => handleOpenModal(type)}
                           className="text-indigo-600 hover:text-indigo-900 p-1 rounded"
                         >
-                          <Edit size={16} />
+                          <Edit size={14} />
                         </button>
                         <button 
                           onClick={() => handleDelete(type.id)}
                           className="text-red-600 hover:text-red-900 p-1 rounded"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
@@ -369,32 +369,32 @@ export default function LeaveTypes() {
       ) : (
         /* Leave Policies Table */
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="min-w-full table-fixed">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Policy Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leave Allocations</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carry Forward</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Encashment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Policy Name</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Leave Allocations</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Carry Forward</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Encashment</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {leavePolicies.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
                     No leave policies found. Create your first leave policy.
                   </td>
                 </tr>
               ) : (
                 filteredPolicies.map((policy) => (
                   <tr key={policy.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{policy.name}</div>
-                      <div className="text-sm text-gray-500">{policy.rule}</div>
+                    <td className="px-4 py-4">
+                      <div className="text-sm font-medium text-gray-900 truncate">{policy.name}</div>
+                      <div className="text-sm text-gray-500 truncate">{policy.rule}</div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <div className="flex flex-wrap gap-1">
                         <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
                           AL: {policy.annual}d
@@ -415,43 +415,43 @@ export default function LeaveTypes() {
                         })}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         policy.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {policy.carry_forward ? `Yes (${policy.max_carry})` : "No"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         policy.encashment ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {policy.encashment ? "Yes" : "No"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                       }`}>
                         {policy.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
+                    <td className="px-4 py-4 text-sm font-medium">
+                      <div className="flex items-center gap-1">
                         <button className="text-blue-600 hover:text-blue-900 p-1 rounded">
-                          <Eye size={16} />
+                          <Eye size={14} />
                         </button>
                         <button 
                           onClick={() => handleOpenPolicyModal(policy)}
                           className="text-indigo-600 hover:text-indigo-900 p-1 rounded"
                         >
-                          <Edit size={16} />
+                          <Edit size={14} />
                         </button>
                         <button 
                           onClick={() => handleDeletePolicy(policy.id)}
                           className="text-red-600 hover:text-red-900 p-1 rounded"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>

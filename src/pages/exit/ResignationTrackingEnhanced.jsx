@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Users, Clock, CheckCircle, FileText, Plus, Search } from 'lucide-react';
 import api from '../../api';
 
 const ResignationTracking = () => {
@@ -141,12 +142,12 @@ const ResignationTracking = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      'Pending': 'bg-yellow-200 text-yellow-800',
-      'In Progress': 'bg-blue-200 text-blue-800',
-      'Completed': 'bg-green-200 text-green-800',
-      'Initiated': 'bg-gray-200 text-gray-800'
+      'Pending': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
+      'Completed': 'bg-green-100 text-green-800 border-green-200',
+      'Initiated': 'bg-gray-100 text-gray-800 border-gray-200'
     };
-    return colors[status] || 'bg-gray-200 text-gray-800';
+    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
   const filteredResignations = resignations.filter(resignation => {
@@ -159,158 +160,213 @@ const ResignationTracking = () => {
   });
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Resignation & Notice Tracking</h1>
-        <button 
-          onClick={() => setShowApplyForm(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Apply Resignation
-        </button>
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Total Resignations</p>
+              <p className="text-3xl font-bold text-slate-700 mt-2">{resignations.length}</p>
+            </div>
+            <div className="p-3 bg-slate-200 rounded-xl">
+              <FileText className="h-6 w-6 text-slate-600" />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-amber-700 text-sm font-medium">In Progress</p>
+              <p className="text-3xl font-bold text-amber-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</p>
+            </div>
+            <div className="p-3 bg-amber-200 rounded-xl">
+              <Clock className="h-6 w-6 text-amber-700" />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-emerald-700 text-sm font-medium">Completed</p>
+              <p className="text-3xl font-bold text-emerald-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</p>
+            </div>
+            <div className="p-3 bg-emerald-200 rounded-xl">
+              <CheckCircle className="h-6 w-6 text-emerald-700" />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-indigo-700 text-sm font-medium">Initiated</p>
+              <p className="text-3xl font-bold text-indigo-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</p>
+            </div>
+            <div className="p-3 bg-indigo-200 rounded-xl">
+              <Users className="h-6 w-6 text-indigo-700" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Summary Cards - Top Position */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-blue-600">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</div>
-          <div className="text-sm text-gray-500">Initiated</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-orange-600">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</div>
-          <div className="text-sm text-gray-500">In Progress</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-green-600">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</div>
-          <div className="text-sm text-gray-500">Completed</div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow flex gap-4 items-center">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Search by employee name, code, or reason..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="border rounded px-3 py-2"
+      {/* Controls */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search by employee name, code, or reason..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent w-full transition-all duration-200"
+              />
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+            >
+              <option value="All">All Status</option>
+              <option value="Initiated">Initiated</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <button 
+            onClick={() => setShowApplyForm(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-xl hover:from-slate-700 hover:to-slate-800 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
           >
-            <option value="All">All Status</option>
-            <option value="Initiated">Initiated</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
+            <Plus className="w-5 h-5" />
+            Apply Resignation
+          </button>
         </div>
       </div>
 
       {/* Apply Resignation Modal */}
       {showApplyForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold mb-4">Apply Resignation</h2>
-            <form onSubmit={handleApplyResignation} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Employee</label>
-                <select 
-                  value={formData.employee_id} 
-                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  required
+          <div className="bg-white p-8 rounded-2xl max-w-2xl w-full mx-4 shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Apply Resignation</h2>
+              <button 
+                onClick={() => setShowApplyForm(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <form onSubmit={handleApplyResignation} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Employee</label>
+                  <select 
+                    value={formData.employee_id} 
+                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    required
+                  >
+                    <option value="">Select Employee ({employees.length} available)</option>
+                    {employees.map(emp => (
+                      <option key={emp.id} value={emp.id}>
+                        {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Resignation Date</label>
+                  <input
+                    type="date"
+                    value={formData.resignation_date}
+                    onChange={(e) => setFormData({...formData, resignation_date: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Last Working Day</label>
+                  <input
+                    type="date"
+                    value={formData.last_working_day}
+                    onChange={(e) => setFormData({...formData, last_working_day: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Notice Period (Days)</label>
+                  <input
+                    type="number"
+                    value={formData.notice_period}
+                    onChange={(e) => setFormData({...formData, notice_period: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    placeholder="30"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Exit Interview Date (Optional)</label>
+                  <input
+                    type="date"
+                    value={formData.exit_interview_date}
+                    onChange={(e) => setFormData({...formData, exit_interview_date: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Reason for Resignation</label>
+                  <textarea
+                    value={formData.reason}
+                    onChange={(e) => setFormData({...formData, reason: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Please provide reason for resignation"
+                    rows="3"
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Additional Notes</label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Any additional notes or comments"
+                    rows="2"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-4 pt-4">
+                <button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white px-6 py-3 rounded-xl hover:from-slate-700 hover:to-slate-800 font-semibold transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                 >
-                  <option value="">Select Employee ({employees.length} available)</option>
-                  {employees.map(emp => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.employee_code || `EMP${emp.id}`} - {emp.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Resignation Date</label>
-                <input
-                  type="date"
-                  value={formData.resignation_date}
-                  onChange={(e) => setFormData({...formData, resignation_date: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Last Working Day</label>
-                <input
-                  type="date"
-                  value={formData.last_working_day}
-                  onChange={(e) => setFormData({...formData, last_working_day: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Notice Period (Days)</label>
-                <input
-                  type="number"
-                  value={formData.notice_period}
-                  onChange={(e) => setFormData({...formData, notice_period: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="30"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Reason</label>
-                <textarea
-                  value={formData.reason}
-                  onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Reason for resignation"
-                  rows="3"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Notes</label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Additional notes"
-                  rows="2"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Exit Interview Date (Optional)</label>
-                <input
-                  type="date"
-                  value={formData.exit_interview_date}
-                  onChange={(e) => setFormData({...formData, exit_interview_date: e.target.value})}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-              
-              <div className="flex gap-2">
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                   Apply Resignation
                 </button>
                 <button 
                   type="button" 
                   onClick={() => setShowApplyForm(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 font-semibold transition-all duration-200"
                 >
                   Cancel
                 </button>
@@ -321,61 +377,65 @@ const ResignationTracking = () => {
       )}
 
       {/* Resignations Table */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 border-b">
-          <h2 className="text-lg font-semibold">Resignation List ({filteredResignations.length})</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-red-50">
+          <h2 className="text-xl font-bold text-gray-900">Resignation List ({filteredResignations.length})</h2>
+          <p className="text-gray-600 text-sm mt-1">Track and manage employee resignations</p>
         </div>
+        
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left p-3 font-medium">Employee</th>
-                <th className="text-left p-3 font-medium">Last Working Day</th>
-                <th className="text-left p-3 font-medium">Notice Period</th>
-                <th className="text-left p-3 font-medium">Overall Status</th>
-                <th className="text-left p-3 font-medium">Reason</th>
-                <th className="text-left p-3 font-medium">Actions</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Employee</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Working Day</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Notice Period</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Overall Status</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reason</th>
+                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-200">
               {filteredResignations.map((resignation) => {
                 const overallStatus = calculateOverallStatus(resignation);
                 return (
-                  <tr key={resignation.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3">
+                  <tr key={resignation.id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <td className="px-6 py-4">
                       <div>
-                        <div className="font-medium">{resignation.employee_name}</div>
+                        <div className="font-semibold text-gray-900">{resignation.employee_name}</div>
                         <div className="text-sm text-gray-500">{resignation.employee_code}</div>
                       </div>
                     </td>
-                    <td className="p-3">
+                    <td className="px-6 py-4 text-sm text-gray-900">
                       {resignation.last_working_day ? new Date(resignation.last_working_day).toLocaleDateString() : '-'}
                     </td>
-                    <td className="p-3">
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        {resignation.notice_period} days
-                        {resignation.notice_served && <span className="text-green-500">✓</span>}
+                        <span className="text-sm font-medium text-gray-900">{resignation.notice_period} days</span>
+                        {resignation.notice_served && <span className="text-green-500 text-lg">✓</span>}
                       </div>
                     </td>
-                    <td className="p-3">
-                      <span className={`px-2 py-1 rounded text-xs ${getStatusColor(overallStatus)}`}>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(overallStatus)}`}>
                         {overallStatus}
                       </span>
-                      <div className="text-xs text-gray-500 mt-1">
-                        H: {resignation.handover_status || 'Pending'} | 
-                        C: {resignation.clearance_status || 'Pending'}
+                      <div className="text-xs text-gray-500 mt-2 space-y-1">
+                        <div>H: {resignation.handover_status || 'Pending'}</div>
+                        <div>C: {resignation.clearance_status || 'Pending'}</div>
                       </div>
                     </td>
-                    <td className="p-3">
-                      <div className="max-w-xs truncate" title={resignation.reason}>
-                        {resignation.reason || '-'}
+                    <td className="px-6 py-4">
+                      <div className="max-w-xs">
+                        <p className="text-sm text-gray-900 truncate" title={resignation.reason}>
+                          {resignation.reason || '-'}
+                        </p>
                       </div>
                     </td>
-                    <td className="p-3">
-                      <div className="flex flex-col gap-1">
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-2">
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          className="border rounded px-2 py-1 text-xs"
+                          className="border border-gray-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
                           value={resignation.handover_status || 'Pending'}
                         >
                           <option value="Pending">Handover Pending</option>
@@ -385,7 +445,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          className="border rounded px-2 py-1 text-xs"
+                          className="border border-gray-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
                           value={resignation.clearance_status || 'Pending'}
                         >
                           <option value="Pending">Clearance Pending</option>
@@ -395,7 +455,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          className="border rounded px-2 py-1 text-xs"
+                          className="border border-gray-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
                           value={resignation.asset_return_status || 'Pending'}
                         >
                           <option value="Pending">Assets Pending</option>
@@ -404,7 +464,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          className="border rounded px-2 py-1 text-xs"
+                          className="border border-gray-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
                           value={resignation.final_settlement_status || 'Pending'}
                         >
                           <option value="Pending">Settlement Pending</option>
@@ -419,14 +479,20 @@ const ResignationTracking = () => {
           </table>
           
           {filteredResignations.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              {statusFilter !== 'All' || searchTerm ? 'No resignations match your filters' : 'No resignations found'}
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <FileText className="w-12 h-12 mx-auto" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {statusFilter !== 'All' || searchTerm ? 'No resignations match your filters' : 'No resignations found'}
+              </h3>
+              <p className="text-gray-500">
+                {statusFilter !== 'All' || searchTerm ? 'Try adjusting your search criteria' : 'Start by applying a resignation'}
+              </p>
             </div>
           )}
         </div>
       </div>
-
-
     </div>
   );
 };

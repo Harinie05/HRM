@@ -300,29 +300,34 @@ export default function Payslips() {
   });
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 border-b border-gray-200 rounded-t-2xl">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Salary Slips & Payment</h2>
-            <p className="text-gray-600 mt-1">Generate payslips and manage bank payments</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-emerald-100 rounded-xl">
+              <FileText className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Salary Slips & Payment</h2>
+              <p className="text-gray-600 mt-1">Generate payslips and manage bank payments</p>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button 
               onClick={handleGeneratePayslips}
               disabled={loading}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <FileText size={16} />
+              <FileText size={18} />
               {loading ? "Generating..." : "Generate Payslips"}
             </button>
             <button 
               onClick={handleSendEmail}
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Send size={16} />
+              <Send size={18} />
               {loading ? "Sending..." : "Send via Email"}
             </button>
           </div>
@@ -355,42 +360,50 @@ export default function Payslips() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <FileText className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600">Total Payslips</p>
-                <p className="text-2xl font-semibold text-blue-900">{payslips.length}</p>
+      {/* Enhanced Stats Cards */}
+      <div className="p-6 border-b border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Total Payslips</p>
+                <p className="text-3xl font-bold text-gray-900">{payslips.length}</p>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-xl">
+                <FileText className="h-10 w-10 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Send className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600">Sent</p>
-                <p className="text-2xl font-semibold text-green-900">{payslips.filter(p => p.status === 'Sent').length}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Sent</p>
+                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Sent').length}</p>
+              </div>
+              <div className="p-3 bg-green-50 rounded-xl">
+                <Send className="h-10 w-10 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-yellow-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600">Generated</p>
-                <p className="text-2xl font-semibold text-yellow-900">{payslips.filter(p => p.status === 'Generated').length}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Generated</p>
+                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Generated').length}</p>
+              </div>
+              <div className="p-3 bg-yellow-50 rounded-xl">
+                <Calendar className="h-10 w-10 text-yellow-600" />
               </div>
             </div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Download className="h-8 w-8 text-purple-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-purple-600">Pending</p>
-                <p className="text-2xl font-semibold text-purple-900">{payslips.filter(p => p.status === 'Pending').length}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Pending</p>
+                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Pending').length}</p>
+              </div>
+              <div className="p-3 bg-purple-50 rounded-xl">
+                <Download className="h-10 w-10 text-purple-600" />
               </div>
             </div>
           </div>

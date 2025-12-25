@@ -131,132 +131,141 @@ export default function TrainingAttendance() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Training Attendance & Assessment</h2>
-            <p className="text-gray-600 mt-1">Track attendance and assessment results</p>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <UserCheck className="w-6 h-6 text-blue-600" />
           </div>
-          <button 
-            onClick={() => setShowModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <UserCheck size={16} />
-            Mark Attendance
-          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Training Attendance & Assessment</h2>
+            <p className="text-gray-600 mt-1">Track attendance and assessment results for training sessions</p>
+          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600">Total Sessions</p>
-                <p className="text-2xl font-semibold text-blue-900">{attendanceRecords.length}</p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Sessions</p>
+              <p className="text-2xl font-semibold text-blue-900">{attendanceRecords.length}</p>
             </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600">Present</p>
-                <p className="text-2xl font-semibold text-green-900">{attendanceRecords.filter(r => r.status === 'Present').length}</p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Present</p>
+              <p className="text-2xl font-semibold text-green-900">{attendanceRecords.filter(r => r.status === 'Present').length}</p>
             </div>
           </div>
-          <div className="bg-red-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <XCircle className="h-8 w-8 text-red-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-600">Absent</p>
-                <p className="text-2xl font-semibold text-red-900">{attendanceRecords.filter(r => r.status === 'Absent').length}</p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <XCircle className="h-8 w-8 text-red-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-600">Absent</p>
+              <p className="text-2xl font-semibold text-red-900">{attendanceRecords.filter(r => r.status === 'Absent').length}</p>
             </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Clock className="h-8 w-8 text-yellow-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600">Pending</p>
-                <p className="text-2xl font-semibold text-yellow-900">{attendanceRecords.filter(r => r.status === 'Pending').length}</p>
-              </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Clock className="h-8 w-8 text-yellow-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-yellow-600">Pending</p>
+              <p className="text-2xl font-semibold text-yellow-900">{attendanceRecords.filter(r => r.status === 'Pending').length}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="bg-white rounded-lg shadow-sm">
+        {/* Header Actions */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-end">
+            <button 
+              onClick={() => setShowModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <UserCheck size={16} />
+              Mark Attendance
+            </button>
           </div>
-        ) : attendanceRecords.length === 0 ? (
-          <div className="text-center py-12">
-            <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No attendance records</h3>
-            <p className="mt-1 text-sm text-gray-500">Attendance records will appear here when training sessions are conducted.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Program</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessment Score</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {attendanceRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{record.employee_name}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{record.program_title}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{new Date(record.session_date).toLocaleDateString()}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        record.status === 'Present' ? 'bg-green-100 text-green-800' :
-                        record.status === 'Absent' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {record.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {record.assessment_score ? `${record.assessment_score}%` : 'N/A'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        record.completion_status === 'Completed' ? 'bg-green-100 text-green-800' :
-                        record.completion_status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {record.completion_status || 'Not Started'}
-                      </span>
-                    </td>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : attendanceRecords.length === 0 ? (
+            <div className="text-center py-12">
+              <Users className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No attendance records</h3>
+              <p className="mt-1 text-sm text-gray-500">Attendance records will appear here when training sessions are conducted.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Program</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessment Score</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {attendanceRecords.map((record) => (
+                    <tr key={record.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{record.employee_name}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{record.program_title}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{new Date(record.session_date).toLocaleDateString()}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          record.status === 'Present' ? 'bg-green-100 text-green-800' :
+                          record.status === 'Absent' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {record.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {record.assessment_score ? `${record.assessment_score}%` : 'N/A'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          record.completion_status === 'Completed' ? 'bg-green-100 text-green-800' :
+                          record.completion_status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {record.completion_status || 'Not Started'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Mark Attendance Modal */}

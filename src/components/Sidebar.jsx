@@ -14,7 +14,6 @@ import {
   GraduationCap,
   Shield,
   LogOut,
-  BarChart3,
   ChevronLeft,
   Briefcase,
 } from "lucide-react";
@@ -507,7 +506,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
           )}
         </div>
 
-        {/* HR Operations & Workforce Management */}
+        {/* HR Management */}
         <Link
           to="/hr"
           className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
@@ -517,10 +516,10 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
               ? "bg-white/20 font-semibold"
               : ""
           }`}
-          title={isCollapsed ? "HR & Workforce Management" : ""}
+          title={isCollapsed ? "HR Management" : ""}
         >
-          <Briefcase size={20} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">HR & Workforce Management</span>}
+          <Users size={20} />
+          {!isCollapsed && <span className="text-sm whitespace-nowrap">HR Management</span>}
         </Link>
 
         {/* Performance Management (PMS) */}
@@ -552,45 +551,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
         </Link>
 
         {/* Analytics & Reports */}
-        <div>
-          <button
-            onClick={() => !isCollapsed && setOpenAnalyticsMenu(!openAnalyticsMenu)}
-            className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
-            title={isCollapsed ? "Analytics & Reports" : ""}
-          >
-            <span className={`flex items-center ${isCollapsed ? '' : 'space-x-4'}`}>
-              <BarChart3 size={16} />
-              {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Analytics & Reports</span>}
-            </span>
-            {!isCollapsed && (openAnalyticsMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
-          </button>
-
-          {openAnalyticsMenu && !isCollapsed && (
-            <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
-              <Link
-                to="/analytics/attrition"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/analytics/attrition"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Attrition Analysis</span>
-              </Link>
-
-              <Link
-                to="/analytics/manpower"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/analytics/manpower"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Manpower Compliance</span>
-              </Link>
-            </div>
-          )}
-        </div>
+        {/* REMOVED - Analytics & Reports section */}
 
         {/* Compliance Module */}
         <Link

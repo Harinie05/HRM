@@ -13,7 +13,7 @@ const RecruitmentDashboard = () => {
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {/* Job Requisitions */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Job Requisitions</h3>
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -27,7 +27,7 @@ const RecruitmentDashboard = () => {
         </div>
 
         {/* Applied Candidates */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Applied Candidates</h3>
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -41,7 +41,7 @@ const RecruitmentDashboard = () => {
         </div>
 
         {/* Onboarded Candidates */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Onboarded Candidates</h3>
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -55,7 +55,7 @@ const RecruitmentDashboard = () => {
         </div>
 
         {/* Completed Jobs */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Completed Jobs</h3>
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -72,7 +72,7 @@ const RecruitmentDashboard = () => {
       {/* Secondary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Selected Candidates */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Selected Candidates</h3>
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -86,7 +86,7 @@ const RecruitmentDashboard = () => {
         </div>
 
         {/* Rejected Candidates */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-600 font-medium">Rejected Candidates</h3>
             <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">

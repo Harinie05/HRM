@@ -403,19 +403,24 @@ export default function PayrollRun() {
   const totalRunsCount = runs.length;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b border-gray-200 rounded-t-2xl">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Payroll Run</h2>
-            <p className="text-gray-600 mt-1">Process monthly payroll using attendance & leave data</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-green-100 rounded-xl">
+              <Play className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Payroll Run</h2>
+              <p className="text-gray-600 mt-1">Process monthly payroll using attendance & leave data</p>
+            </div>
           </div>
           <button 
             onClick={() => setShowRunModal(true)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            <Play size={16} />
+            <Play size={18} />
             Run Payroll
           </button>
         </div>
@@ -447,33 +452,39 @@ export default function PayrollRun() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600">Active Employees</p>
-                <p className="text-2xl font-semibold text-blue-900">{activeEmployeesCount}</p>
+      {/* Enhanced Stats Cards */}
+      <div className="p-6 border-b border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Active Employees</p>
+                <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-xl">
+                <Users className="h-10 w-10 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Play className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600">Completed Runs</p>
-                <p className="text-2xl font-semibold text-green-900">{completedRunsCount}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
+                <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
+              </div>
+              <div className="p-3 bg-green-50 rounded-xl">
+                <Play className="h-10 w-10 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-yellow-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600">This Month</p>
-                <p className="text-2xl font-semibold text-yellow-900">{thisMonthCount}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">This Month</p>
+                <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
+              </div>
+              <div className="p-3 bg-yellow-50 rounded-xl">
+                <Calendar className="h-10 w-10 text-yellow-600" />
               </div>
             </div>
           </div>

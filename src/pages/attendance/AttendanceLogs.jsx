@@ -543,23 +543,30 @@ export default function AttendanceLogs() {
       <div className="flex-1 flex flex-col">
         <Header />
         
-        <div className="p-6">
+        <div className="p-6 pt-24">
           <div className="text-sm text-gray-500 mb-3">Attendance · Logs & Regularization</div>
           
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-blue-100 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl">
-                <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                  Attendance Logs & Regularization
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  Advanced attendance tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting
-                </p>
+          <div className="mb-6">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-100 rounded-xl">
+                    <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Attendance Logs & Regularization</h1>
+                    <p className="text-gray-600 mt-1">Advanced attendance tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{logs.length}</div>
+                    <div className="text-sm text-gray-500">Total Records</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

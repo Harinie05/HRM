@@ -1,105 +1,110 @@
 import { useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { 
-  BookOpen, 
-  Calendar, 
-  FileText, 
-  Users, 
-  Award 
-} from "lucide-react";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import { useLocation } from "react-router-dom";
+import Layout from "../../components/Layout";
+
+// Pages
+import TrainingPrograms from "./TrainingPrograms";
+import TrainingCalendar from "./TrainingCalendar";
+import TrainingRequests from "./TrainingRequests";
+import TrainingAttendance from "./TrainingAttendance";
+import TrainingCertificates from "./TrainingCertificates";
 
 export default function TrainingLayout() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState(() => {
-    const path = location.pathname;
-    if (path.includes('programs')) return 'programs';
-    if (path.includes('calendar')) return 'calendar';
-    if (path.includes('requests')) return 'requests';
-    if (path.includes('attendance')) return 'attendance';
-    if (path.includes('certificates')) return 'certificates';
-    return 'programs';
-  });
+  
+  const initialTab = location.state?.tab || "Training Programs";
+  const [tab, setTab] = useState(initialTab);
 
   const tabs = [
-    {
-      id: 'programs',
-      label: 'Training Programs',
-      icon: BookOpen,
-      path: '/training/programs'
-    },
-    {
-      id: 'calendar',
-      label: 'Training Calendar',
-      icon: Calendar,
-      path: '/training/calendar'
-    },
-    {
-      id: 'requests',
-      label: 'Training Requests',
-      icon: FileText,
-      path: '/training/requests'
-    },
-    {
-      id: 'attendance',
-      label: 'Attendance & Assessment',
-      icon: Users,
-      path: '/training/attendance'
-    },
-    {
-      id: 'certificates',
-      label: 'Certificates',
-      icon: Award,
-      path: '/training/certificates'
-    }
+    "Training Programs",
+    "Training Calendar", 
+    "Training Requests",
+    "Attendance & Assessment",
+    "Certificates"
   ];
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab.id);
-    navigate(tab.path);
-  };
-
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      {/* SIDEBAR */}
-      <Sidebar />
-      
-      {/* CONTENT WRAPPER */}
-      <div className="flex-1 flex flex-col">
-        {/* HEADER */}
-        <Header />
+    <Layout breadcrumb="Training & Development">
+      <div className="w-full overflow-hidden">
+        {/* Hero Section */}
+        <div className="mb-3 sm:mb-4 px-3 sm:px-4">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-white relative overflow-hidden">
+            <div className="flex items-start justify-between">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center mb-2">
+                  <div className="bg-white/20 rounded-lg p-1 sm:p-1.5 mr-2 flex-shrink-0">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <span className="bg-white/20 px-2 py-1 rounded-full text-xs font-medium">
+                    Employee Learning & Development
+                  </span>
+                </div>
+                
+                <h1 className="text-lg sm:text-xl font-bold mb-1">
+                  Training & Development
+                </h1>
+                
+                <p className="text-white/90 text-xs mb-2 sm:mb-3">
+                  Manage training programs, schedules, and employee development.
+                </p>
+                
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <button className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded-lg text-xs font-medium transition-colors">
+                    Learning System
+                  </button>
+                  <span className="text-white/80 text-xs hidden sm:inline">
+                    Used by HR / Employees / Trainers
+                  </span>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 text-center min-w-[100px] sm:min-w-[120px] flex-shrink-0">
+                <p className="text-white/80 text-xs font-medium uppercase tracking-wide mb-1">
+                  MODULES
+                </p>
+                <p className="text-xl sm:text-2xl font-bold mb-1">
+                  {tabs.length}
+                </p>
+                <p className="text-white/70 text-xs">
+                  Training management tools
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         
-        {/* TOP TABS */}
-        <div className="bg-white border-b border-gray-200 px-6 pt-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Training & Development</h1>
-          <div className="flex space-x-8">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
+        {/* Tab Navigation */}
+        <div className="mb-3 sm:mb-4 px-3 sm:px-4">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div className="flex border-b bg-gradient-to-r from-gray-50 to-indigo-50 overflow-x-auto scrollbar-hide">
+              {tabs.map((tabName) => (
                 <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab)}
-                  className={`pb-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                    activeTab === tab.id
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  key={tabName}
+                  onClick={() => setTab(tabName)}
+                  className={`px-3 sm:px-6 py-3 sm:py-5 text-xs sm:text-sm font-semibold border-b-3 transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
+                    tab === tabName
+                      ? 'border-indigo-500 text-indigo-600 bg-white shadow-lg transform -translate-y-1'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
                   }`}
                 >
-                  <Icon size={16} />
-                  {tab.label}
+                  {tabName}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* INNER PAGE CONTENT */}
-        <div className="p-6">
-          <Outlet />
+        {/* Content */}
+        <div className="px-3 sm:px-4">
+          {tab === "Training Programs" && <TrainingPrograms />}
+          {tab === "Training Calendar" && <TrainingCalendar />}
+          {tab === "Training Requests" && <TrainingRequests />}
+          {tab === "Attendance & Assessment" && <TrainingAttendance />}
+          {tab === "Certificates" && <TrainingCertificates />}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

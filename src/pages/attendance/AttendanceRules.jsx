@@ -105,23 +105,30 @@ export default function AttendanceRules() {
       <div className="flex-1 flex flex-col">
         <Header />
         
-        <div className="p-6">
+        <div className="p-6 pt-24">
           <div className="text-sm text-gray-500 mb-3">Attendance · Rules, Policy & Locations</div>
           
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-purple-100 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl">
-                <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                  Attendance Rules & Policies
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  Advanced rule engine for attendance policies, location management, and compliance settings
-                </p>
+          <div className="mb-6">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-100 rounded-xl">
+                    <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Attendance Rules & Policies</h1>
+                    <p className="text-gray-600 mt-1">Advanced rule engine for attendance policies, location management, and compliance settings</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{rules.length + locations.length}</div>
+                    <div className="text-sm text-gray-500">Total Rules</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -131,12 +138,7 @@ export default function AttendanceRules() {
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
               <div className="p-8 border-b bg-gradient-to-r from-purple-50 to-indigo-50 flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <h2 className="text-xl font-bold text-gray-800">
                     Attendance Rules
                   </h2>
                   <p className="text-sm text-gray-600 mt-2">Configure late, early, and overtime policies</p>
@@ -209,12 +211,7 @@ export default function AttendanceRules() {
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
               <div className="p-8 border-b bg-gradient-to-r from-indigo-50 to-blue-50 flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <div className="p-2 bg-indigo-100 rounded-lg">
-                      <svg className="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
-                      </svg>
-                    </div>
+                  <h2 className="text-xl font-bold text-gray-800">
                     Attendance Locations
                   </h2>
                   <p className="text-sm text-gray-600 mt-2">Manage attendance capture locations</p>

@@ -243,92 +243,99 @@ export default function Lifecycle() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+      {/* Enhanced Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Promotions</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
+            </div>
+            <div className="p-2 bg-green-50 rounded-lg">
               <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Promotions</p>
-              <p className="text-xl font-semibold text-gray-900">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
-            </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Transfers</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
+            </div>
+            <div className="p-2 bg-blue-50 rounded-lg">
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Transfers</p>
-              <p className="text-xl font-semibold text-gray-900">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
-            </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Pending</p>
+              <p className="text-xl font-bold text-gray-900">{pendingActions.length}</p>
+            </div>
+            <div className="p-2 bg-yellow-50 rounded-lg">
               <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Pending</p>
-              <p className="text-xl font-semibold text-gray-900">{pendingActions.length}</p>
-            </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Demotions</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
+            </div>
+            <div className="p-2 bg-orange-50 rounded-lg">
               <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Demotions</p>
-              <p className="text-xl font-semibold text-gray-900">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
-            </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Resignations</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
+            </div>
+            <div className="p-2 bg-red-50 rounded-lg">
               <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Resignations</p>
-              <p className="text-xl font-semibold text-gray-900">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
-            </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex items-center">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Terminations</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
+            </div>
             <div className="p-2 bg-gray-100 rounded-lg">
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">Terminations</p>
-              <p className="text-xl font-semibold text-gray-900">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Action Form */}
-      <div className="bg-white rounded-lg shadow-sm border">
-        <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Employee Lifecycle Action</h3>
+      {/* Enhanced Action Form */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-100 rounded-xl">
+              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">Employee Lifecycle Action</h3>
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Shield, Users, TrendingUp, Award, CheckCircle } from "lucide-react";
 import api from "../../api";
 
 export default function NABHCompliance() {
@@ -57,8 +58,6 @@ export default function NABHCompliance() {
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log('Loading NABH compliance data');
-        
         const tenant = localStorage.getItem("tenant_db");
         const token = localStorage.getItem("access_token");
         
@@ -113,11 +112,9 @@ export default function NABHCompliance() {
         setEmployees(allEmployees);
         
         const standardsRes = await api.get("/api/compliance/nabh/standards");
-        console.log('NABH standards loaded:', standardsRes.data);
         setNabhStandards(standardsRes.data);
         
         const complianceRes = await api.get("/api/compliance/nabh");
-        console.log('NABH compliance records loaded:', complianceRes.data);
         setComplianceRecords(complianceRes.data);
       } catch (err) {
         console.log("No NABH compliance data found", err);
@@ -128,7 +125,6 @@ export default function NABHCompliance() {
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    console.log(`NABH compliance field changed: ${name} = ${type === 'checkbox' ? checked : value}`);
     setForm({ 
       ...form, 
       [name]: type === 'checkbox' ? checked : value 
@@ -138,9 +134,7 @@ export default function NABHCompliance() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      console.log('Saving NABH compliance:', form);
       const res = await api.post("/api/compliance/nabh", form);
-      console.log('NABH compliance saved:', res.data);
       alert("NABH Compliance Record Saved Successfully");
       
       // Reset form
@@ -208,596 +202,651 @@ export default function NABHCompliance() {
   const compliancePercentage = calculateCompliancePercentage();
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">NABH HRM Compliance Management</h2>
-
-      {/* NABH Standards Display */}
-      {nabhStandards && (
-        <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <h3 className="text-lg font-medium mb-2">NABH HR Standards Overview</h3>
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>Total Standards: {nabhStandards.total_standards || 12}</div>
-            <div>Mandatory Requirements: {nabhStandards.mandatory_requirements || 8}</div>
-            <div>Minimum Compliance: {nabhStandards.minimum_compliance || 85}%</div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <Shield className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">NABH HRM Compliance Management</h2>
+            <p className="text-gray-600 mt-1">Ensure healthcare staff compliance with NABH accreditation standards</p>
           </div>
         </div>
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-
-        {/* Basic Employee Information */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Employee Information</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Employee ID <span className="text-red-500">*</span>
-              </label>
-              <select
-                required
-                name="employee_id"
-                value={form.employee_id}
-                onChange={(e) => {
-                  const selectedId = e.target.value;
-                  const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
-                  if (selectedEmployee) {
-                    setForm({
-                      ...form,
-                      employee_id: selectedEmployee.employee_id,
-                      employee_name: selectedEmployee.name,
-                      department: selectedEmployee.department,
-                      designation: selectedEmployee.designation
-                    });
-                  } else {
-                    setForm({ ...form, employee_id: selectedId });
-                  }
-                }}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              >
-                <option value="">Select Employee ID</option>
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.employee_id}>
-                    {employee.employee_id}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Employee Name <span className="text-red-500">*</span>
-              </label>
-              <select
-                required
-                name="employee_name"
-                value={form.employee_name}
-                onChange={(e) => {
-                  const selectedName = e.target.value;
-                  const selectedEmployee = employees.find(emp => emp.name === selectedName);
-                  if (selectedEmployee) {
-                    setForm({
-                      ...form,
-                      employee_id: selectedEmployee.employee_id,
-                      employee_name: selectedEmployee.name,
-                      department: selectedEmployee.department,
-                      designation: selectedEmployee.designation
-                    });
-                  } else {
-                    setForm({ ...form, employee_name: selectedName });
-                  }
-                }}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              >
-                <option value="">Select Employee Name</option>
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Department</label>
-              <input
-                type="text"
-                name="department"
-                value={form.department}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-100"
-                placeholder="Auto-filled from employee selection"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Designation</label>
-              <input
-                type="text"
-                name="designation"
-                value={form.designation}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-                placeholder="Enter Designation"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Joining Date</label>
-              <input
-                type="date"
-                name="joining_date"
-                value={form.joining_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Records</p>
+              <p className="text-2xl font-semibold text-blue-900">{complianceRecords.length}</p>
             </div>
           </div>
         </div>
-
-        {/* Qualification & Documentation */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Qualification & Documentation</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="staff_qualification_verified"
-                  checked={form.staff_qualification_verified}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Staff Qualification Verified</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Qualification Documents</label>
-              <input
-                type="text"
-                name="qualification_documents"
-                value={form.qualification_documents}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-                placeholder="List qualification documents"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="background_verification"
-                  checked={form.background_verification}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Background Verification Completed</span>
-              </label>
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="police_verification"
-                  checked={form.police_verification}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Police Verification Completed</span>
-              </label>
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="reference_check"
-                  checked={form.reference_check}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Reference Check Completed</span>
-              </label>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Compliant</p>
+              <p className="text-2xl font-semibold text-green-900">{complianceRecords.filter(r => r.overall_compliance_status === 'Compliant').length}</p>
             </div>
           </div>
         </div>
-
-        {/* Medical Fitness & Credentialing */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Medical Fitness & Credentialing</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="medical_fitness_done"
-                  checked={form.medical_fitness_done}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Medical Fitness Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Medical Fitness Date</label>
-              <input
-                type="date"
-                name="medical_fitness_date"
-                value={form.medical_fitness_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Medical Fitness Validity</label>
-              <input
-                type="date"
-                name="medical_fitness_validity"
-                value={form.medical_fitness_validity}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="credentialing_done"
-                  checked={form.credentialing_done}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Credentialing Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Credentialing Date</label>
-              <input
-                type="date"
-                name="credentialing_date"
-                value={form.credentialing_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Credentialing Validity</label>
-              <input
-                type="date"
-                name="credentialing_validity"
-                value={form.credentialing_validity}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <TrendingUp className="h-8 w-8 text-orange-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-orange-600">Avg Compliance</p>
+              <p className="text-2xl font-semibold text-orange-900">
+                {complianceRecords.length > 0 
+                  ? (complianceRecords.reduce((sum, r) => sum + parseFloat(r.compliance_percentage || 0), 0) / complianceRecords.length).toFixed(1)
+                  : 0}%
+              </p>
             </div>
           </div>
         </div>
-
-        {/* Training Requirements */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Training Requirements</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="orientation_training_done"
-                  checked={form.orientation_training_done}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Orientation Training Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Orientation Date</label>
-              <input
-                type="date"
-                name="orientation_date"
-                value={form.orientation_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="fire_safety_training_done"
-                  checked={form.fire_safety_training_done}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Fire Safety Training Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Fire Safety Training Date</label>
-              <input
-                type="date"
-                name="fire_safety_date"
-                value={form.fire_safety_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="infection_control_training"
-                  checked={form.infection_control_training}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Infection Control Training Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Infection Control Training Date</label>
-              <input
-                type="date"
-                name="infection_control_date"
-                value={form.infection_control_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="patient_safety_training"
-                  checked={form.patient_safety_training}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Patient Safety Training Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Patient Safety Training Date</label>
-              <input
-                type="date"
-                name="patient_safety_date"
-                value={form.patient_safety_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Award className="h-8 w-8 text-purple-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-purple-600">NABH Standards</p>
+              <p className="text-2xl font-semibold text-purple-900">{nabhStandards?.total_standards || 12}</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Performance & Monitoring */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Performance & Monitoring</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="performance_monitoring_done"
-                  checked={form.performance_monitoring_done}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Performance Monitoring Implemented</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Last Appraisal Date</label>
-              <input
-                type="date"
-                name="last_appraisal_date"
-                value={form.last_appraisal_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Next Appraisal Due</label>
-              <input
-                type="date"
-                name="next_appraisal_due"
-                value={form.next_appraisal_due}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="competency_assessment"
-                  checked={form.competency_assessment}
-                  onChange={handleChange}
-                  className="rounded"
-                />
-                <span className="text-sm font-medium">Competency Assessment Completed</span>
-              </label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Competency Assessment Date</label>
-              <input
-                type="date"
-                name="competency_date"
-                value={form.competency_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* NABH Standards Display */}
+        {nabhStandards && (
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <h3 className="text-lg font-medium mb-2">NABH HR Standards Overview</h3>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div>Total Standards: {nabhStandards.total_standards || 12}</div>
+              <div>Mandatory Requirements: {nabhStandards.mandatory_requirements || 8}</div>
+              <div>Minimum Compliance: {nabhStandards.minimum_compliance || 85}%</div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Compliance Status */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4">Compliance Status</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-1">Overall Compliance Status</label>
-              <select
-                name="overall_compliance_status"
-                value={form.overall_compliance_status}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              >
-                <option value="Pending">Pending</option>
-                <option value="Compliant">Compliant</option>
-                <option value="Non-Compliant">Non-Compliant</option>
-                <option value="Partially Compliant">Partially Compliant</option>
-                <option value="Under Review">Under Review</option>
-              </select>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Basic Employee Information */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Employee Information</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Employee ID <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  name="employee_id"
+                  value={form.employee_id}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
+                    const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
+                    if (selectedEmployee) {
+                      setForm({
+                        ...form,
+                        employee_id: selectedEmployee.employee_id,
+                        employee_name: selectedEmployee.name,
+                        department: selectedEmployee.department,
+                        designation: selectedEmployee.designation
+                      });
+                    } else {
+                      setForm({ ...form, employee_id: selectedId });
+                    }
+                  }}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Employee ID</option>
+                  {employees.map((employee) => (
+                    <option key={employee.id} value={employee.employee_id}>
+                      {employee.employee_id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Employee Name <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  name="employee_name"
+                  value={form.employee_name}
+                  onChange={(e) => {
+                    const selectedName = e.target.value;
+                    const selectedEmployee = employees.find(emp => emp.name === selectedName);
+                    if (selectedEmployee) {
+                      setForm({
+                        ...form,
+                        employee_id: selectedEmployee.employee_id,
+                        employee_name: selectedEmployee.name,
+                        department: selectedEmployee.department,
+                        designation: selectedEmployee.designation
+                      });
+                    } else {
+                      setForm({ ...form, employee_name: selectedName });
+                    }
+                  }}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Employee Name</option>
+                  {employees.map((employee) => (
+                    <option key={employee.id} value={employee.name}>
+                      {employee.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Department</label>
+                <input
+                  type="text"
+                  name="department"
+                  value={form.department}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
+                  placeholder="Auto-filled from employee selection"
+                  readOnly
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Designation</label>
+                <input
+                  type="text"
+                  name="designation"
+                  value={form.designation}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter Designation"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Joining Date</label>
+                <input
+                  type="date"
+                  name="joining_date"
+                  value={form.joining_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Last Audit Date</label>
-              <input
-                type="date"
-                name="last_audit_date"
-                value={form.last_audit_date}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+          {/* Qualification & Documentation */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Qualification & Documentation</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="staff_qualification_verified"
+                    checked={form.staff_qualification_verified}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Staff Qualification Verified</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Qualification Documents</label>
+                <input
+                  type="text"
+                  name="qualification_documents"
+                  value={form.qualification_documents}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="List qualification documents"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="background_verification"
+                    checked={form.background_verification}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Background Verification Completed</span>
+                </label>
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="police_verification"
+                    checked={form.police_verification}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Police Verification Completed</span>
+                </label>
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="reference_check"
+                    checked={form.reference_check}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Reference Check Completed</span>
+                </label>
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Next Audit Due</label>
-              <input
-                type="date"
-                name="next_audit_due"
-                value={form.next_audit_due}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50"
-              />
+          {/* Medical Fitness & Credentialing */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Medical Fitness & Credentialing</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="medical_fitness_done"
+                    checked={form.medical_fitness_done}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Medical Fitness Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Medical Fitness Date</label>
+                <input
+                  type="date"
+                  name="medical_fitness_date"
+                  value={form.medical_fitness_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Medical Fitness Validity</label>
+                <input
+                  type="date"
+                  name="medical_fitness_validity"
+                  value={form.medical_fitness_validity}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="credentialing_done"
+                    checked={form.credentialing_done}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Credentialing Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Credentialing Date</label>
+                <input
+                  type="date"
+                  name="credentialing_date"
+                  value={form.credentialing_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Credentialing Validity</label>
+                <input
+                  type="date"
+                  name="credentialing_validity"
+                  value={form.credentialing_validity}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
+          </div>
 
-            <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">Remarks</label>
-              <textarea
-                name="remarks"
-                value={form.remarks}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 bg-gray-50 h-24"
-                placeholder="Enter compliance remarks or notes"
-              />
+          {/* Training Requirements */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Training Requirements</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="orientation_training_done"
+                    checked={form.orientation_training_done}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Orientation Training Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Orientation Date</label>
+                <input
+                  type="date"
+                  name="orientation_date"
+                  value={form.orientation_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="fire_safety_training_done"
+                    checked={form.fire_safety_training_done}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Fire Safety Training Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Fire Safety Training Date</label>
+                <input
+                  type="date"
+                  name="fire_safety_date"
+                  value={form.fire_safety_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="infection_control_training"
+                    checked={form.infection_control_training}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Infection Control Training Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Infection Control Training Date</label>
+                <input
+                  type="date"
+                  name="infection_control_date"
+                  value={form.infection_control_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="patient_safety_training"
+                    checked={form.patient_safety_training}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Patient Safety Training Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Patient Safety Training Date</label>
+                <input
+                  type="date"
+                  name="patient_safety_date"
+                  value={form.patient_safety_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
+          </div>
 
-            {/* Real-time Compliance Percentage */}
-            <div className="col-span-2 bg-green-50 p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Compliance Score</h4>
-              <div className="flex items-center space-x-4">
-                <div className="text-2xl font-bold text-green-600">{compliancePercentage}%</div>
-                <div className="flex-1 bg-gray-200 rounded-full h-4">
-                  <div 
-                    className={`h-4 rounded-full ${
-                      compliancePercentage >= 85 ? 'bg-green-500' :
-                      compliancePercentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${compliancePercentage}%` }}
-                  ></div>
-                </div>
-                <div className={`text-sm font-medium ${
-                  compliancePercentage >= 85 ? 'text-green-600' :
-                  compliancePercentage >= 70 ? 'text-yellow-600' : 'text-red-600'
-                }`}>
-                  {compliancePercentage >= 85 ? 'Compliant' :
-                   compliancePercentage >= 70 ? 'Partially Compliant' : 'Non-Compliant'}
+          {/* Performance & Monitoring */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Performance & Monitoring</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="performance_monitoring_done"
+                    checked={form.performance_monitoring_done}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Performance Monitoring Implemented</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Last Appraisal Date</label>
+                <input
+                  type="date"
+                  name="last_appraisal_date"
+                  value={form.last_appraisal_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Next Appraisal Due</label>
+                <input
+                  type="date"
+                  name="next_appraisal_due"
+                  value={form.next_appraisal_due}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="competency_assessment"
+                    checked={form.competency_assessment}
+                    onChange={handleChange}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Competency Assessment Completed</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Competency Assessment Date</label>
+                <input
+                  type="date"
+                  name="competency_date"
+                  value={form.competency_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Compliance Status */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold mb-4">Compliance Status</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium mb-1">Overall Compliance Status</label>
+                <select
+                  name="overall_compliance_status"
+                  value={form.overall_compliance_status}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Compliant">Compliant</option>
+                  <option value="Non-Compliant">Non-Compliant</option>
+                  <option value="Partially Compliant">Partially Compliant</option>
+                  <option value="Under Review">Under Review</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Last Audit Date</label>
+                <input
+                  type="date"
+                  name="last_audit_date"
+                  value={form.last_audit_date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Next Audit Due</label>
+                <input
+                  type="date"
+                  name="next_audit_due"
+                  value={form.next_audit_due}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-1">Remarks</label>
+                <textarea
+                  name="remarks"
+                  value={form.remarks}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+                  placeholder="Enter compliance remarks or notes"
+                />
+              </div>
+
+              {/* Real-time Compliance Percentage */}
+              <div className="col-span-2 bg-green-50 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">Compliance Score</h4>
+                <div className="flex items-center space-x-4">
+                  <div className="text-2xl font-bold text-green-600">{compliancePercentage}%</div>
+                  <div className="flex-1 bg-gray-200 rounded-full h-4">
+                    <div 
+                      className={`h-4 rounded-full ${
+                        compliancePercentage >= 85 ? 'bg-green-500' :
+                        compliancePercentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}
+                      style={{ width: `${compliancePercentage}%` }}
+                    ></div>
+                  </div>
+                  <div className={`text-sm font-medium ${
+                    compliancePercentage >= 85 ? 'text-green-600' :
+                    compliancePercentage >= 70 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>
+                    {compliancePercentage >= 85 ? 'Compliant' :
+                     compliancePercentage >= 70 ? 'Partially Compliant' : 'Non-Compliant'}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Submit */}
-        <div className="text-center">
-          <button
-            type="submit"
-            className="bg-blue-600 px-8 py-3 text-white rounded-lg hover:bg-blue-700 text-lg"
-          >
-            Save NABH Compliance Record
-          </button>
-        </div>
-
-      </form>
-
-      {/* Display compliance records */}
-      {complianceRecords.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-4">NABH Compliance Records</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Employee</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Department</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Compliance %</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Status</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Last Audit</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Next Audit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {complianceRecords.map((record, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div>
-                        <div className="font-medium">{record.employee_name}</div>
-                        <div className="text-gray-500 text-xs">{record.employee_id}</div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{record.department}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">{record.compliance_percentage}%</span>
-                        <div className="w-16 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              record.compliance_percentage >= 85 ? 'bg-green-500' :
-                              record.compliance_percentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}
-                            style={{ width: `${record.compliance_percentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
-                        record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
-                        record.overall_compliance_status === 'Partially Compliant' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {record.overall_compliance_status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{record.last_audit_date || 'N/A'}</td>
-                    <td className="px-4 py-2 border-b text-sm">{record.next_audit_due || 'N/A'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Submit */}
+          <div className="text-center">
+            <button
+              type="submit"
+              className="bg-blue-600 px-8 py-3 text-white rounded-lg hover:bg-blue-700 text-lg"
+            >
+              Save NABH Compliance Record
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+
+        {/* Display compliance records */}
+        {complianceRecords.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">NABH Compliance Records</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance %</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Audit</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Audit</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {complianceRecords.map((record, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-sm">
+                        <div>
+                          <div className="font-medium">{record.employee_name}</div>
+                          <div className="text-gray-500 text-xs">{record.employee_id}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm">{record.department}</td>
+                      <td className="px-4 py-2 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium">{record.compliance_percentage}%</span>
+                          <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${
+                                record.compliance_percentage >= 85 ? 'bg-green-500' :
+                                record.compliance_percentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${record.compliance_percentage}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                          record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                          record.overall_compliance_status === 'Partially Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {record.overall_compliance_status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-sm">{record.last_audit_date || 'N/A'}</td>
+                      <td className="px-4 py-2 text-sm">{record.next_audit_due || 'N/A'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Eye, Users, Link } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Users, Link, DollarSign } from "lucide-react";
 import api from "../../api";
 
 export default function SalaryStructure() {
@@ -240,34 +240,39 @@ export default function SalaryStructure() {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b border-gray-200 rounded-t-2xl">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Salary Structure</h2>
-            <p className="text-gray-600 mt-1">Define CTC structure, earnings and deductions</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <DollarSign className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Salary Structure</h2>
+              <p className="text-gray-600 mt-1">Define CTC structure, earnings and deductions</p>
+            </div>
           </div>
           <button 
             onClick={() => handleOpenModal()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            <Plus size={16} />
+            <Plus size={18} />
             Add Salary Structure
           </button>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="p-6 border-b border-gray-200">
+      {/* Enhanced Search */}
+      <div className="p-6 border-b border-gray-200 bg-gray-50">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
             placeholder="Search salary structures..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+            className="pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full shadow-sm"
           />
         </div>
       </div>
@@ -371,11 +376,17 @@ export default function SalaryStructure() {
         )}
       </div>
 
-      {/* Stats Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <span>Total: {structures.length} salary structures</span>
-          <span>Active: {structures.filter(s => s.is_active).length}</span>
+      {/* Enhanced Stats Footer */}
+      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-200 rounded-b-2xl">
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+            <span className="text-gray-700 font-medium">Total: {structures.length} salary structures</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-gray-700 font-medium">Active: {structures.filter(s => s.is_active).length}</span>
+          </div>
         </div>
       </div>
 

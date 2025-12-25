@@ -1,37 +1,54 @@
 import React from 'react';
+import { Shield, FileText, AlertTriangle, CheckCircle, Clock, Users, Calendar, TrendingUp } from 'lucide-react';
 
 const ComplianceDashboard = () => {
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Compliance Dashboard</h1>
-      </div>
-
-      {/* Compliance Metrics */}
+    <div className="space-y-6">
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-green-600">95%</div>
-          <div className="text-sm text-gray-600">Overall Compliance</div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Shield className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Overall Compliance</p>
+              <p className="text-2xl font-semibold text-green-900">95%</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-blue-600">12</div>
-          <div className="text-sm text-gray-600">Active Policies</div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <FileText className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Active Policies</p>
+              <p className="text-2xl font-semibold text-blue-900">12</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-orange-600">3</div>
-          <div className="text-sm text-gray-600">Pending Actions</div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Clock className="h-8 w-8 text-orange-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-orange-600">Pending Actions</p>
+              <p className="text-2xl font-semibold text-orange-900">3</p>
+            </div>
+          </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
-          <div className="text-2xl font-bold text-red-600">1</div>
-          <div className="text-sm text-gray-600">Overdue Items</div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <AlertTriangle className="h-8 w-8 text-red-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-600">Overdue Items</p>
+              <p className="text-2xl font-semibold text-red-900">1</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Statutory Compliance */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold mb-4">Statutory Compliance Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">PF Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
@@ -39,7 +56,7 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-gray-600">Last filed: Dec 2024</div>
             <div className="text-sm text-gray-600">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">ESI Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
@@ -47,7 +64,7 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-gray-600">Last filed: Dec 2024</div>
             <div className="text-sm text-gray-600">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">Professional Tax</span>
               <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Due Soon</span>
@@ -60,7 +77,7 @@ const ComplianceDashboard = () => {
 
       {/* Labour Law Compliance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-4">Labour Law Registers</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -82,7 +99,7 @@ const ComplianceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold mb-4">NABH Compliance (Healthcare)</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -106,7 +123,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Compliance Calendar */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold mb-4">Upcoming Compliance Deadlines</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 border-l-4 border-red-500 bg-red-50">
@@ -141,7 +158,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Action Items */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold mb-4">Immediate Action Required</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 border-l-4 border-red-500 bg-red-50">

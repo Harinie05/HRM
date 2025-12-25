@@ -165,19 +165,24 @@ export default function PayrollReports() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 border-b border-gray-200 rounded-t-2xl">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Reports & Compliance</h2>
-            <p className="text-gray-600 mt-1">View payroll summary, PF/ESI/TDS and compliance reports</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-100 rounded-xl">
+              <BarChart3 className="w-6 h-6 text-indigo-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Reports & Compliance</h2>
+              <p className="text-gray-600 mt-1">View payroll summary, PF/ESI/TDS and compliance reports</p>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
             >
               <option value="current-month">Current Month</option>
               <option value="last-month">Last Month</option>
@@ -187,69 +192,81 @@ export default function PayrollReports() {
             <button 
               onClick={handleExportReport}
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Download size={16} />
+              <Download size={18} />
               {loading ? "Loading..." : "Export Report"}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="p-6 border-b border-gray-200">
+      {/* Enhanced Stats Overview */}
+      <div className="p-6 border-b border-gray-200 bg-gray-50">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-blue-600">Employees</p>
-                <p className="text-2xl font-semibold text-blue-900">{stats.totalEmployees}</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Employees</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalEmployees}</p>
+              </div>
+              <div className="p-2 bg-blue-50 rounded-lg">
+                <Users className="h-8 w-8 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <DollarSign className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-600">Total Payroll</p>
-                <p className="text-2xl font-semibold text-green-900">₹{(stats.totalPayroll / 100000).toFixed(1)}L</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Total Payroll</p>
+                <p className="text-2xl font-bold text-gray-900">₹{(stats.totalPayroll / 100000).toFixed(1)}L</p>
+              </div>
+              <div className="p-2 bg-green-50 rounded-lg">
+                <DollarSign className="h-8 w-8 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <TrendingUp className="h-8 w-8 text-purple-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-purple-600">Avg Salary</p>
-                <p className="text-2xl font-semibold text-purple-900">₹{(stats.avgSalary / 1000).toFixed(0)}K</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">Avg Salary</p>
+                <p className="text-2xl font-bold text-gray-900">₹{(stats.avgSalary / 1000).toFixed(0)}K</p>
+              </div>
+              <div className="p-2 bg-purple-50 rounded-lg">
+                <TrendingUp className="h-8 w-8 text-purple-600" />
               </div>
             </div>
           </div>
-          <div className="bg-orange-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <BarChart3 className="h-8 w-8 text-orange-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-orange-600">PF Contribution</p>
-                <p className="text-2xl font-semibold text-orange-900">₹{(stats.pfContribution / 1000).toFixed(0)}K</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">PF Contribution</p>
+                <p className="text-2xl font-bold text-gray-900">₹{(stats.pfContribution / 1000).toFixed(0)}K</p>
+              </div>
+              <div className="p-2 bg-orange-50 rounded-lg">
+                <BarChart3 className="h-8 w-8 text-orange-600" />
               </div>
             </div>
           </div>
-          <div className="bg-red-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <FileText className="h-8 w-8 text-red-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-600">ESI Contribution</p>
-                <p className="text-2xl font-semibold text-red-900">₹{(stats.esiContribution / 1000).toFixed(0)}K</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">ESI Contribution</p>
+                <p className="text-2xl font-bold text-gray-900">₹{(stats.esiContribution / 1000).toFixed(0)}K</p>
+              </div>
+              <div className="p-2 bg-red-50 rounded-lg">
+                <FileText className="h-8 w-8 text-red-600" />
               </div>
             </div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-yellow-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-yellow-600">TDS Deducted</p>
-                <p className="text-2xl font-semibold text-yellow-900">₹{(stats.tdsDeducted / 1000).toFixed(0)}K</p>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">TDS Deducted</p>
+                <p className="text-2xl font-bold text-gray-900">₹{(stats.tdsDeducted / 1000).toFixed(0)}K</p>
+              </div>
+              <div className="p-2 bg-yellow-50 rounded-lg">
+                <Calendar className="h-8 w-8 text-yellow-600" />
               </div>
             </div>
           </div>

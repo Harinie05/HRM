@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DollarSign, Users, Calculator, FileText, Plus } from "lucide-react";
 import api from "../../api";
 
 export default function Statutory() {
@@ -24,8 +25,6 @@ export default function Statutory() {
   const [calculations, setCalculations] = useState([]);
   const [statutoryRules, setStatutoryRules] = useState(null);
   const [employees, setEmployees] = useState([]);
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
 
   // Load statutory rules and calculations
@@ -118,18 +117,6 @@ export default function Statutory() {
     });
   }
 
-  function selectEmployee(employee) {
-    setForm({ 
-      ...form, 
-      employee_id: employee.employee_id || employee.id.toString(),
-      employee_name: employee.name || employee.first_name + ' ' + (employee.last_name || ''),
-      department: employee.department || '',
-      designation: employee.designation || ''
-    });
-    setShowDropdown(false);
-    setFilteredEmployees([]);
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     
@@ -181,7 +168,7 @@ export default function Statutory() {
       employee_id: record.employee_id,
       employee_name: record.employee_name,
       basic_salary: record.basic_salary.toString(),
-      gross_salary: record.basic_salary.toString(), // Assuming gross = basic for edit
+      gross_salary: record.basic_salary.toString(),
       pf_enabled: record.pf_amount > 0,
       pf_percentage: "12",
       esi_enabled: record.esi_amount > 0,
@@ -251,416 +238,439 @@ export default function Statutory() {
   const deductions = calculateDeductions();
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Statutory Deductions Management (PF / ESI / PT / TDS)</h2>
-
-      {/* Statutory Rules Display */}
-      {statutoryRules && (
-        <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <h3 className="text-lg font-medium mb-2">Current Statutory Rules</h3>
-          <div className="grid grid-cols-4 gap-4 text-sm">
-            <div>PF: {statutoryRules.pf_enabled ? `${statutoryRules.pf_percent}%` : 'Disabled'}</div>
-            <div>ESI: {statutoryRules.esi_enabled ? `${statutoryRules.esi_percent}%` : 'Disabled'}</div>
-            <div>PT: {statutoryRules.pt_enabled ? `₹${statutoryRules.pt_amount}` : 'Disabled'}</div>
-            <div>TDS: {statutoryRules.tds_enabled ? `${statutoryRules.tds_percent}%` : 'Disabled'}</div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <Calculator className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Statutory Deductions Management</h2>
+            <p className="text-gray-600 mt-1">Manage PF, ESI, Professional Tax, and TDS calculations</p>
           </div>
         </div>
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
-
-        {/* Employee ID */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee ID <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_id"
-            value={form.employee_id}
-            onChange={(e) => {
-              const selectedId = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_id: selectedId });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee ID</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.employee_id}>
-                {employee.employee_id}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Employee Name */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee Name <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_name"
-            value={form.employee_name}
-            onChange={(e) => {
-              const selectedName = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.name === selectedName);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_name: selectedName });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee Name</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.name}>
-                {employee.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Basic Salary */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Basic Salary <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            required
-            name="basic_salary"
-            value={form.basic_salary}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Basic Salary"
-            min="0"
-            step="0.01"
-          />
-        </div>
-
-        {/* Gross Salary */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Gross Salary <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            required
-            name="gross_salary"
-            value={form.gross_salary}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Gross Salary"
-            min="0"
-            step="0.01"
-          />
-        </div>
-
-        {/* PF Settings */}
-        <div className="col-span-2">
-          <div className="flex items-center space-x-4 mb-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="pf_enabled"
-                checked={form.pf_enabled}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-sm font-medium">Enable PF Deduction</span>
-            </label>
-            {form.pf_enabled && (
-              <div className="flex items-center space-x-2">
-                <label className="text-sm">Percentage:</label>
-                <input
-                  type="number"
-                  name="pf_percentage"
-                  value={form.pf_percentage}
-                  onChange={handleChange}
-                  className="w-20 border rounded p-1 text-sm"
-                  min="0"
-                  max="100"
-                  step="0.01"
-                />
-                <span className="text-sm">%</span>
-              </div>
-            )}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Records</p>
+              <p className="text-2xl font-semibold text-blue-900">{calculations.length}</p>
+            </div>
           </div>
         </div>
-
-        {/* ESI Settings */}
-        <div className="col-span-2">
-          <div className="flex items-center space-x-4 mb-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="esi_enabled"
-                checked={form.esi_enabled}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-sm font-medium">Enable ESI Deduction</span>
-            </label>
-            {form.esi_enabled && (
-              <div className="flex items-center space-x-2">
-                <label className="text-sm">Percentage:</label>
-                <input
-                  type="number"
-                  name="esi_percentage"
-                  value={form.esi_percentage}
-                  onChange={handleChange}
-                  className="w-20 border rounded p-1 text-sm"
-                  min="0"
-                  max="100"
-                  step="0.01"
-                />
-                <span className="text-sm">%</span>
-              </div>
-            )}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <DollarSign className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Total PF</p>
+              <p className="text-2xl font-semibold text-green-900">₹{calculations.reduce((sum, calc) => sum + (calc.pf_amount || 0), 0).toLocaleString()}</p>
+            </div>
           </div>
         </div>
-
-        {/* PT Settings */}
-        <div className="col-span-2">
-          <div className="flex items-center space-x-4 mb-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="pt_enabled"
-                checked={form.pt_enabled}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-sm font-medium">Enable Professional Tax</span>
-            </label>
-            {form.pt_enabled && (
-              <div className="flex items-center space-x-2">
-                <label className="text-sm">Amount:</label>
-                <input
-                  type="number"
-                  name="pt_amount"
-                  value={form.pt_amount}
-                  onChange={handleChange}
-                  className="w-20 border rounded p-1 text-sm"
-                  min="0"
-                  step="1"
-                />
-                <span className="text-sm">₹</span>
-              </div>
-            )}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <FileText className="h-8 w-8 text-purple-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-purple-600">Total ESI</p>
+              <p className="text-2xl font-semibold text-purple-900">₹{calculations.reduce((sum, calc) => sum + (calc.esi_amount || 0), 0).toLocaleString()}</p>
+            </div>
           </div>
         </div>
-
-        {/* TDS Settings */}
-        <div className="col-span-2">
-          <div className="flex items-center space-x-4 mb-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="tds_enabled"
-                checked={form.tds_enabled}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              <span className="text-sm font-medium">Enable TDS Deduction</span>
-            </label>
-            {form.tds_enabled && (
-              <div className="flex items-center space-x-2">
-                <label className="text-sm">Percentage:</label>
-                <input
-                  type="number"
-                  name="tds_percentage"
-                  value={form.tds_percentage}
-                  onChange={handleChange}
-                  className="w-20 border rounded p-1 text-sm"
-                  min="0"
-                  max="100"
-                  step="0.01"
-                />
-                <span className="text-sm">%</span>
-              </div>
-            )}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Calculator className="h-8 w-8 text-orange-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-orange-600">Total Deductions</p>
+              <p className="text-2xl font-semibold text-orange-900">₹{calculations.reduce((sum, calc) => sum + (calc.total_deductions || 0), 0).toLocaleString()}</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Month */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Month</label>
-          <select
-            name="month"
-            value={form.month}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-
-        {/* Year */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Year</label>
-          <input
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Year"
-            min="2020"
-            max="2030"
-          />
-        </div>
-
-        {/* Department */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Department</label>
-          <input
-            type="text"
-            name="department"
-            value={form.department}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Department"
-          />
-        </div>
-
-        {/* Designation */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Designation</label>
-          <input
-            type="text"
-            name="designation"
-            value={form.designation}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Designation"
-          />
-        </div>
-
-        {/* Real-time Calculation Display */}
-        {(form.basic_salary || form.gross_salary) && (
-          <div className="col-span-2 bg-green-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Calculated Deductions</h4>
-            <div className="grid grid-cols-5 gap-4 text-sm">
-              <div>PF: ₹{deductions.pf.toFixed(2)}</div>
-              <div>ESI: ₹{deductions.esi.toFixed(2)}</div>
-              <div>PT: ₹{deductions.pt.toFixed(2)}</div>
-              <div>TDS: ₹{deductions.tds.toFixed(2)}</div>
-              <div className="font-semibold">Total: ₹{deductions.total.toFixed(2)}</div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* Statutory Rules Display */}
+        {statutoryRules && (
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <h3 className="text-lg font-medium mb-2">Current Statutory Rules</h3>
+            <div className="grid grid-cols-4 gap-4 text-sm">
+              <div>PF: {statutoryRules.pf_enabled ? `${statutoryRules.pf_percent}%` : 'Disabled'}</div>
+              <div>ESI: {statutoryRules.esi_enabled ? `${statutoryRules.esi_percent}%` : 'Disabled'}</div>
+              <div>PT: {statutoryRules.pt_enabled ? `₹${statutoryRules.pt_amount}` : 'Disabled'}</div>
+              <div>TDS: {statutoryRules.tds_enabled ? `${statutoryRules.tds_percent}%` : 'Disabled'}</div>
             </div>
           </div>
         )}
 
-        {/* Submit */}
-        <div className="col-span-2 flex gap-4">
-          <button
-            type="submit"
-            className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
-          >
-            {editingRecord ? 'Update' : 'Calculate & Save'} Statutory Deductions
-          </button>
-          {editingRecord && (
-            <button
-              type="button"
-              onClick={cancelEdit}
-              className="bg-gray-600 px-6 py-2 text-white rounded-lg hover:bg-gray-700"
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
+          {/* Employee ID */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee ID <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_id"
+              value={form.employee_id}
+              onChange={(e) => {
+                const selectedId = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_id: selectedId });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              Cancel Edit
-            </button>
-          )}
-        </div>
-
-      </form>
-
-      {/* Display existing calculations */}
-      {calculations.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Statutory Deduction History</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Employee</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Basic Salary</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">PF</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">ESI</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">PT</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">TDS</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Total</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Period</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {calculations.map((calc, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div>
-                        <div className="font-medium">{calc.employee_name}</div>
-                        <div className="text-gray-500 text-xs">{calc.employee_id}</div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">₹{calc.basic_salary}</td>
-                    <td className="px-4 py-2 border-b text-sm">₹{calc.pf_amount}</td>
-                    <td className="px-4 py-2 border-b text-sm">₹{calc.esi_amount}</td>
-                    <td className="px-4 py-2 border-b text-sm">₹{calc.pt_amount}</td>
-                    <td className="px-4 py-2 border-b text-sm">₹{calc.tds_amount}</td>
-                    <td className="px-4 py-2 border-b text-sm font-semibold">₹{calc.total_deductions}</td>
-                    <td className="px-4 py-2 border-b text-sm">{calc.month}/{calc.year}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEdit(calc)}
-                          className="text-blue-600 hover:text-blue-800 text-xs"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(calc.id)}
-                          className="text-red-600 hover:text-red-800 text-xs"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              <option value="">Select Employee ID</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.employee_id}>
+                  {employee.employee_id}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
-      )}
+
+          {/* Employee Name */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee Name <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_name"
+              value={form.employee_name}
+              onChange={(e) => {
+                const selectedName = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.name === selectedName);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_name: selectedName });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Employee Name</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.name}>
+                  {employee.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Basic Salary */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Basic Salary <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              name="basic_salary"
+              value={form.basic_salary}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Basic Salary"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          {/* Gross Salary */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Gross Salary <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              name="gross_salary"
+              value={form.gross_salary}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Gross Salary"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          {/* PF Settings */}
+          <div className="col-span-2">
+            <div className="flex items-center space-x-4 mb-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="pf_enabled"
+                  checked={form.pf_enabled}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium">Enable PF Deduction</span>
+              </label>
+              {form.pf_enabled && (
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm">Percentage:</label>
+                  <input
+                    type="number"
+                    name="pf_percentage"
+                    value={form.pf_percentage}
+                    onChange={handleChange}
+                    className="w-20 border border-gray-300 rounded px-2 py-1 text-sm"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                  />
+                  <span className="text-sm">%</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ESI Settings */}
+          <div className="col-span-2">
+            <div className="flex items-center space-x-4 mb-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="esi_enabled"
+                  checked={form.esi_enabled}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium">Enable ESI Deduction</span>
+              </label>
+              {form.esi_enabled && (
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm">Percentage:</label>
+                  <input
+                    type="number"
+                    name="esi_percentage"
+                    value={form.esi_percentage}
+                    onChange={handleChange}
+                    className="w-20 border border-gray-300 rounded px-2 py-1 text-sm"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                  />
+                  <span className="text-sm">%</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* PT Settings */}
+          <div className="col-span-2">
+            <div className="flex items-center space-x-4 mb-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="pt_enabled"
+                  checked={form.pt_enabled}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium">Enable Professional Tax</span>
+              </label>
+              {form.pt_enabled && (
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm">Amount:</label>
+                  <input
+                    type="number"
+                    name="pt_amount"
+                    value={form.pt_amount}
+                    onChange={handleChange}
+                    className="w-20 border border-gray-300 rounded px-2 py-1 text-sm"
+                    min="0"
+                    step="1"
+                  />
+                  <span className="text-sm">₹</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* TDS Settings */}
+          <div className="col-span-2">
+            <div className="flex items-center space-x-4 mb-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="tds_enabled"
+                  checked={form.tds_enabled}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium">Enable TDS Deduction</span>
+              </label>
+              {form.tds_enabled && (
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm">Percentage:</label>
+                  <input
+                    type="number"
+                    name="tds_percentage"
+                    value={form.tds_percentage}
+                    onChange={handleChange}
+                    className="w-20 border border-gray-300 rounded px-2 py-1 text-sm"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                  />
+                  <span className="text-sm">%</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Month */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Month</label>
+            <select
+              name="month"
+              value={form.month}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Month</option>
+              <option value="01">January</option>
+              <option value="02">February</option>
+              <option value="03">March</option>
+              <option value="04">April</option>
+              <option value="05">May</option>
+              <option value="06">June</option>
+              <option value="07">July</option>
+              <option value="08">August</option>
+              <option value="09">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+
+          {/* Year */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Year</label>
+            <input
+              type="number"
+              name="year"
+              value={form.year}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Year"
+              min="2020"
+              max="2030"
+            />
+          </div>
+
+          {/* Real-time Calculation Display */}
+          {(form.basic_salary || form.gross_salary) && (
+            <div className="col-span-2 bg-green-50 p-4 rounded-lg">
+              <h4 className="font-medium mb-2">Calculated Deductions</h4>
+              <div className="grid grid-cols-5 gap-4 text-sm">
+                <div>PF: ₹{deductions.pf.toFixed(2)}</div>
+                <div>ESI: ₹{deductions.esi.toFixed(2)}</div>
+                <div>PT: ₹{deductions.pt.toFixed(2)}</div>
+                <div>TDS: ₹{deductions.tds.toFixed(2)}</div>
+                <div className="font-semibold">Total: ₹{deductions.total.toFixed(2)}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Submit */}
+          <div className="col-span-2 flex gap-4">
+            <button
+              type="submit"
+              className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
+            >
+              {editingRecord ? 'Update' : 'Calculate & Save'} Statutory Deductions
+            </button>
+            {editingRecord && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="bg-gray-600 px-6 py-2 text-white rounded-lg hover:bg-gray-700"
+              >
+                Cancel Edit
+              </button>
+            )}
+          </div>
+        </form>
+
+        {/* Display existing calculations */}
+        {calculations.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Statutory Deduction History</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Basic Salary</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PF</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ESI</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PT</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {calculations.map((calc, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-sm">
+                        <div>
+                          <div className="font-medium">{calc.employee_name}</div>
+                          <div className="text-gray-500 text-xs">{calc.employee_id}</div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 text-sm">₹{calc.basic_salary}</td>
+                      <td className="px-4 py-2 text-sm">₹{calc.pf_amount}</td>
+                      <td className="px-4 py-2 text-sm">₹{calc.esi_amount}</td>
+                      <td className="px-4 py-2 text-sm">₹{calc.pt_amount}</td>
+                      <td className="px-4 py-2 text-sm font-semibold">₹{calc.total_deductions}</td>
+                      <td className="px-4 py-2 text-sm">{calc.month}/{calc.year}</td>
+                      <td className="px-4 py-2 text-sm">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(calc)}
+                            className="text-blue-600 hover:text-blue-800 text-xs"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(calc.id)}
+                            className="text-red-600 hover:text-red-800 text-xs"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

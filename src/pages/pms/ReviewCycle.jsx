@@ -227,20 +227,27 @@ export default function ReviewCycle() {
 
   return (
     <div className="space-y-6">
-        {/* Header */}
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6 border border-purple-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Review Cycle Management</h1>
-            <p className="text-gray-600">Create and manage performance review cycles</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-purple-100 rounded-xl">
+              <Calendar className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Review Cycle Management</h1>
+              <p className="text-gray-600 mt-1">Create and manage performance review cycles</p>
+            </div>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             <span>Create Review Cycle</span>
           </button>
         </div>
+      </div>
 
         {/* Add Review Cycle Form */}
         {showForm && (

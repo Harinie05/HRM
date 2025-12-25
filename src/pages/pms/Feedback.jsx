@@ -234,20 +234,27 @@ export default function Feedback() {
 
   return (
     <div className="space-y-6">
-        {/* Header */}
+      {/* Header */}
+      <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Feedback Management</h1>
-            <p className="text-gray-600">Manage employee feedback and 360-degree reviews</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-green-100 rounded-xl">
+              <MessageSquare className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Feedback Management</h1>
+              <p className="text-gray-600 mt-1">Manage employee feedback and 360-degree reviews</p>
+            </div>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             <span>Give Feedback</span>
           </button>
         </div>
+      </div>
 
         {/* Add Feedback Form */}
         {showForm && (

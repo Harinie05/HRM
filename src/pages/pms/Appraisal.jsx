@@ -283,11 +283,17 @@ Generated on: ${new Date().toLocaleDateString()}`;
 
   return (
     <div className="space-y-6">
-        {/* Header */}
+      {/* Header */}
+      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Performance Appraisal</h1>
-            <p className="text-gray-600">Manage employee performance appraisals and evaluations</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-orange-100 rounded-xl">
+              <Award className="w-6 h-6 text-orange-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Performance Appraisal</h1>
+              <p className="text-gray-600 mt-1">Manage employee performance appraisals and evaluations</p>
+            </div>
           </div>
           <button
             onClick={() => {
@@ -312,12 +318,13 @@ Generated on: ${new Date().toLocaleDateString()}`;
               });
               setShowForm(true);
             }}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             <span>Create Appraisal</span>
           </button>
         </div>
+      </div>
 
         {/* Add Appraisal Form */}
         {showForm && (

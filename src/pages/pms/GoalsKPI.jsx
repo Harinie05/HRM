@@ -256,26 +256,38 @@ export default function GoalsKPI() {
 
   return (
     <div className="space-y-6">
-        {/* Header */}
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Goals & KPI Management</h1>
-            <p className="text-gray-600">Set and track employee goals and key performance indicators</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <Target className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Goals & KPI Management</h1>
+              <p className="text-gray-600 mt-1">Set and track employee goals and key performance indicators</p>
+            </div>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             <span>Add Goal</span>
           </button>
         </div>
+      </div>
 
         {/* Add Goal Form */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border">
-            <div className="px-6 py-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">{editingGoal ? 'Edit Goal' : 'Add New Goal'}</h3>
+          <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Plus className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">{editingGoal ? 'Edit Goal' : 'Add New Goal'}</h3>
+              </div>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -499,9 +511,14 @@ export default function GoalsKPI() {
         )}
 
         {/* Goals List */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Goals & KPIs</h3>
+        <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200">
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Target className="w-5 h-5 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Goals & KPIs</h3>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -534,35 +551,35 @@ export default function GoalsKPI() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-3 mr-3">
                           <div
-                            className={`h-2 rounded-full ${getProgressColor(goal.progress_percentage || parseInt(goal.progress) || 0)}`}
+                            className={`h-3 rounded-full transition-all duration-300 ${getProgressColor(goal.progress_percentage || parseInt(goal.progress) || 0)}`}
                             style={{ width: `${goal.progress_percentage || parseInt(goal.progress) || 0}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-600">{goal.progress}</span>
+                        <span className="text-sm font-medium text-gray-700">{goal.progress_percentage || parseInt(goal.progress) || 0}%</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{goal.end_date || goal.due_date || goal.dueDate || 'No Due Date'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center gap-3">
                         <button 
                           onClick={() => handleEdit(goal)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
                           title="Edit Goal"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleProgressUpdate(goal)}
-                          className="text-green-600 hover:text-green-900"
+                          className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-all duration-200"
                           title="Update Progress"
                         >
                           <Target className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(goal.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
                           title="Delete Goal"
                         >
                           <Trash2 className="w-4 h-4" />

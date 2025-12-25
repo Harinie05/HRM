@@ -260,23 +260,24 @@ export default function EmployeeListPage() {
       title="Employee Information System (EIS)"
       subtitle="Manage employee profiles, personal information, and records"
     >
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-4 border-b flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Employee Directory</h2>
-            <div className="flex gap-2">
+          <div className="p-3 sm:p-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <h2 className="text-base sm:text-lg font-semibold">Employee Directory</h2>
+            <div className="flex gap-2 w-full sm:w-auto">
               <button
                 onClick={fetchEmployees}
-                className="px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+                className="flex-1 sm:flex-none px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 min-h-[44px]"
               >
                 Refresh
               </button>
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 min-h-[44px]"
               >
                 <Plus size={14} />
-                Create Employee Code
+                <span className="hidden sm:inline">Create Employee Code</span>
+                <span className="sm:hidden">Create</span>
               </button>
             </div>
           </div>
@@ -285,25 +286,25 @@ export default function EmployeeListPage() {
               <table className="min-w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                       Employee Code
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                       Name
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">
                       Designation
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">
                       Department
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">
                       Joining Date
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">
                       Status
                     </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                       Actions
                     </th>
                   </tr>

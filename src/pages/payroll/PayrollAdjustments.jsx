@@ -218,19 +218,24 @@ export default function PayrollAdjustments() {
   const adjustmentTypes = ["Bonus", "Arrears", "Medical", "Overtime", "Deduction", "Other"];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 border-b border-gray-200 rounded-t-2xl">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Payroll Adjustments</h2>
-            <p className="text-gray-600 mt-1">Manage arrears, bonuses and one-time adjustments</p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-purple-100 rounded-xl">
+              <Plus className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Payroll Adjustments</h2>
+              <p className="text-gray-600 mt-1">Manage arrears, bonuses and one-time adjustments</p>
+            </div>
           </div>
           <button 
             onClick={() => handleOpenModal()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            <Plus size={16} />
+            <Plus size={18} />
             Add Adjustment
           </button>
         </div>

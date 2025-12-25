@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FileText, Users, CheckCircle, AlertTriangle, Plus } from "lucide-react";
 import api from "../../api";
 
 export default function LabourRegister() {
@@ -27,8 +28,6 @@ export default function LabourRegister() {
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log('Loading labour registers and employees data');
-        
         const tenant = localStorage.getItem("tenant_db");
         const token = localStorage.getItem("access_token");
         
@@ -80,12 +79,10 @@ export default function LabourRegister() {
           }
         });
         
-        console.log('Employees loaded:', allEmployees);
         setEmployees(allEmployees);
         
         // Fetch labour registers
         const res = await api.get("/api/compliance/labour");
-        console.log('Labour registers loaded:', res.data);
         setRegisters(res.data);
       } catch (err) {
         console.log("Error loading data", err);
@@ -96,7 +93,6 @@ export default function LabourRegister() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    console.log(`Labour register field changed: ${name} = ${value}`);
     
     // If employee is selected, auto-fill employee name
     if (name === 'employee_id' && value) {
@@ -119,8 +115,6 @@ export default function LabourRegister() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      console.log('Saving labour register:', form);
-      
       // Use custom register type if "Other" is selected
       const submitData = {
         ...form,
@@ -136,8 +130,6 @@ export default function LabourRegister() {
         response = await api.post("/api/compliance/labour", submitData);
         alert("Labour Register Added Successfully!");
       }
-      
-      console.log('Labour register saved successfully');
       
       // Reset form
       setForm({
@@ -166,355 +158,6 @@ export default function LabourRegister() {
       alert("Failed to save labour register");
     }
   }
-
-  return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Labour Law Register Management</h2>
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
-
-        {/* Employee ID */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee ID <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_id"
-            value={form.employee_id}
-            onChange={(e) => {
-              const selectedId = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_id: selectedId });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee ID</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.employee_id}>
-                {employee.employee_id}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Employee Name */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Employee Name <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="employee_name"
-            value={form.employee_name}
-            onChange={(e) => {
-              const selectedName = e.target.value;
-              const selectedEmployee = employees.find(emp => emp.name === selectedName);
-              if (selectedEmployee) {
-                setForm({
-                  ...form,
-                  employee_id: selectedEmployee.employee_id,
-                  employee_name: selectedEmployee.name,
-                  department: selectedEmployee.department,
-                  designation: selectedEmployee.designation
-                });
-              } else {
-                setForm({ ...form, employee_name: selectedName });
-              }
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Employee Name</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.name}>
-                {employee.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Register Type */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Register Type <span className="text-red-500">*</span>
-          </label>
-          <select
-            required
-            name="register_type"
-            value={form.register_type}
-            onChange={(e) => {
-              const value = e.target.value;
-              setShowCustomRegisterType(value === 'Other');
-              setForm({ ...form, register_type: value, custom_register_type: value === 'Other' ? form.custom_register_type : '' });
-            }}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Register Type</option>
-            <option value="Form I - Muster Roll">Form I - Muster Roll</option>
-            <option value="Form II - Register of Wages">Form II - Register of Wages</option>
-            <option value="Form III - Register of Overtime">Form III - Register of Overtime</option>
-            <option value="Form IV - Register of Deductions">Form IV - Register of Deductions</option>
-            <option value="Form V - Register of Fines">Form V - Register of Fines</option>
-            <option value="Form VI - Register of Advances">Form VI - Register of Advances</option>
-            <option value="Form VII - Register of Damages">Form VII - Register of Damages</option>
-            <option value="Form VIII - Register of Injuries">Form VIII - Register of Injuries</option>
-            <option value="Form IX - Register of Adult Workers">Form IX - Register of Adult Workers</option>
-            <option value="Form X - Register of Young Persons">Form X - Register of Young Persons</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        {/* Custom Register Type */}
-        {showCustomRegisterType && (
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Custom Register Type <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              name="custom_register_type"
-              value={form.custom_register_type || ''}
-              onChange={handleChange}
-              className="w-full border rounded-lg p-2 bg-gray-50"
-              placeholder="Enter custom register type"
-            />
-          </div>
-        )}
-
-        {/* Register Number */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Register Number</label>
-          <input
-            type="text"
-            name="register_number"
-            value={form.register_number}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Register Number"
-          />
-        </div>
-
-        {/* Issue Date */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Issue Date</label>
-          <input
-            type="date"
-            name="issue_date"
-            value={form.issue_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          />
-        </div>
-
-        {/* Expiry Date */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Expiry Date</label>
-          <input
-            type="date"
-            name="expiry_date"
-            value={form.expiry_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          />
-        </div>
-
-        {/* Issuing Authority */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Issuing Authority</label>
-          <input
-            type="text"
-            name="issuing_authority"
-            value={form.issuing_authority}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Issuing Authority"
-          />
-        </div>
-
-        {/* Compliance Status */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Compliance Status</label>
-          <select
-            name="compliance_status"
-            value={form.compliance_status}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Pending">Pending</option>
-            <option value="Expired">Expired</option>
-          </select>
-        </div>
-
-        {/* Month */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Month</label>
-          <select
-            name="month"
-            value={form.month}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-          >
-            <option value="">Select Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-
-        {/* Year */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Year</label>
-          <input
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Year"
-            min="2020"
-            max="2030"
-          />
-        </div>
-
-        {/* Department */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Department</label>
-          <input
-            type="text"
-            name="department"
-            value={form.department}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Department"
-          />
-        </div>
-
-        {/* Designation */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Designation</label>
-          <input
-            type="text"
-            name="designation"
-            value={form.designation}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50"
-            placeholder="Enter Designation"
-          />
-        </div>
-
-        {/* Remarks */}
-        <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1">Remarks</label>
-          <textarea
-            name="remarks"
-            value={form.remarks}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2 bg-gray-50 h-24"
-            placeholder="Enter any additional remarks or notes"
-          />
-        </div>
-
-        {/* Submit */}
-        <div className="col-span-2 flex gap-4">
-          <button
-            type="submit"
-            className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
-          >
-            {editingRecord ? 'Update' : 'Add'} Labour Register Entry
-          </button>
-          {editingRecord && (
-            <button
-              type="button"
-              onClick={cancelEdit}
-              className="bg-gray-600 px-6 py-2 text-white rounded-lg hover:bg-gray-700"
-            >
-              Cancel Edit
-            </button>
-          )}
-        </div>
-
-      </form>
-
-      {/* Display existing registers */}
-      {registers.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Existing Labour Registers</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Employee ID</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Employee Name</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Register Type</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Status</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Month/Year</th>
-                  <th className="px-4 py-2 border-b text-left text-sm font-medium text-gray-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {registers.map((register, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border-b text-sm">{register.employee_id}</td>
-                    <td className="px-4 py-2 border-b text-sm">{register.employee_name}</td>
-                    <td className="px-4 py-2 border-b text-sm">{register.register_type}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
-                        register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
-                        register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {register.compliance_status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 border-b text-sm">{register.month}/{register.year}</td>
-                    <td className="px-4 py-2 border-b text-sm">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEdit(register)}
-                          className="text-blue-600 hover:text-blue-800 text-xs"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(register.id)}
-                          className="text-red-600 hover:text-red-800 text-xs"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
 
   function handleEdit(record) {
     setEditingRecord(record);
@@ -569,4 +212,378 @@ export default function LabourRegister() {
       remarks: "",
     });
   }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <FileText className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Labour Law Register Management</h2>
+            <p className="text-gray-600 mt-1">Manage labour law compliance registers and documentation</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <FileText className="h-8 w-8 text-blue-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-blue-600">Total Registers</p>
+              <p className="text-2xl font-semibold text-blue-900">{registers.length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-600">Active</p>
+              <p className="text-2xl font-semibold text-green-900">{registers.filter(r => r.compliance_status === 'Active').length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <AlertTriangle className="h-8 w-8 text-yellow-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-yellow-600">Pending</p>
+              <p className="text-2xl font-semibold text-yellow-900">{registers.filter(r => r.compliance_status === 'Pending').length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-purple-600" />
+            <div className="ml-3">
+              <p className="text-sm font-medium text-purple-600">Register Types</p>
+              <p className="text-2xl font-semibold text-purple-900">{new Set(registers.map(r => r.register_type)).size}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
+          {/* Employee ID */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee ID <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_id"
+              value={form.employee_id}
+              onChange={(e) => {
+                const selectedId = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.employee_id === selectedId);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_id: selectedId });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Employee ID</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.employee_id}>
+                  {employee.employee_id}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Employee Name */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Employee Name <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="employee_name"
+              value={form.employee_name}
+              onChange={(e) => {
+                const selectedName = e.target.value;
+                const selectedEmployee = employees.find(emp => emp.name === selectedName);
+                if (selectedEmployee) {
+                  setForm({
+                    ...form,
+                    employee_id: selectedEmployee.employee_id,
+                    employee_name: selectedEmployee.name,
+                    department: selectedEmployee.department,
+                    designation: selectedEmployee.designation
+                  });
+                } else {
+                  setForm({ ...form, employee_name: selectedName });
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Employee Name</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.name}>
+                  {employee.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Register Type */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Register Type <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              name="register_type"
+              value={form.register_type}
+              onChange={(e) => {
+                const value = e.target.value;
+                setShowCustomRegisterType(value === 'Other');
+                setForm({ ...form, register_type: value, custom_register_type: value === 'Other' ? form.custom_register_type : '' });
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Register Type</option>
+              <option value="Form I - Muster Roll">Form I - Muster Roll</option>
+              <option value="Form II - Register of Wages">Form II - Register of Wages</option>
+              <option value="Form III - Register of Overtime">Form III - Register of Overtime</option>
+              <option value="Form IV - Register of Deductions">Form IV - Register of Deductions</option>
+              <option value="Form V - Register of Fines">Form V - Register of Fines</option>
+              <option value="Form VI - Register of Advances">Form VI - Register of Advances</option>
+              <option value="Form VII - Register of Damages">Form VII - Register of Damages</option>
+              <option value="Form VIII - Register of Injuries">Form VIII - Register of Injuries</option>
+              <option value="Form IX - Register of Adult Workers">Form IX - Register of Adult Workers</option>
+              <option value="Form X - Register of Young Persons">Form X - Register of Young Persons</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {/* Custom Register Type */}
+          {showCustomRegisterType && (
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Custom Register Type <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                name="custom_register_type"
+                value={form.custom_register_type || ''}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter custom register type"
+              />
+            </div>
+          )}
+
+          {/* Register Number */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Register Number</label>
+            <input
+              type="text"
+              name="register_number"
+              value={form.register_number}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Register Number"
+            />
+          </div>
+
+          {/* Issue Date */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Issue Date</label>
+            <input
+              type="date"
+              name="issue_date"
+              value={form.issue_date}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Expiry Date */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Expiry Date</label>
+            <input
+              type="date"
+              name="expiry_date"
+              value={form.expiry_date}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Issuing Authority */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Issuing Authority</label>
+            <input
+              type="text"
+              name="issuing_authority"
+              value={form.issuing_authority}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Issuing Authority"
+            />
+          </div>
+
+          {/* Compliance Status */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Compliance Status</label>
+            <select
+              name="compliance_status"
+              value={form.compliance_status}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Pending">Pending</option>
+              <option value="Expired">Expired</option>
+            </select>
+          </div>
+
+          {/* Month */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Month</label>
+            <select
+              name="month"
+              value={form.month}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select Month</option>
+              <option value="01">January</option>
+              <option value="02">February</option>
+              <option value="03">March</option>
+              <option value="04">April</option>
+              <option value="05">May</option>
+              <option value="06">June</option>
+              <option value="07">July</option>
+              <option value="08">August</option>
+              <option value="09">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+
+          {/* Year */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Year</label>
+            <input
+              type="number"
+              name="year"
+              value={form.year}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter Year"
+              min="2020"
+              max="2030"
+            />
+          </div>
+
+          {/* Remarks */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Remarks</label>
+            <textarea
+              name="remarks"
+              value={form.remarks}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              placeholder="Enter any additional remarks or notes"
+            />
+          </div>
+
+          {/* Submit */}
+          <div className="col-span-2 flex gap-4">
+            <button
+              type="submit"
+              className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
+            >
+              {editingRecord ? 'Update' : 'Add'} Labour Register Entry
+            </button>
+            {editingRecord && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="bg-gray-600 px-6 py-2 text-white rounded-lg hover:bg-gray-700"
+              >
+                Cancel Edit
+              </button>
+            )}
+          </div>
+        </form>
+
+        {/* Display existing registers */}
+        {registers.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Existing Labour Registers</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee Name</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Register Type</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month/Year</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {registers.map((register, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-sm">{register.employee_id}</td>
+                      <td className="px-4 py-2 text-sm">{register.employee_name}</td>
+                      <td className="px-4 py-2 text-sm">{register.register_type}</td>
+                      <td className="px-4 py-2 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
+                          register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
+                          register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {register.compliance_status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-sm">{register.month}/{register.year}</td>
+                      <td className="px-4 py-2 text-sm">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(register)}
+                            className="text-blue-600 hover:text-blue-800 text-xs"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(register.id)}
+                            className="text-red-600 hover:text-red-800 text-xs"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

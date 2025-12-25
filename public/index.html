@@ -4,9 +4,40 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Nutryah HRM - Hospital Management System" />
+    <meta name="description" content="Healthcare HRM - Hospital Management System" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Nutryah HRM</title>
+    <style>
+      /* Custom responsive utilities */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Ensure proper touch targets on mobile */
+      @media (max-width: 768px) {
+        button, a {
+          min-height: 44px;
+          min-width: 44px;
+        }
+      }
+      
+      /* Responsive table wrapper */
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Mobile-first grid adjustments */
+      @media (max-width: 640px) {
+        .mobile-stack > * {
+          width: 100% !important;
+        }
+      }
+    </style>
+    <title>Healthcare HRM</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
