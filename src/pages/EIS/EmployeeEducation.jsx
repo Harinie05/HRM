@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiBook, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiEye, FiUpload } from "react-icons/fi";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeEducation() {
   const { id } = useParams();
@@ -139,68 +139,70 @@ export default function EmployeeEducation() {
   };
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-6 space-y-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={() => navigate(`/eis/${id}`)}
-                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <span>←</span> Back to Profile
-              </button>
-              <h2 className="text-xl font-semibold text-[#0D3B66]">
-                Education Details
-              </h2>
-            </div>
+    <Layout 
+      title="Education Details" 
+      subtitle="Academic qualifications and educational background"
+    >
+      <div className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <FiArrowLeft className="text-sm" />
+            Back to Profile
+          </button>
 
-            <button
-              onClick={openAdd}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              + Add Education
-            </button>
-          </div>
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <FiPlus className="text-sm" />
+            Add Education
+          </button>
+        </div>
 
-          <div className="bg-white rounded-lg shadow overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-gray-600">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="p-3 text-left">Degree</th>
-                  <th className="p-3 text-left">Specialization</th>
-                  <th className="p-3 text-left">University</th>
-                  <th className="p-3 text-center">Duration</th>
-                  <th className="p-3 text-center">Grade/CGPA</th>
-                  <th className="p-3 text-center">Certificate</th>
-                  <th className="p-3 text-center">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Degree</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">University</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Duration</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Grade/CGPA</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Certificate</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="divide-y divide-gray-200">
                 {education.length === 0 && (
                   <tr>
-                    <td colSpan="7" className="p-4 text-center text-gray-500">
-                      No education records found
+                    <td colSpan="7" className="px-6 py-12 text-center">
+                      <FiBook className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Education Records</h3>
+                      <p className="text-gray-500">Add educational qualifications to get started.</p>
                     </td>
                   </tr>
                 )}
 
                 {education.map((e) => (
-                  <tr key={e.id} className="border-t">
-                    <td className="p-3 font-medium">{e.degree}</td>
-                    <td className="p-3">{e.specialization || '-'}</td>
-                    <td className="p-3">{e.university}</td>
-                    <td className="p-3 text-center">
-                      {e.start_year && e.end_year ? e.start_year + ' - ' + e.end_year : (e.year || '-')}
+                  <tr key={e.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-gray-900">{e.degree}</div>
                     </td>
-                    <td className="p-3 text-center">{e.percentage_cgpa || '-'}</td>
-                    <td className="p-3 text-center">
+                    <td className="px-6 py-4 text-gray-600">{e.specialization || '-'}</td>
+                    <td className="px-6 py-4 text-gray-600">{e.university}</td>
+                    <td className="px-6 py-4 text-center text-gray-600">
+                      {e.start_year && e.end_year ? `${e.start_year} - ${e.end_year}` : (e.year || '-')}
+                    </td>
+                    <td className="px-6 py-4 text-center text-gray-600">{e.percentage_cgpa || '-'}</td>
+                    <td className="px-6 py-4 text-center">
                       {e.file_name ? (
-                        <span 
-                          className="text-blue-600 cursor-pointer hover:underline"
+                        <button 
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
                           onClick={() => {
                             const token = localStorage.getItem('access_token');
                             if (!token) {
@@ -210,170 +212,220 @@ export default function EmployeeEducation() {
                             window.open(`http://localhost:8000/employee/education/certificate/${e.id}?token=${token}`, '_blank');
                           }}
                         >
+                          <FiEye className="text-sm" />
                           View
-                        </span>
+                        </button>
                       ) : (
-                        "-"
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
-                    <td className="p-3 text-center space-x-2">
-                      <button
-                        onClick={() => openEdit(e)}
-                        className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteEducation(e.id)}
-                        className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-                      >
-                        Delete
-                      </button>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => openEdit(e)}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm"
+                        >
+                          <FiEdit className="text-xs" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteEducation(e.id)}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                        >
+                          <FiTrash2 className="text-xs" />
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+        </div>
 
-          {showForm && (
-            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-              <div className="bg-white rounded-lg p-6 w-full max-w-2xl space-y-4">
-                <h3 className="text-lg font-semibold mb-4">
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center gap-3 mb-6">
+                <FiBook className="text-blue-600 text-xl" />
+                <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Education" : "Add Education"}
                 </h3>
+              </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <select
-                    className="border p-2 rounded w-full"
-                    value={form.degree}
-                    onChange={(e) => setForm({ ...form, degree: e.target.value })}
-                  >
-                    <option value="">Select Degree</option>
-                    <option value="10th">10th Standard</option>
-                    <option value="12th">12th Standard</option>
-                    <option value="Diploma">Diploma</option>
-                    <option value="Bachelor's">Bachelor's Degree</option>
-                    <option value="Master's">Master's Degree</option>
-                    <option value="PhD">PhD</option>
-                    <option value="Certificate">Certificate Course</option>
-                  </select>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Degree *</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.degree}
+                      onChange={(e) => setForm({ ...form, degree: e.target.value })}
+                    >
+                      <option value="">Select Degree</option>
+                      <option value="10th">10th Standard</option>
+                      <option value="12th">12th Standard</option>
+                      <option value="Diploma">Diploma</option>
+                      <option value="Bachelor's">Bachelor's Degree</option>
+                      <option value="Master's">Master's Degree</option>
+                      <option value="PhD">PhD</option>
+                      <option value="Certificate">Certificate Course</option>
+                    </select>
+                  </div>
 
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="Specialization/Stream"
-                    value={form.specialization}
-                    onChange={(e) => setForm({ ...form, specialization: e.target.value })}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Specialization/Stream</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="e.g., Computer Science"
+                      value={form.specialization}
+                      onChange={(e) => setForm({ ...form, specialization: e.target.value })}
+                    />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="University/Board"
-                    value={form.university}
-                    onChange={(e) => setForm({ ...form, university: e.target.value })}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">University/Board *</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="University or Board name"
+                      value={form.university}
+                      onChange={(e) => setForm({ ...form, university: e.target.value })}
+                    />
+                  </div>
 
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="Institution Name"
-                    value={form.board_university}
-                    onChange={(e) => setForm({ ...form, board_university: e.target.value })}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Institution Name</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="College/School name"
+                      value={form.board_university}
+                      onChange={(e) => setForm({ ...form, board_university: e.target.value })}
+                    />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="Start Year"
-                    value={form.start_year}
-                    onChange={(e) => setForm({ ...form, start_year: e.target.value })}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Year</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="2020"
+                      value={form.start_year}
+                      onChange={(e) => setForm({ ...form, start_year: e.target.value })}
+                    />
+                  </div>
 
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="End Year"
-                    value={form.end_year}
-                    onChange={(e) => setForm({ ...form, end_year: e.target.value })}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">End Year</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="2024"
+                      value={form.end_year}
+                      onChange={(e) => setForm({ ...form, end_year: e.target.value })}
+                    />
+                  </div>
 
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="Percentage/CGPA"
-                    value={form.percentage_cgpa}
-                    onChange={(e) => setForm({ ...form, percentage_cgpa: e.target.value })}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Percentage/CGPA</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="85% or 8.5"
+                      value={form.percentage_cgpa}
+                      onChange={(e) => setForm({ ...form, percentage_cgpa: e.target.value })}
+                    />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <select
-                    className="border p-2 rounded w-full"
-                    value={form.education_type}
-                    onChange={(e) => setForm({ ...form, education_type: e.target.value })}
-                  >
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Distance">Distance Learning</option>
-                    <option value="Online">Online</option>
-                  </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Education Type</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.education_type}
+                      onChange={(e) => setForm({ ...form, education_type: e.target.value })}
+                    >
+                      <option value="Full-time">Full-time</option>
+                      <option value="Part-time">Part-time</option>
+                      <option value="Distance">Distance Learning</option>
+                      <option value="Online">Online</option>
+                    </select>
+                  </div>
 
-                  <select
-                    className="border p-2 rounded w-full"
-                    value={form.country}
-                    onChange={(e) => setForm({ ...form, country: e.target.value })}
-                  >
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="UK">UK</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.country}
+                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+                    >
+                      <option value="India">India</option>
+                      <option value="USA">USA</option>
+                      <option value="UK">UK</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Australia">Australia</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="State"
-                    value={form.state}
-                    onChange={(e) => setForm({ ...form, state: e.target.value })}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="State name"
+                      value={form.state}
+                      onChange={(e) => setForm({ ...form, state: e.target.value })}
+                    />
+                  </div>
 
-                  <input
-                    className="border p-2 rounded w-full"
-                    placeholder="City"
-                    value={form.city}
-                    onChange={(e) => setForm({ ...form, city: e.target.value })}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    <input
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="City name"
+                      value={form.city}
+                      onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    />
+                  </div>
                 </div>
 
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                  className="border p-2 rounded w-full"
-                />
-
-                <div className="flex justify-end gap-2">
-                  <button
-                    onClick={() => setShowForm(false)}
-                    className="px-4 py-2 bg-gray-200 rounded"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={saveEducation}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                  >
-                    Save
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Document</label>
+                  <div className="flex items-center gap-2">
+                    <FiUpload className="text-gray-400" />
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
+
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveEducation}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  {editing ? "Update" : "Save"} Education
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }

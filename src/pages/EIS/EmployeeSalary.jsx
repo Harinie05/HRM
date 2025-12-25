@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiDollarSign, FiArrowLeft, FiPieChart, FiShield } from "react-icons/fi";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeSalary() {
   const { id } = useParams();
@@ -64,138 +64,167 @@ export default function EmployeeSalary() {
   };
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-6">
-          <div className="bg-white p-6 rounded-xl shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <button 
-                onClick={() => navigate(`/eis/${id}`)}
-                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <span>←</span> Back to Profile
-              </button>
-              <h2 className="text-lg font-semibold">Salary Structure</h2>
-            </div>
-
-      <div className="space-y-6">
-        {/* CTC */}
-        <div>
-          <h3 className="text-md font-medium mb-3 text-gray-700">Cost to Company (CTC)</h3>
-          <input
-            placeholder="Total CTC (Annual)"
-            type="number"
-            className="border p-3 rounded-lg w-full"
-            value={form.ctc}
-            onChange={(e) => setForm({ ...form, ctc: e.target.value })}
-          />
-        </div>
-
-        {/* Salary Breakdown */}
-        <div>
-          <h3 className="text-md font-medium mb-3 text-gray-700">Salary Component Breakdown (%)</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Basic Salary %</label>
-              <input
-                placeholder="Basic %"
-                type="number"
-                className="border p-3 rounded-lg w-full"
-                value={form.basic_percent}
-                onChange={(e) => setForm({ ...form, basic_percent: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">HRA %</label>
-              <input
-                placeholder="HRA %"
-                type="number"
-                className="border p-3 rounded-lg w-full"
-                value={form.hra_percent}
-                onChange={(e) => setForm({ ...form, hra_percent: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Allowances %</label>
-              <input
-                placeholder="Allowances %"
-                type="number"
-                className="border p-3 rounded-lg w-full"
-                value={form.allowances_percent}
-                onChange={(e) => setForm({ ...form, allowances_percent: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Special Allowances %</label>
-              <input
-                placeholder="Special %"
-                type="number"
-                className="border p-3 rounded-lg w-full"
-                value={form.special_percent}
-                onChange={(e) => setForm({ ...form, special_percent: e.target.value })}
-              />
-            </div>
+    <Layout 
+      title="Salary Structure" 
+      subtitle="Compensation details and salary breakdown"
+    >
+      <div className="p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-4 mb-6">
+            <button 
+              onClick={() => navigate(`/eis/${id}`)}
+              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <FiArrowLeft className="text-sm" />
+              Back to Profile
+            </button>
           </div>
-        </div>
 
-        {/* Compliance */}
-        <div>
-          <h3 className="text-md font-medium mb-3 text-gray-700">Compliance & Benefits</h3>
-          <div className="space-y-3">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={form.pf_eligible}
-                onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
-                className="mr-2"
-              />
-              <span className="text-sm">Provident Fund (PF) Eligible</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={form.esi_eligible}
-                onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
-                className="mr-2"
-              />
-              <span className="text-sm">Employee State Insurance (ESI) Eligible</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Salary Preview */}
-        {form.ctc && (
-          <div>
-            <h3 className="text-md font-medium mb-3 text-gray-700">Salary Breakdown Preview</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>Basic Salary: ₹{Math.round((form.ctc * form.basic_percent) / 100).toLocaleString()}</div>
-                <div>HRA: ₹{Math.round((form.ctc * form.hra_percent) / 100).toLocaleString()}</div>
-                <div>Allowances: ₹{Math.round((form.ctc * form.allowances_percent) / 100).toLocaleString()}</div>
-                <div>Special Allowances: ₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</div>
+          <div className="space-y-8">
+            {/* CTC Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiDollarSign className="text-green-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Cost to Company (CTC)</h3>
               </div>
-              <div className="mt-2 pt-2 border-t font-medium">
-                Total CTC: ₹{parseInt(form.ctc).toLocaleString()}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Annual CTC (₹)</label>
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., 1200000"
+                  value={form.ctc}
+                  onChange={(e) => setForm({ ...form, ctc: e.target.value })}
+                />
               </div>
             </div>
-          </div>
-        )}
-      </div>
 
-      <div className="flex justify-end mt-6">
-        <button
-          onClick={submit}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
-        >
-          {isEditing ? 'Update Salary Structure' : 'Save Salary Structure'}
-        </button>
-      </div>
+            {/* Salary Breakdown */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiPieChart className="text-blue-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Salary Component Breakdown (%)</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Basic Salary (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.basic_percent}
+                    onChange={(e) => setForm({ ...form, basic_percent: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">HRA (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.hra_percent}
+                    onChange={(e) => setForm({ ...form, hra_percent: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Allowances (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.allowances_percent}
+                    onChange={(e) => setForm({ ...form, allowances_percent: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Special Allowances (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.special_percent}
+                    onChange={(e) => setForm({ ...form, special_percent: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Compliance & Benefits */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiShield className="text-purple-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Compliance & Benefits</h3>
+              </div>
+              <div className="space-y-3">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.pf_eligible}
+                    onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Provident Fund (PF) Eligible</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.esi_eligible}
+                    onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Employee State Insurance (ESI) Eligible</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Salary Preview */}
+            {form.ctc && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Breakdown Preview</h3>
+                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Basic Salary:</span>
+                      <span className="font-medium">₹{Math.round((form.ctc * form.basic_percent) / 100).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">HRA:</span>
+                      <span className="font-medium">₹{Math.round((form.ctc * form.hra_percent) / 100).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Allowances:</span>
+                      <span className="font-medium">₹{Math.round((form.ctc * form.allowances_percent) / 100).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Special Allowances:</span>
+                      <span className="font-medium">₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-blue-200">
+                    <div className="flex justify-between text-lg font-semibold text-gray-900">
+                      <span>Total CTC:</span>
+                      <span>₹{parseInt(form.ctc).toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end mt-8 pt-6 border-t">
+            <button
+              onClick={submit}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              {isEditing ? 'Update Salary Structure' : 'Save Salary Structure'}
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
-

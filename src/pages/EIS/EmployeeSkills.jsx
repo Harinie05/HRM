@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiZap, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiStar } from "react-icons/fi";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeSkills() {
   const { id } = useParams(); // employee_id
@@ -80,123 +80,149 @@ export default function EmployeeSkills() {
   };
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-6 space-y-6">
-
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
+    <Layout 
+      title="Skills & Competencies" 
+      subtitle="Technical skills and professional competencies"
+    >
+      <div className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <span>←</span> Back to Profile
+            <FiArrowLeft className="text-sm" />
+            Back to Profile
           </button>
-          <h2 className="text-xl font-semibold text-[#0D3B66]">
-            Skills & Competencies
-          </h2>
+
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <FiPlus className="text-sm" />
+            Add Skill
+          </button>
         </div>
 
-        <button
-          onClick={openAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          + Add Skill
-        </button>
-      </div>
-
-      {/* SKILLS LIST */}
-      <div className="bg-white rounded-lg shadow p-4">
-        {skills.length === 0 && (
-          <p className="text-gray-500 text-sm">No skills added yet</p>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {skills.map((sk) => (
-            <div
-              key={sk.id}
-              className="border rounded-lg p-4 flex justify-between items-center"
-            >
-              <div>
-                <p className="font-semibold">{sk.skill_name}</p>
-                <p className="text-sm text-gray-600">
-                  Rating: {"★".repeat(sk.rating)}
-                  {"☆".repeat(5 - sk.rating)}
-                </p>
-              </div>
-
-              <div className="space-x-2">
-                <button
-                  onClick={() => openEdit(sk)}
-                  className="px-2 py-1 text-xs bg-yellow-500 text-white rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deleteSkill(sk.id)}
-                  className="px-2 py-1 text-xs bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
-              </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          {skills.length === 0 ? (
+            <div className="text-center py-12">
+              <FiZap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Skills Added</h3>
+              <p className="text-gray-500">Add technical skills and competencies to showcase expertise.</p>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* MODAL */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm space-y-4">
-
-            <h3 className="text-lg font-semibold">
-              {editing ? "Edit Skill" : "Add Skill"}
-            </h3>
-
-            <input
-              className="border p-2 rounded w-full"
-              placeholder="Skill name"
-              value={form.skill}
-              onChange={(e) => setForm({ ...form, skill: e.target.value })}
-            />
-
-            <select
-              className="border p-2 rounded w-full"
-              value={form.rating}
-              onChange={(e) =>
-                setForm({ ...form, rating: e.target.value })
-              }
-            >
-              {[1, 2, 3, 4, 5].map((r) => (
-                <option key={r} value={r}>
-                  {r} Star{r > 1 && "s"}
-                </option>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {skills.map((sk) => (
+                <div
+                  key={sk.id}
+                  className="group border border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 mb-2">{sk.skill_name}</h4>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <FiStar
+                            key={i}
+                            className={`text-sm ${
+                              i < sk.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                        <span className="text-sm text-gray-600 ml-2">
+                          {sk.rating}/5
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => openEdit(sk)}
+                        className="p-1 text-yellow-600 hover:bg-yellow-100 rounded transition-colors"
+                      >
+                        <FiEdit className="text-sm" />
+                      </button>
+                      <button
+                        onClick={() => deleteSkill(sk.id)}
+                        className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                      >
+                        <FiTrash2 className="text-sm" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </select>
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowForm(false)}
-                className="px-4 py-2 bg-gray-200 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveSkill}
-                className="px-4 py-2 bg-blue-600 text-white rounded"
-              >
-                Save
-              </button>
             </div>
+          )}
+        </div>
 
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+              <div className="flex items-center gap-3 mb-6">
+                <FiZap className="text-blue-600 text-xl" />
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {editing ? "Edit Skill" : "Add Skill"}
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Skill Name *</label>
+                  <input
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="e.g., JavaScript, Project Management"
+                    value={form.skill}
+                    onChange={(e) => setForm({ ...form, skill: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Proficiency Level *</label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.rating}
+                    onChange={(e) => setForm({ ...form, rating: e.target.value })}
+                  >
+                    <option value={1}>1 Star - Beginner</option>
+                    <option value={2}>2 Stars - Basic</option>
+                    <option value={3}>3 Stars - Intermediate</option>
+                    <option value={4}>4 Stars - Advanced</option>
+                    <option value={5}>5 Stars - Expert</option>
+                  </select>
+                  <div className="flex items-center gap-1 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <FiStar
+                        key={i}
+                        className={`text-lg ${
+                          i < form.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                    <span className="text-sm text-gray-600 ml-2">
+                      {form.rating}/5
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveSkill}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  {editing ? "Update" : "Save"} Skill
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-        </div>
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }

@@ -1,68 +1,56 @@
 import React, { useState, useEffect } from "react";
 import api from "../api";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+import Layout from "../components/Layout";
 import { hasPermission, isAdmin } from "../utils/permissions";
 
 export default function Users() {
-  const tenant_db = localStorage.getItem("tenant_db");
-
-  // ---------------------------
-  // USER PERMISSIONS
-  // ---------------------------
-  const canView = isAdmin() || hasPermission("view_users");
-  const canAdd = isAdmin() || hasPermission("add_user");
-  const canEdit = isAdmin() || hasPermission("edit_user");
-  const canDelete = isAdmin() || hasPermission("delete_user");
-
-  // Block entire page if user cannot view
-  if (!canView) {
-    return (
-      <div className="flex bg-[#F5F7FA] min-h-screen">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <Header />
-          <div className="p-6 text-center text-red-600 text-xl font-bold">
-            ❌ You do not have permission to view Users.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const [users, setUsers] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [departments, setDepartments] = useState([]);
-
-  const [search, setSearch] = useState("");
-
-  // New user fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [department, setDepartment] = useState("");
+  const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  // Edit User Modal
+  // --- EDIT STATE ---
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState("");
   const [editDepartment, setEditDepartment] = useState("");
-  const [showEditModal, setShowEditModal] = useState(false);
 
-  useEffect(() => {
-    loadUsers();
-    loadRoles();
-    loadDepartments();
-  }, []);
+  const tenant_db = localStorage.getItem("tenant_db");
+
+  // ----------------------------
+  // PERMISSION HANDLING (ADMIN = FULL ACCESS)
+  // ----------------------------
+  const canView = isAdmin() || hasPermission("view_users");
+  const canAdd = isAdmin() || hasPermission("add_user");
+  const canEdit = isAdmin() || hasPermission("edit_user");
+  const canDelete = isAdmin() || hasPermission("delete_user");
+
+  // If user does NOT have view permission → block entire page
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="p-6 text-center text-red-600 text-xl font-bold">
+          ❌ You do not have permission to view Users.
+        </div>
+      </Layout>
+    );
+  }
 
   const loadUsers = async () => {
     try {
       console.log(`Loading users for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/users/${tenant_db}/list`);
       console.log('Users loaded:', res.data.users);
-      setUsers(res.data.users);
+      setUsers(res.data.users || []);
     } catch (err) {
       console.error("User load error:", err);
     }
@@ -73,7 +61,7 @@ export default function Users() {
       console.log(`Loading roles for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
       console.log('Roles for user creation loaded:', res.data.roles);
-      setRoles(res.data.roles);
+      setRoles(res.data.roles || []);
     } catch (err) {
       console.error("Role load error:", err);
     }
@@ -84,28 +72,30 @@ export default function Users() {
       console.log(`Loading departments for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
       console.log('Departments for user creation loaded:', res.data.departments);
-      setDepartments(res.data.departments);
+      setDepartments(res.data.departments || []);
     } catch (err) {
       console.error("Dept load error:", err);
     }
   };
 
-  // Create new user
-  const createUser = async () => {
-    if (!canAdd) return alert("❌ You do not have permission to add users.");
+  useEffect(() => {
+    loadUsers();
+    loadRoles();
+    loadDepartments();
+  }, []);
 
-    if (!name || !email || !password || !role || !department) {
+  const createUser = async () => {
+    if (!canAdd) return alert("You do not have permission to add users");
+
+    if (!name.trim() || !email.trim() || !password.trim() || !role || !department) {
       alert("All fields required");
       return;
     }
 
+    setLoading(true);
+
     try {
-      console.log('Creating user:', {
-        name,
-        email,
-        role_id: Number(role),
-        department_id: Number(department)
-      });
+      console.log('Creating user:', { name, email, role_id: Number(role), department_id: Number(department) });
       await api.post(`/hospitals/users/${tenant_db}/create`, {
         name,
         email,
@@ -114,24 +104,40 @@ export default function Users() {
         department_id: Number(department),
       });
 
+      console.log('User created successfully');
       setName("");
       setEmail("");
       setPassword("");
       setRole("");
       setDepartment("");
-
-      console.log('User created successfully');
+      setShowCreateModal(false);
       loadUsers();
       alert("User created!");
-    } catch (error) {
+    } catch (err) {
       alert("Create failed");
+      console.error(err);
     }
+
+    setLoading(false);
   };
 
-  // Delete user
+  // Filter users based on search and filter
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (filter === "with-role") {
+      return matchesSearch && user.role && user.role.trim() !== "";
+    } else if (filter === "without-role") {
+      return matchesSearch && (!user.role || user.role.trim() === "");
+    }
+    
+    return matchesSearch;
+  });
+
   const deleteUser = async (id) => {
     if (!canDelete)
-      return alert("❌ You do not have permission to delete users.");
+      return alert("You do not have permission to delete users");
 
     if (!window.confirm("Delete this user?")) return;
 
@@ -140,290 +146,420 @@ export default function Users() {
       await api.delete(`/hospitals/users/${tenant_db}/delete/${id}`);
       console.log('User deleted successfully');
       loadUsers();
-    } catch (error) {
-      console.error('Delete user failed:', error);
+    } catch (err) {
+      console.error('Delete user failed:', err);
       alert("Delete failed");
     }
   };
 
-  // Update user
-  const updateUser = async () => {
-    if (!canEdit) return alert("❌ You do not have permission to edit users.");
-
-    try {
-      console.log('Updating user:', {
-        id: editing.id,
-        name: editName,
-        email: editEmail,
-        role_id: Number(editRole),
-        department_id: Number(editDepartment)
-      });
-      const updateData = {
-        name: editName,
-        email: editEmail,
-        role_id: Number(editRole),
-        department_id: Number(editDepartment),
-      };
-      await api.put(`/hospitals/users/${tenant_db}/update/${editing.id}`, updateData);
-
-      console.log('User updated successfully');
-      setShowEditModal(false);
-      loadUsers();
-      alert("Updated!");
-    } catch (err) {
-      alert("Update failed");
-    }
-  };
-
-  const filteredUsers = users.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-
-      <div className="flex-1 flex flex-col">
-        <Header />
-
-        <div className="p-6">
-          <div className="text-sm text-gray-500 mb-3">Admin · Users</div>
-
-          <div className="flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border mb-6">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
-              <p className="text-gray-500 mt-1">
-                Manage employees, assign roles & access levels.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="bg-white border p-4 rounded-xl shadow-sm text-center">
-                <p className="text-xs font-medium text-gray-500 tracking-wide">
-                  USERS
+    <Layout 
+      breadcrumb="Admin · Users"
+    >
+      <div className="max-w-full overflow-hidden">
+        {/* Hero Section */}
+        <div className="mb-4 mt-6 px-8">
+          <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl p-4 text-white relative overflow-hidden">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center mb-2">
+                  <div className="bg-white/20 rounded-lg p-1.5 mr-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                    </svg>
+                  </div>
+                  <span className="bg-white/20 px-2 py-1 rounded-full text-xs font-medium">
+                    User & Access Management
+                  </span>
+                </div>
+                
+                <h1 className="text-xl font-bold mb-1">
+                  User Management
+                </h1>
+                
+                <p className="text-white/90 text-xs mb-3">
+                  Manage employees, assign roles & access levels.
                 </p>
-                <p className="text-xl font-bold text-gray-800 mt-1">
-                  {users.length}
-                </p>
-                <p className="text-[10px] text-gray-400">Active employees</p>
-              </div>
-            </div>
-          </div>
-
-          {/* GRID */}
-          <div className="grid grid-cols-2 gap-6">
-
-            {/* CREATE USER CARD (ONLY IF PERMITTED) */}
-            {canAdd && (
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
-                <h2 className="text-lg font-semibold text-gray-800 mb-1">
-                  Create User
-                </h2>
-                <p className="text-gray-500 text-sm mb-4">
-                  Add new employees and assign roles.
-                </p>
-
-                <input
-                  type="text"
-                  placeholder="Full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                />
-
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                />
-
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                />
-
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                >
-                  <option value="">Select role</option>
-                  {roles.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-4"
-                >
-                  <option value="">Select department</option>
-                  {departments.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
-
-                <button
-                  onClick={createUser}
-                  className="mt-2 bg-[#0A2540] text-white px-5 py-3 rounded-xl w-full hover:bg-[#061829]"
-                >
-                  Create User
-                </button>
-              </div>
-            )}
-
-            {/* USER LIST CARD */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border">
-              <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-semibold">User List</h2>
-
-                <input
-                  type="text"
-                  placeholder="Search user..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="border p-2 rounded-lg text-sm"
-                />
-              </div>
-
-              <table className="min-w-full border text-sm rounded-xl overflow-hidden">
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th className="p-3 border w-12 text-center">#</th>
-                    <th className="p-3 border text-left">Name</th>
-                    <th className="p-3 border text-left">Email</th>
-                    <th className="p-3 border text-left">Role</th>
-                    <th className="p-3 border text-left">Department</th>
-                    <th className="p-3 border text-center">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filteredUsers.map((u, index) => (
-                    <tr key={u.id} className="border hover:bg-gray-50 transition">
-                      <td className="p-3 border text-center">{index + 1}</td>
-                      <td className="p-3 border">{u.name}</td>
-                      <td className="p-3 border">{u.email}</td>
-                      <td className="p-3 border">{u.role}</td>
-                      <td className="p-3 border">{u.department}</td>
-
-                      <td className="p-3 border text-center space-x-2">
-
-                        {/* EDIT BUTTON */}
-                        {canEdit && (
-                          <button
-                            className="px-4 py-1 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-50"
-                            onClick={() => {
-                              setEditing(u);
-                              setEditName(u.name);
-                              setEditEmail(u.email);
-                              // Find role and department IDs from names
-                              const userRole = roles.find(r => r.name === u.role);
-                              const userDept = departments.find(d => d.name === u.department);
-                              setEditRole(userRole ? userRole.id : "");
-                              setEditDepartment(userDept ? userDept.id : "");
-                              setShowEditModal(true);
-                            }}
-                          >
-                            Edit
-                          </button>
-                        )}
-
-                        {/* DELETE BUTTON */}
-                        {canDelete && (
-                          <button
-                            onClick={() => deleteUser(u.id)}
-                            className="px-4 py-1 rounded-full border border-red-500 text-red-500 hover:bg-red-50"
-                          >
-                            Delete
-                          </button>
-                        )}
-
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* EDIT USER MODAL */}
-          {showEditModal && canEdit && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white w-[500px] p-6 rounded-xl shadow-xl max-h-[90vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">Edit User</h2>
-
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                />
-
-                <input
-                  type="email"
-                  value={editEmail}
-                  onChange={(e) => setEditEmail(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                />
-
-                <select
-                  value={editRole}
-                  onChange={(e) => setEditRole(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-3"
-                >
-                  <option value="">Select role</option>
-                  {roles.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={editDepartment}
-                  onChange={(e) => setEditDepartment(e.target.value)}
-                  className="border p-3 w-full rounded-xl mb-4"
-                >
-                  <option value="">Select department</option>
-                  {departments.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="flex justify-end gap-3 mt-2">
-                  <button
-                    onClick={() => setShowEditModal(false)}
-                    className="px-4 py-2 border rounded-lg"
-                  >
-                    Cancel
+                
+                <div className="flex items-center space-x-3">
+                  <button className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded-lg text-xs font-medium transition-colors">
+                    User Setup
                   </button>
-
-                  <button
-                    onClick={updateUser}
-                    className="bg-[#0A2540] text-white px-4 py-2 rounded-lg"
-                  >
-                    Save
-                  </button>
+                  <span className="text-white/80 text-xs">
+                    Used by HR / Admin / Management
+                  </span>
                 </div>
               </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center min-w-[120px]">
+                <p className="text-white/80 text-xs font-medium uppercase tracking-wide mb-1">
+                  USERS
+                </p>
+                <p className="text-2xl font-bold mb-1">
+                  {users.length}
+                </p>
+                <p className="text-white/70 text-xs">
+                  Active employees
+                </p>
+              </div>
             </div>
-          )}
+          </div>
+        </div>
+        
+        {/* Controls Section */}
+        <div className="mb-4 p-6">
+          <div className="bg-white rounded-3xl border border-gray-200 p-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              {/* Left side - Total and Showing */}
+              <div className="flex items-center space-x-3">
+                <div className="bg-gray-100 min-w-[100px] text-center px-3 py-1.5 rounded-full text-sm">
+                  Total: {users.length}
+                </div>
+                <div className="bg-gray-100 min-w-[120px] text-center px-3 py-1.5 rounded-full text-sm">
+                  Showing: {filteredUsers.length}
+                </div>
+              </div>
+              
+              {/* Right side - Search and New */}
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search name or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-9 pr-4 py-2 border border-gray-300 rounded-full w-48 sm:w-64 lg:w-72 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                  <svg className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                
+                {canAdd && (
+                  <button 
+                    onClick={() => setShowCreateModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    <span>New</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            {/* Filter section */}
+            <div className="flex items-center space-x-4 mt-4">
+              <span className="text-sm text-gray-600">Filter</span>
+              <div className="bg-gray-50 rounded-full p-1 flex items-center space-x-1">
+                <button 
+                  onClick={() => setFilter("all")}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    filter === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  All
+                </button>
+                <button 
+                  onClick={() => setFilter("with-role")}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    filter === "with-role" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  With role
+                </button>
+                <button 
+                  onClick={() => setFilter("without-role")}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    filter === "without-role" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  Without role
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        {/* User List */}
+        <div className="p-6">
+          <div className="bg-white rounded-3xl border border-gray-200">
+            {filteredUsers.length === 0 ? (
+              <div className="p-12 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No users found
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  Try changing your search/filter, or create a new user.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full table-fixed">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                        #
+                      </th>
+                      <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                        Name
+                      </th>
+                      <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                        Email
+                      </th>
+                      <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                        Role
+                      </th>
+                      <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                        Department
+                      </th>
+                      <th className="px-3 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredUsers.map((u, index) => (
+                      <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {index + 1}
+                        </td>
+                        <td className="px-3 py-4 text-sm font-medium text-gray-900">
+                          <div className="truncate" title={u.name}>{u.name}</div>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          <div className="truncate" title={u.email}>{u.email}</div>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          <div className="truncate" title={u.role}>
+                            {u.role || <span className="italic text-gray-400">No role</span>}
+                          </div>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">
+                          <div className="truncate" title={u.department}>
+                            {u.department || <span className="italic text-gray-400">No department</span>}
+                          </div>
+                        </td>
+                        <td className="px-3 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                          {canEdit && (
+                            <button
+                              onClick={() => {
+                                setEditing(u);
+                                setEditName(u.name);
+                                setEditEmail(u.email);
+                                const userRole = roles.find(r => r.name === u.role);
+                                const userDept = departments.find(d => d.name === u.department);
+                                setEditRole(userRole ? userRole.id : "");
+                                setEditDepartment(userDept ? userDept.id : "");
+                              }}
+                              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                            >
+                              Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => deleteUser(u.id)}
+                              className="text-red-600 hover:text-red-800 font-medium transition-colors"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Create Modal */}
+      {showCreateModal && canAdd && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white w-96 p-6 rounded-xl shadow-xl">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Create User
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select role</option>
+              {roles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select department</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setName("");
+                  setEmail("");
+                  setPassword("");
+                  setRole("");
+                  setDepartment("");
+                }}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={createUser}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50"
+              >
+                {loading ? "Creating..." : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editing && canEdit && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white w-96 p-6 rounded-xl shadow-xl">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Edit User
+            </h2>
+
+            <input
+              type="text"
+              className="border p-3 rounded-xl w-full mb-4"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+            />
+
+            <input
+              type="email"
+              className="border p-3 rounded-xl w-full mb-4"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+            />
+
+            <select
+              value={editRole}
+              onChange={(e) => setEditRole(e.target.value)}
+              className="border p-3 rounded-xl w-full mb-4"
+            >
+              <option value="">Select role</option>
+              {roles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={editDepartment}
+              onChange={(e) => setEditDepartment(e.target.value)}
+              className="border p-3 rounded-xl w-full mb-4"
+            >
+              <option value="">Select department</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setEditing(null)}
+                className="px-4 py-2 rounded-lg border"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={async () => {
+                  try {
+                    console.log('Updating user:', {
+                      id: editing.id,
+                      name: editName,
+                      email: editEmail,
+                      role_id: Number(editRole),
+                      department_id: Number(editDepartment)
+                    });
+                    await api.put(
+                      `/hospitals/users/${tenant_db}/update/${editing.id}`,
+                      {
+                        name: editName,
+                        email: editEmail,
+                        role_id: Number(editRole),
+                        department_id: Number(editDepartment),
+                      }
+                    );
+
+                    console.log('User updated successfully');
+                    alert("Updated successfully!");
+                    setEditing(null);
+                    loadUsers();
+                  } catch (err) {
+                    console.error('Update user failed:', err);
+                    alert("Update failed");
+                  }
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </Layout>
   );
 }

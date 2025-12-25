@@ -1,1 +1,52 @@
 /* Tailwind CSS styles will be added via CDN */
+
+/* Hide all scrollbars completely */
+html {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+*::-webkit-scrollbar-corner {
+  display: none !important;
+}
+
+/* Hide scrollbars on specific elements */
+.overflow-auto,
+.overflow-x-auto,
+.overflow-y-auto,
+.overflow-scroll {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.overflow-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-scroll::-webkit-scrollbar {
+  display: none !important;
+}

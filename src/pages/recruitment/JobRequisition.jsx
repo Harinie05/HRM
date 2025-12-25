@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 import api from "../../api";
 
 // ============================================================================
@@ -56,95 +55,133 @@ export default function JobRequisition() {
   // UI RENDER
   // ======================================================================
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 min-h-screen bg-gray-50">
-        <Header />
-
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-semibold">Job Requisition</h1>
-
-            <button
-              onClick={openCreate}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-            >
-              + New Requisition
-            </button>
+    <Layout breadcrumb="Recruitment · Job Requisition">
+      <div className="w-full overflow-hidden">
+        {/* Enhanced Header */}
+        <div className="mb-6 px-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-blue-100 rounded-xl">
+                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Job Requisition</h1>
+                  <p className="text-gray-600 mt-1">Create and manage job requisitions for hiring needs</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{requisitions.length}</div>
+                  <div className="text-sm text-gray-500">Active Positions</div>
+                </div>
+                <button
+                  onClick={openCreate}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-medium flex items-center space-x-2 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>New Requisition</span>
+                </button>
+              </div>
+            </div>
           </div>
-
-          {/* SEARCH */}
-          <input
-            type="text"
-            placeholder="Search..."
-            className="border p-2 rounded w-64 mb-4"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-
-          {/* TABLE */}
-          <table className="min-w-full bg-white rounded-xl shadow">
-            <thead className="bg-gray-100 text-gray-600 text-sm">
-              <tr>
-                <th className="p-3 text-left">Job Title</th>
-                <th className="p-3 text-left">Department</th>
-                <th className="p-3 text-center">Openings</th>
-                <th className="p-3 text-center">Experience</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {requisitions
-                .filter((r) =>
-                  r.title?.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((req) => (
-                  <tr key={req.id} className="border-t">
-                    <td className="p-3">{req.title}</td>
-                    <td className="p-3">{req.department}</td>
-                    <td className="p-3 text-center">{req.openings}</td>
-                    <td className="p-3 text-center">{req.experience}</td>
-
-                    <td className="p-3 text-center">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          className="px-3 py-1 bg-gray-200 rounded"
-                          onClick={() => openView(req)}
-                        >
-                          View
-                        </button>
-
-                        <button
-                          className="px-3 py-1 bg-yellow-500 text-white rounded"
-                          onClick={() => openEdit(req)}
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-
-          {/* MODAL FORM */}
-          {showForm && (
-            <JobRequisitionForm
-              mode={mode}
-              requisition={selectedReq}
-              onClose={() => {
-                console.log("Closing modal");
-                setShowForm(false);
-                fetchRequisitions();
-              }}
-            />
-          )}
-          {console.log("showForm state:", showForm)}
         </div>
+
+        {/* Search Section */}
+        <div className="mb-6 px-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+            <div className="relative max-w-md">
+              <input
+                type="text"
+                placeholder="Search requisitions..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-4 py-3 border border-gray-300 rounded-xl w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              />
+              <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Job List */}
+        <div className="px-4">
+          <div className="bg-white rounded-3xl border border-gray-200">
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-fixed">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Job Title</th>
+                    <th className="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Department</th>
+                    <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Openings</th>
+                    <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Experience</th>
+                    <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {requisitions
+                    .filter((r) =>
+                      r.title?.toLowerCase().includes(search.toLowerCase())
+                    )
+                    .map((req) => (
+                      <tr key={req.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-4">
+                          <div className="text-sm font-medium text-gray-900 truncate" title={req.title}>{req.title}</div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="text-sm text-gray-600 truncate" title={req.department}>{req.department}</div>
+                        </td>
+                        <td className="px-4 py-4 text-center">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {req.openings}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-center">
+                          <div className="text-sm text-gray-600 truncate" title={req.experience}>{req.experience}</div>
+                        </td>
+                        <td className="px-4 py-4 text-center">
+                          <div className="flex justify-center space-x-1">
+                            <button
+                              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-xs font-medium transition-colors"
+                              onClick={() => openView(req)}
+                            >
+                              View
+                            </button>
+                            <button
+                              className="px-2 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-md text-xs font-medium transition-colors"
+                              onClick={() => openEdit(req)}
+                            >
+                              Edit
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* MODAL FORM */}
+        {showForm && (
+          <JobRequisitionForm
+            mode={mode}
+            requisition={selectedReq}
+            onClose={() => {
+              setShowForm(false);
+              fetchRequisitions();
+            }}
+          />
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }
 

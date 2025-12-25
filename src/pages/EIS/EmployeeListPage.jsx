@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeListPage() {
   const [employees, setEmployees] = useState([]);
@@ -251,50 +250,36 @@ export default function EmployeeListPage() {
   }, [showCreateForm]);
 
   if (loading) return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-6">Loading...</div>
-      </div>
-    </div>
+    <Layout>
+      <div className="p-6">Loading...</div>
+    </Layout>
   );
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        
-        <div className="p-4">
-          <div className="bg-white p-4 rounded-lg shadow mb-4">
-            <h1 className="text-xl font-bold text-[#0D3B66] mb-1">
-              Employee Information System (EIS)
-            </h1>
-            <p className="text-sm text-gray-600">
-              Manage employee profiles, personal information, and records
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h2 className="text-lg font-semibold">Employee Directory</h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={fetchEmployees}
-                  className="px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
-                >
-                  Refresh
-                </button>
-                <button
-                  onClick={() => setShowCreateForm(true)}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  <Plus size={14} />
-                  Create Employee Code
-                </button>
-              </div>
+    <Layout 
+      title="Employee Information System (EIS)"
+      subtitle="Manage employee profiles, personal information, and records"
+    >
+      <div className="p-6">
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-4 border-b flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Employee Directory</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={fetchEmployees}
+                className="px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+              >
+                Refresh
+              </button>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                <Plus size={14} />
+                Create Employee Code
+              </button>
             </div>
+          </div>
             
             <div className="overflow-x-auto">
               <table className="min-w-full">
@@ -364,120 +349,119 @@ export default function EmployeeListPage() {
                   No employees found
                 </div>
               )}
-            </div>
           </div>
+        </div>
 
-          {/* Create Employee Code Modal */}
-          {showCreateForm && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                <h3 className="text-lg font-semibold mb-4">Create Employee Code</h3>
+        {/* Create Employee Code Modal */}
+        {showCreateForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold mb-4">Create Employee Code</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                  <select
+                    value={formData.selectedDepartment}
+                    onChange={(e) => setFormData(prev => ({ ...prev, selectedDepartment: e.target.value, selectedRole: '', selectedUser: '' }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>{dept.name}</option>
+                    ))}
+                  </select>
+                </div>
                 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                    <select
-                      value={formData.selectedDepartment}
-                      onChange={(e) => setFormData(prev => ({ ...prev, selectedDepartment: e.target.value, selectedRole: '', selectedUser: '' }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select Department</option>
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.id}>{dept.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select
-                      value={formData.selectedRole}
-                      onChange={(e) => setFormData(prev => ({ ...prev, selectedRole: e.target.value, selectedUser: '' }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select Role</option>
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>{role.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
-                    <select
-                      value={formData.selectedUser}
-                      onChange={(e) => setFormData(prev => ({ ...prev, selectedUser: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select User</option>
-                      {getFilteredUsers().map((user) => (
-                        <option key={user.id} value={user.id}>{user.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Employee Code</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={formData.employeeCode}
-                        onChange={(e) => setFormData(prev => ({ ...prev, employeeCode: e.target.value }))}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                        placeholder="Enter manually or click Generate"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, employeeCode: generateEmployeeCode() }))}
-                        className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-                      >
-                        Generate
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Designation</label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <select
+                    value={formData.selectedRole}
+                    onChange={(e) => setFormData(prev => ({ ...prev, selectedRole: e.target.value, selectedUser: '' }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Role</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>{role.name}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
+                  <select
+                    value={formData.selectedUser}
+                    onChange={(e) => setFormData(prev => ({ ...prev, selectedUser: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select User</option>
+                    {getFilteredUsers().map((user) => (
+                      <option key={user.id} value={user.id}>{user.name}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Employee Code</label>
+                  <div className="flex gap-2">
                     <input
                       type="text"
-                      value={formData.designation}
-                      onChange={(e) => setFormData(prev => ({ ...prev, designation: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter designation"
+                      value={formData.employeeCode}
+                      onChange={(e) => setFormData(prev => ({ ...prev, employeeCode: e.target.value }))}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter manually or click Generate"
                     />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Joining Date</label>
-                    <input
-                      type="date"
-                      value={formData.joiningDate}
-                      onChange={(e) => setFormData(prev => ({ ...prev, joiningDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, employeeCode: generateEmployeeCode() }))}
+                      className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                    >
+                      Generate
+                    </button>
                   </div>
                 </div>
                 
-                <div className="flex gap-2 mt-6">
-                  <button
-                    onClick={handleCreateEmployee}
-                    disabled={!formData.selectedUser || !formData.employeeCode}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300"
-                  >
-                    Create Employee
-                  </button>
-                  <button
-                    onClick={() => setShowCreateForm(false)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Designation</label>
+                  <input
+                    type="text"
+                    value={formData.designation}
+                    onChange={(e) => setFormData(prev => ({ ...prev, designation: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter designation"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Joining Date</label>
+                  <input
+                    type="date"
+                    value={formData.joiningDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, joiningDate: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
+              
+              <div className="flex gap-2 mt-6">
+                <button
+                  onClick={handleCreateEmployee}
+                  disabled={!formData.selectedUser || !formData.employeeCode}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300"
+                >
+                  Create Employee
+                </button>
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }

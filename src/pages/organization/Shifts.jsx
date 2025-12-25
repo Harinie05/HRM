@@ -479,294 +479,316 @@ export default function Shift() {
   };
 
   return (
-    <div className="space-y-6 w-full max-w-full">
-
-
-      {/* Shift Management */}
-      <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold">Shift & Roster Management</h2>
-            <p className="text-gray-500 text-sm">Create shifts and manage employee roster assignments.</p>
+    <div className="w-full overflow-hidden">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex-shrink-0">
+              <Calendar className="text-white" size={20} />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Shift & Roster Management</h1>
+              <p className="text-gray-600 mt-1">Create shifts and manage employee roster assignments</p>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => setShowCreateShift(!showCreateShift)}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
             >
               <Plus size={16} /> Create Shift
             </button>
             <button
               onClick={() => setShowShifts(!showShifts)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
             >
-              View All Shifts ({shifts.length}) {showShifts ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              View Shifts ({shifts.length}) {showShifts ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
           </div>
         </div>
-
-        {showCreateShift && (
-          <div className="p-4 bg-gray-50 rounded-lg border">
-            <h3 className="font-semibold mb-3">Create New Shift</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shift Name</label>
-                <input
-                  type="text"
-                  value={newShift.name}
-                  onChange={(e) => setNewShift({...newShift, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., Morning Shift"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                <input
-                  type="time"
-                  value={newShift.start_time}
-                  onChange={(e) => setNewShift({...newShift, start_time: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                <input
-                  type="time"
-                  value={newShift.end_time}
-                  onChange={(e) => setNewShift({...newShift, end_time: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2 mt-4">
-              <button
-                onClick={createShift}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                Create Shift
-              </button>
-              <button
-                onClick={() => setShowCreateShift(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {showShifts && (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2 text-left">Shift Name</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Start Time</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">End Time</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
-                  <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shifts.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="border border-gray-300 px-4 py-8 text-center text-gray-500">
-                      <div className="flex flex-col items-center gap-2">
-                        <p>No shifts found</p>
-                        <p className="text-sm">Create shifts above to get started</p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  shifts.map((shift) => {
-                    const calculateDuration = (start, end) => {
-                      const startTime = new Date(`2000-01-01 ${start}`);
-                      const endTime = new Date(`2000-01-01 ${end}`);
-                      let diff = endTime - startTime;
-                      if (diff < 0) diff += 24 * 60 * 60 * 1000;
-                      const hours = Math.floor(diff / (1000 * 60 * 60));
-                      return `${hours} hours`;
-                    };
-                    
-                    return (
-                      <tr key={shift.id}>
-                        <td className="border border-gray-300 px-4 py-2 font-medium">{shift.name}</td>
-                        <td className="border border-gray-300 px-4 py-2">{shift.start_time}</td>
-                        <td className="border border-gray-300 px-4 py-2">{shift.end_time}</td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          {calculateDuration(shift.start_time, shift.end_time)}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                          <button 
-                            onClick={() => deleteShift(shift.id)}
-                            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
 
-      {/* Roster Management */}
-      <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
-        <h2 className="text-xl font-semibold">Roster Management</h2>
-        
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
-          <h3 className="text-md font-semibold mb-4">Add Employee to Roster</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-              <select
-                value={selectedUser}
-                onChange={(e) => setSelectedUser(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Employee</option>
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.employee_code} - {employee.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="flex items-end">
-              <button
-                onClick={async () => {
-                  if (!selectedUser) {
-                    alert("Please select an employee first");
-                    return;
-                  }
-                  
-                  const employee = employees.find(e => e.id == selectedUser);
-                  if (employee) {
-                    // Add to UI immediately
-                    setAllocatedUsers([...allocatedUsers, { ...employee, roster: {} }]);
-                    
-                    // Save to database
-                    const today = new Date().toISOString().split('T')[0];
-                    await saveRosterEntry(employee.id, today, null, "Unscheduled");
-                    
-                    setSelectedUser("");
-                    alert(`${employee.name} added to roster and saved to database!`);
-                  }
-                }}
-                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-              >
-                Add to Roster
-              </button>
-            </div>
+      <div className="p-4 space-y-6">
+        {/* Shift Management */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+
+          <div className="p-6">
+            {showCreateShift && (
+              <div className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Shift</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Shift Name</label>
+                    <input
+                      type="text"
+                      value={newShift.name}
+                      onChange={(e) => setNewShift({...newShift, name: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="e.g., Morning Shift"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                    <input
+                      type="time"
+                      value={newShift.start_time}
+                      onChange={(e) => setNewShift({...newShift, start_time: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                    <input
+                      type="time"
+                      value={newShift.end_time}
+                      onChange={(e) => setNewShift({...newShift, end_time: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={createShift}
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    Create Shift
+                  </button>
+                  <button
+                    onClick={() => setShowCreateShift(false)}
+                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {showShifts && (
+              <div className="overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full table-fixed divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Shift Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Start Time</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">End Time</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Duration</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {shifts.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" className="px-6 py-12 text-center">
+                            <div className="flex flex-col items-center gap-3">
+                              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                <Calendar size={24} className="text-gray-400" />
+                              </div>
+                              <div>
+                                <p className="text-gray-900 font-medium">No shifts found</p>
+                                <p className="text-gray-500 text-sm mt-1">Create your first shift to get started</p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        shifts.map((shift) => {
+                          const calculateDuration = (start, end) => {
+                            const startTime = new Date(`2000-01-01 ${start}`);
+                            const endTime = new Date(`2000-01-01 ${end}`);
+                            let diff = endTime - startTime;
+                            if (diff < 0) diff += 24 * 60 * 60 * 1000;
+                            const hours = Math.floor(diff / (1000 * 60 * 60));
+                            return `${hours} hours`;
+                          };
+                          
+                          return (
+                            <tr key={shift.id} className="hover:bg-gray-50">
+                              <td className="px-4 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900 truncate" title={shift.name}>{shift.name}</div>
+                              </td>
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{shift.start_time}</td>
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{shift.end_time}</td>
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {calculateDuration(shift.start_time, shift.end_time)}
+                              </td>
+                              <td className="px-4 py-4 whitespace-nowrap text-center">
+                                <button 
+                                  onClick={() => deleteShift(shift.id)}
+                                  className="inline-flex items-center p-1.5 bg-red-100 text-red-700 text-sm font-medium rounded-md hover:bg-red-200 transition-colors"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {allocatedUsers.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="text-md font-semibold mb-4 text-blue-800">Bulk Shift Allocation</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
-                <input
-                  type="date"
-                  value={bulkDateRange.start}
-                  onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
-                <input
-                  type="date"
-                  value={bulkDateRange.end}
-                  onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-                <select
-                  value={bulkShift}
-                  onChange={(e) => setBulkShift(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Shift</option>
-                  {shifts.map((shift) => (
-                    <option key={shift.id} value={shift.id}>{shift.name}</option>
-                  ))}
-                  <option value="OFF">OFF</option>
-                </select>
-              </div>
-              
-              <div className="flex items-end">
-                <button
-                  onClick={bulkAllocateShifts}
-                  disabled={!bulkShift}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300"
-                >
-                  Apply to Selected ({selectedUsersForBulk.length})
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-          <div className="flex items-center gap-4">
-            <div className="flex bg-white rounded-lg border">
-              <button
-                onClick={() => setViewMode("week")}
-                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                  viewMode === "week" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                Week
-              </button>
-              <button
-                onClick={() => setViewMode("month")}
-                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                  viewMode === "month" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                Month
-              </button>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => navigateDate(-1)}
-                className="p-2 text-gray-600 hover:bg-white rounded-lg border"
-              >
-                <ChevronDown className="rotate-90" size={16} />
-              </button>
-              
-              <h3 className="text-lg font-semibold text-gray-800 min-w-[200px] text-center">
-                {getCalendarTitle()}
-              </h3>
-              
-              <button
-                onClick={() => navigateDate(1)}
-                className="p-2 text-gray-600 hover:bg-white rounded-lg border"
-              >
-                <ChevronDown className="-rotate-90" size={16} />
-              </button>
-            </div>
+        {/* Roster Management */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Roster Management</h2>
+            <p className="text-gray-600 text-sm mt-1">Assign employees to shifts and manage schedules</p>
           </div>
           
-          <button
-            onClick={() => setCurrentDate(new Date())}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-          >
-            Today
-          </button>
-        </div>
+          <div className="p-6">
+            {/* Add Employee Section */}
+            <div className="mb-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="text-md font-semibold text-blue-900 mb-4">Add Employee to Roster</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                  <select
+                    value={selectedUser}
+                    onChange={(e) => setSelectedUser(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((employee) => (
+                      <option key={employee.id} value={employee.id}>
+                        {employee.employee_code} - {employee.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex items-end">
+                  <button
+                    onClick={async () => {
+                      if (!selectedUser) {
+                        alert("Please select an employee first");
+                        return;
+                      }
+                      
+                      const employee = employees.find(e => e.id == selectedUser);
+                      if (employee) {
+                        setAllocatedUsers([...allocatedUsers, { ...employee, roster: {} }]);
+                        const today = new Date().toISOString().split('T')[0];
+                        await saveRosterEntry(employee.id, today, null, "Unscheduled");
+                        setSelectedUser("");
+                        alert(`${employee.name} added to roster successfully!`);
+                      }
+                    }}
+                    className="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    Add to Roster
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bulk Allocation Section */}
+            {allocatedUsers.length > 0 && (
+              <div className="mb-6 p-6 bg-green-50 rounded-lg border border-green-200">
+                <h3 className="text-md font-semibold text-green-900 mb-4">Bulk Shift Allocation</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                    <input
+                      type="date"
+                      value={bulkDateRange.start}
+                      onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                    <input
+                      type="date"
+                      value={bulkDateRange.end}
+                      onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Shift</label>
+                    <select
+                      value={bulkShift}
+                      onChange={(e) => setBulkShift(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      <option value="">Select Shift</option>
+                      {shifts.map((shift) => (
+                        <option key={shift.id} value={shift.id}>{shift.name}</option>
+                      ))}
+                      <option value="OFF">OFF</option>
+                    </select>
+                  </div>
+                  
+                  <div className="flex items-end">
+                    <button
+                      onClick={bulkAllocateShifts}
+                      disabled={!bulkShift}
+                      className="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Apply to Selected ({selectedUsersForBulk.length})
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Calendar Controls */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="flex bg-white rounded-lg border border-gray-300 overflow-hidden">
+                  <button
+                    onClick={() => setViewMode("week")}
+                    className={`px-4 py-2 text-sm font-medium transition-colors ${
+                      viewMode === "week" ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Week
+                  </button>
+                  <button
+                    onClick={() => setViewMode("month")}
+                    className={`px-4 py-2 text-sm font-medium transition-colors ${
+                      viewMode === "month" ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Month
+                  </button>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => navigateDate(-1)}
+                    className="p-2 text-gray-600 hover:bg-white rounded-lg border border-gray-300 transition-colors"
+                  >
+                    <ChevronDown className="rotate-90" size={16} />
+                  </button>
+                  
+                  <h3 className="text-lg font-semibold text-gray-800 min-w-[200px] text-center">
+                    {getCalendarTitle()}
+                  </h3>
+                  
+                  <button
+                    onClick={() => navigateDate(1)}
+                    className="p-2 text-gray-600 hover:bg-white rounded-lg border border-gray-300 transition-colors"
+                  >
+                    <ChevronDown className="-rotate-90" size={16} />
+                  </button>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setCurrentDate(new Date())}
+                className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Today
+              </button>
+            </div>
 
         <div className="border rounded-lg overflow-hidden">
           <div className="px-4 py-3 bg-gray-100 border-b">
@@ -848,12 +870,9 @@ export default function Shift() {
                         />
                       </td>
                       <td className="px-4 py-3 border-r border-gray-300">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <div className="font-medium text-gray-800 text-sm">{user.name}</div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <div className="font-medium text-gray-900 text-sm">{user.name}</div>
                             <div className="text-xs text-gray-500">{user.department_name}</div>
                           </div>
                         </div>
@@ -933,6 +952,8 @@ export default function Shift() {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
           </div>
         </div>
       </div>

@@ -639,18 +639,29 @@ export default function ShiftRoster() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <div className="flex-1 overflow-y-auto p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Shift & Roster Management</h1>
-        <p className="text-gray-600 mt-1">Manage employee shift assignments and roster planning</p>
+      <div className="mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-blue-100">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
+              <Calendar className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Shift & Roster Management
+              </h1>
+              <p className="text-gray-600 mt-1">Advanced shift planning and employee roster management system</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Section 1: Shift Planning Overview */}
-      <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8 hover:shadow-2xl transition-shadow duration-300">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800"> Shift Planning Overview</h2>
           <div className="flex gap-2">
@@ -785,19 +796,24 @@ export default function ShiftRoster() {
       </div>
 
       {/* Section 2: Roster Allocation */}
-      <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8 hover:shadow-2xl transition-shadow duration-300">
         <h2 className="text-lg font-semibold text-gray-800 mb-4"> Roster Allocation</h2>
         
         {/* Employee Allocation */}
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
-          <h3 className="text-md font-semibold mb-4">Add Employee to Roster</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 shadow-lg">
+          <h3 className="text-lg font-bold mb-6 text-blue-800 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Add Employee to Roster
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Employee</label>
               <select
                 value={selectedUser}
                 onChange={(e) => setSelectedUser(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               >
                 <option value="">Select Employee</option>
                 {getFilteredEmployees().map((employee) => (
@@ -812,7 +828,7 @@ export default function ShiftRoster() {
               <button
                 onClick={addEmployeeToRoster}
                 disabled={!selectedUser}
-                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-300"
+                className="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:transform-none"
               >
                 Add to Roster
               </button>
@@ -822,35 +838,40 @@ export default function ShiftRoster() {
 
         {/* Bulk Shift Allocation */}
         {allocatedUsers.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="text-md font-semibold mb-4 text-blue-800">Bulk Shift Allocation</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border border-purple-200 shadow-lg">
+            <h3 className="text-lg font-bold mb-6 text-purple-800 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"></path>
+              </svg>
+              Bulk Shift Allocation
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">From Date</label>
                 <input
                   type="date"
                   value={bulkDateRange.start}
                   onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">To Date</label>
                 <input
                   type="date"
                   value={bulkDateRange.end}
                   onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shift</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Shift</label>
                 <select
                   value={bulkShift}
                   onChange={(e) => setBulkShift(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 >
                   <option value="">Select Shift</option>
                   {shifts.map((shift) => (
@@ -864,7 +885,7 @@ export default function ShiftRoster() {
                 <button
                   onClick={bulkAllocateShifts}
                   disabled={!bulkShift}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:transform-none"
                 >
                   Apply to Selected ({selectedUsersForBulk.length})
                 </button>
@@ -874,51 +895,51 @@ export default function ShiftRoster() {
         )}
 
         {/* Calendar Navigation */}
-        <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-lg border">
-          <div className="flex items-center gap-4">
-            <div className="flex bg-white rounded-lg border">
+        <div className="flex items-center justify-between mb-8 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-200 shadow-lg">
+          <div className="flex items-center gap-6">
+            <div className="flex bg-white rounded-xl border-2 border-gray-200 shadow-sm">
               <button
                 onClick={() => setViewMode("week")}
-                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                  viewMode === "week" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                className={`px-6 py-3 text-sm font-semibold rounded-l-xl transition-all duration-300 ${
+                  viewMode === "week" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 Week
               </button>
               <button
                 onClick={() => setViewMode("month")}
-                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                  viewMode === "month" ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                className={`px-6 py-3 text-sm font-semibold rounded-r-xl transition-all duration-300 ${
+                  viewMode === "month" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 Month
               </button>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => navigateDate(-1)}
-                className="p-2 text-gray-600 hover:bg-white rounded-lg border"
+                className="p-3 text-gray-600 hover:bg-white rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
-                <ChevronDown className="rotate-90" size={16} />
+                <ChevronDown className="rotate-90" size={20} />
               </button>
               
-              <h3 className="text-lg font-semibold text-gray-800 min-w-[200px] text-center">
+              <h3 className="text-xl font-bold text-gray-800 min-w-[250px] text-center bg-white px-6 py-3 rounded-xl border-2 border-gray-200 shadow-sm">
                 {getCalendarTitle()}
               </h3>
               
               <button
                 onClick={() => navigateDate(1)}
-                className="p-2 text-gray-600 hover:bg-white rounded-lg border"
+                className="p-3 text-gray-600 hover:bg-white rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
-                <ChevronDown className="-rotate-90" size={16} />
+                <ChevronDown className="-rotate-90" size={20} />
               </button>
             </div>
           </div>
           
           <button
             onClick={() => setCurrentDate(new Date())}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
           >
             Today
           </button>
@@ -1103,7 +1124,7 @@ export default function ShiftRoster() {
       </div>
 
       {/* Section 3: Night Shift Rules */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800"> Night Shift Rules</h2>
           <div className="flex gap-2">
@@ -1175,104 +1196,111 @@ export default function ShiftRoster() {
           </div>
         )}
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Night shift applicable for Shifts:
-            </label>
-            <select
-              value={(nightShiftRules.applicable_shifts && nightShiftRules.applicable_shifts[0]) || ""}
-              onChange={(e) => {
-                const value = e.target.value ? [parseInt(e.target.value)] : [];
-                setNightShiftRules({...nightShiftRules, applicable_shifts: value});
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Shift</option>
-              {shifts.map((shift) => (
-                <option key={shift.id} value={shift.id}>{shift.name}</option>
-              ))}
-            </select>
+        {/* Night Shift Rules Configuration */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div className="space-y-6">
+            <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Night shift applicable for Shifts:
+              </label>
+              <select
+                value={(nightShiftRules.applicable_shifts && nightShiftRules.applicable_shifts[0]) || ""}
+                onChange={(e) => {
+                  const value = e.target.value ? [parseInt(e.target.value)] : [];
+                  setNightShiftRules({...nightShiftRules, applicable_shifts: value});
+                }}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
+              >
+                <option value="">Select Shift</option>
+                {shifts.map((shift) => (
+                  <option key={shift.id} value={shift.id}>{shift.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Punch Out after midnight counts as:
+              </label>
+              <select
+                value={nightShiftRules.punch_out_rule}
+                onChange={(e) => setNightShiftRules({...nightShiftRules, punch_out_rule: e.target.value})}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              >
+                <option value="Same day">Same day</option>
+                <option value="Next day">Next day</option>
+              </select>
+            </div>
+
+            <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Minimum hours for night shift credit:
+              </label>
+              <input
+                type="number"
+                value={nightShiftRules.minimum_hours}
+                onChange={(e) => setNightShiftRules({...nightShiftRules, minimum_hours: parseInt(e.target.value)})}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white shadow-sm"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Punch Out after midnight counts as:
-            </label>
-            <select
-              value={nightShiftRules.punch_out_rule}
-              onChange={(e) => setNightShiftRules({...nightShiftRules, punch_out_rule: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Same day">Same day</option>
-              <option value="Next day">Next day</option>
-            </select>
-          </div>
+          <div className="space-y-6">
+            <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Night OT bonus rate:
+              </label>
+              <select
+                value={nightShiftRules.night_ot_rate}
+                onChange={(e) => setNightShiftRules({...nightShiftRules, night_ot_rate: e.target.value})}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white shadow-sm"
+              >
+                <option value="1.25x">1.25x</option>
+                <option value="1.5x">1.5x</option>
+                <option value="2x">2x</option>
+              </select>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Minimum hours for night shift credit:
-            </label>
-            <input
-              type="number"
-              value={nightShiftRules.minimum_hours}
-              onChange={(e) => setNightShiftRules({...nightShiftRules, minimum_hours: parseInt(e.target.value)})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Grace time for night login (minutes):
+              </label>
+              <input
+                type="number"
+                value={nightShiftRules.grace_minutes}
+                onChange={(e) => setNightShiftRules({...nightShiftRules, grace_minutes: parseInt(e.target.value)})}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Night OT bonus rate:
-            </label>
-            <select
-              value={nightShiftRules.night_ot_rate}
-              onChange={(e) => setNightShiftRules({...nightShiftRules, night_ot_rate: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="1.25x">1.25x</option>
-              <option value="1.5x">1.5x</option>
-              <option value="2x">2x</option>
-            </select>
+            <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+              <div className="text-center">
+                <button
+                  onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
+                  className="w-full px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
+                </button>
+                {editingNightShiftRule && (
+                  <button
+                    onClick={() => {
+                      setEditingNightShiftRule(null);
+                      setNightShiftRules({
+                        applicable_shifts: [],
+                        punch_out_rule: "Same day",
+                        minimum_hours: 6,
+                        night_ot_rate: "1.5x",
+                        grace_minutes: 15
+                      });
+                    }}
+                    className="w-full mt-3 px-8 py-4 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-xl hover:from-gray-500 hover:to-gray-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Grace time for night login (minutes):
-            </label>
-            <input
-              type="number"
-              value={nightShiftRules.grace_minutes}
-              onChange={(e) => setNightShiftRules({...nightShiftRules, grace_minutes: parseInt(e.target.value)})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 flex gap-4">
-          <button
-            onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
-          </button>
-          {editingNightShiftRule && (
-            <button
-              onClick={() => {
-                setEditingNightShiftRule(null);
-                setNightShiftRules({
-                  applicable_shifts: [],
-                  punch_out_rule: "Same day",
-                  minimum_hours: 6,
-                  night_ot_rate: "1.5x",
-                  grace_minutes: 15
-                });
-              }}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-            >
-              Cancel Edit
-            </button>
-          )}
         </div>
       </div>
         </div>

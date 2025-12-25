@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
+import { 
+  FiUser, FiMail, FiMapPin, FiUsers, FiClock, FiCalendar, 
+  FiFileText, FiBook, FiBriefcase, FiZap, FiAward,
+  FiHeart, FiCreditCard, FiDollarSign, FiTrendingUp, FiLogOut,
+  FiCamera, FiEye
+} from "react-icons/fi";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeProfile() {
   const { id } = useParams();
@@ -128,232 +133,300 @@ export default function EmployeeProfile() {
 
   if (loading) {
     return (
-      <div className="flex bg-[#F5F7FA] min-h-screen">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <Header />
-          <div className="p-6">Loading employee profile...</div>
+      <Layout title="Employee Profile" subtitle="Loading employee information...">
+        <div className="p-6">
+          <div className="animate-pulse space-y-6">
+            <div className="bg-white rounded-lg p-6 space-y-4">
+              <div className="flex gap-6">
+                <div className="w-28 h-28 bg-gray-200 rounded-lg"></div>
+                <div className="flex-1 space-y-3">
+                  <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (!employee) {
     return (
-      <div className="flex bg-[#F5F7FA] min-h-screen">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <Header />
-          <div className="p-6">Employee not found</div>
+      <Layout title="Employee Profile" subtitle="Employee information not found">
+        <div className="p-6">
+          <div className="bg-white rounded-lg p-8 text-center">
+            <FiUser className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Employee Not Found</h3>
+            <p className="text-gray-500">The requested employee profile could not be found.</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        
-        <div className="p-6 space-y-6">
-          {/* ================= PROFILE HEADER ================= */}
-          <div className="bg-white rounded-lg shadow p-6 flex gap-6">
-            {/* Photo */}
-            <div 
-              className="w-28 h-28 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 relative cursor-pointer hover:bg-gray-300 transition-colors overflow-hidden"
-              onClick={() => setShowPhotoUpload(true)}
-            >
-              {photoUrl ? (
-                <img 
-                  src={photoUrl} 
-                  alt="Employee Photo" 
-                  className="w-full h-full object-cover"
-                  onError={() => setPhotoUrl(null)}
-                />
-              ) : (
-                <div className="text-center">
-                  <div className="text-3xl mb-1">+</div>
-                  <div className="text-xs">Add Photo</div>
+    <Layout>
+      <div className="p-6 space-y-6">
+        {/* Profile Header Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-8 py-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div 
+                  className="relative w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors overflow-hidden group"
+                  onClick={() => setShowPhotoUpload(true)}
+                >
+                  {photoUrl ? (
+                    <>
+                      <img 
+                        src={photoUrl} 
+                        alt="Employee Photo" 
+                        className="w-full h-full object-cover rounded-xl"
+                        onError={() => setPhotoUrl(null)}
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                        <FiCamera className="text-white text-lg" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center text-gray-500">
+                      <FiCamera className="text-2xl mb-1 mx-auto" />
+                      <div className="text-xs font-medium">Add Photo</div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            {/* Basic Info */}
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-[#0D3B66]">
-                {employee.candidate_name}
-              </h1>
-              <p className="text-gray-600">
-                {employee.job_title} · {employee.department}
-              </p>
-
-              <div className="mt-2 text-sm text-gray-700 space-y-1">
-                <p><b>Employee Code:</b> {employee.employee_id}</p>
-                <p><b>Joining Date:</b> {employee.joining_date ? new Date(employee.joining_date).toLocaleDateString() : 'N/A'}</p>
-                <p><b>Status:</b>{" "}
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      employee.status === "Active" || employee.status === "Completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {employee.status}
-                  </span>
-                </p>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{employee.candidate_name}</h1>
+                  <p className="text-gray-600 font-medium mb-3">{employee.job_title} · {employee.department || 'HR Department'}</p>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 bg-blue-100 rounded">
+                        <FiUser className="text-blue-600" size={12} />
+                      </div>
+                      <span className="font-medium">{employee.employee_id}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 bg-green-100 rounded">
+                        <FiCalendar className="text-green-600" size={12} />
+                      </div>
+                      <span>{employee.joining_date ? new Date(employee.joining_date).toLocaleDateString() : 'N/A'}</span>
+                    </div>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        employee.status === "Active" || employee.status === "Completed"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {employee.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Link
+                  to={`/eis/${employee.application_id}/documents`}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  <FiEye size={16} />
+                  View Documents
+                </Link>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Quick Actions */}
-            <div className="space-y-2">
-              <Link
-                to={`/eis/${employee.application_id}/documents`}
-                className="w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-center block"
-              >
-                View All Documents
-              </Link>
+        {/* Employment Details */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiBriefcase className="text-blue-600" />
+            Employment Details
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex items-start gap-3">
+              <FiMail className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Email</p>
+                <p className="text-gray-900">{employee.candidate_email || 'N/A'}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <FiMapPin className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Work Location</p>
+                <p className="text-gray-900">{employee.work_location}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <FiUsers className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Reporting Manager</p>
+                <p className="text-gray-900">{employee.reporting_manager}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <FiClock className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Work Shift</p>
+                <p className="text-gray-900">{employee.work_shift}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <FiCalendar className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Probation Period</p>
+                <p className="text-gray-900">{employee.probation_period}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <FiFileText className="text-gray-400 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Application ID</p>
+                <p className="text-gray-900">{employee.application_id}</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* ================= EMPLOYMENT DETAILS ================= */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4">Employment Details</h2>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <p><b>Email:</b> {employee.candidate_email || 'N/A'}</p>
-              <p><b>Work Location:</b> {employee.work_location}</p>
-              <p><b>Reporting Manager:</b> {employee.reporting_manager}</p>
-              <p><b>Work Shift:</b> {employee.work_shift}</p>
-              <p><b>Probation Period:</b> {employee.probation_period}</p>
-              <p><b>Application ID:</b> {employee.application_id}</p>
-            </div>
+        {/* Employee Information Modules */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <FiFileText className="text-blue-600" />
+            Employee Information Modules
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <Link
+              to={`/eis/${employee.application_id}/education`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
+            >
+              <FiBook className="text-2xl text-blue-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Education</div>
+              <div className="text-xs text-gray-600">Academic Details</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/experience`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
+            >
+              <FiBriefcase className="text-2xl text-green-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Experience</div>
+              <div className="text-xs text-gray-600">Work History</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/skills`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
+            >
+              <FiZap className="text-2xl text-purple-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Skills</div>
+              <div className="text-xs text-gray-600">Technical Skills</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/certifications`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-yellow-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"
+            >
+              <FiAward className="text-2xl text-yellow-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Certifications</div>
+              <div className="text-xs text-gray-600">Professional Certs</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/family`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-pink-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-pink-50 to-pink-100 hover:from-pink-100 hover:to-pink-200"
+            >
+              <FiUsers className="text-2xl text-pink-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Family</div>
+              <div className="text-xs text-gray-600">Family Details</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/medical`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-red-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200"
+            >
+              <FiHeart className="text-2xl text-red-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Medical</div>
+              <div className="text-xs text-gray-600">Health Records</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/id-docs`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-indigo-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200"
+            >
+              <FiCreditCard className="text-2xl text-indigo-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
+              <div className="text-xs text-gray-600">Identity Docs</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/salary`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-emerald-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200"
+            >
+              <FiDollarSign className="text-2xl text-emerald-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Salary</div>
+              <div className="text-xs text-gray-600">Compensation</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/bank-details`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-teal-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200"
+            >
+              <FiCreditCard className="text-2xl text-teal-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
+              <div className="text-xs text-gray-600">Banking Info</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/reporting`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-orange-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
+            >
+              <FiTrendingUp className="text-2xl text-orange-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Reporting</div>
+              <div className="text-xs text-gray-600">Manager & Hierarchy</div>
+            </Link>
+            
+            <Link
+              to={`/eis/${employee.application_id}/exit`}
+              className="group p-5 border border-gray-200 rounded-xl hover:border-gray-400 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200"
+            >
+              <FiLogOut className="text-2xl text-gray-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-gray-900 mb-1">Exit</div>
+              <div className="text-xs text-gray-600">Exit Process</div>
+            </Link>
           </div>
+        </div>
 
-          {/* ================= EIS MODULES NAVIGATION ================= */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4">Employee Information Modules</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Link
-                to={`/eis/${employee.application_id}/education`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🎓</div>
-                <div className="font-medium">Education</div>
-                <div className="text-xs text-gray-500">Academic Details</div>
-              </Link>
+        {/* Photo Upload Modal */}
+        {showPhotoUpload && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+              <div className="flex items-center gap-3 mb-6">
+                <FiCamera className="text-blue-600 text-xl" />
+                <h3 className="text-lg font-semibold text-gray-900">Upload Employee Photo</h3>
+              </div>
               
-              <Link
-                to={`/eis/${employee.application_id}/experience`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">💼</div>
-                <div className="font-medium">Experience</div>
-                <div className="text-xs text-gray-500">Work History</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/skills`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">⚡</div>
-                <div className="font-medium">Skills</div>
-                <div className="text-xs text-gray-500">Technical Skills</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/certifications`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🏆</div>
-                <div className="font-medium">Certifications</div>
-                <div className="text-xs text-gray-500">Professional Certs</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/family`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">👨‍👩‍👧‍👦</div>
-                <div className="font-medium">Family</div>
-                <div className="text-xs text-gray-500">Family Details</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/medical`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🏥</div>
-                <div className="font-medium">Medical</div>
-                <div className="text-xs text-gray-500">Health Records</div>
-              </Link>
-              
-
-              
-              <Link
-                to={`/eis/${employee.application_id}/id-docs`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🆔</div>
-                <div className="font-medium">ID Documents</div>
-                <div className="text-xs text-gray-500">Identity Docs</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/salary`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">💰</div>
-                <div className="font-medium">Salary</div>
-                <div className="text-xs text-gray-500">Compensation</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/bank-details`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🏦</div>
-                <div className="font-medium">Bank Details</div>
-                <div className="text-xs text-gray-500">Banking Info</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/reporting`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">📈</div>
-                <div className="font-medium">Reporting</div>
-                <div className="text-xs text-gray-500">Manager & Hierarchy</div>
-              </Link>
-              
-              <Link
-                to={`/eis/${employee.application_id}/exit`}
-                className="p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-              >
-                <div className="text-2xl mb-2">🚪</div>
-                <div className="font-medium">Exit</div>
-                <div className="text-xs text-gray-500">Exit Process</div>
-              </Link>
-            </div>
-          </div>
-
-
-
-          {/* Photo Upload Modal */}
-          {showPhotoUpload && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                <h3 className="text-lg font-semibold mb-4">Upload Employee Photo</h3>
-                
-                {previewUrl && (
-                  <div className="mb-4 flex justify-center">
+              {previewUrl && (
+                <div className="mb-6 flex justify-center">
+                  <div className="relative">
                     <img 
                       src={previewUrl} 
                       alt="Preview" 
-                      className="w-32 h-32 object-cover rounded-lg border"
+                      className="w-32 h-32 object-cover rounded-full border-4 border-blue-100"
                     />
+                    <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white rounded-full p-2">
+                      <FiCamera className="text-sm" />
+                    </div>
                   </div>
-                )}
-                
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Photo
+                </label>
                 <input 
                   type="file" 
                   accept="image/*"
@@ -364,53 +437,49 @@ export default function EmployeeProfile() {
                       setPreviewUrl(URL.createObjectURL(file));
                     }
                   }}
-                  className="border p-2 rounded w-full mb-4"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                
-                <div className="flex justify-end gap-2">
-                  <button 
-                    onClick={() => {
-                      setShowPhotoUpload(false);
-                      setSelectedFile(null);
-                      setPreviewUrl(null);
-                    }}
-                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (selectedFile) {
-                        const formData = new FormData();
-                        formData.append('candidate_id', employee.application_id);
-                        formData.append('document_type', 'photo');
-                        formData.append('file', selectedFile);
-                        
-                        api.post('/recruitment/onboarding/upload-document', formData)
-                          .then(() => {
-                            // Set the photo URL immediately to the preview
-                            setPhotoUrl(previewUrl);
-                            setShowPhotoUpload(false);
-                            setSelectedFile(null);
-                            setPreviewUrl(null);
-                            // Don't call fetchEmployee() to avoid overwriting the photo
-                          })
-                          .catch(err => console.error('Photo upload failed', err));
-                      }
-                    }}
-                    disabled={!selectedFile}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300"
-                  >
-                    OK
-                  </button>
-                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3">
+                <button 
+                  onClick={() => {
+                    setShowPhotoUpload(false);
+                    setSelectedFile(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    if (selectedFile) {
+                      const formData = new FormData();
+                      formData.append('candidate_id', employee.application_id);
+                      formData.append('document_type', 'photo');
+                      formData.append('file', selectedFile);
+                      
+                      api.post('/recruitment/onboarding/upload-document', formData)
+                        .then(() => {
+                          setPhotoUrl(previewUrl);
+                          setShowPhotoUpload(false);
+                          setSelectedFile(null);
+                          setPreviewUrl(null);
+                        })
+                        .catch(err => console.error('Photo upload failed', err));
+                    }
+                  }}
+                  disabled={!selectedFile}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                >
+                  Upload Photo
+                </button>
               </div>
             </div>
-          )}
-
-
-        </div>
+          </div>
+        )}
       </div>
-    </div>
+    </Layout>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 import api from "../../api";
+import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone } from "react-icons/fi";
 
 export default function Onboarding() {
   const location = useLocation();
@@ -341,82 +341,145 @@ export default function Onboarding() {
   // ========================  UI START  ===============================
   // ===================================================================
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 bg-gray-50 min-h-screen">
-        <Header />
+    <Layout breadcrumb="Recruitment · Onboarding">
+      <div className="p-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border mb-8">
+          <div className="px-8 py-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-purple-100 rounded-xl">
+                  <FiUser className="text-purple-600" size={24} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Onboarding</h1>
+                  <p className="text-gray-600 mt-1">Manage employee onboarding process and documentation</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{candidates.filter(c => 
+                    searchTerm === "" || 
+                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).length}</div>
+                  <div className="text-sm text-gray-600">Onboarded Candidates</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div className="p-6">
-          <h1 className="text-2xl font-semibold mb-4">Onboarding</h1>
-
-          {/* Search Filter */}
-          <div className="flex gap-4 mb-4">
+        {/* Search Section */}
+        <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Search Onboarded Candidate"
-              className="border p-2 rounded w-64"
+              placeholder="Search onboarded candidates by name or job role..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
 
-          {/* Onboarded Candidates Table */}
-          <table className="min-w-full bg-white rounded-xl shadow">
-            <thead className="bg-gray-100 text-gray-600 text-sm">
-              <tr>
-                <th className="p-3 text-left">Candidate Name</th>
-                <th className="p-3 text-left">Job Role</th>
-                <th className="p-3 text-center">Employee ID</th>
-                <th className="p-3 text-center">Status</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {candidates
-                .filter(c => 
+        {/* Onboarded Candidates Table */}
+        <div className="bg-white rounded-xl shadow-sm border">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Onboarded Candidates</h2>
+              <span className="text-sm text-gray-500">
+                {candidates.filter(c => 
                   searchTerm === "" || 
                   c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                   c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-                .map((c) => (
-                <tr key={c.id} className="border-t">
-                  <td className="p-3 font-medium">{c.name}</td>
-                  <td className="p-3">{c.job_title}</td>
-                  <td className="p-3 text-center">
-                    <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded font-mono">
-                      {c.employee_id || 'Not Available'}
-                    </span>
-                  </td>
-                  <td className="p-3 text-center">
-                    <span className="px-3 py-1 text-sm rounded bg-green-100 text-green-700 font-medium">
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="p-3 text-center">
-                    <button
-                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                      onClick={() => fetchCandidateDocuments(c.candidate_id)}
-                    >
-                      View Documents
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              
-              {candidates.filter(c => 
-                searchTerm === "" || 
-                c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-              ).length === 0 && (
-                <tr>
-                  <td colSpan="5" className="p-8 text-center text-gray-500">
-                    {searchTerm ? "No matching onboarded candidates found" : "No onboarded candidates yet"}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                ).length} candidates
+              </span>
+            </div>
+          </div>
+
+          {candidates.filter(c => 
+            searchTerm === "" || 
+            c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+          ).length === 0 ? (
+            <div className="text-center py-12">
+              <FiUser className="mx-auto text-gray-400 mb-4" size={48} />
+              <p className="text-gray-600">
+                {searchTerm ? "No matching onboarded candidates found" : "No onboarded candidates yet"}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {candidates
+                    .filter(c => 
+                      searchTerm === "" || 
+                      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((c) => (
+                    <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                              <FiUser className="text-green-600" size={16} />
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{c.job_title}</div>
+                        <div className="text-sm text-gray-500">{c.department}</div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {c.employee_id ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 font-mono">
+                            {c.employee_id}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400">Not Available</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <FiUser className="mr-1" size={10} />
+                          {c.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          onClick={() => fetchCandidateDocuments(c.candidate_id)}
+                        >
+                          <FiEye className="mr-1" size={12} />
+                          View Documents
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
 
           {/* ============================ MODALS BELOW ============================ */}
 
@@ -1000,58 +1063,68 @@ export default function Onboarding() {
 
           {/* Documents Modal */}
           {showDocumentsModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white p-6 w-[800px] max-h-[90vh] overflow-y-auto rounded-xl shadow-xl">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold">Uploaded Documents</h2>
-                  <button
-                    className="text-gray-500 hover:text-gray-700 text-2xl"
-                    onClick={() => setShowDocumentsModal(false)}
-                  >
-                    ×
-                  </button>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold text-gray-800">Uploaded Documents</h2>
+                    <button
+                      className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition-colors"
+                      onClick={() => setShowDocumentsModal(false)}
+                    >
+                      <span className="text-2xl">×</span>
+                    </button>
+                  </div>
                 </div>
 
-                {candidateDocuments.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {candidateDocuments.map((doc) => (
-                      <div key={doc.id} className="border rounded-lg p-4 bg-gray-50">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-gray-800 capitalize">
-                            {doc.document_type.replace('_', ' ')}
-                          </h3>
-                          <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
-                            {doc.status}
-                          </span>
+                <div className="p-6 overflow-y-auto" style={{maxHeight: 'calc(90vh - 120px)'}}>
+                  {candidateDocuments.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {candidateDocuments.map((doc) => (
+                        <div key={doc.id} className="border border-gray-200 rounded-xl p-4 bg-gray-50 hover:shadow-md transition-shadow">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center">
+                              <FiFileText className="text-blue-600 mr-2" size={20} />
+                              <h3 className="font-semibold text-gray-800 capitalize text-sm">
+                                {doc.document_type.replace('_', ' ')}
+                              </h3>
+                            </div>
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              {doc.status}
+                            </span>
+                          </div>
+                          
+                          <p className="text-sm text-gray-600 mb-2 flex items-center">
+                            <FiFileText className="mr-1" size={14} />
+                            {doc.file_name}
+                          </p>
+                          
+                          <p className="text-xs text-gray-500 mb-4 flex items-center">
+                            <FiCalendar className="mr-1" size={12} />
+                            Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
+                          </p>
+                          
+                          <button
+                            className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                            onClick={() => window.open(`http://localhost:8000/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
+                          >
+                            <FiEye className="mr-2" size={14} />
+                            View Document
+                          </button>
                         </div>
-                        
-                        <p className="text-sm text-gray-600 mb-2">
-                          📎 {doc.file_name}
-                        </p>
-                        
-                        <p className="text-xs text-gray-500 mb-3">
-                          Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
-                        </p>
-                        
-                        <button
-                          className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-                          onClick={() => window.open(`http://localhost:8000/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
-                        >
-                          View Document
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="text-gray-400 text-6xl mb-4">📄</div>
-                    <p className="text-gray-500">No documents uploaded yet</p>
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <FiFileText className="mx-auto text-gray-400 mb-4" size={48} />
+                      <p className="text-gray-600">No documents uploaded yet</p>
+                    </div>
+                  )}
+                </div>
 
-                <div className="flex justify-end mt-6">
+                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
                   <button
-                    className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => setShowDocumentsModal(false)}
                   >
                     Close
@@ -1062,7 +1135,6 @@ export default function Onboarding() {
           )}
 
         </div>
-      </div>
-    </div>
+    </Layout>
   );
 }

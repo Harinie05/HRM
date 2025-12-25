@@ -3,12 +3,12 @@ export default function OrgTabs({ tab, setTab }) {
     "Company Profile",
     "Branch / Unit",
     "Department",
-    "Designation",   // ✅ Added
+    "Designation",
     "Reporting Structure",
-    "Shifts",
+    "Shifts & Roster",
     "Grades / Pay Structure",
     "Holiday Calendar",
-    "Policies"
+    "Rules & Policies"
   ];
 
   return (

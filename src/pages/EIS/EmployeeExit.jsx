@@ -1,42 +1,48 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiLogOut, FiArrowLeft, FiCalendar, FiFileText, FiUpload } from "react-icons/fi";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 
 export default function EmployeeExit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     resignation_date: "",
-    last_working_day: "",
-    reason: "",
-    notice_period: "30",
+    last_working_date: "",
+    notice_period_days: "30",
+    reason_for_leaving: "",
     exit_interview_date: "",
+    exit_interview_feedback: "",
     handover_status: "Pending",
-    asset_return_status: "Pending",
-    final_settlement: "Pending",
-    clearance_status: "Pending",
-    notes: ""
+    final_settlement_amount: "",
+    relieving_letter_issued: false,
+    experience_certificate_issued: false,
+    assets_returned: false,
+    exit_clearance_completed: false,
   });
   const [exitData, setExitData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
 
-  const fetchExit = async () => {
+  const fetchExitDetails = async () => {
     try {
       const res = await api.get(`/employee/exit/${id}`);
       setExitData(res.data);
       setForm({
         resignation_date: res.data.resignation_date || "",
-        last_working_day: res.data.last_working_day || "",
-        reason: res.data.reason || "",
-        notice_period: res.data.notice_period || "30",
+        last_working_date: res.data.last_working_date || "",
+        notice_period_days: res.data.notice_period_days || "30",
+        reason_for_leaving: res.data.reason_for_leaving || "",
         exit_interview_date: res.data.exit_interview_date || "",
+        exit_interview_feedback: res.data.exit_interview_feedback || "",
         handover_status: res.data.handover_status || "Pending",
-        asset_return_status: res.data.asset_return_status || "Pending",
-        final_settlement: res.data.final_settlement || "Pending",
-        clearance_status: res.data.clearance_status || "Pending",
-        notes: res.data.notes || ""
+        final_settlement_amount: res.data.final_settlement_amount || "",
+        relieving_letter_issued: res.data.relieving_letter_issued || false,
+        experience_certificate_issued: res.data.experience_certificate_issued || false,
+        assets_returned: res.data.assets_returned || false,
+        exit_clearance_completed: res.data.exit_clearance_completed || false,
       });
       setIsEditing(!!res.data.id);
     } catch {
@@ -45,238 +51,259 @@ export default function EmployeeExit() {
   };
 
   useEffect(() => {
-    fetchExit();
+    fetchExitDetails();
   }, [id]);
 
   const submit = async () => {
+    setLoading(true);
     try {
+      const data = new FormData();
+      data.append("employee_id", id);
+      Object.keys(form).forEach(key => {
+        data.append(key, form[key]);
+      });
+      if (file) data.append("file", file);
+
       if (isEditing && exitData?.id) {
-        await api.put(`/employee/exit/${exitData.id}`, {
-          employee_id: id,
-          ...form,
-        });
+        await api.put(`/employee/exit/${exitData.id}`, data);
       } else {
-        await api.post("/employee/exit/add", {
-          employee_id: id,
-          ...form,
-        });
+        await api.post("/employee/exit/add", data);
       }
-      alert("Exit process saved successfully");
-      fetchExit();
+      
+      alert("Exit details saved successfully");
+      fetchExitDetails();
     } catch (err) {
       console.error("Failed to save exit details", err);
       alert("Failed to save exit details");
     }
+    setLoading(false);
   };
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <button 
-                onClick={() => navigate(`/eis/${id}`)}
-                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <span>←</span> Back to Profile
-              </button>
-            </div>
-            <h1 className="text-2xl font-bold text-[#0D3B66] mb-2">Employee Exit Process</h1>
-            <p className="text-gray-600">Manage employee resignation and exit formalities</p>
+    <Layout 
+      title="Exit Process" 
+      subtitle="Employee separation and exit formalities"
+    >
+      <div className="p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-4 mb-6">
+            <button 
+              onClick={() => navigate(`/eis/${id}`)}
+              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <FiArrowLeft className="text-sm" />
+              Back to Profile
+            </button>
           </div>
 
-          {/* Exit Form */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-lg font-semibold mb-6 text-[#0D3B66] border-b pb-2">Exit Information</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Resignation Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Resignation Date *
-                </label>
-                <input 
-                  type="date" 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.resignation_date}
-                  onChange={(e) => setForm({ ...form, resignation_date: e.target.value })}
-                  required
-                />
+          <div className="space-y-8">
+            {/* Resignation Details */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiCalendar className="text-red-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Resignation Details</h3>
               </div>
-
-              {/* Last Working Day */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Working Day *
-                </label>
-                <input 
-                  type="date" 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.last_working_day}
-                  onChange={(e) => setForm({ ...form, last_working_day: e.target.value })}
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Resignation Date *</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.resignation_date}
+                    onChange={(e) => setForm({ ...form, resignation_date: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Last Working Date *</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.last_working_date}
+                    onChange={(e) => setForm({ ...form, last_working_date: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Notice Period (Days)</label>
+                  <input
+                    type="number"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.notice_period_days}
+                    onChange={(e) => setForm({ ...form, notice_period_days: e.target.value })}
+                  />
+                </div>
               </div>
-
-              {/* Notice Period */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notice Period (Days)
-                </label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.notice_period}
-                  onChange={(e) => setForm({ ...form, notice_period: e.target.value })}
-                >
-                  <option value="15">15 Days</option>
-                  <option value="30">30 Days</option>
-                  <option value="60">60 Days</option>
-                  <option value="90">90 Days</option>
-                </select>
-              </div>
-
-              {/* Exit Interview Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Exit Interview Date
-                </label>
-                <input 
-                  type="date" 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.exit_interview_date}
-                  onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Reason for Leaving</label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  rows="3"
+                  placeholder="Reason for resignation..."
+                  value={form.reason_for_leaving}
+                  onChange={(e) => setForm({ ...form, reason_for_leaving: e.target.value })}
                 />
               </div>
             </div>
 
-            {/* Reason for Leaving */}
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reason for Leaving
-              </label>
-              <select 
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={form.reason}
-                onChange={(e) => setForm({ ...form, reason: e.target.value })}
-              >
-                <option value="">Select Reason</option>
-                <option value="Better Opportunity">Better Opportunity</option>
-                <option value="Personal Reasons">Personal Reasons</option>
-                <option value="Relocation">Relocation</option>
-                <option value="Higher Studies">Higher Studies</option>
-                <option value="Health Issues">Health Issues</option>
-                <option value="Retirement">Retirement</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Exit Clearance */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-lg font-semibold mb-6 text-[#0D3B66] border-b pb-2">Exit Clearance Status</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Handover Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Knowledge Handover
-                </label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.handover_status}
-                  onChange={(e) => setForm({ ...form, handover_status: e.target.value })}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
+            {/* Exit Interview */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiFileText className="text-blue-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Exit Interview</h3>
               </div>
-
-              {/* Asset Return */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Asset Return Status
-                </label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.asset_return_status}
-                  onChange={(e) => setForm({ ...form, asset_return_status: e.target.value })}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Partial">Partial</option>
-                  <option value="Completed">Completed</option>
-                  <option value="N/A">Not Applicable</option>
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Exit Interview Date</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.exit_interview_date}
+                    onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Handover Status</label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={form.handover_status}
+                    onChange={(e) => setForm({ ...form, handover_status: e.target.value })}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
               </div>
-
-              {/* Final Settlement */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Final Settlement
-                </label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.final_settlement}
-                  onChange={(e) => setForm({ ...form, final_settlement: e.target.value })}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Processed">Processed</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
-
-              {/* Overall Clearance */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Overall Clearance Status
-                </label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={form.clearance_status}
-                  onChange={(e) => setForm({ ...form, clearance_status: e.target.value })}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Exit Interview Feedback</label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  rows="4"
+                  placeholder="Exit interview feedback and comments..."
+                  value={form.exit_interview_feedback}
+                  onChange={(e) => setForm({ ...form, exit_interview_feedback: e.target.value })}
+                />
               </div>
             </div>
-          </div>
 
-          {/* Additional Notes */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-lg font-semibold mb-4 text-[#0D3B66] border-b pb-2">Additional Notes</h2>
-            <textarea
-              placeholder="Enter any additional notes, comments, or special instructions regarding the exit process..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              value={form.notes}
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <div className="flex justify-end space-x-4">
-              <button 
-                type="button"
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={submit}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-              >
-                {isEditing ? 'Update Exit Process' : 'Accept & Complete Exit Process'}
-              </button>
+            {/* Final Settlement */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Final Settlement</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Final Settlement Amount (₹)</label>
+                  <input
+                    type="number"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Final settlement amount"
+                    value={form.final_settlement_amount}
+                    onChange={(e) => setForm({ ...form, final_settlement_amount: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Exit Documents</label>
+                  <div className="flex items-center gap-2">
+                    <FiUpload className="text-gray-400" />
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => setFile(e.target.files[0])}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Exit Clearance Checklist */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Exit Clearance Checklist</h3>
+              <div className="space-y-3">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.relieving_letter_issued}
+                    onChange={(e) => setForm({ ...form, relieving_letter_issued: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Relieving Letter Issued</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.experience_certificate_issued}
+                    onChange={(e) => setForm({ ...form, experience_certificate_issued: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Experience Certificate Issued</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.assets_returned}
+                    onChange={(e) => setForm({ ...form, assets_returned: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Company Assets Returned</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.exit_clearance_completed}
+                    onChange={(e) => setForm({ ...form, exit_clearance_completed: e.target.checked })}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Exit Clearance Completed</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Exit Status Summary */}
+            {form.resignation_date && (
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg p-6">
+                <h4 className="font-semibold text-gray-900 mb-4">Exit Process Status</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600">Resignation Date:</span>
+                    <span className="ml-2 font-medium">{form.resignation_date}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Last Working Date:</span>
+                    <span className="ml-2 font-medium">{form.last_working_date}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Handover Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
+                      form.handover_status === 'Completed' ? 'bg-green-100 text-green-800' :
+                      form.handover_status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {form.handover_status}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Exit Clearance:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
+                      form.exit_clearance_completed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {form.exit_clearance_completed ? 'Completed' : 'Pending'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end mt-8 pt-6 border-t">
+            <button
+              onClick={submit}
+              disabled={loading}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            >
+              {loading ? 'Saving...' : (isEditing ? 'Update Exit Details' : 'Save Exit Details')}
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

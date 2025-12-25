@@ -1,103 +1,180 @@
 import { useEffect, useState } from "react";
-import { RotateCcw, RefreshCcw, ChevronDown, LogOut } from "lucide-react";
+import {
+  RotateCcw,
+  RefreshCcw,
+  ChevronDown,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 
-export default function Header() {
-  const [time, setTime] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
+export default function Header({ isSidebarCollapsed }) {
   const navigate = useNavigate();
+  const [time, setTime] = useState(new Date());
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // Get user info from localStorage
-  const userEmail = localStorage.getItem("email") || "User";
-  const userName = localStorage.getItem("user_name") || userEmail.split("@")[0];
+  // 🔹 Dynamic hospital info
+  const hospitalName =
+    localStorage.getItem("hospital_name") || "Your Hospital Name";
+  const hospitalTagline =
+    localStorage.getItem("hospital_tagline") ||
+    "Smart • Secure • NABH-Standard";
+
+  // 🔹 User info
+  const userEmail = localStorage.getItem("email") || "user@mail.com";
+  const userName =
+    localStorage.getItem("user_name") || userEmail.split("@")[0];
   const userRole = localStorage.getItem("role_name") || "Employee";
   const userInitial = userName.charAt(0).toUpperCase();
-  
-  console.log('Header loaded with user info:', { userEmail, userName, userRole });
 
+  // 🔹 Live clock
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(new Date().toLocaleTimeString());
+      setTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
+  const formattedDate = time.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+  });
+
+  const formattedTime = time.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  // 🔄 Sync → reload ONLY current page data
+  const handleSync = () => {
+    window.dispatchEvent(new Event("page-sync"));
+  };
+
+  // 🔁 Refresh → reload entire app
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
+  // 🔓 Logout
   const handleLogout = async () => {
-  try {
-    console.log('Initiating logout process');
-    await api.post("/auth/logout");       // 🔥 clears refresh token cookie backend
-    console.log('Logout API call successful');
-  } catch (e) {
-    console.error('Logout API call failed:', e);
-  }
+    try {
+      await api.post("/auth/logout");
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+    localStorage.clear();
+    navigate("/login");
+  };
 
-  // frontend cleanup
-  console.log('Clearing localStorage and redirecting to login');
-  localStorage.clear();
-  navigate("/login");
-};
   return (
-    <header className="w-full bg-[#0D3B66] p-4 flex justify-between items-center text-white shadow-md">
+    <header
+      className="fixed top-0 left-0 right-0 z-30 h-16
+      bg-[#3B5BDB] text-white
+      flex items-center justify-between
+      shadow-md transition-all duration-300"
+      style={{ 
+        paddingLeft: isSidebarCollapsed ? "88px" : "280px",
+        paddingRight: "24px"
+      }}
+    >
+      {/* 🔵 Left: Hospital name */}
+      <div className="leading-tight">
+        <h1 className="text-lg font-semibold tracking-wide">
+          {hospitalName}
+        </h1>
+        <p className="text-sm text-blue-200 font-medium">
+          {hospitalTagline}
+        </p>
+      </div>
 
-      <h2 className="text-2xl font-bold">NUTRYAH HRM</h2>
+      {/* 🔵 Right controls */}
+      <div className="flex items-center gap-3">
 
-      <div className="flex items-center space-x-6">
+        {/* Date + Time */}
+        <div className="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-sm">
+          <span className="h-2 w-2 bg-green-400 rounded-full"></span>
+          <span>{formattedDate}</span>
+          <span className="opacity-60">•</span>
+          <span>{formattedTime}</span>
+        </div>
 
-        {/* Time with dot */}
-        <span className="text-lg bg-green-500 px-3 py-1 rounded-full text-white">
-          ● {time}
-        </span>
-
-        {/* Sync Button */}
-        <button 
-          onClick={() => window.location.reload()}
-          className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        {/* Sync */}
+        <button
+          onClick={handleSync}
+          className="flex items-center gap-2
+          bg-white/10 hover:bg-white/20
+          px-4 py-2 rounded-full text-sm transition"
         >
-          <RotateCcw size={18} className="mr-2" /> Sync
+          <RotateCcw size={16} />
+          <span className="hidden md:inline">Sync</span>
         </button>
 
-        {/* Refresh Button */}
-        <button 
-          onClick={() => window.location.reload()}
-          className="bg-blue-600 px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"
+        {/* Refresh */}
+        <button
+          onClick={handleRefresh}
+          className="flex items-center gap-2
+          bg-white/10 hover:bg-white/20
+          px-4 py-2 rounded-full text-sm transition"
         >
-          <RefreshCcw size={18} className="mr-2" /> Refresh
+          <RefreshCcw size={16} />
+          <span className="hidden md:inline">Refresh</span>
         </button>
 
-        {/* Profile with Dropdown */}
+        {/* Profile */}
         <div className="relative">
-          <button 
-            onClick={() => {
-              console.log('Profile dropdown toggled:', !showDropdown);
-              setShowDropdown(!showDropdown);
-            }}
-            className="flex items-center space-x-3 hover:bg-blue-700 p-2 rounded-lg transition-colors"
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center gap-3
+            bg-white/10 hover:bg-white/20
+            px-3 py-1.5 rounded-full transition"
           >
-            <div className="bg-white text-[#0D3B66] rounded-full h-10 w-10 flex items-center justify-center font-bold">
+            <div
+              className="h-9 w-9 rounded-full bg-blue-200
+              text-[#3B5BDB] flex items-center justify-center
+              font-bold text-sm"
+            >
               {userInitial}
             </div>
-            <div className="text-left">
-              <p className="font-semibold">{userName}</p>
-              <p className="text-xs text-gray-300">{userRole}</p>
+
+            <div className="text-left hidden md:block">
+              <p className="text-sm font-semibold leading-none">
+                {userName}
+              </p>
+              <p className="text-xs text-blue-200">
+                {userRole}
+              </p>
             </div>
-            <ChevronDown size={16} className={`transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                showDropdown ? "rotate-180" : ""
+              }`}
+            />
           </button>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown */}
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
-              <div className="p-3 border-b">
-                <p className="text-sm font-medium text-gray-900">{userName}</p>
+            <div
+              className="absolute right-0 mt-2 w-56
+              bg-white text-gray-800
+              rounded-xl shadow-lg overflow-hidden"
+            >
+              <div className="px-4 py-3 border-b">
+                <p className="font-semibold text-sm">{userName}</p>
                 <p className="text-xs text-gray-500">{userEmail}</p>
                 <p className="text-xs text-blue-600">{userRole}</p>
               </div>
+
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-2
+                px-4 py-2 text-sm text-red-600
+                hover:bg-red-50 transition"
               >
-                <LogOut size={16} className="mr-2" />
+                <LogOut size={16} />
                 Logout
               </button>
             </div>

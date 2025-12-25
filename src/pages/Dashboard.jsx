@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+import Layout from "../components/Layout";
 import api from "../api";
 
 export default function Dashboard() {
@@ -25,72 +24,74 @@ export default function Dashboard() {
   // ========================= FETCH DASHBOARD DATA =========================
   const fetchDashboardData = async () => {
     try {
-      // Use the new dashboard stats API endpoint
-      const res = await api.get('/dashboard/stats');
+      const res = await api.get("/dashboard/stats");
       const data = res.data;
-      
-      console.log('Dashboard data from API:', data);
-      
+
+      console.log("Dashboard data from API:", data);
+
       setDashboardData({
         totalEmployees: data.totalEmployees || 0,
         totalDepartments: data.totalDepartments || 0,
         totalRoles: data.totalRoles || 0
       });
-      
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      
-      // Fallback to individual API calls if the new endpoint fails
+      console.error("Error fetching dashboard data:", error);
+
+      // -------- Fallback logic (unchanged) --------
       try {
-        const tenant_db = localStorage.getItem('tenant_db') || 'nutryah';
-        
-        // Fetch employees from users endpoint
+        const tenant_db = localStorage.getItem("tenant_db") || "nutryah";
+
         let totalEmployees = 0;
         try {
           const usersRes = await api.get(`/hospitals/users/${tenant_db}/list`);
           totalEmployees = (usersRes.data?.users || []).length;
-        } catch {
-          console.log('No employee data found');
-        }
-        
-        // Fetch departments
+        } catch {}
+
         let totalDepartments = 0;
         try {
           const deptRes = await api.get(`/hospitals/departments/${tenant_db}/list`);
           totalDepartments = (deptRes.data?.departments || []).length;
-        } catch {
-          console.log('No department data found');
-        }
-        
-        // Fetch roles
+        } catch {}
+
         let totalRoles = 0;
         try {
           const rolesRes = await api.get(`/hospitals/roles/${tenant_db}/list`);
           totalRoles = (rolesRes.data?.roles || []).length;
-        } catch {
-          console.log('No roles data found');
-        }
-        
-        console.log('Dashboard data for tenant:', tenant_db, { totalEmployees, totalDepartments, totalRoles });
-        
+        } catch {}
+
         setDashboardData({
           totalEmployees,
           totalDepartments,
           totalRoles
         });
-        
       } catch (fallbackError) {
-        console.error('Fallback dashboard data fetch also failed:', fallbackError);
+        console.error("Fallback dashboard fetch failed:", fallbackError);
       }
     }
   };
 
+  // ========================= INITIAL LOAD =========================
   useEffect(() => {
     fetchHolidays();
     fetchDashboardData();
   }, []);
 
-  // Calendar Logic
+  // ========================= SYNC LISTENER (NEW) =========================
+  useEffect(() => {
+    const handleSync = () => {
+      console.log("Dashboard sync triggered");
+      fetchHolidays();
+      fetchDashboardData();
+    };
+
+    window.addEventListener("page-sync", handleSync);
+
+    return () => {
+      window.removeEventListener("page-sync", handleSync);
+    };
+  }, []);
+
+  // ========================= CALENDAR LOGIC =========================
   const today = new Date();
   const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
@@ -114,109 +115,86 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <Layout>
+      <h1 className="text-3xl font-bold text-[#0D3B66] mb-6">
+        HRM Dashboard
+      </h1>
 
-      <div className="flex-1 bg-[#F7F9FB] min-h-screen">
-        <Header />
-
-        <div className="p-6">
-          <h1 className="text-3xl font-bold text-[#0D3B66] mb-6">
-            HRM Dashboard
-          </h1>
-
-          {/* ================== TOP CARDS ================== */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">TOTAL EMPLOYEES</p>
-              <p className="text-3xl font-bold">{dashboardData.totalEmployees}</p>
-            </div>
-            <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">TOTAL DEPARTMENTS</p>
-              <p className="text-3xl font-bold">{dashboardData.totalDepartments}</p>
-            </div>
-            <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
-              <p className="text-gray-500">TOTAL ROLES</p>
-              <p className="text-3xl font-bold">{dashboardData.totalRoles}</p>
-            </div>
-          </div>
-
-          {/* ================= HOLIDAY BUTTON ================= */}
-          <button
-            onClick={() => setShowCalendar((v) => !v)}
-            className="bg-[#0D3B66] text-white px-5 py-2 rounded-xl shadow hover:bg-[#0b3154]"
-          >
-            Holiday Gallery
-          </button>
-
-          {/* ================= PROFESSIONAL CALENDAR ================= */}
-          {showCalendar && (
-            <div className="mt-6 bg-white p-6 rounded-xl shadow-lg border">
-              {/* Calendar header */}
-              <div className="flex justify-between items-center mb-4">
-                <button
-                  onClick={prevMonth}
-                  className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200"
-                >
-                  ‹
-                </button>
-                <h2 className="text-xl font-semibold">
-                  {new Date(year, month).toLocaleString("en-US", {
-                    month: "long",
-                  })}{" "}
-                  {year}
-                </h2>
-                <button
-                  onClick={nextMonth}
-                  className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200"
-                >
-                  ›
-                </button>
-              </div>
-
-              <div className="grid grid-cols-7 text-center font-medium text-gray-600 mb-2">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2">
-                {Array.from({ length: firstDay }).map((_, i) => (
-                  <div key={i}></div>
-                ))}
-
-                {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const day = i + 1;
-                  const holiday = getHolidayForDate(day);
-
-                  return (
-                    <div
-                      key={day}
-                      className={`p-3 h-20 border rounded-lg relative ${
-                        holiday ? "bg-blue-50 border-blue-300" : "bg-white"
-                      } hover:shadow`}
-                    >
-                      <span className="font-semibold">{day}</span>
-                      {holiday && (
-                        <>
-                          <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
-                          <p className="text-xs text-blue-700 mt-1 font-medium truncate">
-                            {holiday.name}
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+      {/* ================== TOP CARDS ================== */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
+          <p className="text-gray-500">TOTAL EMPLOYEES</p>
+          <p className="text-3xl font-bold">{dashboardData.totalEmployees}</p>
+        </div>
+        <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
+          <p className="text-gray-500">TOTAL DEPARTMENTS</p>
+          <p className="text-3xl font-bold">{dashboardData.totalDepartments}</p>
+        </div>
+        <div className="p-4 bg-white border rounded-xl shadow-sm text-center">
+          <p className="text-gray-500">TOTAL ROLES</p>
+          <p className="text-3xl font-bold">{dashboardData.totalRoles}</p>
         </div>
       </div>
-    </div>
+
+      {/* ================= HOLIDAY BUTTON ================= */}
+      <button
+        onClick={() => setShowCalendar((v) => !v)}
+        className="bg-[#0D3B66] text-white px-5 py-2 rounded-xl shadow hover:bg-[#0b3154]"
+      >
+        Holiday Gallery
+      </button>
+
+      {/* ================= PROFESSIONAL CALENDAR ================= */}
+      {showCalendar && (
+        <div className="mt-6 bg-white p-6 rounded-xl shadow-lg border">
+          <div className="flex justify-between items-center mb-4">
+            <button onClick={prevMonth} className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200">
+              ‹
+            </button>
+            <h2 className="text-xl font-semibold">
+              {new Date(year, month).toLocaleString("en-US", { month: "long" })} {year}
+            </h2>
+            <button onClick={nextMonth} className="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200">
+              ›
+            </button>
+          </div>
+
+          <div className="grid grid-cols-7 text-center font-medium text-gray-600 mb-2">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+            <div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-2">
+            {Array.from({ length: firstDay }).map((_, i) => (
+              <div key={i}></div>
+            ))}
+
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const holiday = getHolidayForDate(day);
+
+              return (
+                <div
+                  key={day}
+                  className={`p-3 h-20 border rounded-lg relative ${
+                    holiday ? "bg-blue-50 border-blue-300" : "bg-white"
+                  } hover:shadow`}
+                >
+                  <span className="font-semibold">{day}</span>
+                  {holiday && (
+                    <>
+                      <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
+                      <p className="text-xs text-blue-700 mt-1 font-medium truncate">
+                        {holiday.name}
+                      </p>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </Layout>
   );
 }

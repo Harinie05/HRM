@@ -4,9 +4,9 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 import api from "../../api";
+import { FiMail, FiFileText, FiCheck, FiX, FiEye, FiLink, FiUser, FiCalendar, FiDollarSign, FiShield, FiUpload } from "react-icons/fi";
 
 export default function Offer() {
   const navigate = useNavigate();
@@ -356,130 +356,270 @@ export default function Offer() {
   // UI STARTS HERE
   // ------------------------------------------------------------
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 bg-gray-50 min-h-screen">
-        <Header />
+    <Layout breadcrumb="Recruitment · Offers & Contracts">
+      <div className="p-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border mb-8">
+          <div className="px-8 py-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-green-100 rounded-xl">
+                  <FiFileText className="text-green-600" size={24} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Offer & Pre-Onboarding</h1>
+                  <p className="text-gray-600 mt-1">Manage job offers, background verification, and onboarding process</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{candidates.length}</div>
+                  <div className="text-sm text-gray-600">Selected Candidates</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div className="p-6">
+        {/* ==================== SENT OFFERS TABLE ==================== */}
+        {offers.length > 0 && (
+          <div className="mb-10">
+            <div className="bg-white rounded-xl shadow-sm border">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-gray-800">Offers Sent</h2>
+                  <span className="text-sm text-gray-500">{offers.length} offers</span>
+                </div>
+              </div>
 
-          <h1 className="text-2xl font-semibold mb-6">Offer & Pre-Onboarding</h1>
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
 
-          {/* ==================== SENT OFFERS TABLE ==================== */}
-          {offers.length > 0 && (
-            <div className="mb-10">
-              <h2 className="text-lg font-semibold mb-2">Offers Sent</h2>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {offers.map((o) => (
+                      <tr key={o.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <FiUser className="text-blue-600" size={16} />
+                              </div>
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{o.candidate_name}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{o.job_title}</div>
+                          <div className="text-sm text-gray-500">{o.department}</div>
+                        </td>
 
-              <table className="min-w-full bg-white rounded-xl shadow">
-                <thead className="bg-gray-100 text-gray-600 text-sm">
+                        {/* Status */}
+                        <td className="px-6 py-4 text-center">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              o.offer_status === "Accepted"
+                                ? "bg-green-100 text-green-800"
+                                : o.offer_status === "Rejected"
+                                ? "bg-red-100 text-red-800"
+                                : o.offer_status === "Documents Submitted"
+                                ? "bg-blue-100 text-blue-800"
+                                : o.offer_status === "BGV Cleared"
+                                ? "bg-purple-100 text-purple-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {o.offer_status === "Accepted" && <FiCheck className="mr-1" size={10} />}
+                            {o.offer_status === "Rejected" && <FiX className="mr-1" size={10} />}
+                            {o.offer_status === "Documents Submitted" && <FiFileText className="mr-1" size={10} />}
+                            {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={10} />}
+                            {o.offer_status === "Sent" && <FiMail className="mr-1" size={10} />}
+                            {o.offer_status}
+                          </span>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-center space-x-2">
+
+                            {/* Accept/Reject */}
+                            {o.offer_status === "Sent" && (
+                              <>
+                                <button
+                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                                  onClick={() => handleOfferResponse(o.id, "accept")}
+                                >
+                                  <FiCheck className="mr-1" size={12} />
+                                  Accept
+                                </button>
+
+                                <button
+                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+                                  onClick={() => handleOfferResponse(o.id, "reject")}
+                                >
+                                  <FiX className="mr-1" size={12} />
+                                  Reject
+                                </button>
+                              </>
+                            )}
+
+                            {/* Step 1: Generate Document Upload Link */}
+                            {(o.offer_status === "Accepted" || (o.offer_status === "Draft" && o.bgv_status === "Cleared")) && (
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                                onClick={() => generateDocumentLink(o.id)}
+                              >
+                                <FiLink className="mr-1" size={12} />
+                                Generate Link
+                              </button>
+                            )}
+
+                            {/* Step 2: View Documents */}
+                            {o.offer_status === "Documents Submitted" && (
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                onClick={() => viewDocuments(o.id)}
+                              >
+                                <FiEye className="mr-1" size={12} />
+                                View Docs
+                              </button>
+                            )}
+
+                            {/* Step 3: Manage BGV */}
+                            {o.offer_status === "Documents Submitted" && (
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                                onClick={() => {
+                                  if (!o.bgv_id) {
+                                    startBGV(o.candidate_id);
+                                  } else {
+                                    openBGVModal(o);
+                                  }
+                                }}
+                              >
+                                <FiShield className="mr-1" size={12} />
+                                Manage BGV
+                              </button>
+                            )}
+
+                            {/* Step 4: Start Onboarding */}
+                            {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && (
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                                onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
+                              >
+                                <FiUser className="mr-1" size={12} />
+                                Start Onboarding
+                              </button>
+                            )}
+
+                            {/* Onboarding Started Status */}
+                            {o.offer_status === "Onboarding Started" && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <FiUser className="mr-1" size={10} />
+                                Onboarding In Progress
+                              </span>
+                            )}
+
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== SELECTED CANDIDATES ==================== */}
+        <div className="bg-white rounded-xl shadow-sm border">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Selected Candidates</h2>
+              <span className="text-sm text-gray-500">{candidates.length} candidates</span>
+            </div>
+          </div>
+
+          {candidates.length === 0 ? (
+            <div className="text-center py-12">
+              <FiUser className="mx-auto text-gray-400 mb-4" size={48} />
+              <p className="text-gray-600">No selected candidates found</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="p-3 text-left">Candidate</th>
-                    <th className="p-3 text-left">Job</th>
-                    <th className="p-3 text-center">Status</th>
-                    <th className="p-3 text-center">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody>
-                  {offers.map((o) => (
-                    <tr key={o.id} className="border-t">
-                      <td className="p-3">{o.candidate_name}</td>
-                      <td className="p-3">{o.job_title}</td>
-
-                      {/* Status */}
-                      <td className="p-3 text-center">
-                        <span
-                          className={`px-2 py-1 text-xs rounded ${
-                            o.offer_status === "Accepted"
-                              ? "bg-green-100 text-green-700"
-                              : o.offer_status === "Rejected"
-                              ? "bg-red-100 text-red-700"
-                              : o.offer_status === "Documents Submitted"
-                              ? "bg-blue-100 text-blue-700"
-                              : o.offer_status === "BGV Cleared"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                        >
-                          {o.offer_status}
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {candidates.map((c) => (
+                    <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                              <FiUser className="text-green-600" size={16} />
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                            <div className="text-sm text-gray-500">{c.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{c.job_title}</div>
+                        <div className="text-sm text-gray-500">{c.department}</div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <FiCheck className="mr-1" size={10} />
+                          {c.stage}
                         </span>
                       </td>
 
-                      {/* Actions */}
-                      <td className="p-3 text-center flex gap-2 justify-center">
-
-                        {/* Accept/Reject */}
-                        {o.offer_status === "Sent" && (
-                          <>
-                            <button
-                              className="px-2 py-1 bg-green-600 text-white rounded text-xs"
-                              onClick={() => handleOfferResponse(o.id, "accept")}
-                            >
-                              Accept
-                            </button>
-
-                            <button
-                              className="px-2 py-1 bg-red-600 text-white rounded text-xs"
-                              onClick={() => handleOfferResponse(o.id, "reject")}
-                            >
-                              Reject
-                            </button>
-                          </>
-                        )}
-
-                        {/* Step 1: Generate Document Upload Link (for Draft/Accepted offers) */}
-                        {(o.offer_status === "Accepted" || (o.offer_status === "Draft" && o.bgv_status === "Cleared")) && (
+                      <td className="px-6 py-4 text-center">
+                        {offers.some(offer => offer.candidate_id === c.id) ? (
+                          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <FiMail className="mr-1" size={10} />
+                            Offer Sent
+                          </span>
+                        ) : (
                           <button
-                            className="px-2 py-1 bg-orange-600 text-white rounded text-xs mr-1"
-                            onClick={() => generateDocumentLink(o.id)}
-                          >
-                            Generate Link
-                          </button>
-                        )}
-
-                        {/* Step 2: View Documents (after documents uploaded) */}
-                        {o.offer_status === "Documents Submitted" && (
-                          <button
-                            className="px-2 py-1 bg-blue-600 text-white rounded text-xs mr-1"
-                            onClick={() => viewDocuments(o.id)}
-                          >
-                            View Docs
-                          </button>
-                        )}
-
-                        {/* Step 3: Manage BGV (only after documents submitted) */}
-                        {o.offer_status === "Documents Submitted" && (
-                          <button
-                            className="px-2 py-1 bg-purple-600 text-white rounded text-xs mr-1"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                             onClick={() => {
-                              if (!o.bgv_id) {
-                                startBGV(o.candidate_id);
-                              } else {
-                                openBGVModal(o);
-                              }
+                              setSelected(c);
+                              setOfferForm({
+                                ...offerForm,
+                                candidate_id: c.id,
+                                job_title: c.job_title,
+                                department: c.department,
+                                email: c.email,
+                              });
+                              setShowOfferModal(true);
                             }}
                           >
-                            Manage BGV
+                            <FiFileText className="mr-2" size={16} />
+                            Generate Offer
                           </button>
                         )}
-
-                        {/* Step 4: Start Onboarding (only after BGV cleared) */}
-                        {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && (
-                          <button
-                            className="px-2 py-1 bg-green-600 text-white rounded text-xs"
-                            onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
-                          >
-                            Start Onboarding
-                          </button>
-                        )}
-
-                        {/* Onboarding Started Status */}
-                        {o.offer_status === "Onboarding Started" && (
-                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                            Onboarding In Progress
-                          </span>
-                        )}
-
                       </td>
                     </tr>
                   ))}
@@ -487,56 +627,7 @@ export default function Offer() {
               </table>
             </div>
           )}
-
-          {/* ==================== SELECTED CANDIDATES ==================== */}
-          <h2 className="text-lg font-semibold mb-3">Selected Candidates</h2>
-
-          <table className="min-w-full bg-white rounded-xl shadow">
-            <thead className="bg-gray-100 text-gray-600 text-sm">
-              <tr>
-                <th className="p-3 text-left">Candidate</th>
-                <th className="p-3 text-left">Job Role</th>
-                <th className="p-3 text-center">Stage</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {candidates.map((c) => (
-                <tr key={c.id} className="border-t">
-                  <td className="p-3">{c.name}</td>
-                  <td className="p-3">{c.job_title}</td>
-                  <td className="p-3 text-center">{c.stage}</td>
-
-                  <td className="p-3 text-center">
-                    {offers.some(offer => offer.candidate_id === c.id) ? (
-                      <span className="px-4 py-1 bg-green-100 text-green-700 rounded text-sm">
-                        Sent
-                      </span>
-                    ) : (
-                      <button
-                        className="px-4 py-1 bg-blue-600 text-white rounded text-sm"
-                        onClick={() => {
-                          setSelected(c);
-                          setOfferForm({
-                            ...offerForm,
-                            candidate_id: c.id,
-                            job_title: c.job_title,
-                            department: c.department,
-                            email: c.email,
-                          });
-                          setShowOfferModal(true);
-                        }}
-                      >
-                        Generate Offer
-                      </button>
-                    )}
-                  </td>
-
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        </div>
 
           {/* ================================================================== */}
           {/*                         OFFER MODAL                               */}
@@ -1267,7 +1358,6 @@ export default function Offer() {
           )}
 
         </div>
-      </div>
-    </div>
+    </Layout>
   );
 }
