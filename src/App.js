@@ -93,6 +93,9 @@ import ResignationNotice from "./pages/exit/ResignationNotice";
 import ClearanceWorkflow from "./pages/exit/ClearanceWorkflow";
 import SettlementDocuments from "./pages/exit/SettlementDocuments";
 
+// ======================= 🔥 CUSTOMIZATION IMPORTS =======================
+import Customization from "./pages/Customization";
+
 function App() {
   return (
     <BrowserRouter>
@@ -204,6 +207,9 @@ function App() {
           <Route path="clearance" element={<ProtectedRoute><ClearanceWorkflow /></ProtectedRoute>} />
           <Route path="settlement" element={<ProtectedRoute><SettlementDocuments /></ProtectedRoute>} />
         </Route>
+
+        {/* ======================= 🔥 CUSTOMIZATION MODULE ======================= */}
+        <Route path="/customization" element={<ProtectedRoute><Customization /></ProtectedRoute>} />
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />

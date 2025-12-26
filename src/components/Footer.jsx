@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-[#6366F1] text-white py-3 px-4 sm:px-6 text-xs sm:text-sm">
+    <footer className="text-white py-3 px-4 sm:px-6 text-xs sm:text-sm" style={{ backgroundColor: 'var(--header-bg, #6366F1)' }}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         {/* Left side - Powered by */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">

@@ -15,11 +15,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   // 🔹 Dynamic hospital info
-  const hospitalName =
-    localStorage.getItem("hospital_name") || "Your Hospital Name";
-  const hospitalTagline =
-    localStorage.getItem("hospital_tagline") ||
-    "Smart • Secure • NABH-Standard";
+  const hospitalName = localStorage.getItem("hospital_name") || "Your Hospital Name";
+  const hospitalTagline = localStorage.getItem("hospital_tagline") || "Smart • Secure • NABH-Standard";
 
   // 🔹 User info
   const userEmail = localStorage.getItem("email") || "user@mail.com";
@@ -72,10 +69,11 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-30 h-14 sm:h-16
-      bg-[#3B5BDB] text-white
+      text-white
       flex items-center justify-between
       shadow-md transition-all duration-300 px-3 sm:px-6"
       style={{ 
+        backgroundColor: 'var(--header-bg, #3B5BDB)',
         paddingLeft: window.innerWidth >= 1024 ? (isSidebarCollapsed ? "88px" : "280px") : "16px",
         paddingRight: window.innerWidth >= 768 ? "24px" : "16px"
       }}

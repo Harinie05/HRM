@@ -16,6 +16,8 @@ import {
   LogOut,
   ChevronLeft,
   Briefcase,
+  Settings,
+  Palette,
 } from "lucide-react";
 import api from "../api";
 
@@ -153,7 +155,8 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
 
   return (
     <div 
-      className={`sidebar-scroll h-screen bg-gradient-to-b from-[#6366F1] to-[#4F46E5] text-white sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-4'}`}
+      className={`sidebar-scroll h-screen text-white sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-4'}`}
+      style={{ background: 'var(--sidebar-bg, linear-gradient(to bottom, #6366F1, #4F46E5))' }}
     >
 
       {/* Header with Logo, Title and Toggle */}
@@ -565,6 +568,22 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
         >
           <Shield size={16} />
           {!isCollapsed && <span className="text-sm whitespace-nowrap">Compliance Module</span>}
+        </Link>
+
+        {/* Customization & Templates */}
+        <Link
+          to="/customization"
+          className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+            isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
+          } ${
+            location.pathname.startsWith("/customization")
+              ? "bg-white/20 font-semibold"
+              : ""
+          }`}
+          title={isCollapsed ? "Customization & Templates" : ""}
+        >
+          <Palette size={20} />
+          {!isCollapsed && <span className="text-sm whitespace-nowrap">Customization & Templates</span>}
         </Link>
 
         {/* Exit Management */}
