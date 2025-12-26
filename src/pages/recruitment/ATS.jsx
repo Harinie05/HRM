@@ -109,26 +109,24 @@ export default function ATS() {
   const stages = [...new Set(candidates.map(c => c.stage).filter(Boolean))];
 
   return (
-    <Layout breadcrumb="Recruitment · ATS">
-      <div className="p-6">
+    <Layout>
+      <div className="p-4 sm:p-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border mb-8">
-          <div className="px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <FiUsers className="text-blue-600" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">Applicant Tracking System</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Track and manage candidates through your recruitment pipeline</p>
-                </div>
+        <div className="bg-white rounded-2xl mb-6 p-4 sm:p-6 border border-black">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
+                <FiUsers className="w-6 h-6 sm:w-7 sm:h-7 text-gray-600" />
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{jobs.length}</div>
-                  <div className="text-sm text-secondary">Active Positions</div>
+              <div className="text-center sm:text-left">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Applicant Tracking System</h1>
+                <p className="text-gray-600 text-sm sm:text-base font-medium">Track and manage candidates through your recruitment pipeline</p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mt-2 gap-2 sm:gap-0">
+                  <div className="flex items-center justify-center sm:justify-start space-x-2">
+                    <span className="text-xs text-gray-500 font-medium">{jobs.length} Active Positions</span>
+                  </div>
+                  <div className="hidden sm:block w-px h-3 bg-gray-300 rounded-full"></div>
+                  <span className="text-xs text-gray-600 font-semibold text-center sm:text-left">Real-time Updates</span>
                 </div>
               </div>
             </div>
@@ -136,54 +134,56 @@ export default function ATS() {
         </div>
 
         {/* Jobs List */}
-        <div className="bg-white rounded-xl shadow-sm border mb-8">
-          <div className="px-6 py-4 border-b ">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-primary">Active Job Positions</h2>
-              <span className="text-sm text-muted">{jobs.length} positions</span>
+        <div className="bg-white rounded-2xl border border-black mb-6">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Active Job Positions</h2>
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full self-start sm:self-auto">{jobs.length} positions</span>
             </div>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {jobs.length === 0 ? (
               <div className="text-center py-12">
-                <FiUsers className="mx-auto text-muted mb-4" size={48} />
-                <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No active job positions found</p>
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiUsers className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="text-gray-600">No active job positions found</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.map((job) => (
                   <div
                     key={job.id}
                     onClick={() => handleJobSelect(job)}
-                    className={`group p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                    className={`group p-5 border-2 rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
                       selectedJob?.id === job.id 
-                        ? "border-blue-500 bg-blue-50 shadow-md" 
-                        : " hover:border-blue-300 bg-white"
+                        ? "border-black bg-gray-50 shadow-md" 
+                        : "border-gray-200 hover:border-gray-400 bg-white"
                     }`}
                   >
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg text-primary mb-2 group-hover:text-blue-600 transition-colors">
+                        <h3 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
                           {job.title}
                         </h3>
-                        <div className="flex items-center text-sm text-secondary mb-2">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-primary">
+                        <div className="flex items-center text-sm text-gray-600 mb-2">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                             {job.department}
                           </span>
                         </div>
                       </div>
-                      <FiArrowRight className={`text-muted group-hover:text-blue-500 transition-colors ${
-                        selectedJob?.id === job.id ? 'text-blue-500' : ''
-                      }`} size={20} />
+                      <FiArrowRight className={`text-gray-400 group-hover:text-gray-600 transition-colors ${
+                        selectedJob?.id === job.id ? 'text-gray-600' : ''
+                      }`} size={18} />
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center text-sm text-secondary">
+                      <div className="flex items-center text-sm text-gray-600">
                         <FiUsers className="mr-2" size={14} />
                         <span>Rounds: {getRoundNames(job).join(", ") || "Not specified"}</span>
                       </div>
                       {job.openings && (
-                        <div className="flex items-center text-sm text-secondary">
+                        <div className="flex items-center text-sm text-gray-600">
                           <span className="mr-2">📍</span>
                           <span>{job.openings} openings</span>
                         </div>
@@ -213,11 +213,13 @@ export default function ATS() {
                 {/* Search and Filter */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="relative">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
+                      <FiSearch className="w-3 h-3 text-blue-600" />
+                    </div>
                     <input
                       type="text"
                       placeholder="Search candidates..."
-                      className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="pl-11 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -226,7 +228,7 @@ export default function ATS() {
                   <select
                     value={stageFilter}
                     onChange={(e) => setStageFilter(e.target.value)}
-                    className="px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="px-4 py-2.5 bg-gray-50 border-0 rounded-xl text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm"
                   >
                     <option value="">All Stages</option>
                     {stages.map(stage => (
@@ -238,71 +240,73 @@ export default function ATS() {
             </div>
 
             {filteredCandidates.length === 0 ? (
-              <div className="text-center py-12">
-                <FiUsers className="mx-auto text-muted mb-4" size={48} />
-                <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No candidates found for this position</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiUsers className="w-8 h-8 text-gray-400" />
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Experience</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Current Stage</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Round</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Interview</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
+              <p className="text-gray-600">No candidates found for this position</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50/80 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Stage</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Round</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interview</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
 
-                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
-                    {filteredCandidates.map((candidate) => (
-                      <tr key={candidate.id} className="hover:bg-content transition-colors">
-                        <td className="px-6 py-4">
-                          <div>
-                            <div className="text-sm font-medium text-primary">{candidate.name}</div>
-                            <div className="text-sm text-muted">{candidate.email}</div>
+                <tbody className="bg-white/50 divide-y divide-gray-200">
+                  {filteredCandidates.map((candidate) => (
+                    <tr key={candidate.id} className="hover:bg-white/80 transition-colors">
+                      <td className="px-6 py-4">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{candidate.name}</div>
+                          <div className="text-sm text-gray-500">{candidate.email}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-900">{candidate.experience} years</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStageColor(candidate.stage)}`}>
+                          {candidate.stage}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-medium text-gray-900">Round {candidate.current_round}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {candidate.interview_date ? (
+                          <div className="flex items-center text-sm text-gray-600">
+                            <FiCalendar className="mr-1" size={14} />
+                            {new Date(candidate.interview_date).toLocaleDateString()}
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm text-primary">{candidate.experience} years</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStageColor(candidate.stage)}`}>
-                            {candidate.stage}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-medium text-primary">Round {candidate.current_round}</span>
-                        </td>
-                        <td className="px-6 py-4">
-                          {candidate.interview_date ? (
-                            <div className="flex items-center text-sm text-secondary">
-                              <FiCalendar className="mr-1" size={14} />
-                              {new Date(candidate.interview_date).toLocaleDateString()}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-muted">Not scheduled</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex items-center justify-center space-x-2">
-                            <button
-                              onClick={() => handleMoveCandidate(candidate)}
-                              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                            >
-                              <FiArrowRight className="mr-1" size={12} />
-                              Move
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                        ) : (
+                          <span className="text-sm text-gray-500">Not scheduled</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center space-x-2">
+                          <button
+                            onClick={() => handleMoveCandidate(candidate)}
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                          >
+                            <FiArrowRight className="mr-1" size={12} />
+                            Move
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           </div>
         )}
 

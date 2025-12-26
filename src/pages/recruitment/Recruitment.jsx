@@ -142,68 +142,133 @@ export default function Recruitment() {
 
   // ========================================================================
   return (
-    <Layout breadcrumb="Recruitment · Job Management">
+    <Layout>
       <div className="p-6">
-        {/* HEADER */}
-        <div className="bg-white rounded-xl shadow-sm border mb-8">
-          <div className="px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <FiUsers className="text-blue-600" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">Recruitment Setup</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage job postings and recruitment process</p>
+        {/* Header */}
+        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiUsers className="w-7 h-7 text-gray-600" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Recruitment Setup</h1>
+                <p className="text-gray-600 text-base font-medium">Manage job postings and recruitment process</p>
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-medium">{jobs.length} Active Jobs</span>
+                  </div>
+                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
+                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
                 </div>
               </div>
-              
-              <button
-                onClick={openCreate}
-                className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 flex items-center gap-2 transition-colors font-medium"
-              >
-                <FiPlus size={18} />
-                Create Job
-              </button>
+            </div>
+            
+            <button
+              onClick={openCreate}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+            >
+              <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
+                <FiPlus className="w-3 h-3" />
+              </div>
+              <span className="text-sm">Create Job</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Enhanced Search */}
+        <div className="mb-6">
+          <div className="relative max-w-md mx-auto">
+            <div className="bg-white border border-black rounded-xl p-1">
+              <div className="flex items-center space-x-2 px-3 py-2">
+                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                  <FiSearch className="w-3 h-3 text-gray-600" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search jobs..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
+                />
+                <div className="flex items-center space-x-1">
+                  <div className="w-px h-4 bg-gray-200"></div>
+                  <button 
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={`p-1 rounded-md transition-colors ${
+                      showFilters ? 'bg-gray-100 text-gray-600' : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <FiFilter className={`w-3 h-3 transition-colors ${
+                      showFilters ? 'text-gray-600' : 'text-gray-400 group-hover:text-gray-600'
+                    }`} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* SEARCH AND FILTERS */}
-        <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
-              <input
-                type="text"
-                placeholder="Search jobs by title or department..."
-                className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+        {/* STATS CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-2xl p-6 border border-black">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Total Jobs</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiUsers className="text-gray-600" size={20} />
+              </div>
             </div>
-            
-            {/* Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`px-4 py-2 rounded-lg border flex items-center gap-2 transition-colors ${
-                showFilters ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white -dark text-secondary hover:bg-content'
-              }`}
-            >
-              <FiFilter size={16} />
-              Filters
-            </button>
           </div>
+          
+          <div className="bg-white rounded-2xl p-6 border border-black">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Published</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Posted').length}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiPlay className="text-gray-600" size={20} />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 border border-black">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Drafts</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Completed').length}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiPause className="text-gray-600" size={20} />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 border border-black">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Departments</p>
+                <p className="text-2xl font-bold text-gray-900">{departments.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiUsers className="text-gray-600" size={20} />
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {/* Filter Options */}
-          {showFilters && (
-            <div className="mt-4 pt-4 border-t ">
+        {/* Filter Options */}
+        {showFilters && (
+          <div className="mb-6">
+            <div className="bg-white border border-black rounded-2xl p-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <select
                   value={filters.department}
                   onChange={(e) => setFilters({...filters, department: e.target.value})}
-                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
                 >
                   <option value="">All Departments</option>
                   {departments.map(dept => (
@@ -214,7 +279,7 @@ export default function Recruitment() {
                 <select
                   value={filters.status}
                   onChange={(e) => setFilters({...filters, status: e.target.value})}
-                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
                 >
                   <option value="">All Status</option>
                   <option value="Draft">Draft</option>
@@ -224,7 +289,7 @@ export default function Recruitment() {
                 <select
                   value={filters.jobType}
                   onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
                 >
                   <option value="">All Job Types</option>
                   {jobTypes.map(type => (
@@ -234,77 +299,28 @@ export default function Recruitment() {
                 
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 text-secondary border-dark rounded-lg hover:bg-content transition-colors"
+                  className="px-4 py-2 text-gray-600 border border-black rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   Clear Filters
                 </button>
               </div>
             </div>
-          )}
-        </div>
-
-        {/* STATS CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow-sm border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-secondary">Total Jobs</p>
-                <p className="text-2xl font-semibold text-primary">{jobs.length}</p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <FiUsers className="text-blue-600" size={20} />
-              </div>
-            </div>
           </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-secondary">Published</p>
-                <p className="text-2xl font-semibold text-green-600">{jobs.filter(j => j.status?.trim() === 'Posted').length}</p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <FiPlay className="text-green-600" size={20} />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-secondary">Drafts</p>
-                <p className="text-2xl font-semibold text-yellow-600">{jobs.filter(j => j.status?.trim() === 'Completed').length}</p>
-              </div>
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <FiPause className="text-yellow-600" size={20} />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-secondary">Departments</p>
-                <p className="text-2xl font-semibold text-purple-600">{departments.length}</p>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <FiUsers className="text-purple-600" size={20} />
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* JOB TABLE */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className=" mt-2" style={{color: 'var(--text-secondary, #374151)'}}>Loading jobs...</p>
+              <p className="text-gray-600 mt-2">Loading jobs...</p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-8 text-center">
-              <FiUsers className="mx-auto text-muted mb-4" size={48} />
-              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No jobs found matching your criteria</p>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiUsers className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-gray-600">No jobs found matching your criteria</p>
               <button
                 onClick={clearFilters}
                 className="mt-2 text-blue-600 hover:text-blue-700"
@@ -314,27 +330,27 @@ export default function Recruitment() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 border-b border-black">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Job Details</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Department</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Openings</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Openings</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+                <tbody className="bg-white divide-y divide-black">
                   {filteredJobs.map((job) => (
-                    <tr key={job.id} className="hover:bg-content transition-colors">
+                    <tr key={job.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <div className="text-sm font-medium text-primary">{job.title}</div>
-                          <div className="text-sm text-muted">{job.experience} experience</div>
+                          <div className="text-sm font-medium text-gray-900">{job.title}</div>
+                          <div className="text-sm text-gray-500">{job.experience} experience</div>
                           {job.location && (
-                            <div className="text-xs text-muted">{job.location}</div>
+                            <div className="text-xs text-gray-500">{job.location}</div>
                           )}
                         </div>
                       </td>
@@ -344,10 +360,10 @@ export default function Recruitment() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-sm font-medium text-primary">{job.openings}</span>
+                        <span className="text-sm font-medium text-gray-900">{job.openings}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-sm text-secondary">{job.job_type || 'Full-time'}</span>
+                        <span className="text-sm text-gray-600">{job.job_type || 'Full-time'}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         {job.status?.trim() === "Posted" ? (
@@ -365,73 +381,66 @@ export default function Recruitment() {
 
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center space-x-2">
-                          {/* VIEW */}
                           <button
                             onClick={() => openView(job)}
-                            className="p-2 text-secondary hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="View Job"
                           >
                             <FiEye size={16} />
                           </button>
 
-                          {/* EDIT */}
                           <button
                             onClick={() => openEdit(job)}
-                            className="p-2 text-secondary hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
                             title="Edit Job"
                           >
                             <FiEdit size={16} />
                           </button>
 
-                          {/* SCREEN CANDIDATES */}
                           <button
                             onClick={() => window.location.href = `/screening?job=${job.id}`}
-                            className="p-2 text-secondary hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Screen Candidates"
                           >
                             <FiUsers size={16} />
                           </button>
 
-                          {/* GENERATE LINK */}
                           <button
                             onClick={() => generateApplyLink(job)}
-                            className="p-2 text-secondary hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                             title="Generate Apply Link"
                           >
                             <FiLink size={16} />
                           </button>
 
-                          {/* PUBLISH / UNPUBLISH */}
                           <button
                             onClick={() => togglePublish(job)}
                             className={`p-2 rounded-lg transition-colors ${
                               job.status?.trim() === "Posted"
-                                ? "text-secondary hover:text-red-600 hover:bg-red-50"
-                                : "text-secondary hover:text-green-600 hover:bg-green-50"
+                                ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                : "text-gray-500 hover:text-green-600 hover:bg-green-50"
                             }`}
                             title={job.status?.trim() === "Posted" ? "Unpublish" : "Publish"}
                           >
                             {job.status?.trim() === "Posted" ? <FiPause size={16} /> : <FiPlay size={16} />}
                           </button>
 
-                          {/* DELETE */}
                           <button
                             onClick={() => deleteJob(job)}
-                            className="p-2 text-secondary hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete Job"
                           >
                             <FiTrash2 size={16} />
                           </button>
                         </div>
                         
-                        {/* GENERATED LINK FIELD */}
                         {generatedLinks[job.id] && (
                           <div className="mt-2">
                             <input
                               type="text"
                               value={generatedLinks[job.id]}
                               readOnly
-                              className="w-full text-xs border p-2 rounded bg-content focus:outline-none"
+                              className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none"
                               onClick={(e) => e.target.select()}
                               placeholder="Generated link will appear here"
                             />

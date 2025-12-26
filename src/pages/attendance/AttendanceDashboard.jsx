@@ -153,89 +153,95 @@ const AttendanceDashboard = () => {
   return (
     <Layout>
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-sm p-4 sm:p-6 mb-6 sm:mb-8 text-white">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="p-2 bg-white/20 rounded-xl flex-shrink-0">
-                <FiClock className="text-white" size={20} />
+        {/* Header with gradient background matching User page */}
+        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6 sm:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
+                <FiClock className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
               </div>
-              <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-medium mb-1">Attendance Management Pipeline</div>
-                <h1 className="text-lg sm:text-2xl font-bold mb-1">Employee Time & Attendance</h1>
-                <p className="text-blue-100 text-xs sm:text-sm">Overview of employee attendance and time tracking</p>
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Attendance Dashboard</h1>
+                <p className="text-gray-600 text-base sm:text-lg mb-1">Real-time attendance tracking, analytics & workforce insights</p>
+                <p className="text-gray-500 text-sm">Time & Attendance Management</p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="text-right">
-                <div className="text-xs sm:text-sm text-blue-100 mb-1">Attendance Dashboard</div>
-                <div className="text-xs text-blue-200">Real-time attendance metrics</div>
+            <div className="text-center sm:text-right">
+              <div className="flex items-center justify-center sm:justify-end gap-2 text-gray-600 mb-2">
+                <span className="text-sm font-medium">Attendance {attendanceData.overallAttendance}%</span>
               </div>
-              <div className="text-right">
-                <div className="text-xs text-blue-100 mb-1">OVERALL RATE</div>
-                <div className="text-2xl sm:text-3xl font-bold">{attendanceData.overallAttendance}%</div>
-              </div>
-              <div className="text-right hidden sm:block">
-                <div className="text-sm text-blue-100">{attendanceData.presentToday} employees present</div>
-              </div>
+              <p className="text-lg font-bold text-gray-900">Overall rate</p>
             </div>
           </div>
         </div>
         {/* Attendance Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Overall Attendance</p>
-                <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1">
-                  {attendanceData.overallAttendance}%
-                </p>
-              </div>
-              <div className="p-2 sm:p-3 rounded-full bg-green-100 flex-shrink-0">
-                <FiTrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-              </div>
+        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6">
+            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
+              Present: {attendanceData.presentToday}
+            </div>
+            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
+              Absent: {attendanceData.absentToday}
+            </div>
+            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
+              Late: {attendanceData.lateArrivals}
             </div>
           </div>
-          
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Present Today</p>
-                <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-1">
-                  {attendanceData.presentToday}
-                </p>
-              </div>
-              <div className="p-2 sm:p-3 rounded-full bg-blue-100 flex-shrink-0">
-                <FiUserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Absent Today</p>
-                <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-1">
-                  {attendanceData.absentToday}
-                </p>
-              </div>
-              <div className="p-2 sm:p-3 rounded-full bg-red-100 flex-shrink-0">
-                <FiUserX className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-700">Overall Attendance</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+                    {attendanceData.overallAttendance}%
+                  </p>
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiTrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Late Arrivals</p>
-                <p className="text-2xl sm:text-3xl font-bold text-yellow-600 mt-1">
-                  {attendanceData.lateArrivals}
-                </p>
+            
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-700">Present Today</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+                    {attendanceData.presentToday}
+                  </p>
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiUserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                </div>
               </div>
-              <div className="p-2 sm:p-3 rounded-full bg-yellow-100 flex-shrink-0">
-                <FiClock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" />
+            </div>
+            
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-700">Absent Today</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+                    {attendanceData.absentToday}
+                  </p>
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiUserX className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-700">Late Arrivals</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+                    {attendanceData.lateArrivals}
+                  </p>
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiClock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                </div>
               </div>
             </div>
           </div>
@@ -243,86 +249,96 @@ const AttendanceDashboard = () => {
 
         {/* Department Wise Attendance & Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center gap-2 mb-4 sm:mb-6">
-              <FiBarChart className="text-blue-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-primary">Department Wise Attendance</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-black p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <FiBarChart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Department Wise Attendance</h3>
             </div>
             <div className="space-y-4">
               {departments.length > 0 ? departments.map((dept, index) => (
                 <div key={index} className="flex justify-between items-center">
-                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>{dept.name}</span>
+                  <span className="font-medium text-gray-700 text-sm sm:text-base">{dept.name}</span>
                   <div className="flex items-center space-x-3">
-                    <div className="w-24 bg-gray-200 rounded-full h-2">
-                      <div className={`${getAttendanceColor(dept.attendance)} h-2 rounded-full transition-all duration-300`} style={{width: `${dept.attendance}%`}}></div>
+                    <div className="w-20 sm:w-24 bg-gray-200 border border-black rounded-full h-2">
+                      <div className="bg-gray-600 h-2 rounded-full transition-all duration-300" style={{width: `${dept.attendance}%`}}></div>
                     </div>
-                    <span className="text-sm font-semibold text-primary w-10 text-right">{dept.attendance}%</span>
+                    <span className="text-sm font-semibold text-gray-900 w-8 sm:w-10 text-right">{dept.attendance}%</span>
                   </div>
                 </div>
               )) : (
-                <div className="text-center text-muted py-8">
-                  <FiBarChart className="mx-auto h-12 w-12 text-muted mb-4" />
+                <div className="text-center text-gray-500 py-8">
+                  <FiBarChart className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                   <p>No department data available</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="flex items-center gap-2 mb-4 sm:mb-6">
-              <FiCalendar className="text-green-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-primary">Today's Summary</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-black p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <FiCalendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Today's Summary</h3>
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2">
-                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Total Employees</span>
-                <span className="font-semibold text-lg text-primary">{attendanceData.totalEmployees}</span>
+                <span className="text-gray-600 text-sm sm:text-base">Total Employees</span>
+                <span className="font-semibold text-lg text-gray-900">{attendanceData.totalEmployees}</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Attendance Rate</span>
-                <span className="font-semibold text-lg text-green-600">{attendanceData.overallAttendance}%</span>
+                <span className="text-gray-600 text-sm sm:text-base">Attendance Rate</span>
+                <span className="font-semibold text-lg text-gray-900">{attendanceData.overallAttendance}%</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>On Time Arrivals</span>
-                <span className="font-semibold text-lg text-blue-600">{attendanceData.presentToday - attendanceData.lateArrivals}</span>
+                <span className="text-gray-600 text-sm sm:text-base">On Time Arrivals</span>
+                <span className="font-semibold text-lg text-gray-900">{attendanceData.presentToday - attendanceData.lateArrivals}</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Late Arrivals</span>
-                <span className="font-semibold text-lg text-yellow-600">{attendanceData.lateArrivals}</span>
+                <span className="text-gray-600 text-sm sm:text-base">Late Arrivals</span>
+                <span className="font-semibold text-lg text-gray-900">{attendanceData.lateArrivals}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <h2 className="text-lg sm:text-xl font-semibold text-primary mb-4 sm:mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
+          <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-6">Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <button 
               onClick={() => window.location.href = '/attendance/logs'}
-              className="group p-4 sm:p-6 border border-blue-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 min-h-[44px]"
+              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
             >
-              <FiClock className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Punch Logs</h3>
-              <p className="text-xs sm:text-sm text-secondary">View attendance records</p>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                <FiClock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Punch Logs</h3>
+              <p className="text-xs sm:text-sm text-gray-600">View attendance records</p>
             </button>
             
             <button 
               onClick={() => window.location.href = '/shift-roster'}
-              className="group p-4 sm:p-6 border border-purple-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 min-h-[44px]"
+              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
             >
-              <FiUsers className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Shift Roster</h3>
-              <p className="text-xs sm:text-sm text-secondary">Manage employee shifts</p>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Shift Roster</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Manage employee shifts</p>
             </button>
             
             <button 
               onClick={() => window.location.href = '/attendance/rules'}
-              className="group p-4 sm:p-6 border border-green-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 min-h-[44px]"
+              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
             >
-              <FiSettings className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Attendance Rules</h3>
-              <p className="text-xs sm:text-sm text-secondary">Configure policies</p>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                <FiSettings className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Attendance Rules</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Configure policies</p>
             </button>
           </div>
         </div>

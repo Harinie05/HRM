@@ -51,6 +51,126 @@ body {
   display: none !important;
 }
 
+/* Utility class for hiding scrollbars */
+.scrollbar-hide {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar-corner {
+  display: none !important;
+}
+
+/* Specific class for org tabs */
+.org-tabs-container {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.org-tabs-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.org-tabs-container::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.org-tabs-container::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+.org-tabs-container::-webkit-scrollbar-corner {
+  display: none !important;
+}
+
+/* ========== GRADIENT TO WHITE BACKGROUND OVERRIDE ========== */
+/* Override ALL gradient backgrounds with white */
+*[class*="bg-gradient"],
+*[class*="bg-gradient"]:hover,
+*[class*="bg-gradient"]:focus,
+*[class*="bg-gradient"]:active {
+  background: var(--card-bg, #ffffff) !important;
+  background-image: none !important;
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Specific gradient pattern overrides */
+.bg-gradient-to-r,
+.bg-gradient-to-l,
+.bg-gradient-to-t,
+.bg-gradient-to-b,
+.bg-gradient-to-br,
+.bg-gradient-to-bl,
+.bg-gradient-to-tr,
+.bg-gradient-to-tl {
+  background: var(--card-bg, #ffffff) !important;
+  background-image: none !important;
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Override gradient with color stops */
+*[class*="from-"],
+*[class*="via-"],
+*[class*="to-"] {
+  background: var(--card-bg, #ffffff) !important;
+  background-image: none !important;
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Specific gradient combinations that appear in the codebase */
+.bg-gradient-to-r.from-slate-900,
+.bg-gradient-to-r.from-blue-500,
+.bg-gradient-to-r.from-purple-500,
+.bg-gradient-to-r.from-green-500,
+.bg-gradient-to-r.from-red-500,
+.bg-gradient-to-r.from-orange-500,
+.bg-gradient-to-br.from-blue-50,
+.bg-gradient-to-br.from-emerald-50,
+.bg-gradient-to-br.from-indigo-50,
+.bg-gradient-to-br.from-amber-50,
+.bg-gradient-to-br.from-purple-50,
+.bg-gradient-to-br.from-green-50,
+.bg-gradient-to-br.from-red-50,
+.bg-gradient-to-br.from-yellow-50,
+.bg-gradient-to-br.from-orange-50,
+.bg-gradient-to-br.from-pink-50,
+.bg-gradient-to-br.from-teal-50,
+.bg-gradient-to-br.from-cyan-50,
+.bg-gradient-to-br.from-gray-50,
+.bg-gradient-to-br.from-slate-50 {
+  background: var(--card-bg, #ffffff) !important;
+  background-image: none !important;
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Override any element with gradient classes */
+div[class*="bg-gradient"],
+section[class*="bg-gradient"],
+article[class*="bg-gradient"],
+header[class*="bg-gradient"],
+footer[class*="bg-gradient"],
+main[class*="bg-gradient"] {
+  background: var(--card-bg, #ffffff) !important;
+  background-image: none !important;
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
 /* Global card background override - applies to ALL pages */
 .bg-white,
 .bg-white:hover,
@@ -147,6 +267,121 @@ html body .bg-white {
   background-color: var(--card-bg, #ffffff) !important;
 }
 
+/* ========== TEXT COLOR OVERRIDES FOR WHITE BACKGROUNDS ========== */
+/* Ensure text is black/dark on white backgrounds */
+*[class*="bg-gradient"] *,
+*[class*="bg-gradient"] {
+  color: var(--text-primary, #111827) !important;
+}
+
+/* Override light text colors that were meant for dark backgrounds */
+*[class*="bg-gradient"] .text-white,
+*[class*="bg-gradient"] *[class*="text-white"] {
+  color: var(--text-primary, #111827) !important;
+}
+
+*[class*="bg-gradient"] .text-gray-100,
+*[class*="bg-gradient"] *[class*="text-gray-100"] {
+  color: var(--text-primary, #111827) !important;
+}
+
+*[class*="bg-gradient"] .text-gray-200,
+*[class*="bg-gradient"] *[class*="text-gray-200"] {
+  color: var(--text-secondary, #374151) !important;
+}
+
+*[class*="bg-gradient"] .text-gray-300,
+*[class*="bg-gradient"] *[class*="text-gray-300"] {
+  color: var(--text-secondary, #374151) !important;
+}
+
+*[class*="bg-gradient"] .text-gray-400,
+*[class*="bg-gradient"] *[class*="text-gray-400"] {
+  color: var(--text-muted, #6b7280) !important;
+}
+
+*[class*="bg-gradient"] .text-slate-300,
+*[class*="bg-gradient"] *[class*="text-slate-300"] {
+  color: var(--text-secondary, #374151) !important;
+}
+
+*[class*="bg-gradient"] .text-slate-400,
+*[class*="bg-gradient"] *[class*="text-slate-400"] {
+  color: var(--text-muted, #6b7280) !important;
+}
+
+/* Override white/light text in hero sections */
+*[class*="bg-gradient"] h1,
+*[class*="bg-gradient"] h2,
+*[class*="bg-gradient"] h3,
+*[class*="bg-gradient"] h4,
+*[class*="bg-gradient"] h5,
+*[class*="bg-gradient"] h6 {
+  color: var(--text-primary, #111827) !important;
+}
+
+*[class*="bg-gradient"] p {
+  color: var(--text-secondary, #374151) !important;
+}
+
+*[class*="bg-gradient"] span {
+  color: var(--text-secondary, #374151) !important;
+}
+
+/* Override icon colors in gradient backgrounds */
+*[class*="bg-gradient"] svg {
+  color: var(--text-primary, #111827) !important;
+}
+
+/* Specific overrides for colored text that should remain colored */
+*[class*="bg-gradient"] .text-blue-600,
+*[class*="bg-gradient"] .text-blue-700,
+*[class*="bg-gradient"] .text-blue-800 {
+  color: #2563eb !important;
+}
+
+*[class*="bg-gradient"] .text-green-600,
+*[class*="bg-gradient"] .text-green-700,
+*[class*="bg-gradient"] .text-green-800 {
+  color: #16a34a !important;
+}
+
+*[class*="bg-gradient"] .text-red-600,
+*[class*="bg-gradient"] .text-red-700,
+*[class*="bg-gradient"] .text-red-800 {
+  color: #dc2626 !important;
+}
+
+*[class*="bg-gradient"] .text-purple-600,
+*[class*="bg-gradient"] .text-purple-700,
+*[class*="bg-gradient"] .text-purple-800 {
+  color: #9333ea !important;
+}
+
+*[class*="bg-gradient"] .text-yellow-600,
+*[class*="bg-gradient"] .text-yellow-700,
+*[class*="bg-gradient"] .text-yellow-800 {
+  color: #ca8a04 !important;
+}
+
+*[class*="bg-gradient"] .text-indigo-600,
+*[class*="bg-gradient"] .text-indigo-700,
+*[class*="bg-gradient"] .text-indigo-800 {
+  color: #4f46e5 !important;
+}
+
+*[class*="bg-gradient"] .text-emerald-600,
+*[class*="bg-gradient"] .text-emerald-700,
+*[class*="bg-gradient"] .text-emerald-800 {
+  color: #059669 !important;
+}
+
+*[class*="bg-gradient"] .text-amber-600,
+*[class*="bg-gradient"] .text-amber-700,
+*[class*="bg-gradient"] .text-amber-800 {
+  color: #d97706 !important;
+}
+
 /* Additional Tailwind overrides */
 .bg-gray-50 {
   background-color: var(--content-bg, #f8fafc) !important;
@@ -228,4 +463,146 @@ html body .bg-white {
 
 table, thead, tbody, tr, td, th {
   border-color: var(--border-color, #e2e8f0) !important;
+}
+
+/* ========== THIN BLACK BORDERS FOR ALL CARDS AND TABLES ========== */
+/* Add thin black borders to all card-like elements */
+.bg-white,
+.rounded,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl,
+.shadow,
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.card,
+.panel {
+  border: 1px solid #000000 !important;
+}
+
+/* Add borders to all tables */
+table,
+.table,
+.min-w-full {
+  border: 1px solid #000000 !important;
+  border-collapse: collapse !important;
+}
+
+/* Table headers and cells */
+th,
+td,
+thead th,
+tbody td {
+  border: 1px solid #000000 !important;
+}
+
+/* Table rows */
+tr {
+  border-bottom: 1px solid #000000 !important;
+}
+
+/* Modal and form containers */
+.fixed .bg-white,
+.modal,
+.dropdown,
+.popover {
+  border: 1px solid #000000 !important;
+}
+
+/* Form inputs and selects */
+input,
+select,
+textarea,
+.border {
+  border: 1px solid #000000 !important;
+}
+
+/* Specific targeting for common card patterns */
+div.bg-white.rounded-xl,
+div.bg-white.rounded-lg,
+div.bg-white.shadow,
+div.bg-white.p-4,
+div.bg-white.p-6,
+div.bg-white.p-8 {
+  border: 1px solid #000000 !important;
+}
+
+/* Dashboard cards and KPI cards */
+.grid > div,
+.grid .bg-white,
+.flex .bg-white {
+  border: 1px solid #000000 !important;
+}
+
+/* Override any existing border colors */
+*[class*="border-gray"],
+*[class*="border-slate"],
+*[class*="border-blue"],
+*[class*="border-green"],
+*[class*="border-red"] {
+  border-color: #000000 !important;
+}
+
+/* Ensure all bordered elements use black */
+.border-2 {
+  border-color: #000000 !important;
+}
+
+.border-t,
+.border-b,
+.border-l,
+.border-r {
+  border-color: #000000 !important;
+}
+
+/* Navigation and sidebar elements */
+.sidebar,
+.nav,
+.menu {
+  border: 1px solid #000000 !important;
+}
+
+/* Button borders */
+button.border,
+.btn {
+  border: 1px solid #000000 !important;
+}
+
+/* List items and containers */
+ul,
+ol,
+li {
+  border-color: #000000 !important;
+}
+
+/* Dividers */
+.divide-y > *,
+.divide-x > * {
+  border-color: #000000 !important;
+}
+
+/* Header sections */
+header,
+.header {
+  border: 1px solid #000000 !important;
+}
+
+/* Content sections */
+section.bg-white,
+article.bg-white,
+main .bg-white {
+  border: 1px solid #000000 !important;
+}
+
+/* Override inline styles */
+[style*="border"] {
+  border-color: #000000 !important;
+}
+
+/* Ensure all elements with existing borders get black color */
+* {
+  border-color: #000000 !important;
 }

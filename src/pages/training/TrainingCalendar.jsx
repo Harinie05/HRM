@@ -51,70 +51,8 @@ export default function TrainingCalendar() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Calendar className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Training Calendar</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>View scheduled training sessions and upcoming programs</p>
-          </div>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Calendar className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Total Sessions</p>
-              <p className="text-2xl font-semibold text-blue-900">{calendarEvents.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Clock className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">This Month</p>
-              <p className="text-2xl font-semibold text-green-900">
-                {calendarEvents.filter(event => {
-                  const eventDate = new Date(event.start_date);
-                  const now = new Date();
-                  return eventDate.getMonth() === now.getMonth() && eventDate.getFullYear() === now.getFullYear();
-                }).length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Users className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-purple-600">Total Enrolled</p>
-              <p className="text-2xl font-semibold text-purple-900">
-                {calendarEvents.reduce((sum, event) => sum + (event.enrolled_count || 0), 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <MapPin className="h-8 w-8 text-orange-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-orange-600">Locations</p>
-              <p className="text-2xl font-semibold text-orange-900">
-                {new Set(calendarEvents.map(event => event.location).filter(Boolean)).size}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
 
         {/* Content */}
         <div className="p-6">
@@ -131,7 +69,7 @@ export default function TrainingCalendar() {
         ) : (
           <div className="grid gap-4">
             {calendarEvents.map((event) => (
-              <div key={event.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+              <div key={event.id} className="border border-black rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <h3 className="text-lg font-medium text-primary">{event.title}</h3>

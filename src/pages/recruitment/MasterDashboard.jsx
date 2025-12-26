@@ -183,202 +183,230 @@ export default function MasterDashboard() {
   );
 
   return (
-    <Layout breadcrumb="Recruitment · Dashboard">
+    <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-6">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-4 text-white relative overflow-hidden">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center mb-2">
-                <div className="bg-white/20 rounded-lg p-1.5 mr-2">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
-                  </svg>
-                </div>
-                <span className="bg-white/20 px-2 py-1 rounded-full text-xs font-medium">
-                  Talent Acquisition Pipeline
-                </span>
+        <div className="bg-white rounded-3xl border border-black shadow-sm p-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                </svg>
               </div>
-              
-              <h1 className="text-xl font-bold mb-1">
-                Recruitment & Onboarding Pipeline
-              </h1>
-              
-              <p className="text-white/90 text-xs mb-3 max-w-xl">
-                Overview of recruitment activities and candidate pipeline
-              </p>
-              
-              <div className="flex items-center space-x-3">
-                <button className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded-lg text-xs font-medium transition-colors">
-                  Hiring Dashboard
-                </button>
-                <span className="text-white/80 text-xs">
-                  Real-time recruitment metrics
-                </span>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Recruitment & Onboarding Pipeline</h1>
+                <p className="text-gray-600 text-lg mb-1">Overview of recruitment activities and candidate pipeline</p>
+                <p className="text-gray-500 text-sm">Talent Acquisition Pipeline</p>
               </div>
             </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center min-w-[120px]">
-              <p className="text-white/80 text-xs font-medium uppercase tracking-wide mb-1">
-                ACTIVE JOBS
-              </p>
-              <p className="text-2xl font-bold mb-1">
-                {metrics.totalJobs}
-              </p>
-              <p className="text-white/70 text-xs">
-                {metrics.appliedCandidates} applications received
-              </p>
+            <div className="text-right">
+              <div className="flex items-center gap-2 text-gray-600 mb-2">
+                <span className="text-sm font-medium">Active Jobs {metrics.totalJobs}</span>
+              </div>
+              <p className="text-lg font-bold text-gray-900">{metrics.appliedCandidates} applications received</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
           {/* Job Requisitions */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Job Requisitions</h3>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.totalJobs}</div>
+                <p className="text-xs text-gray-500">Job Requisitions</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-blue-600 mb-1">{loading ? "..." : metrics.totalJobs}</div>
-            <p className="text-sm text-muted">Total job openings</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Total job openings</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Active
+              </span>
+            </div>
           </div>
 
           {/* Applied Candidates */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Applied Candidates</h3>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.appliedCandidates}</div>
+                <p className="text-xs text-gray-500">Applications</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-purple-600 mb-1">{loading ? "..." : metrics.appliedCandidates}</div>
-            <p className="text-sm text-muted">Total applications received</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Total applications received</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Pending
+              </span>
+            </div>
           </div>
 
           {/* Onboarded Candidates */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Onboarded Candidates</h3>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.onboardedCandidates}</div>
+                <p className="text-xs text-gray-500">Onboarded</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-green-600 mb-1">{loading ? "..." : metrics.onboardedCandidates}</div>
-            <p className="text-sm text-muted">Successfully joined employees</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Successfully joined employees</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Complete
+              </span>
+            </div>
           </div>
 
           {/* Completed Jobs */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Completed Jobs</h3>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.completedJobs}</div>
+                <p className="text-xs text-gray-500">Completed</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-blue-600 mb-1">{loading ? "..." : metrics.completedJobs}</div>
-            <p className="text-sm text-muted">Filled positions</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Filled positions</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Closed
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Secondary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
           {/* Selected Candidates */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Selected Candidates</h3>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.selectedCandidates}</div>
+                <p className="text-xs text-gray-500">Selected</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-green-600 mb-1">{loading ? "..." : metrics.selectedCandidates}</div>
-            <p className="text-sm text-muted">Candidates cleared all rounds</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Candidates cleared all rounds</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Approved
+              </span>
+            </div>
           </div>
 
           {/* Rejected Candidates */}
-          <div className="p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="bg-white rounded-2xl border border-black p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className=" font-medium text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Rejected Candidates</h3>
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{loading ? "..." : metrics.rejectedCandidates}</div>
+                <p className="text-xs text-gray-500">Rejected</p>
+              </div>
             </div>
-            <div className="text-3xl font-bold text-red-600 mb-1">{loading ? "..." : metrics.rejectedCandidates}</div>
-            <p className="text-sm text-muted">Not selected candidates</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Not selected candidates</span>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                Declined
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-2xl border border-gray-100 shadow-sm p-6 mb-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <h3 className="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl border border-black p-6 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900">Quick Actions</h3>
+              <p className="text-sm text-gray-600">Common recruitment tasks and shortcuts</p>
+            </div>
+            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
+              4 actions available
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <button 
               onClick={() => window.location.href = '/job-requisition'}
-              className="p-4 border border-blue-200 rounded-xl hover:bg-blue-50 transition-colors text-left group"
+              className="p-4 border border-black rounded-xl hover:bg-gray-50 transition-colors text-left group"
             >
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
-              <h4 className="font-medium text-primary mb-1">Create Job</h4>
-              <p className="text-sm text-muted">Add new job requisition</p>
+              <h4 className="font-medium text-gray-900 mb-1">Create Job</h4>
+              <p className="text-xs text-gray-500">Add new job requisition</p>
             </button>
             
             <button 
               onClick={() => window.location.href = '/ats'}
-              className="p-4 border border-purple-200 rounded-xl hover:bg-purple-50 transition-colors text-left group"
+              className="p-4 border border-black rounded-xl hover:bg-gray-50 transition-colors text-left group"
             >
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <h4 className="font-medium text-primary mb-1">View ATS</h4>
-              <p className="text-sm text-muted">Manage candidates</p>
+              <h4 className="font-medium text-gray-900 mb-1">View ATS</h4>
+              <p className="text-xs text-gray-500">Manage candidates</p>
             </button>
             
             <button 
               onClick={() => window.location.href = '/offers'}
-              className="p-4 border border-green-200 rounded-xl hover:bg-green-50 transition-colors text-left group"
+              className="p-4 border border-black rounded-xl hover:bg-gray-50 transition-colors text-left group"
             >
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <h4 className="font-medium text-primary mb-1">Offers</h4>
-              <p className="text-sm text-muted">Manage offer letters</p>
+              <h4 className="font-medium text-gray-900 mb-1">Offers</h4>
+              <p className="text-xs text-gray-500">Manage offer letters</p>
             </button>
             
             <button 
               onClick={() => window.location.href = '/onboarding'}
-              className="p-4 border border-emerald-200 rounded-xl hover:bg-emerald-50 transition-colors text-left group"
+              className="p-4 border border-black rounded-xl hover:bg-gray-50 transition-colors text-left group"
             >
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-emerald-200 transition-colors">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </div>
-              <h4 className="font-medium text-primary mb-1">Onboarding</h4>
-              <p className="text-sm text-muted">Manage new joiners</p>
+              <h4 className="font-medium text-gray-900 mb-1">Onboarding</h4>
+              <p className="text-xs text-gray-500">Manage new joiners</p>
             </button>
           </div>
         </div>
@@ -386,25 +414,30 @@ export default function MasterDashboard() {
         {/* Summary Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recruitment Pipeline Summary */}
-          <div className="rounded-2xl border border-gray-100 shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <h3 className="text-lg font-semibold text-primary mb-4">Recruitment Pipeline</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-content rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Applications</span>
-                <span className="font-semibold text-lg text-primary">{metrics.appliedCandidates}</span>
+          <div className="bg-white rounded-2xl border border-black p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Recruitment Pipeline</h3>
+                <p className="text-sm text-gray-600">Application and selection metrics</p>
               </div>
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Selection Rate</span>
-                <span className="font-semibold text-lg text-green-600">
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Total Applications</span>
+                <span className="text-xl font-bold text-gray-900">{metrics.appliedCandidates}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Selection Rate</span>
+                <span className="text-xl font-bold text-gray-900">
                   {metrics.appliedCandidates > 0 
                     ? `${Math.round((metrics.selectedCandidates / metrics.appliedCandidates) * 100)}%`
                     : '0%'
                   }
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Onboarding Rate</span>
-                <span className="font-semibold text-lg text-blue-600">
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Onboarding Rate</span>
+                <span className="text-xl font-bold text-gray-900">
                   {metrics.appliedCandidates > 0 
                     ? `${Math.min(100, Math.round((metrics.onboardedCandidates / metrics.appliedCandidates) * 100))}%`
                     : '0%'
@@ -415,25 +448,30 @@ export default function MasterDashboard() {
           </div>
 
           {/* Job Status Summary */}
-          <div className="rounded-2xl border border-gray-100 shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <h3 className="text-lg font-semibold text-primary mb-4">Job Status Overview</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-content rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Positions</span>
-                <span className="font-semibold text-lg text-primary">{metrics.totalJobs}</span>
+          <div className="bg-white rounded-2xl border border-black p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Job Status Overview</h3>
+                <p className="text-sm text-gray-600">Position filling progress</p>
               </div>
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Fill Rate</span>
-                <span className="font-semibold text-lg text-green-600">
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Total Positions</span>
+                <span className="text-xl font-bold text-gray-900">{metrics.totalJobs}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Fill Rate</span>
+                <span className="text-xl font-bold text-gray-900">
                   {metrics.totalJobs > 0 
                     ? `${Math.round((metrics.completedJobs / metrics.totalJobs) * 100)}%`
                     : '0%'
                   }
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active Jobs</span>
-                <span className="font-semibold text-lg text-blue-600">{metrics.activeJobs}</span>
+              <div className="flex justify-between items-center p-4 bg-gray-50 border border-black rounded-xl">
+                <span className="text-sm font-medium text-gray-700">Active Jobs</span>
+                <span className="text-xl font-bold text-gray-900">{metrics.activeJobs}</span>
               </div>
             </div>
           </div>

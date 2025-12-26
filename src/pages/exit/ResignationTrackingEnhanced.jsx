@@ -142,12 +142,12 @@ const ResignationTracking = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      'Pending': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
-      'Completed': 'bg-green-100 text-green-800 border-green-200',
-      'Initiated': 'bg-gray-100 text-primary '
+      'Pending': 'bg-gray-100 text-gray-800',
+      'In Progress': 'bg-gray-200 text-gray-900',
+      'Completed': 'bg-gray-300 text-gray-900',
+      'Initiated': 'bg-gray-100 text-gray-800'
     };
-    return colors[status] || 'bg-gray-100 text-primary ';
+    return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
   const filteredResignations = resignations.filter(resignation => {
@@ -170,74 +170,74 @@ const ResignationTracking = () => {
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-600 text-sm font-medium">Total Resignations</p>
-              <p className="text-3xl font-bold text-slate-700 mt-2">{resignations.length}</p>
+              <p className="text-gray-600 text-sm font-medium">Total Resignations</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.length}</p>
             </div>
-            <div className="p-3 bg-slate-200 rounded-xl">
-              <FileText className="h-6 w-6 text-slate-600" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <FileText className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-amber-700 text-sm font-medium">In Progress</p>
-              <p className="text-3xl font-bold text-amber-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</p>
+              <p className="text-gray-600 text-sm font-medium">In Progress</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</p>
             </div>
-            <div className="p-3 bg-amber-200 rounded-xl">
-              <Clock className="h-6 w-6 text-amber-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <Clock className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-emerald-700 text-sm font-medium">Completed</p>
-              <p className="text-3xl font-bold text-emerald-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</p>
+              <p className="text-gray-600 text-sm font-medium">Completed</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</p>
             </div>
-            <div className="p-3 bg-emerald-200 rounded-xl">
-              <CheckCircle className="h-6 w-6 text-emerald-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <CheckCircle className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-indigo-700 text-sm font-medium">Initiated</p>
-              <p className="text-3xl font-bold text-indigo-800 mt-2">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</p>
+              <p className="text-gray-600 text-sm font-medium">Initiated</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</p>
             </div>
-            <div className="p-3 bg-indigo-200 rounded-xl">
-              <Users className="h-6 w-6 text-indigo-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <Users className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
+      <div className="rounded-xl border border-black p-4" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-1">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
               <input
                 type="text"
                 placeholder="Search by employee name, code, or reason..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent w-full transition-all duration-200"
+                className="pl-10 pr-4 py-2 border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full transition-all duration-200"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+              className="border border-black rounded-xl px-4 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
             >
               <option value="All">All Status</option>
               <option value="Initiated">Initiated</option>
@@ -247,9 +247,9 @@ const ResignationTracking = () => {
           </div>
           <button 
             onClick={() => setShowApplyForm(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-xl hover:from-slate-700 hover:to-slate-800 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-700 border border-black transition-all duration-200"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Apply Resignation
           </button>
         </div>
@@ -377,65 +377,65 @@ const ResignationTracking = () => {
       )}
 
       {/* Resignations Table */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div className="p-6 border-b  bg-gradient-to-r from-gray-50 to-red-50">
-          <h2 className="text-xl font-bold text-primary">Resignation List ({filteredResignations.length})</h2>
-          <p className=" text-sm mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Track and manage employee resignations</p>
+      <div className="bg-white rounded-xl border border-black overflow-hidden">
+        <div className="p-4 border-b border-black bg-gray-50">
+          <h2 className="text-lg font-bold text-gray-900">Resignation List ({filteredResignations.length})</h2>
+          <p className="text-sm text-gray-600 mt-1">Track and manage employee resignations</p>
         </div>
         
         <div className="overflow-x-auto">
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Employee</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Last Working Day</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Notice Period</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Overall Status</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Reason</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Employee</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Last Working Day</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Notice Period</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Overall Status</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Reason</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Actions</th>
               </tr>
             </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+            <tbody className="bg-white divide-y divide-black">
               {filteredResignations.map((resignation) => {
                 const overallStatus = calculateOverallStatus(resignation);
                 return (
-                  <tr key={resignation.id} className="hover:bg-content transition-colors duration-150">
-                    <td className="px-6 py-4">
+                  <tr key={resignation.id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <td className="px-4 py-3">
                       <div>
-                        <div className="font-semibold text-primary">{resignation.employee_name}</div>
-                        <div className="text-sm text-muted">{resignation.employee_code}</div>
+                        <div className="font-semibold text-gray-900">{resignation.employee_name}</div>
+                        <div className="text-sm text-gray-600">{resignation.employee_code}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-primary">
+                    <td className="px-4 py-3 text-sm text-gray-900">
                       {resignation.last_working_day ? new Date(resignation.last_working_day).toLocaleDateString() : '-'}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-primary">{resignation.notice_period} days</span>
+                        <span className="text-sm font-medium text-gray-900">{resignation.notice_period} days</span>
                         {resignation.notice_served && <span className="text-green-500 text-lg">✓</span>}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(overallStatus)}`}>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 rounded-lg text-xs font-medium border border-black ${getStatusColor(overallStatus)}`}>
                         {overallStatus}
                       </span>
-                      <div className="text-xs text-muted mt-2 space-y-1">
+                      <div className="text-xs text-gray-600 mt-1 space-y-1">
                         <div>H: {resignation.handover_status || 'Pending'}</div>
                         <div>C: {resignation.clearance_status || 'Pending'}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className="max-w-xs">
-                        <p className="text-sm text-primary truncate" title={resignation.reason}>
+                        <p className="text-sm text-gray-900 truncate" title={resignation.reason}>
                           {resignation.reason || '-'}
                         </p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className="flex flex-col gap-2">
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          className="border-dark rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
                           value={resignation.handover_status || 'Pending'}
                         >
                           <option value="Pending">Handover Pending</option>
@@ -445,7 +445,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          className="border-dark rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
                           value={resignation.clearance_status || 'Pending'}
                         >
                           <option value="Pending">Clearance Pending</option>
@@ -455,7 +455,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          className="border-dark rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
                           value={resignation.asset_return_status || 'Pending'}
                         >
                           <option value="Pending">Assets Pending</option>
@@ -464,7 +464,7 @@ const ResignationTracking = () => {
                         
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          className="border-dark rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
                           value={resignation.final_settlement_status || 'Pending'}
                         >
                           <option value="Pending">Settlement Pending</option>

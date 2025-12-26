@@ -207,20 +207,30 @@ export default function LeaveReports() {
   };
 
   return (
-    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-      {/* Header */}
-      <div className="p-6 border-b ">
+    <div className="p-6 space-y-6">
+      {/* Header with gradient background matching Organization setup */}
+      <div className="p-8 border-b border-gray-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-primary">Leave Reports & Analytics</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Comprehensive leave usage analysis and insights</p>
-          </div>
           <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Reports</h2>
+              <p className="text-gray-600 text-base">Comprehensive leave usage analysis and insights</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center gap-2 text-gray-600 mb-2">
+              <span className="text-sm font-medium">Export Available</span>
+            </div>
             <button 
               onClick={exportToCSV}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              className="bg-white text-black px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold"
             >
-              <Download size={16} />
+              <Download size={18} />
               Export Report
             </button>
           </div>
@@ -228,14 +238,14 @@ export default function LeaveReports() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b ">
-        <div className="flex gap-4">
-          <div className="flex items-center gap-2">
-            <Calendar size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+      <div className="p-4 sm:p-8 border-b border-gray-100">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1 max-w-full sm:max-w-md">
+            <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <select 
               value={dateRange} 
               onChange={(e) => setDateRange(e.target.value)}
-              className="border-dark rounded-lg px-3 py-2 text-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+              className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
             >
               <option value="thisMonth">This Month</option>
               <option value="lastMonth">Last Month</option>
@@ -243,12 +253,12 @@ export default function LeaveReports() {
               <option value="thisYear">This Year</option>
             </select>
           </div>
-          <div className="flex items-center gap-2">
-            <Filter size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+          <div className="relative">
+            <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <select 
               value={department} 
               onChange={(e) => setDepartment(e.target.value)}
-              className="border-dark rounded-lg px-3 py-2 text-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+              className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
             >
               <option value="all">All Departments</option>
               {departments.map(dept => (
@@ -260,98 +270,113 @@ export default function LeaveReports() {
       </div>
 
       {/* Stats Cards */}
-      <div className="p-6 border-b ">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-blue-600 text-sm font-medium">Total Applications</p>
-                <p className="text-2xl font-bold text-blue-900">{stats.totalApplications}</p>
-              </div>
-              <Users className="text-blue-600" size={24} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="bg-white p-3 sm:p-6 rounded-2xl border border-black shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs sm:text-sm font-semibold">Total Applications</p>
+              <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1">{stats.totalApplications}</p>
+            </div>
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <Users className="text-gray-600" size={16} />
             </div>
           </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-green-600 text-sm font-medium">Approved</p>
-                <p className="text-2xl font-bold text-green-900">{stats.approvedLeaves}</p>
-              </div>
-              <TrendingUp className="text-green-600" size={24} />
+        </div>
+        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-semibold">Approved</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.approvedLeaves}</p>
+            </div>
+            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <TrendingUp className="text-gray-600" size={24} />
             </div>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-yellow-600 text-sm font-medium">Pending</p>
-                <p className="text-2xl font-bold text-yellow-900">{stats.pendingApprovals}</p>
-              </div>
-              <Calendar className="text-yellow-600" size={24} />
+        </div>
+        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-semibold">Pending</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.pendingApprovals}</p>
+            </div>
+            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <Calendar className="text-gray-600" size={24} />
             </div>
           </div>
-          <div className="bg-red-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-red-600 text-sm font-medium">Rejected</p>
-                <p className="text-2xl font-bold text-red-900">{stats.rejectedLeaves}</p>
-              </div>
-              <BarChart3 className="text-red-600" size={24} />
+        </div>
+        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-semibold">Rejected</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.rejectedLeaves}</p>
+            </div>
+            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <BarChart3 className="text-gray-600" size={24} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Department Breakdown */}
-      <div className="p-6 border-b ">
-        <h3 className="text-lg font-semibold text-primary mb-4">Department-wise Leave Summary</h3>
-        <div className="overflow-x-auto">
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Total Applications</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Approved</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Pending</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Rejected</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Approval Rate</th>
-              </tr>
-            </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+      <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-black bg-gray-50">
+          <h3 className="text-xl font-bold text-gray-900">Department-wise Leave Summary</h3>
+        </div>
+        <div className="p-6">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Applications</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approved</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Rejected</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approval Rate</th>
+                </tr>
+              </thead>
+            <tbody className="bg-white divide-y divide-gray-100">
               {departmentData.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-muted">
-                    No data available
+                  <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
+                        <BarChart3 className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-lg font-medium text-gray-900">No data available</p>
+                      <p className="text-sm text-gray-500">Submit leave applications to see analytics</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 departmentData.map((dept, index) => {
                   const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
                   return (
-                    <tr key={index} className="hover:bg-content">
+                    <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-primary">{getEmployeeInfo(dept.employee_id).code}</div>
-                        <div className="text-sm text-secondary">{getEmployeeInfo(dept.employee_id).name}</div>
-                        <div className="text-xs text-muted">{getEmployeeInfo(dept.employee_id).department}</div>
+                        <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(dept.employee_id).code}</div>
+                        <div className="text-sm text-gray-600">{getEmployeeInfo(dept.employee_id).name}</div>
+                        <div className="text-xs text-gray-500">{getEmployeeInfo(dept.employee_id).department}</div>
                       </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {dept.total}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                         {dept.approved}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
                         {dept.pending}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
                         {dept.rejected}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="flex items-center">
                         <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                           <div 
@@ -359,7 +384,7 @@ export default function LeaveReports() {
                             style={{ width: `${approvalRate}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium">{approvalRate}%</span>
+                        <span className="text-sm font-semibold">{approvalRate}%</span>
                       </div>
                     </td>
                     </tr>
@@ -367,7 +392,8 @@ export default function LeaveReports() {
                 })
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
 

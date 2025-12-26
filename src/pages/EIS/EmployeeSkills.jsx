@@ -80,96 +80,146 @@ export default function EmployeeSkills() {
   };
 
   return (
-    <Layout 
-      title="Skills & Competencies" 
-      subtitle="Technical skills and professional competencies"
-    >
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <button 
-            onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <FiArrowLeft className="text-sm" />
-            Back to Profile
-          </button>
-
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiZap className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Skills & Competencies
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Technical skills and professional competencies
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">{skills.length} Active Records</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
+          </div>
+          
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
           >
-            <FiPlus className="text-sm" />
+            <FiPlus className="w-4 h-4" />
             Add Skill
           </button>
         </div>
+      </div>
+      <div className="p-6 space-y-6">
+        <div className="flex justify-start mb-4">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
+        </div>
+        {/* Skills Table */}
+        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="bg-gray-50/50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Skill Name</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Proficiency Level</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
 
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          {skills.length === 0 ? (
-            <div className="text-center py-12">
-              <FiZap className="mx-auto h-12 w-12 text-muted mb-4" />
-              <h3 className="text-lg font-medium text-primary mb-2">No Skills Added</h3>
-              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add technical skills and competencies to showcase expertise.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {skills.map((sk) => (
-                <div
-                  key={sk.id}
-                  className="group border rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-primary mb-2">{sk.skill_name}</h4>
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <FiStar
-                            key={i}
-                            className={`text-sm ${
-                              i < sk.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                        <span className="text-sm text-secondary ml-2">
+              <tbody className="divide-y divide-gray-200/50">
+                {skills.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="px-6 py-12 text-center">
+                      <FiZap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Skills Added</h3>
+                      <p className="text-gray-500">Add technical skills and competencies to showcase expertise.</p>
+                    </td>
+                  </tr>
+                )}
+
+                {skills.map((sk) => (
+                  <tr key={sk.id} className="hover:bg-white/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                          <FiZap className="w-4 h-4 text-black" />
+                        </div>
+                        <div className="font-medium text-gray-900">{sk.skill_name}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <FiStar
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < sk.rating ? 'text-gray-600 fill-current' : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-600 ml-1">
                           {sk.rating}/5
                         </span>
                       </div>
-                    </div>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => openEdit(sk)}
-                        className="p-1 text-yellow-600 hover:bg-yellow-100 rounded transition-colors"
-                      >
-                        <FiEdit className="text-sm" />
-                      </button>
-                      <button
-                        onClick={() => deleteSkill(sk.id)}
-                        className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
-                      >
-                        <FiTrash2 className="text-sm" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => openEdit(sk)}
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Edit
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => deleteSkill(sk.id)}
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Delete
+                          </span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
-                <FiZap className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-primary">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiZap className="w-5 h-5 text-black" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Skill" : "Add Skill"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Skill Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Skill Name *</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., JavaScript, Project Management"
                     value={form.skill}
                     onChange={(e) => setForm({ ...form, skill: e.target.value })}
@@ -177,9 +227,9 @@ export default function EmployeeSkills() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Proficiency Level *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Proficiency Level *</label>
                   <select
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.rating}
                     onChange={(e) => setForm({ ...form, rating: e.target.value })}
                   >
@@ -193,28 +243,28 @@ export default function EmployeeSkills() {
                     {[...Array(5)].map((_, i) => (
                       <FiStar
                         key={i}
-                        className={`text-lg ${
-                          i < form.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                        className={`w-5 h-5 ${
+                          i < form.rating ? 'text-gray-600 fill-current' : 'text-gray-300'
                         }`}
                       />
                     ))}
-                    <span className="text-sm text-secondary ml-2">
+                    <span className="text-sm text-gray-600 ml-2">
                       {form.rating}/5
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-black rounded-xl hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveSkill}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
                 >
                   {editing ? "Update" : "Save"} Skill
                 </button>

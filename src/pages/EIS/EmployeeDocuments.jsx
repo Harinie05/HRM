@@ -116,40 +116,53 @@ export default function EmployeeDocuments() {
 
   return (
     <Layout>
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiFileText className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                ID & Verification Documents
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Identity documents and verification status
+              </p>
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <FiFileText className="text-blue-600" size={24} />
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">{docs.length} Active Records</span>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">All Documents</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Employee document repository</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{docs.length}</div>
-                  <div className="text-sm text-secondary">Documents</div>
-                </div>
-                <button 
-                  onClick={() => navigate(`/eis/${id}`)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-secondary rounded-lg hover:bg-gray-200 transition-colors font-medium"
-                >
-                  <FiArrowLeft size={16} />
-                  Back to Profile
-                </button>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
               </div>
             </div>
           </div>
+          
+          <button
+            onClick={() => {}}
+            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+          >
+            <FiFileText className="w-4 h-4" />
+            Upload New Document
+          </button>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="flex justify-start mb-4">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
         </div>
 
         {/* Documents List */}
-        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="rounded-xl shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="p-6">
             {docs.length === 0 ? (
               <div className="text-center py-12">
@@ -162,7 +175,7 @@ export default function EmployeeDocuments() {
                 {docs.map((d) => (
                   <div 
                     key={d.id} 
-                    className="border rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer group" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="border border-black rounded-xl p-4 hover:border-gray-500 hover:shadow-md transition-all duration-200 cursor-pointer group" style={{borderColor: 'var(--border-color, #000000)'}}
                     onClick={() => {
                       const token = localStorage.getItem('access_token');
                       if (!token) {
@@ -173,19 +186,19 @@ export default function EmployeeDocuments() {
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        d.category === 'Education' ? 'bg-blue-100 text-blue-700' :
-                        d.category === 'Experience' ? 'bg-green-100 text-green-700' :
-                        d.category === 'Medical' ? 'bg-red-100 text-red-700' :
-                        d.category === 'Certification' ? 'bg-purple-100 text-purple-700' :
-                        'bg-gray-100 text-secondary'
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border border-black ${
+                        d.category === 'Education' ? 'bg-gray-100 text-black' :
+                        d.category === 'Experience' ? 'bg-gray-100 text-black' :
+                        d.category === 'Medical' ? 'bg-gray-100 text-black' :
+                        d.category === 'Certification' ? 'bg-gray-100 text-black' :
+                        'bg-gray-100 text-black'
                       }`}>
                         {d.category}
                       </span>
-                      <FiEye className=" group-hover:text-blue-600 transition-colors" style={{color: 'var(--text-muted, #6b7280)'}} size={16} />
+                      <FiEye className=" group-hover:text-black transition-colors" style={{color: 'var(--text-muted, #6b7280)'}} size={16} />
                     </div>
                     
-                    <h3 className="font-semibold text-primary mb-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-semibold text-primary mb-2 group-hover:text-black transition-colors">
                       {d.document_type}
                     </h3>
                     
@@ -205,10 +218,10 @@ export default function EmployeeDocuments() {
                     
                     <div className="flex items-center justify-between mt-3">
                       {d.status && (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium border border-black ${
                           d.status === "Uploaded" 
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
+                            ? "bg-gray-100 text-black"
+                            : "bg-gray-100 text-black"
                         }`}>
                           {d.status}
                         </span>

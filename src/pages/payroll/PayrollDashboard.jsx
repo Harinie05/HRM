@@ -160,28 +160,28 @@ const PayrollDashboard = () => {
     <div className="flex">
       <Sidebar />
       
-      <div className="flex-1 bg-[#F7F9FB] min-h-screen">
+      <div className="flex-1 bg-content min-h-screen">
         <Header />
         
         <div className="p-4 sm:p-6 pt-20 sm:pt-24">
           {/* Enhanced Header */}
-          <div className="mb-4 sm:mb-6">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-xl backdrop-blur-sm flex-shrink-0">
-                    <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          <div className="mb-6">
+            <div className="bg-white rounded-2xl border-2 border-black shadow-sm p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="p-3 bg-gray-100 rounded-xl flex-shrink-0 mx-auto sm:mx-0">
+                    <DollarSign className="w-6 h-6 text-gray-700" />
                   </div>
-                  <div className="min-w-0">
-                    <h1 className="text-lg sm:text-2xl font-bold text-white">Payroll Management Dashboard</h1>
-                    <p className="text-white/80 mt-1 text-sm sm:text-base">Overview of payroll processing and employee compensation</p>
+                  <div className="min-w-0 text-center sm:text-left">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Payroll Management Dashboard</h1>
+                    <p className="text-gray-600 mt-1 text-sm sm:text-base">Overview of payroll processing and employee compensation</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center gap-4">
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-bold text-white">{payrollData.employeesProcessed}</div>
-                    <div className="text-xs sm:text-sm text-white/70">Employees Processed</div>
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900">{payrollData.employeesProcessed}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Employees Processed</div>
                   </div>
                 </div>
               </div>
@@ -189,120 +189,122 @@ const PayrollDashboard = () => {
           </div>
 
           {/* Payroll Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Payroll</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-1">
-                    {payrollData.totalPayroll}
-                  </p>
-                </div>
-                <div className="p-2 sm:p-3 rounded-xl bg-blue-100 flex-shrink-0">
-                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Employees Processed</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-1">
-                    {payrollData.employeesProcessed}
-                  </p>
-                </div>
-                <div className="p-2 sm:p-3 rounded-xl bg-purple-100 flex-shrink-0">
-                  <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+          <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">Total Payroll</p>
+                    <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
+                      {payrollData.totalPayroll}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
+                    <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" />
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Deductions</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-1">
-                    {payrollData.totalDeductions}
-                  </p>
-                </div>
-                <div className="p-2 sm:p-3 rounded-xl bg-red-100 flex-shrink-0">
-                  <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+              
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">Employees Processed</p>
+                    <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
+                      {payrollData.employeesProcessed}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
+                    <Users className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" />
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Net Payable</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1">
-                    {payrollData.netPayable}
-                  </p>
+              
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">Total Deductions</p>
+                    <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
+                      {payrollData.totalDeductions}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
+                    <Calculator className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" />
+                  </div>
                 </div>
-                <div className="p-2 sm:p-3 rounded-xl bg-green-100 flex-shrink-0">
-                  <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              </div>
+              
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">Net Payable</p>
+                    <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">
+                      {payrollData.netPayable}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
+                    <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Payroll Breakdown */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Salary Components Breakdown</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary</span>
-                  <span className="font-semibold">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+            <div className="bg-white rounded-2xl border border-black shadow-sm p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Salary Components Breakdown</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">Basic Salary</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.basic?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.basic?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">HRA</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.hra?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.hra?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">Allowances</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.allowances?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.allowances?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Special Allowance</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-600 font-medium">Special Allowance</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.special?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.special?.percentage || 0}%)
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Deductions Breakdown</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>PF Contribution</span>
-                  <span className="font-semibold">
+            <div className="bg-white rounded-2xl border border-black shadow-sm p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Deductions Breakdown</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">PF Contribution</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.pf?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.pf?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>TDS</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">TDS</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.tds?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.tds?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>ESI</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium">ESI</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.esi?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.esi?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>LOP Deduction</span>
-                  <span className="font-semibold">
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-600 font-medium">LOP Deduction</span>
+                  <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.lop?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.lop?.percentage || 0}%)
                   </span>
                 </div>
@@ -311,75 +313,56 @@ const PayrollDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold text-primary mb-4">Quick Actions</h2>
+          <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 mb-6">
+            <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-4 sm:mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <button 
                 onClick={() => navigate('/payroll', { state: { tab: 'Salary Structure' } })}
-                className="p-3 sm:p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left min-h-[44px]"
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:shadow-md transition-all duration-200 text-left bg-white hover:bg-gray-50"
               >
-                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mb-2" />
-                <h3 className="font-semibold text-primary text-sm sm:text-base">Salary Structure</h3>
-                <p className="text-xs sm:text-sm text-secondary">Manage salary components</p>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Salary Structure</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Manage salary components</p>
               </button>
               
               <button 
                 onClick={() => navigate('/payroll', { state: { tab: 'Payroll Run' } })}
-                className="p-3 sm:p-4 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors text-left min-h-[44px]"
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:shadow-md transition-all duration-200 text-left bg-white hover:bg-gray-50"
               >
-                <Calculator className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2" />
-                <h3 className="font-semibold text-primary text-sm sm:text-base">Payroll Run</h3>
-                <p className="text-xs sm:text-sm text-secondary">Process monthly payroll</p>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                  <Calculator className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Payroll Run</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Process monthly payroll</p>
               </button>
               
               <button 
                 onClick={() => navigate('/payroll', { state: { tab: 'Salary Slip & Payment' } })}
-                className="p-3 sm:p-4 border border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left min-h-[44px]"
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:shadow-md transition-all duration-200 text-left bg-white hover:bg-gray-50"
               >
-                <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2" />
-                <h3 className="font-semibold text-primary text-sm sm:text-base">Payslips</h3>
-                <p className="text-xs sm:text-sm text-secondary">Generate & view payslips</p>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Payslips</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Generate & view payslips</p>
               </button>
               
               <button 
                 onClick={() => navigate('/payroll', { state: { tab: 'Reports & Compliance' } })}
-                className="p-3 sm:p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors text-left min-h-[44px]"
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:shadow-md transition-all duration-200 text-left bg-white hover:bg-gray-50"
               >
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 mb-2" />
-                <h3 className="font-semibold text-primary text-sm sm:text-base">Reports</h3>
-                <p className="text-xs sm:text-sm text-secondary">Payroll analytics & reports</p>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Reports</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Payroll analytics & reports</p>
               </button>
             </div>
           </div>
 
-          {/* Department Wise Payroll */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Department Wise Payroll</h3>
-            <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full min-w-[600px]">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-                  <tr>
-                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Department</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Employees</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Gross Salary</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Deductions</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Net Payable</th>
-                  </tr>
-                </thead>
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                  {departments.map((dept, index) => (
-                    <tr key={index} className="border-b border-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.name}</td>
-                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.employees}</td>
-                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.grossSalary}</td>
-                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.deductions}</td>
-                      <td className="p-2 sm:p-3 font-semibold text-green-600 text-sm">{dept.netPayable}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

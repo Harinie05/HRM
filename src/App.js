@@ -64,7 +64,7 @@ import PayrollLayout from "./pages/payroll/PayrollLayout";
 import PayrollDashboard from "./pages/payroll/PayrollDashboard";
 
 // HR Operations & Workforce Management
-import HROperations from "./pages/hr/HROperations";
+import HRLayout from "./pages/hr/HRLayout";
 
 // ======================= 🔥 PMS IMPORTS =======================
 import PMSManagement from "./pages/pms/pmsmanagement";
@@ -90,9 +90,6 @@ import ManpowerComplianceDashboard from "./pages/analytics/ManpowerComplianceDas
 
 // ======================= 🔥 EXIT MANAGEMENT IMPORTS =======================
 import ExitLayout from "./pages/exit/ExitLayout";
-import ResignationNotice from "./pages/exit/ResignationNotice";
-import ClearanceWorkflow from "./pages/exit/ClearanceWorkflow";
-import SettlementDocuments from "./pages/exit/SettlementDocuments";
 
 // ======================= 🔥 CUSTOMIZATION IMPORTS =======================
 import Customization from "./pages/Customization";
@@ -194,7 +191,7 @@ function App() {
         <Route path="/payroll" element={<ProtectedRoute><PayrollLayout /></ProtectedRoute>} />
 
         {/* HR OPERATIONS */}
-        <Route path="/hr" element={<ProtectedRoute><HROperations /></ProtectedRoute>} />
+        <Route path="/hr" element={<ProtectedRoute><HRLayout /></ProtectedRoute>} />
 
         {/* PMS */}
         <Route path="/pms" element={<ProtectedRoute><PMSManagement /></ProtectedRoute>} />
@@ -223,12 +220,7 @@ function App() {
         <Route path="/analytics/manpower" element={<ProtectedRoute><ManpowerComplianceDashboard /></ProtectedRoute>} />
 
         {/* ======================= 🔥 EXIT MANAGEMENT MODULE ======================= */}
-        <Route path="/exit" element={<ProtectedRoute><ExitLayout /></ProtectedRoute>}>
-          <Route index element={<ProtectedRoute><ResignationNotice /></ProtectedRoute>} />
-          <Route path="resignation" element={<ProtectedRoute><ResignationNotice /></ProtectedRoute>} />
-          <Route path="clearance" element={<ProtectedRoute><ClearanceWorkflow /></ProtectedRoute>} />
-          <Route path="settlement" element={<ProtectedRoute><SettlementDocuments /></ProtectedRoute>} />
-        </Route>
+        <Route path="/exit" element={<ProtectedRoute><ExitLayout /></ProtectedRoute>} />
 
         {/* ======================= 🔥 CUSTOMIZATION MODULE ======================= */}
         <Route path="/customization" element={<ProtectedRoute><Customization /></ProtectedRoute>} />

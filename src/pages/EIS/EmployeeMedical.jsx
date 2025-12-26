@@ -88,34 +88,56 @@ export default function EmployeeMedical() {
   };
 
   return (
-    <Layout 
-      title="Medical Details" 
-      subtitle="Health information and medical records"
-    >
-      <div className="p-6">
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="flex items-center gap-4 mb-6">
-            <button 
-              onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiArrowLeft className="text-sm" />
-              Back to Profile
-            </button>
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiHeart className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Employee Medical
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Health information and medical records
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">Medical Profile</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
           </div>
+          
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
 
           <div className="space-y-8">
             {/* Basic Health Information */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiHeart className="text-red-500" />
+                <FiHeart className="text-black" />
                 <h3 className="text-lg font-semibold text-primary">Basic Health Information</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Blood Group</label>
                   <select
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.blood_group}
                     onChange={(e) => setForm({ ...form, blood_group: e.target.value })}
                   >
@@ -134,7 +156,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">Height (cm)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="170"
                     value={form.height}
                     onChange={(e) => setForm({ ...form, height: e.target.value })}
@@ -144,7 +166,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">Weight (kg)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="70"
                     value={form.weight}
                     onChange={(e) => setForm({ ...form, weight: e.target.value })}
@@ -160,7 +182,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Known Allergies</label>
                   <textarea
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any food, medication, or environmental allergies..."
                     value={form.allergies}
@@ -170,7 +192,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Chronic Conditions</label>
                   <textarea
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any chronic conditions like diabetes, hypertension, etc..."
                     value={form.chronic_conditions}
@@ -180,7 +202,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Current Medications</label>
                   <textarea
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List current medications and dosages..."
                     value={form.medications}
@@ -193,14 +215,14 @@ export default function EmployeeMedical() {
             {/* Emergency Contact */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiUser className="text-blue-500" />
+                <FiUser className="text-black" />
                 <h3 className="text-lg font-semibold text-primary">Emergency Contact</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Contact Name</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Full name"
                     value={form.emergency_contact_name}
                     onChange={(e) => setForm({ ...form, emergency_contact_name: e.target.value })}
@@ -209,7 +231,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Phone Number</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Phone number"
                     value={form.emergency_contact_phone}
                     onChange={(e) => setForm({ ...form, emergency_contact_phone: e.target.value })}
@@ -218,7 +240,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Relationship</label>
                   <select
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.emergency_contact_relation}
                     onChange={(e) => setForm({ ...form, emergency_contact_relation: e.target.value })}
                   >
@@ -237,14 +259,14 @@ export default function EmployeeMedical() {
             {/* Insurance Information */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiShield className="text-green-500" />
+                <FiShield className="text-black" />
                 <h3 className="text-lg font-semibold text-primary">Medical Insurance</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Insurance Provider</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Insurance company name"
                     value={form.medical_insurance_provider}
                     onChange={(e) => setForm({ ...form, medical_insurance_provider: e.target.value })}
@@ -253,7 +275,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Policy/Member Number</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Policy or member ID"
                     value={form.medical_insurance_number}
                     onChange={(e) => setForm({ ...form, medical_insurance_number: e.target.value })}
@@ -266,7 +288,7 @@ export default function EmployeeMedical() {
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">Additional Medical Information</label>
               <textarea
-                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 rows="4"
                 placeholder="Any additional medical remarks, notes, or special considerations..."
                 value={form.remarks}
@@ -283,16 +305,16 @@ export default function EmployeeMedical() {
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 />
               </div>
               <p className="text-xs text-muted mb-3">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
               {medicalData?.certificate_name && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-3 bg-gray-100 border border-black rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-secondary">Current Certificate:</span>
                     <button 
-                      className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors text-sm"
+                      className="inline-flex items-center gap-1 text-black hover:text-gray-700 transition-colors text-sm"
                       onClick={() => {
                         const token = localStorage.getItem('access_token');
                         if (!token) {
@@ -311,11 +333,11 @@ export default function EmployeeMedical() {
             </div>
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t">
+          <div className="flex justify-end mt-8 pt-6 border-t border-black">
             <button
               onClick={submit}
               disabled={loading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="px-6 py-3 bg-white text-black border border-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
             </button>

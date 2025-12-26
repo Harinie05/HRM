@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function AttendanceRules() {
   const [rules, setRules] = useState([]);
@@ -99,202 +100,233 @@ export default function AttendanceRules() {
   };
 
   return (
-    <div className="flex bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+    <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
       <Sidebar />
       
       <div className="flex-1 flex flex-col">
         <Header />
         
-        <div className="p-6 pt-24">
-          <div className="text-sm text-muted mb-3">Attendance · Rules, Policy & Locations</div>
-          
-          <div className="mb-6">
-            <div className="bg-white rounded-2xl border shadow-sm p-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-blue-100 rounded-xl">
-                    <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-primary">Attendance Rules & Policies</h1>
-                    <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Advanced rule engine for attendance policies, location management, and compliance settings</p>
-                  </div>
+        <div className="p-6 pt-24 space-y-6">
+          {/* Header with gradient background matching Organization setup */}
+          <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
+                  </svg>
                 </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{rules.length + locations.length}</div>
-                    <div className="text-sm text-muted">Total Rules</div>
-                  </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Rules & Policies</h1>
+                  <p className="text-gray-600 text-base mb-1">Advanced rule engine for attendance policies, location management, and compliance settings</p>
+                  <p className="text-gray-500 text-sm">Attendance Management System</p>
                 </div>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-2 text-gray-600 mb-2">
+                  <span className="text-sm font-medium">{rules.length + locations.length} Active Rules</span>
+                </div>
+                <p className="text-base font-bold text-gray-900">Real-time Updates</p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* ATTENDANCE RULES */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
-              <div className="p-8 border-b bg-gradient-to-r from-purple-50 to-indigo-50 flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl font-bold text-primary">
-                    Attendance Rules
-                  </h2>
-                  <p className="text-sm text-secondary mt-2">Configure late, early, and overtime policies</p>
+            <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-black bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Attendance Rules</h3>
+                    <p className="text-gray-600 text-sm">Configure late, early, and overtime policies</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowRuleModal(true)}
+                    className="bg-white text-black border border-black px-4 py-2 rounded-2xl font-medium hover:bg-gray-50 transition-colors text-sm shadow-sm flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+                    </svg>
+                    Add Rule
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setShowRuleModal(true)}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-purple-600 hover:to-purple-700 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  + Add Rule
-                </button>
               </div>
-              
-              <div className="overflow-x-auto">
-                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-                    <tr>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Rule</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Type</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Value</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Status</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                    {rules.length === 0 ? (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <td colSpan="5" className="p-8 text-center text-muted">No rules configured</td>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Rule</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Value</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
                       </tr>
-                    ) : (
-                      rules.map((r) => (
-                        <tr key={r.id} className="border-b hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                          <td className="p-4 text-sm text-primary">{r.rule_name}</td>
-                          <td className="p-4 text-sm text-primary">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              r.rule_type === 'Late' ? 'bg-red-100 text-red-800' :
-                              r.rule_type === 'Early' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-blue-100 text-blue-800'
-                            }`}>
-                              {r.rule_type}
-                            </span>
-                          </td>
-                          <td className="p-4 text-sm text-primary">{r.value} mins</td>
-                          <td className="p-4 text-sm">
-                            <button
-                              onClick={() => handleToggleRule(r.id, r.is_active)}
-                              className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-                                r.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-primary'
-                              }`}
-                            >
-                              {r.is_active ? "Active" : "Disabled"}
-                            </button>
-                          </td>
-                          <td className="p-4 text-sm">
-                            <button
-                              onClick={() => handleDeleteRule(r.id)}
-                              className="text-red-600 hover:text-red-800 text-xs"
-                            >
-                              Delete
-                            </button>
+                    </thead>
+                    <tbody>
+                      {rules.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" className="p-12 text-center text-gray-500">
+                            <div className="flex flex-col items-center gap-4">
+                              <div className="w-16 h-16 bg-gray-100 rounded-2xl border border-black flex items-center justify-center">
+                                <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="text-lg font-semibold text-gray-600">No rules configured</p>
+                                <p className="text-sm text-gray-400">Add your first attendance rule to get started</p>
+                              </div>
+                            </div>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        rules.map((r, index) => (
+                          <tr key={r.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
+                            <td className="px-4 py-3 text-sm font-semibold text-gray-900">{r.rule_name}</td>
+                            <td className="px-4 py-3 text-sm">
+                              <span className={`px-3 py-1 rounded-2xl text-xs font-medium border border-black ${
+                                r.rule_type === 'Late' ? 'bg-white text-gray-800' :
+                                r.rule_type === 'Early' ? 'bg-gray-100 text-gray-800' :
+                                'bg-gray-200 text-gray-800'
+                              }`}>
+                                {r.rule_type}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-700 font-medium">{r.value} mins</td>
+                            <td className="px-4 py-3 text-sm">
+                              <button
+                                onClick={() => handleToggleRule(r.id, r.is_active)}
+                                className={`px-3 py-1 rounded-2xl text-xs font-medium cursor-pointer transition-all border border-black ${
+                                  r.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
+                              >
+                                {r.is_active ? "Active" : "Disabled"}
+                              </button>
+                            </td>
+                            <td className="px-4 py-3 text-sm">
+                              <button
+                                onClick={() => handleDeleteRule(r.id)}
+                                className="text-gray-600 hover:text-gray-800 font-medium transition-colors px-2 py-1 rounded border border-black hover:bg-gray-100"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
             {/* ATTENDANCE LOCATIONS */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
-              <div className="p-8 border-b bg-gradient-to-r from-indigo-50 to-blue-50 flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl font-bold text-primary">
-                    Attendance Locations
-                  </h2>
-                  <p className="text-sm text-secondary mt-2">Manage attendance capture locations</p>
+            <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-black bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Attendance Locations</h3>
+                    <p className="text-gray-600 text-sm">Manage attendance capture locations</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowLocationModal(true)}
+                    className="bg-white text-black border border-black px-4 py-2 rounded-2xl font-medium hover:bg-gray-50 transition-colors text-sm shadow-sm flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+                    </svg>
+                    Add Location
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setShowLocationModal(true)}
-                  className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-indigo-600 hover:to-indigo-700 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  + Add Location
-                </button>
               </div>
-              
-              <div className="overflow-x-auto">
-                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-                    <tr>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Location</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Grace Time</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Status</th>
-                      <th className="p-4 text-left text-sm font-semibold text-secondary">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                    {locations.length === 0 ? (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
                       <tr>
-                        <td colSpan="4" className="p-8 text-center text-muted">No locations configured</td>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Location</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Grace Time</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
                       </tr>
-                    ) : (
-                      locations.map((loc) => (
-                        <tr key={loc.id} className="border-b hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                          <td className="p-4 text-sm text-primary">{loc.location_name}</td>
-                          <td className="p-4 text-sm text-primary">{loc.grace_time} mins</td>
-                          <td className="p-4 text-sm">
-                            <button
-                              onClick={() => handleToggleLocation(loc.id)}
-                              className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-                                loc.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-primary'
-                              }`}
-                            >
-                              {loc.is_active ? "Active" : "Disabled"}
-                            </button>
-                          </td>
-                          <td className="p-4 text-sm">
-                            <button
-                              onClick={() => handleDeleteLocation(loc.id)}
-                              className="text-red-600 hover:text-red-800 text-xs"
-                            >
-                              Delete
-                            </button>
+                    </thead>
+                    <tbody>
+                      {locations.length === 0 ? (
+                        <tr>
+                          <td colSpan="4" className="p-12 text-center text-gray-500">
+                            <div className="flex flex-col items-center gap-4">
+                              <div className="w-16 h-16 bg-gray-100 rounded-2xl border border-black flex items-center justify-center">
+                                <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="text-lg font-semibold text-gray-600">No locations configured</p>
+                                <p className="text-sm text-gray-400">Add your first attendance location to get started</p>
+                              </div>
+                            </div>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        locations.map((loc, index) => (
+                          <tr key={loc.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
+                            <td className="px-4 py-3 text-sm font-semibold text-gray-900">{loc.location_name}</td>
+                            <td className="px-4 py-3 text-sm text-gray-700 font-medium">{loc.grace_time} mins</td>
+                            <td className="px-4 py-3 text-sm">
+                              <button
+                                onClick={() => handleToggleLocation(loc.id)}
+                                className={`px-3 py-1 rounded-2xl text-xs font-medium cursor-pointer transition-all border border-black ${
+                                  loc.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
+                              >
+                                {loc.is_active ? "Active" : "Disabled"}
+                              </button>
+                            </td>
+                            <td className="px-4 py-3 text-sm">
+                              <button
+                                onClick={() => handleDeleteLocation(loc.id)}
+                                className="text-gray-600 hover:text-gray-800 font-medium transition-colors px-2 py-1 rounded border border-black hover:bg-gray-100"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        
+        <Footer />
       </div>
 
       {/* Add Rule Modal */}
       {showRuleModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">Add Attendance Rule</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl border border-black shadow-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Rule</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Rule Name</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Rule Name</label>
                 <input
                   type="text"
                   value={ruleForm.rule_name}
                   onChange={(e) => setRuleForm({...ruleForm, rule_name: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                   placeholder="e.g., Late Entry Default"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Rule Type</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Rule Type</label>
                 <select
                   value={ruleForm.rule_type}
                   onChange={(e) => setRuleForm({...ruleForm, rule_type: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                 >
                   <option value="Late">Late</option>
                   <option value="Early">Early</option>
@@ -302,25 +334,25 @@ export default function AttendanceRules() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Value (minutes)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Value (minutes)</label>
                 <input
                   type="number"
                   value={ruleForm.value}
                   onChange={(e) => setRuleForm({...ruleForm, value: parseInt(e.target.value)})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                 />
               </div>
             </div>
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-3 mt-6">
               <button
                 onClick={handleAddRule}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                className="flex-1 bg-white text-black border border-black py-3 rounded-2xl hover:bg-gray-50 font-medium transition-colors"
               >
                 Add Rule
               </button>
               <button
                 onClick={() => setShowRuleModal(false)}
-                className="flex-1 bg-gray-200 text-primary py-2 rounded-lg hover:bg-gray-300"
+                className="flex-1 bg-gray-100 text-gray-700 border border-black py-3 rounded-2xl hover:bg-gray-200 font-medium transition-colors"
               >
                 Cancel
               </button>
@@ -331,50 +363,50 @@ export default function AttendanceRules() {
 
       {/* Add Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <h3 className="text-lg font-semibold mb-4">Add Attendance Location</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl border border-black shadow-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Location</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Location Name</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Location Name</label>
                 <input
                   type="text"
                   value={locationForm.location_name}
                   onChange={(e) => setLocationForm({...locationForm, location_name: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                   placeholder="e.g., Main Office"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Grace Time (minutes)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Grace Time (minutes)</label>
                 <input
                   type="number"
                   value={locationForm.grace_time}
                   onChange={(e) => setLocationForm({...locationForm, grace_time: parseInt(e.target.value)})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">OT Rule (optional)</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">OT Rule (optional)</label>
                 <input
                   type="text"
                   value={locationForm.ot_rule}
                   onChange={(e) => setLocationForm({...locationForm, ot_rule: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full border border-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                   placeholder="e.g., OT > 30 mins"
                 />
               </div>
             </div>
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-3 mt-6">
               <button
                 onClick={handleAddLocation}
-                className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+                className="flex-1 bg-white text-black border border-black py-3 rounded-2xl hover:bg-gray-50 font-medium transition-colors"
               >
                 Add Location
               </button>
               <button
                 onClick={() => setShowLocationModal(false)}
-                className="flex-1 bg-gray-200 text-primary py-2 rounded-lg hover:bg-gray-300"
+                className="flex-1 bg-gray-100 text-gray-700 border border-black py-3 rounded-2xl hover:bg-gray-200 font-medium transition-colors"
               >
                 Cancel
               </button>

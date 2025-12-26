@@ -12,11 +12,12 @@ import LeaveReports from "./LeaveReports";
 export default function LeaveLayout() {
   const location = useLocation();
   
-  const initialTab = location.state?.tab || "Leave Types & Policies";
+  const initialTab = location.state?.tab || "Leave Types";
   const [tab, setTab] = useState(initialTab);
 
   const tabs = [
-    "Leave Types & Policies",
+    "Leave Types",
+    "Leave Policies",
     "Leave Rules", 
     "Application & Approvals",
     "Leave Calendar",
@@ -28,81 +29,59 @@ export default function LeaveLayout() {
       <div className="w-full overflow-hidden">
         {/* Hero Section */}
         <div className="mb-3 sm:mb-4 px-3 sm:px-4">
-          <div className="bg-gradient-to-r from-green-500 to-teal-500 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-white relative overflow-hidden">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center mb-2">
-                  <div className="bg-white/20 rounded-lg p-1 sm:p-1.5 mr-2 flex-shrink-0">
-                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M8 7V3a1 1 0 012 0v4h4a1 1 0 010 2h-4v4a1 1 0 01-2 0v-4H4a1 1 0 010-2h4z"/>
-                    </svg>
-                  </div>
-                  <span className="bg-white/20 px-2 py-1 rounded-full text-xs font-medium">
-                    Employee Leave & Time Off
-                  </span>
+          <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 7V3a1 1 0 012 0v4h4a1 1 0 010 2h-4v4a1 1 0 01-2 0v-4H4a1 1 0 010-2h4z"/>
+                  </svg>
                 </div>
-                
-                <h1 className="text-lg sm:text-xl font-bold mb-1">
-                  Leave Management
-                </h1>
-                
-                <p className="text-white/90 text-xs mb-2 sm:mb-3">
-                  Manage leave types, policies, applications and approvals.
-                </p>
-                
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <button className="bg-white/20 hover:bg-white/30 px-2 py-1 rounded-lg text-xs font-medium transition-colors">
-                    Leave System
-                  </button>
-                  <span className="text-white/80 text-xs hidden sm:inline">
-                    Used by HR / Employees / Managers
-                  </span>
+                <div className="text-center sm:text-left">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Leave Management</h1>
+                  <p className="text-gray-600 text-base sm:text-lg mb-1">Manage leave types, policies, applications and approvals</p>
+                  <p className="text-gray-500 text-sm">Employee Leave & Time Off</p>
                 </div>
               </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 text-center min-w-[100px] sm:min-w-[120px] flex-shrink-0">
-                <p className="text-white/80 text-xs font-medium uppercase tracking-wide mb-1">
-                  MODULES
-                </p>
-                <p className="text-xl sm:text-2xl font-bold mb-1">
-                  {tabs.length}
-                </p>
-                <p className="text-white/70 text-xs">
-                  Leave management tools
-                </p>
+              <div className="text-center sm:text-right">
+                <div className="flex items-center justify-center sm:justify-end gap-2 text-gray-600 mb-2">
+                  <span className="text-sm font-medium">Modules {tabs.length}</span>
+                </div>
+                <p className="text-base sm:text-lg font-bold text-gray-900">Leave management tools</p>
               </div>
             </div>
           </div>
         </div>
         
         {/* Tab Navigation */}
-        <div className="mb-3 sm:mb-4 px-3 sm:px-4">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="flex border-b bg-gradient-to-r from-gray-50 to-blue-50 overflow-x-auto scrollbar-hide">
-              {tabs.map((tabName) => (
-                <button
-                  key={tabName}
-                  onClick={() => setTab(tabName)}
-                  className={`px-3 sm:px-6 py-3 sm:py-5 text-xs sm:text-sm font-semibold border-b-3 transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
-                    tab === tabName
-                      ? 'border-blue-500 text-blue-600 bg-white shadow-lg transform -translate-y-1'
-                      : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
-                  }`}
-                >
-                  {tabName}
-                </button>
-              ))}
-            </div>
+        <div className="mb-6 px-4">
+          <div className="bg-gray-100 border border-black rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto">
+            {tabs.map((tabName) => (
+              <button
+                key={tabName}
+                onClick={() => setTab(tabName)}
+                className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
+                  tab === tabName
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+              >
+                {tabName}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-3 sm:px-4">
-          {tab === "Leave Types & Policies" && <LeaveTypes />}
-          {tab === "Leave Rules" && <LeaveRules />}
-          {tab === "Application & Approvals" && <LeaveApplications />}
-          {tab === "Leave Calendar" && <LeaveCalendar />}
-          {tab === "Leave Reports" && <LeaveReports />}
+        <div className="px-4">
+          <div className="bg-white rounded-3xl shadow-xl border border-black overflow-hidden">
+            {tab === "Leave Types" && <LeaveTypes activeView="types" />}
+            {tab === "Leave Policies" && <LeaveTypes activeView="policies" />}
+            {tab === "Leave Rules" && <LeaveRules />}
+            {tab === "Application & Approvals" && <LeaveApplications />}
+            {tab === "Leave Calendar" && <LeaveCalendar />}
+            {tab === "Leave Reports" && <LeaveReports />}
+          </div>
         </div>
       </div>
     </Layout>

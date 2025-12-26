@@ -5,7 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 
 export default function EmployeeFamily() {
-  const { id } = useParams(); // employee_id
+  const { id } = useParams();
   const navigate = useNavigate();
   const [family, setFamily] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -19,7 +19,6 @@ export default function EmployeeFamily() {
     dependent: false,
   });
 
-  // ---------------- FETCH FAMILY ----------------
   const fetchFamily = async () => {
     try {
       const res = await api.get(`/employee/family/${id}`);
@@ -33,7 +32,6 @@ export default function EmployeeFamily() {
     fetchFamily();
   }, [id]);
 
-  // ---------------- HANDLE FORM ----------------
   const openAdd = () => {
     setEditing(null);
     setForm({
@@ -85,98 +83,126 @@ export default function EmployeeFamily() {
   };
 
   return (
-    <Layout 
-      title="Family Details" 
-      subtitle="Family members and dependents information"
-    >
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <button 
-            onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <FiArrowLeft className="text-sm" />
-            Back to Profile
-          </button>
-
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiUsers className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Employee Family
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Family members and dependents information
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">{family.length} Family Members</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
+          </div>
+          
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
           >
-            <FiPlus className="text-sm" />
+            <FiPlus className="w-4 h-4" />
             Add Family Member
           </button>
         </div>
+      </div>
 
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="p-6 space-y-6">
+        <div className="flex justify-start mb-4">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
+        </div>
+
+        {/* Family Table */}
+        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+            <table className="min-w-full">
+              <thead className="bg-gray-50/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Relationship</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Age</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Contact</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Dependent</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Relationship</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Age</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Contact</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Dependent</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
 
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
+              <tbody className="divide-y divide-gray-200/50">
                 {family.length === 0 && (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
-                      <FiUsers className="mx-auto h-12 w-12 text-muted mb-4" />
-                      <h3 className="text-lg font-medium text-primary mb-2">No Family Members</h3>
-                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add family members and dependents information.</p>
+                      <FiUsers className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Family Members</h3>
+                      <p className="text-gray-500">Add family members and dependents information.</p>
                     </td>
                   </tr>
                 )}
 
                 {family.map((f) => (
-                  <tr key={f.id} className="hover:bg-content">
+                  <tr key={f.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <FiUser className="" style={{color: 'var(--text-muted, #6b7280)'}} />
-                        <div className="font-medium text-primary">{f.name}</div>
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                          <FiUser className="w-4 h-4 text-black" />
+                        </div>
+                        <div className="font-medium text-gray-900">{f.name}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-secondary">{f.relationship}</td>
-                    <td className="px-6 py-4 text-center text-secondary">{f.age}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-gray-600">{f.relationship}</td>
+                    <td className="px-6 py-4 text-center text-gray-600">{f.age || '-'}</td>
+                    <td className="px-6 py-4 text-center">
                       {f.contact ? (
-                        <div className="flex items-center gap-1 text-secondary">
-                          <FiPhone className="text-xs" />
+                        <div className="flex items-center justify-center gap-1 text-gray-600">
+                          <FiPhone className="w-3 h-3" />
                           <span className="text-sm">{f.contact}</span>
                         </div>
                       ) : (
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        f.dependent 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-gray-100 text-primary"
+                      <span className={`px-2 py-1 text-xs font-medium rounded-lg border border-black ${
+                        f.dependent ? 'bg-gray-100 text-black' : 'bg-gray-100 text-black'
                       }`}>
-                        {f.dependent ? "Yes" : "No"}
+                        {f.dependent ? 'Yes' : 'No'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => openEdit(f)}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm"
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                         >
-                          <FiEdit className="text-xs" />
-                          Edit
+                          <FiEdit className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Edit
+                          </span>
                         </button>
                         <button
                           onClick={() => deleteFamily(f.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                         >
-                          <FiTrash2 className="text-xs" />
-                          Delete
+                          <FiTrash2 className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Delete
+                          </span>
                         </button>
                       </div>
                     </td>
@@ -188,20 +214,22 @@ export default function EmployeeFamily() {
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
-                <FiUsers className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-primary">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiUsers className="text-black w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Family Member" : "Add Family Member"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Enter full name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -209,9 +237,9 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Relationship *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Relationship *</label>
                   <select
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.relationship}
                     onChange={(e) => setForm({ ...form, relationship: e.target.value })}
                   >
@@ -228,10 +256,10 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Age</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Age"
                     value={form.age}
                     onChange={(e) => setForm({ ...form, age: e.target.value })}
@@ -239,9 +267,9 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Contact Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="Phone number"
                     value={form.contact}
                     onChange={(e) => setForm({ ...form, contact: e.target.value })}
@@ -254,24 +282,24 @@ export default function EmployeeFamily() {
                     id="dependent"
                     checked={form.dependent}
                     onChange={(e) => setForm({ ...form, dependent: e.target.checked })}
-                    className="rounded -dark text-blue-600 focus:ring-blue-500"
+                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
                   />
-                  <label htmlFor="dependent" className="text-sm text-secondary">
+                  <label htmlFor="dependent" className="text-sm text-gray-600">
                     Is this person a dependent?
                   </label>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-black rounded-xl hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveFamily}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
                 >
                   {editing ? "Update" : "Save"} Member
                 </button>

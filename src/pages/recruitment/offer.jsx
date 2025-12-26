@@ -356,26 +356,24 @@ export default function Offer() {
   // UI STARTS HERE
   // ------------------------------------------------------------
   return (
-    <Layout breadcrumb="Recruitment · Offers & Contracts">
-      <div className="p-6">
+    <Layout>
+      <div className="p-4 sm:p-6">
         {/* Header */}
-        <div className="rounded-xl shadow-sm border mb-8" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <FiFileText className="text-green-600" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">Offer & Pre-Onboarding</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage job offers, background verification, and onboarding process</p>
-                </div>
+        <div className="bg-white rounded-2xl mb-6 p-4 sm:p-6 border border-black">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
+                <FiFileText className="w-6 h-6 sm:w-7 sm:h-7 text-gray-600" />
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{candidates.length}</div>
-                  <div className="text-sm text-secondary">Selected Candidates</div>
+              <div className="text-center sm:text-left">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Offer & Pre-Onboarding</h1>
+                <p className="text-gray-600 text-sm sm:text-base font-medium">Manage job offers, background verification, and onboarding process</p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mt-2 gap-2 sm:gap-0">
+                  <div className="flex items-center justify-center sm:justify-start space-x-2">
+                    <span className="text-xs text-gray-500 font-medium">{candidates.length} Selected Candidates</span>
+                  </div>
+                  <div className="hidden sm:block w-px h-3 bg-gray-300 rounded-full"></div>
+                  <span className="text-xs text-gray-600 font-semibold text-center sm:text-left">Real-time Updates</span>
                 </div>
               </div>
             </div>
@@ -385,49 +383,49 @@ export default function Offer() {
         {/* ==================== SENT OFFERS TABLE ==================== */}
         {offers.length > 0 && (
           <div className="mb-10">
-            <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-              <div className="px-6 py-4 border-b ">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-primary">Offers Sent</h2>
-                  <span className="text-sm text-muted">{offers.length} offers</span>
+            <div className="bg-white rounded-2xl border border-black">
+              <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Offers Sent</h2>
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full self-start sm:self-auto">{offers.length} offers</span>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b border-black">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                      <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
 
-                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+                  <tbody className="bg-white divide-y divide-black">
                     {offers.map((o) => (
-                      <tr key={o.id} className="hover:bg-content transition-colors">
-                        <td className="px-6 py-4">
+                      <tr key={o.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-3 sm:px-6 py-4">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <FiUser className="text-blue-600" size={16} />
+                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
+                              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <FiUser className="text-blue-600" size={14} />
                               </div>
                             </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-primary">{o.candidate_name}</div>
+                            <div className="ml-3 sm:ml-4">
+                              <div className="text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-none">{o.candidate_name}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-primary">{o.job_title}</div>
-                          <div className="text-sm text-muted">{o.department}</div>
+                        <td className="px-3 sm:px-6 py-4">
+                          <div className="text-sm text-gray-900 truncate max-w-[100px] sm:max-w-none">{o.job_title}</div>
+                          <div className="text-sm text-gray-500 truncate max-w-[100px] sm:max-w-none">{o.department}</div>
                         </td>
 
                         {/* Status */}
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-3 sm:px-6 py-4 text-center">
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                               o.offer_status === "Accepted"
                                 ? "bg-green-100 text-green-800"
                                 : o.offer_status === "Rejected"
@@ -439,36 +437,37 @@ export default function Offer() {
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {o.offer_status === "Accepted" && <FiCheck className="mr-1" size={10} />}
-                            {o.offer_status === "Rejected" && <FiX className="mr-1" size={10} />}
-                            {o.offer_status === "Documents Submitted" && <FiFileText className="mr-1" size={10} />}
-                            {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={10} />}
-                            {o.offer_status === "Sent" && <FiMail className="mr-1" size={10} />}
-                            {o.offer_status}
+                            {o.offer_status === "Accepted" && <FiCheck className="mr-1" size={8} />}
+                            {o.offer_status === "Rejected" && <FiX className="mr-1" size={8} />}
+                            {o.offer_status === "Documents Submitted" && <FiFileText className="mr-1" size={8} />}
+                            {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={8} />}
+                            {o.offer_status === "Sent" && <FiMail className="mr-1" size={8} />}
+                            <span className="hidden sm:inline">{o.offer_status}</span>
+                            <span className="sm:hidden">{o.offer_status.split(' ')[0]}</span>
                           </span>
                         </td>
 
                         {/* Actions */}
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-center space-x-2">
+                        <td className="px-3 sm:px-6 py-4">
+                          <div className="flex items-center justify-center space-x-1 sm:space-x-2 flex-wrap gap-1">
 
                             {/* Accept/Reject */}
                             {o.offer_status === "Sent" && (
                               <>
                                 <button
-                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                                  className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
                                   onClick={() => handleOfferResponse(o.id, "accept")}
                                 >
-                                  <FiCheck className="mr-1" size={12} />
-                                  Accept
+                                  <FiCheck className="mr-1" size={10} />
+                                  <span className="hidden sm:inline">Accept</span>
                                 </button>
 
                                 <button
-                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+                                  className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
                                   onClick={() => handleOfferResponse(o.id, "reject")}
                                 >
-                                  <FiX className="mr-1" size={12} />
-                                  Reject
+                                  <FiX className="mr-1" size={10} />
+                                  <span className="hidden sm:inline">Reject</span>
                                 </button>
                               </>
                             )}
@@ -543,11 +542,11 @@ export default function Offer() {
         )}
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
-        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-6 py-4 border-b ">
+        <div className="bg-white rounded-2xl border border-black">
+          <div className="px-6 py-4 border-b border-gray-100">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-primary">Selected Candidates</h2>
-              <span className="text-sm text-muted">{candidates.length} candidates</span>
+              <h2 className="text-xl font-semibold text-gray-900">Selected Candidates</h2>
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{candidates.length} candidates</span>
             </div>
           </div>
 
@@ -558,19 +557,19 @@ export default function Offer() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 border-b border-black">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Stage</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+                <tbody className="bg-white divide-y divide-black">
                   {candidates.map((c) => (
-                    <tr key={c.id} className="hover:bg-content transition-colors">
+                    <tr key={c.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -579,14 +578,14 @@ export default function Offer() {
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-primary">{c.name}</div>
-                            <div className="text-sm text-muted">{c.email}</div>
+                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                            <div className="text-sm text-gray-500">{c.email}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-primary">{c.job_title}</div>
-                        <div className="text-sm text-muted">{c.department}</div>
+                        <div className="text-sm text-gray-900">{c.job_title}</div>
+                        <div className="text-sm text-gray-500">{c.department}</div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

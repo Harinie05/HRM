@@ -228,39 +228,36 @@ export default function Dashboard() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-xl sm:rounded-2xl shadow-2xl p-6 sm:p-8 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-          <div className="relative z-10">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                <div className="p-3 sm:p-4 bg-white/10 rounded-xl sm:rounded-2xl backdrop-blur-sm flex-shrink-0">
-                  <Building2 className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Healthcare HRM Suite</h1>
-                  <p className="text-slate-300 text-base sm:text-lg">Complete Human Resource Management Solution</p>
-                  <p className="text-slate-400 text-sm mt-1">Empowering Healthcare Organizations with Smart HR Technology</p>
-                </div>
+        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <Building2 className="h-8 w-8 text-gray-700" />
               </div>
-              <div className="text-left lg:text-right">
-                <div className="flex items-center gap-2 text-slate-300 mb-2">
-                  <Globe className="h-4 w-4" />
-                  <span className="text-sm">NABH-Standard Compliant</span>
-                </div>
-                <p className="text-xl sm:text-2xl font-bold">{today.toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  month: 'short', 
-                  day: 'numeric' 
-                })}</p>
-                <p className="text-slate-400 text-sm">{today.getFullYear()}</p>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Healthcare HRM Suite</h1>
+                <p className="text-gray-600 text-lg mb-1">Complete Human Resource Management Solution</p>
+                <p className="text-gray-500 text-sm">Empowering Healthcare Organizations with Smart HR Technology</p>
               </div>
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-2 text-gray-600 mb-2">
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">NABH-Standard Compliant</span>
+              </div>
+              <p className="text-xl font-bold text-gray-900">{today.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                month: 'short', 
+                day: 'numeric' 
+              })}</p>
+              <p className="text-gray-500 text-sm">{today.getFullYear()}</p>
             </div>
           </div>
         </div>
 
         {/* Key Performance Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 sm:p-6 border border-blue-200 hover:shadow-lg transition-all duration-300">
+          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-blue-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Total Employees</p>
@@ -273,7 +270,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 sm:p-6 border border-emerald-200 hover:shadow-lg transition-all duration-300">
+          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-emerald-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Departments</p>
@@ -286,7 +283,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-4 sm:p-6 border border-indigo-200 hover:shadow-lg transition-all duration-300">
+          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-indigo-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Active Roles</p>
@@ -299,7 +296,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-4 sm:p-6 border border-amber-200 hover:shadow-lg transition-all duration-300">
+          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-amber-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Compliance Rate</p>
@@ -316,14 +313,14 @@ export default function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Attrition Analysis */}
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="rounded-xl shadow-sm border border-black p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-primary">Attrition Analysis</h3>
               <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-muted" />
             </div>
             
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-red-50 rounded-lg border border-black">
                 <div>
                   <p className="text-sm text-red-600 font-medium">Current Month</p>
                   <p className="text-xl sm:text-2xl font-bold text-red-700">{attritionData.currentMonth}%</p>
@@ -335,17 +332,17 @@ export default function Dashboard() {
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-content rounded-lg">
+                <div className="p-3 bg-content rounded-lg border border-black">
                   <p className="text-xs text-secondary">Last Month</p>
                   <p className="text-base sm:text-lg font-semibold text-primary">{attritionData.lastMonth}%</p>
                 </div>
-                <div className="p-3 bg-content rounded-lg">
+                <div className="p-3 bg-content rounded-lg border border-black">
                   <p className="text-xs text-secondary">Year to Date</p>
                   <p className="text-base sm:text-lg font-semibold text-primary">{attritionData.yearToDate}%</p>
                 </div>
               </div>
               
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="p-3 bg-blue-50 rounded-lg border border-black">
                 <p className="text-sm text-blue-700 font-medium">Industry Benchmark: 15-20%</p>
                 <p className="text-xs text-blue-600 mt-1">Your organization is performing well below industry average</p>
               </div>
@@ -353,14 +350,14 @@ export default function Dashboard() {
           </div>
 
           {/* Manpower Compliance */}
-          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="rounded-xl shadow-sm border border-black p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-primary">Manpower Compliance</h3>
               <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-muted" />
             </div>
             
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-green-50 rounded-lg border border-black">
                 <div className="flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
                   <div>
@@ -371,7 +368,7 @@ export default function Dashboard() {
                 <p className="text-lg sm:text-xl font-bold text-green-700">{complianceData.totalCompliant}</p>
               </div>
               
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-yellow-50 rounded-lg border border-black">
                 <div className="flex items-center">
                   <Clock className="h-5 w-5 text-yellow-600 mr-3 flex-shrink-0" />
                   <div>
@@ -382,7 +379,7 @@ export default function Dashboard() {
                 <p className="text-lg sm:text-xl font-bold text-yellow-700">{complianceData.pendingDocuments}</p>
               </div>
               
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-red-50 rounded-lg border border-black">
                 <div className="flex items-center">
                   <AlertTriangle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0" />
                   <div>
@@ -397,8 +394,8 @@ export default function Dashboard() {
         </div>
 
         {/* Product Overview */}
-        <div className="rounded-2xl shadow-xl border border-gray-100 overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="p-8 border-b  bg-gradient-to-r from-slate-50 to-blue-50">
+        <div className="rounded-2xl shadow-xl border border-black overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="p-8 border-b border-black bg-white">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-primary mb-2">Complete HRM Module Suite</h2>
@@ -416,7 +413,7 @@ export default function Dashboard() {
               {hrmModules.map((module, index) => {
                 const IconComponent = module.icon;
                 return (
-                  <div key={index} className={`bg-gradient-to-br ${getColorClasses(module.color)} rounded-xl p-6 border hover:shadow-lg transition-all duration-300 group`}>
+                  <div key={index} className="bg-white rounded-xl p-6 border border-black hover:shadow-lg transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className={`p-3 bg-white/80 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
@@ -455,8 +452,8 @@ export default function Dashboard() {
         </div>
 
         {/* Holiday Gallery Section */}
-        <div className="rounded-xl shadow-sm border overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="p-6 border-b  bg-gradient-to-r from-gray-50 to-slate-50">
+        <div className="rounded-xl shadow-sm border border-black overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="p-6 border-b border-black bg-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-slate-200 rounded-xl">
@@ -469,7 +466,7 @@ export default function Dashboard() {
               </div>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className="bg-slate-600 text-white px-4 py-2 rounded-xl hover:bg-slate-700 transition-colors duration-200 text-sm font-medium"
+                className="bg-slate-600 text-white px-4 py-2 rounded-xl hover:bg-slate-700 transition-colors duration-200 text-sm font-medium border border-black"
               >
                 {showCalendar ? 'Hide Calendar' : 'View Calendar'}
               </button>
@@ -482,7 +479,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {upcomingHolidays.length > 0 ? (
                 upcomingHolidays.map((holiday, index) => (
-                  <div key={index} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div key={index} className="p-4 bg-blue-50 rounded-lg border border-black">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-blue-900">{holiday.name}</p>
@@ -509,12 +506,12 @@ export default function Dashboard() {
 
           {/* Calendar View */}
           {showCalendar && (
-            <div className="p-6 border-t  bg-content">
-              <div className="rounded-lg p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+            <div className="p-6 border-t border-black bg-content">
+              <div className="rounded-lg p-6 border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                 <div className="flex justify-between items-center mb-6">
                   <button 
                     onClick={prevMonth} 
-                    className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                    className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium border border-black"
                   >
                     ‹ Previous
                   </button>
@@ -523,7 +520,7 @@ export default function Dashboard() {
                   </h2>
                   <button 
                     onClick={nextMonth} 
-                    className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                    className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium border border-black"
                   >
                     Next ›
                   </button>
@@ -547,12 +544,12 @@ export default function Dashboard() {
                     return (
                       <div
                         key={day}
-                        className={`h-16 p-2 border rounded-lg relative transition-all duration-200 ${
+                        className={`h-16 p-2 border border-black rounded-lg relative transition-all duration-200 ${
                           holiday 
-                            ? "bg-blue-50 border-blue-300 hover:bg-blue-100" 
+                            ? "bg-blue-50 hover:bg-blue-100" 
                             : isToday
-                            ? "bg-slate-100 border-slate-300"
-                            : "bg-white  hover:bg-content"
+                            ? "bg-slate-100"
+                            : "bg-white hover:bg-content"
                         }`}
                       >
                         <span className={`text-sm font-semibold ${

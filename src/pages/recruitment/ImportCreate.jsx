@@ -110,70 +110,89 @@ export default function ImportCandidates() {
       <div className="flex-1 bg-content min-h-screen">
         <Header />
 
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-semibold">Import Candidates</h1>
+        <div className="p-4 sm:p-6 pt-32">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
+            <h1 className="text-xl sm:text-2xl font-semibold">Import Candidates</h1>
 
             <button
               onClick={() => setShowForm(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm sm:text-base border border-black"
             >
               + Add Candidate
             </button>
           </div>
 
-          {/* TABLE */}
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full bg-white rounded-xl shadow">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary text-sm">
-              <tr>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Email</th>
-                <th className="p-3 text-left">Phone</th>
-                <th className="p-3 text-left">Job</th>
-                <th className="p-3 text-left">Experience</th>
-                <th className="p-3 text-center">Resume</th>
-              </tr>
-            </thead>
-
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-              {candidates.map((c) => (
-                <tr key={c.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                  <td className="p-3">{c.name}</td>
-                  <td className="p-3">{c.email}</td>
-                  <td className="p-3">{c.phone}</td>
-                  <td className="p-3">{c.job_title}</td>
-                  <td className="p-3">{c.experience}</td>
-                  <td className="p-3 text-center">
-                    {c.resume_url ? (
-                      <a
-                        href={c.resume_url}
-                        target="_blank"
-                        className="text-blue-600 underline"
-                      >
-                        View Resume
-                      </a>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* CARDS GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {candidates.map((c) => (
+              <div key={c.id} className="bg-white rounded-xl shadow-sm border border-black p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start space-x-3">
+                  {/* Avatar */}
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 border border-black">
+                    {c.name?.charAt(0)?.toUpperCase() || 'C'}
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 truncate">{c.name}</h3>
+                    <p className="text-sm text-gray-600 truncate">{c.email}</p>
+                    <p className="text-sm text-gray-500">{c.phone}</p>
+                    
+                    <div className="mt-2 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">Job:</span>
+                        <span className="text-xs font-medium text-gray-700 truncate ml-2">{c.job_title}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">Experience:</span>
+                        <span className="text-xs font-medium text-gray-700">{c.experience}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Resume Link */}
+                    <div className="mt-3">
+                      {c.resume_url ? (
+                        <a
+                          href={c.resume_url}
+                          target="_blank"
+                          className="inline-flex items-center text-xs text-gray-900 hover:text-gray-700 font-medium border border-black px-2 py-1 rounded"
+                        >
+                          📄 View Resume
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-400">No resume</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Empty State */}
+          {candidates.length === 0 && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">👥</span>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No candidates imported yet</h3>
+              <p className="text-gray-500">Start by adding your first candidate using the button above.</p>
+            </div>
+          )}
         </div>
 
         {/* MODAL FORM */}
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white w-[600px] p-6 rounded-xl shadow-xl">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white w-full max-w-lg sm:max-w-xl p-4 sm:p-6 rounded-xl shadow-xl border border-black max-h-[90vh] overflow-y-auto">
 
-              <h2 className="text-xl font-semibold mb-4">Add Candidate</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-4">Add Candidate</h2>
 
               <div className="space-y-3">
 
                 {/* Job selection */}
                 <select
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
                   value={form.job_id}
                   onChange={(e) => setForm({ ...form, job_id: e.target.value })}
                 >
@@ -188,7 +207,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Candidate Name"
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
@@ -196,7 +215,7 @@ export default function ImportCandidates() {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -204,7 +223,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Phone Number"
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
@@ -212,7 +231,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Experience (e.g. 2 years)"
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full text-sm sm:text-base"
                   value={form.experience}
                   onChange={(e) =>
                     setForm({ ...form, experience: e.target.value })
@@ -221,7 +240,7 @@ export default function ImportCandidates() {
 
                 <textarea
                   placeholder="Skills"
-                  className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  className="border border-black p-2 rounded w-full h-20 text-sm sm:text-base"
                   value={form.skills}
                   onChange={(e) => setForm({ ...form, skills: e.target.value })}
                 />
@@ -231,22 +250,22 @@ export default function ImportCandidates() {
                   <label className="text-sm font-medium">Upload Resume</label>
                   <input
                     type="file"
-                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                    className="border border-black p-2 rounded w-full text-sm"
                     onChange={(e) => setResumeFile(e.target.files[0])}
                   />
                 </div>
               </div>
 
-              <div className="flex justify-between mt-6">
+              <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
                 <button
-                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                  className="px-4 py-2 bg-gray-300 rounded-lg text-sm sm:text-base border border-black hover:bg-gray-400"
                   onClick={() => setShowForm(false)}
                 >
                   Close
                 </button>
 
                 <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm sm:text-base border border-black hover:bg-gray-700"
                   onClick={saveCandidate}
                 >
                   Save Candidate

@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import api from "../../api";
-
-// ============================================================================
-// MAIN COMPONENT — JOB REQUISITION PAGE
-// ============================================================================
+import { 
+  Plus, 
+  Search, 
+  Eye, 
+  Edit3, 
+  Trash2,
+  Briefcase, 
+  Users, 
+  MapPin, 
+  Clock,
+  Building2,
+  Filter,
+  MoreHorizontal
+} from "lucide-react";
 
 export default function JobRequisition() {
   const [requisitions, setRequisitions] = useState([]);
   const [search, setSearch] = useState("");
-
   const [showForm, setShowForm] = useState(false);
-  const [mode, setMode] = useState("create"); // create | edit | view
+  const [mode, setMode] = useState("create");
   const [selectedReq, setSelectedReq] = useState(null);
 
-  // ---------------------- LOAD ALL REQUISITIONS ----------------------
   const fetchRequisitions = async () => {
     try {
       const res = await api.get("/recruitment/list");
@@ -28,13 +36,10 @@ export default function JobRequisition() {
     fetchRequisitions();
   }, []);
 
-  // ---------------------- OPEN MODALS ----------------------
   const openCreate = () => {
-    console.log("Create button clicked");
     setMode("create");
     setSelectedReq(null);
     setShowForm(true);
-    console.log("showForm set to true");
   };
 
   const openView = (req) => {
@@ -49,127 +54,208 @@ export default function JobRequisition() {
     setShowForm(true);
   };
 
+  const handleDelete = async (req) => {
+    if (window.confirm('Are you sure you want to delete this job requisition?')) {
+      try {
+        await api.delete(`/recruitment/delete/${req.id}`);
+        fetchRequisitions();
+      } catch (err) {
+        console.error("Failed to delete requisition");
+      }
+    }
+  };
 
+  const filteredRequisitions = requisitions.filter((r) =>
+    r.title?.toLowerCase().includes(search.toLowerCase()) ||
+    r.department?.toLowerCase().includes(search.toLowerCase())
+  );
 
-  // ======================================================================
-  // UI RENDER
-  // ======================================================================
   return (
-    <Layout breadcrumb="Recruitment · Job Requisition">
-      <div className="w-full overflow-hidden">
-        {/* Enhanced Header */}
-        <div className="mb-6 px-4">
-          <div className="bg-white rounded-2xl border shadow-sm p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+    <Layout>
+      <div className="p-6">
+        {/* Header */}
+        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <Users className="w-7 h-7 text-gray-600" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Job Requisition</h1>
+                <p className="text-gray-600 text-base font-medium">Manage job postings and recruitment process</p>
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-medium">{requisitions.length} Active Jobs</span>
+                  </div>
+                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
+                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">Job Requisition</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Create and manage job requisitions for hiring needs</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={openCreate}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+            >
+              <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
+                <Plus className="w-3 h-3" />
+              </div>
+              <span className="text-sm">Create Job</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Enhanced Search */}
+        <div className="mb-6">
+          <div className="relative max-w-md mx-auto">
+            <div className="bg-white border border-black rounded-xl p-1">
+              <div className="flex items-center space-x-2 px-3 py-2">
+                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                  <Search className="w-3 h-3 text-gray-600" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search jobs..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Job Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRequisitions.map((req) => (
+            <div key={req.id} className="bg-white rounded-xl p-6 border border-black hover:shadow-lg transition-all duration-200">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{req.title}</h3>
+                  <div className="flex items-center space-x-2 text-gray-500 mb-3">
+                    <Building2 className="w-4 h-4" />
+                    <span className="text-sm">{req.department}</span>
+                  </div>
+                </div>
+                
+                {/* Action Icons */}
+                <div className="flex items-center space-x-1">
+                  <div className="relative group">
+                    <button
+                      onClick={() => openView(req)}
+                      className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <Eye className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      View
+                    </div>
+                  </div>
+                  
+                  <div className="relative group">
+                    <button
+                      onClick={() => openEdit(req)}
+                      className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <Edit3 className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Edit
+                    </div>
+                  </div>
+                  
+                  <div className="relative group">
+                    <button
+                      onClick={() => handleDelete(req)}
+                      className="p-2 hover:bg-red-50 rounded-xl transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </button>
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Delete
+                    </div>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{requisitions.length}</div>
-                  <div className="text-sm text-muted">Active Positions</div>
+              {/* Stats */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-1">
+                    <Users className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm font-semibold text-gray-900">{req.openings}</span>
+                    <span className="text-xs text-gray-500">openings</span>
+                  </div>
+                  
+                  {req.experience && (
+                    <div className="flex items-center space-x-1">
+                      <Clock className="w-4 h-4 text-green-500" />
+                      <span className="text-xs text-gray-600">{req.experience}</span>
+                    </div>
+                  )}
                 </div>
-                <button
-                  onClick={openCreate}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-medium flex items-center space-x-2 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  <span>New Requisition</span>
-                </button>
+                
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span className="text-xs font-medium text-gray-600">Active</span>
+                </div>
               </div>
+              
+              {/* Location & Type */}
+              {(req.location || req.work_mode) && (
+                <div className="flex items-center space-x-4 mb-4">
+                  {req.location && (
+                    <div className="flex items-center space-x-1">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{req.location}</span>
+                    </div>
+                  )}
+                  
+                  {req.work_mode && (
+                    <span className="px-2 py-1 bg-gray-50 text-gray-700 text-xs font-medium rounded-lg">
+                      {req.work_mode}
+                    </span>
+                  )}
+                </div>
+              )}
+              
+              {/* Description */}
+              {req.description && (
+                <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                  {req.description}
+                </p>
+              )}
+              
+              {/* Salary */}
+              {req.salary_range && (
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="text-sm font-semibold text-gray-900">{req.salary_range}</div>
+                  <div className="text-xs text-gray-500">Salary Range</div>
+                </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
 
-        {/* Search Section */}
-        <div className="mb-6 px-4">
-          <div className="bg-white rounded-2xl border shadow-sm p-4">
-            <div className="relative max-w-md">
-              <input
-                type="text"
-                placeholder="Search requisitions..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 pr-4 py-3 border-dark rounded-xl w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-              />
-              <svg className="w-5 h-5 text-muted absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        {/* Empty State */}
+        {filteredRequisitions.length === 0 && (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Briefcase className="w-12 h-12 text-gray-400" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No job requisitions found</h3>
+            <p className="text-gray-500 mb-6">Get started by creating your first job requisition</p>
+            <button
+              onClick={openCreate}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            >
+              Create Job Requisition
+            </button>
           </div>
-        </div>
+        )}
 
-        {/* Job List */}
-        <div className="px-4">
-          <div className="rounded-3xl border" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}} style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
-                  <tr>
-                    <th className="px-4 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider w-64">Job Title</th>
-                    <th className="px-4 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Department</th>
-                    <th className="px-4 py-4 text-center text-xs font-medium text-muted uppercase tracking-wider w-24">Openings</th>
-                    <th className="px-4 py-4 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Experience</th>
-                    <th className="px-4 py-4 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Actions</th>
-                  </tr>
-                </thead>
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
-                  {requisitions
-                    .filter((r) =>
-                      r.title?.toLowerCase().includes(search.toLowerCase())
-                    )
-                    .map((req) => (
-                      <tr key={req.id} className="hover:bg-content transition-colors">
-                        <td className="px-4 py-4">
-                          <div className="text-sm font-medium text-primary truncate" title={req.title}>{req.title}</div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <div className="text-sm text-secondary truncate" title={req.department}>{req.department}</div>
-                        </td>
-                        <td className="px-4 py-4 text-center">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {req.openings}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-center">
-                          <div className="text-sm text-secondary truncate" title={req.experience}>{req.experience}</div>
-                        </td>
-                        <td className="px-4 py-4 text-center">
-                          <div className="flex justify-center space-x-1">
-                            <button
-                              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-secondary rounded-md text-xs font-medium transition-colors"
-                              onClick={() => openView(req)}
-                            >
-                              View
-                            </button>
-                            <button
-                              className="px-2 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-md text-xs font-medium transition-colors"
-                              onClick={() => openEdit(req)}
-                            >
-                              Edit
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* MODAL FORM */}
+        {/* Modal Form */}
         {showForm && (
           <JobRequisitionForm
             mode={mode}
@@ -185,12 +271,7 @@ export default function JobRequisition() {
   );
 }
 
-// ============================================================================
-// FORM COMPONENT (MERGED INSIDE SAME FILE)
-// ============================================================================
-
 function JobRequisitionForm({ mode, requisition, onClose }) {
-  console.log("JobRequisitionForm rendered with mode:", mode);
   const isView = mode === "view";
   const isEdit = mode === "edit";
 
@@ -210,7 +291,6 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
     skills: [],
     description: "",
     deadline: "",
-
   });
 
   useEffect(() => {
@@ -219,12 +299,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
     }
   }, [requisition]);
 
-  const updateField = (key, value) =>
-    setForm({ ...form, [key]: value });
+  const updateField = (key, value) => setForm({ ...form, [key]: value });
 
   const submitForm = async () => {
     try {
-      // Clean the form data - remove empty strings and convert to proper types
       const cleanedForm = {
         title: form.title || "",
         department: form.department || null,
@@ -241,7 +319,6 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         skills: Array.isArray(form.skills) ? form.skills : [],
         description: form.description || null,
         deadline: form.deadline || null,
-
       };
 
       if (mode === "create") {
@@ -260,171 +337,289 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white w-[650px] max-h-[90vh] overflow-y-auto rounded-xl p-6 shadow-xl">
-
-        <h2 className="text-xl font-semibold mb-4">
-          {mode === "create" && "Create Job Requisition"}
-          {mode === "edit" && "Edit Job Requisition"}
-          {mode === "view" && "Requisition Details"}
-        </h2>
-
-        <div className="space-y-4">
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Job Title"
-            disabled={isView}
-            value={form.title}
-            onChange={(e) => updateField("title", e.target.value)}
-          />
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Department"
-            disabled={isView}
-            value={form.department}
-            onChange={(e) => updateField("department", e.target.value)}
-          />
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Hiring Manager"
-            disabled={isView}
-            value={form.hiring_manager}
-            onChange={(e) => updateField("hiring_manager", e.target.value)}
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              type="number"
-              placeholder="Openings"
-              disabled={isView}
-              value={form.openings}
-              onChange={(e) => updateField("openings", parseInt(e.target.value))}
-            />
-
-            <input
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              placeholder="Experience (e.g., 3-5 years)"
-              disabled={isView}
-              value={form.experience}
-              onChange={(e) => updateField("experience", e.target.value)}
-            />
-          </div>
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Salary Range (e.g., 5-8 LPA)"
-            disabled={isView}
-            value={form.salary_range}
-            onChange={(e) => updateField("salary_range", e.target.value)}
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <select
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              disabled={isView}
-              value={form.job_type}
-              onChange={(e) => updateField("job_type", e.target.value)}
-            >
-              <option>Full-time</option>
-              <option>Part-time</option>
-              <option>Internship</option>
-              <option>Contract</option>
-            </select>
-
-            <select
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              disabled={isView}
-              value={form.work_mode}
-              onChange={(e) => updateField("work_mode", e.target.value)}
-            >
-              <option>On-site</option>
-              <option>Hybrid</option>
-              <option>Remote</option>
-            </select>
-          </div>
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Work Location"
-            disabled={isView}
-            value={form.location}
-            onChange={(e) => updateField("location", e.target.value)}
-          />
-
-          <textarea
-            className="border p-2 rounded w-full h-24" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Job Description"
-            disabled={isView}
-            value={form.description}
-            onChange={(e) => updateField("description", e.target.value)}
-          ></textarea>
-
-          <textarea
-            className="border p-2 rounded w-full h-24" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Detailed JD Text"
-            disabled={isView}
-            value={form.jd_text}
-            onChange={(e) => updateField("jd_text", e.target.value)}
-          ></textarea>
-
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              type="number"
-              placeholder="Rounds"
-              disabled={isView}
-              value={form.rounds}
-              onChange={(e) => {
-                const rounds = parseInt(e.target.value) || 1;
-                updateField("rounds", rounds);
-                // Auto-generate round names
-                const roundNames = {};
-                for(let i = 1; i <= rounds; i++) {
-                  roundNames[i] = `Round ${i}`;
-                }
-                updateField("round_names", roundNames);
-              }}
-            />
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl">
+        {/* Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-6 rounded-t-3xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {mode === "create" && "Create Job Requisition"}
+                {mode === "edit" && "Edit Job Requisition"}
+                {mode === "view" && "Requisition Details"}
+              </h2>
+              <p className="text-gray-500 mt-1">
+                {mode === "create" && "Fill in the details to create a new job requisition"}
+                {mode === "edit" && "Update the job requisition details"}
+                {mode === "view" && "View the complete job requisition information"}
+              </p>
+            </div>
             
-            <input
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              type="date"
-              placeholder="Deadline"
-              disabled={isView}
-              value={form.deadline}
-              onChange={(e) => updateField("deadline", e.target.value)}
-            />
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-
-          <input
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            placeholder="Skills Required (comma-separated)"
-            disabled={isView}
-            value={Array.isArray(form.skills) ? form.skills.join(', ') : (form.skills || '')}
-            onChange={(e) => updateField("skills", e.target.value ? e.target.value.split(',').map(s => s.trim()) : [])}
-          />
         </div>
 
-        <div className="flex justify-between mt-6">
-          <button
-            className="px-4 py-2 bg-gray-300 rounded"
-            onClick={onClose}
-          >
-            Close
-          </button>
-
-          {!isView && (
+        {/* Form Content */}
+        <div className="px-8 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Column */}
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
+                  Basic Information
+                </h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                    <input
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      placeholder="e.g., Senior Software Engineer"
+                      disabled={isView}
+                      value={form.title}
+                      onChange={(e) => updateField("title", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        placeholder="e.g., Engineering"
+                        disabled={isView}
+                        value={form.department}
+                        onChange={(e) => updateField("department", e.target.value)}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Hiring Manager</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        placeholder="Manager name"
+                        disabled={isView}
+                        value={form.hiring_manager}
+                        onChange={(e) => updateField("hiring_manager", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Openings</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        type="number"
+                        min="1"
+                        disabled={isView}
+                        value={form.openings}
+                        onChange={(e) => updateField("openings", parseInt(e.target.value))}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        placeholder="e.g., 3-5 years"
+                        disabled={isView}
+                        value={form.experience}
+                        onChange={(e) => updateField("experience", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Job Details */}
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Building2 className="w-5 h-5 mr-2 text-green-600" />
+                  Job Details
+                </h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
+                    <input
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      placeholder="e.g., 5-8 LPA"
+                      disabled={isView}
+                      value={form.salary_range}
+                      onChange={(e) => updateField("salary_range", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                      <select
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        disabled={isView}
+                        value={form.job_type}
+                        onChange={(e) => updateField("job_type", e.target.value)}
+                      >
+                        <option>Full-time</option>
+                        <option>Part-time</option>
+                        <option>Internship</option>
+                        <option>Contract</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
+                      <select
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        disabled={isView}
+                        value={form.work_mode}
+                        onChange={(e) => updateField("work_mode", e.target.value)}
+                      >
+                        <option>On-site</option>
+                        <option>Hybrid</option>
+                        <option>Remote</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
+                    <input
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      placeholder="e.g., Bangalore, India"
+                      disabled={isView}
+                      value={form.location}
+                      onChange={(e) => updateField("location", e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Column */}
+            <div className="space-y-6">
+              {/* Job Description */}
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Job Description
+                </h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Brief Description</label>
+                    <textarea
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                      rows="3"
+                      placeholder="Brief overview of the role..."
+                      disabled={isView}
+                      value={form.description}
+                      onChange={(e) => updateField("description", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Job Description</label>
+                    <textarea
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                      rows="6"
+                      placeholder="Detailed job description, responsibilities, requirements..."
+                      disabled={isView}
+                      value={form.jd_text}
+                      onChange={(e) => updateField("jd_text", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Required Skills</label>
+                    <input
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      placeholder="e.g., React, Node.js, Python (comma-separated)"
+                      disabled={isView}
+                      value={Array.isArray(form.skills) ? form.skills.join(', ') : (form.skills || '')}
+                      onChange={(e) => updateField("skills", e.target.value ? e.target.value.split(',').map(s => s.trim()) : [])}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Interview Process */}
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Users className="w-5 h-5 mr-2 text-orange-600" />
+                  Interview Process
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Interview Rounds</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        type="number"
+                        min="1"
+                        max="10"
+                        disabled={isView}
+                        value={form.rounds}
+                        onChange={(e) => {
+                          const rounds = parseInt(e.target.value) || 1;
+                          updateField("rounds", rounds);
+                          const roundNames = {};
+                          for(let i = 1; i <= rounds; i++) {
+                            roundNames[i] = `Round ${i}`;
+                          }
+                          updateField("round_names", roundNames);
+                        }}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Application Deadline</label>
+                      <input
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        type="date"
+                        disabled={isView}
+                        value={form.deadline}
+                        onChange={(e) => updateField("deadline", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-100 px-8 py-6 rounded-b-3xl">
+          <div className="flex items-center justify-between">
             <button
-              className="px-4 py-2 bg-blue-600 text-white rounded"
-              onClick={submitForm}
+              className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+              onClick={onClose}
             >
-              {mode === "create" ? "Create" : "Update"}
+              Cancel
             </button>
-          )}
+            
+            {!isView && (
+              <button
+                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                onClick={submitForm}
+              >
+                {mode === "create" ? "Create Requisition" : "Update Requisition"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

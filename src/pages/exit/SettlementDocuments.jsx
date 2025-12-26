@@ -346,52 +346,52 @@ export default function SettlementDocuments() {
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-emerald-700 text-sm font-medium">Ready for Settlement</p>
-              <p className="text-3xl font-bold text-emerald-800 mt-2">{exits.length}</p>
+              <p className="text-gray-600 text-sm font-medium">Ready for Settlement</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{exits.length}</p>
             </div>
-            <div className="p-3 bg-emerald-200 rounded-xl">
-              <CheckCircle className="h-6 w-6 text-emerald-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <CheckCircle className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-600 text-sm font-medium">Settlements Completed</p>
-              <p className="text-3xl font-bold text-slate-700 mt-2">
+              <p className="text-gray-600 text-sm font-medium">Settlements Completed</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {exits.filter(e => e.final_settlement_status === 'Completed').length}
               </p>
             </div>
-            <div className="p-3 bg-slate-200 rounded-xl">
-              <DollarSign className="h-6 w-6 text-slate-600" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <DollarSign className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-amber-700 text-sm font-medium">Pending Settlements</p>
-              <p className="text-3xl font-bold text-amber-800 mt-2">
+              <p className="text-gray-600 text-sm font-medium">Pending Settlements</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}
               </p>
             </div>
-            <div className="p-3 bg-amber-200 rounded-xl">
-              <Clock className="h-6 w-6 text-amber-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <Clock className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+        <div className="bg-white rounded-xl p-4 border border-black">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-indigo-700 text-sm font-medium">Fully Processed</p>
-              <p className="text-3xl font-bold text-indigo-800 mt-2">
+              <p className="text-gray-600 text-sm font-medium">Fully Processed</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {exits.filter(e => {
                   const handover = e.handover_status || 'Pending';
                   const clearance = e.clearance_status || 'Pending';
@@ -401,30 +401,30 @@ export default function SettlementDocuments() {
                 }).length}
               </p>
             </div>
-            <div className="p-3 bg-indigo-200 rounded-xl">
-              <FileText className="h-6 w-6 text-indigo-700" />
+            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
+              <FileText className="h-5 w-5 text-gray-600" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Exit List */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          <div className="p-6 border-b  bg-gradient-to-r from-gray-50 to-green-50">
-            <h3 className="text-xl font-bold text-primary">Ready for Settlement</h3>
-            <p className=" text-sm mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Employees with completed exit interviews</p>
+        <div className="bg-white rounded-xl border border-black overflow-hidden">
+          <div className="p-4 border-b border-black bg-gray-50">
+            <h3 className="text-lg font-bold text-gray-900">Ready for Settlement</h3>
+            <p className="text-sm text-gray-600 mt-1">Employees with completed exit interviews</p>
           </div>
           
-          <div className="p-6">
-            <div className="space-y-4">
+          <div className="p-4">
+            <div className="space-y-3">
               {exits.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                    <CheckCircle className="w-12 h-12 mx-auto" />
+                <div className="text-center py-8">
+                  <div className="text-gray-500 mb-3">
+                    <CheckCircle className="w-10 h-10 mx-auto" />
                   </div>
-                  <h4 className="text-lg font-medium text-primary mb-2">No employees ready for settlement</h4>
-                  <p className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>Complete exit interviews first.</p>
+                  <h4 className="text-base font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
+                  <p className="text-sm text-gray-600">Complete exit interviews first.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -434,16 +434,16 @@ export default function SettlementDocuments() {
                     <div
                       key={exit.id}
                       onClick={() => setSelectedExit(exit)}
-                      className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      className={`p-3 border border-black rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         isSelected 
-                          ? 'border-red-500 bg-red-50 shadow-md' 
-                          : ' hover:-dark bg-white'
+                          ? 'bg-gray-100 shadow-md' 
+                          : 'bg-white hover:bg-gray-50'
                       }`}
                     >
-                      <div className="font-semibold text-primary">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
-                      <div className="text-sm text-muted mt-1">Code: {exit.employee_code || 'N/A'}</div>
-                      <div className="text-sm text-muted">Last Working: {exit.last_working_day || 'N/A'}</div>
-                      <div className="text-sm text-muted">Notice: {exit.notice_period || '30'} days</div>
+                      <div className="font-semibold text-gray-900">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
+                      <div className="text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
+                      <div className="text-sm text-gray-600">Last Working: {exit.last_working_day || 'N/A'}</div>
+                      <div className="text-sm text-gray-600">Notice: {exit.notice_period || '30'} days</div>
                     </div>
                   );
                 })
@@ -453,15 +453,15 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Settlement Details */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-xl border border-black p-4">
           {selectedExit ? (
             <>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">F&F Settlement</h3>
+                <h3 className="text-lg font-medium text-gray-900">F&F Settlement</h3>
                 {!settlement && (
                   <button
                     onClick={handleCalculateSettlement}
-                    className="bg-blue-600 px-3 py-1 text-white text-sm rounded hover:bg-blue-700"
+                    className="bg-gray-900 px-3 py-1 text-white text-sm rounded-lg hover:bg-gray-700 border border-black"
                   >
                     Calculate Settlement
                   </button>
@@ -471,8 +471,8 @@ export default function SettlementDocuments() {
               {settlement ? (
                 <div className="space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-content p-4 rounded-lg">
-                    <h4 className="font-medium mb-3">Settlement Breakdown</h4>
+                  <div className="bg-gray-50 p-3 rounded-lg border border-black">
+                    <h4 className="font-medium mb-3 text-gray-900">Settlement Breakdown</h4>
                     
                     {/* Earnings Section */}
                     <div className="mb-4">
@@ -535,8 +535,8 @@ export default function SettlementDocuments() {
                     </div>
                     
                     {/* Net Payable */}
-                    <div className="bg-white p-3 rounded border-2 border-green-200">
-                      <div className="flex justify-between text-lg font-bold text-green-600">
+                    <div className="bg-white p-3 rounded-lg border border-black">
+                      <div className="flex justify-between text-lg font-bold text-gray-900">
                         <span>NET PAYABLE:</span>
                         <span>₹{settlement.net_payable.toLocaleString()}</span>
                       </div>
@@ -544,13 +544,13 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Payment Status */}
-                  <div className="p-4 border rounded-lg">
+                  <div className="p-3 border border-black rounded-lg">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">Payment Status:</span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        settlement.payment_status === 'Approved' ? 'bg-green-100 text-green-800' :
-                        settlement.payment_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-primary'
+                      <span className="font-medium text-gray-900">Payment Status:</span>
+                      <span className={`px-2 py-1 text-xs rounded-lg border border-black ${
+                        settlement.payment_status === 'Approved' ? 'bg-gray-200 text-gray-900' :
+                        settlement.payment_status === 'Pending' ? 'bg-gray-100 text-gray-800' :
+                        'bg-gray-100 text-gray-800'
                       }`}>
                         {settlement.payment_status}
                       </span>
@@ -559,7 +559,7 @@ export default function SettlementDocuments() {
                     {settlement.payment_status === 'Pending' && (
                       <button
                         onClick={handleApproveSettlement}
-                        className="mt-3 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                        className="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 border border-black"
                       >
                         Approve Settlement
                       </button>
@@ -567,7 +567,7 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-sm text-secondary space-y-1">
+                  <div className="text-sm text-gray-600 space-y-1">
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -580,20 +580,20 @@ export default function SettlementDocuments() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-muted py-8">
+                <div className="text-center text-gray-600 py-8">
                   Click "Calculate Settlement" to generate F&F statement
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center text-muted py-8">
+            <div className="text-center text-gray-600 py-8">
               Select an employee to view settlement details
             </div>
           )}
         </div>
 
         {/* Experience Letter */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-xl border border-black p-4">
           {selectedExit ? (
             <>
               <div className="flex justify-between items-center mb-4">

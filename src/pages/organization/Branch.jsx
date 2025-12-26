@@ -45,17 +45,17 @@ export default function Branch() {
   }
 
   return (
-    <div className="rounded-3xl border shadow-sm" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}} style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-      <div className="p-6 border-b ">
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+      <div className="p-6 border-b border-black">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-primary">Branch / Unit Setup</h2>
-            <p className="text-sm text-muted">Configure branch locations and contact details</p>
+            <h2 className="text-lg font-medium text-gray-900">Branch / Unit Setup</h2>
+            <p className="text-sm text-gray-600">Configure branch locations and contact details</p>
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function Branch() {
       <form onSubmit={handleSubmit} className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Branch / Unit Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -72,13 +72,13 @@ export default function Branch() {
               name="branch_name"
               value={form.branch_name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="e.g., Coimbatore Unit"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Branch Code <span className="text-red-500">*</span>
             </label>
             <input
@@ -87,92 +87,92 @@ export default function Branch() {
               name="branch_code"
               value={form.branch_code}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="e.g., CBE01"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">Contact Person</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Contact Person</label>
             <input
               type="text"
               name="contact_person"
               value={form.contact_person}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="Branch manager name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">Contact Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
             <input
               type="tel"
               name="contact_number"
               value={form.contact_number}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="Phone number"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="branch@company.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">City</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
             <input
               type="text"
               name="city"
               value={form.city}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="City name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">State</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
             <input
               type="text"
               name="state"
               value={form.state}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="State name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary mb-2">Pincode</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Pincode</label>
             <input
               type="text"
               name="pincode"
               value={form.pincode}
               onChange={handleChange}
-              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="Postal code"
             />
           </div>
         </div>
 
         <div className="mt-6">
-          <label className="block text-sm font-semibold text-secondary mb-2">Address</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
           <textarea
             name="address"
             value={form.address}
             onChange={handleChange}
             rows={4}
-            className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm resize-none"
+            className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
             placeholder="Complete branch address"
           />
         </div>
@@ -181,7 +181,7 @@ export default function Branch() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 flex items-center gap-2 text-sm"
           >
             {loading ? (
               <>

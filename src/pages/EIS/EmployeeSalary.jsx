@@ -64,34 +64,60 @@ export default function EmployeeSalary() {
   };
 
   return (
-    <Layout 
-      title="Salary Structure" 
-      subtitle="Compensation details and salary breakdown"
-    >
-      <div className="p-6">
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="flex items-center gap-4 mb-6">
-            <button 
-              onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiArrowLeft className="text-sm" />
-              Back to Profile
-            </button>
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiDollarSign className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Salary Structure
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Compensation details and salary breakdown
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">CTC Management</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-8">
+      <div className="p-6">
+        <div className="flex justify-start mb-4">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
+        </div>
+
+        <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+
+          <div className="space-y-6">
             {/* CTC Section */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <FiDollarSign className="text-green-500" />
-                <h3 className="text-lg font-semibold text-primary">Cost to Company (CTC)</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiDollarSign className="w-5 h-5 text-black" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Cost to Company (CTC)</h3>
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-2">Annual CTC (₹)</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   placeholder="e.g., 1200000"
                   value={form.ctc}
                   onChange={(e) => setForm({ ...form, ctc: e.target.value })}
@@ -101,9 +127,11 @@ export default function EmployeeSalary() {
 
             {/* Salary Breakdown */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <FiPieChart className="text-blue-500" />
-                <h3 className="text-lg font-semibold text-primary">Salary Component Breakdown (%)</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiPieChart className="w-5 h-5 text-black" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Salary Component Breakdown (%)</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -112,7 +140,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.basic_percent}
                     onChange={(e) => setForm({ ...form, basic_percent: e.target.value })}
                   />
@@ -123,7 +151,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.hra_percent}
                     onChange={(e) => setForm({ ...form, hra_percent: e.target.value })}
                   />
@@ -134,7 +162,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.allowances_percent}
                     onChange={(e) => setForm({ ...form, allowances_percent: e.target.value })}
                   />
@@ -145,7 +173,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.special_percent}
                     onChange={(e) => setForm({ ...form, special_percent: e.target.value })}
                   />
@@ -155,9 +183,11 @@ export default function EmployeeSalary() {
 
             {/* Compliance & Benefits */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <FiShield className="text-purple-500" />
-                <h3 className="text-lg font-semibold text-primary">Compliance & Benefits</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiShield className="w-5 h-5 text-black" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Compliance & Benefits</h3>
               </div>
               <div className="space-y-3">
                 <label className="flex items-center gap-3">
@@ -165,7 +195,7 @@ export default function EmployeeSalary() {
                     type="checkbox"
                     checked={form.pf_eligible}
                     onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
-                    className="rounded -dark text-blue-600 focus:ring-blue-500"
+                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
                   />
                   <span className="text-sm text-secondary">Provident Fund (PF) Eligible</span>
                 </label>
@@ -174,7 +204,7 @@ export default function EmployeeSalary() {
                     type="checkbox"
                     checked={form.esi_eligible}
                     onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
-                    className="rounded -dark text-blue-600 focus:ring-blue-500"
+                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
                   />
                   <span className="text-sm text-secondary">Employee State Insurance (ESI) Eligible</span>
                 </label>
@@ -184,8 +214,8 @@ export default function EmployeeSalary() {
             {/* Salary Preview */}
             {form.ctc && (
               <div>
-                <h3 className="text-lg font-semibold text-primary mb-4">Salary Breakdown Preview</h3>
-                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Breakdown Preview</h3>
+                <div className="bg-gray-100 border border-black rounded-xl p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex justify-between">
                       <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary:</span>
@@ -204,8 +234,8 @@ export default function EmployeeSalary() {
                       <span className="font-medium">₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</span>
                     </div>
                   </div>
-                  <div className="mt-4 pt-4 border-t border-blue-200">
-                    <div className="flex justify-between text-lg font-semibold text-primary">
+                  <div className="mt-4 pt-4 border-t border-black">
+                    <div className="flex justify-between text-lg font-semibold text-gray-900">
                       <span>Total CTC:</span>
                       <span>₹{parseInt(form.ctc).toLocaleString()}</span>
                     </div>
@@ -215,10 +245,10 @@ export default function EmployeeSalary() {
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t">
+          <div className="flex justify-end mt-8 pt-6 border-t border-black">
             <button
               onClick={submit}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 transition-colors font-medium"
             >
               {isEditing ? 'Update Salary Structure' : 'Save Salary Structure'}
             </button>

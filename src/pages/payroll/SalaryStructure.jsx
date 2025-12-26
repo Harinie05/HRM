@@ -240,205 +240,188 @@ export default function SalaryStructure() {
   );
 
   return (
-    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-      {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b  rounded-t-2xl">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <DollarSign className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-primary">Salary Structure</h2>
-              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Define CTC structure, earnings and deductions</p>
-            </div>
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-black">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <DollarSign className="w-5 h-5 text-gray-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-medium text-gray-900">Salary Structure</h2>
+            <p className="text-sm text-gray-600">Define CTC structure, earnings and deductions</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        {/* Search and Add Button */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <div className="relative max-w-md w-full sm:w-auto">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Search salary structures..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+            />
           </div>
           <button 
             onClick={() => handleOpenModal()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center"
           >
             <Plus size={18} />
-            Add Salary Structure
+            Add Structure
           </button>
         </div>
-      </div>
 
-      {/* Enhanced Search */}
-      <div className="p-6 border-b  bg-content">
-        <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted" size={18} />
-          <input
-            type="text"
-            placeholder="Search salary structures..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 pr-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full shadow-sm"
-          />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        ) : (
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Structure Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Annual CTC</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Basic %</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">HRA %</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employees</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
-              {filteredStructures.length === 0 ? (
+        {/* Table */}
+        <div className="overflow-x-auto border border-black rounded-xl">
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b border-black">
                 <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center text-muted">
-                    {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
-                  </td>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Structure Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Annual CTC</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Basic %</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">HRA %</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employees</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                 </tr>
-              ) : (
-                filteredStructures.map((structure) => {
-                  // Get linked employees from database
-                  const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id) : [];
-                  console.log(`Structure ${structure.name} - Stored IDs:`, linkedEmployeeIds);
-                  console.log('Available employees:', employees.map(emp => ({ id: emp.id, name: emp.name })));
-                  const employeeCount = linkedEmployeeIds.length;
-                  
-                  return (
-                    <tr key={structure.id} className="hover:bg-content">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-primary">{structure.name}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">₹{structure.ctc?.toLocaleString()}/year</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">{structure.basic_percent}%</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">{structure.hra_percent}%</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">{employeeCount} employees</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          structure.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-primary"
-                        }`}>
-                          {structure.is_active ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleViewStructure(structure)}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                            title="View Details"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handleOpenLinkModal(structure)}
-                            className="text-green-600 hover:text-green-900 p-1 rounded"
-                            title="Link Employees"
-                          >
-                            <Link size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handleOpenModal(structure)}
-                            className="text-indigo-600 hover:text-indigo-900 p-1 rounded"
-                            title="Edit Structure"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(structure.id)}
-                            className="text-red-600 hover:text-red-900 p-1 rounded"
-                            title="Delete Structure"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Enhanced Stats Footer */}
-      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t  rounded-b-2xl">
-        <div className="flex justify-between items-center text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total: {structures.length} salary structures</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active: {structures.filter(s => s.is_active).length}</span>
-          </div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredStructures.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                      {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredStructures.map((structure) => {
+                    const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id) : [];
+                    const employeeCount = linkedEmployeeIds.length;
+                    
+                    return (
+                      <tr key={structure.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{structure.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">₹{structure.ctc?.toLocaleString()}/year</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{structure.basic_percent}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{structure.hra_percent}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{employeeCount} employees</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                            structure.is_active ? "bg-gray-100 text-gray-800 border-gray-300" : "bg-gray-50 text-gray-600 border-gray-200"
+                          }`}>
+                            {structure.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <button 
+                              onClick={() => handleViewStructure(structure)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="View Details"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleOpenLinkModal(structure)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="Link Employees"
+                            >
+                              <Link size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleOpenModal(structure)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="Edit Structure"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(structure.id)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="Delete Structure"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">
               {editingStructure ? "Edit Salary Structure" : "Add Salary Structure"}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Structure Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Structure Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   placeholder="e.g., Senior Developer, Manager Level"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Cost to Company (CTC) - Annually</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cost to Company (CTC) - Annually</label>
                 <input
                   type="number"
                   value={formData.ctc}
                   onChange={(e) => setFormData({...formData, ctc: parseFloat(e.target.value) || 0})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                   placeholder="Enter annual CTC amount"
                   required
                 />
-                <p className="text-xs text-muted mt-1">Enter the total annual cost to company</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Basic %</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Basic %</label>
                   <input
                     type="number"
                     value={formData.basic_percent}
                     onChange={(e) => setFormData({...formData, basic_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">HRA %</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">HRA %</label>
                   <input
                     type="number"
                     value={formData.hra_percent}
                     onChange={(e) => setFormData({...formData, hra_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-black rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                     required
                   />
                 </div>
@@ -458,14 +441,14 @@ export default function SalaryStructure() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black"
                 >
                   {loading ? "Saving..." : (editingStructure ? "Update" : "Create")}
                 </button>
@@ -477,14 +460,14 @@ export default function SalaryStructure() {
 
       {/* Link Employees Modal */}
       {showLinkModal && linkingStructure && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">
               Link Employees to {linkingStructure.name}
             </h3>
             <div className="space-y-2 mb-6">
               {employees.length === 0 ? (
-                <p className=" text-center py-4" style={{color: 'var(--text-muted, #6b7280)'}}>No employees found</p>
+                <p className="text-center py-4 text-gray-600">No employees found</p>
               ) : (
                 employees.map((employee) => {
                   // Check if employee is linked to another structure
@@ -498,7 +481,7 @@ export default function SalaryStructure() {
                   console.log(`Employee ${employee.name} (ID: ${employee.id}) - Selected: ${isCurrentlySelected}`);
                   
                   return (
-                    <div key={employee.id} className="flex items-center p-3 border rounded-lg hover:bg-content">
+                    <div key={employee.id} className="flex items-center p-3 border border-black rounded-lg hover:bg-gray-50">
                       <input
                         type="checkbox"
                         checked={isCurrentlySelected}
@@ -507,12 +490,12 @@ export default function SalaryStructure() {
                       />
                       <div className="flex-1">
                         <div className="font-medium">{employee.name}</div>
-                        <div className="text-sm text-muted">{employee.email}</div>
-                        <div className="text-sm text-muted">{employee.designation || 'No designation'}</div>
-                        <div className="text-xs text-blue-600">Code: {employee.employee_code}</div>
+                        <div className="text-sm text-gray-600">{employee.email}</div>
+                        <div className="text-sm text-gray-600">{employee.designation || 'No designation'}</div>
+                        <div className="text-xs text-gray-700">Code: {employee.employee_code}</div>
                       </div>
                       {isLinkedToOther && (
-                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Already linked</span>
+                        <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded border border-gray-300">Already linked</span>
                       )}
                     </div>
                   );
@@ -523,17 +506,17 @@ export default function SalaryStructure() {
               <button
                 type="button"
                 onClick={handleCloseLinkModal}
-                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLinkEmployees}
                 disabled={loading}
-                className={`flex-1 px-4 py-2 rounded-lg text-white ${
+                className={`flex-1 px-4 py-2 rounded-lg text-white border border-black ${
                   selectedEmployees.length === 0 
                     ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-green-600 hover:bg-green-700'
+                    : 'bg-gray-900 hover:bg-gray-800'
                 }`}
               >
                 {loading ? "Linking..." : 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Shield, Eye, Edit3, Trash2, Search, Filter, UserCheck, Settings, Crown, Star } from "lucide-react";
 import api from "../../api";
 
 export default function DesignationList() {
@@ -8,7 +7,6 @@ export default function DesignationList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterLevel, setFilterLevel] = useState("all");
   const [showCreateRole, setShowCreateRole] = useState(false);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
   const tenant_db = localStorage.getItem("tenant_db");
 
   const [newRole, setNewRole] = useState({
@@ -18,19 +16,11 @@ export default function DesignationList() {
     permissions: []
   });
 
-  const permissionCategories = [
-    { id: 'user_management', name: 'User Management', icon: Users },
-    { id: 'attendance', name: 'Attendance', icon: UserCheck },
-    { id: 'payroll', name: 'Payroll', icon: Settings },
-    { id: 'reports', name: 'Reports', icon: Eye },
-    { id: 'admin', name: 'Administration', icon: Shield }
-  ];
-
   const roleHierarchy = {
-    'admin': { label: 'Administrator', color: 'bg-red-500', icon: Crown, priority: 1 },
-    'manager': { label: 'Manager', color: 'bg-purple-500', icon: Star, priority: 2 },
-    'supervisor': { label: 'Supervisor', color: 'bg-blue-500', icon: Shield, priority: 3 },
-    'employee': { label: 'Employee', color: 'bg-green-500', icon: Users, priority: 4 }
+    'admin': { label: 'Administrator', color: 'bg-red-500', priority: 1 },
+    'manager': { label: 'Manager', color: 'bg-purple-500', priority: 2 },
+    'supervisor': { label: 'Supervisor', color: 'bg-blue-500', priority: 3 },
+    'employee': { label: 'Employee', color: 'bg-green-500', priority: 4 }
   };
 
   const fetchRoles = async () => {
@@ -86,313 +76,201 @@ export default function DesignationList() {
     return matchesSearch && matchesFilter;
   });
 
-  const getRoleIcon = (level) => {
-    const hierarchy = roleHierarchy[level] || roleHierarchy['employee'];
-    const IconComponent = hierarchy.icon;
-    return <IconComponent size={20} />;
-  };
-
   const getRoleColor = (level) => {
-    return roleHierarchy[level]?.color || 'bg-content0';
+    return roleHierarchy[level]?.color || 'bg-gray-500';
   };
 
   const getRoleLabel = (level) => {
     return roleHierarchy[level]?.label || 'Employee';
   };
 
-  const renderGridView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredRoles.map((role) => {
-        const IconComponent = roleHierarchy[role.level]?.icon || Users;
-        return (
-          <div key={role.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white`}>
-                  <IconComponent size={24} />
-                </div>
-                <div className="flex gap-2">
-                  <button className="p-2 text-muted hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                    <Edit3 size={16} />
-                  </button>
-                  <button 
-                    onClick={() => deleteRole(role.id)}
-                    className="p-2 text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-primary mb-1">{role.name}</h3>
-                <p className="text-sm text-muted line-clamp-2">
-                  {role.description || 'No description provided'}
-                </p>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-white ${getRoleColor(role.level)}`}>
-                  {getRoleLabel(role.level)}
-                </span>
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  {role.permissions ? role.permissions.length : 0} permissions
-                </span>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-
-  const renderTableView = () => (
-    <div className="overflow-hidden">
-      <div className="overflow-x-auto">
-        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed divide-y">
-          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Role</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-64">Description</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Level</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Permissions</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-24">Actions</th>
-            </tr>
-          </thead>
-          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
-            {filteredRoles.map((role) => {
-              const IconComponent = roleHierarchy[role.level]?.icon || Users;
-              return (
-                <tr key={role.id} className="hover:bg-content">
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className={`w-8 h-8 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white mr-3 flex-shrink-0`}>
-                        <IconComponent size={16} />
-                      </div>
-                      <div className="text-sm font-medium text-primary truncate" title={role.name}>{role.name}</div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="text-sm text-muted truncate" title={role.description}>
-                      {role.description || <span className="italic text-muted">No description</span>}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${getRoleColor(role.level)}`}>
-                      {getRoleLabel(role.level)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {role.permissions ? role.permissions.length : 0}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <button className="inline-flex items-center p-1.5 bg-blue-100 text-blue-700 text-sm font-medium rounded-md hover:bg-blue-200 transition-colors">
-                        <Edit3 size={12} />
-                      </button>
-                      <button
-                        onClick={() => deleteRole(role.id)}
-                        className="inline-flex items-center p-1.5 bg-red-100 text-red-700 text-sm font-medium rounded-md hover:bg-red-200 transition-colors"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="w-full overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b  px-4 py-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex-shrink-0">
-              <Shield className="text-white" size={20} />
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-primary">Designations & Roles</h1>
-              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Overview of all roles and their permission levels</p>
+              <h2 className="text-lg font-medium text-gray-900">Designations & Roles</h2>
+              <p className="text-sm text-gray-600">Overview of all roles and their permission levels</p>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Eye size={16} className="" style={{color: 'var(--text-secondary, #374151)'}} />
-              <span className="text-sm font-medium text-secondary">View:</span>
-              <div className="flex bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
-                  }`}
-                >
-                  <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
-                    <div className="bg-current rounded-sm"></div>
-                    <div className="bg-current rounded-sm"></div>
-                    <div className="bg-current rounded-sm"></div>
-                    <div className="bg-current rounded-sm"></div>
-                  </div>
-                  Grid
-                </button>
-                <button
-                  onClick={() => setViewMode('table')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'table' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
-                  }`}
-                >
-                  <div className="flex flex-col gap-0.5 w-3 h-3">
-                    <div className="bg-current h-0.5 rounded-sm"></div>
-                    <div className="bg-current h-0.5 rounded-sm"></div>
-                    <div className="bg-current h-0.5 rounded-sm"></div>
-                  </div>
-                  Table
-                </button>
-              </div>
-            </div>
-
-          </div>
+          {!showCreateRole && (
+            <button
+              onClick={() => setShowCreateRole(true)}
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              New Role
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="p-4 space-y-6">
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search roles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
+      <div className="p-6 space-y-6">
+        {/* Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search roles..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              />
             </div>
-            <div className="flex items-center gap-2">
-              <Filter size={16} className="" style={{color: 'var(--text-secondary, #374151)'}} />
-              <select
-                value={filterLevel}
-                onChange={(e) => setFilterLevel(e.target.value)}
-                className="px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="all">All Levels</option>
-                <option value="admin">Administrator</option>
-                <option value="manager">Manager</option>
-                <option value="supervisor">Supervisor</option>
-                <option value="employee">Employee</option>
-              </select>
-            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Filter</span>
+            <select
+              value={filterLevel}
+              onChange={(e) => setFilterLevel(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            >
+              <option value="all">All Levels</option>
+              <option value="admin">Administrator</option>
+              <option value="manager">Manager</option>
+              <option value="supervisor">Supervisor</option>
+              <option value="employee">Employee</option>
+            </select>
           </div>
         </div>
 
         {/* Create Role Form */}
         {showCreateRole && (
-          <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-            <div className="px-6 py-4 border-b ">
-              <h3 className="text-lg font-semibold text-primary">Create New Role</h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Role Name</label>
-                  <input
-                    type="text"
-                    value={newRole.name}
-                    onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="e.g., Senior Developer, HR Manager"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Role Level</label>
-                  <select
-                    value={newRole.level}
-                    onChange={(e) => setNewRole({...newRole, level: e.target.value})}
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  >
-                    <option value="employee">Employee</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="manager">Manager</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                </div>
-              </div>
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-secondary mb-2">Description</label>
-                <textarea
-                  value={newRole.description}
-                  onChange={(e) => setNewRole({...newRole, description: e.target.value})}
-                  rows={3}
-                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Describe the role responsibilities and scope..."
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Role</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+                <input
+                  type="text"
+                  value={newRole.name}
+                  onChange={(e) => setNewRole({...newRole, name: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="e.g., Senior Developer, HR Manager"
                 />
               </div>
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={createRole}
-                  className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Role Level</label>
+                <select
+                  value={newRole.level}
+                  onChange={(e) => setNewRole({...newRole, level: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 >
-                  Create Role
-                </button>
-                <button
-                  onClick={() => setShowCreateRole(false)}
-                  className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
-                >
-                  Cancel
-                </button>
+                  <option value="employee">Employee</option>
+                  <option value="supervisor">Supervisor</option>
+                  <option value="manager">Manager</option>
+                  <option value="admin">Administrator</option>
+                </select>
               </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={newRole.description}
+                onChange={(e) => setNewRole({...newRole, description: e.target.value})}
+                rows={3}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                placeholder="Describe the role responsibilities and scope..."
+              />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={createRole}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
+              >
+                Create Role
+              </button>
+              <button
+                onClick={() => setShowCreateRole(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}
 
         {/* Roles Display */}
-        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-6 py-4 border-b ">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-primary">Roles & Permissions</h2>
-                <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Manage organizational roles and their access levels</p>
-              </div>
-              <div className="text-sm text-muted">
-                {filteredRoles.length} of {roles.length} roles
-              </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+          </div>
+        ) : filteredRoles.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {searchTerm || filterLevel !== 'all' ? 'No matching roles found' : 'No roles found'}
+            </h3>
+            <p className="text-gray-500 text-sm">
+              {searchTerm || filterLevel !== 'all' 
+                ? 'Try adjusting your search or filter criteria' 
+                : 'Create your first role to get started with role management'}
+            </p>
           </div>
-
-          <div className="p-6">
-            {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full"></div>
-              </div>
-            ) : filteredRoles.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield size={32} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredRoles.map((role) => (
+              <div key={role.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-xl flex items-center justify-center text-white`}>
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => deleteRole(role.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-2">
-                  {searchTerm || filterLevel !== 'all' ? 'No matching roles found' : 'No roles found'}
-                </h3>
-                <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>
-                  {searchTerm || filterLevel !== 'all' 
-                    ? 'Try adjusting your search or filter criteria' 
-                    : 'Create your first role to get started with role management'}
-                </p>
+                
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">{role.name}</h3>
+                  <p className="text-sm text-gray-600 line-clamp-2">
+                    {role.description || 'No description provided'}
+                  </p>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-white ${getRoleColor(role.level)}`}>
+                    {getRoleLabel(role.level)}
+                  </span>
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {role.permissions ? role.permissions.length : 0} permissions
+                  </span>
+                </div>
               </div>
-            ) : (
-              viewMode === 'grid' ? renderGridView() : renderTableView()
-            )}
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

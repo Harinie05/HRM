@@ -143,45 +143,34 @@ export default function TrainingPrograms() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <BookOpen className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-primary">Training Programs</h2>
-              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Create and manage training programs</p>
-            </div>
-          </div>
+
+      {/* Filters */}
+      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Training Programs</h3>
           <button 
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             New Program
           </button>
         </div>
-      </div>
-
-      {/* Filters */}
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search programs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+            className="border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">All Status</option>
             {statuses.map(status => (
@@ -191,66 +180,26 @@ export default function TrainingPrograms() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-xl p-6 border">
-          <div className="flex items-center">
-            <BookOpen className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Total Programs</p>
-              <p className="text-2xl font-semibold text-blue-900">{(programs || []).length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-xl p-6 border">
-          <div className="flex items-center">
-            <Calendar className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">Published</p>
-              <p className="text-2xl font-semibold text-green-900">{(programs || []).filter(p => p.status === 'Published').length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-xl p-6 border">
-          <div className="flex items-center">
-            <Edit className="h-8 w-8 text-yellow-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-yellow-600">Draft</p>
-              <p className="text-2xl font-semibold text-yellow-900">{(programs || []).filter(p => p.status === 'Draft').length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-xl p-6 border">
-          <div className="flex items-center">
-            <Users className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-purple-600">Categories</p>
-              <p className="text-2xl font-semibold text-purple-900">{new Set((programs || []).map(p => p.category)).size}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         ) : (
           <>
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+            <table className="w-full">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Program</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Trainer</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Dates</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Program</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Trainer</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Dates</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                 </tr>
               </thead>
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+              <tbody className="bg-white divide-y divide-black">
                 {filteredPrograms.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
@@ -274,32 +223,32 @@ export default function TrainingPrograms() {
                   </tr>
                 ) : (
                   filteredPrograms.map((program) => (
-                    <tr key={program.id} className="hover:bg-content">
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-primary">{program.title}</div>
-                        <div className="text-sm text-muted truncate max-w-xs">{program.description}</div>
+                    <tr key={program.id} className="hover:bg-gray-50 border-b border-black">
+                      <td className="px-6 py-4 border-r border-black">
+                        <div className="text-sm font-medium text-gray-900">{program.title}</div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs">{program.description}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           {program.type}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">{program.trainer || 'TBD'}</div>
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900">{program.trainer || 'TBD'}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900">
                           {program.startDate && program.endDate ? 
                             `${program.startDate} to ${program.endDate}` : 
                             'Not scheduled'
                           }
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           program.status === "Published" ? "bg-green-100 text-green-800" :
                           program.status === "Draft" ? "bg-yellow-100 text-yellow-800" :
-                          "bg-gray-100 text-primary"
+                          "bg-gray-100 text-gray-900"
                         }`}>
                           {program.status}
                         </span>
@@ -338,8 +287,8 @@ export default function TrainingPrograms() {
             </table>
             
             {/* Stats Footer */}
-            <div className="px-6 py-4 bg-content border-t ">
-              <div className="flex justify-between items-center text-sm text-secondary">
+            <div className="px-6 py-4 bg-gray-50 border-t border-black">
+              <div className="flex justify-between items-center text-sm text-gray-600">
                 <span>Total Programs: {(programs || []).length}</span>
                 <span>Published: {(programs || []).filter(p => p.status === 'Published').length}</span>
                 <span>Draft: {(programs || []).filter(p => p.status === 'Draft').length}</span>
@@ -351,139 +300,152 @@ export default function TrainingPrograms() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-4">
-              {editingProgram ? 'Edit Training Program' : 'New Training Program'}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Title</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows="3"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {editingProgram ? 'Edit Training Program' : 'New Training Program'}
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">Fill in the details below</p>
+            </div>
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Category</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Program Title</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    placeholder="Enter program title"
                     required
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Duration (Hours)</label>
-                  <input
-                    type="number"
-                    value={formData.duration_hours}
-                    onChange={(e) => setFormData({...formData, duration_hours: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    min="1"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Start Date</label>
-                  <input
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">End Date</label>
-                  <input
-                    type="date"
-                    value={formData.endDate}
-                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
+                    rows="2"
+                    placeholder="Describe the training program"
                   />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Type</label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({...formData, type: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Type</option>
-                  <option value="Internal">Internal</option>
-                  <option value="External">External</option>
-                  <option value="Online">Online</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Trainer</label>
-                <input
-                  type="text"
-                  value={formData.trainer}
-                  onChange={(e) => setFormData({...formData, trainer: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Trainer name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Department</label>
-                <input
-                  type="text"
-                  value={formData.department}
-                  onChange={(e) => setFormData({...formData, department: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Target department"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Max Participants</label>
-                <input
-                  type="number"
-                  value={formData.max_participants}
-                  onChange={(e) => setFormData({...formData, max_participants: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  min="1"
-                  placeholder="Leave empty for unlimited"
-                />
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Saving..." : (editingProgram ? "Update Program" : "Create Program")}
-                </button>
-              </div>
-            </form>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({...formData, category: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Hours)</label>
+                    <input
+                      type="number"
+                      value={formData.duration_hours}
+                      onChange={(e) => setFormData({...formData, duration_hours: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Hours"
+                      min="1"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      value={formData.endDate}
+                      onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <select
+                      value={formData.type}
+                      onChange={(e) => setFormData({...formData, type: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required
+                    >
+                      <option value="">Select Type</option>
+                      <option value="Internal">Internal</option>
+                      <option value="External">External</option>
+                      <option value="Online">Online</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Max Participants</label>
+                    <input
+                      type="number"
+                      value={formData.max_participants}
+                      onChange={(e) => setFormData({...formData, max_participants: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Unlimited"
+                      min="1"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Trainer</label>
+                    <input
+                      type="text"
+                      value={formData.trainer}
+                      onChange={(e) => setFormData({...formData, trainer: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Trainer name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    <input
+                      type="text"
+                      value={formData.department}
+                      onChange={(e) => setFormData({...formData, department: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Target department"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 flex-shrink-0">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                {loading ? "Saving..." : (editingProgram ? "Update Program" : "Create Program")}
+              </button>
+            </div>
           </div>
         </div>
       )}

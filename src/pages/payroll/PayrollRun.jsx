@@ -334,34 +334,9 @@ export default function PayrollRun() {
     }
   };
 
-  // Remove localStorage initialization comments
-
   const handleViewPayroll = (run) => {
     setSelectedRun(run);
     setShowViewModal(true);
-  };
-
-  const handleDownloadPayslip = (run) => {
-    // Use the PDF payslip download endpoint
-    const downloadUrl = `${api.defaults.baseURL}/api/payroll/payslip/${run.id}/download`;
-    
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `payslip_${run.employee_code}_${run.month}_${run.year}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleExportCSV = () => {
-    const downloadUrl = `${api.defaults.baseURL}/api/payroll/runs/export`;
-    
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `payroll_runs_export.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   const filteredRuns = runs.filter(run => {
@@ -378,9 +353,6 @@ export default function PayrollRun() {
   ];
 
   // Get employees with salary structures from database
-  console.log('Structures:', structures);
-  console.log('All employees:', employees.map(e => ({ id: e.id, original_user_id: e.original_user_id, name: e.name, employee_code: e.employee_code })));
-  
   const employeesWithSalary = employees.filter(employee => {
     // Check if employee is linked to any salary structure in database
     const linkedStructure = structures.find(structure => {
@@ -396,190 +368,192 @@ export default function PayrollRun() {
     return linkedStructure;
   });
   
-  console.log('Employees with salary structures:', employeesWithSalary.map(e => ({ id: e.id, name: e.name })));
   const activeEmployeesCount = employeesWithSalary.length;
   const completedRunsCount = runs.filter(r => r.status === 'Completed').length;
   const thisMonthCount = runs.filter(r => r.month === months[new Date().getMonth()]).length;
-  const totalRunsCount = runs.length;
 
   return (
-    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-      {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b  rounded-t-2xl">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Play className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-primary">Payroll Run</h2>
-              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Process monthly payroll using attendance & leave data</p>
-            </div>
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-black">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <Play className="w-5 h-5 text-gray-600" />
           </div>
+          <div>
+            <h2 className="text-lg font-medium text-gray-900">Payroll Run</h2>
+            <p className="text-sm text-gray-600">Process monthly payroll using attendance & leave data</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        {/* Add Payroll Button */}
+        <div className="flex justify-center sm:justify-end mb-6">
           <button 
             onClick={() => setShowRunModal(true)}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center"
           >
             <Play size={18} />
             Run Payroll
           </button>
         </div>
-      </div>
-
-      {/* Filters */}
-      <div className="p-6 border-b ">
-        <div className="flex gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
-            <input
-              type="text"
-              placeholder="Search by employee or month..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
-            />
-          </div>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          >
-            <option value="">All Months</option>
-            {months.map(month => (
-              <option key={month} value={month}>{month}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Enhanced Stats Cards */}
-      <div className="p-6 border-b  bg-content">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-content rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active Employees</p>
-                <p className="text-3xl font-bold text-primary">{activeEmployeesCount}</p>
-              </div>
-              <div className="p-3 bg-blue-50 rounded-xl">
-                <Users className="h-10 w-10 text-blue-600" />
-              </div>
+        {/* Filters */}
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search by employee or month..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+              />
             </div>
-          </div>
-          <div className="bg-content rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Completed Runs</p>
-                <p className="text-3xl font-bold text-primary">{completedRunsCount}</p>
-              </div>
-              <div className="p-3 bg-green-50 rounded-xl">
-                <Play className="h-10 w-10 text-green-600" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-content rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>This Month</p>
-                <p className="text-3xl font-bold text-primary">{thisMonthCount}</p>
-              </div>
-              <div className="p-3 bg-yellow-50 rounded-xl">
-                <Calendar className="h-10 w-10 text-yellow-600" />
-              </div>
-            </div>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm w-full sm:w-auto"
+            >
+              <option value="">All Months</option>
+              {months.map(month => (
+                <option key={month} value={month}>{month}</option>
+              ))}
+            </select>
           </div>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Month</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Present Days</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">LOP Days</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Gross Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Net Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
-            {filteredRuns.length === 0 ? (
+        {/* Stats Cards */}
+        <div className="mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-50 rounded-xl p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Active Employees</p>
+                  <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
+                </div>
+                <div className="p-3 bg-gray-100 rounded-xl">
+                  <Users className="h-10 w-10 text-gray-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
+                  <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
+                </div>
+                <div className="p-3 bg-gray-100 rounded-xl">
+                  <Play className="h-10 w-10 text-gray-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-6 border border-black">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">This Month</p>
+                  <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
+                </div>
+                <div className="p-3 bg-gray-100 rounded-xl">
+                  <Calendar className="h-10 w-10 text-gray-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="overflow-x-auto border border-black rounded-xl">
+          <table className="w-full">
+            <thead className="bg-gray-100 border-b border-black">
               <tr>
-                <td colSpan="8" className="px-6 py-12 text-center">
-                  <Play className="mx-auto h-12 w-12 text-muted" />
-                  <h3 className="mt-2 text-sm font-medium text-primary">No payroll runs yet</h3>
-                  <p className="mt-1 text-sm text-muted">
-                    Start by running payroll for your employees.
-                  </p>
-                  <div className="mt-6">
-                    <button 
-                      onClick={() => setShowRunModal(true)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
-                    >
-                      <Play size={16} />
-                      Run First Payroll
-                    </button>
-                  </div>
-                </td>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Present Days</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">LOP Days</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Gross Salary</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Net Salary</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
-            ) : (
-              filteredRuns.map((run, index) => (
-                <tr key={index} className="hover:bg-content">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-primary">{run.employee_name}</div>
-                    <div className="text-sm text-muted">Code: {run.employee_code}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-primary">{run.month} {run.year}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-primary">{run.present_days}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-primary">{run.lop_days}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-primary">₹{run.gross_salary?.toLocaleString()}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-primary">₹{run.net_salary?.toLocaleString()}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      {run.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => handleViewPayroll(run)}
-                        className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                        title="View Details"
-                      >
-                        <Eye size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+                {filteredRuns.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="px-6 py-12 text-center">
+                      <Play className="mx-auto h-12 w-12 text-gray-400" />
+                      <h3 className="mt-2 text-sm font-medium text-gray-900">No payroll runs yet</h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Start by running payroll for your employees.
+                      </p>
+                      <div className="mt-6">
+                        <button 
+                          onClick={() => setShowRunModal(true)}
+                          className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                        >
+                          <Play size={16} />
+                          Run First Payroll
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRuns.map((run, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
+                        <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{run.month} {run.year}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{run.present_days}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{run.lop_days}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">₹{run.gross_salary?.toLocaleString()}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                          {run.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => handleViewPayroll(run)}
+                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                            title="View Details"
+                          >
+                            <Eye size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* View Payroll Modal */}
       {showViewModal && selectedRun && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">Payroll Details</h3>
               <button 
                 onClick={() => setShowViewModal(false)}
-                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
+                className="text-gray-500 hover:text-gray-700"
               >
                 ✕
               </button>
@@ -587,25 +561,25 @@ export default function PayrollRun() {
             
             <div className="space-y-6">
               {/* Employee Info */}
-              <div className="bg-content rounded-lg p-4">
-                <h4 className="font-medium text-primary mb-2">Employee Information</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="bg-gray-50 rounded-lg border border-black p-4">
+                <h4 className="font-medium text-gray-900 mb-2">Employee Information</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Name:</span>
+                    <span className="text-gray-600">Name:</span>
                     <span className="ml-2 font-medium">{selectedRun.employee_name}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Code:</span>
+                    <span className="text-gray-600">Code:</span>
                     <span className="ml-2 font-medium">{selectedRun.employee_code}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Month:</span>
+                    <span className="text-gray-600">Month:</span>
                     <span className="ml-2 font-medium">{selectedRun.month} {selectedRun.year}</span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Status:</span>
+                    <span className="text-gray-600">Status:</span>
                     <span className="ml-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
                         {selectedRun.status}
                       </span>
                     </span>
@@ -614,51 +588,51 @@ export default function PayrollRun() {
               </div>
 
               {/* Attendance Details */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-medium text-primary mb-2">Attendance Summary</h4>
-                <div className="grid grid-cols-3 gap-4 text-sm">
+              <div className="bg-gray-50 rounded-lg border border-black p-4">
+                <h4 className="font-medium text-gray-900 mb-2">Attendance Summary</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{selectedRun.present_days}</div>
-                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Present Days</div>
+                    <div className="text-2xl font-bold text-gray-700">{selectedRun.present_days}</div>
+                    <div className="text-gray-600">Present Days</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{selectedRun.leave_days || 0}</div>
-                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Leave Days</div>
+                    <div className="text-2xl font-bold text-gray-700">{selectedRun.leave_days || 0}</div>
+                    <div className="text-gray-600">Leave Days</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-red-600">{selectedRun.lop_days}</div>
-                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>LOP Days</div>
+                    <div className="text-2xl font-bold text-gray-700">{selectedRun.lop_days}</div>
+                    <div className="text-gray-600">LOP Days</div>
                   </div>
                 </div>
               </div>
 
               {/* Salary Breakdown */}
-              <div className="bg-green-50 rounded-lg p-4">
-                <h4 className="font-medium text-primary mb-4">Salary Breakdown</h4>
+              <div className="bg-gray-50 rounded-lg border border-black p-4">
+                <h4 className="font-medium text-gray-900 mb-4">Salary Breakdown</h4>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary</span>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-700">Basic Salary</span>
                     <span className="font-medium">₹{selectedRun.basic_salary?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA</span>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-700">HRA</span>
                     <span className="font-medium">₹{selectedRun.hra_salary?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances</span>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-700">Allowances</span>
                     <span className="font-medium">₹{selectedRun.allowances?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b-2 border-green-300 font-semibold">
-                    <span className="" style={{color: 'var(--text-primary, #111827)'}}>Gross Salary</span>
-                    <span className="text-green-600">₹{selectedRun.gross_salary?.toLocaleString()}</span>
+                  <div className="flex justify-between items-center py-2 border-b-2 border-gray-400 font-semibold">
+                    <span className="text-gray-900">Gross Salary</span>
+                    <span className="text-gray-800">₹{selectedRun.gross_salary?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 text-red-600">
+                  <div className="flex justify-between items-center py-2 text-gray-700">
                     <span>LOP Deduction</span>
                     <span className="font-medium">-₹{selectedRun.lop_deduction?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center py-3 bg-green-100 px-4 rounded-lg font-bold text-lg">
-                    <span className="" style={{color: 'var(--text-primary, #111827)'}}>Net Salary</span>
-                    <span className="text-green-700">₹{selectedRun.net_salary?.toLocaleString()}</span>
+                  <div className="flex justify-between items-center py-3 bg-gray-100 px-4 rounded-lg font-bold text-lg border border-gray-300">
+                    <span className="text-gray-900">Net Salary</span>
+                    <span className="text-gray-800">₹{selectedRun.net_salary?.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -667,301 +641,11 @@ export default function PayrollRun() {
             <div className="flex gap-4 mt-6">
               <button
                 onClick={() => setShowViewModal(false)}
-                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-600 hover:bg-gray-50"
               >
                 Close
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Validation Issues Modal */}
-      {showValidationModal && validationResult && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className={`text-lg font-semibold ${
-                validationResult.critical_issues > 0 
-                  ? 'text-red-600' 
-                  : 'text-yellow-600'
-              }`}>
-                {validationResult.critical_issues > 0 
-                  ? '❌ Cannot Run Payroll' 
-                  : '⚠️ Payroll Validation Results'
-                }
-              </h3>
-              <button 
-                onClick={() => setShowValidationModal(false)}
-                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-6">
-              {/* Summary */}
-              <div className={`border rounded-lg p-4 ${
-                validationResult.critical_issues > 0 
-                  ? 'bg-red-50 border-red-200' 
-                  : 'bg-yellow-50 border-yellow-200'
-              }`}>
-                <h4 className={`font-medium mb-2 ${
-                  validationResult.critical_issues > 0 
-                    ? 'text-red-800' 
-                    : 'text-yellow-800'
-                }`}>
-                  {validationResult.critical_issues > 0 
-                    ? 'Critical Issues Found' 
-                    : 'Validation Warnings'
-                  }
-                </h4>
-                <div className={`text-sm ${
-                  validationResult.critical_issues > 0 
-                    ? 'text-red-700' 
-                    : 'text-yellow-700'
-                }`}>
-                  {validationResult.critical_issues > 0 && (
-                    <>
-                      <p><strong>Critical Issues:</strong> {validationResult.critical_issues}</p>
-                      <p className="mt-2">Please resolve all critical issues before running payroll.</p>
-                    </>
-                  )}
-                  {validationResult.warning_issues > 0 && (
-                    <p><strong>Warnings:</strong> {validationResult.warning_issues} (absent days will result in LOP deductions)</p>
-                  )}
-                  <p><strong>Total Issues:</strong> {validationResult.total_issues}</p>
-                </div>
-              </div>
-
-              {/* Issues List */}
-              {validationResult.issues && validationResult.issues.length > 0 && (
-                <div>
-                  <h4 className="font-medium text-primary mb-4">Issues Details:</h4>
-                  
-                  {/* Critical Issues */}
-                  {validationResult.issues.filter(issue => issue.severity === 'critical').length > 0 && (
-                    <div className="mb-6">
-                      <h5 className="font-medium text-red-800 mb-3">🚨 Critical Issues (Must be resolved):</h5>
-                      <div className="space-y-3">
-                        {validationResult.issues
-                          .filter(issue => issue.severity === 'critical')
-                          .map((issue, index) => (
-                          <div key={index} className="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <div className="font-medium text-primary">
-                                  {issue.employee_name} ({issue.employee_id})
-                                </div>
-                                <div className="text-sm mt-1 text-red-700">
-                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
-                                </div>
-                                <div className="text-xs text-secondary mt-2">
-                                  <strong>Action Required:</strong> {issue.action_required}
-                                </div>
-                              </div>
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                CRITICAL
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Warning Issues */}
-                  {validationResult.issues.filter(issue => issue.severity === 'warning').length > 0 && (
-                    <div>
-                      <h5 className="font-medium text-yellow-800 mb-3">⚠️ Warnings (Payroll can run with LOP deductions):</h5>
-                      <div className="space-y-3">
-                        {validationResult.issues
-                          .filter(issue => issue.severity === 'warning')
-                          .map((issue, index) => (
-                          <div key={index} className="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-r-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <div className="font-medium text-primary">
-                                  {issue.employee_name} ({issue.employee_id})
-                                </div>
-                                <div className="text-sm mt-1 text-yellow-700">
-                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
-                                </div>
-                                <div className="text-xs text-secondary mt-2">
-                                  <strong>Action Required:</strong> {issue.action_required}
-                                </div>
-                              </div>
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                WARNING
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex gap-4 mt-6">
-              <button
-                onClick={() => setShowValidationModal(false)}
-                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => {
-                  setShowValidationModal(false);
-                  // Optionally navigate to relevant sections to fix issues
-                }}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Go Fix Issues
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Run Payroll Modal */}
-      {showRunModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-4">Run Payroll</h3>
-            <form onSubmit={handleRunPayroll} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Month</label>
-                <select
-                  value={runData.month}
-                  onChange={(e) => setRunData({...runData, month: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Month</option>
-                  {months.map(month => (
-                    <option key={month} value={month}>{month}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Year</label>
-                <input
-                  type="number"
-                  value={runData.year}
-                  onChange={(e) => setRunData({...runData, year: parseInt(e.target.value)})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-              </div>
-              
-              {/* Validation Check Button */}
-              {runData.month && runData.year && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        const validation = await checkPayrollValidation(runData.month, runData.year);
-                        setValidationResult(validation);
-                        setValidationChecked(true);
-                      } catch (error) {
-                        alert('🔴 Validation check failed. Please try again.');
-                      }
-                    }}
-                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                  >
-                    🔍 Check Validation First
-                  </button>
-                  <p className="text-xs text-blue-600 mt-1 text-center">
-                    Recommended: Check for issues before running payroll
-                  </p>
-                </div>
-              )}
-              
-              {/* Validation Results */}
-              {validationChecked && validationResult && (
-                <div className="mt-4">
-                  {validationResult.can_run_payroll ? (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center">
-                        <span className="text-green-600 text-xl mr-2">✅</span>
-                        <div>
-                          <h4 className="font-medium text-green-800">Validation Passed!</h4>
-                          <p className="text-sm text-green-700">No critical issues found. You can run payroll safely.</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="flex items-start">
-                        <span className="text-red-600 text-xl mr-2">❌</span>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-red-800">Cannot Run Payroll</h4>
-                          <p className="text-sm text-red-700 mb-3">
-                            Found {validationResult.critical_issues} critical issues that must be resolved.
-                          </p>
-                          
-                          {/* Critical Issues Only */}
-                          <div className="space-y-2">
-                            {validationResult.issues
-                              .filter(issue => issue.severity === 'critical')
-                              .map((issue, index) => (
-                              <div key={index} className="bg-white border border-red-200 rounded p-2 text-xs">
-                                <div className="font-medium text-red-800">
-                                  {issue.employee_name} ({issue.employee_id})
-                                </div>
-                                <div className="text-red-700">
-                                  <strong>{issue.issue_type}:</strong> {issue.issue_description}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          {/* Show warning count if any - only if critical issues exist */}
-                          {validationResult.critical_issues > 0 && validationResult.warning_issues > 0 && (
-                            <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                              <div className="text-yellow-700">
-                                <strong>Note:</strong> {validationResult.warning_issues} absent days (LOP deductions)
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              
-              {/* Validation Scenarios Info */}
-              <div className="bg-content border rounded-lg p-3">
-                <h5 className="font-medium text-primary mb-2">📋 Checks:</h5>
-                <div className="text-xs text-secondary space-y-1">
-                  <div>• Pending approvals • Missing punches • Absent days</div>
-                </div>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowRunModal(false)}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading || (validationChecked && validationResult && !validationResult.can_run_payroll)}
-                  className={`flex-1 px-4 py-2 rounded-lg ${
-                    loading || (validationChecked && validationResult && !validationResult.can_run_payroll)
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-green-600 hover:bg-green-700'
-                  } text-white`}
-                >
-                  {loading ? "Processing..." : "Run Payroll"}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

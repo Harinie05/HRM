@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { Award, Download, Eye, Search, Plus } from "lucide-react";
 import api from "../../api";
 
-export default function TrainingCertificates() {
+export default function TrainingCertificates({ showModal, setShowModal }) {
   const [certificates, setCertificates] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [formData, setFormData] = useState({
@@ -170,91 +169,18 @@ export default function TrainingCertificates() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Award className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Training Certificates</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage and download training certificates for completed programs</p>
-          </div>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Award className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Total Certificates</p>
-              <p className="text-2xl font-semibold text-blue-900">{certificates.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Award className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">Active</p>
-              <p className="text-2xl font-semibold text-green-900">{certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Award className="h-8 w-8 text-yellow-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-yellow-600">Expiring Soon</p>
-              <p className="text-2xl font-semibold text-yellow-900">
-                {certificates.filter(c => {
-                  if (!c.expiry_date) return false;
-                  const expiryDate = new Date(c.expiry_date);
-                  const thirtyDaysFromNow = new Date();
-                  thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-                  return expiryDate <= thirtyDaysFromNow && expiryDate > new Date();
-                }).length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Award className="h-8 w-8 text-red-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-red-600">Expired</p>
-              <p className="text-2xl font-semibold text-red-900">{certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        {/* Header Actions */}
-        <div className="p-6 border-b ">
-          <div className="flex justify-end">
-            <button 
-              onClick={() => setShowModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Plus size={16} />
-              Generate Certificate
-            </button>
-          </div>
-        </div>
-
+      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Search */}
-        <div className="p-6 border-b ">
+        <div className="p-6 border-b border-black">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search certificates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
         </div>
@@ -274,43 +200,43 @@ export default function TrainingCertificates() {
               </p>
             </div>
           ) : (
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+            <table className="w-full">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Training Program</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Certificate ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Issued Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Expiry Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Program</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Certificate ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Issued Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Expiry Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                 </tr>
               </thead>
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+              <tbody className="bg-white divide-y divide-black">
                 {filteredCertificates.map((certificate) => {
                   const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
                   const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                   
                   return (
-                    <tr key={certificate.id} className="hover:bg-content">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-primary">{certificate.employee_name}</div>
+                    <tr key={certificate.id} className="hover:bg-gray-50 border-b border-black">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-primary">{certificate.program_title}</div>
+                      <td className="px-6 py-4 border-r border-black">
+                        <div className="text-sm text-gray-900">{certificate.program_title}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary font-mono">{certificate.certificate_number}</div>
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">{new Date(certificate.issued_date).toLocaleDateString()}</div>
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900">
                           {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           isExpired ? 'bg-red-100 text-red-800' :
                           isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
@@ -346,8 +272,8 @@ export default function TrainingCertificates() {
         </div>
 
         {/* Stats Footer */}
-        <div className="px-6 py-4 bg-content border-t ">
-          <div className="flex justify-between items-center text-sm text-secondary">
+        <div className="px-6 py-4 bg-gray-50 border-t border-black">
+          <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Total Certificates: {certificates.length}</span>
             <span>Active: {certificates.filter(c => !c.expiry_date || new Date(c.expiry_date) > new Date()).length}</span>
             <span>Expired: {certificates.filter(c => c.expiry_date && new Date(c.expiry_date) < new Date()).length}</span>
@@ -357,100 +283,108 @@ export default function TrainingCertificates() {
 
       {/* Generate Certificate Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-            <h3 className="text-lg font-semibold mb-4">Generate Training Certificate</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Training Program</label>
-                <select
-                  value={formData.training_id}
-                  onChange={(e) => setFormData({...formData, training_id: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Training Program</option>
-                  {programs.map(program => (
-                    <option key={program.id} value={program.id}>
-                      {program.title} - {program.category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
-                <select
-                  value={formData.employee_id}
-                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map(employee => (
-                    <option key={employee.id} value={employee.id}>
-                      {employee.name} ({employee.employee_code || employee.id})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+              <h3 className="text-lg font-semibold text-gray-900">Generate Training Certificate</h3>
+              <p className="text-sm text-gray-500 mt-1">Create a certificate for completed training</p>
+            </div>
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Score (%)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.score}
-                    onChange={(e) => setFormData({...formData, score: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter final score"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">Compliance Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
                   <select
-                    value={formData.compliance_type}
-                    onChange={(e) => setFormData({...formData, compliance_type: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={formData.training_id}
+                    onChange={(e) => setFormData({...formData, training_id: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required
                   >
-                    <option value="">Select Type</option>
-                    <option value="Safety">Safety</option>
-                    <option value="Quality">Quality</option>
-                    <option value="Technical">Technical</option>
-                    <option value="Compliance">Compliance</option>
-                    <option value="General">General</option>
+                    <option value="">Select Training Program</option>
+                    {programs.map(program => (
+                      <option key={program.id} value={program.id}>
+                        {program.title} - {program.category}
+                      </option>
+                    ))}
                   </select>
                 </div>
-              </div>
-              <div>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.has_expiry}
-                    onChange={(e) => setFormData({...formData, has_expiry: e.target.checked})}
-                    className="mr-2"
-                  />
-                  Certificate has expiry date (1 year from issue)
-                </label>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Generating..." : "Generate Certificate"}
-                </button>
-              </div>
-            </form>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                  <select
+                    value={formData.employee_id}
+                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map(employee => (
+                      <option key={employee.id} value={employee.id}>
+                        {employee.name} ({employee.employee_code || employee.id})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Score (%)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={formData.score}
+                      onChange={(e) => setFormData({...formData, score: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      placeholder="Final score"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Compliance Type</label>
+                    <select
+                      value={formData.compliance_type}
+                      onChange={(e) => setFormData({...formData, compliance_type: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    >
+                      <option value="">Select Type</option>
+                      <option value="Safety">Safety</option>
+                      <option value="Quality">Quality</option>
+                      <option value="Technical">Technical</option>
+                      <option value="Compliance">Compliance</option>
+                      <option value="General">General</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.has_expiry}
+                      onChange={(e) => setFormData({...formData, has_expiry: e.target.checked})}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm font-medium text-gray-700">
+                      Certificate has expiry date (1 year from issue)
+                    </span>
+                  </label>
+                </div>
+              </form>
+            </div>
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                {loading ? "Generating..." : "Generate Certificate"}
+              </button>
+            </div>
           </div>
         </div>
       )}

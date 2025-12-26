@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DollarSign, Users, Calculator, FileText, Plus } from "lucide-react";
+import { DollarSign, Users, Calculator, FileText, Plus, Edit, Trash2 } from "lucide-react";
 import api from "../../api";
 
 export default function Statutory() {
@@ -239,60 +239,7 @@ export default function Statutory() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Calculator className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Statutory Deductions Management</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage PF, ESI, Professional Tax, and TDS calculations</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Users className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Total Records</p>
-              <p className="text-2xl font-semibold text-blue-900">{calculations.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <DollarSign className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">Total PF</p>
-              <p className="text-2xl font-semibold text-green-900">₹{calculations.reduce((sum, calc) => sum + (calc.pf_amount || 0), 0).toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <FileText className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-purple-600">Total ESI</p>
-              <p className="text-2xl font-semibold text-purple-900">₹{calculations.reduce((sum, calc) => sum + (calc.esi_amount || 0), 0).toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Calculator className="h-8 w-8 text-orange-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-orange-600">Total Deductions</p>
-              <p className="text-2xl font-semibold text-orange-900">₹{calculations.reduce((sum, calc) => sum + (calc.total_deductions || 0), 0).toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Statutory Rules Display */}
         {statutoryRules && (
           <div className="bg-blue-50 p-4 rounded-lg mb-6">
@@ -331,7 +278,7 @@ export default function Statutory() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees.map((employee) => (
@@ -366,7 +313,7 @@ export default function Statutory() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees.map((employee) => (
@@ -388,7 +335,7 @@ export default function Statutory() {
               name="basic_salary"
               value={form.basic_salary}
               onChange={handleChange}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Basic Salary"
               min="0"
               step="0.01"
@@ -406,7 +353,7 @@ export default function Statutory() {
               name="gross_salary"
               value={form.gross_salary}
               onChange={handleChange}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Gross Salary"
               min="0"
               step="0.01"
@@ -434,7 +381,7 @@ export default function Statutory() {
                     name="pf_percentage"
                     value={form.pf_percentage}
                     onChange={handleChange}
-                    className="w-20 border-dark rounded px-2 py-1 text-sm"
+                    className="w-20 border border-black rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -466,7 +413,7 @@ export default function Statutory() {
                     name="esi_percentage"
                     value={form.esi_percentage}
                     onChange={handleChange}
-                    className="w-20 border-dark rounded px-2 py-1 text-sm"
+                    className="w-20 border border-black rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -498,7 +445,7 @@ export default function Statutory() {
                     name="pt_amount"
                     value={form.pt_amount}
                     onChange={handleChange}
-                    className="w-20 border-dark rounded px-2 py-1 text-sm"
+                    className="w-20 border border-black rounded px-2 py-1 text-sm"
                     min="0"
                     step="1"
                   />
@@ -529,7 +476,7 @@ export default function Statutory() {
                     name="tds_percentage"
                     value={form.tds_percentage}
                     onChange={handleChange}
-                    className="w-20 border-dark rounded px-2 py-1 text-sm"
+                    className="w-20 border border-black rounded px-2 py-1 text-sm"
                     min="0"
                     max="100"
                     step="0.01"
@@ -547,7 +494,7 @@ export default function Statutory() {
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -573,7 +520,7 @@ export default function Statutory() {
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -598,7 +545,7 @@ export default function Statutory() {
           <div className="col-span-2 flex gap-4">
             <button
               type="submit"
-              className="bg-blue-600 px-6 py-2 text-white rounded-lg hover:bg-blue-700"
+              className="bg-gray-800 px-6 py-2 text-white rounded-lg border border-black hover:bg-gray-900 transition-colors"
             >
               {editingRecord ? 'Update' : 'Calculate & Save'} Statutory Deductions
             </button>
@@ -606,7 +553,7 @@ export default function Statutory() {
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="bg-gray-600 px-6 py-2 text-white rounded-lg hover:bg-gray-700"
+                className="bg-gray-600 px-6 py-2 text-white rounded-lg border border-black hover:bg-gray-700 transition-colors"
               >
                 Cancel Edit
               </button>
@@ -619,47 +566,49 @@ export default function Statutory() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Statutory Deduction History</h3>
             <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+              <table className="w-full border border-black">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Basic Salary</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">PF</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">ESI</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">PT</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Total</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Period</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Basic Salary</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PF</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">ESI</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PT</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Total</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                   </tr>
                 </thead>
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+                <tbody className="bg-white divide-y divide-black">
                   {calculations.map((calc, index) => (
-                    <tr key={index} className="hover:bg-content">
-                      <td className="px-4 py-2 text-sm">
+                    <tr key={index} className="hover:bg-gray-50 border-b border-black">
+                      <td className="px-4 py-2 text-sm border-r border-black">
                         <div>
                           <div className="font-medium">{calc.employee_name}</div>
-                          <div className=" text-xs" style={{color: 'var(--text-muted, #6b7280)'}}>{calc.employee_id}</div>
+                          <div className="text-gray-500 text-xs">{calc.employee_id}</div>
                         </div>
                       </td>
-                      <td className="px-4 py-2 text-sm">₹{calc.basic_salary}</td>
-                      <td className="px-4 py-2 text-sm">₹{calc.pf_amount}</td>
-                      <td className="px-4 py-2 text-sm">₹{calc.esi_amount}</td>
-                      <td className="px-4 py-2 text-sm">₹{calc.pt_amount}</td>
-                      <td className="px-4 py-2 text-sm font-semibold">₹{calc.total_deductions}</td>
-                      <td className="px-4 py-2 text-sm">{calc.month}/{calc.year}</td>
+                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.basic_salary}</td>
+                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pf_amount}</td>
+                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.esi_amount}</td>
+                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pt_amount}</td>
+                      <td className="px-4 py-2 text-sm font-semibold border-r border-black">₹{calc.total_deductions}</td>
+                      <td className="px-4 py-2 text-sm border-r border-black">{calc.month}/{calc.year}</td>
                       <td className="px-4 py-2 text-sm">
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEdit(calc)}
-                            className="text-blue-600 hover:text-blue-800 text-xs"
+                            className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                            title="Edit"
                           >
-                            Edit
+                            <Edit size={16} />
                           </button>
                           <button
                             onClick={() => handleDelete(calc.id)}
-                            className="text-red-600 hover:text-red-800 text-xs"
+                            className="text-red-600 hover:text-red-800 p-1 rounded"
+                            title="Delete"
                           >
-                            Delete
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>

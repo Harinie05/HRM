@@ -244,80 +244,80 @@ export default function Lifecycle() {
   return (
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
+        <div className="bg-white rounded-xl p-3 sm:p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Promotions</p>
-              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
+              <p className="text-gray-600 text-xs font-medium">Promotions</p>
+              <p className="text-lg sm:text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
             </div>
-            <div className="p-2 bg-green-50 rounded-lg">
-              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-1.5 sm:p-2 bg-gray-100 rounded-lg">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Transfers</p>
-              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
+              <p className="text-gray-600 text-xs font-medium">Transfers</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
             </div>
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Pending</p>
-              <p className="text-xl font-bold text-primary">{pendingActions.length}</p>
+              <p className="text-gray-600 text-xs font-medium">Pending</p>
+              <p className="text-xl font-bold text-gray-900">{pendingActions.length}</p>
             </div>
-            <div className="p-2 bg-yellow-50 rounded-lg">
-              <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Demotions</p>
-              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
+              <p className="text-gray-600 text-xs font-medium">Demotions</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
             </div>
-            <div className="p-2 bg-orange-50 rounded-lg">
-              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Resignations</p>
-              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
+              <p className="text-gray-600 text-xs font-medium">Resignations</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
             </div>
-            <div className="p-2 bg-red-50 rounded-lg">
-              <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-xl p-4 border shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Terminations</p>
-              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
+              <p className="text-gray-600 text-xs font-medium">Terminations</p>
+              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
             </div>
             <div className="p-2 bg-gray-100 rounded-lg">
-              <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
@@ -326,25 +326,25 @@ export default function Lifecycle() {
       </div>
 
       {/* Enhanced Action Form */}
-      <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b  rounded-t-2xl">
+      <div className="rounded-2xl shadow-lg border border-black bg-white">
+        <div className="px-6 py-4 border-b border-black rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-xl">
-              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-2 bg-gray-100 rounded-xl">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-primary">Employee Lifecycle Action</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Employee Lifecycle Action</h3>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Employee ID</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((emp) => (
@@ -355,11 +355,11 @@ export default function Lifecycle() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Action Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
               <select 
                 value={formData.actionType}
                 onChange={(e) => setFormData({...formData, actionType: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 <option value="">Select Action</option>
                 <option value="promotion">Promotion</option>
@@ -370,49 +370,49 @@ export default function Lifecycle() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Effective Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
               <input 
                 type="date"
                 value={formData.effectiveDate}
                 onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Current Role</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
               <input 
                 type="text"
                 value={formData.currentRole}
                 onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="Current designation"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">New Role</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">New Role</label>
               <input 
                 type="text"
                 value={formData.newRole}
                 onChange={(e) => setFormData({...formData, newRole: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="New designation"
               />
             </div>
-            <div className="md:col-span-3">
-              <label className="block text-sm font-medium text-secondary mb-2">Reason</label>
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
               <textarea 
                 value={formData.reason}
                 onChange={(e) => setFormData({...formData, reason: e.target.value})}
                 rows={3}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="Reason for this action"
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end">
+          <div className="mt-4 sm:mt-6 flex justify-end">
             <button 
               type="submit"
-              className="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
             >
               Submit for Approval
             </button>
@@ -422,54 +422,56 @@ export default function Lifecycle() {
 
       {/* Pending Actions */}
       {pendingActions.length > 0 && (
-        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-primary">Pending Action Approvals</h3>
+        <div className="rounded-lg shadow-sm border border-black bg-white">
+          <div className="px-6 py-4 border-b border-black">
+            <h3 className="text-lg font-semibold text-gray-900">Pending Action Approvals</h3>
           </div>
           <div className="overflow-x-auto">
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+            <table className="min-w-full divide-y divide-gray-200 border border-black">
+              <thead className="bg-gray-50 border-b border-black">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Action</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">From</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">To</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Action</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">From</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">To</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {pendingActions.map((action) => (
                   <tr key={action.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-primary">{action.name}</div>
-                        <div className="text-sm text-muted">{action.employee}</div>
+                        <div className="text-sm font-medium text-gray-900">{action.name}</div>
+                        <div className="text-sm text-gray-500">{action.employee}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.action}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.from}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.to}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.date}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.action}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.from}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date}</td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                         <button
                           onClick={() => handleApproval(action.id, true)}
-                          className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-black text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          Approve
+                          <span className="hidden sm:inline">Approve</span>
+                          <span className="sm:hidden">✓</span>
                         </button>
                         <button
                           onClick={() => handleApproval(action.id, false)}
-                          className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-black text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
-                          Reject
+                          <span className="hidden sm:inline">Reject</span>
+                          <span className="sm:hidden">✗</span>
                         </button>
                       </div>
                     </td>
@@ -482,45 +484,45 @@ export default function Lifecycle() {
       )}
 
       {/* Actions History */}
-      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-primary">Approved Actions</h3>
+      <div className="rounded-lg shadow-sm border border-black bg-white">
+        <div className="px-6 py-4 border-b border-black">
+          <h3 className="text-lg font-semibold text-gray-900">Approved Actions</h3>
         </div>
         <div className="overflow-x-auto">
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+          <table className="min-w-full divide-y divide-gray-200 border border-black">
+            <thead className="bg-gray-50 border-b border-black">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Action</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">From</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">To</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">From</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">To</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+            <tbody className="bg-white divide-y divide-gray-200">
               {actions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-muted">No actions found</td>
+                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No actions found</td>
                 </tr>
               ) : (
                 actions.map((action) => (
                   <tr key={action.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-primary">{action.name || action.employee_name}</div>
-                        <div className="text-sm text-muted">{action.employee || action.employeeId}</div>
+                        <div className="text-sm font-medium text-gray-900">{action.name || action.employee_name}</div>
+                        <div className="text-sm text-gray-500">{action.employee || action.employeeId}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.action || action.actionType}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.from || action.currentRole}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.to || action.newRole}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.date || action.effectiveDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.action || action.actionType}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.from || action.currentRole}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to || action.newRole}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date || action.effectiveDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          action.status === 'Approved' ? 'bg-green-100 text-green-800' : 
-                          action.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                          action.status === 'Approved' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
+                          action.status === 'Rejected' ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-gray-100 text-gray-700 border-gray-300'
                         }`}>
                           {action.status}
                         </span>
@@ -536,8 +538,8 @@ export default function Lifecycle() {
 
       {/* Email Confirmation Modal */}
       {showEmailModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md mx-4">
             <h3 className="text-lg font-semibold mb-4">
               {emailData.approved ? 'Approve' : 'Reject'} Lifecycle Action
             </h3>
@@ -561,7 +563,7 @@ export default function Lifecycle() {
               </div>
             </div>
             
-            <div className="flex gap-2 mt-6">
+            <div className="flex flex-col sm:flex-row gap-2 mt-6">
               <button
                 onClick={submitApproval}
                 className={`flex-1 px-4 py-2 text-white rounded-lg ${

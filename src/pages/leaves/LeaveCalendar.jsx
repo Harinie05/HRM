@@ -222,21 +222,28 @@ export default function LeaveCalendar() {
   };
 
   return (
-    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+    <div className="">
       {/* Header */}
-      <div className="p-6 border-b ">
+      <div className="p-8 border-b border-gray-100">
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-semibold text-primary">Leave Calendar</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>View team leaves and plan coverage</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Calendar</h2>
+              <p className="text-gray-600 text-base">View team leaves and plan coverage</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Filter size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+              <Filter size={18} className="text-gray-400" />
               <select 
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="border-dark rounded-lg px-3 py-2 text-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                className="border border-black rounded-2xl px-4 py-3 text-sm bg-gray-50 hover:bg-white transition-colors"
               >
                 <option value="All Departments">All Departments</option>
                 {departments.map(dept => (
@@ -244,22 +251,28 @@ export default function LeaveCalendar() {
                 ))}
               </select>
             </div>
-            <div className="flex rounded-lg border-dark">
+            <div className="bg-gray-100 border border-black rounded-full p-1 inline-flex space-x-1">
               <button 
                 onClick={() => setViewMode("month")}
-                className={`px-3 py-2 text-sm ${viewMode === "month" ? "bg-blue-100 text-blue-700" : "text-secondary"}`}
+                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 ${
+                  viewMode === "month" ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                }`}
               >
                 Month
               </button>
               <button 
                 onClick={() => setViewMode("week")}
-                className={`px-3 py-2 text-sm border-l ${viewMode === "week" ? "bg-blue-100 text-blue-700" : "text-secondary"}`}
+                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 ${
+                  viewMode === "week" ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                }`}
               >
                 Week
               </button>
               <button 
                 onClick={() => setViewMode("list")}
-                className={`px-3 py-2 text-sm border-l ${viewMode === "list" ? "bg-blue-100 text-blue-700" : "text-secondary"}`}
+                className={`px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 ${
+                  viewMode === "list" ? "bg-white text-gray-900 shadow-lg" : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                }`}
               >
                 List
               </button>
@@ -269,28 +282,28 @@ export default function LeaveCalendar() {
       </div>
 
       {/* Calendar Navigation */}
-      <div className="p-6 border-b ">
+      <div className="p-8 border-b border-gray-100">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => navigateMonth(-1)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-xl font-bold text-gray-900">
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h3>
             <button 
               onClick={() => navigateMonth(1)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              className="p-3 hover:bg-gray-100 rounded-2xl transition-colors"
             >
               <ChevronRight size={20} />
             </button>
           </div>
           <button 
             onClick={() => setCurrentDate(new Date())}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-3 text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             Today
           </button>
@@ -309,7 +322,7 @@ export default function LeaveCalendar() {
           </div>
           <div className="grid grid-cols-7 gap-1">
             {getDaysInMonth().map((day, index) => (
-              <div key={index} className="min-h-[100px] border p-2">
+              <div key={index} className="min-h-[100px] border border-black p-2">
                 {day && (
                   <>
                     <div className="text-sm font-medium text-primary mb-1">{day}</div>
@@ -357,7 +370,7 @@ export default function LeaveCalendar() {
               const day = date.getDate();
               const isCurrentMonth = date.getMonth() === currentDate.getMonth();
               return (
-                <div key={index} className={`min-h-[120px] border p-2 ${!isCurrentMonth ? 'bg-content' : ''}`}>
+                <div key={index} className={`min-h-[120px] border border-black p-2 ${!isCurrentMonth ? 'bg-content' : ''}`}>
                   <div className={`text-sm font-medium mb-1 ${isCurrentMonth ? 'text-primary' : 'text-muted'}`}>
                     {day}
                   </div>
@@ -400,7 +413,7 @@ export default function LeaveCalendar() {
                 <div className="text-center py-8 text-muted">No leaves found for this period.</div>
               ) : (
                 leaves.map((leave, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 border border-black rounded-lg">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <Calendar size={20} className="text-blue-600" />
@@ -428,23 +441,23 @@ export default function LeaveCalendar() {
       )}
 
       {/* Legend */}
-      <div className="px-6 py-4 bg-content border-t ">
+      <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded"></div>
-            <span>Approved</span>
+            <span className="font-medium text-gray-700">Approved</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span>Pending</span>
+            <span className="font-medium text-gray-700">Pending</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Rejected</span>
+            <span className="font-medium text-gray-700">Rejected</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded"></div>
-            <span>Holiday</span>
+            <span className="font-medium text-gray-700">Holiday</span>
           </div>
         </div>
       </div>

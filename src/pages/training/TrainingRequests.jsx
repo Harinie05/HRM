@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { Plus, Search, Eye, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
 import api from "../../api";
 
-export default function TrainingRequests() {
+export default function TrainingRequests({ showModal, setShowModal }) {
   const [requests, setRequests] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -220,90 +219,25 @@ export default function TrainingRequests() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <FileText className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Training Requests & Workflow</h2>
-            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee training requests and approval workflow</p>
-          </div>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Total Requests</p>
-              <p className="text-2xl font-semibold text-blue-900">{requests.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Clock className="h-8 w-8 text-yellow-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-yellow-600">Pending</p>
-              <p className="text-2xl font-semibold text-yellow-900">{requests.filter(r => r.status === 'Pending').length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <CheckCircle className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">Approved</p>
-              <p className="text-2xl font-semibold text-green-900">{requests.filter(r => r.status === 'HR Approved' || r.status === 'Approved').length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <XCircle className="h-8 w-8 text-red-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-red-600">Rejected</p>
-              <p className="text-2xl font-semibold text-red-900">{requests.filter(r => r.status === 'Rejected').length}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        {/* Header Actions */}
-        <div className="p-6 border-b ">
-          <div className="flex justify-end">
-            <button 
-              onClick={handleOpenModal}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Plus size={16} />
-              New Request
-            </button>
-          </div>
-        </div>
-
+      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Filters */}
-        <div className="p-6 border-b ">
+        <div className="p-6 border-b border-black">
           <div className="flex gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
               <input
                 type="text"
                 placeholder="Search requests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+              className="border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Status</option>
               {statuses.map(status => (
@@ -320,18 +254,18 @@ export default function TrainingRequests() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           ) : (
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+            <table className="w-full">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Training Requested</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Requested Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Requested</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Priority</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Requested Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                 </tr>
               </thead>
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+              <tbody className="bg-white divide-y divide-black">
                 {filteredRequests.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
@@ -355,17 +289,17 @@ export default function TrainingRequests() {
                   </tr>
                 ) : (
                   filteredRequests.map((request) => (
-                    <tr key={request.id} className="hover:bg-content">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-primary">{getEmployeeName(request.employee_id)}</div>
+                    <tr key={request.id} className="hover:bg-gray-50 border-b border-black">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm font-medium text-gray-900">{getEmployeeName(request.employee_id)}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-primary">{request.requested_training}</div>
+                      <td className="px-6 py-4 border-r border-black">
+                        <div className="text-sm text-gray-900">{request.requested_training}</div>
                         {request.justification && (
-                          <div className="text-sm text-muted truncate max-w-xs">{request.justification}</div>
+                          <div className="text-sm text-gray-500 truncate max-w-xs">{request.justification}</div>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           request.priority === "Urgent" ? "bg-red-100 text-red-800" :
                           request.priority === "High" ? "bg-orange-100 text-orange-800" :
@@ -375,7 +309,7 @@ export default function TrainingRequests() {
                           {request.priority}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           request.status === "HR Approved" || request.status === "Approved" ? "bg-green-100 text-green-800" :
                           request.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
@@ -385,8 +319,8 @@ export default function TrainingRequests() {
                           {request.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-primary">
+                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <div className="text-sm text-gray-900">
                           {new Date(request.created_at).toLocaleDateString()}
                         </div>
                       </td>
@@ -421,8 +355,8 @@ export default function TrainingRequests() {
         </div>
 
         {/* Stats Footer */}
-        <div className="px-6 py-4 bg-content border-t ">
-          <div className="flex justify-between items-center text-sm text-secondary">
+        <div className="px-6 py-4 bg-gray-50 border-t border-black">
+          <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Total Requests: {requests.length}</span>
             <span>Pending Approval: {requests.filter(r => r.status === 'Pending' || r.status === 'Manager Approved').length}</span>
             <span>Approved: {requests.filter(r => r.status === 'HR Approved' || r.status === 'Approved').length}</span>
@@ -432,100 +366,106 @@ export default function TrainingRequests() {
 
       {/* Create Request Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-            <h3 className="text-lg font-semibold mb-4">New Training Request</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
-                <select
-                  value={formData.employee_id}
-                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map(employee => (
-                    <option key={employee.id} value={employee.id}>
-                      {employee.name} ({employee.employee_code || employee.id})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Training Program (Optional)</label>
-                <select
-                  value={formData.training_program_id}
-                  onChange={(e) => {
-                    const programId = e.target.value;
-                    const program = programs.find(p => p.id === parseInt(programId));
-                    setFormData({
-                      ...formData, 
-                      training_program_id: programId,
-                      requested_training: program ? program.title : formData.requested_training
-                    });
-                  }}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select from Available Programs</option>
-                  {programs.map(program => (
-                    <option key={program.id} value={program.id}>
-                      {program.title} - {program.category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Training Requested</label>
-                <input
-                  type="text"
-                  value={formData.requested_training}
-                  onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter training name or description"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Justification</label>
-                <textarea
-                  value={formData.justification}
-                  onChange={(e) => setFormData({...formData, justification: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows="3"
-                  placeholder="Explain why this training is needed"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-secondary mb-1">Priority</label>
-                <select
-                  value={formData.priority}
-                  onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  {priorities.map(priority => (
-                    <option key={priority} value={priority}>{priority}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Submitting..." : "Submit Request"}
-                </button>
-              </div>
-            </form>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+              <h3 className="text-lg font-semibold text-gray-900">New Training Request</h3>
+              <p className="text-sm text-gray-500 mt-1">Submit a request for training approval</p>
+            </div>
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                  <select
+                    value={formData.employee_id}
+                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map(employee => (
+                      <option key={employee.id} value={employee.id}>
+                        {employee.name} ({employee.employee_code || employee.id})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Training Program (Optional)</label>
+                  <select
+                    value={formData.training_program_id}
+                    onChange={(e) => {
+                      const programId = e.target.value;
+                      const program = programs.find(p => p.id === parseInt(programId));
+                      setFormData({
+                        ...formData, 
+                        training_program_id: programId,
+                        requested_training: program ? program.title : formData.requested_training
+                      });
+                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                  >
+                    <option value="">Select from Available Programs</option>
+                    {programs.map(program => (
+                      <option key={program.id} value={program.id}>
+                        {program.title} - {program.category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Training Requested</label>
+                  <input
+                    type="text"
+                    value={formData.requested_training}
+                    onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    placeholder="Enter training name or description"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Justification</label>
+                  <textarea
+                    value={formData.justification}
+                    onChange={(e) => setFormData({...formData, justification: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
+                    rows="2"
+                    placeholder="Explain why this training is needed"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required
+                  >
+                    {priorities.map(priority => (
+                      <option key={priority} value={priority}>{priority}</option>
+                    ))}
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3 flex-shrink-0">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                {loading ? "Submitting..." : "Submit Request"}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -606,7 +546,7 @@ export default function TrainingRequests() {
                 <select
                   value={approvalData.action}
                   onChange={(e) => setApprovalData({...approvalData, action: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Action</option>
@@ -619,7 +559,7 @@ export default function TrainingRequests() {
                 <textarea
                   value={approvalData.comment}
                   onChange={(e) => setApprovalData({...approvalData, comment: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Add your comments (optional)"
                 />
@@ -628,7 +568,7 @@ export default function TrainingRequests() {
                 <button
                   type="button"
                   onClick={() => setShowApprovalModal(false)}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

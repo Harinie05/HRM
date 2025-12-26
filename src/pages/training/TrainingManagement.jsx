@@ -101,14 +101,14 @@ export default function TrainingManagement() {
             <input
               type="text"
               placeholder="Search training programs..."
-              className="pl-10 pr-4 py-2 border-dark rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2 border border-black rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           
           <select
-            className="border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+            className="border border-black rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -129,34 +129,34 @@ export default function TrainingManagement() {
       </div>
 
       {/* Training Programs Table */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
-          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+      <div className="bg-white shadow rounded-lg border border-black overflow-hidden">
+        <table className="min-w-full divide-y divide-black">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Program</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Trainer</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Schedule</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Program</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Trainer</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Schedule</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
             </tr>
           </thead>
-          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+          <tbody className="bg-white divide-y divide-black">
             {filteredTrainings.map((training) => (
-              <tr key={training.id} className="hover:bg-content">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-primary">{training.title}</div>
+              <tr key={training.id} className="hover:bg-gray-50 border-b border-black">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                  <div className="text-sm font-medium text-gray-900">{training.title}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-primary">{training.category}</div>
+                <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                  <div className="text-sm text-gray-900">{training.category}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-primary">{training.trainer}</div>
+                <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                  <div className="text-sm text-gray-900">{training.trainer}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-primary">{training.startDate} - {training.endDate}</div>
+                <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                  <div className="text-sm text-gray-900">{training.startDate} - {training.endDate}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                     {training.status}
                   </span>

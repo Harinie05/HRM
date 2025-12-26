@@ -88,73 +88,102 @@ export default function EmployeeCertifications() {
   };
 
   return (
-    <Layout 
-      title="Certifications" 
-      subtitle="Professional certifications and credentials"
-    >
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <button 
-            onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <FiArrowLeft className="text-sm" />
-            Back to Profile
-          </button>
-
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiAward className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Certifications
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Professional certifications and credentials
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">{certs.length} Active Records</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
+          </div>
+          
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
           >
-            <FiPlus className="text-sm" />
+            <FiPlus className="w-4 h-4" />
             Add Certification
           </button>
         </div>
+      </div>
 
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="p-6 space-y-6">
+        <div className="flex justify-start mb-4">
+          <button 
+            onClick={() => navigate(`/eis/${id}`)}
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+          >
+            <FiArrowLeft className="w-4 h-4" />
+            Back to Profile
+          </button>
+        </div>
+
+        {/* Certifications Table */}
+        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
-            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+            <table className="min-w-full">
+              <thead className="bg-gray-50/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Certification</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Issued By</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Expiry Date</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Certificate</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Certification</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Issued By</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Expiry Date</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Certificate</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
 
-              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
+              <tbody className="divide-y divide-gray-200/50">
                 {certs.length === 0 && (
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
-                      <FiAward className="mx-auto h-12 w-12 text-muted mb-4" />
-                      <h3 className="text-lg font-medium text-primary mb-2">No Certifications</h3>
-                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add professional certifications and credentials.</p>
+                      <FiAward className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Certifications</h3>
+                      <p className="text-gray-500">Add professional certifications and credentials.</p>
                     </td>
                   </tr>
                 )}
 
                 {certs.map((c) => (
-                  <tr key={c.id} className="hover:bg-content">
+                  <tr key={c.id} className="hover:bg-white/50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-primary">{c.certification}</div>
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                          <FiAward className="w-4 h-4 text-black" />
+                        </div>
+                        <div className="font-medium text-gray-900">{c.certification}</div>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-secondary">{c.issued_by || '-'}</td>
+                    <td className="px-6 py-4 text-gray-600">{c.issued_by || '-'}</td>
                     <td className="px-6 py-4 text-center">
                       {c.expiry_date ? (
-                        <div className="flex items-center justify-center gap-1 text-secondary">
-                          <FiCalendar className="text-xs" />
+                        <div className="flex items-center justify-center gap-1 text-gray-600">
+                          <FiCalendar className="w-3 h-3" />
                           <span className="text-sm">{c.expiry_date}</span>
                         </div>
                       ) : (
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       {c.file_name ? (
                         <button 
-                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors"
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                           onClick={() => {
                             const token = localStorage.getItem('access_token');
                             if (!token) {
@@ -164,28 +193,34 @@ export default function EmployeeCertifications() {
                             window.open(`http://localhost:8000/employee/certifications/certificate/${c.id}?token=${token}`, '_blank');
                           }}
                         >
-                          <FiEye className="text-sm" />
-                          View
+                          <FiEye className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            View
+                          </span>
                         </button>
                       ) : (
-                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => openEdit(c)}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm"
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                         >
-                          <FiEdit className="text-xs" />
-                          Edit
+                          <FiEdit className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Edit
+                          </span>
                         </button>
                         <button
                           onClick={() => deleteCert(c.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                         >
-                          <FiTrash2 className="text-xs" />
-                          Delete
+                          <FiTrash2 className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Delete
+                          </span>
                         </button>
                       </div>
                     </td>
@@ -197,20 +232,22 @@ export default function EmployeeCertifications() {
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
-                <FiAward className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-primary">
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiAward className="w-5 h-5 text-black" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   {editing ? "Edit Certification" : "Add Certification"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Certification Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Certification Name *</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., AWS Certified Solutions Architect"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -218,9 +255,9 @@ export default function EmployeeCertifications() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Issued By</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Issued By</label>
                   <input
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., Amazon Web Services"
                     value={form.issued_by}
                     onChange={(e) => setForm({ ...form, issued_by: e.target.value })}
@@ -228,40 +265,40 @@ export default function EmployeeCertifications() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Expiry Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.expiry}
                     onChange={(e) => setForm({ ...form, expiry: e.target.value })}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Certificate Document</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Document</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+                    <FiUpload className="text-gray-400" />
                     <input
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     />
                   </div>
-                  <p className="text-xs text-muted mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+                  <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-black rounded-xl hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveCert}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
                 >
                   {editing ? "Update" : "Save"} Certification
                 </button>

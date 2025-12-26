@@ -165,24 +165,30 @@ export default function PayrollReports() {
   };
 
   return (
-    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-      {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 border-b  rounded-t-2xl">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-indigo-100 rounded-xl">
-              <BarChart3 className="w-6 h-6 text-indigo-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-primary">Reports & Compliance</h2>
-              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>View payroll summary, PF/ESI/TDS and compliance reports</p>
-            </div>
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-black">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-gray-600" />
           </div>
-          <div className="flex gap-3">
+          <div>
+            <h2 className="text-lg font-medium text-gray-900">Reports & Compliance</h2>
+            <p className="text-sm text-gray-600">View payroll summary, PF/ESI/TDS and compliance reports</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        {/* Period Selection and Export */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+          <span className="text-sm text-gray-600">Period & Export</span>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black gap-2 sm:gap-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+              className="border-0 bg-transparent px-4 py-2 text-sm focus:outline-none rounded-full w-full sm:w-auto"
             >
               <option value="current-month">Current Month</option>
               <option value="last-month">Last Month</option>
@@ -192,141 +198,139 @@ export default function PayrollReports() {
             <button 
               onClick={handleExportReport}
               disabled={loading}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-white text-black border border-black px-4 py-2 rounded-full flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium hover:bg-gray-100 justify-center"
             >
-              <Download size={18} />
-              {loading ? "Loading..." : "Export Report"}
+              <Download size={16} />
+              {loading ? "Loading..." : "Export"}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Enhanced Stats Overview */}
-      <div className="p-6 border-b  bg-content">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Employees</p>
-                <p className="text-2xl font-bold text-primary">{stats.totalEmployees}</p>
-              </div>
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Payroll</p>
-                <p className="text-2xl font-bold text-primary">₹{(stats.totalPayroll / 100000).toFixed(1)}L</p>
-              </div>
-              <div className="p-2 bg-green-50 rounded-lg">
-                <DollarSign className="h-8 w-8 text-green-600" />
+        {/* Stats Overview */}
+        <div className="mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Employees</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalEmployees}</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <Users className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Avg Salary</p>
-                <p className="text-2xl font-bold text-primary">₹{(stats.avgSalary / 1000).toFixed(0)}K</p>
-              </div>
-              <div className="p-2 bg-purple-50 rounded-lg">
-                <TrendingUp className="h-8 w-8 text-purple-600" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>PF Contribution</p>
-                <p className="text-2xl font-bold text-primary">₹{(stats.pfContribution / 1000).toFixed(0)}K</p>
-              </div>
-              <div className="p-2 bg-orange-50 rounded-lg">
-                <BarChart3 className="h-8 w-8 text-orange-600" />
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Total Payroll</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats.totalPayroll / 100000).toFixed(1)}L</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <DollarSign className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>ESI Contribution</p>
-                <p className="text-2xl font-bold text-primary">₹{(stats.esiContribution / 1000).toFixed(0)}K</p>
-              </div>
-              <div className="p-2 bg-red-50 rounded-lg">
-                <FileText className="h-8 w-8 text-red-600" />
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Avg Salary</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats.avgSalary / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <TrendingUp className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="bg-content rounded-xl p-4 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>TDS Deducted</p>
-                <p className="text-2xl font-bold text-primary">₹{(stats.tdsDeducted / 1000).toFixed(0)}K</p>
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">PF Contribution</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats.pfContribution / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <BarChart3 className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
-              <div className="p-2 bg-yellow-50 rounded-lg">
-                <Calendar className="h-8 w-8 text-yellow-600" />
+            </div>
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">ESI Contribution</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats.esiContribution / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <FileText className="h-8 w-8 text-gray-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-2xl border border-black p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">TDS Deducted</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{(stats.tdsDeducted / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="p-2 bg-gray-100 rounded-2xl">
+                  <Calendar className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Report Sections */}
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Report Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Compliance Reports */}
-          <div className="bg-content rounded-lg p-6">
-            <h3 className="text-lg font-medium text-primary mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-black p-6 shadow-sm">
+            <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <FileText size={20} />
               Compliance Reports
             </h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">PF Challan Report</p>
-                  <p className="text-sm text-muted">Monthly PF contribution summary</p>
+                  <p className="font-medium text-gray-900">PF Challan Report</p>
+                  <p className="text-sm text-gray-600">Monthly PF contribution summary</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('pf-challan')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">ESI Challan Report</p>
-                  <p className="text-sm text-muted">Monthly ESI contribution summary</p>
+                  <p className="font-medium text-gray-900">ESI Challan Report</p>
+                  <p className="text-sm text-gray-600">Monthly ESI contribution summary</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('esi-challan')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">TDS Report</p>
-                  <p className="text-sm text-muted">Tax deduction summary</p>
+                  <p className="font-medium text-gray-900">TDS Report</p>
+                  <p className="text-sm text-gray-600">Tax deduction summary</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('tds')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">Form 16 Generation</p>
-                  <p className="text-sm text-muted">Annual tax certificate</p>
+                  <p className="font-medium text-gray-900">Form 16 Generation</p>
+                  <p className="text-sm text-gray-600">Annual tax certificate</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('form16')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
@@ -335,56 +339,56 @@ export default function PayrollReports() {
           </div>
 
           {/* Payroll Summary */}
-          <div className="bg-content rounded-lg p-6">
-            <h3 className="text-lg font-medium text-primary mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-black p-6 shadow-sm">
+            <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 size={20} />
               Payroll Summary
             </h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">Department-wise Report</p>
-                  <p className="text-sm text-muted">Payroll breakdown by department</p>
+                  <p className="font-medium text-gray-900">Department-wise Report</p>
+                  <p className="text-sm text-gray-600">Payroll breakdown by department</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('department-wise')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">Grade-wise Report</p>
-                  <p className="text-sm text-muted">Salary distribution by grade</p>
+                  <p className="font-medium text-gray-900">Grade-wise Report</p>
+                  <p className="text-sm text-gray-600">Salary distribution by grade</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('grade-wise')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">Bank Transfer Report</p>
-                  <p className="text-sm text-muted">Salary transfer summary</p>
+                  <p className="font-medium text-gray-900">Bank Transfer Report</p>
+                  <p className="text-sm text-gray-600">Salary transfer summary</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('bank-transfer')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
               </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded border">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
-                  <p className="font-medium text-primary">Attendance vs Payroll</p>
-                  <p className="text-sm text-muted">Attendance impact analysis</p>
+                  <p className="font-medium text-gray-900">Attendance vs Payroll</p>
+                  <p className="text-sm text-gray-600">Attendance impact analysis</p>
                 </div>
                 <button 
                   onClick={() => handleDownloadReport('attendance-payroll')}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download size={16} />
                 </button>
@@ -394,29 +398,33 @@ export default function PayrollReports() {
         </div>
 
         {/* Summary Data */}
-        <div className="mt-6">
-          <h3 className="text-lg font-medium text-primary mb-4">Current Period Summary</h3>
-          <div className="bg-gray-100 rounded-lg p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <p><strong>Active Employees:</strong> {stats.totalEmployees}</p>
-                <p><strong>Payroll Runs:</strong> {summaryData.payrollRuns}</p>
-                <p><strong>Period:</strong> {summaryData.period}</p>
-              </div>
-              <div>
-                <p><strong>Total Gross:</strong> ₹{summaryData.totalGross.toLocaleString()}</p>
-                <p><strong>Total Deductions:</strong> ₹{summaryData.totalDeductions.toLocaleString()}</p>
-                <p><strong>Net Payable:</strong> ₹{summaryData.netPayable.toLocaleString()}</p>
+        <div className="bg-white rounded-2xl border border-black shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-black bg-gray-50">
+            <h3 className="text-lg font-medium text-gray-900">Current Period Summary</h3>
+          </div>
+          <div className="p-6">
+            <div className="bg-gray-50 rounded-2xl border border-black p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p><strong>Active Employees:</strong> {stats.totalEmployees}</p>
+                  <p><strong>Payroll Runs:</strong> {summaryData.payrollRuns}</p>
+                  <p><strong>Period:</strong> {summaryData.period}</p>
+                </div>
+                <div>
+                  <p><strong>Total Gross:</strong> ₹{summaryData.totalGross.toLocaleString()}</p>
+                  <p><strong>Total Deductions:</strong> ₹{summaryData.totalDeductions.toLocaleString()}</p>
+                  <p><strong>Net Payable:</strong> ₹{summaryData.netPayable.toLocaleString()}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="px-6 py-4 bg-content border-t ">
-        <div className="text-sm text-secondary">
-          <p>All reports are generated based on processed payroll data. Ensure payroll is processed before generating compliance reports.</p>
+        {/* Footer */}
+        <div className="bg-gray-50 rounded-2xl border border-black p-6">
+          <div className="text-sm text-gray-600">
+            <p>All reports are generated based on processed payroll data. Ensure payroll is processed before generating compliance reports.</p>
+          </div>
         </div>
       </div>
     </div>

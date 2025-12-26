@@ -140,75 +140,19 @@ export default function Insurance() {
 
   return (
     <div className="space-y-6">
-      {/* Enhanced Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 border shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Policies</p>
-              <p className="text-3xl font-bold text-primary">{stats.total}</p>
-            </div>
-            <div className="p-3 bg-blue-50 rounded-xl">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-6 border shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active</p>
-              <p className="text-3xl font-bold text-primary">{stats.active}</p>
-            </div>
-            <div className="p-3 bg-green-50 rounded-xl">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-6 border shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Expiring Soon</p>
-              <p className="text-3xl font-bold text-primary">{stats.expiring_soon}</p>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded-xl">
-              <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-6 border shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Expired</p>
-              <p className="text-3xl font-bold text-primary">{stats.expired}</p>
-            </div>
-            <div className="p-3 bg-red-50 rounded-xl">
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Insurance Policy Form */}
-      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-primary">Add Insurance Policy</h3>
+      <div className="rounded-lg shadow-sm border border-black bg-white">
+        <div className="px-6 py-4 border-b border-black">
+          <h3 className="text-lg font-semibold text-gray-900">Add Insurance Policy</h3>
         </div>
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Employee</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 required
               >
                 <option value="">Select Employee</option>
@@ -220,74 +164,74 @@ export default function Insurance() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Policy Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Policy Type</label>
               <input 
                 type="text"
                 value={formData.policyType}
                 onChange={(e) => setFormData({...formData, policyType: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="e.g., Medical, Life, Accident"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Policy Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
               <input 
                 type="text"
                 value={formData.policyNumber}
                 onChange={(e) => setFormData({...formData, policyNumber: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="Policy number"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Provider</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Provider</label>
               <input 
                 type="text"
                 value={formData.provider}
                 onChange={(e) => setFormData({...formData, provider: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="Insurance provider"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Coverage Amount</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Coverage Amount</label>
               <input 
                 type="number"
                 value={formData.coverageAmount}
                 onChange={(e) => setFormData({...formData, coverageAmount: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 placeholder="Coverage amount"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Start Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
               <input 
                 type="date"
                 value={formData.startDate}
                 onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Expiry Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
               <input 
                 type="date"
                 value={formData.expiryDate}
                 onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
-                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 required
               />
             </div>
           </div>
-          <div className="mt-6 flex justify-end">
+          <div className="mt-4 sm:mt-6 flex justify-end">
             <button 
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
             >
               Add Policy
             </button>
@@ -296,54 +240,54 @@ export default function Insurance() {
       </div>
 
       {/* Policies List */}
-      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-primary">Insurance Policies</h3>
+      <div className="rounded-lg shadow-sm border border-black bg-white">
+        <div className="px-6 py-4 border-b border-black">
+          <h3 className="text-lg font-semibold text-gray-900">Insurance Policies</h3>
         </div>
         <div className="overflow-x-auto">
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
+          <table className="min-w-full divide-y divide-gray-200 border border-black">
+            <thead className="bg-gray-50 border-b border-black">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Policy Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Policy Number</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Provider</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Coverage</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Expiry Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Policy Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Policy Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Provider</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Coverage</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Expiry Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+            <tbody className="bg-white divide-y divide-gray-200">
               {policies.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-4 text-center text-muted">No policies found</td>
+                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">No policies found</td>
                 </tr>
               ) : (
                 policies.map((policy) => (
                   <tr key={policy.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-primary">{policy.name}</div>
-                        <div className="text-sm text-muted">{policy.employee}</div>
+                        <div className="text-sm font-medium text-gray-900">{policy.name}</div>
+                        <div className="text-sm text-gray-500">{policy.employee}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{policy.policyType}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{policy.policyNumber}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{policy.provider}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">₹{policy.coverageAmount?.toLocaleString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{policy.expiryDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.policyType}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.policyNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.provider}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹{policy.coverageAmount?.toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.expiryDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        policy.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                        policy.status === 'Active' ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-gray-50 text-gray-600 border-gray-200'
                       }`}>
                         {policy.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleDelete(policy.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-gray-600 hover:text-gray-900 border border-gray-300 px-2 py-1 rounded text-xs sm:text-sm"
                       >
                         Delete
                       </button>

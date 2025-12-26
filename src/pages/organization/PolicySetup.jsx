@@ -234,16 +234,24 @@ const [statusAtt, setStatusAtt] = useState("Active");
     return (
         <div className="p-6 bg-content min-h-screen space-y-6">
 
-            {/* POLICY TYPE DROPDOWN */}
-            <div className="mb-5">
-                <select 
-                    value={activeTab} 
-                    onChange={(e)=>{setActiveTab(e.target.value);setEditingId(null);setPolicies([])}}
-                    className="border p-2 rounded w-64 bg-white" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                    {tabs.map(t=>(
-                        <option key={t} value={t}>{t}</option>
+            {/* Tab Navigation */}
+            <div className="flex items-center gap-2 mb-6">
+                <span className="text-sm text-gray-600">Policy Types</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => {setActiveTab(tab); resetForm();}}
+                            className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                                activeTab === tab
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-600 hover:text-gray-900"
+                            }`}
+                        >
+                            {tab}
+                        </button>
                     ))}
-                </select>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">

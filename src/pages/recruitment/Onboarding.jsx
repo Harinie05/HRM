@@ -341,30 +341,28 @@ export default function Onboarding() {
   // ========================  UI START  ===============================
   // ===================================================================
   return (
-    <Layout breadcrumb="Recruitment · Onboarding">
+    <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border mb-8">
-          <div className="px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-purple-100 rounded-xl">
-                  <FiUser className="text-purple-600" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">Onboarding</h1>
-                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee onboarding process and documentation</p>
-                </div>
+        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <FiUser className="w-7 h-7 text-gray-600" />
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{candidates.filter(c => 
-                    searchTerm === "" || 
-                    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                  ).length}</div>
-                  <div className="text-sm text-secondary">Onboarded Candidates</div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Onboarding</h1>
+                <p className="text-gray-600 text-base font-medium">Manage employee onboarding process and documentation</p>
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 font-medium">{candidates.filter(c => 
+                      searchTerm === "" || 
+                      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).length} Onboarded Candidates</span>
+                  </div>
+                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
+                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
                 </div>
               </div>
             </div>
@@ -372,32 +370,36 @@ export default function Onboarding() {
         </div>
 
         {/* Search Section */}
-        <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
-            <input
-              type="text"
-              placeholder="Search onboarded candidates by name or job role..."
-              className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="mb-6">
+          <div className="relative max-w-md mx-auto">
+            <div className="bg-white border border-black rounded-xl p-1">
+              <div className="flex items-center space-x-2 px-3 py-2">
+                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                  <FiSearch className="w-3 h-3 text-gray-600" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search candidates..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Onboarded Candidates Table */}
-        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-          <div className="px-6 py-4 border-b ">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-primary">Onboarded Candidates</h2>
-              <span className="text-sm text-muted">
-                {candidates.filter(c => 
-                  searchTerm === "" || 
-                  c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                ).length} candidates
-              </span>
-            </div>
+        {/* Onboarded Candidates Cards */}
+        <div className="bg-white rounded-2xl border border-black p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Onboarded Candidates</h2>
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+              {candidates.filter(c => 
+                searchTerm === "" || 
+                c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+              ).length} candidates
+            </span>
           </div>
 
           {candidates.filter(c => 
@@ -406,77 +408,70 @@ export default function Onboarding() {
             c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
           ).length === 0 ? (
             <div className="text-center py-12">
-              <FiUser className="mx-auto text-muted mb-4" size={48} />
-              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiUser className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No candidates found</h3>
+              <p className="text-gray-500">
                 {searchTerm ? "No matching onboarded candidates found" : "No onboarded candidates yet"}
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Employee ID</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
-                  {candidates
-                    .filter(c => 
-                      searchTerm === "" || 
-                      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
-                    .map((c) => (
-                    <tr key={c.id} className="hover:bg-content transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                              <FiUser className="text-green-600" size={16} />
-                            </div>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-primary">{c.name}</div>
-                          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {candidates
+                .filter(c => 
+                  searchTerm === "" || 
+                  c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((c) => (
+                <div key={c.id} className="bg-white rounded-xl shadow-sm border border-black p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start space-x-3">
+                    {/* Avatar */}
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                      {c.name?.charAt(0)?.toUpperCase() || 'C'}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 truncate">{c.name}</h3>
+                      <p className="text-sm text-gray-600 truncate">{c.job_title}</p>
+                      <p className="text-sm text-gray-500">{c.department}</p>
+                      
+                      <div className="mt-2 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500">Employee ID:</span>
+                          {c.employee_id ? (
+                            <span className="text-xs font-medium text-blue-700 font-mono bg-blue-50 px-2 py-0.5 rounded">
+                              {c.employee_id}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">Not Available</span>
+                          )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-primary">{c.job_title}</div>
-                        <div className="text-sm text-muted">{c.department}</div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {c.employee_id ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 font-mono">
-                            {c.employee_id}
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500">Status:</span>
+                          <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded flex items-center">
+                            <FiUser className="mr-1" size={8} />
+                            {c.status}
                           </span>
-                        ) : (
-                          <span className="text-xs text-muted">Not Available</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          <FiUser className="mr-1" size={10} />
-                          {c.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
+                        </div>
+                      </div>
+                      
+                      {/* Action Button */}
+                      <div className="mt-3">
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
                           onClick={() => fetchCandidateDocuments(c.candidate_id)}
                         >
                           <FiEye className="mr-1" size={12} />
                           View Documents
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

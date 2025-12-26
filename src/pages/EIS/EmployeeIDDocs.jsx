@@ -71,33 +71,56 @@ export default function EmployeeIDDocs() {
   }
 
   return (
-    <Layout 
-      title="ID & Verification Documents" 
-      subtitle="Identity documents and verification status"
-    >
+    <Layout>
+      {/* Header Section */}
+      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
+              <FiCreditCard className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                ID & Verification Documents
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Identity documents and verification status
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">{docs.length} Active Records</span>
+                </div>
+                <span className="text-sm text-gray-600">Real-time Updates</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
           >
-            <FiArrowLeft className="text-sm" />
+            <FiArrowLeft className="w-4 h-4" />
             Back to Profile
           </button>
         </div>
 
         {/* Upload Section */}
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
           <div className="flex items-center gap-2 mb-4">
-            <FiUpload className="text-blue-600" />
-            <h3 className="text-lg font-semibold text-primary">Upload New Document</h3>
+            <FiUpload className="text-black" />
+            <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Document Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
               <select
-                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
               >
@@ -111,93 +134,102 @@ export default function EmployeeIDDocs() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-secondary mb-2">Select File</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
               <input 
                 type="file" 
                 accept=".pdf,.jpg,.jpeg,.png"
-                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 onChange={(e) => setFile(e.target.files[0])} 
               />
             </div>
             
             <button 
               onClick={upload} 
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 bg-white text-black border border-black px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!type || !file}
             >
-              <FiUpload className="text-sm" />
+              <FiUpload className="w-4 h-4" />
               Upload Document
             </button>
           </div>
-          <p className="text-xs text-muted mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+          <p className="text-xs text-gray-500 mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
         </div>
 
-        {/* Documents List */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-          {docs.length === 0 ? (
-            <div className="p-12 text-center">
-              <FiCreditCard className="mx-auto h-12 w-12 text-muted mb-4" />
-              <h3 className="text-lg font-medium text-primary mb-2">No Documents Uploaded</h3>
-              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Upload identity documents for verification.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
-                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
+        {/* Documents Table */}
+        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="bg-gray-50/50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Document Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">File Name</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200/50">
+                {docs.length === 0 && (
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Document Type</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-primary">File Name</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Status</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
+                    <td colSpan="4" className="px-6 py-12 text-center">
+                      <FiCreditCard className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Documents Uploaded</h3>
+                      <p className="text-gray-500">Upload identity documents for verification.</p>
+                    </td>
                   </tr>
-                </thead>
-                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
-                  {docs.map((d) => (
-                    <tr key={d.id} className="hover:bg-content">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <FiFileText className="" style={{color: 'var(--text-muted, #6b7280)'}} />
-                          <span className="font-medium text-primary">{d.document_type}</span>
+                )}
+
+                {docs.map((d) => (
+                  <tr key={d.id} className="hover:bg-white/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                          <FiFileText className="w-4 h-4 text-black" />
                         </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-secondary">{d.file_name}</td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          d.status === "Verified" 
-                            ? "bg-green-100 text-green-800"
-                            : d.status === "Rejected"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {d.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {d.status === "Uploaded" && (
-                          <div className="flex items-center justify-center gap-2">
-                            <button 
-                              onClick={() => verify(d.id, "Verified")} 
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm"
-                            >
-                              <FiCheck className="text-xs" />
+                        <div className="font-medium text-gray-900">{d.document_type}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{d.file_name}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-black ${
+                        d.status === "Verified" 
+                          ? "bg-gray-100 text-black"
+                          : d.status === "Rejected"
+                          ? "bg-gray-100 text-black"
+                          : "bg-gray-100 text-black"
+                      }`}>
+                        {d.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {d.status === "Uploaded" && (
+                        <div className="flex items-center justify-center gap-2">
+                          <button 
+                            onClick={() => verify(d.id, "Verified")} 
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiCheck className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                               Verify
-                            </button>
-                            <button 
-                              onClick={() => verify(d.id, "Rejected")} 
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
-                            >
-                              <FiX className="text-xs" />
+                            </span>
+                          </button>
+                          <button 
+                            onClick={() => verify(d.id, "Rejected")} 
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiX className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                               Reject
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                            </span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </Layout>
