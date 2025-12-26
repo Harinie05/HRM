@@ -93,7 +93,7 @@ export default function EmployeeFamily() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -108,56 +108,56 @@ export default function EmployeeFamily() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Relationship</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Age</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Contact</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Dependent</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Relationship</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Age</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Contact</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Dependent</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                 {family.length === 0 && (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
-                      <FiUsers className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Family Members</h3>
-                      <p className="text-gray-500">Add family members and dependents information.</p>
+                      <FiUsers className="mx-auto h-12 w-12 text-muted mb-4" />
+                      <h3 className="text-lg font-medium text-primary mb-2">No Family Members</h3>
+                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add family members and dependents information.</p>
                     </td>
                   </tr>
                 )}
 
                 {family.map((f) => (
-                  <tr key={f.id} className="hover:bg-gray-50">
+                  <tr key={f.id} className="hover:bg-content">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <FiUser className="text-gray-400" />
-                        <div className="font-medium text-gray-900">{f.name}</div>
+                        <FiUser className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+                        <div className="font-medium text-primary">{f.name}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{f.relationship}</td>
-                    <td className="px-6 py-4 text-center text-gray-600">{f.age}</td>
+                    <td className="px-6 py-4 text-secondary">{f.relationship}</td>
+                    <td className="px-6 py-4 text-center text-secondary">{f.age}</td>
                     <td className="px-6 py-4">
                       {f.contact ? (
-                        <div className="flex items-center gap-1 text-gray-600">
+                        <div className="flex items-center gap-1 text-secondary">
                           <FiPhone className="text-xs" />
                           <span className="text-sm">{f.contact}</span>
                         </div>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                         f.dependent 
                           ? "bg-green-100 text-green-800" 
-                          : "bg-gray-100 text-gray-800"
+                          : "bg-gray-100 text-primary"
                       }`}>
                         {f.dependent ? "Yes" : "No"}
                       </span>
@@ -192,16 +192,16 @@ export default function EmployeeFamily() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <FiUsers className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-primary">
                   {editing ? "Edit Family Member" : "Add Family Member"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Full Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter full name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -209,9 +209,9 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Relationship *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Relationship *</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.relationship}
                     onChange={(e) => setForm({ ...form, relationship: e.target.value })}
                   >
@@ -228,10 +228,10 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Age</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Age"
                     value={form.age}
                     onChange={(e) => setForm({ ...form, age: e.target.value })}
@@ -239,9 +239,9 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Contact Number</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Phone number"
                     value={form.contact}
                     onChange={(e) => setForm({ ...form, contact: e.target.value })}
@@ -254,9 +254,9 @@ export default function EmployeeFamily() {
                     id="dependent"
                     checked={form.dependent}
                     onChange={(e) => setForm({ ...form, dependent: e.target.checked })}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded -dark text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="dependent" className="text-sm text-gray-700">
+                  <label htmlFor="dependent" className="text-sm text-secondary">
                     Is this person a dependent?
                   </label>
                 </div>
@@ -265,7 +265,7 @@ export default function EmployeeFamily() {
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

@@ -114,17 +114,17 @@ export default function CandidateScreening() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 bg-gray-50 min-h-screen">
+      <div className="flex-1 bg-content min-h-screen">
         <Header />
 
         <div className="p-6">
           {/* HEADER */}
           <div className="mb-6">
             <h1 className="text-2xl font-semibold">Candidate Screening</h1>
-            <p className="text-gray-600">
+            <p className="" style={{color: 'var(--text-secondary, #374151)'}}>
               Job: <span className="font-medium">{job.title}</span> - {job.department}
             </p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted mt-1">
               Review applications and shortlist candidates for ATS pipeline
             </p>
           </div>
@@ -138,7 +138,7 @@ export default function CandidateScreening() {
               >
                 {selectedCandidates.length === applications.length ? "Deselect All" : "Select All"}
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-secondary">
                 {selectedCandidates.length} of {applications.length} selected
               </span>
             </div>
@@ -163,8 +163,8 @@ export default function CandidateScreening() {
 
           {/* APPLICATIONS TABLE */}
           <div className="bg-white rounded-xl shadow overflow-hidden">
-            <table className="min-w-full">
-              <thead className="bg-gray-100 text-gray-600 text-sm">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary text-sm">
                 <tr>
                   <th className="p-3 text-left">
                     <input
@@ -182,9 +182,9 @@ export default function CandidateScreening() {
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 {applications.map((app) => (
-                  <tr key={app.id} className="border-t hover:bg-gray-50">
+                  <tr key={app.id} className="border-t hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <td className="p-3">
                       <input
                         type="checkbox"
@@ -196,8 +196,8 @@ export default function CandidateScreening() {
                     <td className="p-3">
                       <div>
                         <div className="font-medium">{app.name}</div>
-                        <div className="text-sm text-gray-600">{app.email}</div>
-                        <div className="text-sm text-gray-600">{app.phone}</div>
+                        <div className="text-sm text-secondary">{app.email}</div>
+                        <div className="text-sm text-secondary">{app.phone}</div>
                       </div>
                     </td>
                     
@@ -219,7 +219,7 @@ export default function CandidateScreening() {
                       </span>
                     </td>
                     
-                    <td className="p-3 text-center text-sm text-gray-600">
+                    <td className="p-3 text-center text-sm text-secondary">
                       {new Date(app.applied_at).toLocaleDateString()}
                     </td>
                     
@@ -243,7 +243,7 @@ export default function CandidateScreening() {
             </table>
 
             {applications.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-muted">
                 No applications found for this job
               </div>
             )}
@@ -254,13 +254,13 @@ export default function CandidateScreening() {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-white p-6 rounded-lg w-[600px] max-h-[80vh] overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">Schedule Round 1 Interviews</h2>
-                <p className="text-gray-600 mb-2">
+                <p className=" mb-2" style={{color: 'var(--text-secondary, #374151)'}}>
                   <strong>Job:</strong> {job?.title} - {job?.department}
                 </p>
-                <p className="text-gray-600 mb-4">
+                <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>
                   <strong>Round 1:</strong> {job?.round_names?.[0]?.name || job?.round_names?.[0] || "Interview"}
                 </p>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-muted mb-4">
                   Set Round 1 interview dates and times. Shortlist emails with complete interview process will be sent automatically.
                 </p>
 
@@ -268,9 +268,9 @@ export default function CandidateScreening() {
                   {selectedCandidates.map(candidateId => {
                     const candidate = applications.find(app => app.id === candidateId);
                     return (
-                      <div key={candidateId} className="border p-4 rounded bg-gray-50">
+                      <div key={candidateId} className="border p-4 rounded bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                         <div className="font-medium mb-2">{candidate?.name}</div>
-                        <div className="text-sm text-gray-600 mb-2">{candidate?.email}</div>
+                        <div className="text-sm text-secondary mb-2">{candidate?.email}</div>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="text-sm font-medium">Round 1 Date</label>

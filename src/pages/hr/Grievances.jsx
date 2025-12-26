@@ -167,11 +167,11 @@ export default function Grievances() {
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Total Grievances</p>
-              <p className="text-3xl font-bold text-gray-900">{grievances.length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Grievances</p>
+              <p className="text-3xl font-bold text-primary">{grievances.length}</p>
             </div>
             <div className="p-3 bg-red-50 rounded-xl">
               <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,11 +180,11 @@ export default function Grievances() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Under Investigation</p>
-              <p className="text-3xl font-bold text-gray-900">{grievances.filter(g => g.status === 'Under Investigation').length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Under Investigation</p>
+              <p className="text-3xl font-bold text-primary">{grievances.filter(g => g.status === 'Under Investigation').length}</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-xl">
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,11 +193,11 @@ export default function Grievances() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Resolved</p>
-              <p className="text-3xl font-bold text-gray-900">{grievances.filter(g => g.status === 'Resolved').length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Resolved</p>
+              <p className="text-3xl font-bold text-primary">{grievances.filter(g => g.status === 'Resolved').length}</p>
             </div>
             <div className="p-3 bg-green-50 rounded-xl">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,18 +209,18 @@ export default function Grievances() {
       </div>
 
       {/* Grievance Form */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Submit Grievance</h3>
+          <h3 className="text-lg font-semibold text-primary">Submit Grievance</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Employee ID</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((emp) => (
@@ -231,11 +231,11 @@ export default function Grievances() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Grievance Type</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Grievance Type</label>
               <select 
                 value={formData.grievanceType}
                 onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Type</option>
                 <option value="harassment">Harassment</option>
@@ -249,11 +249,11 @@ export default function Grievances() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Priority</label>
               <select 
                 value={formData.priority}
                 onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Priority</option>
                 <option value="low">Low</option>
@@ -263,31 +263,31 @@ export default function Grievances() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occurrence</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Date of Occurrence</label>
               <input 
                 type="date"
                 value={formData.dateOccurred}
                 onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Subject</label>
               <input 
                 type="text"
                 value={formData.subject}
                 onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Brief subject of the grievance"
               />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Description</label>
               <textarea 
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Detailed description of the grievance..."
               />
             </div>
@@ -304,37 +304,37 @@ export default function Grievances() {
       </div>
 
       {/* Grievances List */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Grievances Management</h3>
+          <h3 className="text-lg font-semibold text-primary">Grievances Management</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Priority</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {grievances.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No grievances found</td>
+                  <td colSpan={6} className="px-6 py-4 text-center text-muted">No grievances found</td>
                 </tr>
               ) : (
                 grievances.map((grievance) => (
                   <tr key={grievance.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{grievance.employee_name || 'Unknown'}</div>
-                        <div className="text-sm text-gray-500">{grievance.employee_code || 'N/A'}</div>
+                        <div className="text-sm font-medium text-primary">{grievance.employee_name || 'Unknown'}</div>
+                        <div className="text-sm text-muted">{grievance.employee_code || 'N/A'}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{grievance.category || 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{grievance.category || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         grievance.priority === 'high' ? 'bg-red-100 text-red-800' : 
@@ -343,7 +343,7 @@ export default function Grievances() {
                         {grievance.priority || 'Medium'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                       {grievance.created_at ? new Date(grievance.created_at).toLocaleDateString() : 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -392,7 +392,7 @@ export default function Grievances() {
               <h3 className="text-lg font-semibold">Grievance Details</h3>
               <button
                 onClick={() => setViewModal({ show: false, grievance: null })}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
@@ -401,38 +401,38 @@ export default function Grievances() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Ticket Code</label>
-                    <p className="text-sm text-gray-900">{viewModal.grievance.ticket_code}</p>
+                    <label className="block text-sm font-medium text-secondary">Ticket Code</label>
+                    <p className="text-sm text-primary">{viewModal.grievance.ticket_code}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Employee</label>
-                    <p className="text-sm text-gray-900">{viewModal.grievance.employee_name} ({viewModal.grievance.employee_code})</p>
+                    <label className="block text-sm font-medium text-secondary">Employee</label>
+                    <p className="text-sm text-primary">{viewModal.grievance.employee_name} ({viewModal.grievance.employee_code})</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Category</label>
-                    <p className="text-sm text-gray-900">{viewModal.grievance.category}</p>
+                    <label className="block text-sm font-medium text-secondary">Category</label>
+                    <p className="text-sm text-primary">{viewModal.grievance.category}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Priority</label>
-                    <p className="text-sm text-gray-900">{viewModal.grievance.priority}</p>
+                    <label className="block text-sm font-medium text-secondary">Priority</label>
+                    <p className="text-sm text-primary">{viewModal.grievance.priority}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <p className="text-sm text-gray-900">{viewModal.grievance.status}</p>
+                    <label className="block text-sm font-medium text-secondary">Status</label>
+                    <p className="text-sm text-primary">{viewModal.grievance.status}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Created Date</label>
-                    <p className="text-sm text-gray-900">{new Date(viewModal.grievance.created_at).toLocaleDateString()}</p>
+                    <label className="block text-sm font-medium text-secondary">Created Date</label>
+                    <p className="text-sm text-primary">{new Date(viewModal.grievance.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Description</label>
-                  <p className="text-sm text-gray-900 mt-1">{viewModal.grievance.description}</p>
+                  <label className="block text-sm font-medium text-secondary">Description</label>
+                  <p className="text-sm text-primary mt-1">{viewModal.grievance.description}</p>
                 </div>
                 {viewModal.grievance.resolution_notes && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Resolution Notes</label>
-                    <p className="text-sm text-gray-900 mt-1">{viewModal.grievance.resolution_notes}</p>
+                    <label className="block text-sm font-medium text-secondary">Resolution Notes</label>
+                    <p className="text-sm text-primary mt-1">{viewModal.grievance.resolution_notes}</p>
                   </div>
                 )}
               </div>

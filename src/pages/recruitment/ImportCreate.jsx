@@ -107,7 +107,7 @@ export default function ImportCandidates() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 bg-gray-50 min-h-screen">
+      <div className="flex-1 bg-content min-h-screen">
         <Header />
 
         <div className="p-6">
@@ -123,8 +123,8 @@ export default function ImportCandidates() {
           </div>
 
           {/* TABLE */}
-          <table className="min-w-full bg-white rounded-xl shadow">
-            <thead className="bg-gray-100 text-gray-600 text-sm">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full bg-white rounded-xl shadow">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary text-sm">
               <tr>
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Email</th>
@@ -135,9 +135,9 @@ export default function ImportCandidates() {
               </tr>
             </thead>
 
-            <tbody>
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
               {candidates.map((c) => (
-                <tr key={c.id} className="border-t">
+                <tr key={c.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                   <td className="p-3">{c.name}</td>
                   <td className="p-3">{c.email}</td>
                   <td className="p-3">{c.phone}</td>
@@ -173,7 +173,7 @@ export default function ImportCandidates() {
 
                 {/* Job selection */}
                 <select
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.job_id}
                   onChange={(e) => setForm({ ...form, job_id: e.target.value })}
                 >
@@ -188,7 +188,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Candidate Name"
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
@@ -196,7 +196,7 @@ export default function ImportCandidates() {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
@@ -204,7 +204,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Phone Number"
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
@@ -212,7 +212,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Experience (e.g. 2 years)"
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.experience}
                   onChange={(e) =>
                     setForm({ ...form, experience: e.target.value })
@@ -221,7 +221,7 @@ export default function ImportCandidates() {
 
                 <textarea
                   placeholder="Skills"
-                  className="border p-2 rounded w-full h-20"
+                  className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={form.skills}
                   onChange={(e) => setForm({ ...form, skills: e.target.value })}
                 />
@@ -231,7 +231,7 @@ export default function ImportCandidates() {
                   <label className="text-sm font-medium">Upload Resume</label>
                   <input
                     type="file"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     onChange={(e) => setResumeFile(e.target.files[0])}
                   />
                 </div>

@@ -300,17 +300,17 @@ export default function Payslips() {
   });
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 border-b border-gray-200 rounded-t-2xl">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 border-b  rounded-t-2xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-emerald-100 rounded-xl">
               <FileText className="w-6 h-6 text-emerald-600" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Salary Slips & Payment</h2>
-              <p className="text-gray-600 mt-1">Generate payslips and manage bank payments</p>
+              <h2 className="text-xl font-semibold text-primary">Salary Slips & Payment</h2>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Generate payslips and manage bank payments</p>
             </div>
           </div>
           <div className="flex gap-3">
@@ -335,22 +335,22 @@ export default function Payslips() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <input
               type="text"
               placeholder="Search by employee name or ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           >
             <option value="">All Months</option>
             {months.map(month => (
@@ -361,46 +361,46 @@ export default function Payslips() {
       </div>
 
       {/* Enhanced Stats Cards */}
-      <div className="p-6 border-b border-gray-200 bg-gray-50">
+      <div className="p-6 border-b  bg-content">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Total Payslips</p>
-                <p className="text-3xl font-bold text-gray-900">{payslips.length}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Payslips</p>
+                <p className="text-3xl font-bold text-primary">{payslips.length}</p>
               </div>
               <div className="p-3 bg-blue-50 rounded-xl">
                 <FileText className="h-10 w-10 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Sent</p>
-                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Sent').length}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Sent</p>
+                <p className="text-3xl font-bold text-primary">{payslips.filter(p => p.status === 'Sent').length}</p>
               </div>
               <div className="p-3 bg-green-50 rounded-xl">
                 <Send className="h-10 w-10 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Generated</p>
-                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Generated').length}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Generated</p>
+                <p className="text-3xl font-bold text-primary">{payslips.filter(p => p.status === 'Generated').length}</p>
               </div>
               <div className="p-3 bg-yellow-50 rounded-xl">
                 <Calendar className="h-10 w-10 text-yellow-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Pending</p>
-                <p className="text-3xl font-bold text-gray-900">{payslips.filter(p => p.status === 'Pending').length}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Pending</p>
+                <p className="text-3xl font-bold text-primary">{payslips.filter(p => p.status === 'Pending').length}</p>
               </div>
               <div className="p-3 bg-purple-50 rounded-xl">
                 <Download className="h-10 w-10 text-purple-600" />
@@ -412,18 +412,18 @@ export default function Payslips() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Month</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Gross Salary</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Net Salary</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {loading ? (
               <tr>
                 <td colSpan="6" className="px-6 py-8 text-center">
@@ -433,9 +433,9 @@ export default function Payslips() {
             ) : filteredPayslips.length === 0 ? (
               <tr>
                 <td colSpan="6" className="px-6 py-12 text-center">
-                  <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No payslips found</h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <FileText className="mx-auto h-12 w-12 text-muted" />
+                  <h3 className="mt-2 text-sm font-medium text-primary">No payslips found</h3>
+                  <p className="mt-1 text-sm text-muted">
                     {searchTerm || selectedMonth ? "No payslips match your search criteria." : "Generate payslips for employees to view them here."}
                   </p>
                   {!searchTerm && !selectedMonth && (
@@ -453,25 +453,25 @@ export default function Payslips() {
               </tr>
             ) : (
               filteredPayslips.map((payslip) => (
-                <tr key={payslip.id} className="hover:bg-gray-50">
+                <tr key={payslip.id} className="hover:bg-content">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{payslip.employee_name}</div>
-                    <div className="text-sm text-gray-500">ID: {payslip.employee_id}</div>
+                    <div className="text-sm font-medium text-primary">{payslip.employee_name}</div>
+                    <div className="text-sm text-muted">ID: {payslip.employee_id}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{payslip.month} {payslip.year}</div>
+                    <div className="text-sm text-primary">{payslip.month} {payslip.year}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">₹{payslip.gross_salary?.toLocaleString() || 0}</div>
+                    <div className="text-sm text-primary">₹{payslip.gross_salary?.toLocaleString() || 0}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</div>
+                    <div className="text-sm font-medium text-primary">₹{payslip.net_salary?.toLocaleString() || 0}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       payslip.status === "Sent" ? "bg-green-100 text-green-800" :
                       payslip.status === "Generated" ? "bg-blue-100 text-blue-800" :
-                      "bg-gray-100 text-gray-800"
+                      "bg-gray-100 text-primary"
                     }`}>
                       {payslip.status}
                     </span>
@@ -509,8 +509,8 @@ export default function Payslips() {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
+      <div className="px-6 py-4 bg-content border-t ">
+        <div className="flex justify-between items-center text-sm text-secondary">
           <span>Total Payslips: {payslips.length}</span>
           <span>Generated: {payslips.filter(p => p.status === 'Generated').length}</span>
           <span>Sent: {payslips.filter(p => p.status === 'Sent').length}</span>
@@ -525,7 +525,7 @@ export default function Payslips() {
               <h3 className="text-lg font-semibold">Payslip Details - {selectedPayslip.employee_name}</h3>
               <button 
                 onClick={() => setShowViewModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
@@ -533,30 +533,30 @@ export default function Payslips() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Employee Info */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-3">Employee Information</h4>
+              <div className="bg-content rounded-lg p-4">
+                <h4 className="font-medium text-primary mb-3">Employee Information</h4>
                 <div className="space-y-2 text-sm">
-                  <div><span className="text-gray-500">Name:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_name}</span></div>
-                  <div><span className="text-gray-500">Code:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_code}</span></div>
-                  <div><span className="text-gray-500">Month:</span> <span className="ml-2 font-medium">{selectedPayslip.month} {selectedPayslip.year}</span></div>
+                  <div><span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Name:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_name}</span></div>
+                  <div><span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Code:</span> <span className="ml-2 font-medium">{selectedPayslip.employee_code}</span></div>
+                  <div><span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Month:</span> <span className="ml-2 font-medium">{selectedPayslip.month} {selectedPayslip.year}</span></div>
                 </div>
               </div>
 
               {/* Attendance */}
               <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-3">Attendance Summary</h4>
+                <h4 className="font-medium text-primary mb-3">Attendance Summary</h4>
                 <div className="grid grid-cols-3 gap-2 text-sm">
                   <div className="text-center">
                     <div className="text-xl font-bold text-blue-600">{selectedPayslip.present_days}</div>
-                    <div className="text-gray-500">Present</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Present</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xl font-bold text-green-600">{selectedPayslip.leave_days}</div>
-                    <div className="text-gray-500">Leave</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Leave</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xl font-bold text-red-600">{selectedPayslip.lop_days}</div>
-                    <div className="text-gray-500">LOP</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>LOP</div>
                   </div>
                 </div>
               </div>
@@ -565,7 +565,7 @@ export default function Payslips() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               {/* Earnings */}
               <div className="bg-green-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-3">Earnings</h4>
+                <h4 className="font-medium text-primary mb-3">Earnings</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Basic Salary</span>
@@ -594,7 +594,7 @@ export default function Payslips() {
 
               {/* Deductions */}
               <div className="bg-red-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-3">Deductions</h4>
+                <h4 className="font-medium text-primary mb-3">Deductions</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>LOP Deduction</span>
@@ -639,7 +639,7 @@ export default function Payslips() {
               </button>
               <button
                 onClick={() => setShowViewModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Close
               </button>
@@ -656,21 +656,21 @@ export default function Payslips() {
               <h3 className="text-lg font-semibold">Send Payslip via Email</h3>
               <button 
                 onClick={() => setShowEmailModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
             </div>
             
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-secondary mb-2">
                 Sending payslip for <strong>{emailForm.payslip.employee_name}</strong>
               </p>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-secondary mb-4">
                 Month: <strong>{emailForm.payslip.month} {emailForm.payslip.year}</strong>
               </p>
               
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-secondary mb-2">
                 Email Address *
               </label>
               <input
@@ -678,7 +678,7 @@ export default function Payslips() {
                 value={emailForm.email}
                 onChange={(e) => setEmailForm({...emailForm, email: e.target.value})}
                 placeholder="Enter employee email address"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
@@ -694,7 +694,7 @@ export default function Payslips() {
               </button>
               <button
                 onClick={() => setShowEmailModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Cancel
               </button>
@@ -714,7 +714,7 @@ export default function Payslips() {
                   setShowEmailConfirmModal(false);
                   setShowEmailModal(true);
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
@@ -735,19 +735,19 @@ export default function Payslips() {
               
               <div className="space-y-3">
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-600 font-medium">Employee:</span>
+                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Employee:</span>
                   <span className="font-semibold">{emailForm.payslip.employee_name}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-600 font-medium">Month:</span>
+                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Month:</span>
                   <span className="font-semibold">{emailForm.payslip.month} {emailForm.payslip.year}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-600 font-medium">Net Salary:</span>
+                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Net Salary:</span>
                   <span className="font-semibold text-green-600">₹{emailForm.payslip.net_salary?.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-600 font-medium">Send to:</span>
+                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Send to:</span>
                   <span className="font-semibold text-blue-600">{emailForm.email}</span>
                 </div>
               </div>
@@ -768,7 +768,7 @@ export default function Payslips() {
                   setShowEmailConfirmModal(false);
                   setShowEmailModal(true);
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Edit Email
               </button>

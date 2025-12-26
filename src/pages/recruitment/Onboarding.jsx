@@ -352,19 +352,19 @@ export default function Onboarding() {
                   <FiUser className="text-purple-600" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Onboarding</h1>
-                  <p className="text-gray-600 mt-1">Manage employee onboarding process and documentation</p>
+                  <h1 className="text-2xl font-bold text-primary">Onboarding</h1>
+                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee onboarding process and documentation</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{candidates.filter(c => 
+                  <div className="text-2xl font-bold text-primary">{candidates.filter(c => 
                     searchTerm === "" || 
                     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                   ).length}</div>
-                  <div className="text-sm text-gray-600">Onboarded Candidates</div>
+                  <div className="text-sm text-secondary">Onboarded Candidates</div>
                 </div>
               </div>
             </div>
@@ -374,11 +374,11 @@ export default function Onboarding() {
         {/* Search Section */}
         <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <input
               type="text"
               placeholder="Search onboarded candidates by name or job role..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -386,11 +386,11 @@ export default function Onboarding() {
         </div>
 
         {/* Onboarded Candidates Table */}
-        <div className="bg-white rounded-xl shadow-sm border">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Onboarded Candidates</h2>
-              <span className="text-sm text-gray-500">
+              <h2 className="text-xl font-semibold text-primary">Onboarded Candidates</h2>
+              <span className="text-sm text-muted">
                 {candidates.filter(c => 
                   searchTerm === "" || 
                   c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -406,25 +406,25 @@ export default function Onboarding() {
             c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
           ).length === 0 ? (
             <div className="text-center py-12">
-              <FiUser className="mx-auto text-gray-400 mb-4" size={48} />
-              <p className="text-gray-600">
+              <FiUser className="mx-auto text-muted mb-4" size={48} />
+              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>
                 {searchTerm ? "No matching onboarded candidates found" : "No onboarded candidates yet"}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Employee ID</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                   {candidates
                     .filter(c => 
                       searchTerm === "" || 
@@ -432,7 +432,7 @@ export default function Onboarding() {
                       c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                     )
                     .map((c) => (
-                    <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={c.id} className="hover:bg-content transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -441,13 +441,13 @@ export default function Onboarding() {
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                            <div className="text-sm font-medium text-primary">{c.name}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{c.job_title}</div>
-                        <div className="text-sm text-gray-500">{c.department}</div>
+                        <div className="text-sm text-primary">{c.job_title}</div>
+                        <div className="text-sm text-muted">{c.department}</div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         {c.employee_id ? (
@@ -455,7 +455,7 @@ export default function Onboarding() {
                             {c.employee_id}
                           </span>
                         ) : (
-                          <span className="text-xs text-gray-400">Not Available</span>
+                          <span className="text-xs text-muted">Not Available</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -501,7 +501,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Full Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.full_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, full_name: e.target.value})}
                       required
@@ -512,7 +512,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.date_of_birth}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, date_of_birth: e.target.value})}
                       required
@@ -522,7 +522,7 @@ export default function Onboarding() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
                     <select
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.gender}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, gender: e.target.value})}
                       required
@@ -538,7 +538,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Personal Email *</label>
                     <input
                       type="email"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.personal_email}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, personal_email: e.target.value})}
                       required
@@ -554,7 +554,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Phone Number *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.phone_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, phone_number: e.target.value})}
                       required
@@ -565,7 +565,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.emergency_contact_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, emergency_contact_name: e.target.value})}
                       required
@@ -576,7 +576,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.emergency_contact_phone}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, emergency_contact_phone: e.target.value})}
                       required
@@ -593,7 +593,7 @@ export default function Onboarding() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        className="border p-2 rounded flex-1"
+                        className="border p-2 rounded flex-1" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                         value={newOnboardingForm.employee_id}
                         onChange={(e) => setNewOnboardingForm({...newOnboardingForm, employee_id: e.target.value})}
                         required
@@ -613,7 +613,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.joining_date}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, joining_date: e.target.value})}
                       required
@@ -624,7 +624,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Department *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100"
+                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.department}
                       readOnly
                     />
@@ -634,7 +634,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Designation *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100"
+                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.designation}
                       readOnly
                     />
@@ -644,7 +644,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Work Location</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.work_location || ""}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, work_location: e.target.value})}
                       placeholder="Main Office"
@@ -655,7 +655,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.reporting_manager || ""}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, reporting_manager: e.target.value})}
                       placeholder="To be assigned"
@@ -671,7 +671,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Bank Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.bank_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, bank_name: e.target.value})}
                       required
@@ -682,7 +682,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Account Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.account_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, account_number: e.target.value})}
                       required
@@ -693,7 +693,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">IFSC Code *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.ifsc_code}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, ifsc_code: e.target.value})}
                       required
@@ -709,7 +709,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.aadhar_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, aadhar_number: e.target.value})}
                       required
@@ -720,7 +720,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">PAN Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.pan_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, pan_number: e.target.value})}
                       required
@@ -735,7 +735,7 @@ export default function Onboarding() {
                   <div className="col-span-2">
                     <label className="block text-sm font-medium mb-1">Current Address *</label>
                     <textarea
-                      className="border p-2 rounded w-full h-20"
+                      className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.current_address}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, current_address: e.target.value})}
                       required
@@ -746,7 +746,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">City *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.city}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, city: e.target.value})}
                       required
@@ -757,7 +757,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">State *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={newOnboardingForm.state}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, state: e.target.value})}
                       required
@@ -796,7 +796,7 @@ export default function Onboarding() {
                   <label>Joining Date</label>
                   <input
                     type="date"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.joining_date}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -808,7 +808,7 @@ export default function Onboarding() {
 
                   <label>Work Location</label>
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.work_location}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -827,7 +827,7 @@ export default function Onboarding() {
 
                   <label>Reporting Manager</label>
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.reporting_manager}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -846,7 +846,7 @@ export default function Onboarding() {
 
                   <label>Work Shift</label>
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={onboardingForm.work_shift}
                     onChange={(e) =>
                       setOnboardingForm({
@@ -888,7 +888,7 @@ export default function Onboarding() {
                 </h2>
 
                 <div className="space-y-3">
-                  <input type="file" className="border p-2 rounded w-full" multiple />
+                  <input type="file" className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} multiple />
                 </div>
 
                 <div className="flex justify-between mt-6">
@@ -948,7 +948,7 @@ export default function Onboarding() {
 
                 <label>Grade</label>
                 <select
-                  className="border p-2 rounded w-full mb-3"
+                  className="border p-2 rounded w-full mb-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={appointmentForm.grade}
                   onChange={(e) =>
                     setAppointmentForm({
@@ -966,7 +966,7 @@ export default function Onboarding() {
 
                 <label>Terms</label>
                 <textarea
-                  className="border p-2 rounded w-full h-32"
+                  className="border p-2 rounded w-full h-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={appointmentForm.terms}
                   onChange={(e) =>
                     setAppointmentForm({
@@ -1003,7 +1003,7 @@ export default function Onboarding() {
 
                 <div className="space-y-3">
                   <input
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Employee Code"
                     value={employeeForm.employee_code}
                     onChange={(e) =>
@@ -1015,7 +1015,7 @@ export default function Onboarding() {
                   />
 
                   <input
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Official Email"
                     value={employeeForm.official_email}
                     onChange={(e) =>
@@ -1027,7 +1027,7 @@ export default function Onboarding() {
                   />
 
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={employeeForm.employee_type}
                     onChange={(e) =>
                       setEmployeeForm({
@@ -1065,11 +1065,11 @@ export default function Onboarding() {
           {showDocumentsModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <div className="px-6 py-4 border-b  bg-content">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-gray-800">Uploaded Documents</h2>
+                    <h2 className="text-xl font-semibold text-primary">Uploaded Documents</h2>
                     <button
-                      className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition-colors"
+                      className=" hover:text-secondary p-2 rounded-lg hover:bg-gray-200 transition-colors" style={{color: 'var(--text-muted, #6b7280)'}}
                       onClick={() => setShowDocumentsModal(false)}
                     >
                       <span className="text-2xl">×</span>
@@ -1081,11 +1081,11 @@ export default function Onboarding() {
                   {candidateDocuments.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {candidateDocuments.map((doc) => (
-                        <div key={doc.id} className="border border-gray-200 rounded-xl p-4 bg-gray-50 hover:shadow-md transition-shadow">
+                        <div key={doc.id} className="border rounded-xl p-4 bg-content hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center">
                               <FiFileText className="text-blue-600 mr-2" size={20} />
-                              <h3 className="font-semibold text-gray-800 capitalize text-sm">
+                              <h3 className="font-semibold text-primary capitalize text-sm">
                                 {doc.document_type.replace('_', ' ')}
                               </h3>
                             </div>
@@ -1094,12 +1094,12 @@ export default function Onboarding() {
                             </span>
                           </div>
                           
-                          <p className="text-sm text-gray-600 mb-2 flex items-center">
+                          <p className="text-sm text-secondary mb-2 flex items-center">
                             <FiFileText className="mr-1" size={14} />
                             {doc.file_name}
                           </p>
                           
-                          <p className="text-xs text-gray-500 mb-4 flex items-center">
+                          <p className="text-xs text-muted mb-4 flex items-center">
                             <FiCalendar className="mr-1" size={12} />
                             Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
                           </p>
@@ -1116,15 +1116,15 @@ export default function Onboarding() {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <FiFileText className="mx-auto text-gray-400 mb-4" size={48} />
-                      <p className="text-gray-600">No documents uploaded yet</p>
+                      <FiFileText className="mx-auto text-muted mb-4" size={48} />
+                      <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No documents uploaded yet</p>
                     </div>
                   )}
                 </div>
 
-                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+                <div className="px-6 py-4 border-t  bg-content flex justify-end">
                   <button
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-2 border-dark text-secondary rounded-lg hover:bg-content transition-colors"
                     onClick={() => setShowDocumentsModal(false)}
                   >
                     Close

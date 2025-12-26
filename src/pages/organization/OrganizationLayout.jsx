@@ -94,7 +94,7 @@ export default function OrganizationLayout() {
                   className={`px-2 sm:px-3 py-3 sm:py-4 text-xs font-semibold border-b-3 transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                     tab === tabName
                       ? 'border-blue-500 text-blue-600 bg-white shadow-lg transform -translate-y-1'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                      : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
                   }`}
                 >
                   {tabName}

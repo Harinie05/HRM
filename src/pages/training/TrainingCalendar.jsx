@@ -58,15 +58,15 @@ export default function TrainingCalendar() {
             <Calendar className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Training Calendar</h2>
-            <p className="text-gray-600 mt-1">View scheduled training sessions and upcoming programs</p>
+            <h2 className="text-2xl font-bold text-primary">Training Calendar</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>View scheduled training sessions and upcoming programs</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Calendar className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -75,7 +75,7 @@ export default function TrainingCalendar() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Clock className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -90,7 +90,7 @@ export default function TrainingCalendar() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-purple-600" />
             <div className="ml-3">
@@ -101,7 +101,7 @@ export default function TrainingCalendar() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <MapPin className="h-8 w-8 text-orange-600" />
             <div className="ml-3">
@@ -114,7 +114,7 @@ export default function TrainingCalendar() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
 
         {/* Content */}
         <div className="p-6">
@@ -124,19 +124,19 @@ export default function TrainingCalendar() {
           </div>
         ) : calendarEvents.length === 0 ? (
           <div className="text-center py-12">
-            <Calendar className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No scheduled training sessions</h3>
-            <p className="mt-1 text-sm text-gray-500">Training sessions will appear here when programs are published to the calendar.</p>
+            <Calendar className="mx-auto h-12 w-12 text-muted" />
+            <h3 className="mt-2 text-sm font-medium text-primary">No scheduled training sessions</h3>
+            <p className="mt-1 text-sm text-muted">Training sessions will appear here when programs are published to the calendar.</p>
           </div>
         ) : (
           <div className="grid gap-4">
             {calendarEvents.map((event) => (
-              <div key={event.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div key={event.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-lg font-medium text-gray-900">{event.title}</h3>
-                    <p className="text-gray-600 mt-1">{event.description}</p>
-                    <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                    <h3 className="text-lg font-medium text-primary">{event.title}</h3>
+                    <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>{event.description}</p>
+                    <div className="flex items-center gap-4 mt-3 text-sm text-muted">
                       <div className="flex items-center gap-1">
                         <Clock size={16} />
                         <span>{new Date(event.start_date).toLocaleDateString()} - {new Date(event.end_date).toLocaleDateString()}</span>
@@ -162,7 +162,7 @@ export default function TrainingCalendar() {
                     event.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
                     event.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' :
                     event.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                    'bg-gray-100 text-gray-800'
+                    'bg-gray-100 text-primary'
                   }`}>
                     {event.status}
                   </span>

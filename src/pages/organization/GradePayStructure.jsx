@@ -140,15 +140,15 @@ export default function GradePayStructure() {
   return (
     <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b  px-4 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex-shrink-0">
               <DollarSign className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Grade & Pay Structure</h1>
-              <p className="text-gray-600 mt-1">Define salary grades and compensation structure</p>
+              <h1 className="text-xl font-bold text-primary">Grade & Pay Structure</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Define salary grades and compensation structure</p>
             </div>
           </div>
           <button
@@ -161,42 +161,42 @@ export default function GradePayStructure() {
       </div>
 
       <div className="p-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-primary">
                 {editingGrade ? 'Edit Grade Structure' : 'Create Grade Structure'}
               </h2>
-              <p className="text-gray-600 text-sm">Define salary structure & compliance settings</p>
+              <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Define salary structure & compliance settings</p>
             </div>
           </div>
 
           <div className="p-6 space-y-6">
             {/* Basic Info */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Basic Information</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Grade Code</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Grade Code</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="e.g., G1, EXEC, MGR"
                     value={code} onChange={(e) => setCode(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Grade Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Grade Name</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="e.g., Executive, Manager"
                     value={gradeName} onChange={(e) => setGradeName(e.target.value)}
                   />
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   rows="3" placeholder="Grade description"
                   value={description} onChange={(e) => setDescription(e.target.value)}
                 />
@@ -205,20 +205,20 @@ export default function GradePayStructure() {
 
             {/* Salary Range */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Salary Range</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Salary Range</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Salary</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Minimum Salary</label>
                   <input
-                    type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    type="number" className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="25000"
                     value={minSalary} onChange={(e) => setMinSalary(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Salary</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Maximum Salary</label>
                   <input
-                    type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    type="number" className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="50000"
                     value={maxSalary} onChange={(e) => setMaxSalary(e.target.value)}
                   />
@@ -228,48 +228,48 @@ export default function GradePayStructure() {
 
             {/* Salary Components */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Salary Components (%)</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Salary Components (%)</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Basic %</label>
-                  <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="40" value={basic} onChange={(e) => setBasic(e.target.value)} />
+                  <label className="block text-sm font-medium text-secondary mb-2">Basic %</label>
+                  <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="40" value={basic} onChange={(e) => setBasic(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">HRA %</label>
-                  <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="20" value={hra} onChange={(e) => setHra(e.target.value)} />
+                  <label className="block text-sm font-medium text-secondary mb-2">HRA %</label>
+                  <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="20" value={hra} onChange={(e) => setHra(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Allowance %</label>
-                  <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="30" value={allowance} onChange={(e) => setAllowance(e.target.value)} />
+                  <label className="block text-sm font-medium text-secondary mb-2">Allowance %</label>
+                  <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="30" value={allowance} onChange={(e) => setAllowance(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Special %</label>
-                  <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="10" value={special} onChange={(e) => setSpecial(e.target.value)} />
+                  <label className="block text-sm font-medium text-secondary mb-2">Special %</label>
+                  <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="10" value={special} onChange={(e) => setSpecial(e.target.value)} />
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-2">Total must equal 100%. Current: {(+basic + +hra + +allowance + +special) || 0}%</p>
+              <p className="text-sm text-muted mt-2">Total must equal 100%. Current: {(+basic + +hra + +allowance + +special) || 0}%</p>
             </div>
 
             {/* Compliance */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Compliance Settings</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Compliance Settings</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-4 border border-gray-200 rounded-lg">
+                <div className="p-4 border rounded-lg">
                   <label className="flex items-center gap-3 mb-3">
                     <input type="checkbox" checked={pfEnable} onChange={(e) => setPfEnable(e.target.checked)} className="rounded" />
-                    <span className="font-medium text-gray-900">PF Applicable</span>
+                    <span className="font-medium text-primary">PF Applicable</span>
                   </label>
                   {pfEnable && (
-                    <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="12" value={pfPercent} onChange={(e) => setPfPercent(e.target.value)} />
+                    <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="12" value={pfPercent} onChange={(e) => setPfPercent(e.target.value)} />
                   )}
                 </div>
-                <div className="p-4 border border-gray-200 rounded-lg">
+                <div className="p-4 border rounded-lg">
                   <label className="flex items-center gap-3 mb-3">
                     <input type="checkbox" checked={esiEnable} onChange={(e) => setEsiEnable(e.target.checked)} className="rounded" />
-                    <span className="font-medium text-gray-900">ESI Applicable</span>
+                    <span className="font-medium text-primary">ESI Applicable</span>
                   </label>
                   {esiEnable && (
-                    <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="3.25" value={esiPercent} onChange={(e) => setEsiPercent(e.target.value)} />
+                    <input className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="3.25" value={esiPercent} onChange={(e) => setEsiPercent(e.target.value)} />
                   )}
                 </div>
               </div>
@@ -277,11 +277,11 @@ export default function GradePayStructure() {
 
             {/* Department & Role Mapping */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Department & Role Mapping</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Department & Role Mapping</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Departments</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3" value="" onChange={(e) => { if (e.target.value) addDept(e.target.value); }}>
+                  <label className="block text-sm font-medium text-secondary mb-2">Departments</label>
+                  <select className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3" value="" onChange={(e) => { if (e.target.value) addDept(e.target.value); }}>
                     <option value="">Select Department</option>
                     {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
                   </select>
@@ -294,8 +294,8 @@ export default function GradePayStructure() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Roles</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3" value="" onChange={(e) => { if (e.target.value) addRole(e.target.value); }}>
+                  <label className="block text-sm font-medium text-secondary mb-2">Roles</label>
+                  <select className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3" value="" onChange={(e) => { if (e.target.value) addRole(e.target.value); }}>
                     <option value="">Select Role</option>
                     {roles.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
                   </select>
@@ -312,15 +312,15 @@ export default function GradePayStructure() {
 
             {/* Effective Date & Status */}
             <div>
-              <h3 className="text-md font-semibold text-gray-900 mb-4">Effective Date & Status</h3>
+              <h3 className="text-md font-semibold text-primary mb-4">Effective Date & Status</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Effective From</label>
-                  <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} />
+                  <label className="block text-sm font-medium text-secondary mb-2">Effective From</label>
+                  <input type="date" className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" value={effectiveFrom} onChange={(e) => setEffectiveFrom(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
+                  <select className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" value={status} onChange={(e) => setStatus(e.target.value)}>
                     <option>Active</option>
                     <option>Inactive</option>
                   </select>
@@ -329,8 +329,8 @@ export default function GradePayStructure() {
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
-              <button onClick={clearForm} className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex justify-end gap-3 pt-6 border-t ">
+              <button onClick={clearForm} className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors">
                 Reset
               </button>
               <button onClick={saveGrade} className="px-6 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
@@ -345,9 +345,9 @@ export default function GradePayStructure() {
       {showGradeList && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-4xl mx-4 rounded-xl shadow-xl max-h-[80vh] overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">All Grades ({gradeList.length})</h3>
-              <button onClick={() => setShowGradeList(false)} className="text-gray-400 hover:text-gray-600">
+            <div className="px-6 py-4 border-b  flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-primary">All Grades ({gradeList.length})</h3>
+              <button onClick={() => setShowGradeList(false)} className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}>
                 <X size={24} />
               </button>
             </div>
@@ -355,17 +355,17 @@ export default function GradePayStructure() {
               {gradeList.length === 0 ? (
                 <div className="text-center py-8">
                   <DollarSign size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 font-medium">No grades created yet</p>
-                  <p className="text-gray-400 text-sm">Create your first grade to get started</p>
+                  <p className=" font-medium" style={{color: 'var(--text-muted, #6b7280)'}}>No grades created yet</p>
+                  <p className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>Create your first grade to get started</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {gradeList.map((g) => (
-                    <div key={g.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div key={g.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900">{g.name} ({g.code})</h4>
-                          <p className="text-sm text-gray-600">₹{g.min_salary.toLocaleString()} - ₹{g.max_salary.toLocaleString()}</p>
+                          <h4 className="font-semibold text-primary">{g.name} ({g.code})</h4>
+                          <p className="text-sm text-secondary">₹{g.min_salary.toLocaleString()} - ₹{g.max_salary.toLocaleString()}</p>
                         </div>
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                           g.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

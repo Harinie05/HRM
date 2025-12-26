@@ -79,7 +79,7 @@ export default function EmployeeIDDocs() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -87,17 +87,17 @@ export default function EmployeeIDDocs() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center gap-2 mb-4">
             <FiUpload className="text-blue-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
+            <h3 className="text-lg font-semibold text-primary">Upload New Document</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Document Type</label>
               <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
               >
@@ -111,11 +111,11 @@ export default function EmployeeIDDocs() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Select File</label>
               <input 
                 type="file" 
                 accept=".pdf,.jpg,.jpeg,.png"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 onChange={(e) => setFile(e.target.files[0])} 
               />
             </div>
@@ -129,38 +129,38 @@ export default function EmployeeIDDocs() {
               Upload Document
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+          <p className="text-xs text-muted mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
         </div>
 
         {/* Documents List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           {docs.length === 0 ? (
             <div className="p-12 text-center">
-              <FiCreditCard className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Documents Uploaded</h3>
-              <p className="text-gray-500">Upload identity documents for verification.</p>
+              <FiCreditCard className="mx-auto h-12 w-12 text-muted mb-4" />
+              <h3 className="text-lg font-medium text-primary mb-2">No Documents Uploaded</h3>
+              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Upload identity documents for verification.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Document Type</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">File Name</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Status</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Document Type</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-primary">File Name</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Status</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                   {docs.map((d) => (
-                    <tr key={d.id} className="hover:bg-gray-50">
+                    <tr key={d.id} className="hover:bg-content">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <FiFileText className="text-gray-400" />
-                          <span className="font-medium text-gray-900">{d.document_type}</span>
+                          <FiFileText className="" style={{color: 'var(--text-muted, #6b7280)'}} />
+                          <span className="font-medium text-primary">{d.document_type}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{d.file_name}</td>
+                      <td className="px-6 py-4 text-sm text-secondary">{d.file_name}</td>
                       <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                           d.status === "Verified" 

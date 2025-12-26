@@ -118,7 +118,7 @@ export default function EmployeeDocuments() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-8 py-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="flex items-center gap-4">
@@ -126,19 +126,19 @@ export default function EmployeeDocuments() {
                   <FiFileText className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">All Documents</h1>
-                  <p className="text-gray-600 mt-1">Employee document repository</p>
+                  <h1 className="text-2xl font-bold text-primary">All Documents</h1>
+                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Employee document repository</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{docs.length}</div>
-                  <div className="text-sm text-gray-600">Documents</div>
+                  <div className="text-2xl font-bold text-primary">{docs.length}</div>
+                  <div className="text-sm text-secondary">Documents</div>
                 </div>
                 <button 
                   onClick={() => navigate(`/eis/${id}`)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-secondary rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   <FiArrowLeft size={16} />
                   Back to Profile
@@ -149,20 +149,20 @@ export default function EmployeeDocuments() {
         </div>
 
         {/* Documents List */}
-        <div className="bg-white rounded-xl shadow-sm border">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="p-6">
             {docs.length === 0 ? (
               <div className="text-center py-12">
-                <FiFileText className="mx-auto text-gray-400 mb-4" size={48} />
-                <p className="text-gray-600 text-lg font-medium mb-2">No documents found</p>
-                <p className="text-gray-500">Documents will appear here once uploaded</p>
+                <FiFileText className="mx-auto text-muted mb-4" size={48} />
+                <p className=" text-lg font-medium mb-2" style={{color: 'var(--text-secondary, #374151)'}}>No documents found</p>
+                <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Documents will appear here once uploaded</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {docs.map((d) => (
                   <div 
                     key={d.id} 
-                    className="border border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
+                    className="border rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer group" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     onClick={() => {
                       const token = localStorage.getItem('access_token');
                       if (!token) {
@@ -178,27 +178,27 @@ export default function EmployeeDocuments() {
                         d.category === 'Experience' ? 'bg-green-100 text-green-700' :
                         d.category === 'Medical' ? 'bg-red-100 text-red-700' :
                         d.category === 'Certification' ? 'bg-purple-100 text-purple-700' :
-                        'bg-gray-100 text-gray-700'
+                        'bg-gray-100 text-secondary'
                       }`}>
                         {d.category}
                       </span>
-                      <FiEye className="text-gray-400 group-hover:text-blue-600 transition-colors" size={16} />
+                      <FiEye className=" group-hover:text-blue-600 transition-colors" style={{color: 'var(--text-muted, #6b7280)'}} size={16} />
                     </div>
                     
-                    <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-semibold text-primary mb-2 group-hover:text-blue-600 transition-colors">
                       {d.document_type}
                     </h3>
                     
-                    <p className="text-sm text-gray-600 mb-3 truncate">{d.file_name}</p>
+                    <p className="text-sm text-secondary mb-3 truncate">{d.file_name}</p>
                     
                     {d.degree && (
-                      <p className="text-xs text-gray-500 mb-2">{d.degree} - {d.university}</p>
+                      <p className="text-xs text-muted mb-2">{d.degree} - {d.university}</p>
                     )}
                     {d.company && (
-                      <p className="text-xs text-gray-500 mb-2">{d.job_title} at {d.company}</p>
+                      <p className="text-xs text-muted mb-2">{d.job_title} at {d.company}</p>
                     )}
                     {d.certification && (
-                      <p className="text-xs text-gray-500 mb-2">
+                      <p className="text-xs text-muted mb-2">
                         {d.certification} {d.issued_by && `by ${d.issued_by}`}
                       </p>
                     )}
@@ -214,7 +214,7 @@ export default function EmployeeDocuments() {
                         </span>
                       )}
                       {d.uploaded_at && (
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-muted">
                           {new Date(d.uploaded_at).toLocaleDateString()}
                         </span>
                       )}

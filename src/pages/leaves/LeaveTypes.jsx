@@ -207,13 +207,13 @@ export default function LeaveTypes() {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Leave Types & Policies</h2>
-            <p className="text-gray-600 mt-1">Manage different types of leaves and their policies</p>
+            <h2 className="text-xl font-semibold text-primary">Leave Types & Policies</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage different types of leaves and their policies</p>
           </div>
           <div className="flex gap-2">
             <button 
@@ -228,14 +228,14 @@ export default function LeaveTypes() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b " style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
         <div className="flex">
           <button
             onClick={() => setActiveTab("types")}
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "types"
                 ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-muted hover:text-secondary"
             }`}
           >
             Leave Types ({leaveTypes.length})
@@ -245,7 +245,7 @@ export default function LeaveTypes() {
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "policies"
                 ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-muted hover:text-secondary"
             }`}
           >
             Leave Policies ({leavePolicies.length})
@@ -254,16 +254,16 @@ export default function LeaveTypes() {
       </div>
 
       {/* Search and Filters */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <input
               type="text"
               placeholder={`Search ${activeTab === "types" ? "leave types" : "leave policies"}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
         </div>
@@ -273,32 +273,32 @@ export default function LeaveTypes() {
       {activeTab === "types" ? (
         /* Leave Types Table */
         <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Leave Type</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Code</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Category</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Limit Source</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Carry Forward</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Leave Type</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-20">Code</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">Category</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">Limit Source</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-24">Carry Forward</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-20">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-24">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {filteredTypes.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-4 py-8 text-center text-muted">
                     {searchTerm ? "No leave types found matching your search." : "No leave types configured yet."}
                   </td>
                 </tr>
               ) : (
                 filteredTypes.map((type) => (
-                  <tr key={type.id} className="hover:bg-gray-50">
+                  <tr key={type.id} className="hover:bg-content">
                     <td className="px-4 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900 truncate">{type.name}</div>
-                        <div className="text-sm text-gray-500 truncate">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
+                        <div className="text-sm font-medium text-primary truncate">{type.name}</div>
+                        <div className="text-sm text-muted truncate">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
@@ -306,7 +306,7 @@ export default function LeaveTypes() {
                         {type.code}
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-900 truncate">
+                    <td className="px-4 py-4 text-sm text-primary truncate">
                       {type.category || "General"}
                     </td>
                     <td className="px-4 py-4">
@@ -323,7 +323,7 @@ export default function LeaveTypes() {
                             Policy Controlled
                           </span>
                         ) : (
-                          <span className="text-sm text-gray-900">{type.annual_limit} days</span>
+                          <span className="text-sm text-primary">{type.annual_limit} days</span>
                         );
                       })()} 
                     </td>
@@ -336,7 +336,7 @@ export default function LeaveTypes() {
                     </td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-primary"
                       }`}>
                         {type.status}
                       </span>
@@ -369,30 +369,30 @@ export default function LeaveTypes() {
       ) : (
         /* Leave Policies Table */
         <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Policy Name</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Leave Allocations</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Carry Forward</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Encashment</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Policy Name</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-64">Leave Allocations</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">Carry Forward</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-24">Encashment</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-20">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-24">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {leavePolicies.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-4 py-8 text-center text-muted">
                     No leave policies found. Create your first leave policy.
                   </td>
                 </tr>
               ) : (
                 filteredPolicies.map((policy) => (
-                  <tr key={policy.id} className="hover:bg-gray-50">
+                  <tr key={policy.id} className="hover:bg-content">
                     <td className="px-4 py-4">
-                      <div className="text-sm font-medium text-gray-900 truncate">{policy.name}</div>
-                      <div className="text-sm text-gray-500 truncate">{policy.rule}</div>
+                      <div className="text-sm font-medium text-primary truncate">{policy.name}</div>
+                      <div className="text-sm text-muted truncate">{policy.rule}</div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-wrap gap-1">
@@ -431,7 +431,7 @@ export default function LeaveTypes() {
                     </td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-primary"
                       }`}>
                         {policy.status}
                       </span>
@@ -464,8 +464,8 @@ export default function LeaveTypes() {
       )}
 
       {/* Stats Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
+      <div className="px-6 py-4 bg-content border-t ">
+        <div className="flex justify-between items-center text-sm text-secondary">
           {activeTab === "types" ? (
             <>
               <span>Total: {leaveTypes.length} leave types</span>
@@ -489,36 +489,36 @@ export default function LeaveTypes() {
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Code</label>
                 <input
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({...formData, code: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Category</label>
                 <input
                   type="text"
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-secondary mb-1">
                   {(() => {
                     const isFixedPolicyType = formData.code && ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(formData.code.toUpperCase());
                     const isDynamicPolicyType = formData.code && leavePolicies.some(policy => 
@@ -549,7 +549,7 @@ export default function LeaveTypes() {
                       policy.leave_allocations && 
                       policy.leave_allocations[formData.code?.toUpperCase()]
                     );
-                    return (isFixedPolicyType || isDynamicPolicyType) ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed' : 'border-gray-300';
+                    return (isFixedPolicyType || isDynamicPolicyType) ? ' bg-content text-muted cursor-not-allowed' : '-dark';
                   })()}`}
                   placeholder={(() => {
                     const isFixedPolicyType = formData.code && ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(formData.code.toUpperCase());
@@ -599,7 +599,7 @@ export default function LeaveTypes() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -625,72 +625,72 @@ export default function LeaveTypes() {
             <form onSubmit={handlePolicySubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Policy Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Policy Name</label>
                   <input
                     type="text"
                     value={policyFormData.name}
                     onChange={(e) => setPolicyFormData({...policyFormData, name: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Policy Rule</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Policy Rule</label>
                   <textarea
                     value={policyFormData.rule}
                     onChange={(e) => setPolicyFormData({...policyFormData, rule: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     rows="3"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Annual Leave (days)</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Annual Leave (days)</label>
                   <input
                     type="number"
                     value={policyFormData.annual}
                     onChange={(e) => setPolicyFormData({...policyFormData, annual: parseInt(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sick Leave (days)</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Sick Leave (days)</label>
                   <input
                     type="number"
                     value={policyFormData.sick}
                     onChange={(e) => setPolicyFormData({...policyFormData, sick: parseInt(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Casual Leave (days)</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Casual Leave (days)</label>
                   <input
                     type="number"
                     value={policyFormData.casual}
                     onChange={(e) => setPolicyFormData({...policyFormData, casual: parseInt(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Max Carry Forward</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Max Carry Forward</label>
                   <input
                     type="number"
                     value={policyFormData.max_carry}
                     onChange={(e) => setPolicyFormData({...policyFormData, max_carry: parseInt(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
               
               {/* Other Leave Types */}
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Other Leave Types</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Other Leave Types</label>
                 
                 {/* Add New Leave Type */}
                 <div className="flex gap-2 mb-3">
                   <select
                     value={selectedLeaveType}
                     onChange={(e) => setSelectedLeaveType(e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 border-dark rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select Leave Type</option>
                     {leaveTypes.filter(lt => 
@@ -707,7 +707,7 @@ export default function LeaveTypes() {
                     placeholder="Days"
                     value={allocationDays}
                     onChange={(e) => setAllocationDays(e.target.value)}
-                    className="w-20 border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    className="w-20 border-dark rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
                   />
                   <button
                     type="button"
@@ -735,10 +735,10 @@ export default function LeaveTypes() {
                   {Object.entries(policyFormData.leave_allocations).map(([code, days]) => {
                     const leaveType = leaveTypes.find(lt => lt.code?.toUpperCase() === code);
                     return (
-                      <div key={code} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                      <div key={code} className="flex items-center justify-between bg-content p-2 rounded">
                         <span className="text-sm font-medium">{code} - {leaveType?.name}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-600">{days} days</span>
+                          <span className="text-sm text-secondary">{days} days</span>
                           <button
                             type="button"
                             onClick={() => {
@@ -780,7 +780,7 @@ export default function LeaveTypes() {
                 <button
                   type="button"
                   onClick={handleClosePolicyModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

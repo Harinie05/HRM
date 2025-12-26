@@ -93,7 +93,7 @@ export default function DesignationList() {
   };
 
   const getRoleColor = (level) => {
-    return roleHierarchy[level]?.color || 'bg-gray-500';
+    return roleHierarchy[level]?.color || 'bg-content0';
   };
 
   const getRoleLabel = (level) => {
@@ -105,19 +105,19 @@ export default function DesignationList() {
       {filteredRoles.map((role) => {
         const IconComponent = roleHierarchy[role.level]?.icon || Users;
         return (
-          <div key={role.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <div key={role.id} className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow">
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white`}>
                   <IconComponent size={24} />
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                  <button className="p-2 text-muted hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                     <Edit3 size={16} />
                   </button>
                   <button 
                     onClick={() => deleteRole(role.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -125,8 +125,8 @@ export default function DesignationList() {
               </div>
               
               <div className="mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">{role.name}</h3>
-                <p className="text-sm text-gray-500 line-clamp-2">
+                <h3 className="text-lg font-semibold text-primary mb-1">{role.name}</h3>
+                <p className="text-sm text-muted line-clamp-2">
                   {role.description || 'No description provided'}
                 </p>
               </div>
@@ -149,32 +149,32 @@ export default function DesignationList() {
   const renderTableView = () => (
     <div className="overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full table-fixed divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed divide-y">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Role</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Description</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Level</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Permissions</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Role</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-64">Description</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Level</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-32">Permissions</th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-24">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {filteredRoles.map((role) => {
               const IconComponent = roleHierarchy[role.level]?.icon || Users;
               return (
-                <tr key={role.id} className="hover:bg-gray-50">
+                <tr key={role.id} className="hover:bg-content">
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className={`w-8 h-8 ${getRoleColor(role.level)} rounded-lg flex items-center justify-center text-white mr-3 flex-shrink-0`}>
                         <IconComponent size={16} />
                       </div>
-                      <div className="text-sm font-medium text-gray-900 truncate" title={role.name}>{role.name}</div>
+                      <div className="text-sm font-medium text-primary truncate" title={role.name}>{role.name}</div>
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-500 truncate" title={role.description}>
-                      {role.description || <span className="italic text-gray-400">No description</span>}
+                    <div className="text-sm text-muted truncate" title={role.description}>
+                      {role.description || <span className="italic text-muted">No description</span>}
                     </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-center">
@@ -212,26 +212,26 @@ export default function DesignationList() {
   return (
     <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b  px-4 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex-shrink-0">
               <Shield className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Designations & Roles</h1>
-              <p className="text-gray-600 mt-1">Overview of all roles and their permission levels</p>
+              <h1 className="text-xl font-bold text-primary">Designations & Roles</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Overview of all roles and their permission levels</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex items-center gap-2">
-              <Eye size={16} className="text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">View:</span>
+              <Eye size={16} className="" style={{color: 'var(--text-secondary, #374151)'}} />
+              <span className="text-sm font-medium text-secondary">View:</span>
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600 hover:text-gray-800'
+                    viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
                   }`}
                 >
                   <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
@@ -245,7 +245,7 @@ export default function DesignationList() {
                 <button
                   onClick={() => setViewMode('table')}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'table' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600 hover:text-gray-800'
+                    viewMode === 'table' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
                   }`}
                 >
                   <div className="flex flex-col gap-0.5 w-3 h-3">
@@ -264,26 +264,26 @@ export default function DesignationList() {
 
       <div className="p-4 space-y-6">
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={20} />
                 <input
                   type="text"
                   placeholder="Search roles..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-gray-600" />
+              <Filter size={16} className="" style={{color: 'var(--text-secondary, #374151)'}} />
               <select
                 value={filterLevel}
                 onChange={(e) => setFilterLevel(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="all">All Levels</option>
                 <option value="admin">Administrator</option>
@@ -297,28 +297,28 @@ export default function DesignationList() {
 
         {/* Create Role Form */}
         {showCreateRole && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Create New Role</h3>
+          <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+            <div className="px-6 py-4 border-b ">
+              <h3 className="text-lg font-semibold text-primary">Create New Role</h3>
             </div>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Role Name</label>
                   <input
                     type="text"
                     value={newRole.name}
                     onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="e.g., Senior Developer, HR Manager"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role Level</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Role Level</label>
                   <select
                     value={newRole.level}
                     onChange={(e) => setNewRole({...newRole, level: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   >
                     <option value="employee">Employee</option>
                     <option value="supervisor">Supervisor</option>
@@ -328,12 +328,12 @@ export default function DesignationList() {
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                 <textarea
                   value={newRole.description}
                   onChange={(e) => setNewRole({...newRole, description: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Describe the role responsibilities and scope..."
                 />
               </div>
@@ -346,7 +346,7 @@ export default function DesignationList() {
                 </button>
                 <button
                   onClick={() => setShowCreateRole(false)}
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
                 >
                   Cancel
                 </button>
@@ -356,14 +356,14 @@ export default function DesignationList() {
         )}
 
         {/* Roles Display */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Roles & Permissions</h2>
-                <p className="text-gray-600 text-sm">Manage organizational roles and their access levels</p>
+                <h2 className="text-lg font-semibold text-primary">Roles & Permissions</h2>
+                <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Manage organizational roles and their access levels</p>
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted">
                 {filteredRoles.length} of {roles.length} roles
               </div>
             </div>
@@ -377,12 +377,12 @@ export default function DesignationList() {
             ) : filteredRoles.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield size={32} className="text-gray-400" />
+                  <Shield size={32} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-primary mb-2">
                   {searchTerm || filterLevel !== 'all' ? 'No matching roles found' : 'No roles found'}
                 </h3>
-                <p className="text-gray-500">
+                <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>
                   {searchTerm || filterLevel !== 'all' 
                     ? 'Try adjusting your search or filter criteria' 
                     : 'Create your first role to get started with role management'}

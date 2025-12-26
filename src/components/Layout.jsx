@@ -16,7 +16,7 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen" style={{ backgroundColor: 'var(--content-bg, #f8fafc)' }}>
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div 
@@ -41,11 +41,11 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
           onMobileMenuToggle={toggleMobileMenu}
         />
         
-        <main className="flex-1 overflow-auto bg-gray-50 pt-14 sm:pt-16 pb-0">
+        <main className="flex-1 overflow-auto pt-14 sm:pt-16 pb-0" style={{ backgroundColor: 'var(--content-bg, #f8fafc)' }}>
           {/* Breadcrumb */}
           {breadcrumb && (
-            <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
-              <nav className="text-sm text-gray-600 font-medium">
+            <div className="px-4 sm:px-6 py-3" style={{ backgroundColor: 'var(--card-bg, #ffffff)', borderBottom: '1px solid var(--border-color, #e2e8f0)' }}>
+              <nav className="text-sm font-medium" style={{ color: 'var(--muted-text, #64748b)' }}>
                 {breadcrumb}
               </nav>
             </div>
@@ -53,31 +53,31 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
           
           {/* Page Header */}
           {title && (
-            <div className="bg-white px-4 sm:px-6 py-4 sm:py-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+            <div className="px-4 sm:px-6 py-4 sm:py-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+              <h1 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: 'var(--text-color, #1e293b)' }}>{title}</h1>
               {subtitle && (
-                <p className="text-gray-600 text-sm">{subtitle}</p>
+                <p className="text-sm" style={{ color: 'var(--muted-text, #64748b)' }}>{subtitle}</p>
               )}
               
               {/* Stats Section */}
               {stats && (
-                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="mt-4 rounded-lg p-4" style={{ backgroundColor: 'var(--content-bg, #f8fafc)', border: '1px solid var(--border-color, #e2e8f0)' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h3 className="font-semibold text-blue-900 uppercase tracking-wide text-xs">
+                      <h3 className="font-semibold uppercase tracking-wide text-xs" style={{ color: 'var(--primary-color, #2862e9)' }}>
                         {stats.label}
                       </h3>
                       <div className="flex items-center mt-1">
-                        <span className="text-2xl font-bold text-blue-900 mr-2">
+                        <span className="text-2xl font-bold mr-2" style={{ color: 'var(--primary-color, #2862e9)' }}>
                           {stats.count}
                         </span>
-                        <span className="text-sm text-blue-700">
+                        <span className="text-sm" style={{ color: 'var(--muted-text, #64748b)' }}>
                           {stats.description}
                         </span>
                       </div>
                     </div>
                     {stats.action && (
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors w-full sm:w-auto">
+                      <button className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors w-full sm:w-auto" style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}>
                         {stats.action}
                       </button>
                     )}

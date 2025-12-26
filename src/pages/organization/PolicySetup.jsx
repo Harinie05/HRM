@@ -232,14 +232,14 @@ const [statusAtt, setStatusAtt] = useState("Active");
 
     // ---------------------- UI SECTION ----------------------
     return (
-        <div className="p-6 bg-gray-50 min-h-screen space-y-6">
+        <div className="p-6 bg-content min-h-screen space-y-6">
 
             {/* POLICY TYPE DROPDOWN */}
             <div className="mb-5">
                 <select 
                     value={activeTab} 
                     onChange={(e)=>{setActiveTab(e.target.value);setEditingId(null);setPolicies([])}}
-                    className="border p-2 rounded w-64 bg-white">
+                    className="border p-2 rounded w-64 bg-white" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     {tabs.map(t=>(
                         <option key={t} value={t}>{t}</option>
                     ))}
@@ -266,13 +266,13 @@ const [statusAtt, setStatusAtt] = useState("Active");
                     maxOT,setMaxOT,eligibleGrades,setEligibleGrades,autoOT,setAutoOT,statusOT,setStatusOT,availableGrades}}/>}
 
                     <div className="flex justify-end gap-3">
-                        <button onClick={resetForm} className="border px-5 py-2 rounded-lg">Reset</button>
+                        <button onClick={resetForm} className="border px-5 py-2 rounded-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Reset</button>
                         <button onClick={savePolicy} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Save</button>
                     </div>
                 </div>
 
                 {/* ---------------- RIGHT: LIST TABLE ---------------- */}
-                <div className="bg-white p-6 rounded-xl shadow-sm">
+                <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                     <PolicyTable policies={policies} onEdit={loadForEdit} onDelete={deletePolicy} activeTab={activeTab}/>
                 </div>
 
@@ -290,33 +290,33 @@ function HRForm(props){
         description,setDescription,policyFile,setPolicyFile}=props
 
     return(<>
-        <input className="border p-2 w-full rounded" placeholder="Policy Name" value={hrName} onChange={e=>setHrName(e.target.value)}/>
-        <textarea className="border p-2 w-full rounded" rows="3" placeholder="Policy Description"
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Policy Name" value={hrName} onChange={e=>setHrName(e.target.value)}/>
+        <textarea className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} rows="3" placeholder="Policy Description"
             value={description} onChange={e=>setDescription(e.target.value)}/>
-        <input className="border p-2 w-full rounded" placeholder="Notice Period (Days)" type="number" value={noticeDays} onChange={e=>setNoticeDays(e.target.value)}/>
-        <input className="border p-2 w-full rounded" placeholder="Probation Period (Days)" type="number" value={probation} onChange={e=>setProbation(e.target.value)}/>
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Notice Period (Days)" type="number" value={noticeDays} onChange={e=>setNoticeDays(e.target.value)}/>
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Probation Period (Days)" type="number" value={probation} onChange={e=>setProbation(e.target.value)}/>
         
         <div>
-            <label className="block text-sm text-gray-600 mb-1">Work Week</label>
-            <select className="border p-2 w-full rounded" value={workWeek} onChange={e=>setWorkWeek(e.target.value)}>
+            <label className="block text-sm text-secondary mb-1">Work Week</label>
+            <select className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={workWeek} onChange={e=>setWorkWeek(e.target.value)}>
                 <option>Mon-Fri</option><option>Mon-Sat</option><option>Custom</option>
             </select>
         </div>
         
         <div>
-            <label className="block text-sm text-gray-600 mb-1">Holiday Pattern</label>
-            <select className="border p-2 w-full rounded" value={holidayPattern} onChange={e=>setHolidayPattern(e.target.value)}>
+            <label className="block text-sm text-secondary mb-1">Holiday Pattern</label>
+            <select className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={holidayPattern} onChange={e=>setHolidayPattern(e.target.value)}>
                 <option>Based on Holiday Calendar</option><option>Custom</option>
             </select>
         </div>
         
         <div>
-            <label className="block text-sm text-gray-600 mb-1">Upload Policy Document (PDF)</label>
-            <input type="file" accept=".pdf" className="border p-2 w-full rounded" 
+            <label className="block text-sm text-secondary mb-1">Upload Policy Document (PDF)</label>
+            <input type="file" accept=".pdf" className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} 
                 onChange={e=>setPolicyFile(e.target.files[0])}/>
         </div>
         
-        <select className="border p-2 w-full rounded" value={statusHR} onChange={e=>setStatusHR(e.target.value)}>
+        <select className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={statusHR} onChange={e=>setStatusHR(e.target.value)}>
             <option>Active</option><option>Inactive</option>
         </select>
     </>)
@@ -327,23 +327,23 @@ function LeaveForm(props){
         carry,setCarry,carryMax,setCarryMax,encash,setEncash,rule,setRule,statusLeave,setStatusLeave}=props
 
     return(<>
-        <input className="border p-2 w-full rounded" placeholder="Policy Name" value={leaveName} onChange={e=>setLeaveName(e.target.value)}/>
-        <input className="border p-2 rounded" placeholder="Annual Leave Count" type="number" value={annual} onChange={e=>setAnnual(e.target.value)}/>
-        <input className="border p-2 rounded" placeholder="Sick Leave Count" type="number" value={sick} onChange={e=>setSick(e.target.value)}/>
-        <input className="border p-2 rounded" placeholder="Casual Leave Count" type="number" value={casual} onChange={e=>setCasual(e.target.value)}/>
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Policy Name" value={leaveName} onChange={e=>setLeaveName(e.target.value)}/>
+        <input className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Annual Leave Count" type="number" value={annual} onChange={e=>setAnnual(e.target.value)}/>
+        <input className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Sick Leave Count" type="number" value={sick} onChange={e=>setSick(e.target.value)}/>
+        <input className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Casual Leave Count" type="number" value={casual} onChange={e=>setCasual(e.target.value)}/>
 
         <label className="flex gap-2 items-center text-sm"><input type="checkbox" checked={carry} onChange={e=>setCarry(e.target.checked)}/> Carry Forward Allowed</label>
-        {carry && <input className="border p-2 w-full rounded" placeholder="Max Carry Forward Days" type="number" value={carryMax} onChange={e=>setCarryMax(e.target.value)}/>}
+        {carry && <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Max Carry Forward Days" type="number" value={carryMax} onChange={e=>setCarryMax(e.target.value)}/>}
 
         <label className="flex gap-2 items-center text-sm"><input type="checkbox" checked={encash} onChange={e=>setEncash(e.target.checked)}/> Encashment Allowed</label>
 
-        <select className="border p-2 w-full rounded" value={rule} onChange={e=>setRule(e.target.value)}>
+        <select className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={rule} onChange={e=>setRule(e.target.value)}>
             <option>Full Day</option><option>Half Day</option><option>Pro-rata</option>
         </select>
 
-        <p className="text-xs text-gray-400">LOP applied automatically if leave balance not available.</p>
+        <p className="text-xs text-muted">LOP applied automatically if leave balance not available.</p>
 
-        <select className="border p-2 w-full rounded" value={statusLeave} onChange={e=>setStatusLeave(e.target.value)}>
+        <select className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={statusLeave} onChange={e=>setStatusLeave(e.target.value)}>
             <option>Active</option><option>Inactive</option>
         </select>
     </>)
@@ -355,34 +355,34 @@ function AttendanceForm(props){
         halfHours,setHalfHours,fullHours,setFullHours,weeklyOff,setWeeklyOff,statusAtt,setStatusAtt}=props
 
     return(<>
-        <input className="border p-2 w-full rounded" placeholder="Policy Name" value={attName} onChange={e=>setAttName(e.target.value)}/>
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Policy Name" value={attName} onChange={e=>setAttName(e.target.value)}/>
         
         <div>
-            <label className="block text-xs text-gray-600 mb-1">Check-in Start (e.g., 8:00 AM)</label>
-            <input className="border p-2 rounded w-full" type="time" value={checkStart} onChange={e=>setCheckStart(e.target.value)}/>
+            <label className="block text-xs text-secondary mb-1">Check-in Start (e.g., 8:00 AM)</label>
+            <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} type="time" value={checkStart} onChange={e=>setCheckStart(e.target.value)}/>
         </div>
         
         <div>
-            <label className="block text-xs text-gray-600 mb-1">Check-in End (Latest time to check-in)</label>
-            <input className="border p-2 rounded w-full" type="time" value={checkEnd} onChange={e=>setCheckEnd(e.target.value)}/>
+            <label className="block text-xs text-secondary mb-1">Check-in End (Latest time to check-in)</label>
+            <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} type="time" value={checkEnd} onChange={e=>setCheckEnd(e.target.value)}/>
         </div>
         
         <div>
-            <label className="block text-xs text-gray-600 mb-1">Check-out Time (e.g., 5:00 PM)</label>
-            <input className="border p-2 rounded w-full" type="time" value={checkout} onChange={e=>setCheckout(e.target.value)}/>
+            <label className="block text-xs text-secondary mb-1">Check-out Time (e.g., 5:00 PM)</label>
+            <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} type="time" value={checkout} onChange={e=>setCheckout(e.target.value)}/>
         </div>
         
-        <input className="border p-2 rounded w-full" placeholder="Grace Minutes" type="number" value={grace} onChange={e=>setGrace(e.target.value)}/>
-        <input className="border p-2 rounded w-full" placeholder="Max Late per Month" type="number" value={lateMax} onChange={e=>setLateMax(e.target.value)}/>
-        <select className="border p-2 rounded w-full" value={lateConvert} onChange={e=>setLateConvert(e.target.value)}>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Grace Minutes" type="number" value={grace} onChange={e=>setGrace(e.target.value)}/>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Max Late per Month" type="number" value={lateMax} onChange={e=>setLateMax(e.target.value)}/>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={lateConvert} onChange={e=>setLateConvert(e.target.value)}>
             <option>1 Half Day after 3 late marks</option><option>1 Full Day</option>
         </select>
-        <input className="border p-2 rounded w-full" placeholder="Min Hours for Half-Day" type="number" value={halfHours} onChange={e=>setHalfHours(e.target.value)}/>
-        <input className="border p-2 rounded w-full" placeholder="Full Day Required Hours" type="number" value={fullHours} onChange={e=>setFullHours(e.target.value)}/>
-        <select className="border p-2 rounded w-full" value={weeklyOff} onChange={e=>setWeeklyOff(e.target.value)}>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Min Hours for Half-Day" type="number" value={halfHours} onChange={e=>setHalfHours(e.target.value)}/>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Full Day Required Hours" type="number" value={fullHours} onChange={e=>setFullHours(e.target.value)}/>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={weeklyOff} onChange={e=>setWeeklyOff(e.target.value)}>
             <option>Sat & Sun</option><option>Sunday Only</option><option>Custom</option>
         </select>
-        <select className="border p-2 rounded w-full" value={statusAtt} onChange={e=>setStatusAtt(e.target.value)}>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={statusAtt} onChange={e=>setStatusAtt(e.target.value)}>
             <option>Active</option><option>Inactive</option>
         </select>
     </>)
@@ -396,17 +396,17 @@ function OTForm(props){
     const remove = g=>setEligibleGrades(eligibleGrades.filter(x=>x!==g))
 
     return(<>
-        <input className="border p-2 w-full rounded" placeholder="Policy Name" value={otName} onChange={e=>setOtName(e.target.value)}/>
-        <select className="border p-2 rounded w-full" value={basis} onChange={e=>setBasis(e.target.value)}>
+        <input className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Policy Name" value={otName} onChange={e=>setOtName(e.target.value)}/>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={basis} onChange={e=>setBasis(e.target.value)}>
             <option>Hourly</option><option>Daily</option>
         </select>
-        <select className="border p-2 rounded w-full" value={rate} onChange={e=>setRate(e.target.value)}>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={rate} onChange={e=>setRate(e.target.value)}>
             <option>1.5x</option><option>2x</option><option>Custom</option>
         </select>
-        <input className="border p-2 rounded w-full" placeholder="Min OT Hours" value={minOT} onChange={e=>setMinOT(e.target.value)}/>
-        <input className="border p-2 rounded w-full" placeholder="Max OT Per Day" value={maxOT} onChange={e=>setMaxOT(e.target.value)}/>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Min OT Hours" value={minOT} onChange={e=>setMinOT(e.target.value)}/>
+        <input className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} placeholder="Max OT Per Day" value={maxOT} onChange={e=>setMaxOT(e.target.value)}/>
 
-        <p className="text-xs mb-1 text-gray-600">Eligible Grades:</p>
+        <p className="text-xs mb-1 text-secondary">Eligible Grades:</p>
         <div className="flex flex-wrap gap-2">
             {eligibleGrades.map(g=>(
                 <span key={g} className="px-3 py-1 bg-blue-100 rounded-full text-xs flex items-center gap-1">
@@ -415,7 +415,7 @@ function OTForm(props){
             ))}
         </div>
 
-        <select className="border p-2 rounded w-full" value="" onChange={e=>addGrade(e.target.value)}>
+        <select className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value="" onChange={e=>addGrade(e.target.value)}>
             <option value="">Select Grade</option>
             {availableGrades.map(g=><option key={g.id} value={g.code}>{g.name} ({g.code})</option>)}
         </select>
@@ -424,7 +424,7 @@ function OTForm(props){
             <input type="checkbox" checked={autoOT} onChange={e=>setAutoOT(e.target.checked)}/> Auto OT Approval
         </label>
 
-        <select className="border p-2 rounded w-full mt-2" value={statusOT} onChange={e=>setStatusOT(e.target.value)}>
+        <select className="border p-2 rounded w-full mt-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}} value={statusOT} onChange={e=>setStatusOT(e.target.value)}>
             <option>Active</option><option>Inactive</option>
         </select>
     </>)
@@ -434,34 +434,34 @@ function OTForm(props){
 // ---------------- Policy Table ----------------
 function PolicyTable({policies, onEdit, onDelete, activeTab}){
     return (
-        <table className="min-w-full text-sm border">
-            <thead className="bg-gray-100 text-gray-600">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full text-sm border">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary">
                 <tr>
-                    <th className="border p-3 text-left">Policy Name</th>
-                    <th className="border p-3 text-left">Status</th>
-                    {activeTab==="HR Policy" && <th className="border p-3 text-center">Document</th>}
-                    <th className="border p-3 text-center">Actions</th>
+                    <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Policy Name</th>
+                    <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Status</th>
+                    {activeTab==="HR Policy" && <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Document</th>}
+                    <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Actions</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 {policies.length===0 ? (
-                    <tr><td colSpan={activeTab==="HR Policy"?"4":"3"} className="text-center p-3 text-gray-400">No records found</td></tr>
+                    <tr><td colSpan={activeTab==="HR Policy"?"4":"3"} className="text-center p-3 text-muted">No records found</td></tr>
                 ) : policies.map(p=>(
                     <tr key={p.id}>
-                        <td className="border p-3">{p.name}</td>
-                        <td className="border p-3">{p.status}</td>
+                        <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.name}</td>
+                        <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.status}</td>
                         {activeTab==="HR Policy" && (
-                            <td className="border p-3 text-center">
+                            <td className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                                 {p.document_download_url ? (
                                     <a href={`http://localhost:8000${p.document_download_url}`} target="_blank" rel="noreferrer" 
                                        className="text-blue-600 text-xs hover:underline">Download PDF</a>
                                 ) : (
-                                    <span className="text-gray-400 text-xs">No document</span>
+                                    <span className=" text-xs" style={{color: 'var(--text-muted, #6b7280)'}}>No document</span>
                                 )}
                             </td>
                         )}
-                        <td className="border p-3 text-center space-x-3">
+                        <td className="border p-3 text-center space-x-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                             <button onClick={()=>onEdit(p)} className="text-blue-600 text-xs hover:underline">Edit</button>
                             <button onClick={()=>onDelete(p.id)} className="text-red-600 text-xs hover:underline">Delete</button>
                         </td>

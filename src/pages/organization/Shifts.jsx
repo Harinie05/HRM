@@ -481,15 +481,15 @@ export default function Shift() {
   return (
     <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b  px-4 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex-shrink-0">
               <Calendar className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Shift & Roster Management</h1>
-              <p className="text-gray-600 mt-1">Create shifts and manage employee roster assignments</p>
+              <h1 className="text-xl font-bold text-primary">Shift & Roster Management</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Create shifts and manage employee roster assignments</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -501,7 +501,7 @@ export default function Shift() {
             </button>
             <button
               onClick={() => setShowShifts(!showShifts)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors whitespace-nowrap"
             >
               View Shifts ({shifts.length}) {showShifts ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
@@ -511,39 +511,39 @@ export default function Shift() {
 
       <div className="p-4 space-y-6">
         {/* Shift Management */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
 
           <div className="p-6">
             {showCreateShift && (
-              <div className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Shift</h3>
+              <div className="mb-6 p-6 bg-content rounded-lg border">
+                <h3 className="text-lg font-semibold text-primary mb-4">Create New Shift</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Shift Name</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Shift Name</label>
                     <input
                       type="text"
                       value={newShift.name}
                       onChange={(e) => setNewShift({...newShift, name: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="e.g., Morning Shift"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Start Time</label>
                     <input
                       type="time"
                       value={newShift.start_time}
                       onChange={(e) => setNewShift({...newShift, start_time: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">End Time</label>
                     <input
                       type="time"
                       value={newShift.end_time}
                       onChange={(e) => setNewShift({...newShift, end_time: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                 </div>
@@ -556,7 +556,7 @@ export default function Shift() {
                   </button>
                   <button
                     onClick={() => setShowCreateShift(false)}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
                   >
                     Cancel
                   </button>
@@ -567,27 +567,27 @@ export default function Shift() {
             {showShifts && (
               <div className="overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="min-w-full table-fixed divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full table-fixed divide-y">
+                    <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Shift Name</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Start Time</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">End Time</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Duration</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-48">Shift Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">Start Time</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">End Time</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider w-32">Duration</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider w-24">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                       {shifts.length === 0 ? (
                         <tr>
                           <td colSpan="5" className="px-6 py-12 text-center">
                             <div className="flex flex-col items-center gap-3">
                               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                                <Calendar size={24} className="text-gray-400" />
+                                <Calendar size={24} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                               </div>
                               <div>
-                                <p className="text-gray-900 font-medium">No shifts found</p>
-                                <p className="text-gray-500 text-sm mt-1">Create your first shift to get started</p>
+                                <p className=" font-medium" style={{color: 'var(--text-primary, #111827)'}}>No shifts found</p>
+                                <p className=" text-sm mt-1" style={{color: 'var(--text-muted, #6b7280)'}}>Create your first shift to get started</p>
                               </div>
                             </div>
                           </td>
@@ -604,13 +604,13 @@ export default function Shift() {
                           };
                           
                           return (
-                            <tr key={shift.id} className="hover:bg-gray-50">
+                            <tr key={shift.id} className="hover:bg-content">
                               <td className="px-4 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900 truncate" title={shift.name}>{shift.name}</div>
+                                <div className="text-sm font-medium text-primary truncate" title={shift.name}>{shift.name}</div>
                               </td>
-                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{shift.start_time}</td>
-                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{shift.end_time}</td>
-                              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-primary">{shift.start_time}</td>
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-primary">{shift.end_time}</td>
+                              <td className="px-4 py-4 whitespace-nowrap text-sm text-muted">
                                 {calculateDuration(shift.start_time, shift.end_time)}
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap text-center">
@@ -634,10 +634,10 @@ export default function Shift() {
         </div>
 
         {/* Roster Management */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Roster Management</h2>
-            <p className="text-gray-600 text-sm mt-1">Assign employees to shifts and manage schedules</p>
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
+            <h2 className="text-lg font-semibold text-primary">Roster Management</h2>
+            <p className=" text-sm mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Assign employees to shifts and manage schedules</p>
           </div>
           
           <div className="p-6">
@@ -646,11 +646,11 @@ export default function Shift() {
               <h3 className="text-md font-semibold text-blue-900 mb-4">Add Employee to Roster</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Employee</label>
                   <select
                     value={selectedUser}
                     onChange={(e) => setSelectedUser(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   >
                     <option value="">Select Employee</option>
                     {employees.map((employee) => (
@@ -692,31 +692,31 @@ export default function Shift() {
                 <h3 className="text-md font-semibold text-green-900 mb-4">Bulk Shift Allocation</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">From Date</label>
                     <input
                       type="date"
                       value={bulkDateRange.start}
                       onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">To Date</label>
                     <input
                       type="date"
                       value={bulkDateRange.end}
                       onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Shift</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Shift</label>
                     <select
                       value={bulkShift}
                       onChange={(e) => setBulkShift(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="">Select Shift</option>
                       {shifts.map((shift) => (
@@ -740,13 +740,13 @@ export default function Shift() {
             )}
 
             {/* Calendar Controls */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
+            <div className="flex items-center justify-between p-4 bg-content rounded-lg border mb-6">
               <div className="flex items-center gap-4">
-                <div className="flex bg-white rounded-lg border border-gray-300 overflow-hidden">
+                <div className="flex bg-white rounded-lg border-dark overflow-hidden">
                   <button
                     onClick={() => setViewMode("week")}
                     className={`px-4 py-2 text-sm font-medium transition-colors ${
-                      viewMode === "week" ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                      viewMode === "week" ? "bg-indigo-600 text-white" : "text-secondary hover:bg-gray-100"
                     }`}
                   >
                     Week
@@ -754,7 +754,7 @@ export default function Shift() {
                   <button
                     onClick={() => setViewMode("month")}
                     className={`px-4 py-2 text-sm font-medium transition-colors ${
-                      viewMode === "month" ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
+                      viewMode === "month" ? "bg-indigo-600 text-white" : "text-secondary hover:bg-gray-100"
                     }`}
                   >
                     Month
@@ -764,18 +764,18 @@ export default function Shift() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => navigateDate(-1)}
-                    className="p-2 text-gray-600 hover:bg-white rounded-lg border border-gray-300 transition-colors"
+                    className="p-2 text-secondary hover:bg-white rounded-lg border-dark transition-colors"
                   >
                     <ChevronDown className="rotate-90" size={16} />
                   </button>
                   
-                  <h3 className="text-lg font-semibold text-gray-800 min-w-[200px] text-center">
+                  <h3 className="text-lg font-semibold text-primary min-w-[200px] text-center">
                     {getCalendarTitle()}
                   </h3>
                   
                   <button
                     onClick={() => navigateDate(1)}
-                    className="p-2 text-gray-600 hover:bg-white rounded-lg border border-gray-300 transition-colors"
+                    className="p-2 text-secondary hover:bg-white rounded-lg border-dark transition-colors"
                   >
                     <ChevronDown className="-rotate-90" size={16} />
                   </button>
@@ -790,20 +790,20 @@ export default function Shift() {
               </button>
             </div>
 
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg overflow-hidden" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           <div className="px-4 py-3 bg-gray-100 border-b">
-            <h3 className="font-semibold text-gray-800">
+            <h3 className="font-semibold text-primary">
               {viewMode === "week" ? "Weekly" : "Monthly"} Roster Calendar
               {allocatedUsers.length > 0 && (
-                <span className="ml-2 text-sm text-gray-600">({allocatedUsers.length} employees)</span>
+                <span className="ml-2 text-sm text-secondary">({allocatedUsers.length} employees)</span>
               )}
             </h3>
           </div>
           <div className="overflow-x-auto max-w-full">
-            <table className="w-full border-collapse table-fixed">
-              <thead className="bg-gray-100">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full border-collapse table-fixed">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100">
                 <tr>
-                  <th className="px-2 py-3 text-center font-semibold text-gray-800 w-12 border-r border-gray-300">
+                  <th className="px-2 py-3 text-center font-semibold text-primary w-12 border-r -dark">
                     <input
                       type="checkbox"
                       checked={selectedUsersForBulk.length === allocatedUsers.length && allocatedUsers.length > 0}
@@ -817,7 +817,7 @@ export default function Shift() {
                       className="rounded"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-800 min-w-[180px] border-r border-gray-300">
+                  <th className="px-4 py-3 text-left font-semibold text-primary min-w-[180px] border-r -dark">
                     Employee
                   </th>
                   {getDateRange().map((date) => {
@@ -826,25 +826,25 @@ export default function Shift() {
                     const isWeekend = ['Sat', 'Sun'].includes(dayName);
                     
                     return (
-                      <th key={date} className={`px-3 py-3 text-center min-w-[100px] border-r border-gray-300 ${
+                      <th key={date} className={`px-3 py-3 text-center min-w-[100px] border-r -dark ${
                         isWeekend ? 'bg-red-50' : ''
                       }`}>
                         <div className={`font-semibold text-sm ${
-                          isWeekend ? 'text-red-600' : 'text-gray-800'
+                          isWeekend ? 'text-red-600' : 'text-primary'
                         }`}>{dayName}</div>
                         <div className={`text-xs ${
-                          isWeekend ? 'text-red-500' : 'text-gray-500'
+                          isWeekend ? 'text-red-500' : 'text-muted'
                         }`}>{dayNum}</div>
                       </th>
                     );
                   })}
-                  <th className="px-4 py-3 text-center font-semibold text-gray-800">Action</th>
+                  <th className="px-4 py-3 text-center font-semibold text-primary">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 {allocatedUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={getDateRange().length + 3} className="px-8 py-12 text-center text-gray-500">
+                    <td colSpan={getDateRange().length + 3} className="px-8 py-12 text-center text-muted">
                       <div className="flex flex-col items-center gap-3">
                         <Calendar size={48} className="text-gray-300" />
                         <p className="text-lg font-medium">No employees in roster</p>
@@ -854,8 +854,8 @@ export default function Shift() {
                   </tr>
                 ) : (
                   allocatedUsers.map((user, index) => (
-                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                      <td className="px-2 py-3 text-center border-r border-gray-300">
+                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-content' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                      <td className="px-2 py-3 text-center border-r -dark">
                         <input
                           type="checkbox"
                           checked={selectedUsersForBulk.includes(user.id)}
@@ -869,11 +869,11 @@ export default function Shift() {
                           className="rounded"
                         />
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 border-r -dark">
                         <div className="flex items-center gap-3">
                           <div className="flex flex-col">
-                            <div className="font-medium text-gray-900 text-sm">{user.name}</div>
-                            <div className="text-xs text-gray-500">{user.department_name}</div>
+                            <div className="font-medium text-primary text-sm">{user.name}</div>
+                            <div className="text-xs text-muted">{user.department_name}</div>
                           </div>
                         </div>
                       </td>
@@ -884,7 +884,7 @@ export default function Shift() {
                         const shift = shifts.find(s => s.id == shiftValue);
                         
                         return (
-                          <td key={date} className={`px-2 py-3 border-r border-gray-300 text-center ${
+                          <td key={date} className={`px-2 py-3 border-r -dark text-center ${
                             isWeekend ? 'bg-red-25' : ''
                           }`}>
                             {editingCell === `${user.id}-${date}` ? (
@@ -931,7 +931,7 @@ export default function Shift() {
                             ) : (
                               <div 
                                 onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                className="text-gray-400 text-xs cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-1 rounded"
+                                className=" text-xs cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-1 rounded" style={{color: 'var(--text-muted, #6b7280)'}}
                               >
                                 + Add
                               </div>

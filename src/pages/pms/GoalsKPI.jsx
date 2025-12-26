@@ -250,7 +250,7 @@ export default function GoalsKPI() {
       case "High": return "bg-orange-100 text-orange-800";
       case "Medium": return "bg-yellow-100 text-yellow-800";
       case "Low": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-primary";
     }
   };
 
@@ -264,8 +264,8 @@ export default function GoalsKPI() {
               <Target className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Goals & KPI Management</h1>
-              <p className="text-gray-600 mt-1">Set and track employee goals and key performance indicators</p>
+              <h1 className="text-2xl font-bold text-primary">Goals & KPI Management</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Set and track employee goals and key performance indicators</p>
             </div>
           </div>
           <button
@@ -280,34 +280,34 @@ export default function GoalsKPI() {
 
         {/* Add Goal Form */}
         {showForm && (
-          <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+          <div className="bg-content rounded-2xl shadow-lg border">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b  rounded-t-2xl">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <Plus className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{editingGoal ? 'Edit Goal' : 'Add New Goal'}</h3>
+                <h3 className="text-lg font-semibold text-primary">{editingGoal ? 'Edit Goal' : 'Add New Goal'}</h3>
               </div>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Goal Title</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Goal Title</label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Employee</label>
                   <select
                     value={formData.employee}
                     onChange={(e) => setFormData({...formData, employee: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -318,25 +318,25 @@ export default function GoalsKPI() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => {
                       setFormData({...formData, category: e.target.value});
                       if (e.target.value !== "Others") setCustomCategory("");
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Category</option>
@@ -350,18 +350,18 @@ export default function GoalsKPI() {
                       value={customCategory}
                       onChange={(e) => setCustomCategory(e.target.value)}
                       placeholder="Enter custom category"
-                      className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-2 px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Priority</label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {priorities.map(priority => (
                       <option key={priority} value={priority}>{priority}</option>
@@ -370,66 +370,66 @@ export default function GoalsKPI() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Start Date</label>
                   <input
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">End Date</label>
                   <input
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Target Value</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Target Value</label>
                   <input
                     type="number"
                     value={formData.targetValue}
                     onChange={(e) => setFormData({...formData, targetValue: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Value</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Current Value</label>
                   <input
                     type="number"
                     value={formData.currentValue}
                     onChange={(e) => setFormData({...formData, currentValue: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Unit</label>
                   <input
                     type="text"
                     value={formData.unit}
                     onChange={(e) => setFormData({...formData, unit: e.target.value})}
                     placeholder="e.g., USD, %, Projects"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {statuses.map(status => (
                       <option key={status} value={status}>{status}</option>
@@ -442,7 +442,7 @@ export default function GoalsKPI() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -462,27 +462,27 @@ export default function GoalsKPI() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
               <div className="px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-900">Update Progress</h3>
-                <p className="text-sm text-gray-600">{progressGoal.title}</p>
+                <h3 className="text-lg font-semibold text-primary">Update Progress</h3>
+                <p className="text-sm text-secondary">{progressGoal.title}</p>
               </div>
               <form onSubmit={handleProgressSubmit} className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Target Value</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Target Value</label>
                     <input
                       type="text"
                       value={progressGoal.target_value}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                      className="w-full px-3 py-2 border-dark rounded-md bg-content"
                       readOnly
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Current Value</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Current Value</label>
                     <input
                       type="number"
                       name="currentValue"
                       defaultValue={progressGoal.current_value || 0}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -494,7 +494,7 @@ export default function GoalsKPI() {
                       setShowProgressModal(false);
                       setProgressGoal(null);
                     }}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                    className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                   >
                     Cancel
                   </button>
@@ -511,39 +511,39 @@ export default function GoalsKPI() {
         )}
 
         {/* Goals List */}
-        <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200">
-          <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+        <div className="bg-content rounded-2xl shadow-lg border">
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b  rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <Target className="w-5 h-5 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Goals & KPIs</h3>
+              <h3 className="text-lg font-semibold text-primary">Goals & KPIs</h3>
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Goal</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Goal</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Priority</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Progress</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Due Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {goals.map((goal) => (
                   <tr key={goal.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{goal.title}</div>
-                        <div className="text-sm text-gray-500">{goal.description}</div>
+                        <div className="text-sm font-medium text-primary">{goal.title}</div>
+                        <div className="text-sm text-muted">{goal.description}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{goal.employee_name || goal.employee}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{goal.category}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{goal.employee_name || goal.employee}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{goal.category}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(goal.priority)}`}>
                         {goal.priority}
@@ -557,10 +557,10 @@ export default function GoalsKPI() {
                             style={{ width: `${goal.progress_percentage || parseInt(goal.progress) || 0}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-gray-700">{goal.progress_percentage || parseInt(goal.progress) || 0}%</span>
+                        <span className="text-sm font-medium text-secondary">{goal.progress_percentage || parseInt(goal.progress) || 0}%</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{goal.end_date || goal.due_date || goal.dueDate || 'No Due Date'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{goal.end_date || goal.due_date || goal.dueDate || 'No Due Date'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-3">
                         <button 

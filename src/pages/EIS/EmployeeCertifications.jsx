@@ -96,7 +96,7 @@ export default function EmployeeCertifications() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -111,44 +111,44 @@ export default function EmployeeCertifications() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Certification</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Issued By</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Expiry Date</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Certificate</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Certification</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Issued By</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Expiry Date</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Certificate</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                 {certs.length === 0 && (
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
-                      <FiAward className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Certifications</h3>
-                      <p className="text-gray-500">Add professional certifications and credentials.</p>
+                      <FiAward className="mx-auto h-12 w-12 text-muted mb-4" />
+                      <h3 className="text-lg font-medium text-primary mb-2">No Certifications</h3>
+                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add professional certifications and credentials.</p>
                     </td>
                   </tr>
                 )}
 
                 {certs.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50">
+                  <tr key={c.id} className="hover:bg-content">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{c.certification}</div>
+                      <div className="font-medium text-primary">{c.certification}</div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{c.issued_by || '-'}</td>
+                    <td className="px-6 py-4 text-secondary">{c.issued_by || '-'}</td>
                     <td className="px-6 py-4 text-center">
                       {c.expiry_date ? (
-                        <div className="flex items-center justify-center gap-1 text-gray-600">
+                        <div className="flex items-center justify-center gap-1 text-secondary">
                           <FiCalendar className="text-xs" />
                           <span className="text-sm">{c.expiry_date}</span>
                         </div>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -168,7 +168,7 @@ export default function EmployeeCertifications() {
                           View
                         </button>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -201,16 +201,16 @@ export default function EmployeeCertifications() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <FiAward className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-primary">
                   {editing ? "Edit Certification" : "Add Certification"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Certification Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Certification Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="e.g., AWS Certified Solutions Architect"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -218,9 +218,9 @@ export default function EmployeeCertifications() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Issued By</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Issued By</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="e.g., Amazon Web Services"
                     value={form.issued_by}
                     onChange={(e) => setForm({ ...form, issued_by: e.target.value })}
@@ -228,34 +228,34 @@ export default function EmployeeCertifications() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Expiry Date</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.expiry}
                     onChange={(e) => setForm({ ...form, expiry: e.target.value })}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Document</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Certificate Document</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="text-gray-400" />
+                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                     <input
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+                  <p className="text-xs text-muted mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

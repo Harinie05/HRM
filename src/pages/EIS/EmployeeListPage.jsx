@@ -283,48 +283,48 @@ export default function EmployeeListPage() {
           </div>
             
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase">
                       Employee Code
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase">
                       Name
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase hidden sm:table-cell">
                       Designation
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase hidden md:table-cell">
                       Department
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase hidden lg:table-cell">
                       Joining Date
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase hidden sm:table-cell">
                       Status
                     </th>
-                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-2 sm:px-4 py-2 text-left text-xs font-medium text-muted uppercase">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                   {employees.map((employee) => (
-                    <tr key={employee.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={employee.id} className="hover:bg-content">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-primary">
                         {employee.employee_code}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-primary">
                         {employee.name}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-muted">
                         {employee.designation}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-muted">
                         {employee.department}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-muted">
                         {employee.joining_date ? new Date(employee.joining_date).toLocaleDateString() : 'N/A'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap">
@@ -346,7 +346,7 @@ export default function EmployeeListPage() {
               </table>
               
               {employees.length === 0 && (
-                <div className="text-center py-6 text-gray-500">
+                <div className="text-center py-6 text-muted">
                   No employees found
                 </div>
               )}
@@ -361,11 +361,11 @@ export default function EmployeeListPage() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Department</label>
                   <select
                     value={formData.selectedDepartment}
                     onChange={(e) => setFormData(prev => ({ ...prev, selectedDepartment: e.target.value, selectedRole: '', selectedUser: '' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select Department</option>
                     {departments.map((dept) => (
@@ -375,11 +375,11 @@ export default function EmployeeListPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Role</label>
                   <select
                     value={formData.selectedRole}
                     onChange={(e) => setFormData(prev => ({ ...prev, selectedRole: e.target.value, selectedUser: '' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select Role</option>
                     {roles.map((role) => (
@@ -389,11 +389,11 @@ export default function EmployeeListPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">User</label>
                   <select
                     value={formData.selectedUser}
                     onChange={(e) => setFormData(prev => ({ ...prev, selectedUser: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select User</option>
                     {getFilteredUsers().map((user) => (
@@ -403,13 +403,13 @@ export default function EmployeeListPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Employee Code</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Employee Code</label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={formData.employeeCode}
                       onChange={(e) => setFormData(prev => ({ ...prev, employeeCode: e.target.value }))}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter manually or click Generate"
                     />
                     <button
@@ -423,23 +423,23 @@ export default function EmployeeListPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Designation</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Designation</label>
                   <input
                     type="text"
                     value={formData.designation}
                     onChange={(e) => setFormData(prev => ({ ...prev, designation: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter designation"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Joining Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Joining Date</label>
                   <input
                     type="date"
                     value={formData.joiningDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, joiningDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -454,7 +454,7 @@ export default function EmployeeListPage() {
                 </button>
                 <button
                   onClick={() => setShowCreateForm(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                  className="px-4 py-2 bg-gray-300 text-secondary rounded-lg hover:bg-gray-400"
                 >
                   Cancel
                 </button>

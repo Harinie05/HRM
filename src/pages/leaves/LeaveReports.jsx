@@ -207,13 +207,13 @@ export default function LeaveReports() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Leave Reports & Analytics</h2>
-            <p className="text-gray-600 mt-1">Comprehensive leave usage analysis and insights</p>
+            <h2 className="text-xl font-semibold text-primary">Leave Reports & Analytics</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Comprehensive leave usage analysis and insights</p>
           </div>
           <div className="flex items-center gap-3">
             <button 
@@ -228,14 +228,14 @@ export default function LeaveReports() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex gap-4">
           <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-gray-400" />
+            <Calendar size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
             <select 
               value={dateRange} 
               onChange={(e) => setDateRange(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="border-dark rounded-lg px-3 py-2 text-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             >
               <option value="thisMonth">This Month</option>
               <option value="lastMonth">Last Month</option>
@@ -244,11 +244,11 @@ export default function LeaveReports() {
             </select>
           </div>
           <div className="flex items-center gap-2">
-            <Filter size={16} className="text-gray-400" />
+            <Filter size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
             <select 
               value={department} 
               onChange={(e) => setDepartment(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="border-dark rounded-lg px-3 py-2 text-sm" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             >
               <option value="all">All Departments</option>
               {departments.map(dept => (
@@ -260,7 +260,7 @@ export default function LeaveReports() {
       </div>
 
       {/* Stats Cards */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="flex items-center justify-between">
@@ -302,24 +302,24 @@ export default function LeaveReports() {
       </div>
 
       {/* Department Breakdown */}
-      <div className="p-6 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Department-wise Leave Summary</h3>
+      <div className="p-6 border-b ">
+        <h3 className="text-lg font-semibold text-primary mb-4">Department-wise Leave Summary</h3>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Applications</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approved</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rejected</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approval Rate</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Total Applications</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Approved</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Pending</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Rejected</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Approval Rate</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {departmentData.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-6 py-8 text-center text-muted">
                     No data available
                   </td>
                 </tr>
@@ -327,13 +327,13 @@ export default function LeaveReports() {
                 departmentData.map((dept, index) => {
                   const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
                   return (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-content">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{getEmployeeInfo(dept.employee_id).code}</div>
-                        <div className="text-sm text-gray-600">{getEmployeeInfo(dept.employee_id).name}</div>
-                        <div className="text-xs text-gray-500">{getEmployeeInfo(dept.employee_id).department}</div>
+                        <div className="text-sm font-medium text-primary">{getEmployeeInfo(dept.employee_id).code}</div>
+                        <div className="text-sm text-secondary">{getEmployeeInfo(dept.employee_id).name}</div>
+                        <div className="text-xs text-muted">{getEmployeeInfo(dept.employee_id).department}</div>
                       </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                       {dept.total}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -351,7 +351,7 @@ export default function LeaveReports() {
                         {dept.rejected}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                       <div className="flex items-center">
                         <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                           <div 

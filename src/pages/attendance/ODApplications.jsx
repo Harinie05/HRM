@@ -108,13 +108,13 @@ export default function ODApplications() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">OD Applications</h2>
-            <p className="text-gray-600 mt-1">Manage On Duty applications for employees</p>
+            <h2 className="text-xl font-semibold text-primary">OD Applications</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage On Duty applications for employees</p>
           </div>
           <button 
             onClick={() => setShowModal(true)}
@@ -128,60 +128,60 @@ export default function ODApplications() {
 
       {/* Applications List */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Time</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Purpose</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Location</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {applications.length === 0 ? (
               <tr>
                 <td colSpan="7" className="px-6 py-12 text-center">
-                  <Calendar className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No OD applications</h3>
-                  <p className="mt-1 text-sm text-gray-500">Start by applying for an OD.</p>
+                  <Calendar className="mx-auto h-12 w-12 text-muted" />
+                  <h3 className="mt-2 text-sm font-medium text-primary">No OD applications</h3>
+                  <p className="mt-1 text-sm text-muted">Start by applying for an OD.</p>
                 </td>
               </tr>
             ) : (
               applications.map((app) => {
                 const employee = employees.find(emp => emp.id === app.employee_id);
                 return (
-                  <tr key={app.id} className="hover:bg-gray-50">
+                  <tr key={app.id} className="hover:bg-content">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-primary">
                         {employee?.name || `Employee ${app.employee_id}`}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted">
                         ID: {app.employee_id}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center text-sm text-gray-900">
-                        <Calendar size={16} className="mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm text-primary">
+                        <Calendar size={16} className="mr-2 text-muted" />
                         {new Date(app.od_date).toLocaleDateString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center text-sm text-gray-900">
-                        <Clock size={16} className="mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm text-primary">
+                        <Clock size={16} className="mr-2 text-muted" />
                         {app.from_time} - {app.to_time}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate">
+                      <div className="text-sm text-primary max-w-xs truncate">
                         {app.purpose}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center text-sm text-gray-900">
-                        <MapPin size={16} className="mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm text-primary">
+                        <MapPin size={16} className="mr-2 text-muted" />
                         {app.location || 'N/A'}
                       </div>
                     </td>
@@ -225,11 +225,11 @@ export default function ODApplications() {
             <h3 className="text-lg font-semibold mb-4">Apply for OD</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -240,43 +240,43 @@ export default function ODApplications() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">OD Date</label>
+                <label className="block text-sm font-medium text-secondary mb-1">OD Date</label>
                 <input
                   type="date"
                   value={formData.od_date}
                   onChange={(e) => setFormData({...formData, od_date: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">From Time</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">From Time</label>
                   <input
                     type="time"
                     value={formData.from_time}
                     onChange={(e) => setFormData({...formData, from_time: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">To Time</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">To Time</label>
                   <input
                     type="time"
                     value={formData.to_time}
                     onChange={(e) => setFormData({...formData, to_time: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Purpose</label>
                 <textarea
                   value={formData.purpose}
                   onChange={(e) => setFormData({...formData, purpose: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Reason for OD..."
                   required
@@ -284,12 +284,12 @@ export default function ODApplications() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Location</label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="OD location (optional)"
                 />
               </div>
@@ -298,7 +298,7 @@ export default function ODApplications() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

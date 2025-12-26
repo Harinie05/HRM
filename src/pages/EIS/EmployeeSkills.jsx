@@ -88,7 +88,7 @@ export default function EmployeeSkills() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -103,23 +103,23 @@ export default function EmployeeSkills() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           {skills.length === 0 ? (
             <div className="text-center py-12">
-              <FiZap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Skills Added</h3>
-              <p className="text-gray-500">Add technical skills and competencies to showcase expertise.</p>
+              <FiZap className="mx-auto h-12 w-12 text-muted mb-4" />
+              <h3 className="text-lg font-medium text-primary mb-2">No Skills Added</h3>
+              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add technical skills and competencies to showcase expertise.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {skills.map((sk) => (
                 <div
                   key={sk.id}
-                  className="group border border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200"
+                  className="group border rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-200"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-2">{sk.skill_name}</h4>
+                      <h4 className="font-semibold text-primary mb-2">{sk.skill_name}</h4>
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
                           <FiStar
@@ -129,7 +129,7 @@ export default function EmployeeSkills() {
                             }`}
                           />
                         ))}
-                        <span className="text-sm text-gray-600 ml-2">
+                        <span className="text-sm text-secondary ml-2">
                           {sk.rating}/5
                         </span>
                       </div>
@@ -160,16 +160,16 @@ export default function EmployeeSkills() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <FiZap className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-primary">
                   {editing ? "Edit Skill" : "Add Skill"}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Skill Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Skill Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="e.g., JavaScript, Project Management"
                     value={form.skill}
                     onChange={(e) => setForm({ ...form, skill: e.target.value })}
@@ -177,9 +177,9 @@ export default function EmployeeSkills() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Proficiency Level *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Proficiency Level *</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.rating}
                     onChange={(e) => setForm({ ...form, rating: e.target.value })}
                   >
@@ -198,7 +198,7 @@ export default function EmployeeSkills() {
                         }`}
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2">
+                    <span className="text-sm text-secondary ml-2">
                       {form.rating}/5
                     </span>
                   </div>
@@ -208,7 +208,7 @@ export default function EmployeeSkills() {
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

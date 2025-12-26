@@ -219,7 +219,7 @@ export default function Feedback() {
       case "Reviewed": return "bg-green-100 text-green-800";
       case "Acknowledged": return "bg-purple-100 text-purple-800";
       case "Draft": return "bg-yellow-100 text-yellow-800";
-      default: return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-primary";
     }
   };
 
@@ -242,8 +242,8 @@ export default function Feedback() {
               <MessageSquare className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Feedback Management</h1>
-              <p className="text-gray-600 mt-1">Manage employee feedback and 360-degree reviews</p>
+              <h1 className="text-2xl font-bold text-primary">Feedback Management</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee feedback and 360-degree reviews</p>
             </div>
           </div>
           <button
@@ -258,18 +258,18 @@ export default function Feedback() {
 
         {/* Add Feedback Form */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border">
+          <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="px-6 py-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">{editingFeedback ? 'Edit Feedback' : 'Give Feedback'}</h3>
+              <h3 className="text-lg font-semibold text-primary">{editingFeedback ? 'Edit Feedback' : 'Give Feedback'}</h3>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Feedback Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Feedback Type</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value, customType: e.target.value === "Other" ? formData.customType : ""})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {feedbackTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -281,18 +281,18 @@ export default function Feedback() {
                       value={formData.customType}
                       onChange={(e) => setFormData({...formData, customType: e.target.value})}
                       placeholder="Enter custom feedback type"
-                      className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-2 px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {categories.map(category => (
                       <option key={category} value={category}>{category}</option>
@@ -301,11 +301,11 @@ export default function Feedback() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">From Employee</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">From Employee</label>
                   <select
                     value={formData.fromEmployee}
                     onChange={(e) => setFormData({...formData, fromEmployee: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -316,11 +316,11 @@ export default function Feedback() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">To Employee</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">To Employee</label>
                   <select
                     value={formData.toEmployee}
                     onChange={(e) => setFormData({...formData, toEmployee: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -331,11 +331,11 @@ export default function Feedback() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Overall Rating</label>
                   <select
                     value={formData.rating}
                     onChange={(e) => setFormData({...formData, rating: parseInt(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {[1, 2, 3, 4, 5].map(rating => (
                       <option key={rating} value={rating}>{rating} Star{rating > 1 ? 's' : ''}</option>
@@ -344,11 +344,11 @@ export default function Feedback() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {statuses.map(status => (
                       <option key={status} value={status}>{status}</option>
@@ -357,46 +357,46 @@ export default function Feedback() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Feedback</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Feedback</label>
                   <textarea
                     value={formData.feedback}
                     onChange={(e) => setFormData({...formData, feedback: e.target.value})}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Provide detailed feedback..."
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Strengths</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Strengths</label>
                   <textarea
                     value={formData.strengths}
                     onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="List key strengths..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Areas for Improvement</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Areas for Improvement</label>
                   <textarea
                     value={formData.improvements}
                     onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Suggest areas for improvement..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Future Goals</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Future Goals</label>
                   <textarea
                     value={formData.goals}
                     onChange={(e) => setFormData({...formData, goals: e.target.value})}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Suggest future goals and development areas..."
                   />
                 </div>
@@ -409,7 +409,7 @@ export default function Feedback() {
                       onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
                       className="mr-2"
                     />
-                    <span className="text-sm text-gray-700">Submit as anonymous feedback</span>
+                    <span className="text-sm text-secondary">Submit as anonymous feedback</span>
                   </label>
                 </div>
               </div>
@@ -418,7 +418,7 @@ export default function Feedback() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -438,51 +438,51 @@ export default function Feedback() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-900">Feedback Details</h3>
+                <h3 className="text-lg font-semibold text-primary">Feedback Details</h3>
               </div>
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Type</label>
-                    <p className="text-sm text-gray-900">{viewFeedback.relationship}</p>
+                    <label className="block text-sm font-medium text-secondary">Type</label>
+                    <p className="text-sm text-primary">{viewFeedback.relationship}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Rating</label>
+                    <label className="block text-sm font-medium text-secondary">Rating</label>
                     <div className="flex items-center">
                       {renderStars(viewFeedback.rating || 0)}
-                      <span className="ml-2 text-sm text-gray-600">({viewFeedback.rating || 0}/5)</span>
+                      <span className="ml-2 text-sm text-secondary">({viewFeedback.rating || 0}/5)</span>
                     </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">From</label>
-                    <p className="text-sm text-gray-900">{viewFeedback.from_employee_name}</p>
+                    <label className="block text-sm font-medium text-secondary">From</label>
+                    <p className="text-sm text-primary">{viewFeedback.from_employee_name}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">To</label>
-                    <p className="text-sm text-gray-900">{viewFeedback.to_employee_name}</p>
+                    <label className="block text-sm font-medium text-secondary">To</label>
+                    <p className="text-sm text-primary">{viewFeedback.to_employee_name}</p>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Feedback Comments</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewFeedback.comments || 'No comments provided'}</p>
+                  <label className="block text-sm font-medium text-secondary">Feedback Comments</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewFeedback.comments || 'No comments provided'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Strengths</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewFeedback.strengths || 'No strengths mentioned'}</p>
+                  <label className="block text-sm font-medium text-secondary">Strengths</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewFeedback.strengths || 'No strengths mentioned'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Areas for Improvement</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewFeedback.improvements || 'No improvements mentioned'}</p>
+                  <label className="block text-sm font-medium text-secondary">Areas for Improvement</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewFeedback.improvements || 'No improvements mentioned'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Future Goals</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewFeedback.goals || 'No goals mentioned'}</p>
+                  <label className="block text-sm font-medium text-secondary">Future Goals</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewFeedback.goals || 'No goals mentioned'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Date</label>
-                  <p className="text-sm text-gray-900">{viewFeedback.created_at ? new Date(viewFeedback.created_at).toLocaleDateString() : 'N/A'}</p>
+                  <label className="block text-sm font-medium text-secondary">Date</label>
+                  <p className="text-sm text-primary">{viewFeedback.created_at ? new Date(viewFeedback.created_at).toLocaleDateString() : 'N/A'}</p>
                 </div>
               </div>
               <div className="px-6 py-4 border-t flex justify-end">
@@ -501,27 +501,27 @@ export default function Feedback() {
         )}
 
         {/* Feedback List */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Feedback History</h3>
+            <h3 className="text-lg font-semibold text-primary">Feedback History</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From/To</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">From/To</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Rating</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {feedbacks.map((feedback) => (
                   <tr key={feedback.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{feedback.relationship}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{feedback.relationship}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-primary">
                         <div>From: {feedback.from_employee_name}</div>
                         <div>To: {feedback.to_employee_name}</div>
                       </div>
@@ -529,10 +529,10 @@ export default function Feedback() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {renderStars(feedback.rating || 0)}
-                        <span className="ml-2 text-sm text-gray-600">({feedback.rating || 0}/5)</span>
+                        <span className="ml-2 text-sm text-secondary">({feedback.rating || 0}/5)</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{feedback.created_at ? new Date(feedback.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{feedback.created_at ? new Date(feedback.created_at).toLocaleDateString() : 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button 

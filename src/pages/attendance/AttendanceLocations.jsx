@@ -19,8 +19,8 @@ export default function AttendanceLocations() {
         Attendance → Rules & Locations
       </h2>
 
-      <table className="w-full border text-sm">
-        <thead className="bg-gray-100">
+      <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full border text-sm">
+        <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100">
           <tr>
             <th>Location</th>
             <th>Grace</th>
@@ -28,9 +28,9 @@ export default function AttendanceLocations() {
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           {locations.map((l) => (
-            <tr key={l.id} className="border-t">
+            <tr key={l.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
               <td>{l.location_name}</td>
               <td>{l.grace_time} mins</td>
               <td>{l.ot_rule}</td>

@@ -143,7 +143,7 @@ export default function EmployeeExperience() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -158,49 +158,49 @@ export default function EmployeeExperience() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Company</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Role</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Duration</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Document</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Company</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Role</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Duration</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Document</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                 {experience.length === 0 && (
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
-                      <FiBriefcase className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Experience Records</h3>
-                      <p className="text-gray-500">Add work experience to get started.</p>
+                      <FiBriefcase className="mx-auto h-12 w-12 text-muted mb-4" />
+                      <h3 className="text-lg font-medium text-primary mb-2">No Experience Records</h3>
+                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add work experience to get started.</p>
                     </td>
                   </tr>
                 )}
 
                 {experience.map((e) => (
-                  <tr key={e.id} className="hover:bg-gray-50">
+                  <tr key={e.id} className="hover:bg-content">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{e.company}</div>
+                      <div className="font-medium text-primary">{e.company}</div>
                       {e.location && (
-                        <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                        <div className="flex items-center gap-1 text-sm text-muted mt-1">
                           <FiMapPin className="text-xs" />
                           {e.location}
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-gray-900">{e.job_title || e.role || '-'}</div>
+                      <div className="" style={{color: 'var(--text-primary, #111827)'}}>{e.job_title || e.role || '-'}</div>
                       {e.department && (
-                        <div className="text-sm text-gray-500">{e.department}</div>
+                        <div className="text-sm text-muted">{e.department}</div>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-1 text-gray-600">
+                      <div className="flex items-center justify-center gap-1 text-secondary">
                         <FiCalendar className="text-xs" />
                         <span className="text-sm">
                           {e.start_date || e.from_year || '-'} to {e.end_date || e.to_year || (e.current_job ? 'Present' : '-')}
@@ -225,7 +225,7 @@ export default function EmployeeExperience() {
                           View
                         </button>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -258,7 +258,7 @@ export default function EmployeeExperience() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
                 <FiBriefcase className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-primary">
                   {editing ? "Edit Experience" : "Add Experience"}
                 </h3>
               </div>
@@ -266,9 +266,9 @@ export default function EmployeeExperience() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Company Name *</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Company Name"
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
@@ -276,9 +276,9 @@ export default function EmployeeExperience() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Job Title *</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Job Title"
                       value={form.job_title}
                       onChange={(e) => setForm({ ...form, job_title: e.target.value })}
@@ -288,9 +288,9 @@ export default function EmployeeExperience() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Department</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Department"
                       value={form.department}
                       onChange={(e) => setForm({ ...form, department: e.target.value })}
@@ -298,9 +298,9 @@ export default function EmployeeExperience() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Employment Type</label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={form.employment_type}
                       onChange={(e) => setForm({ ...form, employment_type: e.target.value })}
                     >
@@ -315,20 +315,20 @@ export default function EmployeeExperience() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Start Date *</label>
                     <input
                       type="date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={form.start_date}
                       onChange={(e) => setForm({ ...form, start_date: e.target.value })}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">End Date</label>
                     <input
                       type="date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
                       value={form.end_date}
                       onChange={(e) => setForm({ ...form, end_date: e.target.value })}
                       disabled={form.current_job}
@@ -336,12 +336,12 @@ export default function EmployeeExperience() {
                   </div>
 
                   <div className="flex items-end">
-                    <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <label className="flex items-center gap-2 text-sm text-secondary">
                       <input
                         type="checkbox"
                         checked={form.current_job}
                         onChange={(e) => setForm({ ...form, current_job: e.target.checked, end_date: e.target.checked ? "" : form.end_date })}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded -dark text-blue-600 focus:ring-blue-500"
                       />
                       Currently working here
                     </label>
@@ -350,9 +350,9 @@ export default function EmployeeExperience() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Location</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="City, State, Country"
                       value={form.location}
                       onChange={(e) => setForm({ ...form, location: e.target.value })}
@@ -360,9 +360,9 @@ export default function EmployeeExperience() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Salary (Optional)</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Salary (Optional)</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Annual salary"
                       value={form.salary}
                       onChange={(e) => setForm({ ...form, salary: e.target.value })}
@@ -371,9 +371,9 @@ export default function EmployeeExperience() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Description & Responsibilities</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Job Description & Responsibilities</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                     placeholder="Describe your role and responsibilities..."
                     value={form.job_description}
@@ -382,9 +382,9 @@ export default function EmployeeExperience() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Key Achievements</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Key Achievements</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                     placeholder="Notable achievements and accomplishments..."
                     value={form.achievements}
@@ -394,9 +394,9 @@ export default function EmployeeExperience() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Manager</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Reporting Manager</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Manager's name"
                       value={form.reporting_manager}
                       onChange={(e) => setForm({ ...form, reporting_manager: e.target.value })}
@@ -404,9 +404,9 @@ export default function EmployeeExperience() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Manager Contact</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Manager Contact</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Email or phone number"
                       value={form.manager_contact}
                       onChange={(e) => setForm({ ...form, manager_contact: e.target.value })}
@@ -416,9 +416,9 @@ export default function EmployeeExperience() {
 
                 {!form.current_job && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Reason for Leaving</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Reason for leaving this position"
                       value={form.reason_for_leaving}
                       onChange={(e) => setForm({ ...form, reason_for_leaving: e.target.value })}
@@ -427,24 +427,24 @@ export default function EmployeeExperience() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Relieving Letter/Experience Certificate</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Relieving Letter/Experience Certificate</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="text-gray-400" />
+                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                     <input
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+                  <p className="text-xs text-muted mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

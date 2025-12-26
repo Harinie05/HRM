@@ -106,10 +106,10 @@ export default function AttendanceRules() {
         <Header />
         
         <div className="p-6 pt-24">
-          <div className="text-sm text-gray-500 mb-3">Attendance · Rules, Policy & Locations</div>
+          <div className="text-sm text-muted mb-3">Attendance · Rules, Policy & Locations</div>
           
           <div className="mb-6">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-2xl border shadow-sm p-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-blue-100 rounded-xl">
@@ -118,15 +118,15 @@ export default function AttendanceRules() {
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Attendance Rules & Policies</h1>
-                    <p className="text-gray-600 mt-1">Advanced rule engine for attendance policies, location management, and compliance settings</p>
+                    <h1 className="text-2xl font-bold text-primary">Attendance Rules & Policies</h1>
+                    <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Advanced rule engine for attendance policies, location management, and compliance settings</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">{rules.length + locations.length}</div>
-                    <div className="text-sm text-gray-500">Total Rules</div>
+                    <div className="text-sm text-muted">Total Rules</div>
                   </div>
                 </div>
               </div>
@@ -138,10 +138,10 @@ export default function AttendanceRules() {
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
               <div className="p-8 border-b bg-gradient-to-r from-purple-50 to-indigo-50 flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800">
+                  <h2 className="text-xl font-bold text-primary">
                     Attendance Rules
                   </h2>
-                  <p className="text-sm text-gray-600 mt-2">Configure late, early, and overtime policies</p>
+                  <p className="text-sm text-secondary mt-2">Configure late, early, and overtime policies</p>
                 </div>
                 <button 
                   onClick={() => setShowRuleModal(true)}
@@ -152,26 +152,26 @@ export default function AttendanceRules() {
               </div>
               
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                     <tr>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Rule</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Type</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Value</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Status</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Rule</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Type</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Value</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Status</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     {rules.length === 0 ? (
                       <tr>
-                        <td colSpan="5" className="p-8 text-center text-gray-500">No rules configured</td>
+                        <td colSpan="5" className="p-8 text-center text-muted">No rules configured</td>
                       </tr>
                     ) : (
                       rules.map((r) => (
-                        <tr key={r.id} className="border-b hover:bg-gray-50">
-                          <td className="p-4 text-sm text-gray-800">{r.rule_name}</td>
-                          <td className="p-4 text-sm text-gray-800">
+                        <tr key={r.id} className="border-b hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                          <td className="p-4 text-sm text-primary">{r.rule_name}</td>
+                          <td className="p-4 text-sm text-primary">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               r.rule_type === 'Late' ? 'bg-red-100 text-red-800' :
                               r.rule_type === 'Early' ? 'bg-yellow-100 text-yellow-800' :
@@ -180,12 +180,12 @@ export default function AttendanceRules() {
                               {r.rule_type}
                             </span>
                           </td>
-                          <td className="p-4 text-sm text-gray-800">{r.value} mins</td>
+                          <td className="p-4 text-sm text-primary">{r.value} mins</td>
                           <td className="p-4 text-sm">
                             <button
                               onClick={() => handleToggleRule(r.id, r.is_active)}
                               className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-                                r.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                r.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-primary'
                               }`}
                             >
                               {r.is_active ? "Active" : "Disabled"}
@@ -211,10 +211,10 @@ export default function AttendanceRules() {
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
               <div className="p-8 border-b bg-gradient-to-r from-indigo-50 to-blue-50 flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800">
+                  <h2 className="text-xl font-bold text-primary">
                     Attendance Locations
                   </h2>
-                  <p className="text-sm text-gray-600 mt-2">Manage attendance capture locations</p>
+                  <p className="text-sm text-secondary mt-2">Manage attendance capture locations</p>
                 </div>
                 <button 
                   onClick={() => setShowLocationModal(true)}
@@ -225,30 +225,30 @@ export default function AttendanceRules() {
               </div>
               
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                     <tr>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Location</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Grace Time</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Status</th>
-                      <th className="p-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Location</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Grace Time</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Status</th>
+                      <th className="p-4 text-left text-sm font-semibold text-secondary">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     {locations.length === 0 ? (
                       <tr>
-                        <td colSpan="4" className="p-8 text-center text-gray-500">No locations configured</td>
+                        <td colSpan="4" className="p-8 text-center text-muted">No locations configured</td>
                       </tr>
                     ) : (
                       locations.map((loc) => (
-                        <tr key={loc.id} className="border-b hover:bg-gray-50">
-                          <td className="p-4 text-sm text-gray-800">{loc.location_name}</td>
-                          <td className="p-4 text-sm text-gray-800">{loc.grace_time} mins</td>
+                        <tr key={loc.id} className="border-b hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                          <td className="p-4 text-sm text-primary">{loc.location_name}</td>
+                          <td className="p-4 text-sm text-primary">{loc.grace_time} mins</td>
                           <td className="p-4 text-sm">
                             <button
                               onClick={() => handleToggleLocation(loc.id)}
                               className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer ${
-                                loc.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                loc.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-primary'
                               }`}
                             >
                               {loc.is_active ? "Active" : "Disabled"}
@@ -320,7 +320,7 @@ export default function AttendanceRules() {
               </button>
               <button
                 onClick={() => setShowRuleModal(false)}
-                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
+                className="flex-1 bg-gray-200 text-primary py-2 rounded-lg hover:bg-gray-300"
               >
                 Cancel
               </button>
@@ -374,7 +374,7 @@ export default function AttendanceRules() {
               </button>
               <button
                 onClick={() => setShowLocationModal(false)}
-                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
+                className="flex-1 bg-gray-200 text-primary py-2 rounded-lg hover:bg-gray-300"
               >
                 Cancel
               </button>

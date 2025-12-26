@@ -102,7 +102,7 @@ export default function JobForm({ mode, job, onClose }) {
             value={form.title}
             disabled={isView}
             onChange={(e) => updateField("title", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           {/* Department & Openings */}
@@ -113,7 +113,7 @@ export default function JobForm({ mode, job, onClose }) {
               value={form.department}
               disabled={isView}
               onChange={(e) => updateField("department", e.target.value)}
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
             <input
@@ -122,7 +122,7 @@ export default function JobForm({ mode, job, onClose }) {
               value={form.openings}
               disabled={isView}
               onChange={(e) => updateField("openings", e.target.value)}
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
           </div>
 
@@ -134,7 +134,7 @@ export default function JobForm({ mode, job, onClose }) {
               value={form.experience}
               disabled={isView}
               onChange={(e) => updateField("experience", e.target.value)}
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
             <input
@@ -143,14 +143,14 @@ export default function JobForm({ mode, job, onClose }) {
               value={form.salary_range}
               disabled={isView}
               onChange={(e) => updateField("salary_range", e.target.value)}
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
           </div>
 
           {/* Job Type & Work Mode */}
           <div className="grid grid-cols-2 gap-3">
             <select
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
               value={form.job_type}
               disabled={isView}
               onChange={(e) => updateField("job_type", e.target.value)}
@@ -162,7 +162,7 @@ export default function JobForm({ mode, job, onClose }) {
             </select>
 
             <select
-              className="border p-2 rounded"
+              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
               value={form.work_mode}
               disabled={isView}
               onChange={(e) => updateField("work_mode", e.target.value)}
@@ -180,7 +180,7 @@ export default function JobForm({ mode, job, onClose }) {
             value={form.location}
             disabled={isView}
             onChange={(e) => updateField("location", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           {/* Skills */}
@@ -189,7 +189,7 @@ export default function JobForm({ mode, job, onClose }) {
             value={form.skills}
             disabled={isView}
             onChange={(e) => updateField("skills", e.target.value)}
-            className="border p-2 rounded w-full h-20"
+            className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           ></textarea>
 
           {/* Description */}
@@ -198,7 +198,7 @@ export default function JobForm({ mode, job, onClose }) {
             value={form.description}
             disabled={isView}
             onChange={(e) => updateField("description", e.target.value)}
-            className="border p-2 rounded w-full h-32"
+            className="border p-2 rounded w-full h-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           ></textarea>
 
           {/* Publish */}
@@ -226,7 +226,7 @@ export default function JobForm({ mode, job, onClose }) {
                   value={r}
                   disabled={isView}
                   onChange={(e) => updateRound(index, e.target.value)}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
 
                 {!isView && (

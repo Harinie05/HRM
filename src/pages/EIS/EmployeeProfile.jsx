@@ -157,9 +157,9 @@ export default function EmployeeProfile() {
       <Layout title="Employee Profile" subtitle="Employee information not found">
         <div className="p-6">
           <div className="bg-white rounded-lg p-8 text-center">
-            <FiUser className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Employee Not Found</h3>
-            <p className="text-gray-500">The requested employee profile could not be found.</p>
+            <FiUser className="mx-auto h-12 w-12 text-muted mb-4" />
+            <h3 className="text-lg font-medium text-primary mb-2">Employee Not Found</h3>
+            <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>The requested employee profile could not be found.</p>
           </div>
         </div>
       </Layout>
@@ -170,7 +170,7 @@ export default function EmployeeProfile() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Profile Header Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="px-8 py-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -191,16 +191,16 @@ export default function EmployeeProfile() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-center text-gray-500">
+                    <div className="text-center text-muted">
                       <FiCamera className="text-2xl mb-1 mx-auto" />
                       <div className="text-xs font-medium">Add Photo</div>
                     </div>
                   )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{employee.candidate_name}</h1>
-                  <p className="text-gray-600 font-medium mb-3">{employee.job_title} · {employee.department || 'HR Department'}</p>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                  <h1 className="text-2xl font-bold text-primary mb-1">{employee.candidate_name}</h1>
+                  <p className=" font-medium mb-3" style={{color: 'var(--text-secondary, #374151)'}}>{employee.job_title} · {employee.department || 'HR Department'}</p>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-secondary">
                     <div className="flex items-center gap-2">
                       <div className="p-1 bg-blue-100 rounded">
                         <FiUser className="text-blue-600" size={12} />
@@ -240,161 +240,161 @@ export default function EmployeeProfile() {
         </div>
 
         {/* Employment Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <h2 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
             <FiBriefcase className="text-blue-600" />
             Employment Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="flex items-start gap-3">
-              <FiMail className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiMail className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Email</p>
-                <p className="text-gray-900">{employee.candidate_email || 'N/A'}</p>
+                <p className="text-sm font-medium text-muted">Email</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.candidate_email || 'N/A'}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <FiMapPin className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiMapPin className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Work Location</p>
-                <p className="text-gray-900">{employee.work_location}</p>
+                <p className="text-sm font-medium text-muted">Work Location</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.work_location}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <FiUsers className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiUsers className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Reporting Manager</p>
-                <p className="text-gray-900">{employee.reporting_manager}</p>
+                <p className="text-sm font-medium text-muted">Reporting Manager</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.reporting_manager}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <FiClock className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiClock className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Work Shift</p>
-                <p className="text-gray-900">{employee.work_shift}</p>
+                <p className="text-sm font-medium text-muted">Work Shift</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.work_shift}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <FiCalendar className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiCalendar className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Probation Period</p>
-                <p className="text-gray-900">{employee.probation_period}</p>
+                <p className="text-sm font-medium text-muted">Probation Period</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.probation_period}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <FiFileText className="text-gray-400 mt-1 flex-shrink-0" />
+              <FiFileText className=" mt-1 flex-shrink-0" style={{color: 'var(--text-muted, #6b7280)'}} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Application ID</p>
-                <p className="text-gray-900">{employee.application_id}</p>
+                <p className="text-sm font-medium text-muted">Application ID</p>
+                <p className="" style={{color: 'var(--text-primary, #111827)'}}>{employee.application_id}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Employee Information Modules */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <h2 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
             <FiFileText className="text-blue-600" />
             Employee Information Modules
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <Link
               to={`/eis/${employee.application_id}/education`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
+              className="group p-5 border rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
             >
               <FiBook className="text-2xl text-blue-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Education</div>
-              <div className="text-xs text-gray-600">Academic Details</div>
+              <div className="font-semibold text-primary mb-1">Education</div>
+              <div className="text-xs text-secondary">Academic Details</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/experience`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
+              className="group p-5 border rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
             >
               <FiBriefcase className="text-2xl text-green-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Experience</div>
-              <div className="text-xs text-gray-600">Work History</div>
+              <div className="font-semibold text-primary mb-1">Experience</div>
+              <div className="text-xs text-secondary">Work History</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/skills`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
+              className="group p-5 border rounded-xl hover:border-purple-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
             >
               <FiZap className="text-2xl text-purple-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Skills</div>
-              <div className="text-xs text-gray-600">Technical Skills</div>
+              <div className="font-semibold text-primary mb-1">Skills</div>
+              <div className="text-xs text-secondary">Technical Skills</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/certifications`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-yellow-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"
+              className="group p-5 border rounded-xl hover:border-yellow-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"
             >
               <FiAward className="text-2xl text-yellow-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Certifications</div>
-              <div className="text-xs text-gray-600">Professional Certs</div>
+              <div className="font-semibold text-primary mb-1">Certifications</div>
+              <div className="text-xs text-secondary">Professional Certs</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/family`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-pink-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-pink-50 to-pink-100 hover:from-pink-100 hover:to-pink-200"
+              className="group p-5 border rounded-xl hover:border-pink-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-pink-50 to-pink-100 hover:from-pink-100 hover:to-pink-200"
             >
               <FiUsers className="text-2xl text-pink-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Family</div>
-              <div className="text-xs text-gray-600">Family Details</div>
+              <div className="font-semibold text-primary mb-1">Family</div>
+              <div className="text-xs text-secondary">Family Details</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/medical`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-red-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200"
+              className="group p-5 border rounded-xl hover:border-red-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200"
             >
               <FiHeart className="text-2xl text-red-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Medical</div>
-              <div className="text-xs text-gray-600">Health Records</div>
+              <div className="font-semibold text-primary mb-1">Medical</div>
+              <div className="text-xs text-secondary">Health Records</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/id-docs`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-indigo-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200"
+              className="group p-5 border rounded-xl hover:border-indigo-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-indigo-50 to-indigo-100 hover:from-indigo-100 hover:to-indigo-200"
             >
               <FiCreditCard className="text-2xl text-indigo-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
-              <div className="text-xs text-gray-600">Identity Docs</div>
+              <div className="font-semibold text-primary mb-1">ID Documents</div>
+              <div className="text-xs text-secondary">Identity Docs</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/salary`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-emerald-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200"
+              className="group p-5 border rounded-xl hover:border-emerald-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200"
             >
               <FiDollarSign className="text-2xl text-emerald-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Salary</div>
-              <div className="text-xs text-gray-600">Compensation</div>
+              <div className="font-semibold text-primary mb-1">Salary</div>
+              <div className="text-xs text-secondary">Compensation</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/bank-details`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-teal-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200"
+              className="group p-5 border rounded-xl hover:border-teal-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200"
             >
               <FiCreditCard className="text-2xl text-teal-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
-              <div className="text-xs text-gray-600">Banking Info</div>
+              <div className="font-semibold text-primary mb-1">Bank Details</div>
+              <div className="text-xs text-secondary">Banking Info</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/reporting`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-orange-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
+              className="group p-5 border rounded-xl hover:border-orange-300 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
             >
               <FiTrendingUp className="text-2xl text-orange-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Reporting</div>
-              <div className="text-xs text-gray-600">Manager & Hierarchy</div>
+              <div className="font-semibold text-primary mb-1">Reporting</div>
+              <div className="text-xs text-secondary">Manager & Hierarchy</div>
             </Link>
             
             <Link
               to={`/eis/${employee.application_id}/exit`}
-              className="group p-5 border border-gray-200 rounded-xl hover:border-gray-400 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200"
+              className="group p-5 border rounded-xl hover:border-gray-400 hover:shadow-md transition-all duration-200 text-center bg-gradient-to-br from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200"
             >
-              <FiLogOut className="text-2xl text-gray-600 mb-3 mx-auto group-hover:scale-110 transition-transform" />
-              <div className="font-semibold text-gray-900 mb-1">Exit</div>
-              <div className="text-xs text-gray-600">Exit Process</div>
+              <FiLogOut className="text-2xl text-secondary mb-3 mx-auto group-hover:scale-110 transition-transform" />
+              <div className="font-semibold text-primary mb-1">Exit</div>
+              <div className="text-xs text-secondary">Exit Process</div>
             </Link>
           </div>
         </div>
@@ -405,7 +405,7 @@ export default function EmployeeProfile() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <FiCamera className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">Upload Employee Photo</h3>
+                <h3 className="text-lg font-semibold text-primary">Upload Employee Photo</h3>
               </div>
               
               {previewUrl && (
@@ -424,7 +424,7 @@ export default function EmployeeProfile() {
               )}
               
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-secondary mb-2">
                   Select Photo
                 </label>
                 <input 
@@ -437,7 +437,7 @@ export default function EmployeeProfile() {
                       setPreviewUrl(URL.createObjectURL(file));
                     }
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               
@@ -448,7 +448,7 @@ export default function EmployeeProfile() {
                     setSelectedFile(null);
                     setPreviewUrl(null);
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

@@ -86,7 +86,7 @@ export default function LeaveLayout() {
                   className={`px-3 sm:px-6 py-3 sm:py-5 text-xs sm:text-sm font-semibold border-b-3 transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                     tab === tabName
                       ? 'border-blue-500 text-blue-600 bg-white shadow-lg transform -translate-y-1'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                      : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
                   }`}
                 >
                   {tabName}

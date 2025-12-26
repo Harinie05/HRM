@@ -184,15 +184,15 @@ export default function LeaveCompliance() {
             <Calendar className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Leave & Working Hours Compliance</h2>
-            <p className="text-gray-600 mt-1">Monitor and ensure compliance with leave policies and working hour regulations</p>
+            <h2 className="text-2xl font-bold text-primary">Leave & Working Hours Compliance</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Monitor and ensure compliance with leave policies and working hour regulations</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -201,7 +201,7 @@ export default function LeaveCompliance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -210,7 +210,7 @@ export default function LeaveCompliance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <TrendingUp className="h-8 w-8 text-orange-600" />
             <div className="ml-3">
@@ -223,7 +223,7 @@ export default function LeaveCompliance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Clock className="h-8 w-8 text-purple-600" />
             <div className="ml-3">
@@ -234,7 +234,7 @@ export default function LeaveCompliance() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Leave Rules Display */}
         {leaveRules && (
           <div className="bg-blue-50 p-4 rounded-lg mb-6">
@@ -273,7 +273,7 @@ export default function LeaveCompliance() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees.map((employee) => (
@@ -308,7 +308,7 @@ export default function LeaveCompliance() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees.map((employee) => (
@@ -330,7 +330,7 @@ export default function LeaveCompliance() {
               name="total_working_days"
               value={form.total_working_days}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Total Working Days"
               min="0"
               max="31"
@@ -348,7 +348,7 @@ export default function LeaveCompliance() {
               name="actual_working_days"
               value={form.actual_working_days}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Actual Working Days"
               min="0"
               max="31"
@@ -366,7 +366,7 @@ export default function LeaveCompliance() {
               name="leaves_taken"
               value={form.leaves_taken}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Total Leaves Taken"
               min="0"
             />
@@ -380,7 +380,7 @@ export default function LeaveCompliance() {
               name="paid_leaves"
               value={form.paid_leaves}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Paid Leaves"
               min="0"
             />
@@ -394,7 +394,7 @@ export default function LeaveCompliance() {
               name="unpaid_leaves"
               value={form.unpaid_leaves}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Unpaid Leaves"
               min="0"
             />
@@ -408,7 +408,7 @@ export default function LeaveCompliance() {
               name="sick_leaves"
               value={form.sick_leaves}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Sick Leaves"
               min="0"
             />
@@ -422,7 +422,7 @@ export default function LeaveCompliance() {
               name="casual_leaves"
               value={form.casual_leaves}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Casual Leaves"
               min="0"
             />
@@ -436,7 +436,7 @@ export default function LeaveCompliance() {
               name="earned_leaves"
               value={form.earned_leaves}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Earned Leaves"
               min="0"
             />
@@ -450,7 +450,7 @@ export default function LeaveCompliance() {
               name="overtime_hours"
               value={form.overtime_hours}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Overtime Hours"
               min="0"
               step="0.5"
@@ -464,7 +464,7 @@ export default function LeaveCompliance() {
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -490,7 +490,7 @@ export default function LeaveCompliance() {
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -504,7 +504,7 @@ export default function LeaveCompliance() {
               name="remarks"
               value={form.remarks}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
               placeholder="Enter any compliance notes or remarks"
             />
           </div>
@@ -544,25 +544,25 @@ export default function LeaveCompliance() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Leave Compliance Records</h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Working Days</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leaves Taken</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OT Hours</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Working Days</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Leaves Taken</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Attendance %</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">OT Hours</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Period</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                   {complianceRecords.map((record, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-content">
                       <td className="px-4 py-2 text-sm">
                         <div>
                           <div className="font-medium">{record.employee_name}</div>
-                          <div className="text-gray-500 text-xs">{record.employee_id}</div>
+                          <div className=" text-xs" style={{color: 'var(--text-muted, #6b7280)'}}>{record.employee_id}</div>
                         </div>
                       </td>
                       <td className="px-4 py-2 text-sm">{record.actual_working_days}/{record.total_working_days}</td>
@@ -576,7 +576,7 @@ export default function LeaveCompliance() {
                           record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
                           record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
                           record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
+                          'bg-gray-100 text-primary'
                         }`}>
                           {record.compliance_status}
                         </span>

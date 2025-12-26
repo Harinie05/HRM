@@ -190,11 +190,11 @@ export default function Assets() {
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Total Assets</p>
-              <p className="text-3xl font-bold text-gray-900">{assets.length + pendingAssets.length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Assets</p>
+              <p className="text-3xl font-bold text-primary">{assets.length + pendingAssets.length}</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-xl">
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,11 +203,11 @@ export default function Assets() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Pending</p>
-              <p className="text-3xl font-bold text-gray-900">{pendingAssets.length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Pending</p>
+              <p className="text-3xl font-bold text-primary">{pendingAssets.length}</p>
             </div>
             <div className="p-3 bg-orange-50 rounded-xl">
               <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,11 +216,11 @@ export default function Assets() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Assigned</p>
-              <p className="text-3xl font-bold text-gray-900">{assets.length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Assigned</p>
+              <p className="text-3xl font-bold text-primary">{assets.length}</p>
             </div>
             <div className="p-3 bg-green-50 rounded-xl">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,18 +232,18 @@ export default function Assets() {
       </div>
 
       {/* Asset Assignment Form */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Asset Assignment</h3>
+          <h3 className="text-lg font-semibold text-primary">Asset Assignment</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Employee ID</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((emp) => (
@@ -254,11 +254,11 @@ export default function Assets() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Asset Type</label>
               <select 
                 value={formData.assetType}
                 onChange={(e) => setFormData({...formData, assetType: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Type</option>
                 <option value="laptop">Laptop</option>
@@ -276,70 +276,70 @@ export default function Assets() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Asset Name</label>
               <input 
                 type="text"
                 value={formData.assetName}
                 onChange={(e) => setFormData({...formData, assetName: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Asset name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset ID</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Asset ID</label>
               <input 
                 type="text"
                 value={formData.assetId}
                 onChange={(e) => setFormData({...formData, assetId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Unique asset ID"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Brand</label>
               <input 
                 type="text"
                 value={formData.brand}
                 onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Brand name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Model</label>
               <input 
                 type="text"
                 value={formData.model}
                 onChange={(e) => setFormData({...formData, model: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Model number"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Serial Number</label>
               <input 
                 type="text"
                 value={formData.serialNumber}
                 onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Serial number"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Date</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Assigned Date</label>
               <input 
                 type="date"
                 value={formData.assignedDate}
                 onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Condition</label>
               <select 
                 value={formData.condition}
                 onChange={(e) => setFormData({...formData, condition: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Condition</option>
                 <option value="new">New</option>
@@ -351,12 +351,12 @@ export default function Assets() {
               </select>
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Remarks</label>
               <textarea 
                 value={formData.remarks}
                 onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Additional remarks or special instructions..."
               />
             </div>
@@ -374,43 +374,43 @@ export default function Assets() {
 
       {/* Pending Assets */}
       {pendingAssets.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Pending Asset Approvals</h3>
+            <h3 className="text-lg font-semibold text-primary">Pending Asset Approvals</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asset</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand/Model</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial Number</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Asset</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Brand/Model</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Serial Number</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Assigned Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {pendingAssets.map((asset) => (
                   <tr key={asset.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{asset.name}</div>
-                        <div className="text-sm text-gray-500">{asset.employee}</div>
+                        <div className="text-sm font-medium text-primary">{asset.name}</div>
+                        <div className="text-sm text-muted">{asset.employee}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{asset.assetName}</div>
-                        <div className="text-sm text-gray-500">{asset.assetType}</div>
+                        <div className="text-sm font-medium text-primary">{asset.assetName}</div>
+                        <div className="text-sm text-muted">{asset.assetType}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{asset.brand}</div>
-                      <div className="text-sm text-gray-500">{asset.model}</div>
+                      <div className="text-sm text-primary">{asset.brand}</div>
+                      <div className="text-sm text-muted">{asset.model}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.serialNumber}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.assignedDate || asset.requestDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.serialNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.assignedDate || asset.requestDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
@@ -442,43 +442,43 @@ export default function Assets() {
       )}
 
       {/* Assets List */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">All Assets</h3>
+          <h3 className="text-lg font-semibold text-primary">All Assets</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asset</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand/Model</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial Number</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Asset</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Brand/Model</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Serial Number</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Assigned Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {assets.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No assets found</td>
+                  <td colSpan={6} className="px-6 py-4 text-center text-muted">No assets found</td>
                 </tr>
               ) : (
                 assets.map((asset) => (
                   <tr key={asset.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{asset.name}</div>
-                        <div className="text-sm text-gray-500">{asset.employee}</div>
+                        <div className="text-sm font-medium text-primary">{asset.name}</div>
+                        <div className="text-sm text-muted">{asset.employee}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.asset || asset.assetName}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.asset || asset.assetName}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{asset.brand}</div>
-                      <div className="text-sm text-gray-500">{asset.model}</div>
+                      <div className="text-sm text-primary">{asset.brand}</div>
+                      <div className="text-sm text-muted">{asset.model}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.serial || asset.serialNumber}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{asset.assignedDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.serial || asset.serialNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.assignedDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         asset.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'

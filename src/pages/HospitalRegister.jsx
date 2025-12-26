@@ -104,7 +104,7 @@ const HospitalRegister = () => {
               {popup.success ? "Success!" : "Error!"}
             </h2>
 
-            <p className="text-gray-700 mb-4">{popup.message}</p>
+            <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{popup.message}</p>
 
             <button
               className="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800"
@@ -121,7 +121,7 @@ const HospitalRegister = () => {
         <h1 className="text-3xl font-bold text-center text-blue-800 mb-2">
           Register Hospital
         </h1>
-        <p className="text-center text-gray-500 mb-6">
+        <p className="text-center text-muted mb-6">
           Create your tenant hospital account
         </p>
 
@@ -251,17 +251,17 @@ const HospitalRegister = () => {
                 <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-bold">i</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">Subscription & License Period</h3>
+                <h3 className="text-lg font-semibold text-primary">Subscription & License Period</h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="font-medium text-gray-700 mb-2 block">Subscription Plan</label>
+                  <label className="font-medium text-secondary mb-2 block">Subscription Plan</label>
                   <select
                     name="subscription_plan"
                     value={form.subscription_plan}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="Basic">Basic (30 Days)</option>
                     <option value="Standard">Standard (6 Months)</option>
@@ -270,9 +270,9 @@ const HospitalRegister = () => {
                 </div>
                 
                 <div>
-                  <label className="font-medium text-gray-700 mb-2 block">License Duration (auto-calculated):</label>
-                  <div className="bg-white border border-gray-300 rounded-lg px-4 py-3">
-                    <ul className="text-sm text-gray-600 space-y-1">
+                  <label className="font-medium text-secondary mb-2 block">License Duration (auto-calculated):</label>
+                  <div className="bg-white border-dark rounded-lg px-4 py-3">
+                    <ul className="text-sm text-secondary space-y-1">
                       <li className={form.subscription_plan === "Basic" ? "font-semibold text-blue-600" : ""}>
                         • Basic → 30 days from registration
                       </li>
@@ -288,7 +288,7 @@ const HospitalRegister = () => {
               </div>
               
               <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-secondary">
                   AMC, subscription amount, and renewals are configured by NUTRYAH admin in the master console. 
                   They are not editable from this screen.
                 </p>

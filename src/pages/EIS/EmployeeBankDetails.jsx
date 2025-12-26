@@ -70,11 +70,11 @@ export default function EmployeeBankDetails() {
       subtitle="Banking information for salary processing"
     >
       <div className="p-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center gap-4 mb-6">
             <button 
               onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiArrowLeft className="text-sm" />
               Back to Profile
@@ -86,22 +86,22 @@ export default function EmployeeBankDetails() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiHome className="text-blue-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Bank Information</h3>
+                <h3 className="text-lg font-semibold text-primary">Bank Information</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bank Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Bank Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="e.g., State Bank of India"
                     value={form.bank_name}
                     onChange={(e) => setForm({ ...form, bank_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Branch Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Branch Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Branch location"
                     value={form.branch_name}
                     onChange={(e) => setForm({ ...form, branch_name: e.target.value })}
@@ -114,22 +114,22 @@ export default function EmployeeBankDetails() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiCreditCard className="text-green-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Account Details</h3>
+                <h3 className="text-lg font-semibold text-primary">Account Details</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Account Holder Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Account Holder Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Full name as per bank records"
                     value={form.account_holder_name}
                     onChange={(e) => setForm({ ...form, account_holder_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Account Type</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.account_type}
                     onChange={(e) => setForm({ ...form, account_type: e.target.value })}
                   >
@@ -139,18 +139,18 @@ export default function EmployeeBankDetails() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Account Number *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Account Number *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Bank account number"
                     value={form.account_number}
                     onChange={(e) => setForm({ ...form, account_number: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">IFSC Code *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">IFSC Code *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="e.g., SBIN0001234"
                     value={form.ifsc_code}
                     onChange={(e) => setForm({ ...form, ifsc_code: e.target.value.toUpperCase() })}

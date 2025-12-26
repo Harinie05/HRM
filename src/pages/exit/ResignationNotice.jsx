@@ -131,7 +131,7 @@ export default function ResignationNotice() {
                   name="employee_id"
                   value={form.employee_id}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50"
+                  className="w-full border rounded-lg p-2 bg-content"
                 >
                   <option value="">Select Employee</option>
                   {employees.map((employee) => (
@@ -153,7 +153,7 @@ export default function ResignationNotice() {
                   name="resignation_date"
                   value={form.resignation_date}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50"
+                  className="w-full border rounded-lg p-2 bg-content"
                 />
               </div>
 
@@ -168,7 +168,7 @@ export default function ResignationNotice() {
                   name="last_working_day"
                   value={form.last_working_day}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50"
+                  className="w-full border rounded-lg p-2 bg-content"
                 />
               </div>
 
@@ -179,7 +179,7 @@ export default function ResignationNotice() {
                   name="notice_period"
                   value={form.notice_period}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50"
+                  className="w-full border rounded-lg p-2 bg-content"
                 >
                   <option value="15">15 Days</option>
                   <option value="30">30 Days</option>
@@ -195,7 +195,7 @@ export default function ResignationNotice() {
                   name="reason"
                   value={form.reason}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50"
+                  className="w-full border rounded-lg p-2 bg-content"
                 >
                   <option value="">Select Reason</option>
                   <option value="Better Opportunity">Better Opportunity</option>
@@ -215,7 +215,7 @@ export default function ResignationNotice() {
                   name="notes"
                   value={form.notes}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-gray-50 h-24"
+                  className="w-full border rounded-lg p-2 bg-content h-24"
                   placeholder="Enter any additional notes or comments"
                 />
               </div>
@@ -225,7 +225,7 @@ export default function ResignationNotice() {
                 <button
                   type="button"
                   onClick={() => setShowApplyForm(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -244,27 +244,27 @@ export default function ResignationNotice() {
       {/* Resignations Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Working Day</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notice Period</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Last Working Day</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Notice Period</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Reason</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {resignations.map((resignation) => (
-                <tr key={resignation.id} className="hover:bg-gray-50">
+                <tr key={resignation.id} className="hover:bg-content">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">Employee #{resignation.employee_id}</div>
+                    <div className="text-sm font-medium text-primary">Employee #{resignation.employee_id}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                     {resignation.last_working_day}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                     {resignation.notice_period} Days
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -272,12 +272,12 @@ export default function ResignationNotice() {
                       resignation.overall_status === 'Initiated' ? 'bg-yellow-100 text-yellow-800' :
                       resignation.overall_status === 'Approved' ? 'bg-green-100 text-green-800' :
                       resignation.overall_status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
+                      'bg-gray-100 text-primary'
                     }`}>
                       {resignation.overall_status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                     {resignation.reason || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -298,7 +298,7 @@ export default function ResignationNotice() {
                       </div>
                     )}
                     {resignation.overall_status !== 'Initiated' && (
-                      <span className="text-gray-400">No actions</span>
+                      <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>No actions</span>
                     )}
                   </td>
                 </tr>

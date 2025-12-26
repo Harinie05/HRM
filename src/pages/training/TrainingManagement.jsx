@@ -97,18 +97,18 @@ export default function TrainingManagement() {
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted h-4 w-4" />
             <input
               type="text"
               placeholder="Search training programs..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2 border-dark rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           
           <select
-            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+            className="border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -130,31 +130,31 @@ export default function TrainingManagement() {
 
       {/* Training Programs Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trainer</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Schedule</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Program</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Trainer</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Schedule</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {filteredTrainings.map((training) => (
-              <tr key={training.id} className="hover:bg-gray-50">
+              <tr key={training.id} className="hover:bg-content">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{training.title}</div>
+                  <div className="text-sm font-medium text-primary">{training.title}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{training.category}</div>
+                  <div className="text-sm text-primary">{training.category}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{training.trainer}</div>
+                  <div className="text-sm text-primary">{training.trainer}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{training.startDate} - {training.endDate}</div>
+                  <div className="text-sm text-primary">{training.startDate} - {training.endDate}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
@@ -178,7 +178,7 @@ export default function TrainingManagement() {
         
         {filteredTrainings.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-500">No training programs found</div>
+            <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>No training programs found</div>
           </div>
         )}
       </div>
@@ -187,28 +187,28 @@ export default function TrainingManagement() {
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <h3 className="text-lg font-medium text-primary mb-4">
               {editingTraining ? "Edit Training Program" : "Add New Training Program"}
             </h3>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Program Title *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Program Title *</label>
                   <input
                     type="text"
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Category *</label>
                   <select
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
                   >
@@ -220,10 +220,10 @@ export default function TrainingManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Training Type *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Training Type *</label>
                   <select
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value})}
                   >
@@ -234,33 +234,33 @@ export default function TrainingManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Trainer *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Trainer *</label>
                   <input
                     type="text"
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.trainer}
                     onChange={(e) => setFormData({...formData, trainer: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Start Date *</label>
                   <input
                     type="date"
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.startDate}
                     onChange={(e) => setFormData({...formData, startDate: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">End Date *</label>
                   <input
                     type="date"
                     required
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border-dark rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                     value={formData.endDate}
                     onChange={(e) => setFormData({...formData, endDate: e.target.value})}
                   />
@@ -271,7 +271,7 @@ export default function TrainingManagement() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  className="px-4 py-2 border-dark rounded-md text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

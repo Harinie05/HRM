@@ -193,7 +193,7 @@ export default function Roles() {
       
       {/* Controls Section */}
       <div className="mb-4 p-6">
-        <div className="bg-white rounded-3xl border border-gray-200 p-4">
+        <div className="rounded-3xl border p-4" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}} style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center justify-between">
             {/* Left side - Total and Showing */}
             <div className="flex items-center space-x-3">
@@ -213,9 +213,9 @@ export default function Roles() {
                   placeholder="Search name or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-full w-72 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  className="pl-9 pr-4 py-2 border-dark rounded-full w-72 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
-                <svg className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -238,59 +238,59 @@ export default function Roles() {
 
       {/* Role List */}
       <div className="p-6">
-        <div className="bg-white rounded-3xl border border-gray-200">
+        <div className="bg-white rounded-3xl border">
           {filteredRoles.length === 0 ? (
             <div className="p-12 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-primary mb-2">
                 No roles found
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className=" mb-6" style={{color: 'var(--text-muted, #6b7280)'}}>
                 Try changing your search, or create a new role.
               </p>
             </div>
           ) : (
             <div className="overflow-hidden">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       #
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Description
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Permissions
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-right text-xs font-medium text-muted uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                   {filteredRoles.map((role, index) => (
-                    <tr key={role.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <tr key={role.id} className="hover:bg-content transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{role.name}</div>
+                        <div className="text-sm font-medium text-primary">{role.name}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500">
-                          {role.description || <span className="italic text-gray-400">No description</span>}
+                        <div className="text-sm text-muted">
+                          {role.description || <span className="italic text-muted">No description</span>}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted">
                           {role.permissions.length} permissions
                         </div>
                       </td>
@@ -330,7 +330,7 @@ export default function Roles() {
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white w-[500px] p-6 rounded-xl shadow-xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+            <h2 className="text-lg font-semibold mb-4 text-primary">
               Create Role
             </h2>
 
@@ -339,7 +339,7 @@ export default function Roles() {
               placeholder="Role name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border-dark p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
             <input
@@ -347,17 +347,17 @@ export default function Roles() {
               placeholder="Description (optional)"
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border-dark p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
-            <p className="text-sm font-medium text-gray-700 mb-2">
+            <p className="text-sm font-medium text-secondary mb-2">
               Permissions{" "}
-              <span className="text-gray-400 ml-1">
+              <span className=" ml-1" style={{color: 'var(--text-muted, #6b7280)'}}>
                 {selectedPerms.length} selected
               </span>
             </p>
 
-            <div className="border border-gray-300 rounded-lg p-3 h-64 overflow-y-auto mb-4">
+            <div className="border-dark rounded-lg p-3 h-64 overflow-y-auto mb-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
               {permissions.map((p) => (
                 <label key={p.name} className="flex items-start mb-3">
                   <input
@@ -369,8 +369,8 @@ export default function Roles() {
                     className="mt-1 h-4 w-4 text-blue-600"
                   />
                   <div className="ml-2">
-                    <p className="text-sm text-gray-800">{p.description}</p>
-                    <p className="text-xs text-gray-400">{p.name}</p>
+                    <p className="text-sm text-primary">{p.description}</p>
+                    <p className="text-xs text-muted">{p.name}</p>
                   </div>
                 </label>
               ))}
@@ -384,7 +384,7 @@ export default function Roles() {
                   setDesc("");
                   setSelectedPerms([]);
                 }}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
+                className="px-4 py-2 rounded-lg border-dark text-secondary hover:bg-content font-medium"
               >
                 Cancel
               </button>
@@ -405,27 +405,27 @@ export default function Roles() {
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white w-[500px] p-6 rounded-xl shadow-xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+            <h2 className="text-lg font-semibold mb-4 text-primary">
               Edit Role
             </h2>
 
             <input
               type="text"
-              className="border p-3 rounded-xl w-full mb-4"
+              className="border p-3 rounded-xl w-full mb-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
             />
 
             <input
               type="text"
-              className="border p-3 rounded-xl w-full mb-4"
+              className="border p-3 rounded-xl w-full mb-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
               value={editDesc}
               onChange={(e) => setEditDesc(e.target.value)}
             />
 
-            <p className="text-sm font-medium text-gray-700 mb-2">
+            <p className="text-sm font-medium text-secondary mb-2">
               Permissions{" "}
-              <span className="text-gray-400 ml-1">
+              <span className=" ml-1" style={{color: 'var(--text-muted, #6b7280)'}}>
                 {editPerms.length} selected
               </span>
             </p>
@@ -443,7 +443,7 @@ export default function Roles() {
                   />
                   <div className="ml-2">
                     <p className="text-sm">{p.description}</p>
-                    <p className="text-xs text-gray-500">{p.name}</p>
+                    <p className="text-xs text-muted">{p.name}</p>
                   </div>
                 </label>
               ))}

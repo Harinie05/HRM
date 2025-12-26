@@ -403,17 +403,17 @@ export default function PayrollRun() {
   const totalRunsCount = runs.length;
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b border-gray-200 rounded-t-2xl">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b  rounded-t-2xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-green-100 rounded-xl">
               <Play className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Payroll Run</h2>
-              <p className="text-gray-600 mt-1">Process monthly payroll using attendance & leave data</p>
+              <h2 className="text-xl font-semibold text-primary">Payroll Run</h2>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Process monthly payroll using attendance & leave data</p>
             </div>
           </div>
           <button 
@@ -427,22 +427,22 @@ export default function PayrollRun() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <input
               type="text"
               placeholder="Search by employee or month..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           >
             <option value="">All Months</option>
             {months.map(month => (
@@ -453,35 +453,35 @@ export default function PayrollRun() {
       </div>
 
       {/* Enhanced Stats Cards */}
-      <div className="p-6 border-b border-gray-200 bg-gray-50">
+      <div className="p-6 border-b  bg-content">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Active Employees</p>
-                <p className="text-3xl font-bold text-gray-900">{activeEmployeesCount}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active Employees</p>
+                <p className="text-3xl font-bold text-primary">{activeEmployeesCount}</p>
               </div>
               <div className="p-3 bg-blue-50 rounded-xl">
                 <Users className="h-10 w-10 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Completed Runs</p>
-                <p className="text-3xl font-bold text-gray-900">{completedRunsCount}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Completed Runs</p>
+                <p className="text-3xl font-bold text-primary">{completedRunsCount}</p>
               </div>
               <div className="p-3 bg-green-50 rounded-xl">
                 <Play className="h-10 w-10 text-green-600" />
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm">
+          <div className="bg-content rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">This Month</p>
-                <p className="text-3xl font-bold text-gray-900">{thisMonthCount}</p>
+                <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>This Month</p>
+                <p className="text-3xl font-bold text-primary">{thisMonthCount}</p>
               </div>
               <div className="p-3 bg-yellow-50 rounded-xl">
                 <Calendar className="h-10 w-10 text-yellow-600" />
@@ -493,26 +493,26 @@ export default function PayrollRun() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Present Days</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">LOP Days</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Salary</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Month</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Present Days</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">LOP Days</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Gross Salary</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Net Salary</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {filteredRuns.length === 0 ? (
               <tr>
                 <td colSpan="8" className="px-6 py-12 text-center">
-                  <Play className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No payroll runs yet</h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <Play className="mx-auto h-12 w-12 text-muted" />
+                  <h3 className="mt-2 text-sm font-medium text-primary">No payroll runs yet</h3>
+                  <p className="mt-1 text-sm text-muted">
                     Start by running payroll for your employees.
                   </p>
                   <div className="mt-6">
@@ -528,25 +528,25 @@ export default function PayrollRun() {
               </tr>
             ) : (
               filteredRuns.map((run, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <tr key={index} className="hover:bg-content">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
-                    <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
+                    <div className="text-sm font-medium text-primary">{run.employee_name}</div>
+                    <div className="text-sm text-muted">Code: {run.employee_code}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{run.month} {run.year}</div>
+                    <div className="text-sm text-primary">{run.month} {run.year}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{run.present_days}</div>
+                    <div className="text-sm text-primary">{run.present_days}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{run.lop_days}</div>
+                    <div className="text-sm text-primary">{run.lop_days}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">₹{run.gross_salary?.toLocaleString()}</div>
+                    <div className="text-sm text-primary">₹{run.gross_salary?.toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</div>
+                    <div className="text-sm font-medium text-primary">₹{run.net_salary?.toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -579,7 +579,7 @@ export default function PayrollRun() {
               <h3 className="text-lg font-semibold">Payroll Details</h3>
               <button 
                 onClick={() => setShowViewModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
@@ -587,23 +587,23 @@ export default function PayrollRun() {
             
             <div className="space-y-6">
               {/* Employee Info */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-2">Employee Information</h4>
+              <div className="bg-content rounded-lg p-4">
+                <h4 className="font-medium text-primary mb-2">Employee Information</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-500">Name:</span>
+                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Name:</span>
                     <span className="ml-2 font-medium">{selectedRun.employee_name}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Code:</span>
+                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Code:</span>
                     <span className="ml-2 font-medium">{selectedRun.employee_code}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Month:</span>
+                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Month:</span>
                     <span className="ml-2 font-medium">{selectedRun.month} {selectedRun.year}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Status:</span>
+                    <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Status:</span>
                     <span className="ml-2">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         {selectedRun.status}
@@ -615,41 +615,41 @@ export default function PayrollRun() {
 
               {/* Attendance Details */}
               <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-2">Attendance Summary</h4>
+                <h4 className="font-medium text-primary mb-2">Attendance Summary</h4>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">{selectedRun.present_days}</div>
-                    <div className="text-gray-500">Present Days</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Present Days</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">{selectedRun.leave_days || 0}</div>
-                    <div className="text-gray-500">Leave Days</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>Leave Days</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-red-600">{selectedRun.lop_days}</div>
-                    <div className="text-gray-500">LOP Days</div>
+                    <div className="" style={{color: 'var(--text-muted, #6b7280)'}}>LOP Days</div>
                   </div>
                 </div>
               </div>
 
               {/* Salary Breakdown */}
               <div className="bg-green-50 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-4">Salary Breakdown</h4>
+                <h4 className="font-medium text-primary mb-4">Salary Breakdown</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="text-gray-600">Basic Salary</span>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary</span>
                     <span className="font-medium">₹{selectedRun.basic_salary?.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="text-gray-600">HRA</span>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA</span>
                     <span className="font-medium">₹{selectedRun.hra_salary?.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="text-gray-600">Allowances</span>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances</span>
                     <span className="font-medium">₹{selectedRun.allowances?.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b-2 border-green-300 font-semibold">
-                    <span className="text-gray-800">Gross Salary</span>
+                    <span className="" style={{color: 'var(--text-primary, #111827)'}}>Gross Salary</span>
                     <span className="text-green-600">₹{selectedRun.gross_salary?.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 text-red-600">
@@ -657,7 +657,7 @@ export default function PayrollRun() {
                     <span className="font-medium">-₹{selectedRun.lop_deduction?.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 bg-green-100 px-4 rounded-lg font-bold text-lg">
-                    <span className="text-gray-800">Net Salary</span>
+                    <span className="" style={{color: 'var(--text-primary, #111827)'}}>Net Salary</span>
                     <span className="text-green-700">₹{selectedRun.net_salary?.toLocaleString()}</span>
                   </div>
                 </div>
@@ -667,7 +667,7 @@ export default function PayrollRun() {
             <div className="flex gap-4 mt-6">
               <button
                 onClick={() => setShowViewModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Close
               </button>
@@ -693,7 +693,7 @@ export default function PayrollRun() {
               </h3>
               <button 
                 onClick={() => setShowValidationModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 ✕
               </button>
@@ -737,7 +737,7 @@ export default function PayrollRun() {
               {/* Issues List */}
               {validationResult.issues && validationResult.issues.length > 0 && (
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-4">Issues Details:</h4>
+                  <h4 className="font-medium text-primary mb-4">Issues Details:</h4>
                   
                   {/* Critical Issues */}
                   {validationResult.issues.filter(issue => issue.severity === 'critical').length > 0 && (
@@ -747,16 +747,16 @@ export default function PayrollRun() {
                         {validationResult.issues
                           .filter(issue => issue.severity === 'critical')
                           .map((issue, index) => (
-                          <div key={index} className="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg">
+                          <div key={index} className="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
-                                <div className="font-medium text-gray-900">
+                                <div className="font-medium text-primary">
                                   {issue.employee_name} ({issue.employee_id})
                                 </div>
                                 <div className="text-sm mt-1 text-red-700">
                                   <strong>{issue.issue_type}:</strong> {issue.issue_description}
                                 </div>
-                                <div className="text-xs text-gray-600 mt-2">
+                                <div className="text-xs text-secondary mt-2">
                                   <strong>Action Required:</strong> {issue.action_required}
                                 </div>
                               </div>
@@ -778,16 +778,16 @@ export default function PayrollRun() {
                         {validationResult.issues
                           .filter(issue => issue.severity === 'warning')
                           .map((issue, index) => (
-                          <div key={index} className="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-r-lg">
+                          <div key={index} className="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-r-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
-                                <div className="font-medium text-gray-900">
+                                <div className="font-medium text-primary">
                                   {issue.employee_name} ({issue.employee_id})
                                 </div>
                                 <div className="text-sm mt-1 text-yellow-700">
                                   <strong>{issue.issue_type}:</strong> {issue.issue_description}
                                 </div>
-                                <div className="text-xs text-gray-600 mt-2">
+                                <div className="text-xs text-secondary mt-2">
                                   <strong>Action Required:</strong> {issue.action_required}
                                 </div>
                               </div>
@@ -807,7 +807,7 @@ export default function PayrollRun() {
             <div className="flex gap-4 mt-6">
               <button
                 onClick={() => setShowValidationModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Close
               </button>
@@ -832,11 +832,11 @@ export default function PayrollRun() {
             <h3 className="text-lg font-semibold mb-4">Run Payroll</h3>
             <form onSubmit={handleRunPayroll} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Month</label>
                 <select
                   value={runData.month}
                   onChange={(e) => setRunData({...runData, month: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Month</option>
@@ -846,12 +846,12 @@ export default function PayrollRun() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Year</label>
                 <input
                   type="number"
                   value={runData.year}
                   onChange={(e) => setRunData({...runData, year: parseInt(e.target.value)})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -935,9 +935,9 @@ export default function PayrollRun() {
               )}
               
               {/* Validation Scenarios Info */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                <h5 className="font-medium text-gray-800 mb-2">📋 Checks:</h5>
-                <div className="text-xs text-gray-600 space-y-1">
+              <div className="bg-content border rounded-lg p-3">
+                <h5 className="font-medium text-primary mb-2">📋 Checks:</h5>
+                <div className="text-xs text-secondary space-y-1">
                   <div>• Pending approvals • Missing punches • Absent days</div>
                 </div>
               </div>
@@ -945,7 +945,7 @@ export default function PayrollRun() {
                 <button
                   type="button"
                   onClick={() => setShowRunModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

@@ -69,11 +69,11 @@ export default function EmployeeSalary() {
       subtitle="Compensation details and salary breakdown"
     >
       <div className="p-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center gap-4 mb-6">
             <button 
               onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiArrowLeft className="text-sm" />
               Back to Profile
@@ -85,13 +85,13 @@ export default function EmployeeSalary() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiDollarSign className="text-green-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Cost to Company (CTC)</h3>
+                <h3 className="text-lg font-semibold text-primary">Cost to Company (CTC)</h3>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Annual CTC (₹)</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Annual CTC (₹)</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="e.g., 1200000"
                   value={form.ctc}
                   onChange={(e) => setForm({ ...form, ctc: e.target.value })}
@@ -103,49 +103,49 @@ export default function EmployeeSalary() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiPieChart className="text-blue-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Salary Component Breakdown (%)</h3>
+                <h3 className="text-lg font-semibold text-primary">Salary Component Breakdown (%)</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Basic Salary (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Basic Salary (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.basic_percent}
                     onChange={(e) => setForm({ ...form, basic_percent: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">HRA (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">HRA (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.hra_percent}
                     onChange={(e) => setForm({ ...form, hra_percent: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Allowances (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Allowances (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.allowances_percent}
                     onChange={(e) => setForm({ ...form, allowances_percent: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Special Allowances (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Special Allowances (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.special_percent}
                     onChange={(e) => setForm({ ...form, special_percent: e.target.value })}
                   />
@@ -157,7 +157,7 @@ export default function EmployeeSalary() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiShield className="text-purple-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Compliance & Benefits</h3>
+                <h3 className="text-lg font-semibold text-primary">Compliance & Benefits</h3>
               </div>
               <div className="space-y-3">
                 <label className="flex items-center gap-3">
@@ -165,18 +165,18 @@ export default function EmployeeSalary() {
                     type="checkbox"
                     checked={form.pf_eligible}
                     onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded -dark text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Provident Fund (PF) Eligible</span>
+                  <span className="text-sm text-secondary">Provident Fund (PF) Eligible</span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     checked={form.esi_eligible}
                     onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded -dark text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Employee State Insurance (ESI) Eligible</span>
+                  <span className="text-sm text-secondary">Employee State Insurance (ESI) Eligible</span>
                 </label>
               </div>
             </div>
@@ -184,28 +184,28 @@ export default function EmployeeSalary() {
             {/* Salary Preview */}
             {form.ctc && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Breakdown Preview</h3>
+                <h3 className="text-lg font-semibold text-primary mb-4">Salary Breakdown Preview</h3>
                 <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Basic Salary:</span>
+                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.basic_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">HRA:</span>
+                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.hra_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Allowances:</span>
+                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.allowances_percent) / 100).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Special Allowances:</span>
+                      <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Special Allowances:</span>
                       <span className="font-medium">₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</span>
                     </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-blue-200">
-                    <div className="flex justify-between text-lg font-semibold text-gray-900">
+                    <div className="flex justify-between text-lg font-semibold text-primary">
                       <span>Total CTC:</span>
                       <span>₹{parseInt(form.ctc).toLocaleString()}</span>
                     </div>

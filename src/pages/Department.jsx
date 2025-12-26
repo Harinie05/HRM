@@ -178,7 +178,7 @@ export default function Departments() {
       
       {/* Controls Section */}
       <div className="mb-4 p-6">
-        <div className="bg-white rounded-3xl border border-gray-200 p-4">
+        <div className="rounded-3xl border p-4" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}}>
           <div className="flex items-center justify-between">
             {/* Left side - Total and Showing */}
             <div className="flex items-center space-x-3">
@@ -198,9 +198,9 @@ export default function Departments() {
                   placeholder="Search name or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-full w-72 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  className="pl-9 pr-4 py-2 border-dark rounded-full w-72 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
-                <svg className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -221,12 +221,12 @@ export default function Departments() {
           
           {/* Filter section */}
           <div className="flex items-center space-x-4 mt-4">
-            <span className="text-sm text-gray-600">Filter</span>
-            <div className="bg-gray-50 rounded-full p-1 flex items-center space-x-1">
+            <span className="text-sm text-secondary">Filter</span>
+            <div className="bg-content rounded-full p-1 flex items-center space-x-1">
               <button 
                 onClick={() => setFilter("all")}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  filter === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  filter === "all" ? "bg-white text-primary shadow-sm" : "text-secondary hover:text-primary"
                 }`}
               >
                 All
@@ -234,7 +234,7 @@ export default function Departments() {
               <button 
                 onClick={() => setFilter("with-description")}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  filter === "with-description" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  filter === "with-description" ? "bg-white text-primary shadow-sm" : "text-secondary hover:text-primary"
                 }`}
               >
                 With description
@@ -242,7 +242,7 @@ export default function Departments() {
               <button 
                 onClick={() => setFilter("without-description")}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  filter === "without-description" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                  filter === "without-description" ? "bg-white text-primary shadow-sm" : "text-secondary hover:text-primary"
                 }`}
               >
                 Without description
@@ -254,52 +254,52 @@ export default function Departments() {
 
       {/* Department List */}
       <div className="p-6">
-        <div className="bg-white rounded-3xl border border-gray-200">
+        <div className="rounded-3xl border" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}}>
           {filteredDepartments.length === 0 ? (
             <div className="p-12 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-primary mb-2">
                 No departments found
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className=" mb-6" style={{color: 'var(--text-muted, #6b7280)'}}>
                 Try changing your search/filter, or create a new department.
               </p>
             </div>
           ) : (
             <div className="overflow-hidden">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       #
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-muted uppercase tracking-wider">
                       Description
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-right text-xs font-medium text-muted uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                   {filteredDepartments.map((dept, index) => (
-                    <tr key={dept.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <tr key={dept.id} className="hover:bg-content transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{dept.name}</div>
+                        <div className="text-sm font-medium text-primary">{dept.name}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500">
-                          {dept.description || <span className="italic text-gray-400">No description</span>}
+                        <div className="text-sm text-muted">
+                          {dept.description || <span className="italic text-muted">No description</span>}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-3">
@@ -336,8 +336,8 @@ export default function Departments() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white w-96 p-6 rounded-xl shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+          <div className="w-96 p-6 rounded-xl shadow-xl" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+            <h2 className="text-lg font-semibold mb-4 text-primary">
               Create Department
             </h2>
 
@@ -346,7 +346,7 @@ export default function Departments() {
               placeholder="Department name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border-dark p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
             <input
@@ -354,7 +354,7 @@ export default function Departments() {
               placeholder="Description (optional)"
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-              className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border-dark p-3 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
 
             <div className="flex justify-end gap-3">
@@ -364,7 +364,7 @@ export default function Departments() {
                   setName("");
                   setDesc("");
                 }}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
+                className="px-4 py-2 rounded-lg border-dark text-secondary hover:bg-content font-medium"
               >
                 Cancel
               </button>
@@ -384,21 +384,21 @@ export default function Departments() {
       {/* Edit Modal */}
           {editing && canEdit && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white w-96 p-6 rounded-xl shadow-xl">
-                <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              <div className="w-96 p-6 rounded-xl shadow-xl" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+                <h2 className="text-lg font-semibold mb-4 text-primary">
                   Edit Department
                 </h2>
 
                 <input
                   type="text"
-                  className="border p-3 rounded-xl w-full mb-4"
+                  className="border p-3 rounded-xl w-full mb-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                 />
 
                 <input
                   type="text"
-                  className="border p-3 rounded-xl w-full mb-4"
+                  className="border p-3 rounded-xl w-full mb-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                   value={editDesc}
                   onChange={(e) => setEditDesc(e.target.value)}
                 />

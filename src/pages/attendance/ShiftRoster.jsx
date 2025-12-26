@@ -645,22 +645,22 @@ export default function ShiftRoster() {
         <Header />
         <div className="flex-1 overflow-y-auto p-6 pt-24">
       <div className="mb-6">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white rounded-2xl border shadow-sm p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-100 rounded-xl">
                 <Calendar className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Shift & Roster Management</h1>
-                <p className="text-gray-600 mt-1">Advanced shift planning and employee roster management system</p>
+                <h1 className="text-2xl font-bold text-primary">Shift & Roster Management</h1>
+                <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Advanced shift planning and employee roster management system</p>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">{shifts.length}</div>
-                <div className="text-sm text-gray-500">Active Shifts</div>
+                <div className="text-sm text-muted">Active Shifts</div>
               </div>
             </div>
           </div>
@@ -670,7 +670,7 @@ export default function ShiftRoster() {
       {/* Section 1: Shift Planning Overview */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8 hover:shadow-2xl transition-shadow duration-300">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800"> Shift Planning Overview</h2>
+          <h2 className="text-lg font-semibold text-primary"> Shift Planning Overview</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowCreateShift(!showCreateShift)}
@@ -688,35 +688,35 @@ export default function ShiftRoster() {
         </div>
 
         {showCreateShift && (
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+          <div className="mb-6 p-4 bg-content rounded-lg border">
             <h3 className="text-md font-semibold mb-4">Create New Shift</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shift Name</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Shift Name</label>
                 <input
                   type="text"
                   value={newShift.name}
                   onChange={(e) => setNewShift({...newShift, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g., Morning Shift"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Start Time</label>
                 <input
                   type="time"
                   value={newShift.start_time}
                   onChange={(e) => setNewShift({...newShift, start_time: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                <label className="block text-sm font-medium text-secondary mb-1">End Time</label>
                 <input
                   type="time"
                   value={newShift.end_time}
                   onChange={(e) => setNewShift({...newShift, end_time: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -739,20 +739,20 @@ export default function ShiftRoster() {
 
         {showShifts && (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full border-collapse border-dark">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2 text-left">Shift Name</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Start Time</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">End Time</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
-                  <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
+                  <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Shift Name</th>
+                  <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Start Time</th>
+                  <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>End Time</th>
+                  <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Duration</th>
+                  <th className="border-dark px-4 py-2 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 {shifts.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                    <td colSpan="5" className="border-dark px-4 py-8 text-center text-muted" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                       <div className="flex flex-col items-center gap-2">
                         <p>No shifts found</p>
                         <p className="text-sm">Please create shifts in Organization Setup → Shifts first</p>
@@ -778,13 +778,13 @@ export default function ShiftRoster() {
                     
                     return (
                       <tr key={shift.id}>
-                        <td className="border border-gray-300 px-4 py-2 font-medium">{shift.name}</td>
-                        <td className="border border-gray-300 px-4 py-2">{shift.start_time}</td>
-                        <td className="border border-gray-300 px-4 py-2">{shift.end_time}</td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="border-dark px-4 py-2 font-medium" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{shift.name}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{shift.start_time}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{shift.end_time}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           {calculateDuration(shift.start_time, shift.end_time)}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           <button 
                             onClick={() => deleteShift(shift.id)}
                             className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
@@ -804,7 +804,7 @@ export default function ShiftRoster() {
 
       {/* Section 2: Roster Allocation */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-8 hover:shadow-2xl transition-shadow duration-300">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4"> Roster Allocation</h2>
+        <h2 className="text-lg font-semibold text-primary mb-4"> Roster Allocation</h2>
         
         {/* Employee Allocation */}
         <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 shadow-lg">
@@ -816,11 +816,11 @@ export default function ShiftRoster() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Employee</label>
+              <label className="block text-sm font-semibold text-secondary mb-2">Employee</label>
               <select
                 value={selectedUser}
                 onChange={(e) => setSelectedUser(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               >
                 <option value="">Select Employee</option>
                 {getFilteredEmployees().map((employee) => (
@@ -854,31 +854,31 @@ export default function ShiftRoster() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">From Date</label>
+                <label className="block text-sm font-semibold text-secondary mb-2">From Date</label>
                 <input
                   type="date"
                   value={bulkDateRange.start}
                   onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
+                  className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">To Date</label>
+                <label className="block text-sm font-semibold text-secondary mb-2">To Date</label>
                 <input
                   type="date"
                   value={bulkDateRange.end}
                   onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
+                  className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Shift</label>
+                <label className="block text-sm font-semibold text-secondary mb-2">Shift</label>
                 <select
                   value={bulkShift}
                   onChange={(e) => setBulkShift(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
+                  className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
                 >
                   <option value="">Select Shift</option>
                   {shifts.map((shift) => (
@@ -902,13 +902,13 @@ export default function ShiftRoster() {
         )}
 
         {/* Calendar Navigation */}
-        <div className="flex items-center justify-between mb-8 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-200 shadow-lg">
+        <div className="flex items-center justify-between mb-8 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border shadow-lg">
           <div className="flex items-center gap-6">
-            <div className="flex bg-white rounded-xl border-2 border-gray-200 shadow-sm">
+            <div className="flex bg-white rounded-xl border-2  shadow-sm">
               <button
                 onClick={() => setViewMode("week")}
                 className={`px-6 py-3 text-sm font-semibold rounded-l-xl transition-all duration-300 ${
-                  viewMode === "week" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-gray-700 hover:bg-gray-100"
+                  viewMode === "week" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-secondary hover:bg-gray-100"
                 }`}
               >
                 Week
@@ -916,7 +916,7 @@ export default function ShiftRoster() {
               <button
                 onClick={() => setViewMode("month")}
                 className={`px-6 py-3 text-sm font-semibold rounded-r-xl transition-all duration-300 ${
-                  viewMode === "month" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-gray-700 hover:bg-gray-100"
+                  viewMode === "month" ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg" : "text-secondary hover:bg-gray-100"
                 }`}
               >
                 Month
@@ -926,18 +926,18 @@ export default function ShiftRoster() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigateDate(-1)}
-                className="p-3 text-gray-600 hover:bg-white rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+                className="p-3 text-secondary hover:bg-white rounded-xl border-2  shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
                 <ChevronDown className="rotate-90" size={20} />
               </button>
               
-              <h3 className="text-xl font-bold text-gray-800 min-w-[250px] text-center bg-white px-6 py-3 rounded-xl border-2 border-gray-200 shadow-sm">
+              <h3 className="text-xl font-bold text-primary min-w-[250px] text-center bg-white px-6 py-3 rounded-xl border-2  shadow-sm">
                 {getCalendarTitle()}
               </h3>
               
               <button
                 onClick={() => navigateDate(1)}
-                className="p-3 text-gray-600 hover:bg-white rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+                className="p-3 text-secondary hover:bg-white rounded-xl border-2  shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
                 <ChevronDown className="-rotate-90" size={20} />
               </button>
@@ -957,18 +957,18 @@ export default function ShiftRoster() {
         {/* Elegant Roster Calendar */}
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-            <h3 className="font-semibold text-gray-800">
+            <h3 className="font-semibold text-primary">
               {viewMode === "week" ? "Weekly" : "Monthly"} Roster Calendar
               {allocatedUsers.length > 0 && (
-                <span className="ml-2 text-sm text-gray-600">({allocatedUsers.length} employees)</span>
+                <span className="ml-2 text-sm text-secondary">({allocatedUsers.length} employees)</span>
               )}
             </h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gradient-to-r from-blue-50 to-indigo-50">
                 <tr>
-                  <th className="px-2 py-4 text-center font-semibold text-gray-800 w-12 border-r border-gray-200">
+                  <th className="px-2 py-4 text-center font-semibold text-primary w-12 border-r ">
                     <input
                       type="checkbox"
                       checked={selectedUsersForBulk.length === allocatedUsers.length && allocatedUsers.length > 0}
@@ -982,7 +982,7 @@ export default function ShiftRoster() {
                       className="rounded"
                     />
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-800 min-w-[200px] border-r border-gray-200">
+                  <th className="px-6 py-4 text-left font-semibold text-primary min-w-[200px] border-r ">
                     Employee
                   </th>
                   {getDateRange().map((date) => {
@@ -991,25 +991,25 @@ export default function ShiftRoster() {
                     const isWeekend = ['Sat', 'Sun'].includes(dayName);
                     
                     return (
-                      <th key={date} className={`px-3 py-4 text-center min-w-[130px] border-r border-gray-200 ${
+                      <th key={date} className={`px-3 py-4 text-center min-w-[130px] border-r  ${
                         isWeekend ? 'bg-red-50' : ''
                       }`}>
                         <div className={`font-semibold ${
-                          isWeekend ? 'text-red-600' : 'text-gray-800'
+                          isWeekend ? 'text-red-600' : 'text-primary'
                         }`}>{dayName}</div>
                         <div className={`text-sm ${
-                          isWeekend ? 'text-red-500' : 'text-gray-500'
+                          isWeekend ? 'text-red-500' : 'text-muted'
                         }`}>{dayNum}</div>
                       </th>
                     );
                   })}
-                  <th className="px-4 py-4 text-center font-semibold text-gray-800">Action</th>
+                  <th className="px-4 py-4 text-center font-semibold text-primary">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 {allocatedUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={getDateRange().length + 3} className="px-8 py-12 text-center text-gray-500">
+                    <td colSpan={getDateRange().length + 3} className="px-8 py-12 text-center text-muted">
                       <div className="flex flex-col items-center gap-3">
                         <Calendar size={48} className="text-gray-300" />
                         <p className="text-lg font-medium">No employees in roster</p>
@@ -1019,8 +1019,8 @@ export default function ShiftRoster() {
                   </tr>
                 ) : (
                   allocatedUsers.map((user, index) => (
-                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                      <td className="px-2 py-4 text-center border-r border-gray-200">
+                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-content' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                      <td className="px-2 py-4 text-center border-r ">
                         <input
                           type="checkbox"
                           checked={selectedUsersForBulk.includes(user.id)}
@@ -1034,14 +1034,14 @@ export default function ShiftRoster() {
                           className="rounded"
                         />
                       </td>
-                      <td className="px-6 py-4 border-r border-gray-200">
+                      <td className="px-6 py-4 border-r ">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
                             {user.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-semibold text-gray-800">{user.name}</div>
-                            <div className="text-sm text-gray-500">{user.department_name} • {user.role_name}</div>
+                            <div className="font-semibold text-primary">{user.name}</div>
+                            <div className="text-sm text-muted">{user.department_name} • {user.role_name}</div>
                           </div>
                         </div>
                       </td>
@@ -1052,7 +1052,7 @@ export default function ShiftRoster() {
                         const shift = shifts.find(s => s.id == shiftValue);
                         
                         return (
-                          <td key={date} className={`px-3 py-4 border-r border-gray-200 ${
+                          <td key={date} className={`px-3 py-4 border-r  ${
                             isWeekend ? 'bg-red-25' : ''
                           }`}>
                             {editingCell === `${user.id}-${date}` ? (
@@ -1088,7 +1088,7 @@ export default function ShiftRoster() {
                                   {shiftValue === "OFF" ? "OFF" : shift?.name || "Unknown"}
                                 </div>
                                 {shift && (
-                                  <div className="text-xs text-gray-500 mt-1">
+                                  <div className="text-xs text-muted mt-1">
                                     {shift.start_time} - {shift.end_time}
                                   </div>
                                 )}
@@ -1105,7 +1105,7 @@ export default function ShiftRoster() {
                             ) : (
                               <div 
                                 onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                className="text-center text-gray-400 text-sm cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-2 rounded"
+                                className="text-center text-muted text-sm cursor-pointer hover:text-blue-500 hover:bg-blue-50 py-2 rounded"
                               >
                                 + Add
                               </div>
@@ -1133,7 +1133,7 @@ export default function ShiftRoster() {
       {/* Section 3: Night Shift Rules */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-shadow duration-300">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800"> Night Shift Rules</h2>
+          <h2 className="text-lg font-semibold text-primary"> Night Shift Rules</h2>
           <div className="flex gap-2">
             <button
               onClick={() => {
@@ -1148,37 +1148,37 @@ export default function ShiftRoster() {
         </div>
 
         {showNightShiftRulesList && (
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+          <div className="mb-6 p-4 bg-content rounded-lg border">
             <h3 className="text-md font-semibold mb-4">All Night Shift Rules</h3>
             {allNightShiftRules.length === 0 ? (
-              <p className="text-gray-500">No night shift rules found</p>
+              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>No night shift rules found</p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full border-collapse border-dark">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Applicable Shifts</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Punch Out Rule</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">Min Hours</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left">OT Rate</th>
-                      <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
+                      <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>ID</th>
+                      <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Applicable Shifts</th>
+                      <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Punch Out Rule</th>
+                      <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Min Hours</th>
+                      <th className="border-dark px-4 py-2 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>OT Rate</th>
+                      <th className="border-dark px-4 py-2 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     {allNightShiftRules.map((rule) => (
                       <tr key={rule.id}>
-                        <td className="border border-gray-300 px-4 py-2">{rule.id}</td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{rule.id}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           {rule.applicable_shifts?.map(shiftId => {
                             const shift = shifts.find(s => s.id === shiftId);
                             return shift ? shift.name : `Shift ${shiftId}`;
                           }).join(', ') || 'None'}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2">{rule.punch_out_rule}</td>
-                        <td className="border border-gray-300 px-4 py-2">{rule.minimum_hours} hrs</td>
-                        <td className="border border-gray-300 px-4 py-2">{rule.night_ot_rate}</td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{rule.punch_out_rule}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{rule.minimum_hours} hrs</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{rule.night_ot_rate}</td>
+                        <td className="border-dark px-4 py-2" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           <div className="flex gap-2 justify-center">
                             <button
                               onClick={() => editNightShiftRule(rule.id)}
@@ -1207,7 +1207,7 @@ export default function ShiftRoster() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="space-y-6">
             <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-200">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-secondary mb-3">
                 Night shift applicable for Shifts:
               </label>
               <select
@@ -1216,7 +1216,7 @@ export default function ShiftRoster() {
                   const value = e.target.value ? [parseInt(e.target.value)] : [];
                   setNightShiftRules({...nightShiftRules, applicable_shifts: value});
                 }}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
               >
                 <option value="">Select Shift</option>
                 {shifts.map((shift) => (
@@ -1226,13 +1226,13 @@ export default function ShiftRoster() {
             </div>
 
             <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-secondary mb-3">
                 Punch Out after midnight counts as:
               </label>
               <select
                 value={nightShiftRules.punch_out_rule}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, punch_out_rule: e.target.value})}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               >
                 <option value="Same day">Same day</option>
                 <option value="Next day">Next day</option>
@@ -1240,27 +1240,27 @@ export default function ShiftRoster() {
             </div>
 
             <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-secondary mb-3">
                 Minimum hours for night shift credit:
               </label>
               <input
                 type="number"
                 value={nightShiftRules.minimum_hours}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, minimum_hours: parseInt(e.target.value)})}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white shadow-sm"
               />
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-secondary mb-3">
                 Night OT bonus rate:
               </label>
               <select
                 value={nightShiftRules.night_ot_rate}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, night_ot_rate: e.target.value})}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white shadow-sm"
               >
                 <option value="1.25x">1.25x</option>
                 <option value="1.5x">1.5x</option>
@@ -1269,18 +1269,18 @@ export default function ShiftRoster() {
             </div>
 
             <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-secondary mb-3">
                 Grace time for night login (minutes):
               </label>
               <input
                 type="number"
                 value={nightShiftRules.grace_minutes}
                 onChange={(e) => setNightShiftRules({...nightShiftRules, grace_minutes: parseInt(e.target.value)})}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
+                className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white shadow-sm"
               />
             </div>
 
-            <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+            <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border">
               <div className="text-center">
                 <button
                   onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}

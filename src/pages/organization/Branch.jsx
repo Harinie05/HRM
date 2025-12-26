@@ -45,8 +45,8 @@ export default function Branch() {
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-200 shadow-sm">
-      <div className="p-6 border-b border-gray-200">
+    <div className="rounded-3xl border shadow-sm" style={{borderColor: 'var(--border-color, #e2e8f0)', backgroundColor: 'var(--card-bg, #ffffff)'}} style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="p-6 border-b ">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 rounded-lg">
             <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -54,8 +54,8 @@ export default function Branch() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Branch / Unit Setup</h2>
-            <p className="text-sm text-gray-500">Configure branch locations and contact details</p>
+            <h2 className="text-xl font-bold text-primary">Branch / Unit Setup</h2>
+            <p className="text-sm text-muted">Configure branch locations and contact details</p>
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function Branch() {
       <form onSubmit={handleSubmit} className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-secondary mb-2">
               Branch / Unit Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -72,13 +72,13 @@ export default function Branch() {
               name="branch_name"
               value={form.branch_name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="e.g., Coimbatore Unit"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-secondary mb-2">
               Branch Code <span className="text-red-500">*</span>
             </label>
             <input
@@ -87,92 +87,92 @@ export default function Branch() {
               name="branch_code"
               value={form.branch_code}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="e.g., CBE01"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Person</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">Contact Person</label>
             <input
               type="text"
               name="contact_person"
               value={form.contact_person}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="Branch manager name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">Contact Number</label>
             <input
               type="tel"
               name="contact_number"
               value={form.contact_number}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="Phone number"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="branch@company.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">City</label>
             <input
               type="text"
               name="city"
               value={form.city}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="City name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">State</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">State</label>
             <input
               type="text"
               name="state"
               value={form.state}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="State name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Pincode</label>
+            <label className="block text-sm font-semibold text-secondary mb-2">Pincode</label>
             <input
               type="text"
               name="pincode"
               value={form.pincode}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+              className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
               placeholder="Postal code"
             />
           </div>
         </div>
 
         <div className="mt-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+          <label className="block text-sm font-semibold text-secondary mb-2">Address</label>
           <textarea
             name="address"
             value={form.address}
             onChange={handleChange}
             rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm resize-none"
+            className="w-full px-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm resize-none"
             placeholder="Complete branch address"
           />
         </div>

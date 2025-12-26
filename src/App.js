@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -97,6 +98,27 @@ import SettlementDocuments from "./pages/exit/SettlementDocuments";
 import Customization from "./pages/Customization";
 
 function App() {
+  // Load saved theme colors on app startup
+  useEffect(() => {
+    const savedColors = localStorage.getItem('theme-colors');
+    if (savedColors) {
+      const colors = JSON.parse(savedColors);
+      
+      // Apply saved colors to CSS variables
+      Object.entries(colors).forEach(([key, value]) => {
+        if (key === 'primaryDark') {
+          document.documentElement.style.setProperty('--header-bg', value);
+        } else if (key === 'sidebarBg') {
+          document.documentElement.style.setProperty('--sidebar-bg', value);
+        } else if (key === 'cardBg') {
+          document.documentElement.style.setProperty('--card-bg', value);
+        } else {
+          document.documentElement.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
+        }
+      });
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

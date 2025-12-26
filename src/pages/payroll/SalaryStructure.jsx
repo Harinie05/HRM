@@ -240,17 +240,17 @@ export default function SalaryStructure() {
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b border-gray-200 rounded-t-2xl">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b  rounded-t-2xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-100 rounded-xl">
               <DollarSign className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Salary Structure</h2>
-              <p className="text-gray-600 mt-1">Define CTC structure, earnings and deductions</p>
+              <h2 className="text-xl font-semibold text-primary">Salary Structure</h2>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Define CTC structure, earnings and deductions</p>
             </div>
           </div>
           <button 
@@ -264,15 +264,15 @@ export default function SalaryStructure() {
       </div>
 
       {/* Enhanced Search */}
-      <div className="p-6 border-b border-gray-200 bg-gray-50">
+      <div className="p-6 border-b  bg-content">
         <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted" size={18} />
           <input
             type="text"
             placeholder="Search salary structures..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full shadow-sm"
+            className="pl-12 pr-4 py-3 border-dark rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full shadow-sm"
           />
         </div>
       </div>
@@ -284,22 +284,22 @@ export default function SalaryStructure() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Structure Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Annual CTC</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Basic %</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HRA %</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employees</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Structure Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Annual CTC</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Basic %</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">HRA %</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employees</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {filteredStructures.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-6 py-8 text-center text-muted">
                     {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
                   </td>
                 </tr>
@@ -312,25 +312,25 @@ export default function SalaryStructure() {
                   const employeeCount = linkedEmployeeIds.length;
                   
                   return (
-                    <tr key={structure.id} className="hover:bg-gray-50">
+                    <tr key={structure.id} className="hover:bg-content">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{structure.name}</div>
+                        <div className="text-sm font-medium text-primary">{structure.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">₹{structure.ctc?.toLocaleString()}/year</div>
+                        <div className="text-sm text-primary">₹{structure.ctc?.toLocaleString()}/year</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{structure.basic_percent}%</div>
+                        <div className="text-sm text-primary">{structure.basic_percent}%</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{structure.hra_percent}%</div>
+                        <div className="text-sm text-primary">{structure.hra_percent}%</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{employeeCount} employees</div>
+                        <div className="text-sm text-primary">{employeeCount} employees</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          structure.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                          structure.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-primary"
                         }`}>
                           {structure.is_active ? "Active" : "Inactive"}
                         </span>
@@ -377,15 +377,15 @@ export default function SalaryStructure() {
       </div>
 
       {/* Enhanced Stats Footer */}
-      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-200 rounded-b-2xl">
+      <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t  rounded-b-2xl">
         <div className="flex justify-between items-center text-sm">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span className="text-gray-700 font-medium">Total: {structures.length} salary structures</span>
+            <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total: {structures.length} salary structures</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-gray-700 font-medium">Active: {structures.filter(s => s.is_active).length}</span>
+            <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Active: {structures.filter(s => s.is_active).length}</span>
           </div>
         </div>
       </div>
@@ -399,46 +399,46 @@ export default function SalaryStructure() {
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Structure Name</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Structure Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Senior Developer, Manager Level"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cost to Company (CTC) - Annually</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Cost to Company (CTC) - Annually</label>
                 <input
                   type="number"
                   value={formData.ctc}
                   onChange={(e) => setFormData({...formData, ctc: parseFloat(e.target.value) || 0})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter annual CTC amount"
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">Enter the total annual cost to company</p>
+                <p className="text-xs text-muted mt-1">Enter the total annual cost to company</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Basic %</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Basic %</label>
                   <input
                     type="number"
                     value={formData.basic_percent}
                     onChange={(e) => setFormData({...formData, basic_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">HRA %</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">HRA %</label>
                   <input
                     type="number"
                     value={formData.hra_percent}
                     onChange={(e) => setFormData({...formData, hra_percent: parseFloat(e.target.value) || 0})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
@@ -458,7 +458,7 @@ export default function SalaryStructure() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -484,7 +484,7 @@ export default function SalaryStructure() {
             </h3>
             <div className="space-y-2 mb-6">
               {employees.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No employees found</p>
+                <p className=" text-center py-4" style={{color: 'var(--text-muted, #6b7280)'}}>No employees found</p>
               ) : (
                 employees.map((employee) => {
                   // Check if employee is linked to another structure
@@ -498,7 +498,7 @@ export default function SalaryStructure() {
                   console.log(`Employee ${employee.name} (ID: ${employee.id}) - Selected: ${isCurrentlySelected}`);
                   
                   return (
-                    <div key={employee.id} className="flex items-center p-3 border rounded-lg hover:bg-gray-50">
+                    <div key={employee.id} className="flex items-center p-3 border rounded-lg hover:bg-content">
                       <input
                         type="checkbox"
                         checked={isCurrentlySelected}
@@ -507,8 +507,8 @@ export default function SalaryStructure() {
                       />
                       <div className="flex-1">
                         <div className="font-medium">{employee.name}</div>
-                        <div className="text-sm text-gray-500">{employee.email}</div>
-                        <div className="text-sm text-gray-500">{employee.designation || 'No designation'}</div>
+                        <div className="text-sm text-muted">{employee.email}</div>
+                        <div className="text-sm text-muted">{employee.designation || 'No designation'}</div>
                         <div className="text-xs text-blue-600">Code: {employee.employee_code}</div>
                       </div>
                       {isLinkedToOther && (
@@ -523,7 +523,7 @@ export default function SalaryStructure() {
               <button
                 type="button"
                 onClick={handleCloseLinkModal}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Cancel
               </button>

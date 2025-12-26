@@ -99,7 +99,7 @@ const ManpowerComplianceDashboard = () => {
       case 'Compliant': return 'text-green-600';
       case 'Partial': return 'text-yellow-600';
       case 'Non-Compliant': return 'text-red-600';
-      default: return 'text-gray-600';
+      default: return 'text-secondary';
     }
   };
 
@@ -133,17 +133,17 @@ const ManpowerComplianceDashboard = () => {
             <h1 className="text-3xl font-bold text-[#0D3B66] mb-2">
               Manpower Planning & Compliance Dashboard
             </h1>
-            <p className="text-gray-600">
+            <p className="" style={{color: 'var(--text-secondary, #374151)'}}>
               Workforce planning insights and regulatory compliance tracking
             </p>
           </div>
 
           {/* Compliance Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Current Headcount</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Current Headcount</p>
                   <p className="text-3xl font-bold text-blue-600 mt-1">
                     {complianceData.totalEmployees}
                   </p>
@@ -154,10 +154,10 @@ const ManpowerComplianceDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Vacant Positions</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Vacant Positions</p>
                   <p className="text-3xl font-bold text-orange-600 mt-1">
                     {complianceData.vacantPositions}
                   </p>
@@ -168,10 +168,10 @@ const ManpowerComplianceDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Compliance Score</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Compliance Score</p>
                   <p className="text-3xl font-bold text-green-600 mt-1">
                     {complianceData.complianceScore}%
                   </p>
@@ -182,10 +182,10 @@ const ManpowerComplianceDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Budget Utilization</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Budget Utilization</p>
                   <p className="text-3xl font-bold text-purple-600 mt-1">
                     {complianceData.budgetUtilization}%
                   </p>
@@ -199,36 +199,36 @@ const ManpowerComplianceDashboard = () => {
 
           {/* Manpower Planning & Compliance Status */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Workforce Planning Summary</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Required Headcount</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Required Headcount</span>
                   <span className="font-semibold text-lg">{complianceData.requiredHeadcount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Current Strength</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Current Strength</span>
                   <span className="font-semibold text-lg text-blue-600">{complianceData.totalEmployees}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Fulfillment Rate</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Fulfillment Rate</span>
                   <span className="font-semibold text-lg text-green-600">
                     {((complianceData.totalEmployees / complianceData.requiredHeadcount) * 100).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Critical Roles Vacant</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Critical Roles Vacant</span>
                   <span className="font-semibold text-lg text-red-600">{complianceData.criticalRoles}</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Compliance Status</h3>
               <div className="space-y-3">
                 {complianceItems.slice(0, 4).map((item, index) => (
                   <div key={index} className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">{item.item}</span>
+                    <span className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>{item.item}</span>
                     <div className="flex items-center space-x-2">
                       <span className={`text-xs font-medium ${getComplianceColor(item.status)}`}>
                         {item.status}
@@ -246,27 +246,27 @@ const ManpowerComplianceDashboard = () => {
           </div>
 
           {/* Department Wise Manpower Planning */}
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <div className="rounded-xl shadow-sm p-6 mb-8" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Department Wise Manpower Planning</h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="text-left p-3 font-medium text-gray-600">Department</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Current</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Required</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Vacant</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Utilization</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Status</th>
+                    <th className="text-left p-3 font-medium text-secondary">Department</th>
+                    <th className="text-left p-3 font-medium text-secondary">Current</th>
+                    <th className="text-left p-3 font-medium text-secondary">Required</th>
+                    <th className="text-left p-3 font-medium text-secondary">Vacant</th>
+                    <th className="text-left p-3 font-medium text-secondary">Utilization</th>
+                    <th className="text-left p-3 font-medium text-secondary">Status</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                   {departments.map((dept, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="p-3 text-gray-800">{dept.name}</td>
-                      <td className="p-3 text-gray-800">{dept.current}</td>
-                      <td className="p-3 text-gray-800">{dept.required}</td>
-                      <td className="p-3 text-gray-800">{dept.vacant}</td>
+                    <tr key={index} className="border-b border-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                      <td className="p-3 text-primary">{dept.name}</td>
+                      <td className="p-3 text-primary">{dept.current}</td>
+                      <td className="p-3 text-primary">{dept.required}</td>
+                      <td className="p-3 text-primary">{dept.vacant}</td>
                       <td className={`p-3 font-semibold ${getUtilizationColor(dept.utilization)}`}>
                         {dept.utilization}%
                       </td>
@@ -287,7 +287,7 @@ const ManpowerComplianceDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <h2 className="text-xl font-semibold text-[#0D3B66] mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <button 
@@ -295,8 +295,8 @@ const ManpowerComplianceDashboard = () => {
                 className="p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left"
               >
                 <Users className="w-8 h-8 text-blue-600 mb-2" />
-                <h3 className="font-semibold text-gray-800">Statutory Compliance</h3>
-                <p className="text-sm text-gray-600">Manage statutory requirements</p>
+                <h3 className="font-semibold text-primary">Statutory Compliance</h3>
+                <p className="text-sm text-secondary">Manage statutory requirements</p>
               </button>
               
               <button 
@@ -304,8 +304,8 @@ const ManpowerComplianceDashboard = () => {
                 className="p-4 border border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left"
               >
                 <Shield className="w-8 h-8 text-green-600 mb-2" />
-                <h3 className="font-semibold text-gray-800">Labour Register</h3>
-                <p className="text-sm text-gray-600">Review labour compliance</p>
+                <h3 className="font-semibold text-primary">Labour Register</h3>
+                <p className="text-sm text-secondary">Review labour compliance</p>
               </button>
               
               <button 
@@ -313,8 +313,8 @@ const ManpowerComplianceDashboard = () => {
                 className="p-4 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors text-left"
               >
                 <FileText className="w-8 h-8 text-purple-600 mb-2" />
-                <h3 className="font-semibold text-gray-800">NABH Compliance</h3>
-                <p className="text-sm text-gray-600">Healthcare compliance tracking</p>
+                <h3 className="font-semibold text-primary">NABH Compliance</h3>
+                <p className="text-sm text-secondary">Healthcare compliance tracking</p>
               </button>
             </div>
           </div>

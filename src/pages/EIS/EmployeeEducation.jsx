@@ -147,7 +147,7 @@ export default function EmployeeEducation() {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
           >
             <FiArrowLeft className="text-sm" />
             Back to Profile
@@ -162,43 +162,43 @@ export default function EmployeeEducation() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Degree</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialization</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">University</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Duration</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Grade/CGPA</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Certificate</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Degree</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">Specialization</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-primary">University</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Duration</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Grade/CGPA</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Certificate</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-primary">Actions</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y">
                 {education.length === 0 && (
                   <tr>
                     <td colSpan="7" className="px-6 py-12 text-center">
-                      <FiBook className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Education Records</h3>
-                      <p className="text-gray-500">Add educational qualifications to get started.</p>
+                      <FiBook className="mx-auto h-12 w-12 text-muted mb-4" />
+                      <h3 className="text-lg font-medium text-primary mb-2">No Education Records</h3>
+                      <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>Add educational qualifications to get started.</p>
                     </td>
                   </tr>
                 )}
 
                 {education.map((e) => (
-                  <tr key={e.id} className="hover:bg-gray-50">
+                  <tr key={e.id} className="hover:bg-content">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{e.degree}</div>
+                      <div className="font-medium text-primary">{e.degree}</div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{e.specialization || '-'}</td>
-                    <td className="px-6 py-4 text-gray-600">{e.university}</td>
-                    <td className="px-6 py-4 text-center text-gray-600">
+                    <td className="px-6 py-4 text-secondary">{e.specialization || '-'}</td>
+                    <td className="px-6 py-4 text-secondary">{e.university}</td>
+                    <td className="px-6 py-4 text-center text-secondary">
                       {e.start_year && e.end_year ? `${e.start_year} - ${e.end_year}` : (e.year || '-')}
                     </td>
-                    <td className="px-6 py-4 text-center text-gray-600">{e.percentage_cgpa || '-'}</td>
+                    <td className="px-6 py-4 text-center text-secondary">{e.percentage_cgpa || '-'}</td>
                     <td className="px-6 py-4 text-center">
                       {e.file_name ? (
                         <button 
@@ -216,7 +216,7 @@ export default function EmployeeEducation() {
                           View
                         </button>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -249,7 +249,7 @@ export default function EmployeeEducation() {
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
                 <FiBook className="text-blue-600 text-xl" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-primary">
                   {editing ? "Edit Education" : "Add Education"}
                 </h3>
               </div>
@@ -257,9 +257,9 @@ export default function EmployeeEducation() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Degree *</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Degree *</label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={form.degree}
                       onChange={(e) => setForm({ ...form, degree: e.target.value })}
                     >
@@ -275,9 +275,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Specialization/Stream</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Specialization/Stream</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g., Computer Science"
                       value={form.specialization}
                       onChange={(e) => setForm({ ...form, specialization: e.target.value })}
@@ -287,9 +287,9 @@ export default function EmployeeEducation() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">University/Board *</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">University/Board *</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="University or Board name"
                       value={form.university}
                       onChange={(e) => setForm({ ...form, university: e.target.value })}
@@ -297,9 +297,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Institution Name</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Institution Name</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="College/School name"
                       value={form.board_university}
                       onChange={(e) => setForm({ ...form, board_university: e.target.value })}
@@ -309,9 +309,9 @@ export default function EmployeeEducation() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Year</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Start Year</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="2020"
                       value={form.start_year}
                       onChange={(e) => setForm({ ...form, start_year: e.target.value })}
@@ -319,9 +319,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">End Year</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">End Year</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="2024"
                       value={form.end_year}
                       onChange={(e) => setForm({ ...form, end_year: e.target.value })}
@@ -329,9 +329,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Percentage/CGPA</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Percentage/CGPA</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="85% or 8.5"
                       value={form.percentage_cgpa}
                       onChange={(e) => setForm({ ...form, percentage_cgpa: e.target.value })}
@@ -341,9 +341,9 @@ export default function EmployeeEducation() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Education Type</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Education Type</label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={form.education_type}
                       onChange={(e) => setForm({ ...form, education_type: e.target.value })}
                     >
@@ -355,9 +355,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Country</label>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={form.country}
                       onChange={(e) => setForm({ ...form, country: e.target.value })}
                     >
@@ -373,9 +373,9 @@ export default function EmployeeEducation() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">State</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="State name"
                       value={form.state}
                       onChange={(e) => setForm({ ...form, state: e.target.value })}
@@ -383,9 +383,9 @@ export default function EmployeeEducation() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">City</label>
                     <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="City name"
                       value={form.city}
                       onChange={(e) => setForm({ ...form, city: e.target.value })}
@@ -394,24 +394,24 @@ export default function EmployeeEducation() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Certificate/Document</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Certificate/Document</label>
                   <div className="flex items-center gap-2">
-                    <FiUpload className="text-gray-400" />
+                    <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                     <input
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+                  <p className="text-xs text-muted mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-secondary bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>

@@ -388,11 +388,11 @@ export default function Communication() {
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Total Letters</p>
-              <p className="text-3xl font-bold text-gray-900">{letters.length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Letters</p>
+              <p className="text-3xl font-bold text-primary">{letters.length}</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-xl">
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -401,11 +401,11 @@ export default function Communication() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Ready</p>
-              <p className="text-3xl font-bold text-gray-900">{letters.filter(l => l.status === 'Ready').length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Ready</p>
+              <p className="text-3xl font-bold text-primary">{letters.filter(l => l.status === 'Ready').length}</p>
             </div>
             <div className="p-3 bg-green-50 rounded-xl">
               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -414,11 +414,11 @@ export default function Communication() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-xl p-6 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Drafts</p>
-              <p className="text-3xl font-bold text-gray-900">{letters.filter(l => l.status === 'Draft').length}</p>
+              <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Drafts</p>
+              <p className="text-3xl font-bold text-primary">{letters.filter(l => l.status === 'Draft').length}</p>
             </div>
             <div className="p-3 bg-yellow-50 rounded-xl">
               <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -430,18 +430,18 @@ export default function Communication() {
       </div>
 
       {/* Letter Creation Form */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Create HR Letter</h3>
+          <h3 className="text-lg font-semibold text-primary">Create HR Letter</h3>
         </div>
         <form className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Employee ID</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((emp) => (
@@ -452,11 +452,11 @@ export default function Communication() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Letter Type</label>
               <select 
                 value={formData.letterType}
                 onChange={(e) => setFormData({...formData, letterType: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Type</option>
                 <option value="offer">Offer Letter</option>
@@ -471,11 +471,11 @@ export default function Communication() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Priority</label>
               <select 
                 value={formData.priority}
                 onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Priority</option>
                 <option value="low">Low</option>
@@ -485,22 +485,22 @@ export default function Communication() {
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Subject</label>
               <input 
                 type="text"
                 value={formData.subject}
                 onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Letter subject"
               />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Content</label>
               <textarea 
                 value={formData.content}
                 onChange={(e) => setFormData({...formData, content: e.target.value})}
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Letter content..."
               />
             </div>
@@ -509,7 +509,7 @@ export default function Communication() {
             <button 
               type="button"
               onClick={handleSaveDraft}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-6 py-2 border-dark text-secondary rounded-md hover:bg-content focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Save as Draft
             </button>
@@ -525,39 +525,39 @@ export default function Communication() {
       </div>
 
       {/* Letters History */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Letters</h3>
+          <h3 className="text-lg font-semibold text-primary">Recent Letters</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Subject</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {letters.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No letters found</td>
+                  <td colSpan={6} className="px-6 py-4 text-center text-muted">No letters found</td>
                 </tr>
               ) : (
                 letters.map((letter) => (
                   <tr key={letter.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{letter.name}</div>
-                        <div className="text-sm text-gray-500">{letter.employee}</div>
+                        <div className="text-sm font-medium text-primary">{letter.name}</div>
+                        <div className="text-sm text-muted">{letter.employee}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{letter.type}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{letter.subject}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{letter.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{letter.type}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{letter.subject}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{letter.date}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         letter.status === 'Ready' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -569,7 +569,7 @@ export default function Communication() {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleViewLetter(letter.id)}
-                          className="text-gray-600 hover:text-gray-900"
+                          className=" hover:text-primary" style={{color: 'var(--text-secondary, #374151)'}}
                           title="View Letter"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -626,7 +626,7 @@ export default function Communication() {
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -636,14 +636,14 @@ export default function Communication() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Letter Type</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Letter Type</label>
                 {modalMode === 'view' ? (
-                  <p className="text-sm text-gray-900">{selectedLetter.letter_type}</p>
+                  <p className="text-sm text-primary">{selectedLetter.letter_type}</p>
                 ) : (
                   <select
                     value={selectedLetter.letter_type}
                     onChange={(e) => setSelectedLetter({...selectedLetter, letter_type: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="offer">Offer Letter</option>
                     <option value="appointment">Appointment Letter</option>
@@ -659,23 +659,23 @@ export default function Communication() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Subject</label>
                 {modalMode === 'view' ? (
-                  <p className="text-sm text-gray-900">{selectedLetter.subject}</p>
+                  <p className="text-sm text-primary">{selectedLetter.subject}</p>
                 ) : (
                   <input
                     type="text"
                     value={selectedLetter.subject}
                     onChange={(e) => setSelectedLetter({...selectedLetter, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Content</label>
                 {modalMode === 'view' ? (
-                  <div className="text-sm text-gray-900 whitespace-pre-line border border-gray-300 rounded-md p-3 min-h-[200px]">
+                  <div className="text-sm text-primary whitespace-pre-line border-dark rounded-md p-3 min-h-[200px]">
                     {selectedLetter.content}
                   </div>
                 ) : (
@@ -683,7 +683,7 @@ export default function Communication() {
                     value={selectedLetter.content}
                     onChange={(e) => setSelectedLetter({...selectedLetter, content: e.target.value})}
                     rows={8}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
               </div>
@@ -692,7 +692,7 @@ export default function Communication() {
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 text-secondary rounded-md hover:bg-gray-400"
               >
                 {modalMode === 'view' ? 'Close' : 'Cancel'}
               </button>

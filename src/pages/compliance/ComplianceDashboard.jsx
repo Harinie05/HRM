@@ -6,7 +6,7 @@ const ComplianceDashboard = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Shield className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -15,7 +15,7 @@ const ComplianceDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <FileText className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -24,7 +24,7 @@ const ComplianceDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Clock className="h-8 w-8 text-orange-600" />
             <div className="ml-3">
@@ -33,7 +33,7 @@ const ComplianceDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <AlertTriangle className="h-8 w-8 text-red-600" />
             <div className="ml-3">
@@ -45,39 +45,39 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Statutory Compliance */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Statutory Compliance Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="p-4 border rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">PF Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
             </div>
-            <div className="text-sm text-gray-600">Last filed: Dec 2024</div>
-            <div className="text-sm text-gray-600">Next due: Jan 15, 2025</div>
+            <div className="text-sm text-secondary">Last filed: Dec 2024</div>
+            <div className="text-sm text-secondary">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="p-4 border rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">ESI Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
             </div>
-            <div className="text-sm text-gray-600">Last filed: Dec 2024</div>
-            <div className="text-sm text-gray-600">Next due: Jan 15, 2025</div>
+            <div className="text-sm text-secondary">Last filed: Dec 2024</div>
+            <div className="text-sm text-secondary">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border border-gray-200 rounded-lg">
+          <div className="p-4 border rounded-lg">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">Professional Tax</span>
               <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Due Soon</span>
             </div>
-            <div className="text-sm text-gray-600">Last filed: Nov 2024</div>
-            <div className="text-sm text-gray-600">Next due: Jan 7, 2025</div>
+            <div className="text-sm text-secondary">Last filed: Nov 2024</div>
+            <div className="text-sm text-secondary">Next due: Jan 7, 2025</div>
           </div>
         </div>
       </div>
 
       {/* Labour Law Compliance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">Labour Law Registers</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -99,7 +99,7 @@ const ComplianceDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">NABH Compliance (Healthcare)</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -123,7 +123,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Compliance Calendar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Upcoming Compliance Deadlines</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 border-l-4 border-red-500 bg-red-50">
@@ -158,7 +158,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Action Items */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Immediate Action Required</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 border-l-4 border-red-500 bg-red-50">

@@ -195,7 +195,7 @@ export default function ReviewCycle() {
       case "Completed": return "bg-blue-100 text-blue-800";
       case "Draft": return "bg-yellow-100 text-yellow-800";
       case "Cancelled": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-primary";
     }
   };
 
@@ -235,8 +235,8 @@ export default function ReviewCycle() {
               <Calendar className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Review Cycle Management</h1>
-              <p className="text-gray-600 mt-1">Create and manage performance review cycles</p>
+              <h1 className="text-2xl font-bold text-primary">Review Cycle Management</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Create and manage performance review cycles</p>
             </div>
           </div>
           <button
@@ -251,29 +251,29 @@ export default function ReviewCycle() {
 
         {/* Add Review Cycle Form */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border">
+          <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="px-6 py-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">Create New Review Cycle</h3>
+              <h3 className="text-lg font-semibold text-primary">Create New Review Cycle</h3>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cycle Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Cycle Name</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Review Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Review Type</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {reviewTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -282,76 +282,76 @@ export default function ReviewCycle() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Start Date</label>
                   <input
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">End Date</label>
                   <input
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Departments</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Departments</label>
                   <select
                     multiple
                     value={formData.departments}
                     onChange={(e) => setFormData({...formData, departments: Array.from(e.target.selectedOptions, option => option.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     size={4}
                   >
                     {departments.map(dept => (
                       <option key={dept.id} value={dept.name}>{dept.name}</option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
+                  <p className="text-xs text-muted mt-1">Hold Ctrl/Cmd to select multiple</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Employees</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Employees</label>
                   <select
                     multiple
                     value={formData.employees}
                     onChange={(e) => setFormData({...formData, employees: Array.from(e.target.selectedOptions, option => option.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     size={4}
                   >
                     {employees.map(emp => (
                       <option key={emp.id} value={emp.name}>{emp.employee_code} - {emp.name}</option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
+                  <p className="text-xs text-muted mt-1">Hold Ctrl/Cmd to select multiple</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {statuses.map(status => (
                       <option key={status} value={status}>{status}</option>
@@ -364,7 +364,7 @@ export default function ReviewCycle() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -384,13 +384,13 @@ export default function ReviewCycle() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
               <div className="px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-900">Update Review Progress</h3>
-                <p className="text-sm text-gray-600">{progressCycle.cycle} - {progressCycle.review_type}</p>
+                <h3 className="text-lg font-semibold text-primary">Update Review Progress</h3>
+                <p className="text-sm text-secondary">{progressCycle.cycle} - {progressCycle.review_type}</p>
               </div>
               <form onSubmit={handleProgressSubmit} className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Self Score (1-5)</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Self Score (1-5)</label>
                     <input
                       type="number"
                       name="selfScore"
@@ -398,11 +398,11 @@ export default function ReviewCycle() {
                       max="5"
                       step="0.1"
                       defaultValue={progressCycle.self_score || ''}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Manager Score (1-5)</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Manager Score (1-5)</label>
                     <input
                       type="number"
                       name="managerScore"
@@ -410,7 +410,7 @@ export default function ReviewCycle() {
                       max="5"
                       step="0.1"
                       defaultValue={progressCycle.manager_score || ''}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -421,7 +421,7 @@ export default function ReviewCycle() {
                       setShowProgressModal(false);
                       setProgressCycle(null);
                     }}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                    className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                   >
                     Cancel
                   </button>
@@ -438,37 +438,37 @@ export default function ReviewCycle() {
         )}
 
         {/* Review Cycles List */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Review Cycles</h3>
+            <h3 className="text-lg font-semibold text-primary">Review Cycles</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cycle Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participants</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Cycle Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Duration</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Participants</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Progress</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {cycles.map((cycle) => (
                   <tr key={cycle.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{cycle.cycle}</div>
-                        <div className="text-sm text-gray-500">{cycle.review_type}</div>
+                        <div className="text-sm font-medium text-primary">{cycle.cycle}</div>
+                        <div className="text-sm text-muted">{cycle.review_type}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{cycle.review_type}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{cycle.review_type}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                       {cycle.created_at ? new Date(cycle.created_at).toLocaleDateString() : 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
                       1 employee
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -479,7 +479,7 @@ export default function ReviewCycle() {
                             style={{ width: `${cycle.progress_percentage || 0}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-secondary">
                           {cycle.progress || "0%"}
                         </span>
                       </div>

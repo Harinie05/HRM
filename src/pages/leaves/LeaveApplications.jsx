@@ -256,18 +256,18 @@ export default function LeaveApplications() {
       case "Approved": return "bg-green-100 text-green-800";
       case "Rejected": return "bg-red-100 text-red-800";
       case "Pending": return "bg-yellow-100 text-yellow-800";
-      default: return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-primary";
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Leave Applications & Approvals</h2>
-            <p className="text-gray-600 mt-1">Review and manage employee leave requests</p>
+            <h2 className="text-xl font-semibold text-primary">Leave Applications & Approvals</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Review and manage employee leave requests</p>
           </div>
           <div className="flex gap-2">
             <button 
@@ -282,24 +282,24 @@ export default function LeaveApplications() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <input
               type="text"
               placeholder="Search applications..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10 pr-8 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="All">All Status</option>
               <option value="Pending">Pending</option>
@@ -312,35 +312,35 @@ export default function LeaveApplications() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leave Details</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Leave Details</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Duration</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Reason</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {filteredApplications.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                <td colSpan="6" className="px-6 py-8 text-center text-muted">
                   {searchTerm || statusFilter !== "All" ? "No applications found matching your criteria." : "No leave applications yet."}
                 </td>
               </tr>
             ) : (
               filteredApplications.map((app) => (
-                <tr key={app.id} className="hover:bg-gray-50">
+                <tr key={app.id} className="hover:bg-content">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
-                    <div className="text-sm text-gray-600">{getEmployeeInfo(app.employee_id).name}</div>
-                    <div className="text-sm text-gray-500">Applied: {new Date(app.applied_at).toLocaleDateString()}</div>
+                    <div className="text-sm font-medium text-primary">{getEmployeeInfo(app.employee_id).code}</div>
+                    <div className="text-sm text-secondary">{getEmployeeInfo(app.employee_id).name}</div>
+                    <div className="text-sm text-muted">Applied: {new Date(app.applied_at).toLocaleDateString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{getLeaveTypeName(app.leave_type_id)}</div>
-                    <div className="flex items-center text-sm text-gray-500">
+                    <div className="text-sm text-primary">{getLeaveTypeName(app.leave_type_id)}</div>
+                    <div className="flex items-center text-sm text-muted">
                       <Calendar size={14} className="mr-1" />
                       {app.from_date} to {app.to_date}
                     </div>
@@ -351,7 +351,7 @@ export default function LeaveApplications() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs truncate">
+                    <div className="text-sm text-primary max-w-xs truncate">
                       {app.reason || "No reason provided"}
                     </div>
                   </td>
@@ -360,7 +360,7 @@ export default function LeaveApplications() {
                       {app.status}
                     </span>
                     {app.approver_comment && (
-                      <div className="text-xs text-gray-500 mt-1">{app.approver_comment}</div>
+                      <div className="text-xs text-muted mt-1">{app.approver_comment}</div>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -400,8 +400,8 @@ export default function LeaveApplications() {
       </div>
 
       {/* Stats Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
+      <div className="px-6 py-4 bg-content border-t ">
+        <div className="flex justify-between items-center text-sm text-secondary">
           <span>Total: {applications.length} applications</span>
           <div className="flex gap-4">
             <span>Pending: {applications.filter(a => a.status === "Pending").length}</span>
@@ -418,11 +418,11 @@ export default function LeaveApplications() {
             <h3 className="text-lg font-semibold mb-4">New Leave Application</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee ({employees.length} available)</option>
@@ -434,11 +434,11 @@ export default function LeaveApplications() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Leave Policy</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Leave Policy</label>
                 <select
                   value={formData.policy_id}
                   onChange={(e) => setFormData({...formData, policy_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Use Default Policy</option>
                   {leavePolicies.map(policy => (
@@ -449,11 +449,11 @@ export default function LeaveApplications() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Leave Type</label>
                 <select
                   value={formData.leave_type_id}
                   onChange={(e) => setFormData({...formData, leave_type_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Leave Type</option>
@@ -466,32 +466,32 @@ export default function LeaveApplications() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">From Date</label>
                   <input
                     type="date"
                     value={formData.from_date}
                     onChange={(e) => setFormData({...formData, from_date: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">To Date</label>
                   <input
                     type="date"
                     value={formData.to_date}
                     onChange={(e) => setFormData({...formData, to_date: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Reason</label>
                 <textarea
                   value={formData.reason}
                   onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Enter reason for leave..."
                   required
@@ -501,7 +501,7 @@ export default function LeaveApplications() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -525,7 +525,7 @@ export default function LeaveApplications() {
               <h3 className="text-lg font-semibold">Leave Balances</h3>
               <button 
                 onClick={() => setShowBalanceModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 <X size={20} />
               </button>
@@ -533,7 +533,7 @@ export default function LeaveApplications() {
             
             {leaveBalances.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">No leave balances found for this employee.</p>
+                <p className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>No leave balances found for this employee.</p>
                 <button 
                   onClick={() => initializeBalances(selectedEmployeeId)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
@@ -544,9 +544,9 @@ export default function LeaveApplications() {
             ) : (
               <div className="space-y-4">
                 {leaveBalances.map((balance) => (
-                  <div key={balance.leave_type_id} className="border rounded-lg p-4">
+                  <div key={balance.leave_type_id} className="border rounded-lg p-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-medium text-gray-900">
+                      <h4 className="font-medium text-primary">
                         {balance.leave_type_name} ({balance.leave_type_code})
                       </h4>
                       <span className={`px-2 py-1 rounded text-sm ${
@@ -560,15 +560,15 @@ export default function LeaveApplications() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Allocated:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
                         <div className="font-medium">{balance.total_allocated} days</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Used:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
                         <div className="font-medium">{balance.used} days</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Balance:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
                         <div className="font-medium">{balance.balance} days</div>
                       </div>
                     </div>
@@ -592,7 +592,7 @@ export default function LeaveApplications() {
                 <div className="mt-4 pt-4 border-t">
                   <button 
                     onClick={() => initializeBalances(selectedEmployeeId)}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm"
+                    className="w-full bg-gray-100 hover:bg-gray-200 text-secondary px-4 py-2 rounded-lg text-sm"
                   >
                     Refresh Balances
                   </button>
@@ -611,38 +611,38 @@ export default function LeaveApplications() {
               <h3 className="text-lg font-semibold">Review Leave Application</h3>
               <button 
                 onClick={() => setShowReviewModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className=" hover:text-secondary" style={{color: 'var(--text-muted, #6b7280)'}}
               >
                 <X size={20} />
               </button>
             </div>
             
             {/* Application Details */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-content rounded-lg p-4 mb-4">
               <h4 className="font-medium mb-2">Application Details</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-500">Employee:</span>
+                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Employee:</span>
                   <div className="font-medium">{getEmployeeInfo(reviewingApplication.employee_id).name}</div>
-                  <div className="text-gray-600">{getEmployeeInfo(reviewingApplication.employee_id).code}</div>
+                  <div className="" style={{color: 'var(--text-secondary, #374151)'}}>{getEmployeeInfo(reviewingApplication.employee_id).code}</div>
                 </div>
                 <div>
-                  <span className="text-gray-500">Leave Type:</span>
+                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Leave Type:</span>
                   <div className="font-medium">{getLeaveTypeName(reviewingApplication.leave_type_id)}</div>
                 </div>
                 <div>
-                  <span className="text-gray-500">Duration:</span>
+                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Duration:</span>
                   <div className="font-medium">{reviewingApplication.from_date} to {reviewingApplication.to_date}</div>
                   <div className="text-blue-600">{reviewingApplication.total_days} days</div>
                 </div>
                 <div>
-                  <span className="text-gray-500">Applied:</span>
+                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Applied:</span>
                   <div className="font-medium">{new Date(reviewingApplication.applied_at).toLocaleDateString()}</div>
                 </div>
               </div>
               {reviewingApplication.reason && (
                 <div className="mt-3">
-                  <span className="text-gray-500">Reason:</span>
+                  <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Reason:</span>
                   <div className="font-medium">{reviewingApplication.reason}</div>
                 </div>
               )}
@@ -653,9 +653,9 @@ export default function LeaveApplications() {
               <h4 className="font-medium mb-2">Current Leave Balances</h4>
               <div className="space-y-3">
                 {reviewBalances.map((balance) => (
-                  <div key={balance.leave_type_id} className="border rounded-lg p-3">
+                  <div key={balance.leave_type_id} className="border rounded-lg p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <div className="flex justify-between items-center mb-2">
-                      <h5 className="font-medium text-gray-900">
+                      <h5 className="font-medium text-primary">
                         {balance.leave_type_name} ({balance.leave_type_code})
                       </h5>
                       <span className={`px-2 py-1 rounded text-sm ${
@@ -669,15 +669,15 @@ export default function LeaveApplications() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Allocated:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Allocated:</span>
                         <div className="font-medium">{balance.total_allocated} days</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Used:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Used:</span>
                         <div className="font-medium">{balance.used} days</div>
                       </div>
                       <div>
-                        <span className="text-gray-500">Balance:</span>
+                        <span className="" style={{color: 'var(--text-muted, #6b7280)'}}>Balance:</span>
                         <div className="font-medium">{balance.balance} days</div>
                       </div>
                     </div>
@@ -690,7 +690,7 @@ export default function LeaveApplications() {
             <div className="flex gap-4 pt-4 border-t">
               <button
                 onClick={() => setShowReviewModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
               >
                 Cancel
               </button>

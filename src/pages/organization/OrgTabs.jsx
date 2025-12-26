@@ -20,7 +20,7 @@ export default function OrgTabs({ tab, setTab }) {
           className={`py-4 text-sm ${
             tab === item
               ? "border-b-2 border-blue-600 text-blue-600 font-semibold"
-              : "text-gray-500 hover:text-gray-700"
+              : "text-muted hover:text-secondary"
           }`}
         >
           {item}

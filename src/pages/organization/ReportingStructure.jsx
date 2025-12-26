@@ -155,13 +155,13 @@ export default function ReportingStructure() {
 
     const TreeNode = ({ node, depth = 0 }) => (
       <div className={`ml-${depth * 6}`}>
-        <div className="flex items-center gap-3 p-4 border border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mb-3 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center gap-3 p-4 border bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mb-3 shadow-sm hover:shadow-md transition-shadow">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
             <Building2 size={20} className="text-white" />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900">{node.level_name}</h4>
-            <p className="text-sm text-gray-600">{node.description || 'No description'}</p>
+            <h4 className="font-semibold text-primary">{node.level_name}</h4>
+            <p className="text-sm text-secondary">{node.description || 'No description'}</p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
             node.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -181,8 +181,8 @@ export default function ReportingStructure() {
         {tree.length === 0 ? (
           <div className="text-center py-12">
             <Building2 size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 font-medium">No hierarchy structure found</p>
-            <p className="text-gray-400 text-sm">Create levels and hierarchy rules to see the tree view</p>
+            <p className=" font-medium" style={{color: 'var(--text-muted, #6b7280)'}}>No hierarchy structure found</p>
+            <p className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>Create levels and hierarchy rules to see the tree view</p>
           </div>
         ) : (
           tree.map(node => <TreeNode key={node.id} node={node} />)
@@ -194,26 +194,26 @@ export default function ReportingStructure() {
   return (
     <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b  px-4 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex-shrink-0">
               <GitBranch className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Reporting Structure</h1>
-              <p className="text-gray-600 mt-1">Define organizational hierarchy and reporting levels</p>
+              <h1 className="text-xl font-bold text-primary">Reporting Structure</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Define organizational hierarchy and reporting levels</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Eye size={16} className="text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">View:</span>
+              <Eye size={16} className="" style={{color: 'var(--text-secondary, #374151)'}} />
+              <span className="text-sm font-medium text-secondary">View:</span>
               <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('table')}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'table' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600 hover:text-gray-800'
+                    viewMode === 'table' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
                   }`}
                 >
                   <List size={14} /> Table
@@ -221,7 +221,7 @@ export default function ReportingStructure() {
                 <button
                   onClick={() => setViewMode('tree')}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'tree' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600 hover:text-gray-800'
+                    viewMode === 'tree' ? 'bg-white shadow-sm text-indigo-600' : 'text-secondary hover:text-primary'
                   }`}
                 >
                   <GitBranch size={14} /> Tree
@@ -234,12 +234,12 @@ export default function ReportingStructure() {
 
       <div className="p-4 space-y-6">
         {/* Section 1: Reporting Levels */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Reporting Levels</h2>
-                <p className="text-gray-600 text-sm">Define organizational levels and hierarchy</p>
+                <h2 className="text-lg font-semibold text-primary">Reporting Levels</h2>
+                <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Define organizational levels and hierarchy</p>
               </div>
               <button
                 onClick={() => setShowCreateLevel(!showCreateLevel)}
@@ -252,36 +252,36 @@ export default function ReportingStructure() {
 
           <div className="p-6">
             {showCreateLevel && (
-              <div className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Level</h3>
+              <div className="mb-6 p-6 bg-content rounded-lg border">
+                <h3 className="text-lg font-semibold text-primary mb-4">Create New Level</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Level Name</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Level Name</label>
                     <input
                       type="text"
                       value={newLevel.level_name}
                       onChange={(e) => setNewLevel({...newLevel, level_name: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="e.g., CEO, Manager, Team Lead"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Level Order</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Level Order</label>
                     <input
                       type="number"
                       value={newLevel.level_order}
                       onChange={(e) => setNewLevel({...newLevel, level_order: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="1=highest, 2=next level"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                     <input
                       type="text"
                       value={newLevel.description}
                       onChange={(e) => setNewLevel({...newLevel, description: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       placeholder="Optional description"
                     />
                   </div>
@@ -295,7 +295,7 @@ export default function ReportingStructure() {
                   </button>
                   <button
                     onClick={() => setShowCreateLevel(false)}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
                   >
                     Cancel
                   </button>
@@ -306,34 +306,34 @@ export default function ReportingStructure() {
             {viewMode === 'table' ? (
               <div className="overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+                    <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Order</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Level Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Description</th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                       {levels.length === 0 ? (
                         <tr>
                           <td colSpan="5" className="px-6 py-12 text-center">
                             <div className="flex flex-col items-center gap-3">
                               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                                <Building2 size={24} className="text-gray-400" />
+                                <Building2 size={24} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                               </div>
                               <div>
-                                <p className="text-gray-900 font-medium">No reporting levels found</p>
-                                <p className="text-gray-500 text-sm mt-1">Create your first level to get started</p>
+                                <p className=" font-medium" style={{color: 'var(--text-primary, #111827)'}}>No reporting levels found</p>
+                                <p className=" text-sm mt-1" style={{color: 'var(--text-muted, #6b7280)'}}>Create your first level to get started</p>
                               </div>
                             </div>
                           </td>
                         </tr>
                       ) : (
                         levels.map((level) => (
-                          <tr key={level.id} className="hover:bg-gray-50">
+                          <tr key={level.id} className="hover:bg-content">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -342,10 +342,10 @@ export default function ReportingStructure() {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">{level.level_name}</div>
+                              <div className="text-sm font-medium text-primary">{level.level_name}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">{level.description || '-'}</div>
+                              <div className="text-sm text-muted">{level.description || '-'}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center">
                               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -376,12 +376,12 @@ export default function ReportingStructure() {
         </div>
 
         {/* Section 2: Hierarchy Rules */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Hierarchy Rules</h2>
-                <p className="text-gray-600 text-sm">Define reporting relationships between levels</p>
+                <h2 className="text-lg font-semibold text-primary">Hierarchy Rules</h2>
+                <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Define reporting relationships between levels</p>
               </div>
               <button
                 onClick={() => setShowCreateHierarchy(!showCreateHierarchy)}
@@ -394,15 +394,15 @@ export default function ReportingStructure() {
 
           <div className="p-6">
             {showCreateHierarchy && (
-              <div className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Hierarchy Rule</h3>
+              <div className="mb-6 p-6 bg-content rounded-lg border">
+                <h3 className="text-lg font-semibold text-primary mb-4">Create Hierarchy Rule</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Supervisor Level</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Supervisor Level</label>
                     <select
                       value={newHierarchy.parent_level_id}
                       onChange={(e) => setNewHierarchy({...newHierarchy, parent_level_id: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="">Select Supervisor Level</option>
                       {levels.map((level) => (
@@ -411,11 +411,11 @@ export default function ReportingStructure() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Subordinate Level</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Subordinate Level</label>
                     <select
                       value={newHierarchy.child_level_id}
                       onChange={(e) => setNewHierarchy({...newHierarchy, child_level_id: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="">Select Subordinate Level</option>
                       {levels.map((level) => (
@@ -424,11 +424,11 @@ export default function ReportingStructure() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Department (Optional)</label>
+                    <label className="block text-sm font-medium text-secondary mb-2">Department (Optional)</label>
                     <select
                       value={newHierarchy.department_id}
                       onChange={(e) => setNewHierarchy({...newHierarchy, department_id: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="">All Departments</option>
                       {departments.map((dept) => (
@@ -446,7 +446,7 @@ export default function ReportingStructure() {
                   </button>
                   <button
                     onClick={() => setShowCreateHierarchy(false)}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
                   >
                     Cancel
                   </button>
@@ -456,42 +456,42 @@ export default function ReportingStructure() {
 
             <div className="overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor Level</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subordinate Level</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Supervisor Level</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Subordinate Level</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Department</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                     {hierarchy.length === 0 ? (
                       <tr>
                         <td colSpan="5" className="px-6 py-12 text-center">
                           <div className="flex flex-col items-center gap-3">
                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                              <Users size={24} className="text-gray-400" />
+                              <Users size={24} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                             </div>
                             <div>
-                              <p className="text-gray-900 font-medium">No hierarchy rules found</p>
-                              <p className="text-gray-500 text-sm mt-1">Create rules to establish reporting relationships</p>
+                              <p className=" font-medium" style={{color: 'var(--text-primary, #111827)'}}>No hierarchy rules found</p>
+                              <p className=" text-sm mt-1" style={{color: 'var(--text-muted, #6b7280)'}}>Create rules to establish reporting relationships</p>
                             </div>
                           </div>
                         </td>
                       </tr>
                     ) : (
                       hierarchy.map((rule) => (
-                        <tr key={rule.id} className="hover:bg-gray-50">
+                        <tr key={rule.id} className="hover:bg-content">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{rule.parent_level_name || 'Top Level'}</div>
+                            <div className="text-sm text-primary">{rule.parent_level_name || 'Top Level'}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{rule.child_level_name}</div>
+                            <div className="text-sm font-medium text-primary">{rule.child_level_name}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-500">{rule.department_name || 'All Departments'}</div>
+                            <div className="text-sm text-muted">{rule.department_name || 'All Departments'}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

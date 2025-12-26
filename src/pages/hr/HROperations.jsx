@@ -79,7 +79,7 @@ export default function HROperations() {
                   className={`px-6 py-5 text-sm font-semibold border-b-3 transition-all duration-300 whitespace-nowrap ${
                     tab === tabItem.key
                       ? 'border-indigo-500 text-indigo-600 bg-white shadow-lg transform -translate-y-1'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                      : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
                   }`}
                 >
                   {tabItem.label}

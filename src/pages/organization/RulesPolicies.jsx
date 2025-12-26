@@ -214,17 +214,17 @@ export default function RulesPolicies() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-content">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-white border-b  px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg">
               <Shield className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Rules & Policies Management</h1>
-              <p className="text-gray-600 mt-1">Comprehensive policy framework for HR, Leave, Attendance, and Overtime management</p>
+              <h1 className="text-xl font-bold text-primary">Rules & Policies Management</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Comprehensive policy framework for HR, Leave, Attendance, and Overtime management</p>
             </div>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function RulesPolicies() {
               className={`flex-1 px-6 py-5 text-sm font-semibold border-b-3 transition-all duration-300 flex items-center justify-center gap-2 ${
                 activeTab === tab
                   ? 'border-indigo-500 text-indigo-600 bg-white shadow-lg transform -translate-y-1'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                  : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
               }`}
             >
               {getTabIcon(tab)}
@@ -260,7 +260,7 @@ export default function RulesPolicies() {
         {/* Content */}
         <div className="p-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800">{activeTab}</h2>
+            <h2 className="text-xl font-bold text-primary">{activeTab}</h2>
             <button
               onClick={() => {
                 resetForm();
@@ -274,22 +274,22 @@ export default function RulesPolicies() {
           </div>
 
           {/* Policies Table */}
-          <div className="bg-gray-50 rounded-xl overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
+          <div className="bg-content rounded-xl overflow-hidden">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gradient-to-r from-gray-100 to-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Policy Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-secondary">Policy Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-secondary">Status</th>
                   {activeTab === "HR Policies" && (
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Document</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-secondary">Document</th>
                   )}
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Actions</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-secondary">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white">
                 {policies.length === 0 ? (
                   <tr>
-                    <td colSpan={activeTab === "HR Policies" ? "4" : "3"} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={activeTab === "HR Policies" ? "4" : "3"} className="px-6 py-12 text-center text-muted">
                       <div className="flex flex-col items-center gap-3">
                         <FileText className="w-12 h-12 text-gray-300" />
                         <p className="text-lg font-medium">No {activeTab} Found</p>
@@ -299,11 +299,11 @@ export default function RulesPolicies() {
                   </tr>
                 ) : (
                   policies.map((policy) => (
-                    <tr key={policy.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <tr key={policy.id} className="border-b border-gray-100 hover:bg-content transition-colors" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                       <td className="px-6 py-4">
-                        <div className="font-semibold text-gray-800">{policy.name}</div>
+                        <div className="font-semibold text-primary">{policy.name}</div>
                         {policy.description && (
-                          <div className="text-sm text-gray-500 mt-1">{policy.description}</div>
+                          <div className="text-sm text-muted mt-1">{policy.description}</div>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -327,7 +327,7 @@ export default function RulesPolicies() {
                               Download PDF
                             </a>
                           ) : (
-                            <span className="text-gray-400 text-sm">No document</span>
+                            <span className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>No document</span>
                           )}
                         </td>
                       )}
@@ -374,13 +374,13 @@ export default function RulesPolicies() {
               {activeTab === "HR Policies" && (
                 <div className="space-y-4">
                   <input
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="Policy Name"
                     value={hrForm.name}
                     onChange={(e) => setHrForm({...hrForm, name: e.target.value})}
                   />
                   <textarea
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                     rows="3"
                     placeholder="Policy Description"
                     value={hrForm.description}
@@ -388,14 +388,14 @@ export default function RulesPolicies() {
                   />
                   <div className="grid grid-cols-2 gap-4">
                     <input
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                       placeholder="Notice Period (Days)"
                       type="number"
                       value={hrForm.notice_days}
                       onChange={(e) => setHrForm({...hrForm, notice_days: e.target.value})}
                     />
                     <input
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                       placeholder="Probation Period (Days)"
                       type="number"
                       value={hrForm.probation_period}
@@ -403,7 +403,7 @@ export default function RulesPolicies() {
                     />
                   </div>
                   <select
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                     value={hrForm.work_week}
                     onChange={(e) => setHrForm({...hrForm, work_week: e.target.value})}
                   >
@@ -414,7 +414,7 @@ export default function RulesPolicies() {
                   <input
                     type="file"
                     accept=".pdf"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                     onChange={(e) => setHrForm({...hrForm, policy_file: e.target.files[0]})}
                   />
                 </div>
@@ -435,7 +435,7 @@ export default function RulesPolicies() {
                     setShowCreateModal(false);
                     resetForm();
                   }}
-                  className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold flex items-center justify-center gap-2"
+                  className="flex-1 bg-gray-200 text-primary py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold flex items-center justify-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   Cancel

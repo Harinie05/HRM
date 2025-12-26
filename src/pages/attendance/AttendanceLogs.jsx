@@ -544,10 +544,10 @@ export default function AttendanceLogs() {
         <Header />
         
         <div className="p-6 pt-24">
-          <div className="text-sm text-gray-500 mb-3">Attendance · Logs & Regularization</div>
+          <div className="text-sm text-muted mb-3">Attendance · Logs & Regularization</div>
           
           <div className="mb-6">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-2xl border shadow-sm p-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-blue-100 rounded-xl">
@@ -556,15 +556,15 @@ export default function AttendanceLogs() {
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Attendance Logs & Regularization</h1>
-                    <p className="text-gray-600 mt-1">Advanced attendance tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
+                    <h1 className="text-2xl font-bold text-primary">Attendance Logs & Regularization</h1>
+                    <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Advanced attendance tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">{logs.length}</div>
-                    <div className="text-sm text-gray-500">Total Records</div>
+                    <div className="text-sm text-muted">Total Records</div>
                   </div>
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function AttendanceLogs() {
                   className={`px-8 py-5 text-sm font-semibold border-b-3 transition-all duration-300 ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600 bg-white shadow-lg transform -translate-y-1'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                      : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
                   }`}
                 >
                   {tab.label}
@@ -601,7 +601,7 @@ export default function AttendanceLogs() {
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Employee</label>
+                      <label className="block text-sm font-semibold text-secondary mb-2">Employee</label>
                       <select
                         value={selectedEmployee}
                         onChange={(e) => {
@@ -611,7 +611,7 @@ export default function AttendanceLogs() {
                           setShowAddLocation(false);
                           setNewLocationName('');
                         }}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                        className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
                       >
                         <option value="">Choose Employee</option>
                         {employees.map((employee) => (
@@ -624,7 +624,7 @@ export default function AttendanceLogs() {
                     
                     {attendanceMode === 'WEB' && (
                       <div className="mt-4">
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Office Location</label>
+                        <label className="block text-sm font-semibold text-secondary mb-2">Office Location</label>
                         {!showAddLocation ? (
                           <select
                             value={selectedLocation}
@@ -635,7 +635,7 @@ export default function AttendanceLogs() {
                                 setSelectedLocation(e.target.value);
                               }
                             }}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                            className="w-full px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
                           >
                             {officeLocations.map((location) => (
                               <option key={location.id} value={location.id}>
@@ -651,7 +651,7 @@ export default function AttendanceLogs() {
                               value={newLocationName}
                               onChange={(e) => setNewLocationName(e.target.value)}
                               placeholder="Enter location name"
-                              className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                              className="flex-1 px-4 py-3 border-2  rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
                             />
                             <button
                               onClick={async () => {
@@ -705,9 +705,9 @@ export default function AttendanceLogs() {
                           </svg>
                           <h4 className="font-semibold text-blue-800">Web Check-In</h4>
                         </div>
-                        <p className="text-sm text-gray-600">Check in from office computer</p>
-                        <p className="text-xs text-gray-500 mt-1">• Select office location</p>
-                        <p className="text-xs text-gray-500">• No GPS required</p>
+                        <p className="text-sm text-secondary">Check in from office computer</p>
+                        <p className="text-xs text-muted mt-1">• Select office location</p>
+                        <p className="text-xs text-muted">• No GPS required</p>
                       </button>
                       
                       <button
@@ -758,9 +758,9 @@ export default function AttendanceLogs() {
                           </svg>
                           <h4 className="font-semibold text-green-800">Mobile GPS Check-In</h4>
                         </div>
-                        <p className="text-sm text-gray-600">Check in from mobile device</p>
-                        <p className="text-xs text-gray-500 mt-1">• GPS location tracking</p>
-                        <p className="text-xs text-gray-500">• Location permission required</p>
+                        <p className="text-sm text-secondary">Check in from mobile device</p>
+                        <p className="text-xs text-muted mt-1">• GPS location tracking</p>
+                        <p className="text-xs text-muted">• Location permission required</p>
                       </button>
                     </div>
                   </div>
@@ -768,7 +768,7 @@ export default function AttendanceLogs() {
 
                 {/* Status Display */}
                 {selectedEmployee && attendanceMode && (
-                  <div className="mb-4 p-4 rounded-lg border-2 border-dashed border-gray-200">
+                  <div className="mb-4 p-4 rounded-lg border-2 border-dashed ">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${
@@ -777,18 +777,18 @@ export default function AttendanceLogs() {
                           'bg-gray-400'
                         }`}></div>
                         <div>
-                          <div className="font-semibold text-gray-800">
+                          <div className="font-semibold text-primary">
                             {currentStatus === 'checked_in' ? 'Currently Checked In' :
                              currentStatus === 'checked_out' ? 'Checked Out for Today' :
                              'Ready to Check In'}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted">
                             {new Date().toLocaleDateString()} • {new Date().toLocaleTimeString()}
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-gray-500">Employee</div>
+                        <div className="text-sm text-muted">Employee</div>
                         <div className="font-semibold">
                           {employees.find(e => e.id == selectedEmployee)?.name}
                           {(() => {
@@ -810,8 +810,8 @@ export default function AttendanceLogs() {
                   <div>
                     {currentStatus === 'not_checked_in' && attendanceMode && (
                       <div className="text-center mb-4">
-                        <div className="inline-block p-4 bg-gray-50 rounded-lg border">
-                          <p className="text-sm text-gray-600 mb-3">
+                        <div className="inline-block p-4 bg-content rounded-lg border">
+                          <p className="text-sm text-secondary mb-3">
                             Ready to check in using <span className="font-semibold">{attendanceMode}</span> mode
                             {attendanceMode === 'MOBILE' && gpsPermissionGranted && (
                               <span className="ml-2 text-green-600">✓ GPS Permission Granted</span>
@@ -854,7 +854,7 @@ export default function AttendanceLogs() {
                         <h3 className="text-md font-semibold mb-4">Step 2: Check Out</h3>
                         <div className="text-center">
                           <div className="inline-block p-4 bg-white rounded-lg border">
-                            <p className="text-sm text-gray-600 mb-3">
+                            <p className="text-sm text-secondary mb-3">
                               You checked in via <span className="font-semibold">{checkInSource}</span>. 
                               Please use the same method to check out.
                             </p>
@@ -899,7 +899,7 @@ export default function AttendanceLogs() {
             {activeTab === 'logs' && (
               <div className="overflow-x-auto">
                 <div className="p-6 border-b bg-gradient-to-r from-gray-50 to-blue-50">
-                  <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-primary flex items-center gap-2">
                     <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
                     </svg>
@@ -911,19 +911,19 @@ export default function AttendanceLogs() {
                     })}
                   </h3>
                 </div>
-                <table className="w-full bg-white">
-                  <thead className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-blue-200">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full bg-white">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-blue-200">
                     <tr>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Emp Code</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Date</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">In</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Out</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Location</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Status</th>
-                      <th className="p-4 text-left text-sm font-bold text-gray-700">Source</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Emp Code</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Date</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">In</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Out</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Location</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Status</th>
+                      <th className="p-4 text-left text-sm font-bold text-secondary">Source</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     {(() => {
                       const today = new Date().toISOString().split('T')[0];
                       const todayLogs = logs.filter(log => log.date === today);
@@ -931,7 +931,7 @@ export default function AttendanceLogs() {
                       if (todayLogs.length === 0) {
                         return (
                           <tr>
-                            <td colSpan="7" className="p-8 text-center text-gray-500">
+                            <td colSpan="7" className="p-8 text-center text-muted">
                               No attendance records for today
                             </td>
                           </tr>
@@ -939,8 +939,8 @@ export default function AttendanceLogs() {
                       }
                       
                       return todayLogs.map((log) => (
-                        <tr key={log.id} className="border-b hover:bg-gray-50">
-                          <td className="p-4 text-sm text-gray-800">
+                        <tr key={log.id} className="border-b hover:bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                          <td className="p-4 text-sm text-primary">
                             {(() => {
                               const employee = employees.find(emp => {
                                 if (emp.source === 'user_management') {
@@ -951,10 +951,10 @@ export default function AttendanceLogs() {
                               return employee?.employee_code || log.employee_id;
                             })()}
                           </td>
-                          <td className="p-4 text-sm text-gray-800">{log.date}</td>
-                          <td className="p-4 text-sm text-gray-800">{log.in_time || "-"}</td>
-                          <td className="p-4 text-sm text-gray-800">{log.out_time || "-"}</td>
-                          <td className="p-4 text-sm text-gray-800">{log.location || "-"}</td>
+                          <td className="p-4 text-sm text-primary">{log.date}</td>
+                          <td className="p-4 text-sm text-primary">{log.in_time || "-"}</td>
+                          <td className="p-4 text-sm text-primary">{log.out_time || "-"}</td>
+                          <td className="p-4 text-sm text-primary">{log.location || "-"}</td>
                           <td className="p-4 text-sm">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               log.status === 'Present' ? 'bg-green-100 text-green-800' :
@@ -964,7 +964,7 @@ export default function AttendanceLogs() {
                               {log.status}
                             </span>
                           </td>
-                          <td className="p-4 text-sm text-gray-800">{log.source}</td>
+                          <td className="p-4 text-sm text-primary">{log.source}</td>
                         </tr>
                       ));
                     })()}
@@ -981,11 +981,11 @@ export default function AttendanceLogs() {
                     <h3 className="text-lg font-semibold mb-4">Submit Regularization Request</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                         <select 
                           value={regularizationForm.employee_id}
                           onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                          className="w-full border-dark rounded-lg px-3 py-2"
                         >
                           <option value="">Choose Employee</option>
                           {employees.map((employee) => (
@@ -996,20 +996,20 @@ export default function AttendanceLogs() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Date</label>
                         <input 
                           type="date" 
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Issue Type</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Issue Type</label>
                         <select 
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                          className="w-full border-dark rounded-lg px-3 py-2"
                         >
                           <option>Missed IN</option>
                           <option>Missed OUT</option>
@@ -1017,11 +1017,11 @@ export default function AttendanceLogs() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Reason</label>
                         <textarea 
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                           rows="3" 
                           placeholder="Explain the reason"
                         ></textarea>
@@ -1039,8 +1039,8 @@ export default function AttendanceLogs() {
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Regularization Requests</h3>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm border rounded-lg">
-                        <thead className="bg-gray-50">
+                      <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full text-sm border rounded-lg">
+                        <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                           <tr>
                             <th className="p-3 text-left">Employee</th>
                             <th className="p-3 text-left">Date</th>
@@ -1049,16 +1049,16 @@ export default function AttendanceLogs() {
                             <th className="p-3 text-left">Actions</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           {regularizationRequests.length === 0 ? (
-                            <tr className="border-t">
-                              <td colSpan="5" className="p-4 text-center text-gray-500">
+                            <tr className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                              <td colSpan="5" className="p-4 text-center text-muted">
                                 No regularization requests yet
                               </td>
                             </tr>
                           ) : (
                             regularizationRequests.map((request) => (
-                              <tr key={request.id} className="border-t">
+                              <tr key={request.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                                 <td className="p-3">{request.employee}</td>
                                 <td className="p-3">{request.date}</td>
                                 <td className="p-3">{request.type}</td>
@@ -1107,11 +1107,11 @@ export default function AttendanceLogs() {
                     <h3 className="text-lg font-semibold mb-4">Submit OD Application</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Employee *</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Employee *</label>
                         <select 
                           value={odForm.employee_id}
                           onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                          className="w-full border-dark rounded-lg px-3 py-2"
                         >
                           <option value="">Choose Employee</option>
                           {employees.map((employee) => (
@@ -1122,51 +1122,51 @@ export default function AttendanceLogs() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">OD Date *</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">OD Date *</label>
                         <input 
                           type="date" 
                           value={odForm.od_date}
                           onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Purpose *</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Purpose *</label>
                         <textarea 
                           value={odForm.purpose}
                           onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                           rows="3" 
                           placeholder="Purpose of OD"
                         ></textarea>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">From Time</label>
+                          <label className="block text-sm font-medium text-secondary mb-1">From Time</label>
                           <input 
                             type="time" 
                             value={odForm.from_time}
                             onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                            className="w-full border-dark rounded-lg px-3 py-2" 
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">To Time</label>
+                          <label className="block text-sm font-medium text-secondary mb-1">To Time</label>
                           <input 
                             type="time" 
                             value={odForm.to_time}
                             onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                            className="w-full border-dark rounded-lg px-3 py-2" 
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Location</label>
                         <input 
                           type="text" 
                           value={odForm.location}
                           onChange={(e) => setOdForm({...odForm, location: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                           placeholder="OD Location"
                         />
                       </div>
@@ -1182,8 +1182,8 @@ export default function AttendanceLogs() {
                   <div>
                     <h3 className="text-lg font-semibold mb-4">OD Applications</h3>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm border rounded-lg">
-                        <thead className="bg-gray-50">
+                      <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full text-sm border rounded-lg">
+                        <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                           <tr>
                             <th className="p-3 text-left">Employee</th>
                             <th className="p-3 text-left">Date</th>
@@ -1192,16 +1192,16 @@ export default function AttendanceLogs() {
                             <th className="p-3 text-left">Actions</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                           {odApplications.length === 0 ? (
-                            <tr className="border-t">
-                              <td colSpan="5" className="p-4 text-center text-gray-500">
+                            <tr className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                              <td colSpan="5" className="p-4 text-center text-muted">
                                 No OD applications yet
                               </td>
                             </tr>
                           ) : (
                             odApplications.map((application) => (
-                              <tr key={application.id} className="border-t">
+                              <tr key={application.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                                 <td className="p-3">{application.employee}</td>
                                 <td className="p-3">{application.od_date}</td>
                                 <td className="p-3" title={application.purpose}>
@@ -1256,11 +1256,11 @@ export default function AttendanceLogs() {
                     <h3 className="text-lg font-semibold mb-4">Generate Reports</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Report Type</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Report Type</label>
                         <select 
                           value={reportFilters.reportType}
                           onChange={(e) => setReportFilters({...reportFilters, reportType: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                          className="w-full border-dark rounded-lg px-3 py-2"
                         >
                           <option value="daily">Daily Report</option>
                           <option value="monthly">Monthly Summary</option>
@@ -1268,29 +1268,29 @@ export default function AttendanceLogs() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">From Date</label>
                         <input 
                           type="date" 
                           value={reportFilters.fromDate}
                           onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">To Date</label>
                         <input 
                           type="date" 
                           value={reportFilters.toDate}
                           onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2" 
+                          className="w-full border-dark rounded-lg px-3 py-2" 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                         <select 
                           value={reportFilters.employeeId}
                           onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                          className="w-full border-dark rounded-lg px-3 py-2"
                         >
                           <option value="">All Employees</option>
                           {employees.map((employee) => (
@@ -1320,37 +1320,37 @@ export default function AttendanceLogs() {
                   {/* Report Results */}
                   <div className="lg:col-span-2">
                     <h3 className="text-lg font-semibold mb-4">Report Results</h3>
-                    <div className="bg-gray-50 rounded-lg p-6">
+                    <div className="bg-content rounded-lg p-6">
                       {reportData.length > 0 && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-blue-600">{reportData.length}</div>
-                            <div className="text-sm text-gray-600">Total Records</div>
+                            <div className="text-sm text-secondary">Total Records</div>
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-green-600">
                               {reportData.filter(r => r.status === 'Present').length}
                             </div>
-                            <div className="text-sm text-gray-600">Present</div>
+                            <div className="text-sm text-secondary">Present</div>
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-yellow-600">
                               {reportData.filter(r => r.status === 'Late').length}
                             </div>
-                            <div className="text-sm text-gray-600">Late</div>
+                            <div className="text-sm text-secondary">Late</div>
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-red-600">
                               {reportData.filter(r => r.status === 'Absent').length}
                             </div>
-                            <div className="text-sm text-gray-600">Absent</div>
+                            <div className="text-sm text-secondary">Absent</div>
                           </div>
                         </div>
                       )}
                       
                       <div className="overflow-x-auto">
-                        <table className="w-full text-sm border rounded-lg bg-white">
-                          <thead className="bg-gray-100">
+                        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full text-sm border rounded-lg bg-white">
+                          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100">
                             <tr>
                               <th className="p-3 text-left">Emp Code</th>
                               <th className="p-3 text-left">Date</th>
@@ -1360,16 +1360,16 @@ export default function AttendanceLogs() {
                               <th className="p-3 text-left">Status</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                             {reportData.length === 0 ? (
                               <tr>
-                                <td colSpan="6" className="p-8 text-center text-gray-500">
+                                <td colSpan="6" className="p-8 text-center text-muted">
                                   Click "Generate Report" to view attendance data
                                 </td>
                               </tr>
                             ) : (
                               reportData.map((log) => (
-                                <tr key={log.id} className="border-t">
+                                <tr key={log.id} className="border-t" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                                   <td className="p-3">
                                     {(() => {
                                       const employee = employees.find(emp => {

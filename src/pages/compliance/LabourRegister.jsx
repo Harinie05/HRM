@@ -222,15 +222,15 @@ export default function LabourRegister() {
             <FileText className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Labour Law Register Management</h2>
-            <p className="text-gray-600 mt-1">Manage labour law compliance registers and documentation</p>
+            <h2 className="text-2xl font-bold text-primary">Labour Law Register Management</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage labour law compliance registers and documentation</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <FileText className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -239,7 +239,7 @@ export default function LabourRegister() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -248,7 +248,7 @@ export default function LabourRegister() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <AlertTriangle className="h-8 w-8 text-yellow-600" />
             <div className="ml-3">
@@ -257,7 +257,7 @@ export default function LabourRegister() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-purple-600" />
             <div className="ml-3">
@@ -268,7 +268,7 @@ export default function LabourRegister() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
           {/* Employee ID */}
           <div>
@@ -294,7 +294,7 @@ export default function LabourRegister() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees.map((employee) => (
@@ -329,7 +329,7 @@ export default function LabourRegister() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees.map((employee) => (
@@ -354,7 +354,7 @@ export default function LabourRegister() {
                 setShowCustomRegisterType(value === 'Other');
                 setForm({ ...form, register_type: value, custom_register_type: value === 'Other' ? form.custom_register_type : '' });
               }}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Register Type</option>
               <option value="Form I - Muster Roll">Form I - Muster Roll</option>
@@ -383,7 +383,7 @@ export default function LabourRegister() {
                 name="custom_register_type"
                 value={form.custom_register_type || ''}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter custom register type"
               />
             </div>
@@ -397,7 +397,7 @@ export default function LabourRegister() {
               name="register_number"
               value={form.register_number}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Register Number"
             />
           </div>
@@ -410,7 +410,7 @@ export default function LabourRegister() {
               name="issue_date"
               value={form.issue_date}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -422,7 +422,7 @@ export default function LabourRegister() {
               name="expiry_date"
               value={form.expiry_date}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -434,7 +434,7 @@ export default function LabourRegister() {
               name="issuing_authority"
               value={form.issuing_authority}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Issuing Authority"
             />
           </div>
@@ -446,7 +446,7 @@ export default function LabourRegister() {
               name="compliance_status"
               value={form.compliance_status}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -462,7 +462,7 @@ export default function LabourRegister() {
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -488,7 +488,7 @@ export default function LabourRegister() {
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -502,7 +502,7 @@ export default function LabourRegister() {
               name="remarks"
               value={form.remarks}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
               placeholder="Enter any additional remarks or notes"
             />
           </div>
@@ -532,20 +532,20 @@ export default function LabourRegister() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Existing Labour Registers</h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee Name</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Register Type</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month/Year</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee ID</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee Name</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Register Type</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Month/Year</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                   {registers.map((register, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-content">
                       <td className="px-4 py-2 text-sm">{register.employee_id}</td>
                       <td className="px-4 py-2 text-sm">{register.employee_name}</td>
                       <td className="px-4 py-2 text-sm">{register.register_type}</td>
@@ -554,7 +554,7 @@ export default function LabourRegister() {
                           register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
                           register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
                           register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
+                          'bg-gray-100 text-primary'
                         }`}>
                           {register.compliance_status}
                         </span>

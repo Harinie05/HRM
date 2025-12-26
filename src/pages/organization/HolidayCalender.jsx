@@ -95,25 +95,25 @@ export default function HolidayCalendar() {
       Optional: 'bg-yellow-100 text-yellow-800',
       Company: 'bg-green-100 text-green-800'
     };
-    return colors[type] || 'bg-gray-100 text-gray-800';
+    return colors[type] || 'bg-gray-100 text-primary';
   };
 
   return (
     <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b  px-4 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex-shrink-0">
               <Calendar className="text-white" size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Holiday Calendar</h1>
-              <p className="text-gray-600 mt-1">Manage company holidays and observances</p>
+              <h1 className="text-xl font-bold text-primary">Holiday Calendar</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage company holidays and observances</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">Total Holidays: {filteredHolidays.length}</span>
+            <span className="text-sm text-secondary">Total Holidays: {filteredHolidays.length}</span>
           </div>
         </div>
       </div>
@@ -121,31 +121,31 @@ export default function HolidayCalendar() {
       <div className="p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Create/Edit Form */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+            <div className="px-6 py-4 border-b ">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-primary">
                   {editingId ? 'Edit Holiday' : 'Create Holiday'}
                 </h2>
-                <p className="text-gray-600 text-sm">Add official company holidays</p>
+                <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Add official company holidays</p>
               </div>
             </div>
 
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Holiday Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Holiday Name</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="e.g., Diwali, Christmas"
                     value={holidayName} onChange={e => setHolidayName(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Date</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={holidayDate} onChange={e => setHolidayDate(e.target.value)}
                   />
                 </div>
@@ -153,18 +153,18 @@ export default function HolidayCalendar() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Type</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={holidayType} onChange={e => setHolidayType(e.target.value)}
                   >
                     {holidayTypes.map(type => <option key={type} value={type}>{type}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={status} onChange={e => setStatus(e.target.value)}
                   >
                     <option value="Active">Active</option>
@@ -174,9 +174,9 @@ export default function HolidayCalendar() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Description</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   rows="3" placeholder="Optional description"
                   value={description} onChange={e => setDescription(e.target.value)}
                 />
@@ -186,12 +186,12 @@ export default function HolidayCalendar() {
                 <input
                   type="checkbox" checked={repeat}
                   onChange={e => setRepeat(e.target.checked)}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  className="rounded -dark text-indigo-600 focus:ring-indigo-500"
                 />
-                <label className="text-sm font-medium text-gray-700">Repeat Every Year</label>
+                <label className="text-sm font-medium text-secondary">Repeat Every Year</label>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-4 border-t ">
                 <button
                   onClick={saveHoliday}
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
@@ -200,7 +200,7 @@ export default function HolidayCalendar() {
                 </button>
                 <button
                   onClick={resetForm}
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 bg-white border-dark text-secondary text-sm font-medium rounded-lg hover:bg-content transition-colors"
                 >
                   Reset
                 </button>
@@ -209,18 +209,18 @@ export default function HolidayCalendar() {
           </div>
 
           {/* Holiday List */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+            <div className="px-6 py-4 border-b ">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Holiday List</h2>
+                <h2 className="text-lg font-semibold text-primary">Holiday List</h2>
               </div>
 
               {/* Filters */}
               <div className="flex flex-wrap gap-3">
                 <div className="flex items-center gap-2">
-                  <Filter size={16} className="text-gray-500" />
+                  <Filter size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                   <select
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="px-3 py-1 border-dark rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={yearFilter} onChange={e => setYearFilter(e.target.value)}
                   >
                     {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -228,16 +228,16 @@ export default function HolidayCalendar() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Search size={16} className="text-gray-500" />
+                  <Search size={16} className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                   <input
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm w-40 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="px-3 py-1 border-dark rounded-md text-sm w-40 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Search holidays"
                     value={search} onChange={e => setSearch(e.target.value)}
                   />
                 </div>
 
                 <select
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="px-3 py-1 border-dark rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
                 >
                   <option value="All">All Types</option>
@@ -250,16 +250,16 @@ export default function HolidayCalendar() {
               {filteredHolidays.length === 0 ? (
                 <div className="text-center py-8">
                   <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500 font-medium">No holidays found</p>
-                  <p className="text-gray-400 text-sm">Create your first holiday to get started</p>
+                  <p className=" font-medium" style={{color: 'var(--text-muted, #6b7280)'}}>No holidays found</p>
+                  <p className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>Create your first holiday to get started</p>
                 </div>
               ) : (
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {filteredHolidays.map(h => (
-                    <div key={h.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <div key={h.id} className="flex items-center justify-between p-4 border rounded-lg hover:shadow-sm transition-shadow">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-semibold text-gray-900">{h.name}</h4>
+                          <h4 className="font-semibold text-primary">{h.name}</h4>
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(h.type)}`}>
                             {h.type}
                           </span>
@@ -269,13 +269,13 @@ export default function HolidayCalendar() {
                             {h.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-4 text-sm text-secondary">
                           <span>{new Date(h.date).toLocaleDateString('en-US', { 
                             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
                           })}</span>
                           {h.repeat_yearly && <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Yearly</span>}
                         </div>
-                        {h.description && <p className="text-sm text-gray-500 mt-1">{h.description}</p>}
+                        {h.description && <p className="text-sm text-muted mt-1">{h.description}</p>}
                       </div>
                       <div className="flex gap-2 ml-4">
                         <button

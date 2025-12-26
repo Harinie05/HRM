@@ -245,11 +245,11 @@ export default function Lifecycle() {
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Promotions</p>
-              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Promotions</p>
+              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'promotion' || a.actionType === 'promotion').length}</p>
             </div>
             <div className="p-2 bg-green-50 rounded-lg">
               <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,11 +258,11 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Transfers</p>
-              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Transfers</p>
+              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'transfer' || a.actionType === 'transfer').length}</p>
             </div>
             <div className="p-2 bg-blue-50 rounded-lg">
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,11 +271,11 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Pending</p>
-              <p className="text-xl font-bold text-gray-900">{pendingActions.length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Pending</p>
+              <p className="text-xl font-bold text-primary">{pendingActions.length}</p>
             </div>
             <div className="p-2 bg-yellow-50 rounded-lg">
               <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,11 +284,11 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Demotions</p>
-              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Demotions</p>
+              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'demotion' || a.actionType === 'demotion').length}</p>
             </div>
             <div className="p-2 bg-orange-50 rounded-lg">
               <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,11 +297,11 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Resignations</p>
-              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Resignations</p>
+              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'resignation' || a.actionType === 'resignation').length}</p>
             </div>
             <div className="p-2 bg-red-50 rounded-lg">
               <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,14 +310,14 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 shadow-sm">
+        <div className="bg-content rounded-xl p-4 border shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-xs font-medium">Terminations</p>
-              <p className="text-xl font-bold text-gray-900">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
+              <p className=" text-xs font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Terminations</p>
+              <p className="text-xl font-bold text-primary">{actions.filter(a => a.action === 'termination' || a.actionType === 'termination').length}</p>
             </div>
             <div className="p-2 bg-gray-100 rounded-lg">
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
@@ -326,25 +326,25 @@ export default function Lifecycle() {
       </div>
 
       {/* Enhanced Action Form */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+      <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4 border-b  rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-100 rounded-xl">
               <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">Employee Lifecycle Action</h3>
+            <h3 className="text-lg font-semibold text-primary">Employee Lifecycle Action</h3>
           </div>
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Employee ID</label>
               <select 
                 value={formData.employeeId}
                 onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((emp) => (
@@ -355,11 +355,11 @@ export default function Lifecycle() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Action Type</label>
               <select 
                 value={formData.actionType}
                 onChange={(e) => setFormData({...formData, actionType: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Action</option>
                 <option value="promotion">Promotion</option>
@@ -370,41 +370,41 @@ export default function Lifecycle() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Effective Date</label>
               <input 
                 type="date"
                 value={formData.effectiveDate}
                 onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Current Role</label>
               <input 
                 type="text"
                 value={formData.currentRole}
                 onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Current designation"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">New Role</label>
+              <label className="block text-sm font-medium text-secondary mb-2">New Role</label>
               <input 
                 type="text"
                 value={formData.newRole}
                 onChange={(e) => setFormData({...formData, newRole: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="New designation"
               />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Reason</label>
               <textarea 
                 value={formData.reason}
                 onChange={(e) => setFormData({...formData, reason: e.target.value})}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Reason for this action"
               />
             </div>
@@ -422,35 +422,35 @@ export default function Lifecycle() {
 
       {/* Pending Actions */}
       {pendingActions.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Pending Action Approvals</h3>
+            <h3 className="text-lg font-semibold text-primary">Pending Action Approvals</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Action</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">From</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">To</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {pendingActions.map((action) => (
                   <tr key={action.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{action.name}</div>
-                        <div className="text-sm text-gray-500">{action.employee}</div>
+                        <div className="text-sm font-medium text-primary">{action.name}</div>
+                        <div className="text-sm text-muted">{action.employee}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.action}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.from}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.action}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.from}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.to}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.date}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
@@ -482,40 +482,40 @@ export default function Lifecycle() {
       )}
 
       {/* Actions History */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="px-6 py-4 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Approved Actions</h3>
+          <h3 className="text-lg font-semibold text-primary">Approved Actions</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">From</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">To</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
               {actions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No actions found</td>
+                  <td colSpan={6} className="px-6 py-4 text-center text-muted">No actions found</td>
                 </tr>
               ) : (
                 actions.map((action) => (
                   <tr key={action.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{action.name || action.employee_name}</div>
-                        <div className="text-sm text-gray-500">{action.employee || action.employeeId}</div>
+                        <div className="text-sm font-medium text-primary">{action.name || action.employee_name}</div>
+                        <div className="text-sm text-muted">{action.employee || action.employeeId}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.action || action.actionType}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.from || action.currentRole}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to || action.newRole}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date || action.effectiveDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.action || action.actionType}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.from || action.currentRole}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.to || action.newRole}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{action.date || action.effectiveDate}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -544,20 +544,20 @@ export default function Lifecycle() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee Email</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee Email</label>
                 <input
                   type="email"
                   value={emailData.email}
                   onChange={(e) => setEmailData({...emailData, email: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="employee@company.com"
                 />
               </div>
               
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-600"><strong>Employee:</strong> {emailData.action?.name}</p>
-                <p className="text-sm text-gray-600"><strong>Action:</strong> {emailData.action?.action}</p>
-                <p className="text-sm text-gray-600"><strong>From:</strong> {emailData.action?.from} → <strong>To:</strong> {emailData.action?.to}</p>
+              <div className="bg-content p-3 rounded-lg">
+                <p className="text-sm text-secondary"><strong>Employee:</strong> {emailData.action?.name}</p>
+                <p className="text-sm text-secondary"><strong>Action:</strong> {emailData.action?.action}</p>
+                <p className="text-sm text-secondary"><strong>From:</strong> {emailData.action?.from} → <strong>To:</strong> {emailData.action?.to}</p>
               </div>
             </div>
             
@@ -572,7 +572,7 @@ export default function Lifecycle() {
               </button>
               <button
                 onClick={() => setShowEmailModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 text-secondary rounded-lg hover:bg-gray-400"
               >
                 Cancel
               </button>

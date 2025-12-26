@@ -93,11 +93,11 @@ export default function EmployeeMedical() {
       subtitle="Health information and medical records"
     >
       <div className="p-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center gap-4 mb-6">
             <button 
               onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiArrowLeft className="text-sm" />
               Back to Profile
@@ -109,13 +109,13 @@ export default function EmployeeMedical() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiHeart className="text-red-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Basic Health Information</h3>
+                <h3 className="text-lg font-semibold text-primary">Basic Health Information</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Blood Group</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Blood Group</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.blood_group}
                     onChange={(e) => setForm({ ...form, blood_group: e.target.value })}
                   >
@@ -131,20 +131,20 @@ export default function EmployeeMedical() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Height (cm)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="170"
                     value={form.height}
                     onChange={(e) => setForm({ ...form, height: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Weight (kg)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="70"
                     value={form.weight}
                     onChange={(e) => setForm({ ...form, weight: e.target.value })}
@@ -155,12 +155,12 @@ export default function EmployeeMedical() {
 
             {/* Medical History */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Medical History</h3>
+              <h3 className="text-lg font-semibold text-primary mb-4">Medical History</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Known Allergies</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Known Allergies</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                     placeholder="List any food, medication, or environmental allergies..."
                     value={form.allergies}
@@ -168,9 +168,9 @@ export default function EmployeeMedical() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Chronic Conditions</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Chronic Conditions</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                     placeholder="List any chronic conditions like diabetes, hypertension, etc..."
                     value={form.chronic_conditions}
@@ -178,9 +178,9 @@ export default function EmployeeMedical() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Medications</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Current Medications</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows="3"
                     placeholder="List current medications and dosages..."
                     value={form.medications}
@@ -194,31 +194,31 @@ export default function EmployeeMedical() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiUser className="text-blue-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Emergency Contact</h3>
+                <h3 className="text-lg font-semibold text-primary">Emergency Contact</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Contact Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Contact Name</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Full name"
                     value={form.emergency_contact_name}
                     onChange={(e) => setForm({ ...form, emergency_contact_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Phone Number</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Phone number"
                     value={form.emergency_contact_phone}
                     onChange={(e) => setForm({ ...form, emergency_contact_phone: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Relationship</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.emergency_contact_relation}
                     onChange={(e) => setForm({ ...form, emergency_contact_relation: e.target.value })}
                   >
@@ -238,22 +238,22 @@ export default function EmployeeMedical() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiShield className="text-green-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Medical Insurance</h3>
+                <h3 className="text-lg font-semibold text-primary">Medical Insurance</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Insurance Provider</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Insurance Provider</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Insurance company name"
                     value={form.medical_insurance_provider}
                     onChange={(e) => setForm({ ...form, medical_insurance_provider: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Policy/Member Number</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Policy/Member Number</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Policy or member ID"
                     value={form.medical_insurance_number}
                     onChange={(e) => setForm({ ...form, medical_insurance_number: e.target.value })}
@@ -264,9 +264,9 @@ export default function EmployeeMedical() {
 
             {/* Additional Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Additional Medical Information</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Additional Medical Information</label>
               <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows="4"
                 placeholder="Any additional medical remarks, notes, or special considerations..."
                 value={form.remarks}
@@ -276,21 +276,21 @@ export default function EmployeeMedical() {
 
             {/* Medical Certificate Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Medical Certificate</label>
+              <label className="block text-sm font-medium text-secondary mb-2">Medical Certificate</label>
               <div className="flex items-center gap-2 mb-2">
-                <FiUpload className="text-gray-400" />
+                <FiUpload className="" style={{color: 'var(--text-muted, #6b7280)'}} />
                 <input
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              <p className="text-xs text-gray-500 mb-3">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
+              <p className="text-xs text-muted mb-3">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
               {medicalData?.certificate_name && (
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Current Certificate:</span>
+                    <span className="text-sm text-secondary">Current Certificate:</span>
                     <button 
                       className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors text-sm"
                       onClick={() => {

@@ -359,7 +359,7 @@ export default function Offer() {
     <Layout breadcrumb="Recruitment · Offers & Contracts">
       <div className="p-6">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border mb-8">
+        <div className="rounded-xl shadow-sm border mb-8" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-8 py-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="flex items-center gap-4">
@@ -367,15 +367,15 @@ export default function Offer() {
                   <FiFileText className="text-green-600" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Offer & Pre-Onboarding</h1>
-                  <p className="text-gray-600 mt-1">Manage job offers, background verification, and onboarding process</p>
+                  <h1 className="text-2xl font-bold text-primary">Offer & Pre-Onboarding</h1>
+                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage job offers, background verification, and onboarding process</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{candidates.length}</div>
-                  <div className="text-sm text-gray-600">Selected Candidates</div>
+                  <div className="text-2xl font-bold text-primary">{candidates.length}</div>
+                  <div className="text-sm text-secondary">Selected Candidates</div>
                 </div>
               </div>
             </div>
@@ -385,28 +385,28 @@ export default function Offer() {
         {/* ==================== SENT OFFERS TABLE ==================== */}
         {offers.length > 0 && (
           <div className="mb-10">
-            <div className="bg-white rounded-xl shadow-sm border">
-              <div className="px-6 py-4 border-b border-gray-200">
+            <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+              <div className="px-6 py-4 border-b ">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-gray-800">Offers Sent</h2>
-                  <span className="text-sm text-gray-500">{offers.length} offers</span>
+                  <h2 className="text-xl font-semibold text-primary">Offers Sent</h2>
+                  <span className="text-sm text-muted">{offers.length} offers</span>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                  <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
 
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                     {offers.map((o) => (
-                      <tr key={o.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={o.id} className="hover:bg-content transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
@@ -415,13 +415,13 @@ export default function Offer() {
                               </div>
                             </div>
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{o.candidate_name}</div>
+                              <div className="text-sm font-medium text-primary">{o.candidate_name}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900">{o.job_title}</div>
-                          <div className="text-sm text-gray-500">{o.department}</div>
+                          <div className="text-sm text-primary">{o.job_title}</div>
+                          <div className="text-sm text-muted">{o.department}</div>
                         </td>
 
                         {/* Status */}
@@ -543,34 +543,34 @@ export default function Offer() {
         )}
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
-        <div className="bg-white rounded-xl shadow-sm border">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="rounded-xl shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="px-6 py-4 border-b ">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Selected Candidates</h2>
-              <span className="text-sm text-gray-500">{candidates.length} candidates</span>
+              <h2 className="text-xl font-semibold text-primary">Selected Candidates</h2>
+              <span className="text-sm text-muted">{candidates.length} candidates</span>
             </div>
           </div>
 
           {candidates.length === 0 ? (
             <div className="text-center py-12">
-              <FiUser className="mx-auto text-gray-400 mb-4" size={48} />
-              <p className="text-gray-600">No selected candidates found</p>
+              <FiUser className="mx-auto text-muted mb-4" size={48} />
+              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No selected candidates found</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Candidate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Position</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Stage</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="divide-y" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                   {candidates.map((c) => (
-                    <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={c.id} className="hover:bg-content transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -579,14 +579,14 @@ export default function Offer() {
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
-                            <div className="text-sm text-gray-500">{c.email}</div>
+                            <div className="text-sm font-medium text-primary">{c.name}</div>
+                            <div className="text-sm text-muted">{c.email}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{c.job_title}</div>
-                        <div className="text-sm text-gray-500">{c.department}</div>
+                        <div className="text-sm text-primary">{c.job_title}</div>
+                        <div className="text-sm text-muted">{c.department}</div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -645,7 +645,7 @@ export default function Offer() {
 
                   <input
                     type="number"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="CTC Offered"
                     value={offerForm.ctc}
                     onChange={(e) =>
@@ -656,7 +656,7 @@ export default function Offer() {
                   <div className="grid grid-cols-2 gap-3">
                     <input
                       type="number"
-                      className="border p-2 rounded"
+                      className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       placeholder="Basic %"
                       value={offerForm.basic_percent}
                       onChange={(e) =>
@@ -669,7 +669,7 @@ export default function Offer() {
 
                     <input
                       type="number"
-                      className="border p-2 rounded"
+                      className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       placeholder="HRA %"
                       value={offerForm.hra_percent}
                       onChange={(e) =>
@@ -683,7 +683,7 @@ export default function Offer() {
 
                   <input
                     type="text"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Location"
                     value={offerForm.location}
                     onChange={(e) =>
@@ -696,7 +696,7 @@ export default function Offer() {
 
                   <input
                     type="email"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Email"
                     value={offerForm.email}
                     onChange={(e) =>
@@ -706,7 +706,7 @@ export default function Offer() {
 
                   <input
                     type="date"
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={offerForm.joining_date}
                     onChange={(e) =>
                       setOfferForm({
@@ -717,7 +717,7 @@ export default function Offer() {
                   />
 
                   <textarea
-                    className="border p-2 rounded w-full h-20"
+                    className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Terms & Conditions"
                     value={offerForm.terms}
                     onChange={(e) =>
@@ -729,7 +729,7 @@ export default function Offer() {
                   <input
                     type="file"
                     multiple
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     onChange={(e) =>
                       setAttachments(Array.from(e.target.files))
                     }
@@ -810,7 +810,7 @@ export default function Offer() {
                 <div className="space-y-3">
 
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={bgvForm.verification_type}
                     onChange={(e) =>
                       setBgvForm({
@@ -827,7 +827,7 @@ export default function Offer() {
                   {bgvForm.verification_type === "Agency" && (
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       placeholder="Agency Name"
                       value={bgvForm.agency_name}
                       onChange={(e) =>
@@ -840,7 +840,7 @@ export default function Offer() {
                   )}
 
                   <select
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     value={bgvForm.status}
                     onChange={(e) =>
                       setBgvForm({ ...bgvForm, status: e.target.value })
@@ -853,7 +853,7 @@ export default function Offer() {
                   </select>
 
                   {/* BGV Verification Checkboxes */}
-                  <div className="border p-3 rounded bg-gray-50">
+                  <div className="border p-3 rounded bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <h4 className="font-medium mb-2 text-sm">Verification Checklist:</h4>
                     <div className="space-y-2">
                       <label className="flex items-center text-sm">
@@ -915,7 +915,7 @@ export default function Offer() {
                   </div>
 
                   <textarea
-                    className="border p-2 rounded w-full h-20"
+                    className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                     placeholder="Remarks"
                     value={bgvForm.remarks}
                     onChange={(e) =>
@@ -956,7 +956,7 @@ export default function Offer() {
                 </h2>
 
                 {documents.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
+                  <p className=" text-center py-8" style={{color: 'var(--text-muted, #6b7280)'}}>
                     No documents uploaded yet
                   </p>
                 ) : (
@@ -973,7 +973,7 @@ export default function Offer() {
                           >
                             📄 {doc.file_name}
                           </a>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-muted">
                             Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -1022,7 +1022,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Full Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100"
+                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.full_name}
                       readOnly
                     />
@@ -1032,7 +1032,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.date_of_birth}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, date_of_birth: e.target.value})}
                       required
@@ -1042,7 +1042,7 @@ export default function Offer() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
                     <select
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.gender}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, gender: e.target.value})}
                       required
@@ -1058,7 +1058,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Personal Email *</label>
                     <input
                       type="email"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.personal_email}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, personal_email: e.target.value})}
                       required
@@ -1074,7 +1074,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Phone Number *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.phone_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, phone_number: e.target.value})}
                       required
@@ -1085,7 +1085,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.emergency_contact_name}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, emergency_contact_name: e.target.value})}
                       required
@@ -1096,7 +1096,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.emergency_contact_phone}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, emergency_contact_phone: e.target.value})}
                       required
@@ -1113,7 +1113,7 @@ export default function Offer() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        className="border p-2 rounded flex-1"
+                        className="border p-2 rounded flex-1" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                         value={onboardingFormData.employee_id}
                         onChange={(e) => setOnboardingFormData({...onboardingFormData, employee_id: e.target.value})}
                         required
@@ -1133,7 +1133,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.joining_date}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, joining_date: e.target.value})}
                       required
@@ -1144,7 +1144,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Department *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100"
+                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.department}
                       readOnly
                     />
@@ -1154,7 +1154,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Designation *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100"
+                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.designation}
                       readOnly
                     />
@@ -1164,7 +1164,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Work Location</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.work_location}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, work_location: e.target.value})}
                       placeholder="Main Office"
@@ -1175,7 +1175,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.reporting_manager}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, reporting_manager: e.target.value})}
                       placeholder="To be assigned"
@@ -1191,7 +1191,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Bank Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.bank_name}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, bank_name: e.target.value})}
                       required
@@ -1202,7 +1202,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Account Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.account_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, account_number: e.target.value})}
                       required
@@ -1213,7 +1213,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">IFSC Code *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.ifsc_code}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, ifsc_code: e.target.value})}
                       required
@@ -1229,7 +1229,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.aadhar_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, aadhar_number: e.target.value})}
                       required
@@ -1240,7 +1240,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">PAN Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.pan_number}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, pan_number: e.target.value})}
                       required
@@ -1255,7 +1255,7 @@ export default function Offer() {
                   <div className="col-span-2">
                     <label className="block text-sm font-medium mb-1">Current Address *</label>
                     <textarea
-                      className="border p-2 rounded w-full h-20"
+                      className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.current_address}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, current_address: e.target.value})}
                       required
@@ -1266,7 +1266,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">City *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.city}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, city: e.target.value})}
                       required
@@ -1277,7 +1277,7 @@ export default function Offer() {
                     <label className="block text-sm font-medium mb-1">State *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full"
+                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                       value={onboardingFormData.state}
                       onChange={(e) => setOnboardingFormData({...onboardingFormData, state: e.target.value})}
                       required
@@ -1315,7 +1315,7 @@ export default function Offer() {
                   🔗 Document Upload Link
                 </h2>
 
-                <p className="text-gray-600 mb-4">
+                <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>
                   Share this link with <strong>{linkCandidate}</strong> to upload documents:
                 </p>
 

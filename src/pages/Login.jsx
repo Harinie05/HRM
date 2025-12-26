@@ -107,7 +107,7 @@ export default function Login() {
               {popup.success ? "Success!" : "Error!"}
             </h2>
 
-            <p className="text-gray-700 mb-4">{popup.message}</p>
+            <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{popup.message}</p>
 
             <button
               className="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800"

@@ -190,10 +190,10 @@ const PayrollDashboard = () => {
 
           {/* Payroll Metrics Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="p-4 sm:p-6 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-gray-600 text-xs sm:text-sm font-medium">Total Payroll</p>
+                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Payroll</p>
                   <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-1">
                     {payrollData.totalPayroll}
                   </p>
@@ -204,10 +204,10 @@ const PayrollDashboard = () => {
               </div>
             </div>
             
-            <div className="p-4 sm:p-6 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-gray-600 text-xs sm:text-sm font-medium">Employees Processed</p>
+                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Employees Processed</p>
                   <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-1">
                     {payrollData.employeesProcessed}
                   </p>
@@ -218,10 +218,10 @@ const PayrollDashboard = () => {
               </div>
             </div>
             
-            <div className="p-4 sm:p-6 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-gray-600 text-xs sm:text-sm font-medium">Total Deductions</p>
+                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Deductions</p>
                   <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-1">
                     {payrollData.totalDeductions}
                   </p>
@@ -232,10 +232,10 @@ const PayrollDashboard = () => {
               </div>
             </div>
             
-            <div className="p-4 sm:p-6 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-4 sm:p-6 bg-content border rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-gray-600 text-xs sm:text-sm font-medium">Net Payable</p>
+                  <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Net Payable</p>
                   <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1">
                     {payrollData.netPayable}
                   </p>
@@ -249,29 +249,29 @@ const PayrollDashboard = () => {
 
           {/* Payroll Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Salary Components Breakdown</h3>
+            <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Salary Components Breakdown</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Basic Salary</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary</span>
                   <span className="font-semibold">
                     ₹{((payrollData.salaryComponents?.basic?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.basic?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">HRA</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>HRA</span>
                   <span className="font-semibold">
                     ₹{((payrollData.salaryComponents?.hra?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.hra?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Allowances</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Allowances</span>
                   <span className="font-semibold">
                     ₹{((payrollData.salaryComponents?.allowances?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.allowances?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Special Allowance</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Special Allowance</span>
                   <span className="font-semibold">
                     ₹{((payrollData.salaryComponents?.special?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.special?.percentage || 0}%)
                   </span>
@@ -279,29 +279,29 @@ const PayrollDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Deductions Breakdown</h3>
+            <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Deductions Breakdown</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">PF Contribution</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>PF Contribution</span>
                   <span className="font-semibold">
                     ₹{((payrollData.deductionComponents?.pf?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.pf?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">TDS</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>TDS</span>
                   <span className="font-semibold">
                     ₹{((payrollData.deductionComponents?.tds?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.tds?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">ESI</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>ESI</span>
                   <span className="font-semibold">
                     ₹{((payrollData.deductionComponents?.esi?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.esi?.percentage || 0}%)
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">LOP Deduction</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>LOP Deduction</span>
                   <span className="font-semibold">
                     ₹{((payrollData.deductionComponents?.lop?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.lop?.percentage || 0}%)
                   </span>
@@ -311,16 +311,16 @@ const PayrollDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-semibold text-primary mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <button 
                 onClick={() => navigate('/payroll', { state: { tab: 'Salary Structure' } })}
                 className="p-3 sm:p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left min-h-[44px]"
               >
                 <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mb-2" />
-                <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Salary Structure</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Manage salary components</p>
+                <h3 className="font-semibold text-primary text-sm sm:text-base">Salary Structure</h3>
+                <p className="text-xs sm:text-sm text-secondary">Manage salary components</p>
               </button>
               
               <button 
@@ -328,8 +328,8 @@ const PayrollDashboard = () => {
                 className="p-3 sm:p-4 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors text-left min-h-[44px]"
               >
                 <Calculator className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2" />
-                <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Payroll Run</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Process monthly payroll</p>
+                <h3 className="font-semibold text-primary text-sm sm:text-base">Payroll Run</h3>
+                <p className="text-xs sm:text-sm text-secondary">Process monthly payroll</p>
               </button>
               
               <button 
@@ -337,8 +337,8 @@ const PayrollDashboard = () => {
                 className="p-3 sm:p-4 border border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left min-h-[44px]"
               >
                 <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2" />
-                <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Payslips</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Generate & view payslips</p>
+                <h3 className="font-semibold text-primary text-sm sm:text-base">Payslips</h3>
+                <p className="text-xs sm:text-sm text-secondary">Generate & view payslips</p>
               </button>
               
               <button 
@@ -346,33 +346,33 @@ const PayrollDashboard = () => {
                 className="p-3 sm:p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors text-left min-h-[44px]"
               >
                 <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 mb-2" />
-                <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Reports</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Payroll analytics & reports</p>
+                <h3 className="font-semibold text-primary text-sm sm:text-base">Reports</h3>
+                <p className="text-xs sm:text-sm text-secondary">Payroll analytics & reports</p>
               </button>
             </div>
           </div>
 
           {/* Department Wise Payroll */}
-          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Department Wise Payroll</h3>
+          <div className="bg-white rounded-xl sm:rounded-2xl border shadow-sm p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-primary mb-4">Department Wise Payroll</h3>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px]">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full min-w-[600px]">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="text-left p-2 sm:p-3 font-medium text-gray-600 text-xs sm:text-sm">Department</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-gray-600 text-xs sm:text-sm">Employees</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-gray-600 text-xs sm:text-sm">Gross Salary</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-gray-600 text-xs sm:text-sm">Deductions</th>
-                    <th className="text-left p-2 sm:p-3 font-medium text-gray-600 text-xs sm:text-sm">Net Payable</th>
+                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Department</th>
+                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Employees</th>
+                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Gross Salary</th>
+                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Deductions</th>
+                    <th className="text-left p-2 sm:p-3 font-medium text-secondary text-xs sm:text-sm">Net Payable</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                   {departments.map((dept, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="p-2 sm:p-3 text-gray-800 text-sm">{dept.name}</td>
-                      <td className="p-2 sm:p-3 text-gray-800 text-sm">{dept.employees}</td>
-                      <td className="p-2 sm:p-3 text-gray-800 text-sm">{dept.grossSalary}</td>
-                      <td className="p-2 sm:p-3 text-gray-800 text-sm">{dept.deductions}</td>
+                    <tr key={index} className="border-b border-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.name}</td>
+                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.employees}</td>
+                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.grossSalary}</td>
+                      <td className="p-2 sm:p-3 text-primary text-sm">{dept.deductions}</td>
                       <td className="p-2 sm:p-3 font-semibold text-green-600 text-sm">{dept.netPayable}</td>
                     </tr>
                   ))}

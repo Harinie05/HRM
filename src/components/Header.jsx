@@ -167,12 +167,12 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
           {showDropdown && (
             <div
               className="absolute right-0 mt-2 w-48 sm:w-56
-              bg-white text-gray-800
+              bg-white text-primary
               rounded-xl shadow-lg overflow-hidden z-50"
             >
               <div className="px-3 sm:px-4 py-3 border-b">
                 <p className="font-semibold text-sm truncate">{userName}</p>
-                <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+                <p className="text-xs text-muted truncate">{userEmail}</p>
                 <p className="text-xs text-blue-600">{userRole}</p>
               </div>
 

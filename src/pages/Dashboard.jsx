@@ -316,10 +316,10 @@ export default function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Attrition Analysis */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Attrition Analysis</h3>
-              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+              <h3 className="text-base sm:text-lg font-bold text-primary">Attrition Analysis</h3>
+              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-muted" />
             </div>
             
             <div className="space-y-4">
@@ -335,13 +335,13 @@ export default function Dashboard() {
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-600">Last Month</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-800">{attritionData.lastMonth}%</p>
+                <div className="p-3 bg-content rounded-lg">
+                  <p className="text-xs text-secondary">Last Month</p>
+                  <p className="text-base sm:text-lg font-semibold text-primary">{attritionData.lastMonth}%</p>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-600">Year to Date</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-800">{attritionData.yearToDate}%</p>
+                <div className="p-3 bg-content rounded-lg">
+                  <p className="text-xs text-secondary">Year to Date</p>
+                  <p className="text-base sm:text-lg font-semibold text-primary">{attritionData.yearToDate}%</p>
                 </div>
               </div>
               
@@ -353,10 +353,10 @@ export default function Dashboard() {
           </div>
 
           {/* Manpower Compliance */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Manpower Compliance</h3>
-              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+              <h3 className="text-base sm:text-lg font-bold text-primary">Manpower Compliance</h3>
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-muted" />
             </div>
             
             <div className="space-y-4">
@@ -397,12 +397,12 @@ export default function Dashboard() {
         </div>
 
         {/* Product Overview */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="p-8 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-blue-50">
+        <div className="rounded-2xl shadow-xl border border-gray-100 overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="p-8 border-b  bg-gradient-to-r from-slate-50 to-blue-50">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete HRM Module Suite</h2>
-                <p className="text-gray-600">Comprehensive human resource management modules designed for healthcare organizations</p>
+                <h2 className="text-2xl font-bold text-primary mb-2">Complete HRM Module Suite</h2>
+                <p className="" style={{color: 'var(--text-secondary, #374151)'}}>Comprehensive human resource management modules designed for healthcare organizations</p>
               </div>
               <div className="flex items-center gap-2 text-green-600">
                 <Activity className="h-5 w-5" />
@@ -455,16 +455,16 @@ export default function Dashboard() {
         </div>
 
         {/* Holiday Gallery Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-slate-50">
+        <div className="rounded-xl shadow-sm border overflow-hidden" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <div className="p-6 border-b  bg-gradient-to-r from-gray-50 to-slate-50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-slate-200 rounded-xl">
                   <Calendar className="h-5 w-5 text-slate-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">Holiday Gallery</h3>
-                  <p className="text-gray-600 text-sm">Upcoming holidays and company events</p>
+                  <h3 className="text-xl font-bold text-primary">Holiday Gallery</h3>
+                  <p className=" text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Upcoming holidays and company events</p>
                 </div>
               </div>
               <button
@@ -478,7 +478,7 @@ export default function Dashboard() {
 
           {/* Upcoming Holidays Preview */}
           <div className="p-6">
-            <h4 className="font-semibold text-gray-900 mb-4">Upcoming Holidays</h4>
+            <h4 className="font-semibold text-primary mb-4">Upcoming Holidays</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {upcomingHolidays.length > 0 ? (
                 upcomingHolidays.map((holiday, index) => (
@@ -499,7 +499,7 @@ export default function Dashboard() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-3 text-center py-8 text-gray-500">
+                <div className="col-span-3 text-center py-8 text-muted">
                   <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                   <p>No upcoming holidays found</p>
                 </div>
@@ -509,8 +509,8 @@ export default function Dashboard() {
 
           {/* Calendar View */}
           {showCalendar && (
-            <div className="p-6 border-t border-gray-200 bg-gray-50">
-              <div className="bg-white rounded-lg p-6">
+            <div className="p-6 border-t  bg-content">
+              <div className="rounded-lg p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                 <div className="flex justify-between items-center mb-6">
                   <button 
                     onClick={prevMonth} 
@@ -518,7 +518,7 @@ export default function Dashboard() {
                   >
                     ‹ Previous
                   </button>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-primary">
                     {new Date(year, month).toLocaleString("en-US", { month: "long" })} {year}
                   </h2>
                   <button 
@@ -529,7 +529,7 @@ export default function Dashboard() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-7 text-center font-semibold text-gray-600 mb-4">
+                <div className="grid grid-cols-7 text-center font-semibold text-secondary mb-4">
                   <div className="py-2">Sun</div><div className="py-2">Mon</div><div className="py-2">Tue</div><div className="py-2">Wed</div>
                   <div className="py-2">Thu</div><div className="py-2">Fri</div><div className="py-2">Sat</div>
                 </div>
@@ -552,11 +552,11 @@ export default function Dashboard() {
                             ? "bg-blue-50 border-blue-300 hover:bg-blue-100" 
                             : isToday
                             ? "bg-slate-100 border-slate-300"
-                            : "bg-white border-gray-200 hover:bg-gray-50"
+                            : "bg-white  hover:bg-content"
                         }`}
                       >
                         <span className={`text-sm font-semibold ${
-                          isToday ? "text-slate-700" : holiday ? "text-blue-700" : "text-gray-700"
+                          isToday ? "text-slate-700" : holiday ? "text-blue-700" : "text-secondary"
                         }`}>
                           {day}
                         </span>

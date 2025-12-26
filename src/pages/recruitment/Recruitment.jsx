@@ -153,8 +153,8 @@ export default function Recruitment() {
                   <FiUsers className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Recruitment Setup</h1>
-                  <p className="text-gray-600 mt-1">Manage job postings and recruitment process</p>
+                  <h1 className="text-2xl font-bold text-primary">Recruitment Setup</h1>
+                  <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage job postings and recruitment process</p>
                 </div>
               </div>
               
@@ -174,11 +174,11 @@ export default function Recruitment() {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
               <input
                 type="text"
                 placeholder="Search jobs by title or department..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -188,7 +188,7 @@ export default function Recruitment() {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`px-4 py-2 rounded-lg border flex items-center gap-2 transition-colors ${
-                showFilters ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                showFilters ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white -dark text-secondary hover:bg-content'
               }`}
             >
               <FiFilter size={16} />
@@ -198,12 +198,12 @@ export default function Recruitment() {
 
           {/* Filter Options */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t ">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <select
                   value={filters.department}
                   onChange={(e) => setFilters({...filters, department: e.target.value})}
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 >
                   <option value="">All Departments</option>
                   {departments.map(dept => (
@@ -214,7 +214,7 @@ export default function Recruitment() {
                 <select
                   value={filters.status}
                   onChange={(e) => setFilters({...filters, status: e.target.value})}
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 >
                   <option value="">All Status</option>
                   <option value="Draft">Draft</option>
@@ -224,7 +224,7 @@ export default function Recruitment() {
                 <select
                   value={filters.jobType}
                   onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 >
                   <option value="">All Job Types</option>
                   {jobTypes.map(type => (
@@ -234,7 +234,7 @@ export default function Recruitment() {
                 
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-secondary border-dark rounded-lg hover:bg-content transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -248,8 +248,8 @@ export default function Recruitment() {
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Jobs</p>
-                <p className="text-2xl font-semibold text-gray-800">{jobs.length}</p>
+                <p className="text-sm text-secondary">Total Jobs</p>
+                <p className="text-2xl font-semibold text-primary">{jobs.length}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
                 <FiUsers className="text-blue-600" size={20} />
@@ -260,7 +260,7 @@ export default function Recruitment() {
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Published</p>
+                <p className="text-sm text-secondary">Published</p>
                 <p className="text-2xl font-semibold text-green-600">{jobs.filter(j => j.status?.trim() === 'Posted').length}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -272,7 +272,7 @@ export default function Recruitment() {
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Drafts</p>
+                <p className="text-sm text-secondary">Drafts</p>
                 <p className="text-2xl font-semibold text-yellow-600">{jobs.filter(j => j.status?.trim() === 'Completed').length}</p>
               </div>
               <div className="p-3 bg-yellow-100 rounded-lg">
@@ -284,7 +284,7 @@ export default function Recruitment() {
           <div className="bg-white rounded-xl shadow-sm border p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Departments</p>
+                <p className="text-sm text-secondary">Departments</p>
                 <p className="text-2xl font-semibold text-purple-600">{departments.length}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
@@ -299,12 +299,12 @@ export default function Recruitment() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="text-gray-600 mt-2">Loading jobs...</p>
+              <p className=" mt-2" style={{color: 'var(--text-secondary, #374151)'}}>Loading jobs...</p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-8 text-center">
-              <FiUsers className="mx-auto text-gray-400 mb-4" size={48} />
-              <p className="text-gray-600">No jobs found matching your criteria</p>
+              <FiUsers className="mx-auto text-muted mb-4" size={48} />
+              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No jobs found matching your criteria</p>
               <button
                 onClick={clearFilters}
                 className="mt-2 text-blue-600 hover:text-blue-700"
@@ -314,27 +314,27 @@ export default function Recruitment() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content border-b ">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Openings</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Job Details</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Department</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Openings</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
 
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                   {filteredJobs.map((job) => (
-                    <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={job.id} className="hover:bg-content transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{job.title}</div>
-                          <div className="text-sm text-gray-500">{job.experience} experience</div>
+                          <div className="text-sm font-medium text-primary">{job.title}</div>
+                          <div className="text-sm text-muted">{job.experience} experience</div>
                           {job.location && (
-                            <div className="text-xs text-gray-400">{job.location}</div>
+                            <div className="text-xs text-muted">{job.location}</div>
                           )}
                         </div>
                       </td>
@@ -344,10 +344,10 @@ export default function Recruitment() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-sm font-medium text-gray-900">{job.openings}</span>
+                        <span className="text-sm font-medium text-primary">{job.openings}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-sm text-gray-600">{job.job_type || 'Full-time'}</span>
+                        <span className="text-sm text-secondary">{job.job_type || 'Full-time'}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         {job.status?.trim() === "Posted" ? (
@@ -368,7 +368,7 @@ export default function Recruitment() {
                           {/* VIEW */}
                           <button
                             onClick={() => openView(job)}
-                            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-secondary hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="View Job"
                           >
                             <FiEye size={16} />
@@ -377,7 +377,7 @@ export default function Recruitment() {
                           {/* EDIT */}
                           <button
                             onClick={() => openEdit(job)}
-                            className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                            className="p-2 text-secondary hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
                             title="Edit Job"
                           >
                             <FiEdit size={16} />
@@ -386,7 +386,7 @@ export default function Recruitment() {
                           {/* SCREEN CANDIDATES */}
                           <button
                             onClick={() => window.location.href = `/screening?job=${job.id}`}
-                            className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            className="p-2 text-secondary hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Screen Candidates"
                           >
                             <FiUsers size={16} />
@@ -395,7 +395,7 @@ export default function Recruitment() {
                           {/* GENERATE LINK */}
                           <button
                             onClick={() => generateApplyLink(job)}
-                            className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                            className="p-2 text-secondary hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                             title="Generate Apply Link"
                           >
                             <FiLink size={16} />
@@ -406,8 +406,8 @@ export default function Recruitment() {
                             onClick={() => togglePublish(job)}
                             className={`p-2 rounded-lg transition-colors ${
                               job.status?.trim() === "Posted"
-                                ? "text-gray-600 hover:text-red-600 hover:bg-red-50"
-                                : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+                                ? "text-secondary hover:text-red-600 hover:bg-red-50"
+                                : "text-secondary hover:text-green-600 hover:bg-green-50"
                             }`}
                             title={job.status?.trim() === "Posted" ? "Unpublish" : "Publish"}
                           >
@@ -417,7 +417,7 @@ export default function Recruitment() {
                           {/* DELETE */}
                           <button
                             onClick={() => deleteJob(job)}
-                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-secondary hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete Job"
                           >
                             <FiTrash2 size={16} />
@@ -431,7 +431,7 @@ export default function Recruitment() {
                               type="text"
                               value={generatedLinks[job.id]}
                               readOnly
-                              className="w-full text-xs border border-gray-200 p-2 rounded bg-gray-50 focus:outline-none"
+                              className="w-full text-xs border p-2 rounded bg-content focus:outline-none"
                               onClick={(e) => e.target.select()}
                               placeholder="Generated link will appear here"
                             />
@@ -545,13 +545,13 @@ function JobFormModal({ mode, job, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="px-6 py-4 border-b  bg-content">
+          <h2 className="text-xl font-semibold text-primary">
             {mode === "create" && "Create New Job"}
             {mode === "edit" && "Edit Job"}
             {mode === "view" && "Job Details"}
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-secondary mt-1">
             {mode === "create" && "Fill in the details to create a new job posting"}
             {mode === "edit" && "Update the job information"}
             {mode === "view" && "View job posting details"}
@@ -559,14 +559,14 @@ function JobFormModal({ mode, job, onClose }) {
         </div>
 
         {/* Tabs */}
-        <div className="px-6 py-3 border-b border-gray-200">
+        <div className="px-6 py-3 border-b ">
           <div className="flex space-x-6">
             <button
               onClick={() => setActiveTab('basic')}
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'basic'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  : 'border-transparent text-muted hover:text-secondary'
               }`}
             >
               Basic Info
@@ -576,7 +576,7 @@ function JobFormModal({ mode, job, onClose }) {
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'details'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  : 'border-transparent text-muted hover:text-secondary'
               }`}
             >
               Job Details
@@ -586,7 +586,7 @@ function JobFormModal({ mode, job, onClose }) {
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'rounds'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  : 'border-transparent text-muted hover:text-secondary'
               }`}
             >
               Interview Rounds
@@ -602,64 +602,64 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Job Title *</label>
                   <div className="space-y-2">
                     <select
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select existing job title</option>
                       {existingJobs.map((title, index) => (
                         <option key={index} value={title}>{title}</option>
                       ))}
                     </select>
-                    <div className="text-center text-xs text-gray-500">OR</div>
+                    <div className="text-center text-xs text-muted">OR</div>
                     <input
                       type="text"
                       placeholder="Enter new job title"
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Department *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Department *</label>
                   <input
                     type="text"
                     placeholder="e.g., Engineering, Marketing"
                     value={form.department}
                     onChange={(e) => setForm({...form, department: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Hiring Manager</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Hiring Manager</label>
                   <input
                     type="text"
                     placeholder="Manager name"
                     value={form.hiring_manager}
                     onChange={(e) => setForm({...form, hiring_manager: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Number of Openings</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Number of Openings</label>
                   <input
                     type="number"
                     min="1"
                     value={form.openings}
                     onChange={(e) => setForm({...form, openings: parseInt(e.target.value) || 1})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -671,36 +671,36 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Experience Required</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Experience Required</label>
                   <input
                     type="text"
                     placeholder="e.g., 2-5 years"
                     value={form.experience}
                     onChange={(e) => setForm({...form, experience: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Salary Range</label>
                   <input
                     type="text"
                     placeholder="e.g., $50,000 - $70,000"
                     value={form.salary_range}
                     onChange={(e) => setForm({...form, salary_range: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Job Type</label>
                   <select
                     value={form.job_type}
                     onChange={(e) => setForm({...form, job_type: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -710,12 +710,12 @@ function JobFormModal({ mode, job, onClose }) {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Work Mode</label>
                   <select
                     value={form.work_mode}
                     onChange={(e) => setForm({...form, work_mode: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="On-site">On-site</option>
                     <option value="Remote">Remote</option>
@@ -724,27 +724,27 @@ function JobFormModal({ mode, job, onClose }) {
                 </div>
                 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Location</label>
                   <input
                     type="text"
                     placeholder="e.g., New York, NY"
                     value={form.location}
                     onChange={(e) => setForm({...form, location: e.target.value})}
                     disabled={isView}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
+                <label className="block text-sm font-medium text-secondary mb-2">Job Description</label>
                 <textarea
                   placeholder="Describe the role, responsibilities, and requirements..."
                   value={form.description}
                   onChange={(e) => setForm({...form, description: e.target.value})}
                   disabled={isView}
                   rows={6}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
             </div>
@@ -755,8 +755,8 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-800">Interview Rounds</h3>
-                  <p className="text-sm text-gray-600">Configure the interview process for this position</p>
+                  <h3 className="text-lg font-medium text-primary">Interview Rounds</h3>
+                  <p className="text-sm text-secondary">Configure the interview process for this position</p>
                 </div>
                 {!isView && (
                   <button
@@ -775,9 +775,9 @@ function JobFormModal({ mode, job, onClose }) {
               
               <div className="space-y-4">
                 {(form.round_names || []).map((round, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div key={index} className="border rounded-lg p-4 bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                     <div className="flex justify-between items-center mb-3">
-                      <h4 className="font-medium text-gray-800">Round {index + 1}</h4>
+                      <h4 className="font-medium text-primary">Round {index + 1}</h4>
                       {!isView && form.round_names.length > 1 && (
                         <button
                           type="button"
@@ -802,7 +802,7 @@ function JobFormModal({ mode, job, onClose }) {
                           setForm({...form, round_names: newRounds});
                         }}
                         disabled={isView}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <textarea
                         placeholder={`Round ${index + 1} Description (e.g., Technical skills assessment)`}
@@ -814,7 +814,7 @@ function JobFormModal({ mode, job, onClose }) {
                         }}
                         disabled={isView}
                         rows={3}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                       />
                     </div>
                   </div>
@@ -825,10 +825,10 @@ function JobFormModal({ mode, job, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between">
+        <div className="px-6 py-4 border-t  bg-content flex justify-between">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-6 py-2 border-dark text-secondary rounded-lg hover:bg-content transition-colors"
           >
             {isView ? 'Close' : 'Cancel'}
           </button>

@@ -261,8 +261,8 @@ Generated on: ${new Date().toLocaleDateString()}`;
       case "Approved": return "bg-blue-100 text-blue-800";
       case "In Progress": return "bg-yellow-100 text-yellow-800";
       case "Rejected": return "bg-red-100 text-red-800";
-      case "Draft": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "Draft": return "bg-gray-100 text-primary";
+      default: return "bg-gray-100 text-primary";
     }
   };
 
@@ -291,8 +291,8 @@ Generated on: ${new Date().toLocaleDateString()}`;
               <Award className="w-6 h-6 text-orange-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Performance Appraisal</h1>
-              <p className="text-gray-600 mt-1">Manage employee performance appraisals and evaluations</p>
+              <h1 className="text-2xl font-bold text-primary">Performance Appraisal</h1>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee performance appraisals and evaluations</p>
             </div>
           </div>
           <button
@@ -328,14 +328,14 @@ Generated on: ${new Date().toLocaleDateString()}`;
 
         {/* Add Appraisal Form */}
         {showForm && (
-          <div className="bg-white rounded-lg shadow-sm border">
+          <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="px-6 py-4 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">Create Performance Appraisal</h3>
+              <h3 className="text-lg font-semibold text-primary">Create Performance Appraisal</h3>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Employee</label>
                   <select
                     value={formData.employee}
                     onChange={(e) => {
@@ -347,7 +347,7 @@ Generated on: ${new Date().toLocaleDateString()}`;
                         position: selectedEmp?.position || ""
                       });
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -358,23 +358,23 @@ Generated on: ${new Date().toLocaleDateString()}`;
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Review Period</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Review Period</label>
                   <input
                     type="text"
                     value={formData.reviewPeriod}
                     onChange={(e) => setFormData({...formData, reviewPeriod: e.target.value})}
                     placeholder="e.g., 2024 Annual Review, Q4 2024"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Appraiser</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Appraiser</label>
                   <select
                     value={formData.appraiser}
                     onChange={(e) => setFormData({...formData, appraiser: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Appraiser</option>
@@ -385,11 +385,11 @@ Generated on: ${new Date().toLocaleDateString()}`;
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Review Type</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Review Type</label>
                   <select
                     value={formData.reviewType}
                     onChange={(e) => setFormData({...formData, reviewType: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {reviewTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -398,33 +398,33 @@ Generated on: ${new Date().toLocaleDateString()}`;
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Department</label>
                   <input
                     type="text"
                     value={formData.department}
                     onChange={(e) => setFormData({...formData, department: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter department"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Position</label>
                   <input
                     type="text"
                     value={formData.position}
                     onChange={(e) => setFormData({...formData, position: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter position"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Overall Rating</label>
                   <select
                     value={formData.overallRating}
                     onChange={(e) => setFormData({...formData, overallRating: parseInt(e.target.value)})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {ratings.map(rating => (
                       <option key={rating} value={rating}>{rating} - {rating === 5 ? 'Excellent' : rating === 4 ? 'Good' : rating === 3 ? 'Average' : rating === 2 ? 'Below Average' : 'Poor'}</option>
@@ -433,30 +433,30 @@ Generated on: ${new Date().toLocaleDateString()}`;
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Performance Score (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Performance Score (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={formData.performanceScore}
                     onChange={(e) => setFormData({...formData, performanceScore: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Goals Achievement</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Goals Achievement</label>
                   <input
                     type="text"
                     value={formData.goalsAchievement}
                     onChange={(e) => setFormData({...formData, goalsAchievement: e.target.value})}
                     placeholder="e.g., 90%, 8/10 goals"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Competency Rating</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Competency Rating</label>
                   <input
                     type="number"
                     min="1"
@@ -464,71 +464,71 @@ Generated on: ${new Date().toLocaleDateString()}`;
                     step="0.1"
                     value={formData.competencyRating}
                     onChange={(e) => setFormData({...formData, competencyRating: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Key Strengths</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Key Strengths</label>
                   <textarea
                     value={formData.strengths}
                     onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="List key strengths and achievements..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Areas for Improvement</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Areas for Improvement</label>
                   <textarea
                     value={formData.improvements}
                     onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Identify areas that need improvement..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Development Plan</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Development Plan</label>
                   <textarea
                     value={formData.developmentPlan}
                     onChange={(e) => setFormData({...formData, developmentPlan: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Outline development plan and training needs..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Comments</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Comments</label>
                   <textarea
                     value={formData.comments}
                     onChange={(e) => setFormData({...formData, comments: e.target.value})}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Additional comments and observations..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Recommendations</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Recommendations</label>
                   <textarea
                     value={formData.recommendations}
                     onChange={(e) => setFormData({...formData, recommendations: e.target.value})}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Recommendations for promotion, role changes, etc..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {statuses.map(status => (
                       <option key={status} value={status}>{status}</option>
@@ -541,7 +541,7 @@ Generated on: ${new Date().toLocaleDateString()}`;
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 border-dark text-secondary rounded-md hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -561,61 +561,61 @@ Generated on: ${new Date().toLocaleDateString()}`;
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="px-6 py-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-900">Appraisal Details</h3>
+                <h3 className="text-lg font-semibold text-primary">Appraisal Details</h3>
               </div>
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Employee</label>
-                    <p className="text-sm text-gray-900">{viewAppraisal.employee_name}</p>
+                    <label className="block text-sm font-medium text-secondary">Employee</label>
+                    <p className="text-sm text-primary">{viewAppraisal.employee_name}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Review Period</label>
-                    <p className="text-sm text-gray-900">{viewAppraisal.cycle}</p>
+                    <label className="block text-sm font-medium text-secondary">Review Period</label>
+                    <p className="text-sm text-primary">{viewAppraisal.cycle}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Final Rating</label>
+                    <label className="block text-sm font-medium text-secondary">Final Rating</label>
                     <div className="flex items-center">
                       {renderStars(viewAppraisal.final_rating || 0)}
-                      <span className="ml-2 text-sm text-gray-600">({viewAppraisal.final_rating || 0}/5)</span>
+                      <span className="ml-2 text-sm text-secondary">({viewAppraisal.final_rating || 0}/5)</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
+                    <label className="block text-sm font-medium text-secondary">Status</label>
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(viewAppraisal.status)}`}>
                       {viewAppraisal.status}
                     </span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">KPI Score</label>
-                  <p className="text-sm text-gray-900">{viewAppraisal.kpi_score || 'N/A'}</p>
+                  <label className="block text-sm font-medium text-secondary">KPI Score</label>
+                  <p className="text-sm text-primary">{viewAppraisal.kpi_score || 'N/A'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Feedback Score</label>
-                  <p className="text-sm text-gray-900">{viewAppraisal.feedback_score || 'N/A'}</p>
+                  <label className="block text-sm font-medium text-secondary">Feedback Score</label>
+                  <p className="text-sm text-primary">{viewAppraisal.feedback_score || 'N/A'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Recommendations</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewAppraisal.recommendation || 'No recommendations provided'}</p>
+                  <label className="block text-sm font-medium text-secondary">Recommendations</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewAppraisal.recommendation || 'No recommendations provided'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Key Strengths</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewAppraisal.strengths || 'No strengths mentioned'}</p>
+                  <label className="block text-sm font-medium text-secondary">Key Strengths</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewAppraisal.strengths || 'No strengths mentioned'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Areas for Improvement</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewAppraisal.improvements || 'No improvements mentioned'}</p>
+                  <label className="block text-sm font-medium text-secondary">Areas for Improvement</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewAppraisal.improvements || 'No improvements mentioned'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Development Plan</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewAppraisal.development_plan || 'No development plan provided'}</p>
+                  <label className="block text-sm font-medium text-secondary">Development Plan</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewAppraisal.development_plan || 'No development plan provided'}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Comments</label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{viewAppraisal.comments || 'No comments provided'}</p>
+                  <label className="block text-sm font-medium text-secondary">Comments</label>
+                  <p className="text-sm text-primary bg-content p-3 rounded">{viewAppraisal.comments || 'No comments provided'}</p>
                 </div>
               </div>
               <div className="px-6 py-4 border-t flex justify-end">
@@ -634,33 +634,33 @@ Generated on: ${new Date().toLocaleDateString()}`;
         )}
 
         {/* Appraisals List */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="rounded-lg shadow-sm border" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="px-6 py-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Performance Appraisals</h3>
+            <h3 className="text-lg font-semibold text-primary">Performance Appraisals</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full divide-y">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Review Period</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Review Period</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Rating</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Progress</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {appraisals.map((appraisal) => (
                   <tr key={appraisal.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{appraisal.employee_name}</div>
-                        <div className="text-sm text-gray-500">ID: {appraisal.employee_id}</div>
+                        <div className="text-sm font-medium text-primary">{appraisal.employee_name}</div>
+                        <div className="text-sm text-muted">ID: {appraisal.employee_id}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{appraisal.cycle}</div>
+                      <div className="text-sm text-primary">{appraisal.cycle}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -678,7 +678,7 @@ Generated on: ${new Date().toLocaleDateString()}`;
                             style={{ width: `${appraisal.progress_percentage || 0}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-600 whitespace-nowrap">{appraisal.progress || "0%"}</span>
+                        <span className="text-sm text-secondary whitespace-nowrap">{appraisal.progress || "0%"}</span>
                         <div className="flex space-x-1">
                           {appraisal.status === "Draft" && (
                             <button

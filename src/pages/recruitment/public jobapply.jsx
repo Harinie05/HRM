@@ -153,10 +153,10 @@ export default function JobApply() {
 
         {/* JOB HEADER */}
         <h1 className="text-2xl font-bold mb-2">{job.title}</h1>
-        <p className="text-gray-600 mb-4">{job.department}</p>
+        <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{job.department}</p>
 
         <h2 className="text-lg font-semibold mb-1">Job Description</h2>
-        <p className="text-gray-700 whitespace-pre-line mb-6">
+        <p className=" whitespace-pre-line mb-6" style={{color: 'var(--text-secondary, #374151)'}}>
           {job.description}
         </p>
 
@@ -172,7 +172,7 @@ export default function JobApply() {
             placeholder="Full Name"
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           <input
@@ -180,7 +180,7 @@ export default function JobApply() {
             placeholder="Email"
             value={form.email}
             onChange={(e) => updateField("email", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           <input
@@ -188,7 +188,7 @@ export default function JobApply() {
             placeholder="Phone Number"
             value={form.phone}
             onChange={(e) => updateField("phone", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           <input
@@ -196,18 +196,18 @@ export default function JobApply() {
             placeholder="Experience (e.g., 3 years)"
             value={form.experience}
             onChange={(e) => updateField("experience", e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           />
 
           <textarea
             placeholder="Skills (comma-separated)"
             value={form.skills}
             onChange={(e) => updateField("skills", e.target.value)}
-            className="border p-2 rounded w-full h-24"
+            className="border p-2 rounded w-full h-24" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
           ></textarea>
 
           {/* Referral Section */}
-          <div className="border-t pt-4">
+          <div className="border-t pt-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
             <div className="flex items-center gap-2 mb-4">
               <input
                 type="checkbox"
@@ -222,7 +222,7 @@ export default function JobApply() {
                 }}
                 className="w-4 h-4 text-blue-600"
               />
-              <label htmlFor="referral-checkbox" className="text-sm font-medium text-gray-700">
+              <label htmlFor="referral-checkbox" className="text-sm font-medium text-secondary">
                 🔗 I was referred by an employee
               </label>
             </div>
@@ -235,7 +235,7 @@ export default function JobApply() {
                 </p>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-secondary mb-1">
                     Employee Code *
                   </label>
                   <div className="relative">
@@ -245,7 +245,7 @@ export default function JobApply() {
                       value={referralData.employee_code}
                       onChange={(e) => updateReferralField("employee_code", e.target.value)}
                       className={`border p-2 rounded w-full ${
-                        referralValidated ? 'border-green-500' : 'border-gray-300'
+                        referralValidated ? 'border-green-500' : '-dark'
                       }`}
                     />
                     {validatingReferral && (
@@ -283,7 +283,7 @@ export default function JobApply() {
                   setResume(file);
                 }
               }}
-              className="border p-2 w-full rounded"
+              className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             />
             {resume && (
               <p className="text-sm text-green-600 mt-1">

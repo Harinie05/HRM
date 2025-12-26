@@ -74,11 +74,11 @@ export default function EmployeeReporting() {
       subtitle="Manager hierarchy and reporting relationships"
     >
       <div className="p-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="flex items-center gap-4 mb-6">
             <button 
               onClick={() => navigate(`/eis/${id}`)}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiArrowLeft className="text-sm" />
               Back to Profile
@@ -90,42 +90,42 @@ export default function EmployeeReporting() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiUser className="text-blue-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Direct Reporting Manager</h3>
+                <h3 className="text-lg font-semibold text-primary">Direct Reporting Manager</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Manager Name *</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Manager Name *</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Direct manager's full name"
                     value={form.reporting_manager_name}
                     onChange={(e) => setForm({ ...form, reporting_manager_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Manager Email</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Manager Email</label>
                   <input
                     type="email"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="manager@company.com"
                     value={form.reporting_manager_email}
                     onChange={(e) => setForm({ ...form, reporting_manager_email: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Manager Employee ID</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Manager Employee ID</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Manager's employee ID"
                     value={form.reporting_manager_id}
                     onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Start Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Reporting Start Date</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={form.reporting_start_date}
                     onChange={(e) => setForm({ ...form, reporting_start_date: e.target.value })}
                   />
@@ -137,22 +137,22 @@ export default function EmployeeReporting() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiUsers className="text-green-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Department Head</h3>
+                <h3 className="text-lg font-semibold text-primary">Department Head</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Department Head Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Department Head Name</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Department head's full name"
                     value={form.department_head_name}
                     onChange={(e) => setForm({ ...form, department_head_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Department Head Employee ID</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Department Head Employee ID</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Department head's employee ID"
                     value={form.department_head_id}
                     onChange={(e) => setForm({ ...form, department_head_id: e.target.value })}
@@ -165,22 +165,22 @@ export default function EmployeeReporting() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <FiTrendingUp className="text-purple-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Secondary Manager (Optional)</h3>
+                <h3 className="text-lg font-semibold text-primary">Secondary Manager (Optional)</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Secondary Manager Name</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Secondary Manager Name</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Secondary/dotted line manager"
                     value={form.secondary_manager_name}
                     onChange={(e) => setForm({ ...form, secondary_manager_name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Secondary Manager Employee ID</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Secondary Manager Employee ID</label>
                   <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Secondary manager's employee ID"
                     value={form.secondary_manager_id}
                     onChange={(e) => setForm({ ...form, secondary_manager_id: e.target.value })}
@@ -192,15 +192,15 @@ export default function EmployeeReporting() {
             {/* Reporting Hierarchy Summary */}
             {form.reporting_manager_name && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
-                <h4 className="font-semibold text-gray-900 mb-4">Reporting Hierarchy</h4>
+                <h4 className="font-semibold text-primary mb-4">Reporting Hierarchy</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                       <FiUser className="text-blue-600 text-sm" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">Direct Manager</p>
-                      <p className="text-sm text-gray-600">{form.reporting_manager_name}</p>
+                      <p className="font-medium text-primary">Direct Manager</p>
+                      <p className="text-sm text-secondary">{form.reporting_manager_name}</p>
                     </div>
                   </div>
                   
@@ -210,8 +210,8 @@ export default function EmployeeReporting() {
                         <FiUsers className="text-green-600 text-sm" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Department Head</p>
-                        <p className="text-sm text-gray-600">{form.department_head_name}</p>
+                        <p className="font-medium text-primary">Department Head</p>
+                        <p className="text-sm text-secondary">{form.department_head_name}</p>
                       </div>
                     </div>
                   )}
@@ -222,8 +222,8 @@ export default function EmployeeReporting() {
                         <FiTrendingUp className="text-purple-600 text-sm" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Secondary Manager</p>
-                        <p className="text-sm text-gray-600">{form.secondary_manager_name}</p>
+                        <p className="font-medium text-primary">Secondary Manager</p>
+                        <p className="text-sm text-secondary">{form.secondary_manager_name}</p>
                       </div>
                     </div>
                   )}

@@ -87,19 +87,19 @@ export default function DocumentUpload() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-content py-8">
       <div className="max-w-4xl mx-auto px-4">
         
         {/* Header */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-primary mb-2">
               📄 Document Upload Portal
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-secondary">
               Welcome <strong>{candidateInfo.candidate_name}</strong>
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
               Position: {candidateInfo.job_title} at NUTRYAH
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function DocumentUpload() {
           {requiredDocs.map((doc) => (
             <div key={doc.key} className="bg-white rounded-xl shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-primary">
                   {doc.label}
                   {doc.required && <span className="text-red-500 ml-1">*</span>}
                 </h3>
@@ -137,7 +137,7 @@ export default function DocumentUpload() {
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => handleFileUpload(doc.key, e.target.files[0])}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  className="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   disabled={uploading[doc.key]}
                 />
 
@@ -162,7 +162,7 @@ export default function DocumentUpload() {
         <div className="bg-white rounded-xl shadow p-6 mt-8">
           <div className="text-center">
             <div className="mb-4">
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-lg font-semibold text-primary">
                 Progress: {getRequiredUploaded()} / {getTotalRequired()} Required Documents
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
@@ -180,7 +180,7 @@ export default function DocumentUpload() {
                 className={`px-8 py-3 rounded-lg font-semibold text-lg ${
                   getRequiredUploaded() >= getTotalRequired()
                     ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-300 text-muted cursor-not-allowed"
                 }`}
               >
                 📤 Submit All Documents
@@ -189,7 +189,7 @@ export default function DocumentUpload() {
               <div className="text-green-600">
                 <div className="text-2xl mb-2">✅</div>
                 <p className="text-lg font-semibold">Documents Submitted Successfully!</p>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-secondary mt-2">
                   HR will review your documents and contact you soon.
                 </p>
               </div>
@@ -199,10 +199,10 @@ export default function DocumentUpload() {
 
         {/* Footer */}
         <div className="bg-white rounded-xl shadow p-6 mt-8 text-center">
-          <p className="text-gray-600 mb-4">
+          <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>
             Need help? Contact HR at <strong>hr@nutryah.com</strong>
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted">
             This link expires in 7 days. Please upload all documents promptly.
           </p>
         </div>

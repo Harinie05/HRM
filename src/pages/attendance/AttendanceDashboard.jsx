@@ -184,10 +184,10 @@ const AttendanceDashboard = () => {
         </div>
         {/* Attendance Metrics Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-medium">Overall Attendance</p>
+                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Overall Attendance</p>
                 <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1">
                   {attendanceData.overallAttendance}%
                 </p>
@@ -198,10 +198,10 @@ const AttendanceDashboard = () => {
             </div>
           </div>
           
-          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-medium">Present Today</p>
+                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Present Today</p>
                 <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-1">
                   {attendanceData.presentToday}
                 </p>
@@ -212,10 +212,10 @@ const AttendanceDashboard = () => {
             </div>
           </div>
           
-          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-medium">Absent Today</p>
+                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Absent Today</p>
                 <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-1">
                   {attendanceData.absentToday}
                 </p>
@@ -226,10 +226,10 @@ const AttendanceDashboard = () => {
             </div>
           </div>
           
-          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6 hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-medium">Late Arrivals</p>
+                <p className=" text-xs sm:text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Late Arrivals</p>
                 <p className="text-2xl sm:text-3xl font-bold text-yellow-600 mt-1">
                   {attendanceData.lateArrivals}
                 </p>
@@ -243,51 +243,51 @@ const AttendanceDashboard = () => {
 
         {/* Department Wise Attendance & Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center gap-2 mb-4 sm:mb-6">
               <FiBarChart className="text-blue-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Department Wise Attendance</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-primary">Department Wise Attendance</h3>
             </div>
             <div className="space-y-4">
               {departments.length > 0 ? departments.map((dept, index) => (
                 <div key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700 font-medium">{dept.name}</span>
+                  <span className=" font-medium" style={{color: 'var(--text-secondary, #374151)'}}>{dept.name}</span>
                   <div className="flex items-center space-x-3">
                     <div className="w-24 bg-gray-200 rounded-full h-2">
                       <div className={`${getAttendanceColor(dept.attendance)} h-2 rounded-full transition-all duration-300`} style={{width: `${dept.attendance}%`}}></div>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900 w-10 text-right">{dept.attendance}%</span>
+                    <span className="text-sm font-semibold text-primary w-10 text-right">{dept.attendance}%</span>
                   </div>
                 </div>
               )) : (
-                <div className="text-center text-gray-500 py-8">
-                  <FiBarChart className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <div className="text-center text-muted py-8">
+                  <FiBarChart className="mx-auto h-12 w-12 text-muted mb-4" />
                   <p>No department data available</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <div className="flex items-center gap-2 mb-4 sm:mb-6">
               <FiCalendar className="text-green-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Today's Summary</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-primary">Today's Summary</h3>
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600">Total Employees</span>
-                <span className="font-semibold text-lg text-gray-900">{attendanceData.totalEmployees}</span>
+                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Total Employees</span>
+                <span className="font-semibold text-lg text-primary">{attendanceData.totalEmployees}</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600">Attendance Rate</span>
+                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Attendance Rate</span>
                 <span className="font-semibold text-lg text-green-600">{attendanceData.overallAttendance}%</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600">On Time Arrivals</span>
+                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>On Time Arrivals</span>
                 <span className="font-semibold text-lg text-blue-600">{attendanceData.presentToday - attendanceData.lateArrivals}</span>
               </div>
               <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600">Late Arrivals</span>
+                <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Late Arrivals</span>
                 <span className="font-semibold text-lg text-yellow-600">{attendanceData.lateArrivals}</span>
               </div>
             </div>
@@ -295,16 +295,16 @@ const AttendanceDashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Quick Actions</h2>
+        <div className="rounded-xl shadow-sm border p-4 sm:p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+          <h2 className="text-lg sm:text-xl font-semibold text-primary mb-4 sm:mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <button 
               onClick={() => window.location.href = '/attendance/logs'}
               className="group p-4 sm:p-6 border border-blue-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 min-h-[44px]"
             >
               <FiClock className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Punch Logs</h3>
-              <p className="text-xs sm:text-sm text-gray-600">View attendance records</p>
+              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Punch Logs</h3>
+              <p className="text-xs sm:text-sm text-secondary">View attendance records</p>
             </button>
             
             <button 
@@ -312,8 +312,8 @@ const AttendanceDashboard = () => {
               className="group p-4 sm:p-6 border border-purple-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 min-h-[44px]"
             >
               <FiUsers className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Shift Roster</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Manage employee shifts</p>
+              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Shift Roster</h3>
+              <p className="text-xs sm:text-sm text-secondary">Manage employee shifts</p>
             </button>
             
             <button 
@@ -321,8 +321,8 @@ const AttendanceDashboard = () => {
               className="group p-4 sm:p-6 border border-green-200 rounded-xl hover:border-green-300 hover:shadow-md transition-all duration-200 text-left bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 min-h-[44px]"
             >
               <FiSettings className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2 sm:mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Attendance Rules</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Configure policies</p>
+              <h3 className="font-semibold text-primary mb-1 text-sm sm:text-base">Attendance Rules</h3>
+              <p className="text-xs sm:text-sm text-secondary">Configure policies</p>
             </button>
           </div>
         </div>

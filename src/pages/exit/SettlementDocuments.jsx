@@ -410,21 +410,21 @@ export default function SettlementDocuments() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-green-50">
-            <h3 className="text-xl font-bold text-gray-900">Ready for Settlement</h3>
-            <p className="text-gray-600 text-sm mt-1">Employees with completed exit interviews</p>
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="p-6 border-b  bg-gradient-to-r from-gray-50 to-green-50">
+            <h3 className="text-xl font-bold text-primary">Ready for Settlement</h3>
+            <p className=" text-sm mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Employees with completed exit interviews</p>
           </div>
           
           <div className="p-6">
             <div className="space-y-4">
               {exits.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="text-gray-400 mb-4">
+                  <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
                     <CheckCircle className="w-12 h-12 mx-auto" />
                   </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
-                  <p className="text-gray-500 text-sm">Complete exit interviews first.</p>
+                  <h4 className="text-lg font-medium text-primary mb-2">No employees ready for settlement</h4>
+                  <p className=" text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>Complete exit interviews first.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -437,13 +437,13 @@ export default function SettlementDocuments() {
                       className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         isSelected 
                           ? 'border-red-500 bg-red-50 shadow-md' 
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                          : ' hover:-dark bg-white'
                       }`}
                     >
-                      <div className="font-semibold text-gray-900">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
-                      <div className="text-sm text-gray-500 mt-1">Code: {exit.employee_code || 'N/A'}</div>
-                      <div className="text-sm text-gray-500">Last Working: {exit.last_working_day || 'N/A'}</div>
-                      <div className="text-sm text-gray-500">Notice: {exit.notice_period || '30'} days</div>
+                      <div className="font-semibold text-primary">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
+                      <div className="text-sm text-muted mt-1">Code: {exit.employee_code || 'N/A'}</div>
+                      <div className="text-sm text-muted">Last Working: {exit.last_working_day || 'N/A'}</div>
+                      <div className="text-sm text-muted">Notice: {exit.notice_period || '30'} days</div>
                     </div>
                   );
                 })
@@ -471,7 +471,7 @@ export default function SettlementDocuments() {
               {settlement ? (
                 <div className="space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-content p-4 rounded-lg">
                     <h4 className="font-medium mb-3">Settlement Breakdown</h4>
                     
                     {/* Earnings Section */}
@@ -550,7 +550,7 @@ export default function SettlementDocuments() {
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         settlement.payment_status === 'Approved' ? 'bg-green-100 text-green-800' :
                         settlement.payment_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
+                        'bg-gray-100 text-primary'
                       }`}>
                         {settlement.payment_status}
                       </span>
@@ -567,7 +567,7 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-sm text-gray-600 space-y-1">
+                  <div className="text-sm text-secondary space-y-1">
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -580,13 +580,13 @@ export default function SettlementDocuments() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-gray-500 py-8">
+                <div className="text-center text-muted py-8">
                   Click "Calculate Settlement" to generate F&F statement
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-muted py-8">
               Select an employee to view settlement details
             </div>
           )}
@@ -621,7 +621,7 @@ export default function SettlementDocuments() {
                 <div className="space-y-4">
                   {/* Editable Form or Letter Preview */}
                   {isEditingLetter ? (
-                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                    <div className="bg-content p-4 rounded-lg space-y-3">
                       <h4 className="font-medium mb-3">Edit Experience Letter Details</h4>
                       
                       <div className="grid grid-cols-2 gap-3">
@@ -718,7 +718,7 @@ export default function SettlementDocuments() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-gray-50 p-4 rounded-lg text-sm">
+                    <div className="bg-content p-4 rounded-lg text-sm">
                       <div className="text-center font-bold mb-4 text-lg">EXPERIENCE CERTIFICATE</div>
                       <div className="space-y-3 leading-relaxed">
                         <p>This is to certify that <strong>{experienceLetter.employee_name}</strong> (Employee Code: <strong>{experienceLetter.employee_code}</strong>) was employed with <strong>{experienceLetter.company_name}</strong> as <strong>{experienceLetter.designation}</strong> in the <strong>{experienceLetter.department}</strong>.</p>
@@ -734,7 +734,7 @@ export default function SettlementDocuments() {
                             <div>
                               <p className="font-semibold">For {experienceLetter.company_name}</p>
                               <div className="mt-8">
-                                <div className="border-t border-gray-400 w-32"></div>
+                                <div className="border-t border-gray-400 w-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}></div>
                                 <p className="text-xs mt-1">{experienceLetter.authorized_signatory}</p>
                                 <p className="text-xs">{experienceLetter.issued_by}</p>
                               </div>
@@ -755,7 +755,7 @@ export default function SettlementDocuments() {
                       <span className="font-medium">Status:</span>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         experienceLetter.status === 'Generated' ? 'bg-green-100 text-green-800' :
-                        'bg-gray-100 text-gray-800'
+                        'bg-gray-100 text-primary'
                       }`}>
                         {experienceLetter.status}
                       </span>
@@ -779,13 +779,13 @@ export default function SettlementDocuments() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-gray-500 py-8">
+                <div className="text-center text-muted py-8">
                   Click "Generate Letter" to create experience certificate
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-muted py-8">
               Select an employee to generate experience letter
             </div>
           )}

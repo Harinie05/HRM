@@ -20,8 +20,8 @@ export default function ComplianceLayout() {
               </svg>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Compliance Management</h2>
-              <p className="text-gray-600 mt-1">Manage statutory compliance, labour laws, and regulatory requirements</p>
+              <h2 className="text-2xl font-bold text-primary">Compliance Management</h2>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage statutory compliance, labour laws, and regulatory requirements</p>
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@ export default function ComplianceLayout() {
                 className={`px-6 py-5 text-sm font-semibold border-b-3 transition-all duration-300 whitespace-nowrap ${
                   tab === key
                     ? 'border-blue-500 text-blue-600 bg-white shadow-lg transform -translate-y-1'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                    : 'border-transparent text-muted hover:text-secondary hover:bg-white/50'
                 }`}
               >
                 {label}

@@ -154,17 +154,17 @@ const AttritionDashboard = () => {
             <h1 className="text-3xl font-bold text-[#0D3B66] mb-2">
               Attrition Analysis Dashboard
             </h1>
-            <p className="text-gray-600">
+            <p className="" style={{color: 'var(--text-secondary, #374151)'}}>
               Employee turnover insights and retention analytics
             </p>
           </div>
 
           {/* Attrition Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Attrition Rate</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Attrition Rate</p>
                   <p className="text-3xl font-bold text-red-600 mt-1">
                     {attritionData.attritionRate}%
                   </p>
@@ -175,10 +175,10 @@ const AttritionDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Total Exits</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Total Exits</p>
                   <p className="text-3xl font-bold text-orange-600 mt-1">
                     {attritionData.totalAttrition}
                   </p>
@@ -189,10 +189,10 @@ const AttritionDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Monthly Exits</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Monthly Exits</p>
                   <p className="text-3xl font-bold text-purple-600 mt-1">
                     {attritionData.monthlyAttrition}
                   </p>
@@ -203,10 +203,10 @@ const AttritionDashboard = () => {
               </div>
             </div>
             
-            <div className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Avg Tenure</p>
+                  <p className=" text-sm font-medium" style={{color: 'var(--text-secondary, #374151)'}}>Avg Tenure</p>
                   <p className="text-3xl font-bold text-blue-600 mt-1">
                     {attritionData.avgTenure}y
                   </p>
@@ -220,11 +220,11 @@ const AttritionDashboard = () => {
 
           {/* Attrition Analysis */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Exit Type Analysis</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Voluntary Exits</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Voluntary Exits</span>
                   <div className="flex items-center space-x-2">
                     <div className="w-32 bg-gray-200 rounded-full h-2">
                       <div className="bg-green-500 h-2 rounded-full" style={{width: `${attritionData.totalAttrition > 0 ? (attritionData.voluntaryAttrition / attritionData.totalAttrition) * 100 : 0}%`}}></div>
@@ -233,7 +233,7 @@ const AttritionDashboard = () => {
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Involuntary Exits</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Involuntary Exits</span>
                   <div className="flex items-center space-x-2">
                     <div className="w-32 bg-gray-200 rounded-full h-2">
                       <div className="bg-red-500 h-2 rounded-full" style={{width: `${attritionData.totalAttrition > 0 ? (attritionData.involuntaryAttrition / attritionData.totalAttrition) * 100 : 0}%`}}></div>
@@ -244,19 +244,19 @@ const AttritionDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
               <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Retention Metrics</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Retention Rate</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Retention Rate</span>
                   <span className="font-semibold text-lg text-green-600">{(100 - attritionData.attritionRate).toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Average Tenure</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Average Tenure</span>
                   <span className="font-semibold text-lg text-blue-600">{attritionData.avgTenure} years</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Exit Trend</span>
+                  <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Exit Trend</span>
                   <span className="font-semibold text-lg text-red-600">↑ 5%</span>
                 </div>
               </div>
@@ -264,25 +264,25 @@ const AttritionDashboard = () => {
           </div>
 
           {/* Department Wise Attrition */}
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <div className="rounded-xl shadow-sm p-6 mb-8" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <h3 className="text-lg font-semibold text-[#0D3B66] mb-4">Department Wise Attrition</h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="text-left p-3 font-medium text-gray-600">Department</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Total Employees</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Exits</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Attrition Rate</th>
-                    <th className="text-left p-3 font-medium text-gray-600">Status</th>
+                    <th className="text-left p-3 font-medium text-secondary">Department</th>
+                    <th className="text-left p-3 font-medium text-secondary">Total Employees</th>
+                    <th className="text-left p-3 font-medium text-secondary">Exits</th>
+                    <th className="text-left p-3 font-medium text-secondary">Attrition Rate</th>
+                    <th className="text-left p-3 font-medium text-secondary">Status</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                   {departments.map((dept, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="p-3 text-gray-800">{dept.name}</td>
-                      <td className="p-3 text-gray-800">{dept.employees}</td>
-                      <td className="p-3 text-gray-800">{dept.attrition}</td>
+                    <tr key={index} className="border-b border-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                      <td className="p-3 text-primary">{dept.name}</td>
+                      <td className="p-3 text-primary">{dept.employees}</td>
+                      <td className="p-3 text-primary">{dept.attrition}</td>
                       <td className={`p-3 font-semibold ${getAttritionColor(dept.rate)}`}>{dept.rate}%</td>
                       <td className="p-3">
                         {dept.rate <= 10 ? (
@@ -301,7 +301,7 @@ const AttritionDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
             <h2 className="text-xl font-semibold text-[#0D3B66] mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button 
@@ -309,8 +309,8 @@ const AttritionDashboard = () => {
                 className="p-4 border border-red-200 rounded-lg hover:bg-red-50 transition-colors text-left"
               >
                 <FileText className="w-8 h-8 text-red-600 mb-2" />
-                <h3 className="font-semibold text-gray-800">Resignation</h3>
-                <p className="text-sm text-gray-600">Manage resignation requests</p>
+                <h3 className="font-semibold text-primary">Resignation</h3>
+                <p className="text-sm text-secondary">Manage resignation requests</p>
               </button>
               
               <button 
@@ -318,8 +318,8 @@ const AttritionDashboard = () => {
                 className="p-4 border border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left"
               >
                 <CheckCircle className="w-8 h-8 text-green-600 mb-2" />
-                <h3 className="font-semibold text-gray-800">Clearance</h3>
-                <p className="text-sm text-gray-600">Process exit clearance</p>
+                <h3 className="font-semibold text-primary">Clearance</h3>
+                <p className="text-sm text-secondary">Process exit clearance</p>
               </button>
             </div>
           </div>

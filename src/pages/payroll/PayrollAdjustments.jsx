@@ -218,17 +218,17 @@ export default function PayrollAdjustments() {
   const adjustmentTypes = ["Bonus", "Arrears", "Medical", "Overtime", "Deduction", "Other"];
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 border-b border-gray-200 rounded-t-2xl">
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 border-b  rounded-t-2xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-purple-100 rounded-xl">
               <Plus className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Payroll Adjustments</h2>
-              <p className="text-gray-600 mt-1">Manage arrears, bonuses and one-time adjustments</p>
+              <h2 className="text-xl font-semibold text-primary">Payroll Adjustments</h2>
+              <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage arrears, bonuses and one-time adjustments</p>
             </div>
           </div>
           <button 
@@ -242,48 +242,48 @@ export default function PayrollAdjustments() {
       </div>
 
       {/* Search */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b ">
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
           <input
             type="text"
             placeholder="Search adjustments..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+            className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
         </div>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+          <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Month</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Type</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Description</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
             {filteredAdjustments.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                <td colSpan="6" className="px-6 py-8 text-center text-muted">
                   {searchTerm ? "No adjustments found matching your search." : "No payroll adjustments added yet."}
                 </td>
               </tr>
             ) : (
               filteredAdjustments.map((adjustment) => (
-                <tr key={adjustment.id} className="hover:bg-gray-50">
+                <tr key={adjustment.id} className="hover:bg-content">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
-                    <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                    <div className="text-sm font-medium text-primary">{getEmployeeName(adjustment.employee_id)}</div>
+                    <div className="text-sm text-muted">ID: {adjustment.employee_id}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{adjustment.month}</div>
+                    <div className="text-sm text-primary">{adjustment.month}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -302,7 +302,7 @@ export default function PayrollAdjustments() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs truncate">{adjustment.description}</div>
+                    <div className="text-sm text-primary max-w-xs truncate">{adjustment.description}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center gap-2">
@@ -331,8 +331,8 @@ export default function PayrollAdjustments() {
       </div>
 
       {/* Stats Footer */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div className="flex justify-between items-center text-sm text-gray-600">
+      <div className="px-6 py-4 bg-content border-t ">
+        <div className="flex justify-between items-center text-sm text-secondary">
           <span>Total Adjustments: {adjustments.length}</span>
           <span>This Month: {adjustments.filter(a => a.month === new Date().toLocaleString('default', { month: 'long' })).length}</span>
           <span>Total Amount: ₹{adjustments.reduce((sum, adj) => sum + (adj.amount || 0), 0).toLocaleString()}</span>
@@ -348,11 +348,11 @@ export default function PayrollAdjustments() {
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -364,11 +364,11 @@ export default function PayrollAdjustments() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Month</label>
                 <select
                   value={formData.month}
                   onChange={(e) => setFormData({...formData, month: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Month</option>
@@ -379,11 +379,11 @@ export default function PayrollAdjustments() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Adjustment Type</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Adjustment Type</label>
                 <select
                   value={formData.adjustment_type}
                   onChange={(e) => setFormData({...formData, adjustment_type: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Type</option>
@@ -393,21 +393,21 @@ export default function PayrollAdjustments() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Amount</label>
                 <input
                   type="number"
                   value={formData.amount}
                   onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value) || 0})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Description</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                 />
               </div>
@@ -415,7 +415,7 @@ export default function PayrollAdjustments() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

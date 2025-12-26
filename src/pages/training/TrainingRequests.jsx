@@ -227,15 +227,15 @@ export default function TrainingRequests() {
             <FileText className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Training Requests & Workflow</h2>
-            <p className="text-gray-600 mt-1">Manage employee training requests and approval workflow</p>
+            <h2 className="text-2xl font-bold text-primary">Training Requests & Workflow</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage employee training requests and approval workflow</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <FileText className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -244,7 +244,7 @@ export default function TrainingRequests() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Clock className="h-8 w-8 text-yellow-600" />
             <div className="ml-3">
@@ -253,7 +253,7 @@ export default function TrainingRequests() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -262,7 +262,7 @@ export default function TrainingRequests() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <XCircle className="h-8 w-8 text-red-600" />
             <div className="ml-3">
@@ -273,9 +273,9 @@ export default function TrainingRequests() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Header Actions */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b ">
           <div className="flex justify-end">
             <button 
               onClick={handleOpenModal}
@@ -288,22 +288,22 @@ export default function TrainingRequests() {
         </div>
 
         {/* Filters */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b ">
           <div className="flex gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" size={16} />
               <input
                 type="text"
                 placeholder="Search requests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                className="pl-10 pr-4 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
             >
               <option value="">All Status</option>
               {statuses.map(status => (
@@ -320,24 +320,24 @@ export default function TrainingRequests() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50">
+            <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+              <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Requested</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Training Requested</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Priority</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Requested Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                 {filteredRequests.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
-                      <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                      <h3 className="mt-2 text-sm font-medium text-gray-900">No training requests</h3>
-                      <p className="mt-1 text-sm text-gray-500">
+                      <FileText className="mx-auto h-12 w-12 text-muted" />
+                      <h3 className="mt-2 text-sm font-medium text-primary">No training requests</h3>
+                      <p className="mt-1 text-sm text-muted">
                         {searchTerm || statusFilter ? "No requests match your search criteria." : "No training requests have been submitted yet."}
                       </p>
                       {!searchTerm && !statusFilter && (
@@ -355,14 +355,14 @@ export default function TrainingRequests() {
                   </tr>
                 ) : (
                   filteredRequests.map((request) => (
-                    <tr key={request.id} className="hover:bg-gray-50">
+                    <tr key={request.id} className="hover:bg-content">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{getEmployeeName(request.employee_id)}</div>
+                        <div className="text-sm font-medium text-primary">{getEmployeeName(request.employee_id)}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{request.requested_training}</div>
+                        <div className="text-sm text-primary">{request.requested_training}</div>
                         {request.justification && (
-                          <div className="text-sm text-gray-500 truncate max-w-xs">{request.justification}</div>
+                          <div className="text-sm text-muted truncate max-w-xs">{request.justification}</div>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -386,7 +386,7 @@ export default function TrainingRequests() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-primary">
                           {new Date(request.created_at).toLocaleDateString()}
                         </div>
                       </td>
@@ -421,8 +421,8 @@ export default function TrainingRequests() {
         </div>
 
         {/* Stats Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-          <div className="flex justify-between items-center text-sm text-gray-600">
+        <div className="px-6 py-4 bg-content border-t ">
+          <div className="flex justify-between items-center text-sm text-secondary">
             <span>Total Requests: {requests.length}</span>
             <span>Pending Approval: {requests.filter(r => r.status === 'Pending' || r.status === 'Manager Approved').length}</span>
             <span>Approved: {requests.filter(r => r.status === 'HR Approved' || r.status === 'Approved').length}</span>
@@ -437,11 +437,11 @@ export default function TrainingRequests() {
             <h3 className="text-lg font-semibold mb-4">New Training Request</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -453,7 +453,7 @@ export default function TrainingRequests() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Training Program (Optional)</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Training Program (Optional)</label>
                 <select
                   value={formData.training_program_id}
                   onChange={(e) => {
@@ -465,7 +465,7 @@ export default function TrainingRequests() {
                       requested_training: program ? program.title : formData.requested_training
                     });
                   }}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select from Available Programs</option>
                   {programs.map(program => (
@@ -476,32 +476,32 @@ export default function TrainingRequests() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Training Requested</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Training Requested</label>
                 <input
                   type="text"
                   value={formData.requested_training}
                   onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter training name or description"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Justification</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Justification</label>
                 <textarea
                   value={formData.justification}
                   onChange={(e) => setFormData({...formData, justification: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Explain why this training is needed"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Priority</label>
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   {priorities.map(priority => (
@@ -513,7 +513,7 @@ export default function TrainingRequests() {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -538,11 +538,11 @@ export default function TrainingRequests() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Employee</label>
-                  <p className="text-sm text-gray-900">{getEmployeeName(selectedRequest.employee_id)}</p>
+                  <label className="block text-sm font-medium text-secondary">Employee</label>
+                  <p className="text-sm text-primary">{getEmployeeName(selectedRequest.employee_id)}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Priority</label>
+                  <label className="block text-sm font-medium text-secondary">Priority</label>
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     selectedRequest.priority === "Urgent" ? "bg-red-100 text-red-800" :
                     selectedRequest.priority === "High" ? "bg-orange-100 text-orange-800" :
@@ -554,16 +554,16 @@ export default function TrainingRequests() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Training Requested</label>
-                <p className="text-sm text-gray-900">{selectedRequest.requested_training}</p>
+                <label className="block text-sm font-medium text-secondary">Training Requested</label>
+                <p className="text-sm text-primary">{selectedRequest.requested_training}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Justification</label>
-                <p className="text-sm text-gray-900">{selectedRequest.justification || 'No justification provided'}</p>
+                <label className="block text-sm font-medium text-secondary">Justification</label>
+                <p className="text-sm text-primary">{selectedRequest.justification || 'No justification provided'}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <label className="block text-sm font-medium text-secondary">Status</label>
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     selectedRequest.status === "HR Approved" || selectedRequest.status === "Approved" ? "bg-green-100 text-green-800" :
                     selectedRequest.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
@@ -574,8 +574,8 @@ export default function TrainingRequests() {
                   </span>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Requested Date</label>
-                  <p className="text-sm text-gray-900">{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
+                  <label className="block text-sm font-medium text-secondary">Requested Date</label>
+                  <p className="text-sm text-primary">{new Date(selectedRequest.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
@@ -595,18 +595,18 @@ export default function TrainingRequests() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold mb-4">Approve/Reject Request</h3>
-            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+            <div className="mb-4 p-4 bg-content rounded-lg">
               <p><strong>Employee:</strong> {getEmployeeName(selectedRequest.employee_id)}</p>
               <p><strong>Training:</strong> {selectedRequest.requested_training}</p>
               <p><strong>Priority:</strong> {selectedRequest.priority}</p>
             </div>
             <form onSubmit={handleApproval} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Action</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Action</label>
                 <select
                   value={approvalData.action}
                   onChange={(e) => setApprovalData({...approvalData, action: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Action</option>
@@ -615,11 +615,11 @@ export default function TrainingRequests() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Comment</label>
                 <textarea
                   value={approvalData.comment}
                   onChange={(e) => setApprovalData({...approvalData, comment: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Add your comments (optional)"
                 />
@@ -628,7 +628,7 @@ export default function TrainingRequests() {
                 <button
                   type="button"
                   onClick={() => setShowApprovalModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

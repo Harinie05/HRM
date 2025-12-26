@@ -9,30 +9,30 @@ const ManpowerDashboard = () => {
 
       {/* Manpower Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow text-center">
+        <div className="p-4 rounded-lg shadow text-center" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="text-2xl font-bold text-blue-600">245</div>
-          <div className="text-sm text-gray-600">Current Strength</div>
+          <div className="text-sm text-secondary">Current Strength</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
+        <div className="p-4 rounded-lg shadow text-center" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="text-2xl font-bold text-green-600">280</div>
-          <div className="text-sm text-gray-600">Planned Strength</div>
+          <div className="text-sm text-secondary">Planned Strength</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
+        <div className="p-4 rounded-lg shadow text-center" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="text-2xl font-bold text-orange-600">35</div>
-          <div className="text-sm text-gray-600">Gap to Fill</div>
+          <div className="text-sm text-secondary">Gap to Fill</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow text-center">
+        <div className="p-4 rounded-lg shadow text-center" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <div className="text-2xl font-bold text-purple-600">87.5%</div>
-          <div className="text-sm text-gray-600">Utilization Rate</div>
+          <div className="text-sm text-secondary">Utilization Rate</div>
         </div>
       </div>
 
       {/* Department Wise Planning */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="p-6 rounded-lg shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Department Wise Manpower Planning</h3>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
+          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
               <tr>
                 <th className="text-left p-3 font-medium">Department</th>
                 <th className="text-left p-3 font-medium">Current</th>
@@ -42,8 +42,8 @@ const ManpowerDashboard = () => {
                 <th className="text-left p-3 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody>
-              <tr className="border-b">
+            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+              <tr className="border-b" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <td className="p-3">IT Department</td>
                 <td className="p-3">85</td>
                 <td className="p-3">100</td>
@@ -51,7 +51,7 @@ const ManpowerDashboard = () => {
                 <td className="p-3">85%</td>
                 <td className="p-3"><span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Understaffed</span></td>
               </tr>
-              <tr className="border-b">
+              <tr className="border-b" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <td className="p-3">Operations</td>
                 <td className="p-3">65</td>
                 <td className="p-3">70</td>
@@ -59,7 +59,7 @@ const ManpowerDashboard = () => {
                 <td className="p-3">93%</td>
                 <td className="p-3"><span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Near Target</span></td>
               </tr>
-              <tr className="border-b">
+              <tr className="border-b" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <td className="p-3">Sales & Marketing</td>
                 <td className="p-3">45</td>
                 <td className="p-3">60</td>
@@ -67,7 +67,7 @@ const ManpowerDashboard = () => {
                 <td className="p-3">75%</td>
                 <td className="p-3"><span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Understaffed</span></td>
               </tr>
-              <tr className="border-b">
+              <tr className="border-b" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <td className="p-3">HR & Admin</td>
                 <td className="p-3">25</td>
                 <td className="p-3">25</td>
@@ -75,7 +75,7 @@ const ManpowerDashboard = () => {
                 <td className="p-3">100%</td>
                 <td className="p-3"><span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Optimal</span></td>
               </tr>
-              <tr className="border-b">
+              <tr className="border-b" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                 <td className="p-3">Finance</td>
                 <td className="p-3">25</td>
                 <td className="p-3">25</td>
@@ -90,7 +90,7 @@ const ManpowerDashboard = () => {
 
       {/* Hiring Forecast */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="p-6 rounded-lg shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">Quarterly Hiring Forecast</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center p-3 bg-blue-50 rounded">
@@ -112,7 +112,7 @@ const ManpowerDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="p-6 rounded-lg shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">Critical Positions</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 border-l-4 border-red-500 bg-red-50">
@@ -141,24 +141,24 @@ const ManpowerDashboard = () => {
       </div>
 
       {/* Budget Planning */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="p-6 rounded-lg shadow" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Manpower Budget Planning</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center p-4 border rounded-lg">
             <div className="text-lg font-bold text-blue-600">₹2.8Cr</div>
-            <div className="text-sm text-gray-600">Annual Salary Budget</div>
+            <div className="text-sm text-secondary">Annual Salary Budget</div>
           </div>
           <div className="text-center p-4 border rounded-lg">
             <div className="text-lg font-bold text-green-600">₹2.45Cr</div>
-            <div className="text-sm text-gray-600">Current Utilization</div>
+            <div className="text-sm text-secondary">Current Utilization</div>
           </div>
           <div className="text-center p-4 border rounded-lg">
             <div className="text-lg font-bold text-orange-600">₹35L</div>
-            <div className="text-sm text-gray-600">Available Budget</div>
+            <div className="text-sm text-secondary">Available Budget</div>
           </div>
           <div className="text-center p-4 border rounded-lg">
             <div className="text-lg font-bold text-purple-600">87.5%</div>
-            <div className="text-sm text-gray-600">Budget Utilization</div>
+            <div className="text-sm text-secondary">Budget Utilization</div>
           </div>
         </div>
       </div>

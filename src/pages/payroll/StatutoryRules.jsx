@@ -56,16 +56,16 @@ export default function StatutoryRules() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+    <div className="rounded-2xl shadow-lg border border-gray-100" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b border-gray-200 rounded-t-2xl">
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b  rounded-t-2xl">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-green-100 rounded-xl">
             <FileText className="w-6 h-6 text-green-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Statutory Rules Configuration</h2>
-            <p className="text-gray-600 mt-1">Configure PF, ESI, Professional Tax and TDS rules</p>
+            <h2 className="text-xl font-semibold text-primary">Statutory Rules Configuration</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Configure PF, ESI, Professional Tax and TDS rules</p>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function StatutoryRules() {
       <div className="p-6">
         <div className="space-y-6">
         {/* PF Section */}
-        <div className="border-2 border-blue-200 rounded-xl p-6 bg-blue-50">
+        <div className="border-2 border-blue-200 rounded-xl p-6 bg-blue-50" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           <div className="flex items-center gap-3 mb-4">
             <input
               type="checkbox"
@@ -93,7 +93,7 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.pf_percent}
                   onChange={(e) => setForm({ ...form, pf_percent: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
               </div>
               <div>
@@ -101,7 +101,7 @@ export default function StatutoryRules() {
                 <select
                   value={form.pf_apply_on}
                   onChange={(e) => setForm({ ...form, pf_apply_on: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 >
                   <option value="Basic">Basic Salary</option>
                   <option value="Gross">Gross Salary</option>
@@ -112,7 +112,7 @@ export default function StatutoryRules() {
         </div>
 
         {/* ESI Section */}
-        <div className="border-2 border-green-200 rounded-xl p-6 bg-green-50">
+        <div className="border-2 border-green-200 rounded-xl p-6 bg-green-50" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           <div className="flex items-center gap-3 mb-4">
             <input
               type="checkbox"
@@ -131,9 +131,9 @@ export default function StatutoryRules() {
                   type="number"
                   value={form.esi_threshold}
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
-                <p className="text-xs text-gray-500 mt-1">Salary &gt; threshold → ESI auto = 0</p>
+                <p className="text-xs text-muted mt-1">Salary &gt; threshold → ESI auto = 0</p>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Employee ESI %</label>
@@ -142,7 +142,7 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.esi_percent}
                   onChange={(e) => setForm({ ...form, esi_percent: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
               </div>
             </div>
@@ -150,7 +150,7 @@ export default function StatutoryRules() {
         </div>
 
         {/* Professional Tax Section */}
-        <div className="border-2 border-purple-200 rounded-xl p-6 bg-purple-50">
+        <div className="border-2 border-purple-200 rounded-xl p-6 bg-purple-50" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           <div className="flex items-center gap-3 mb-4">
             <input
               type="checkbox"
@@ -169,7 +169,7 @@ export default function StatutoryRules() {
                   type="number"
                   value={form.pt_amount}
                   onChange={(e) => setForm({ ...form, pt_amount: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
               </div>
             </div>
@@ -177,7 +177,7 @@ export default function StatutoryRules() {
         </div>
 
         {/* TDS Section */}
-        <div className="border-2 border-orange-200 rounded-xl p-6 bg-orange-50">
+        <div className="border-2 border-orange-200 rounded-xl p-6 bg-orange-50" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
           <div className="flex items-center gap-3 mb-4">
             <input
               type="checkbox"
@@ -197,7 +197,7 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.tds_percent}
                   onChange={(e) => setForm({ ...form, tds_percent: e.target.value })}
-                  className="border p-2 rounded w-full"
+                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
                 />
               </div>
             </div>

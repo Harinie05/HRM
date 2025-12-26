@@ -139,15 +139,15 @@ export default function TrainingAttendance() {
             <UserCheck className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Training Attendance & Assessment</h2>
-            <p className="text-gray-600 mt-1">Track attendance and assessment results for training sessions</p>
+            <h2 className="text-2xl font-bold text-primary">Training Attendance & Assessment</h2>
+            <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Track attendance and assessment results for training sessions</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
@@ -156,7 +156,7 @@ export default function TrainingAttendance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-green-600" />
             <div className="ml-3">
@@ -165,7 +165,7 @@ export default function TrainingAttendance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <XCircle className="h-8 w-8 text-red-600" />
             <div className="ml-3">
@@ -174,7 +174,7 @@ export default function TrainingAttendance() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-content rounded-lg p-4">
           <div className="flex items-center">
             <Clock className="h-8 w-8 text-yellow-600" />
             <div className="ml-3">
@@ -185,9 +185,9 @@ export default function TrainingAttendance() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Header Actions */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b ">
           <div className="flex justify-end">
             <button 
               onClick={() => setShowModal(true)}
@@ -207,34 +207,34 @@ export default function TrainingAttendance() {
             </div>
           ) : attendanceRecords.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No attendance records</h3>
-              <p className="mt-1 text-sm text-gray-500">Attendance records will appear here when training sessions are conducted.</p>
+              <Users className="mx-auto h-12 w-12 text-muted" />
+              <h3 className="mt-2 text-sm font-medium text-primary">No attendance records</h3>
+              <p className="mt-1 text-sm text-muted">Attendance records will appear here when training sessions are conducted.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+              <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
+                <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Training Program</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessment Score</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Training Program</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Session Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Attendance</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Assessment Score</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
                   {attendanceRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-gray-50">
+                    <tr key={record.id} className="hover:bg-content">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{record.employee_name}</div>
+                        <div className="text-sm font-medium text-primary">{record.employee_name}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{record.program_title}</div>
+                        <div className="text-sm text-primary">{record.program_title}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{new Date(record.session_date).toLocaleDateString()}</div>
+                        <div className="text-sm text-primary">{new Date(record.session_date).toLocaleDateString()}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -246,7 +246,7 @@ export default function TrainingAttendance() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-primary">
                           {record.assessment_score ? `${record.assessment_score}%` : 'N/A'}
                         </div>
                       </td>
@@ -254,7 +254,7 @@ export default function TrainingAttendance() {
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           record.completion_status === 'Completed' ? 'bg-green-100 text-green-800' :
                           record.completion_status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
+                          'bg-gray-100 text-primary'
                         }`}>
                           {record.completion_status || 'Not Started'}
                         </span>
@@ -275,11 +275,11 @@ export default function TrainingAttendance() {
             <h3 className="text-lg font-semibold mb-4">Mark Training Attendance</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Training Program</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Training Program</label>
                 <select
                   value={formData.training_id}
                   onChange={(e) => setFormData({...formData, training_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Training Program</option>
@@ -291,11 +291,11 @@ export default function TrainingAttendance() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -307,7 +307,7 @@ export default function TrainingAttendance() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Attendance Status</label>
+                <label className="block text-sm font-medium text-secondary mb-1">Attendance Status</label>
                 <div className="flex gap-4">
                   <label className="flex items-center">
                     <input
@@ -333,26 +333,26 @@ export default function TrainingAttendance() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Pre-Assessment Score (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Pre-Assessment Score (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={formData.pre_score}
                     onChange={(e) => setFormData({...formData, pre_score: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter pre-assessment score"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Post-Assessment Score (%)</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Post-Assessment Score (%)</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={formData.post_score}
                     onChange={(e) => setFormData({...formData, post_score: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter post-assessment score"
                   />
                 </div>
@@ -361,7 +361,7 @@ export default function TrainingAttendance() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>

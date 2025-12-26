@@ -50,3 +50,182 @@ body {
 .overflow-scroll::-webkit-scrollbar {
   display: none !important;
 }
+
+/* Global card background override - applies to ALL pages */
+.bg-white,
+.bg-white:hover,
+.bg-white:focus,
+.bg-white:active {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Card-like elements */
+.rounded-xl,
+.rounded-lg,
+.rounded-2xl,
+.rounded,
+.card,
+.panel,
+.modal,
+.dropdown,
+.popover {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Override Tailwind utility classes */
+*[class*="bg-white"] {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Table and list containers */
+table,
+.table,
+.table-container,
+.list-container,
+.data-table {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Form and input containers */
+.form-container,
+.input-group,
+.select-container {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Override any white backgrounds */
+[style*="background-color: white"],
+[style*="background-color: #ffffff"],
+[style*="background-color: #fff"],
+[style*="background: white"],
+[style*="background: #ffffff"],
+[style*="background: #fff"] {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Nuclear option - override ALL white backgrounds */
+* {
+  --tw-bg-opacity: 1;
+}
+
+*[class*="bg-white"],
+*[style*="background"],
+div[class*="bg-white"],
+section[class*="bg-white"],
+article[class*="bg-white"] {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Specific overrides for common patterns */
+.bg-white.rounded,
+.bg-white.shadow,
+.bg-white.border,
+.bg-white.p-4,
+.bg-white.p-6 {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Ultimate override - target everything */
+body * {
+  --tw-bg-opacity: 1 !important;
+}
+
+body .bg-white,
+body div.bg-white,
+body section.bg-white,
+body article.bg-white,
+body main .bg-white,
+body [class*="bg-white"] {
+  background-color: var(--card-bg, #ffffff) !important;
+  background: var(--card-bg, #ffffff) !important;
+}
+
+/* Force override with higher specificity */
+html body div.bg-white,
+html body section.bg-white,
+html body .bg-white {
+  background-color: var(--card-bg, #ffffff) !important;
+}
+
+/* Additional Tailwind overrides */
+.bg-gray-50 {
+  background-color: var(--content-bg, #f8fafc) !important;
+}
+
+.text-gray-900 {
+  color: var(--text-color, #1e293b) !important;
+}
+
+.text-gray-600 {
+  color: var(--muted-text, #64748b) !important;
+}
+
+.border-gray-200 {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+/* Theme-aware text colors */
+.text-primary {
+  color: var(--text-primary, #111827) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary, #374151) !important;
+}
+
+.text-muted {
+  color: var(--text-muted, #6b7280) !important;
+}
+
+/* Additional theme classes */
+.bg-content {
+  background-color: var(--content-bg, #f8fafc) !important;
+}
+
+.hover\:bg-content:hover {
+  background-color: var(--content-bg, #f8fafc) !important;
+}
+
+/* Theme-aware border colors */
+.border-theme {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+.border-theme-dark {
+  border-color: var(--border-dark, #d1d5db) !important;
+}
+
+/* Override Tailwind border classes globally */
+.border-gray-200 {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+.border-gray-300 {
+  border-color: var(--border-color, #d1d5db) !important;
+}
+
+/* Force all border elements to use CSS variables */
+* {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+[class*="border-gray"] {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+/* Table and card specific borders */
+.divide-y > * {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
+
+.border-b {
+  border-bottom-color: var(--border-color, #e2e8f0) !important;
+}
+
+.border-t {
+  border-top-color: var(--border-color, #e2e8f0) !important;
+}
+
+table, thead, tbody, tr, td, th {
+  border-color: var(--border-color, #e2e8f0) !important;
+}
