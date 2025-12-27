@@ -615,12 +615,46 @@ class EmployeeMedical(MasterBase):
     medical_insurance_provider = Column(String(200))
     medical_insurance_number = Column(String(100))
     
+    # Medical Council Registration Details
+    medical_council_registration_number = Column(String(100), nullable=True)
+    medical_council_name = Column(String(200), nullable=True)
+    medical_council_expiry_date = Column(Date, nullable=True)
+    
+    # Vaccination Records
+    vaccination_records = Column(JSON, nullable=True)  # [{"vaccine": "Hep B", "date": "2023-01-01", "status": "Completed"}]
+    
+    # License Information with Renewal Alerts
+    professional_licenses = Column(JSON, nullable=True)  # [{"license_type": "Medical License", "license_number": "ML123", "issuing_authority": "Medical Board", "issue_date": "2020-01-01", "expiry_date": "2025-01-01", "status": "Active", "alert_days": 30, "alert_enabled": true}]
+    
+    # License Renewal Alert Settings
+    license_alert_enabled = Column(Boolean, default=True)
+    license_alert_days = Column(Integer, default=30)  # Days before expiry to alert
+    
     # Additional Notes
     remarks = Column(Text)
 
     # Medical Certificate
     medical_certificate = Column(Text)  # File path
     certificate_name = Column(String(255))
+
+
+# ========================= LICENSE RENEWAL ALERTS =========================
+class LicenseRenewalAlert(MasterBase):
+    __tablename__ = "license_renewal_alerts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    license_type = Column(String(100), nullable=False)
+    license_number = Column(String(100), nullable=False)
+    expiry_date = Column(Date, nullable=False)
+    alert_date = Column(Date, nullable=False)  # Calculated based on alert_days
+    
+    alert_days = Column(Integer, default=30)  # Days before expiry
+    status = Column(String(50), default="Pending")  # Pending / Sent / Acknowledged
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 
 
 # ========================= ID DOCUMENTS =========================

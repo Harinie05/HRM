@@ -1041,4 +1041,45 @@ with engine.connect() as conn:
 
     conn.commit()
 
+# ========================= LICENSE RENEWAL ALERTS MIGRATION =========================
+print("\nAdding license renewal alerts to employee_medical table...")
+with engine.connect() as conn:
+    license_columns = [
+        ("professional_licenses JSON", "professional_licenses"),
+        ("license_alert_enabled BOOLEAN DEFAULT TRUE", "license_alert_enabled"),
+        ("license_alert_days INT DEFAULT 30", "license_alert_days")
+    ]
+    
+    for sql_def, name in license_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_medical ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    # Create license_renewal_alerts table
+    try:
+        create_license_alerts = text("""
+            CREATE TABLE IF NOT EXISTS license_renewal_alerts (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                employee_id INT NOT NULL,
+                license_type VARCHAR(100) NOT NULL,
+                license_number VARCHAR(100) NOT NULL,
+                expiry_date DATE NOT NULL,
+                alert_date DATE NOT NULL,
+                alert_days INT DEFAULT 30,
+                status VARCHAR(50) DEFAULT 'Pending',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (employee_id) REFERENCES users(id)
+            )
+        """)
+        conn.execute(create_license_alerts)
+        print("✔️ Created license_renewal_alerts table")
+    except Exception as e:
+        print(f"⚠️ license_renewal_alerts table: {e}")
+    
+    conn.commit()
+    print("🎉 License renewal alerts migration completed!")
+
 print("\n🎉 DONE — All tables created and updated successfully!\n")

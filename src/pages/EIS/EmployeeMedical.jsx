@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiHeart, FiArrowLeft, FiUpload, FiEye, FiUser, FiPhone, FiShield } from "react-icons/fi";
+import { FiHeart, FiArrowLeft, FiUpload, FiEye, FiUser, FiPhone, FiShield, FiBell, FiCalendar, FiAlertTriangle } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
 
@@ -19,6 +19,13 @@ export default function EmployeeMedical() {
     emergency_contact_relation: "",
     medical_insurance_provider: "",
     medical_insurance_number: "",
+    medical_council_registration_number: "",
+    medical_council_name: "",
+    medical_council_expiry_date: "",
+    vaccination_records: [],
+    professional_licenses: [],
+    license_alert_enabled: true,
+    license_alert_days: 30,
     remarks: "",
   });
   const [file, setFile] = useState(null);
@@ -42,6 +49,13 @@ export default function EmployeeMedical() {
         emergency_contact_relation: res.data.emergency_contact_relation || "",
         medical_insurance_provider: res.data.medical_insurance_provider || "",
         medical_insurance_number: res.data.medical_insurance_number || "",
+        medical_council_registration_number: res.data.medical_council_registration_number || "",
+        medical_council_name: res.data.medical_council_name || "",
+        medical_council_expiry_date: res.data.medical_council_expiry_date || "",
+        vaccination_records: res.data.vaccination_records || [],
+        professional_licenses: res.data.professional_licenses || [],
+        license_alert_enabled: res.data.license_alert_enabled !== undefined ? res.data.license_alert_enabled : true,
+        license_alert_days: res.data.license_alert_days || 30,
         remarks: res.data.remarks || "",
       });
       setIsEditing(!!res.data.id);
@@ -68,13 +82,20 @@ export default function EmployeeMedical() {
     data.append("emergency_contact_relation", form.emergency_contact_relation);
     data.append("medical_insurance_provider", form.medical_insurance_provider);
     data.append("medical_insurance_number", form.medical_insurance_number);
+    data.append("medical_council_registration_number", form.medical_council_registration_number);
+    data.append("medical_council_name", form.medical_council_name);
+    data.append("medical_council_expiry_date", form.medical_council_expiry_date);
+    data.append("vaccination_records", JSON.stringify(form.vaccination_records));
+    data.append("professional_licenses", JSON.stringify(form.professional_licenses));
+    data.append("license_alert_enabled", form.license_alert_enabled);
+    data.append("license_alert_days", form.license_alert_days);
     data.append("remarks", form.remarks);
     if (file) data.append("file", file);
 
     setLoading(true);
     try {
       if (isEditing && medicalData?.id) {
-        await api.put(`/employee/medical/${medicalData.id}`, data);
+        await api.put(`/employee/medical/${id}`, data);
       } else {
         await api.post("/employee/medical/add", data);
       }
@@ -281,6 +302,334 @@ export default function EmployeeMedical() {
                     onChange={(e) => setForm({ ...form, medical_insurance_number: e.target.value })}
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Medical Council Registration */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiShield className="text-black" />
+                <h3 className="text-lg font-semibold text-primary">Medical Council Registration Details</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-2">Registration Number</label>
+                  <input
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    placeholder="Medical council registration number"
+                    value={form.medical_council_registration_number}
+                    onChange={(e) => setForm({ ...form, medical_council_registration_number: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-2">Council Name</label>
+                  <input
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    placeholder="Medical council name"
+                    value={form.medical_council_name}
+                    onChange={(e) => setForm({ ...form, medical_council_name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-2">Expiry Date</label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    value={form.medical_council_expiry_date}
+                    onChange={(e) => setForm({ ...form, medical_council_expiry_date: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Vaccination Records */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiHeart className="text-black" />
+                <h3 className="text-lg font-semibold text-primary">Vaccination Records</h3>
+              </div>
+              <div className="space-y-4">
+                {form.vaccination_records.map((vaccine, index) => (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-300 rounded-xl">
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">Vaccine</label>
+                      <select
+                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        value={vaccine.vaccine}
+                        onChange={(e) => {
+                          const updated = [...form.vaccination_records];
+                          updated[index].vaccine = e.target.value;
+                          setForm({ ...form, vaccination_records: updated });
+                        }}
+                      >
+                        <option value="">Select vaccine</option>
+                        <option value="Hepatitis B">Hepatitis B</option>
+                        <option value="COVID-19">COVID-19</option>
+                        <option value="Influenza">Influenza</option>
+                        <option value="Tetanus">Tetanus</option>
+                        <option value="MMR">MMR</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">Date</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        value={vaccine.date}
+                        onChange={(e) => {
+                          const updated = [...form.vaccination_records];
+                          updated[index].date = e.target.value;
+                          setForm({ ...form, vaccination_records: updated });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-secondary mb-2">Status</label>
+                      <select
+                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        value={vaccine.status}
+                        onChange={(e) => {
+                          const updated = [...form.vaccination_records];
+                          updated[index].status = e.target.value;
+                          setForm({ ...form, vaccination_records: updated });
+                        }}
+                      >
+                        <option value="">Select status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Overdue">Overdue</option>
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = form.vaccination_records.filter((_, i) => i !== index);
+                          setForm({ ...form, vaccination_records: updated });
+                        }}
+                        className="px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm({
+                      ...form,
+                      vaccination_records: [...form.vaccination_records, { vaccine: "", date: "", status: "" }]
+                    });
+                  }}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+                >
+                  Add Vaccination Record
+                </button>
+              </div>
+            </div>
+
+            {/* Professional Licenses with Renewal Alerts */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FiBell className="text-black" />
+                <h3 className="text-lg font-semibold text-primary">Professional Licenses & Renewal Alerts</h3>
+              </div>
+              
+              {/* License Alert Settings */}
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="license_alert_enabled"
+                      checked={form.license_alert_enabled}
+                      onChange={(e) => setForm({ ...form, license_alert_enabled: e.target.checked })}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="license_alert_enabled" className="text-sm font-medium text-gray-700">
+                      Enable License Renewal Alerts
+                    </label>
+                  </div>
+                  {form.license_alert_enabled && (
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-700">Alert Days:</label>
+                      <select
+                        className="px-3 py-1 border border-gray-300 rounded-lg text-sm"
+                        value={form.license_alert_days}
+                        onChange={(e) => setForm({ ...form, license_alert_days: parseInt(e.target.value) })}
+                      >
+                        <option value={7}>7 days</option>
+                        <option value={15}>15 days</option>
+                        <option value={30}>30 days</option>
+                        <option value={60}>60 days</option>
+                        <option value={90}>90 days</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-blue-600">
+                  <FiAlertTriangle className="inline w-3 h-3 mr-1" />
+                  Alerts will be sent {form.license_alert_days} days before license expiry
+                </p>
+              </div>
+
+              {/* License List */}
+              <div className="space-y-4">
+                {form.professional_licenses.map((license, index) => {
+                  const expiryDate = new Date(license.expiry_date);
+                  const today = new Date();
+                  const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                  const isExpiringSoon = daysUntilExpiry <= form.license_alert_days && daysUntilExpiry > 0;
+                  const isExpired = daysUntilExpiry <= 0;
+                  
+                  return (
+                    <div key={index} className={`p-4 border rounded-xl ${
+                      isExpired ? 'border-red-300 bg-red-50' : 
+                      isExpiringSoon ? 'border-yellow-300 bg-yellow-50' : 
+                      'border-gray-300'
+                    }`}>
+                      {/* Alert Badge */}
+                      {(isExpired || isExpiringSoon) && (
+                        <div className={`mb-3 inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                          isExpired ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          <FiAlertTriangle className="w-3 h-3" />
+                          {isExpired ? 'Expired' : `Expires in ${daysUntilExpiry} days`}
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">License Type</label>
+                          <select
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            value={license.license_type || ''}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].license_type = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          >
+                            <option value="">Select license type</option>
+                            <option value="Medical License">Medical License</option>
+                            <option value="Nursing License">Nursing License</option>
+                            <option value="Pharmacy License">Pharmacy License</option>
+                            <option value="Dental License">Dental License</option>
+                            <option value="Physiotherapy License">Physiotherapy License</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">License Number</label>
+                          <input
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            placeholder="License number"
+                            value={license.license_number || ''}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].license_number = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">Issuing Authority</label>
+                          <input
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            placeholder="Issuing authority"
+                            value={license.issuing_authority || ''}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].issuing_authority = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">Issue Date</label>
+                          <input
+                            type="date"
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            value={license.issue_date || ''}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].issue_date = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">
+                            <FiCalendar className="inline w-4 h-4 mr-1" />
+                            Expiry Date
+                          </label>
+                          <input
+                            type="date"
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            value={license.expiry_date || ''}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].expiry_date = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-secondary mb-2">Status</label>
+                          <select
+                            className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                            value={license.status || 'Active'}
+                            onChange={(e) => {
+                              const updated = [...form.professional_licenses];
+                              updated[index].status = e.target.value;
+                              setForm({ ...form, professional_licenses: updated });
+                            }}
+                          >
+                            <option value="Active">Active</option>
+                            <option value="Expired">Expired</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Renewed">Renewed</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end mt-4">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = form.professional_licenses.filter((_, i) => i !== index);
+                            setForm({ ...form, professional_licenses: updated });
+                          }}
+                          className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors text-sm"
+                        >
+                          Remove License
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm({
+                      ...form,
+                      professional_licenses: [...form.professional_licenses, {
+                        license_type: '',
+                        license_number: '',
+                        issuing_authority: '',
+                        issue_date: '',
+                        expiry_date: '',
+                        status: 'Active'
+                      }]
+                    });
+                  }}
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium"
+                >
+                  + Add Professional License
+                </button>
               </div>
             </div>
 

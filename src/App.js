@@ -38,6 +38,7 @@ import EmployeeSkills from "./pages/EIS/EmployeeSkills";
 import EmployeeCertifications from "./pages/EIS/EmployeeCertifications";
 import EmployeeFamily from "./pages/EIS/EmployeeFamily";
 import EmployeeMedical from "./pages/EIS/EmployeeMedical";
+import LicenseAlerts from "./pages/EIS/LicenseAlerts";
 import EmployeeDocuments from "./pages/EIS/EmployeeDocuments";
 import EmployeeIDDocs from "./pages/EIS/EmployeeIDDocs";
 import EmployeeSalary from "./pages/EIS/EmployeeSalary";
@@ -175,6 +176,7 @@ function App() {
         <Route path="/eis/:id/certifications" element={<ProtectedRoute><EmployeeCertifications /></ProtectedRoute>} />
         <Route path="/eis/:id/family" element={<ProtectedRoute><EmployeeFamily /></ProtectedRoute>} />
         <Route path="/eis/:id/medical" element={<ProtectedRoute><EmployeeMedical /></ProtectedRoute>} />
+        <Route path="/license-alerts" element={<ProtectedRoute><LicenseAlerts /></ProtectedRoute>} />
         <Route path="/eis/:id/documents" element={<ProtectedRoute><EmployeeDocuments /></ProtectedRoute>} />
         <Route path="/eis/:id/id-docs" element={<ProtectedRoute><EmployeeIDDocs /></ProtectedRoute>} />
         <Route path="/eis/:id/salary" element={<ProtectedRoute><EmployeeSalary /></ProtectedRoute>} />
