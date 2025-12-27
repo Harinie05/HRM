@@ -1710,6 +1710,94 @@ class NABHCreate(BaseModel):
     performance_monitoring_done: bool
     remarks: Optional[str] = None
 
+# =====================================================
+# LOCUM / VISITING CONSULTANT SCHEMAS
+# =====================================================
+class VisitingConsultantBase(BaseModel):
+    name: str
+    specialization: Optional[str] = None
+    registration_number: Optional[str] = None
+    consultant_type: str  # Locum / Visiting
+    department_id: Optional[int] = None
+    contact_details: Optional[dict] = None
+    status: Optional[str] = "Active"
+
+class VisitingConsultantCreate(VisitingConsultantBase):
+    pass
+
+class VisitingConsultantOut(VisitingConsultantBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+class ConsultantAvailabilityBase(BaseModel):
+    consultant_id: int
+    date: date
+    from_time: time
+    to_time: time
+    availability_type: str  # OPD / Surgery / On-call
+
+class ConsultantAvailabilityCreate(ConsultantAvailabilityBase):
+    pass
+
+class ConsultantAvailabilityOut(ConsultantAvailabilityBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ConsultantPayoutBase(BaseModel):
+    consultant_id: int
+    period_start: date
+    period_end: date
+    total_cases: Optional[int] = 0
+    total_revenue: Optional[float] = 0.0
+    consultant_share: Optional[float] = 0.0
+    hospital_share: Optional[float] = 0.0
+    payout_status: Optional[str] = "Pending"
+
+class ConsultantPayoutCreate(ConsultantPayoutBase):
+    pass
+
+class ConsultantPayoutOut(ConsultantPayoutBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+# =====================================================
+# PROBATION PERIOD TRACKING SCHEMAS
+# =====================================================
+class EmployeeProbationBase(BaseModel):
+    employee_id: int
+    date_of_joining: date
+    probation_end_date: date
+    probation_status: Optional[str] = "In Progress"
+    extension_end_date: Optional[date] = None
+    remarks: Optional[str] = None
+
+class EmployeeProbationCreate(EmployeeProbationBase):
+    pass
+
+class EmployeeProbationUpdate(BaseModel):
+    probation_status: Optional[str] = None
+    extension_end_date: Optional[date] = None
+    remarks: Optional[str] = None
+
+class EmployeeProbationOut(EmployeeProbationBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
 
 
 

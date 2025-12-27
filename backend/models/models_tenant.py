@@ -1596,3 +1596,62 @@ class ExperienceLetter(MasterBase):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
+# =====================================================
+# LOCUM / VISITING CONSULTANT MANAGEMENT
+# =====================================================
+class VisitingConsultant(MasterBase):
+    __tablename__ = "visiting_consultants"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(150), nullable=False)
+    specialization = Column(String(200), nullable=True)
+    registration_number = Column(String(100), nullable=True)
+    consultant_type = Column(String(50), nullable=False)  # Locum / Visiting
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
+    contact_details = Column(JSON, nullable=True)  # {phone, email, address}
+    status = Column(String(50), default="Active")  # Active / Inactive
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class ConsultantAvailability(MasterBase):
+    __tablename__ = "consultant_availability"
+
+    id = Column(Integer, primary_key=True, index=True)
+    consultant_id = Column(Integer, ForeignKey("visiting_consultants.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    from_time = Column(Time, nullable=False)
+    to_time = Column(Time, nullable=False)
+    availability_type = Column(String(50), nullable=False)  # OPD / Surgery / On-call
+    created_at = Column(DateTime, default=func.now())
+
+class ConsultantPayout(MasterBase):
+    __tablename__ = "consultant_payouts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    consultant_id = Column(Integer, ForeignKey("visiting_consultants.id"), nullable=False)
+    period_start = Column(Date, nullable=False)
+    period_end = Column(Date, nullable=False)
+    total_cases = Column(Integer, default=0)
+    total_revenue = Column(Float, default=0.0)
+    consultant_share = Column(Float, default=0.0)
+    hospital_share = Column(Float, default=0.0)
+    payout_status = Column(String(50), default="Pending")  # Pending / Processed / Paid
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+# =====================================================
+# PROBATION PERIOD TRACKING
+# =====================================================
+class EmployeeProbation(MasterBase):
+    __tablename__ = "employee_probations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date_of_joining = Column(Date, nullable=False)
+    probation_end_date = Column(Date, nullable=False)
+    probation_status = Column(String(50), default="In Progress")  # In Progress / Confirmed / Extended / Terminated
+    extension_end_date = Column(Date, nullable=True)
+    remarks = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+

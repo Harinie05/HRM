@@ -94,6 +94,10 @@ import ExitLayout from "./pages/exit/ExitLayout";
 // ======================= 🔥 CUSTOMIZATION IMPORTS =======================
 import Customization from "./pages/Customization";
 
+// ======================= 🔥 NEW RECRUITMENT FEATURES =======================
+import LocumConsultants from "./pages/recruitment/LocumConsultants";
+import ProbationTracking from "./pages/recruitment/ProbationTracking";
+
 function App() {
   // Load saved theme colors on app startup
   useEffect(() => {
@@ -158,6 +162,9 @@ function App() {
         <Route path="/offers" element={<ProtectedRoute><Offer /></ProtectedRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
         <Route path="/screening" element={<ProtectedRoute><CandidateScreening /></ProtectedRoute>} />
+        <Route path="/locum-consultants" element={<ProtectedRoute><LocumConsultants /></ProtectedRoute>} />
+        <Route path="/probation-tracking" element={<ProtectedRoute><ProbationTracking /></ProtectedRoute>} />
+        <Route path="/employee-list" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
 
         {/* EIS */}
         <Route path="/eis" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />

@@ -377,6 +377,28 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
               >
                 Onboarding
               </Link>
+
+              <Link
+                to="/locum-consultants"
+                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                  location.pathname === "/locum-consultants"
+                    ? "font-medium text-white bg-white/10"
+                    : "text-white/80"
+                }`}
+              >
+                Locum / Visiting Consultants
+              </Link>
+
+              <Link
+                to="/probation-tracking"
+                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                  location.pathname === "/probation-tracking"
+                    ? "font-medium text-white bg-white/10"
+                    : "text-white/80"
+                }`}
+              >
+                Probation Tracking
+              </Link>
             </div>
           )}
         </div>
