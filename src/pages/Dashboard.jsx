@@ -4,7 +4,7 @@ import {
   Users, Building2, UserCheck, TrendingUp, TrendingDown, Calendar, AlertTriangle, 
   CheckCircle, Clock, BarChart3, Target, Award, GraduationCap, DollarSign, 
   FileText, UserPlus, Settings, Shield, Activity, Briefcase, PieChart,
-  ArrowRight, Star, Zap, Globe
+  ArrowRight, Star, Zap, Globe, Bell
 } from "lucide-react";
 import api from "../api";
 
@@ -16,6 +16,17 @@ export default function Dashboard() {
     totalDepartments: 0,
     totalRoles: 0
   });
+  const [licenseAlerts, setLicenseAlerts] = useState([]);
+
+  // ========================= FETCH LICENSE ALERTS =========================
+  const fetchLicenseAlerts = async () => {
+    try {
+      const res = await api.get("/employee/medical/license-alerts");
+      setLicenseAlerts(res.data?.alerts || []);
+    } catch {
+      console.error("Failed to load license alerts");
+    }
+  };
 
   // ========================= FETCH HOLIDAYS =========================
   const fetchHolidays = async () => {
@@ -78,6 +89,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchHolidays();
     fetchDashboardData();
+    fetchLicenseAlerts();
   }, []);
 
   // ========================= SYNC LISTENER =========================
@@ -319,7 +331,50 @@ export default function Dashboard() {
         </div>
 
         {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* License Renewal Alerts */}
+          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">License Alerts</h3>
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+            </div>
+            
+            <div className="space-y-3">
+              {licenseAlerts.length > 0 ? (
+                licenseAlerts.slice(0, 3).map((alert, index) => (
+                  <div key={index} className={`p-3 rounded-lg border ${
+                    alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{alert.license_type}</p>
+                        <p className="text-xs text-gray-600">Employee ID: {alert.employee_id}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-xs font-bold ${
+                          alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                        }`}>
+                          {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                  <p className="text-sm">No license alerts</p>
+                </div>
+              )}
+              
+              {licenseAlerts.length > 3 && (
+                <div className="text-center pt-2">
+                  <p className="text-xs text-gray-600">+{licenseAlerts.length - 3} more alerts</p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Attrition Analysis */}
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">

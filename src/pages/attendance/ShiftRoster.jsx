@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Calendar, Download, Copy, Save, Plus, Users, Clock, Settings } from "lucide-react";
+import { ChevronDown, ChevronUp, Calendar, Download, Copy, Save, Plus, Users, Clock, Settings, Phone, AlertTriangle } from "lucide-react";
 import Layout from "../../components/Layout";
 import api from "../../api";
 
@@ -36,6 +36,30 @@ export default function ShiftRoster() {
   const [showCreateShift, setShowCreateShift] = useState(false);
   const [newShift, setNewShift] = useState({ name: "", start_time: "", end_time: "" });
   const [selectedUsersForBulk, setSelectedUsersForBulk] = useState([]);
+  
+  // On-Call Duty States
+  const [onCallDuties, setOnCallDuties] = useState([]);
+  const [showOnCallForm, setShowOnCallForm] = useState(false);
+  const [onCallForm, setOnCallForm] = useState({
+    employee_id: "",
+    date: new Date().toISOString().split('T')[0],
+    from_time: "18:00",
+    to_time: "08:00",
+    duty_type: "On-Call",
+    priority_level: "Normal",
+    contact_number: "",
+    remarks: ""
+  });
+  const [emergencyCalls, setEmergencyCalls] = useState([]);
+  const [showEmergencyForm, setShowEmergencyForm] = useState(false);
+  const [emergencyForm, setEmergencyForm] = useState({
+    on_call_duty_id: "",
+    employee_id: "",
+    call_time: new Date().toISOString().slice(0, 19),
+    call_type: "Emergency",
+    caller_details: "",
+    issue_description: ""
+  });
 
   useEffect(() => {
     fetchShifts();
@@ -44,6 +68,8 @@ export default function ShiftRoster() {
     fetchDepartments();
     fetchRoles();
     fetchUsers();
+    fetchOnCallDuties();
+    fetchEmergencyCalls();
   }, []);
 
   useEffect(() => {
@@ -588,6 +614,99 @@ export default function ShiftRoster() {
     }
   };
 
+  // On-Call Duty Functions
+  const fetchOnCallDuties = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8000/api/roster/on-call", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setOnCallDuties(data.on_call_duties || []);
+      }
+    } catch (error) {
+      console.error("Error fetching on-call duties:", error);
+    }
+  };
+
+  const fetchEmergencyCalls = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8000/api/roster/emergency-calls", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEmergencyCalls(data.emergency_calls || []);
+      }
+    } catch (error) {
+      console.error("Error fetching emergency calls:", error);
+    }
+  };
+
+  const saveOnCallDuty = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8000/api/roster/on-call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(onCallForm)
+      });
+      
+      if (response.ok) {
+        alert("On-call duty created successfully!");
+        setShowOnCallForm(false);
+        setOnCallForm({
+          employee_id: "",
+          date: new Date().toISOString().split('T')[0],
+          from_time: "18:00",
+          to_time: "08:00",
+          duty_type: "On-Call",
+          priority_level: "Normal",
+          contact_number: "",
+          remarks: ""
+        });
+        fetchOnCallDuties();
+      }
+    } catch (error) {
+      console.error("Error saving on-call duty:", error);
+    }
+  };
+
+  const logEmergencyCall = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8000/api/roster/emergency-call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(emergencyForm)
+      });
+      
+      if (response.ok) {
+        alert("Emergency call logged successfully!");
+        setShowEmergencyForm(false);
+        setEmergencyForm({
+          on_call_duty_id: "",
+          employee_id: "",
+          call_time: new Date().toISOString().slice(0, 19),
+          call_type: "Emergency",
+          caller_details: "",
+          issue_description: ""
+        });
+        fetchEmergencyCalls();
+      }
+    } catch (error) {
+      console.error("Error logging emergency call:", error);
+    }
+  };
+
   const getDayName = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -1039,7 +1158,7 @@ export default function ShiftRoster() {
                                 onClick={() => setEditingCell(`${user.id}-${date}`)}
                                 className="text-center text-gray-500 text-sm cursor-pointer hover:text-gray-700 hover:bg-gray-100 py-2 rounded border border-dashed border-gray-300"
                               >
-                                + Add
+                                Assign
                               </div>
                             )}
                           </td>
@@ -1060,6 +1179,71 @@ export default function ShiftRoster() {
             </table>
           </div>
         </div>
+        </div>
+
+        {/* On-Call / Emergency Duty Management */}
+        <div className="bg-white rounded-lg p-4 sm:p-6 border border-black mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <Phone className="w-5 h-5 text-gray-600" />
+              On-Call / Emergency Duty Management
+            </h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowOnCallForm(true)}
+                className="bg-white border border-black text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add On-Call Duty</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Current On-Call Duties</h3>
+            {onCallDuties.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Phone className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p>No on-call duties scheduled</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {onCallDuties.map((duty) => (
+                  <div key={duty.id} className="bg-gray-50 rounded-lg p-4 border border-black">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900">{duty.employee_name}</h4>
+                        <p className="text-sm text-gray-600">{duty.duty_type} - {duty.priority_level}</p>
+                      </div>
+                      <span className={`px-2 py-1 text-xs rounded-lg font-medium ${
+                        duty.status === 'Active' ? 'bg-green-100 text-green-800' :
+                        duty.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {duty.status}
+                      </span>
+                    </div>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{duty.date}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        <span>{duty.from_time} - {duty.to_time}</span>
+                      </div>
+                      {duty.contact_number && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          <span>{duty.contact_number}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Night Shift Rules Section */}
@@ -1294,6 +1478,135 @@ export default function ShiftRoster() {
                     className="flex-1 px-4 py-3 bg-white border border-black text-gray-900 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                   >
                     Create Shift
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* On-Call Duty Modal */}
+        {showOnCallForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 overflow-y-auto">
+            <div className="bg-white w-full max-w-4xl rounded-lg border border-black my-8">
+              <div className="p-4 sm:p-6 border-b border-black">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Add On-Call Duty</h3>
+                  <button
+                    onClick={() => setShowOnCallForm(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg border border-black transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-4 sm:p-6 max-h-96 overflow-y-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                    <select
+                      value={onCallForm.employee_id}
+                      onChange={(e) => setOnCallForm({...onCallForm, employee_id: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.map((emp) => (
+                        <option key={emp.id} value={emp.id}>
+                          {emp.name} - {emp.employee_code}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input
+                      type="date"
+                      value={onCallForm.date}
+                      onChange={(e) => setOnCallForm({...onCallForm, date: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
+                    <input
+                      type="time"
+                      value={onCallForm.from_time}
+                      onChange={(e) => setOnCallForm({...onCallForm, from_time: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
+                    <input
+                      type="time"
+                      value={onCallForm.to_time}
+                      onChange={(e) => setOnCallForm({...onCallForm, to_time: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Duty Type</label>
+                    <select
+                      value={onCallForm.duty_type}
+                      onChange={(e) => setOnCallForm({...onCallForm, duty_type: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <option value="On-Call">On-Call</option>
+                      <option value="Emergency">Emergency</option>
+                      <option value="Standby">Standby</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
+                    <select
+                      value={onCallForm.priority_level}
+                      onChange={(e) => setOnCallForm({...onCallForm, priority_level: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <option value="Normal">Normal</option>
+                      <option value="High">High</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                    <input
+                      type="tel"
+                      value={onCallForm.contact_number}
+                      onChange={(e) => setOnCallForm({...onCallForm, contact_number: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      placeholder="Emergency contact number"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+                    <textarea
+                      value={onCallForm.remarks}
+                      onChange={(e) => setOnCallForm({...onCallForm, remarks: e.target.value})}
+                      className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      rows="3"
+                      placeholder="Additional notes..."
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 sm:p-6 border-t border-black">
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowOnCallForm(false)}
+                    className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 border border-black rounded-lg hover:bg-gray-200 font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={saveOnCallDuty}
+                    className="flex-1 px-4 py-3 bg-white border border-black text-gray-900 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                  >
+                    Add On-Call Duty
                   </button>
                 </div>
               </div>

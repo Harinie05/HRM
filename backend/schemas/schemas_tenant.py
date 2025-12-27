@@ -1772,6 +1772,73 @@ class ConsultantPayoutOut(ConsultantPayoutBase):
         from_attributes = True
 
 # =====================================================
+# ON-CALL / EMERGENCY DUTY TRACKING SCHEMAS
+# =====================================================
+class OnCallDutyBase(BaseModel):
+    employee_id: int
+    date: date
+    from_time: time
+    to_time: time
+    duty_type: Optional[str] = "On-Call"
+    department_id: Optional[int] = None
+    priority_level: Optional[str] = "Normal"
+    contact_number: Optional[str] = None
+    status: Optional[str] = "Scheduled"
+    remarks: Optional[str] = None
+
+class OnCallDutyCreate(OnCallDutyBase):
+    pass
+
+class OnCallDutyUpdate(BaseModel):
+    employee_id: Optional[int] = None
+    date: Optional[date] = None
+    from_time: Optional[time] = None
+    to_time: Optional[time] = None
+    duty_type: Optional[str] = None
+    department_id: Optional[int] = None
+    priority_level: Optional[str] = None
+    contact_number: Optional[str] = None
+    status: Optional[str] = None
+    remarks: Optional[str] = None
+
+class OnCallDutyOut(OnCallDutyBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+class EmergencyCallLogBase(BaseModel):
+    on_call_duty_id: int
+    employee_id: int
+    call_time: datetime
+    call_type: str
+    caller_details: Optional[str] = None
+    issue_description: Optional[str] = None
+    response_time: Optional[datetime] = None
+    resolution_notes: Optional[str] = None
+    call_duration: Optional[int] = None
+    status: Optional[str] = "Received"
+
+class EmergencyCallLogCreate(EmergencyCallLogBase):
+    pass
+
+class EmergencyCallLogUpdate(BaseModel):
+    response_time: Optional[datetime] = None
+    resolution_notes: Optional[str] = None
+    call_duration: Optional[int] = None
+    status: Optional[str] = None
+
+class EmergencyCallLogOut(EmergencyCallLogBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+# =====================================================
 # PROBATION PERIOD TRACKING SCHEMAS
 # =====================================================
 class EmployeeProbationBase(BaseModel):

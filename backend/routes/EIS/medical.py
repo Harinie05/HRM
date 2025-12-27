@@ -142,6 +142,55 @@ async def add_medical(
 
 
 # -------------------------------------------------------------------------
+# 6. GET LICENSE RENEWAL ALERTS
+# -------------------------------------------------------------------------
+@router.get("/license-alerts")
+def get_license_alerts(user=Depends(get_current_user)):
+    """Get all employees with licenses expiring soon"""
+    db = get_tenant_session(user)
+    from datetime import datetime, timedelta
+    
+    try:
+        # Get all medical records with professional licenses
+        medical_records = db.query(EmployeeMedical).filter(
+            EmployeeMedical.professional_licenses.isnot(None),
+            EmployeeMedical.license_alert_enabled == True
+        ).all()
+        
+        alerts = []
+        today = datetime.now().date()
+        
+        for record in medical_records:
+            if record.professional_licenses:
+                for license_data in record.professional_licenses:
+                    if license_data.get('expiry_date'):
+                        try:
+                            expiry_date = datetime.strptime(license_data['expiry_date'], '%Y-%m-%d').date()
+                            days_until_expiry = (expiry_date - today).days
+                            
+                            # Check if license is expiring within alert days
+                            if days_until_expiry <= record.license_alert_days and days_until_expiry >= 0:
+                                alerts.append({
+                                    'employee_id': record.employee_id,
+                                    'license_type': license_data.get('license_type'),
+                                    'license_number': license_data.get('license_number'),
+                                    'expiry_date': license_data.get('expiry_date'),
+                                    'days_until_expiry': days_until_expiry,
+                                    'status': license_data.get('status', 'Active'),
+                                    'alert_level': 'critical' if days_until_expiry <= 7 else 'warning'
+                                })
+                        except ValueError:
+                            continue
+        
+        return {'alerts': alerts}
+        
+    except Exception as e:
+        raise HTTPException(500, f"Failed to get license alerts: {str(e)}")
+    finally:
+        db.close()
+
+
+# -------------------------------------------------------------------------
 # 2. GET MEDICAL DETAILS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=MedicalOut)
@@ -294,55 +343,6 @@ def view_certificate(employee_id: int, token: str = Query(None)):
         media_type=media_type,
         headers={"Content-Disposition": "inline"}
     )
-
-# -------------------------------------------------------------------------
-# 6. GET LICENSE RENEWAL ALERTS
-# -------------------------------------------------------------------------
-@router.get("/license-alerts")
-def get_license_alerts(user=Depends(get_current_user)):
-    """Get all employees with licenses expiring soon"""
-    db = get_tenant_session(user)
-    from datetime import datetime, timedelta
-    
-    try:
-        # Get all medical records with professional licenses
-        medical_records = db.query(EmployeeMedical).filter(
-            EmployeeMedical.professional_licenses.isnot(None),
-            EmployeeMedical.license_alert_enabled == True
-        ).all()
-        
-        alerts = []
-        today = datetime.now().date()
-        
-        for record in medical_records:
-            if record.professional_licenses:
-                for license_data in record.professional_licenses:
-                    if license_data.get('expiry_date'):
-                        try:
-                            expiry_date = datetime.strptime(license_data['expiry_date'], '%Y-%m-%d').date()
-                            days_until_expiry = (expiry_date - today).days
-                            
-                            # Check if license is expiring within alert days
-                            if days_until_expiry <= record.license_alert_days and days_until_expiry >= 0:
-                                alerts.append({
-                                    'employee_id': record.employee_id,
-                                    'license_type': license_data.get('license_type'),
-                                    'license_number': license_data.get('license_number'),
-                                    'expiry_date': license_data.get('expiry_date'),
-                                    'days_until_expiry': days_until_expiry,
-                                    'status': license_data.get('status', 'Active'),
-                                    'alert_level': 'critical' if days_until_expiry <= 7 else 'warning'
-                                })
-                        except ValueError:
-                            continue
-        
-        return {'alerts': alerts}
-        
-    except Exception as e:
-        raise HTTPException(500, f"Failed to get license alerts: {str(e)}")
-    finally:
-        db.close()
-
 
 # -------------------------------------------------------------------------
 # 7. DELETE MEDICAL RECORD

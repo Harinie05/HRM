@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 from routes.hospital import get_current_user
 from database import get_tenant_engine
 from utils.audit_logger import audit_crud
-from models.models_tenant import EmployeeRoster, NightShiftRule, Shift, Employee, User
+from models.models_tenant import EmployeeRoster, NightShiftRule, Shift, Employee, User, OnCallDuty, EmergencyCallLog
 
 router = APIRouter(prefix="/roster", tags=["Roster Management"])
 
@@ -148,6 +148,25 @@ class NightShiftRulesRequest(BaseModel):
     minimum_hours: int
     night_ot_rate: str
     grace_minutes: int
+
+class OnCallDutyRequest(BaseModel):
+    employee_id: int
+    date: str
+    from_time: str
+    to_time: str
+    duty_type: str = "On-Call"
+    department_id: Optional[int] = None
+    priority_level: str = "Normal"
+    contact_number: Optional[str] = None
+    remarks: Optional[str] = None
+
+class EmergencyCallRequest(BaseModel):
+    on_call_duty_id: int
+    employee_id: int
+    call_time: str
+    call_type: str
+    caller_details: Optional[str] = None
+    issue_description: Optional[str] = None
 
 @router.post("/save")
 def save_roster_entry(
@@ -415,5 +434,237 @@ def debug_roster_table(user=Depends(get_current_user)):
         }
     except Exception as e:
         return {"error": str(e)}
+    finally:
+        db.close()
+
+# -------------------------------------------------------------------------
+# ON-CALL DUTY MANAGEMENT
+# -------------------------------------------------------------------------
+@router.get("/on-call")
+def get_on_call_duties(
+    date: Optional[str] = None,
+    department_id: Optional[int] = None,
+    user=Depends(get_current_user)
+):
+    """Get on-call duties for a specific date or date range"""
+    db = get_tenant_session(user)
+    try:
+        query = db.query(OnCallDuty)
+        
+        if date:
+            duty_date = datetime.strptime(date, "%Y-%m-%d").date()
+            query = query.filter(OnCallDuty.date == duty_date)
+        
+        if department_id:
+            query = query.filter(OnCallDuty.department_id == department_id)
+        
+        duties = query.all()
+        
+        # Get employee details
+        result = []
+        for duty in duties:
+            employee = db.query(User).filter(User.id == duty.employee_id).first()
+            result.append({
+                "id": duty.id,
+                "employee_id": duty.employee_id,
+                "employee_name": employee.name if employee else "Unknown",
+                "date": str(duty.date),
+                "from_time": str(duty.from_time),
+                "to_time": str(duty.to_time),
+                "duty_type": duty.duty_type,
+                "priority_level": duty.priority_level,
+                "contact_number": duty.contact_number,
+                "status": duty.status,
+                "remarks": duty.remarks
+            })
+        
+        return {"on_call_duties": result}
+    except Exception as e:
+        raise HTTPException(500, f"Error fetching on-call duties: {str(e)}")
+    finally:
+        db.close()
+
+@router.post("/on-call")
+def create_on_call_duty(
+    request: OnCallDutyRequest,
+    req: Request,
+    user=Depends(get_current_user)
+):
+    """Create new on-call duty assignment"""
+    db = get_tenant_session(user)
+    try:
+        duty_date = datetime.strptime(request.date, "%Y-%m-%d").date()
+        from_time = datetime.strptime(request.from_time, "%H:%M").time()
+        to_time = datetime.strptime(request.to_time, "%H:%M").time()
+        
+        new_duty = OnCallDuty(
+            employee_id=request.employee_id,
+            date=duty_date,
+            from_time=from_time,
+            to_time=to_time,
+            duty_type=request.duty_type,
+            department_id=request.department_id,
+            priority_level=request.priority_level,
+            contact_number=request.contact_number,
+            remarks=request.remarks
+        )
+        
+        db.add(new_duty)
+        db.commit()
+        db.refresh(new_duty)
+        
+        audit_crud(req, user.get("tenant_db"), user, "CREATE", "on_call_duties", new_duty.id, None, request.dict())
+        return {"message": "On-call duty created successfully", "duty_id": new_duty.id}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error creating on-call duty: {str(e)}")
+    finally:
+        db.close()
+
+@router.put("/on-call/{duty_id}")
+def update_on_call_duty(
+    duty_id: int,
+    request: OnCallDutyRequest,
+    req: Request,
+    user=Depends(get_current_user)
+):
+    """Update on-call duty"""
+    db = get_tenant_session(user)
+    try:
+        duty = db.query(OnCallDuty).filter(OnCallDuty.id == duty_id).first()
+        if not duty:
+            raise HTTPException(404, "On-call duty not found")
+        
+        duty_date = datetime.strptime(request.date, "%Y-%m-%d").date()
+        from_time = datetime.strptime(request.from_time, "%H:%M").time()
+        to_time = datetime.strptime(request.to_time, "%H:%M").time()
+        
+        duty.employee_id = request.employee_id
+        duty.date = duty_date
+        duty.from_time = from_time
+        duty.to_time = to_time
+        duty.duty_type = request.duty_type
+        duty.department_id = request.department_id
+        duty.priority_level = request.priority_level
+        duty.contact_number = request.contact_number
+        duty.remarks = request.remarks
+        
+        db.commit()
+        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "on_call_duties", duty_id, None, request.dict())
+        return {"message": "On-call duty updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error updating on-call duty: {str(e)}")
+    finally:
+        db.close()
+
+@router.delete("/on-call/{duty_id}")
+def delete_on_call_duty(
+    duty_id: int,
+    request: Request,
+    user=Depends(get_current_user)
+):
+    """Delete on-call duty"""
+    db = get_tenant_session(user)
+    try:
+        duty = db.query(OnCallDuty).filter(OnCallDuty.id == duty_id).first()
+        if not duty:
+            raise HTTPException(404, "On-call duty not found")
+        
+        old_values = duty.__dict__.copy()
+        db.delete(duty)
+        db.commit()
+        
+        audit_crud(request, user.get("tenant_db"), user, "DELETE", "on_call_duties", duty_id, old_values, None)
+        return {"message": "On-call duty deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error deleting on-call duty: {str(e)}")
+    finally:
+        db.close()
+
+# -------------------------------------------------------------------------
+# EMERGENCY CALL LOGGING
+# -------------------------------------------------------------------------
+@router.post("/emergency-call")
+def log_emergency_call(
+    request: EmergencyCallRequest,
+    req: Request,
+    user=Depends(get_current_user)
+):
+    """Log an emergency call"""
+    db = get_tenant_session(user)
+    try:
+        call_time = datetime.strptime(request.call_time, "%Y-%m-%d %H:%M:%S")
+        
+        new_call = EmergencyCallLog(
+            on_call_duty_id=request.on_call_duty_id,
+            employee_id=request.employee_id,
+            call_time=call_time,
+            call_type=request.call_type,
+            caller_details=request.caller_details,
+            issue_description=request.issue_description
+        )
+        
+        db.add(new_call)
+        db.commit()
+        db.refresh(new_call)
+        
+        audit_crud(req, user.get("tenant_db"), user, "CREATE", "emergency_call_logs", new_call.id, None, request.dict())
+        return {"message": "Emergency call logged successfully", "call_id": new_call.id}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error logging emergency call: {str(e)}")
+    finally:
+        db.close()
+
+@router.get("/emergency-calls")
+def get_emergency_calls(
+    duty_id: Optional[int] = None,
+    employee_id: Optional[int] = None,
+    user=Depends(get_current_user)
+):
+    """Get emergency call logs"""
+    db = get_tenant_session(user)
+    try:
+        query = db.query(EmergencyCallLog)
+        
+        if duty_id:
+            query = query.filter(EmergencyCallLog.on_call_duty_id == duty_id)
+        
+        if employee_id:
+            query = query.filter(EmergencyCallLog.employee_id == employee_id)
+        
+        calls = query.order_by(EmergencyCallLog.call_time.desc()).all()
+        
+        result = []
+        for call in calls:
+            employee = db.query(User).filter(User.id == call.employee_id).first()
+            result.append({
+                "id": call.id,
+                "on_call_duty_id": call.on_call_duty_id,
+                "employee_id": call.employee_id,
+                "employee_name": employee.name if employee else "Unknown",
+                "call_time": str(call.call_time),
+                "response_time": str(call.response_time) if call.response_time else None,
+                "call_type": call.call_type,
+                "caller_details": call.caller_details,
+                "issue_description": call.issue_description,
+                "resolution_notes": call.resolution_notes,
+                "call_duration": call.call_duration,
+                "status": call.status
+            })
+        
+        return {"emergency_calls": result}
+    except Exception as e:
+        raise HTTPException(500, f"Error fetching emergency calls: {str(e)}")
     finally:
         db.close()

@@ -1674,6 +1674,43 @@ class ConsultantPayout(MasterBase):
     updated_at = Column(DateTime, onupdate=func.now())
 
 # =====================================================
+# ON-CALL / EMERGENCY DUTY TRACKING
+# =====================================================
+class OnCallDuty(MasterBase):
+    __tablename__ = "on_call_duties"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    from_time = Column(Time, nullable=False)
+    to_time = Column(Time, nullable=False)
+    duty_type = Column(String(50), default="On-Call")  # On-Call / Emergency / Standby
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
+    priority_level = Column(String(20), default="Normal")  # High / Normal / Low
+    contact_number = Column(String(20), nullable=True)
+    status = Column(String(50), default="Scheduled")  # Scheduled / Active / Completed / Cancelled
+    remarks = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class EmergencyCallLog(MasterBase):
+    __tablename__ = "emergency_call_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    on_call_duty_id = Column(Integer, ForeignKey("on_call_duties.id"), nullable=False)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    call_time = Column(DateTime, nullable=False)
+    response_time = Column(DateTime, nullable=True)
+    call_type = Column(String(50), nullable=False)  # Emergency / Consultation / Support
+    caller_details = Column(String(200), nullable=True)
+    issue_description = Column(Text, nullable=True)
+    resolution_notes = Column(Text, nullable=True)
+    call_duration = Column(Integer, nullable=True)  # Minutes
+    status = Column(String(50), default="Received")  # Received / In Progress / Resolved / Escalated
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+# =====================================================
 # PROBATION PERIOD TRACKING
 # =====================================================
 class EmployeeProbation(MasterBase):
