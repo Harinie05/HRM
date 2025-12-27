@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import { AppleForm, AppleInput, AppleTextarea, AppleSelect, AppleButton, AppleCheckbox, AppleFormRow, AppleFormSection, AppleFormActions } from "../../components/AppleForms";
 
 export default function JobForm({ mode, job, onClose }) {
   const isView = mode === "view";
@@ -85,191 +86,185 @@ export default function JobForm({ mode, job, onClose }) {
   // ========================= RENDER UI =========================
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white w-[700px] max-h-[88vh] overflow-y-auto p-6 rounded-xl shadow-xl">
+      <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl mx-4">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">
+            {mode === "create" && "Create New Job"}
+            {mode === "edit" && "Edit Job"}
+            {mode === "view" && "Job Details"}
+          </h2>
 
-        <h2 className="text-xl font-semibold mb-4">
-          {mode === "create" && "Create New Job"}
-          {mode === "edit" && "Edit Job"}
-          {mode === "view" && "Job Details"}
-        </h2>
-
-        {/* FORM FIELDS */}
-        <div className="space-y-4">
-
-          <input
-            type="text"
-            placeholder="Job Title"
-            value={form.title}
-            disabled={isView}
-            onChange={(e) => updateField("title", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
-
-          {/* Department & Openings */}
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="text"
-              placeholder="Department"
-              value={form.department}
-              disabled={isView}
-              onChange={(e) => updateField("department", e.target.value)}
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            />
-
-            <input
-              type="number"
-              placeholder="Openings"
-              value={form.openings}
-              disabled={isView}
-              onChange={(e) => updateField("openings", e.target.value)}
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            />
-          </div>
-
-          {/* Experience & Salary */}
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="text"
-              placeholder="Experience (e.g., 2-4 years)"
-              value={form.experience}
-              disabled={isView}
-              onChange={(e) => updateField("experience", e.target.value)}
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            />
-
-            <input
-              type="text"
-              placeholder="Salary Range (e.g., 4-7 LPA)"
-              value={form.salary_range}
-              disabled={isView}
-              onChange={(e) => updateField("salary_range", e.target.value)}
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            />
-          </div>
-
-          {/* Job Type & Work Mode */}
-          <div className="grid grid-cols-2 gap-3">
-            <select
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              value={form.job_type}
-              disabled={isView}
-              onChange={(e) => updateField("job_type", e.target.value)}
-            >
-              <option>Full-time</option>
-              <option>Part-time</option>
-              <option>Internship</option>
-              <option>Contract</option>
-            </select>
-
-            <select
-              className="border p-2 rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-              value={form.work_mode}
-              disabled={isView}
-              onChange={(e) => updateField("work_mode", e.target.value)}
-            >
-              <option>On-site</option>
-              <option>Hybrid</option>
-              <option>Remote</option>
-            </select>
-          </div>
-
-          {/* Location */}
-          <input
-            type="text"
-            placeholder="Job Location"
-            value={form.location}
-            disabled={isView}
-            onChange={(e) => updateField("location", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
-
-          {/* Skills */}
-          <textarea
-            placeholder="Required Skills"
-            value={form.skills}
-            disabled={isView}
-            onChange={(e) => updateField("skills", e.target.value)}
-            className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          ></textarea>
-
-          {/* Description */}
-          <textarea
-            placeholder="Job Description"
-            value={form.description}
-            disabled={isView}
-            onChange={(e) => updateField("description", e.target.value)}
-            className="border p-2 rounded w-full h-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          ></textarea>
-
-          {/* Publish */}
-          {!isView && (
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.status === "Posted"}
-                onChange={(e) =>
-                  updateField("status", e.target.checked ? "Posted" : "Draft")
-                }
+          <AppleForm>
+            <AppleFormSection title="Basic Information">
+              <AppleInput
+                label="Job Title"
+                required
+                placeholder="Enter job title"
+                value={form.title}
+                disabled={isView}
+                onChange={(e) => updateField("title", e.target.value)}
               />
-              <span className="text-sm">Publish this job</span>
-            </label>
-          )}
 
-          {/* ROUNDS */}
-          <div>
-            <h3 className="font-semibold mb-2">Interview Rounds</h3>
-
-            {form.rounds.map((r, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={r}
+              <AppleFormRow cols={2}>
+                <AppleInput
+                  label="Department"
+                  required
+                  placeholder="Enter department"
+                  value={form.department}
                   disabled={isView}
-                  onChange={(e) => updateRound(index, e.target.value)}
-                  className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                  onChange={(e) => updateField("department", e.target.value)}
                 />
+                <AppleInput
+                  type="number"
+                  label="Number of Openings"
+                  required
+                  placeholder="1"
+                  value={form.openings}
+                  disabled={isView}
+                  onChange={(e) => updateField("openings", e.target.value)}
+                />
+              </AppleFormRow>
 
+              <AppleFormRow cols={2}>
+                <AppleInput
+                  label="Experience Required"
+                  placeholder="e.g., 2-4 years"
+                  value={form.experience}
+                  disabled={isView}
+                  onChange={(e) => updateField("experience", e.target.value)}
+                />
+                <AppleInput
+                  label="Salary Range"
+                  placeholder="e.g., 4-7 LPA"
+                  value={form.salary_range}
+                  disabled={isView}
+                  onChange={(e) => updateField("salary_range", e.target.value)}
+                />
+              </AppleFormRow>
+
+              <AppleFormRow cols={2}>
+                <AppleSelect
+                  label="Job Type"
+                  value={form.job_type}
+                  disabled={isView}
+                  onChange={(e) => updateField("job_type", e.target.value)}
+                >
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Contract">Contract</option>
+                </AppleSelect>
+                <AppleSelect
+                  label="Work Mode"
+                  value={form.work_mode}
+                  disabled={isView}
+                  onChange={(e) => updateField("work_mode", e.target.value)}
+                >
+                  <option value="On-site">On-site</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Remote">Remote</option>
+                </AppleSelect>
+              </AppleFormRow>
+
+              <AppleInput
+                label="Job Location"
+                placeholder="Enter job location"
+                value={form.location}
+                disabled={isView}
+                onChange={(e) => updateField("location", e.target.value)}
+              />
+            </AppleFormSection>
+
+            <AppleFormSection title="Job Details">
+              <AppleTextarea
+                label="Required Skills"
+                placeholder="List the required skills and qualifications"
+                value={form.skills}
+                disabled={isView}
+                onChange={(e) => updateField("skills", e.target.value)}
+                rows={4}
+              />
+
+              <AppleTextarea
+                label="Job Description"
+                placeholder="Provide a detailed job description"
+                value={form.description}
+                disabled={isView}
+                onChange={(e) => updateField("description", e.target.value)}
+                rows={6}
+              />
+            </AppleFormSection>
+
+            <AppleFormSection title="Interview Process">
+              <div className="space-y-3">
+                {form.rounds.map((round, index) => (
+                  <div key={index} className="flex gap-3 items-end">
+                    <div className="flex-1">
+                      <AppleInput
+                        label={`Round ${index + 1}`}
+                        placeholder="Enter round name"
+                        value={round}
+                        disabled={isView}
+                        onChange={(e) => updateRound(index, e.target.value)}
+                      />
+                    </div>
+                    {!isView && form.rounds.length > 1 && (
+                      <AppleButton
+                        variant="danger"
+                        size="small"
+                        onClick={() => removeRound(index)}
+                        type="button"
+                      >
+                        Remove
+                      </AppleButton>
+                    )}
+                  </div>
+                ))}
                 {!isView && (
-                  <button
-                    onClick={() => removeRound(index)}
-                    className="px-2 py-1 bg-red-500 text-white rounded"
+                  <AppleButton
+                    variant="secondary"
+                    size="small"
+                    onClick={addRound}
+                    type="button"
                   >
-                    X
-                  </button>
+                    + Add Interview Round
+                  </AppleButton>
                 )}
               </div>
-            ))}
+            </AppleFormSection>
 
             {!isView && (
-              <button
-                onClick={addRound}
-                className="px-3 py-1 bg-blue-600 text-white rounded text-sm"
-              >
-                + Add Round
-              </button>
+              <AppleFormSection>
+                <AppleCheckbox
+                  label="Publish this job immediately"
+                  checked={form.status === "Posted"}
+                  onChange={(e) =>
+                    updateField("status", e.target.checked ? "Posted" : "Draft")
+                  }
+                />
+              </AppleFormSection>
             )}
-          </div>
+
+            <AppleFormActions>
+              <AppleButton
+                variant="secondary"
+                onClick={onClose}
+                type="button"
+              >
+                {isView ? 'Close' : 'Cancel'}
+              </AppleButton>
+              {!isView && (
+                <AppleButton
+                  variant="primary"
+                  onClick={submitForm}
+                  type="button"
+                >
+                  {mode === "create" ? "Create Job" : "Update Job"}
+                </AppleButton>
+              )}
+            </AppleFormActions>
+          </AppleForm>
         </div>
-
-        {/* ACTION BUTTONS */}
-        <div className="flex justify-between mt-6">
-          <button
-            className="px-4 py-2 bg-gray-300 rounded-lg"
-            onClick={onClose}
-          >
-            Close
-          </button>
-
-          {!isView && (
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-              onClick={submitForm}
-            >
-              {mode === "create" ? "Create Job" : "Update Job"}
-            </button>
-          )}
-        </div>
-
       </div>
     </div>
   );

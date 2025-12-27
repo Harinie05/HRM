@@ -50,9 +50,7 @@ export default function Users() {
 
   const loadUsers = async () => {
     try {
-      console.log(`Loading users for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/users/${tenant_db}/list`);
-      console.log('Users loaded:', res.data.users);
       setUsers(res.data.users || []);
     } catch (err) {
       console.error("User load error:", err);
@@ -61,9 +59,7 @@ export default function Users() {
 
   const loadRoles = async () => {
     try {
-      console.log(`Loading roles for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
-      console.log('Roles for user creation loaded:', res.data.roles);
       setRoles(res.data.roles || []);
     } catch (err) {
       console.error("Role load error:", err);
@@ -72,9 +68,7 @@ export default function Users() {
 
   const loadDepartments = async () => {
     try {
-      console.log(`Loading departments for user creation in tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
-      console.log('Departments for user creation loaded:', res.data.departments);
       setDepartments(res.data.departments || []);
     } catch (err) {
       console.error("Dept load error:", err);
@@ -98,7 +92,6 @@ export default function Users() {
     setLoading(true);
 
     try {
-      console.log('Creating user:', { name, email, role_id: Number(role), department_id: Number(department) });
       await api.post(`/hospitals/users/${tenant_db}/create`, {
         name,
         email,
@@ -107,7 +100,6 @@ export default function Users() {
         department_id: Number(department),
       });
 
-      console.log('User created successfully');
       setName("");
       setEmail("");
       setPassword("");
@@ -145,9 +137,7 @@ export default function Users() {
     if (!window.confirm("Delete this user?")) return;
 
     try {
-      console.log(`Deleting user with ID: ${id}`);
       await api.delete(`/hospitals/users/${tenant_db}/delete/${id}`);
-      console.log('User deleted successfully');
       loadUsers();
     } catch (err) {
       console.error('Delete user failed:', err);
@@ -174,10 +164,12 @@ export default function Users() {
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">Users {users.length}</span>
+              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Users</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{users.length}</p>
               </div>
-              <p className="text-lg font-bold text-gray-900">Active employees</p>
             </div>
           </div>
         </div>
@@ -246,7 +238,10 @@ export default function Users() {
               {canAdd && (
                 <button 
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors text-sm font-medium"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-full hover:opacity-90 transition-colors text-sm font-medium"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -284,7 +279,6 @@ export default function Users() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="text-sm font-semibold text-gray-900 truncate">{u.name}</h3>
-                          <p className="text-xs text-gray-500">User #{index + 1}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
@@ -478,7 +472,10 @@ export default function Users() {
                 <button
                   onClick={createUser}
                   disabled={loading || !name.trim() || !email.trim() || !password.trim() || !role || !department}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Creating..." : "Create"}
                 </button>
@@ -569,13 +566,6 @@ export default function Users() {
                 <button
                   onClick={async () => {
                     try {
-                      console.log('Updating user:', {
-                        id: editing.id,
-                        name: editName,
-                        email: editEmail,
-                        role_id: Number(editRole),
-                        department_id: Number(editDepartment)
-                      });
                       await api.put(
                         `/hospitals/users/${tenant_db}/update/${editing.id}`,
                         {
@@ -586,7 +576,6 @@ export default function Users() {
                         }
                       );
 
-                      console.log('User updated successfully');
                       alert("Updated successfully!");
                       setEditing(null);
                       loadUsers();
@@ -595,7 +584,10 @@ export default function Users() {
                       alert("Update failed");
                     }
                   }}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Update
                 </button>

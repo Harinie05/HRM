@@ -3,6 +3,7 @@ import { LogOut } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { ResponsiveContainer, ResponsiveHeader, ResponsiveTabs, ResponsiveCard } from "../../components/ResponsiveUtils";
 import ResignationTrackingEnhanced from "./ResignationTrackingEnhanced";
 import ClearanceWorkflow from "./ClearanceWorkflow";
 import SettlementDocuments from "./SettlementDocuments";
@@ -82,59 +83,43 @@ export default function ExitLayout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header setSidebarOpen={setSidebarOpen} />
         
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 pt-20">
-          <div className="container mx-auto px-6 py-4">
-            {/* Header with gradient background */}
-            <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 mb-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                  <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-black">
-                    <LogOut className="w-6 h-6 text-gray-700" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Exit Management</h1>
-                    <p className="text-gray-600 text-sm sm:text-base mb-1">Manage employee resignations, clearance workflows, and final settlements</p>
-                    <p className="text-gray-500 text-xs">Employee Exit & Offboarding</p>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 pt-16 sm:pt-20">
+          <ResponsiveContainer>
+            {/* Header */}
+            <ResponsiveHeader
+              title="Exit Management"
+              subtitle="Manage employee resignations, clearance workflows, and final settlements"
+              icon={LogOut}
+              actions={
+                <div className="text-left lg:text-right">
+                  <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                    <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                      <span className="text-xs font-medium">Modules</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
                   </div>
                 </div>
-                <div className="text-left sm:text-right">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <span className="text-xs font-medium">{tabs.length} Modules</span>
-                  </div>
-                  <p className="text-sm font-bold text-gray-900">Exit components</p>
-                </div>
+              }
+            />
+
+            <ResponsiveCard>
+              {/* Tab Navigation */}
+              <div className="mb-4 sm:mb-6">
+                <ResponsiveTabs
+                  tabs={tabs}
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                />
               </div>
-            </div>
 
-            <div className="bg-white rounded-2xl border border-black overflow-hidden">
-              {/* Content */}
-              <div className="p-3 sm:p-4">
-                {/* Tab Navigation */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black">
-                    {tabs.map((tabName) => (
-                      <button
-                        key={tabName}
-                        onClick={() => setActiveTab(tabName)}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap ${
-                          activeTab === tabName
-                            ? "bg-white text-gray-900 shadow-sm border border-gray-300"
-                            : "text-gray-600 hover:text-gray-900"
-                        }`}
-                      >
-                        {tabName}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Tab Content */}
+              {/* Tab Content */}
+              <div className="min-h-0">
                 {renderTabContent()}
               </div>
-            </div>
+            </ResponsiveCard>
             
             <Footer />
-          </div>
+          </ResponsiveContainer>
         </main>
       </div>
     </div>

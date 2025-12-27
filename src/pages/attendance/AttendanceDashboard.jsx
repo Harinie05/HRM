@@ -167,10 +167,12 @@ const AttendanceDashboard = () => {
               </div>
             </div>
             <div className="text-center sm:text-right">
-              <div className="flex items-center justify-center sm:justify-end gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">Attendance {attendanceData.overallAttendance}%</span>
+              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Attendance</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{attendanceData.overallAttendance}%</p>
               </div>
-              <p className="text-lg font-bold text-gray-900">Overall rate</p>
             </div>
           </div>
         </div>

@@ -30,7 +30,13 @@ export default function Customization() {
     setColors(prev => ({ ...prev, [colorKey]: value }));
     
     // Apply to CSS variables immediately for live preview
-    if (colorKey === 'primaryDark') {
+    if (colorKey === 'primaryColor') {
+      document.documentElement.style.setProperty('--primary-color', value);
+      document.documentElement.style.setProperty('--primary-bg', value);
+      // Calculate hover color (darker version)
+      const hoverColor = adjustBrightness(value, -20);
+      document.documentElement.style.setProperty('--primary-hover', hoverColor);
+    } else if (colorKey === 'primaryDark') {
       document.documentElement.style.setProperty('--header-bg', value);
     } else if (colorKey === 'sidebarBg') {
       document.documentElement.style.setProperty('--sidebar-bg', value);
@@ -41,6 +47,18 @@ export default function Customization() {
     }
   };
 
+  // Helper function to adjust brightness for hover states
+  const adjustBrightness = (hex, percent) => {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+  };
+
   const saveSettings = () => {
     localStorage.setItem('org-details', JSON.stringify(orgDetails));
     localStorage.setItem('theme-colors', JSON.stringify(colors));
@@ -49,7 +67,12 @@ export default function Customization() {
     
     // Apply all colors to CSS variables permanently
     Object.entries(colors).forEach(([key, value]) => {
-      if (key === 'primaryDark') {
+      if (key === 'primaryColor') {
+        document.documentElement.style.setProperty('--primary-color', value);
+        document.documentElement.style.setProperty('--primary-bg', value);
+        const hoverColor = adjustBrightness(value, -20);
+        document.documentElement.style.setProperty('--primary-hover', hoverColor);
+      } else if (key === 'primaryDark') {
         document.documentElement.style.setProperty('--header-bg', value);
       } else if (key === 'sidebarBg') {
         document.documentElement.style.setProperty('--sidebar-bg', value);
@@ -73,7 +96,12 @@ export default function Customization() {
       
       // Apply saved colors to CSS variables on load
       Object.entries(theme).forEach(([key, value]) => {
-        if (key === 'primaryDark') {
+        if (key === 'primaryColor') {
+          document.documentElement.style.setProperty('--primary-color', value);
+          document.documentElement.style.setProperty('--primary-bg', value);
+          const hoverColor = adjustBrightness(value, -20);
+          document.documentElement.style.setProperty('--primary-hover', hoverColor);
+        } else if (key === 'primaryDark') {
           document.documentElement.style.setProperty('--header-bg', value);
         } else if (key === 'sidebarBg') {
           document.documentElement.style.setProperty('--sidebar-bg', value);
@@ -159,7 +187,7 @@ export default function Customization() {
                       type="text"
                       value={orgDetails.name}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -169,7 +197,7 @@ export default function Customization() {
                       type="text"
                       value={orgDetails.tagline}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, tagline: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -179,7 +207,7 @@ export default function Customization() {
                       value={orgDetails.address}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, address: e.target.value }))}
                       rows={3}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -189,7 +217,7 @@ export default function Customization() {
                       type="text"
                       value={orgDetails.phone}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -199,7 +227,7 @@ export default function Customization() {
                       type="email"
                       value={orgDetails.email}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -209,7 +237,7 @@ export default function Customization() {
                       type="url"
                       value={orgDetails.website}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, website: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
@@ -219,7 +247,7 @@ export default function Customization() {
                       type="text"
                       value={orgDetails.gstin}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, gstin: e.target.value }))}
-                      className="w-full px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -241,13 +269,13 @@ export default function Customization() {
                         type="color"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.primaryColor}
                         onChange={(e) => updateColor('primaryColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -259,13 +287,13 @@ export default function Customization() {
                         type="color"
                         value={colors.primaryDark}
                         onChange={(e) => updateColor('primaryDark', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.primaryDark}
                         onChange={(e) => updateColor('primaryDark', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -277,13 +305,13 @@ export default function Customization() {
                         type="color"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.sidebarBg}
                         onChange={(e) => updateColor('sidebarBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -295,13 +323,13 @@ export default function Customization() {
                         type="color"
                         value={colors.contentBg}
                         onChange={(e) => updateColor('contentBg', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.contentBg}
                         onChange={(e) => updateColor('contentBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -313,13 +341,13 @@ export default function Customization() {
                         type="color"
                         value={colors.cardBg}
                         onChange={(e) => updateColor('cardBg', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.cardBg}
                         onChange={(e) => updateColor('cardBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -331,13 +359,13 @@ export default function Customization() {
                         type="color"
                         value={colors.borderColor}
                         onChange={(e) => updateColor('borderColor', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.borderColor}
                         onChange={(e) => updateColor('borderColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -349,13 +377,13 @@ export default function Customization() {
                         type="color"
                         value={colors.textColor}
                         onChange={(e) => updateColor('textColor', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.textColor}
                         onChange={(e) => updateColor('textColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -367,13 +395,13 @@ export default function Customization() {
                         type="color"
                         value={colors.mutedText}
                         onChange={(e) => updateColor('mutedText', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.mutedText}
                         onChange={(e) => updateColor('mutedText', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -385,13 +413,13 @@ export default function Customization() {
                         type="color"
                         value={colors.iconColor}
                         onChange={(e) => updateColor('iconColor', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.iconColor}
                         onChange={(e) => updateColor('iconColor', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -403,13 +431,13 @@ export default function Customization() {
                         type="color"
                         value={colors.iconBg}
                         onChange={(e) => updateColor('iconBg', e.target.value)}
-                        className="w-12 h-10 rounded border-dark cursor-pointer"
+                        className="w-12 h-10 rounded border border-black cursor-pointer"
                       />
                       <input
                         type="text"
                         value={colors.iconBg}
                         onChange={(e) => updateColor('iconBg', e.target.value)}
-                        className="flex-1 px-3 py-2 border-dark rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="flex-1 px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -427,7 +455,10 @@ export default function Customization() {
         <div className="flex justify-end">
           <button
             onClick={saveSettings}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+            style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+            className="px-6 py-2 text-white rounded-lg transition-colors"
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
           >
             Save branding
           </button>

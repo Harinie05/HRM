@@ -50,10 +50,12 @@ export default function OrganizationLayout() {
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">{tabs.length} Components</span>
+              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Components</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
               </div>
-              <p className="text-lg font-bold text-gray-900">Setup components</p>
             </div>
           </div>
         </div>

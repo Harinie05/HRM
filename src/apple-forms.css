@@ -1,0 +1,306 @@
+/* Apple Premium UI Forms */
+
+.apple-form-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.apple-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+}
+
+.apple-form-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.apple-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.apple-label.required::after {
+  content: ' *';
+  color: #ff6b6b;
+}
+
+.apple-input,
+.apple-textarea,
+.apple-select {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1a1a1a;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.apple-input:focus,
+.apple-textarea:focus,
+.apple-select:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.apple-input::placeholder,
+.apple-textarea::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 400;
+}
+
+.apple-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.apple-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+  min-height: 56px;
+}
+
+.apple-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.apple-button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4), 0 4px 6px -2px rgba(102, 126, 234, 0.2);
+}
+
+.apple-button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(102, 126, 234, 0.4), 0 10px 10px -5px rgba(102, 126, 234, 0.2);
+}
+
+.apple-button.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.apple-button.secondary {
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.apple-button.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.apple-button.small {
+  padding: 12px 24px;
+  font-size: 14px;
+  min-height: 44px;
+}
+
+.apple-button.large {
+  padding: 20px 40px;
+  font-size: 18px;
+  min-height: 64px;
+}
+
+.apple-button.full-width {
+  width: 100%;
+}
+
+.apple-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.apple-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.apple-checkbox .checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.apple-checkbox:hover .checkmark {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.apple-checkbox input:checked ~ .checkmark {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.apple-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.apple-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.apple-checkbox .label {
+  margin-left: 8px;
+  font-weight: 400;
+}
+
+.apple-form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.apple-form-row.cols-2 > * {
+  flex: 1;
+}
+
+.apple-form-row.cols-3 > * {
+  flex: 1;
+}
+
+.apple-form-section {
+  margin-bottom: 32px;
+}
+
+.apple-form-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.apple-form-section-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.apple-form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.apple-error-message {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.apple-success-message {
+  color: #51cf66;
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.apple-input.error,
+.apple-textarea.error,
+.apple-select.error {
+  border-color: rgba(255, 107, 107, 0.6);
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+.apple-input.success,
+.apple-textarea.success,
+.apple-select.success {
+  border-color: rgba(81, 207, 102, 0.6);
+  box-shadow: 0 0 0 4px rgba(81, 207, 102, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .apple-form-container {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  
+  .apple-form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .apple-form-actions {
+    flex-direction: column;
+  }
+  
+  .apple-button {
+    width: 100%;
+  }
+}
+
+/* Loading Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.apple-button svg.animate-spin {
+  animation: spin 1s linear infinite;
+}

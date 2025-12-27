@@ -54,7 +54,7 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
           {/* Page Header */}
           {title && (
             <div className="px-4 sm:px-6 py-4 sm:py-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-              <h1 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: 'var(--text-color, #1e293b)' }}>{title}</h1>
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2" style={{ color: 'var(--text-color, #1e293b)' }}>{title}</h1>
               {subtitle && (
                 <p className="text-sm" style={{ color: 'var(--muted-text, #64748b)' }}>{subtitle}</p>
               )}
@@ -68,7 +68,7 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
                         {stats.label}
                       </h3>
                       <div className="flex items-center mt-1">
-                        <span className="text-2xl font-bold mr-2" style={{ color: 'var(--primary-color, #2862e9)' }}>
+                        <span className="text-xl sm:text-2xl font-bold mr-2" style={{ color: 'var(--primary-color, #2862e9)' }}>
                           {stats.count}
                         </span>
                         <span className="text-sm" style={{ color: 'var(--muted-text, #64748b)' }}>

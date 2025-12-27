@@ -107,7 +107,10 @@ const HospitalRegister = () => {
             <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{popup.message}</p>
 
             <button
-              className="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="text-white px-6 py-2 rounded-lg transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               onClick={() => setPopup({ ...popup, show: false })}
             >
               OK
@@ -300,7 +303,10 @@ const HospitalRegister = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-700 text-white px-10 py-3 rounded-xl hover:bg-blue-800"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="text-white px-10 py-3 rounded-xl transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               {loading ? "Registering..." : "Register Hospital"}
             </button>

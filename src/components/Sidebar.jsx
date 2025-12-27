@@ -13,7 +13,7 @@ import {
   Target,
   GraduationCap,
   Shield,
-  LogOut,
+  UserMinus,
   ChevronLeft,
   Briefcase,
   Settings,
@@ -40,7 +40,7 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(styleSheet);
 }
 
-export default function Sidebar({ isCollapsed = false, onToggle }) {
+export default function Sidebar({ isCollapsed = false, onToggle, isMobile = false, onMobileClose }) {
   const location = useLocation();
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [openRecruitmentMenu, setOpenRecruitmentMenu] = useState(false);
@@ -148,14 +148,22 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
   }, []);
 
   const handleToggle = () => {
-    if (onToggle) {
+    if (isMobile && onMobileClose) {
+      onMobileClose();
+    } else if (onToggle) {
       onToggle();
+    }
+  };
+
+  const handleLinkClick = () => {
+    if (isMobile && onMobileClose) {
+      onMobileClose();
     }
   };
 
   return (
     <div 
-      className={`sidebar-scroll h-screen text-white sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-4'}`}
+      className={`sidebar-scroll h-screen text-white sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-3 sm:p-4'}`}
       style={{ background: 'var(--sidebar-bg, linear-gradient(to bottom, #6366F1, #4F46E5))' }}
     >
 
@@ -202,6 +210,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
         {/* Dashboard */}
         <Link
           to="/dashboard"
+          onClick={handleLinkClick}
           className={`flex items-center rounded-xl hover:bg-white/15 transition-all duration-200 backdrop-blur-sm ${
             isCollapsed 
               ? 'justify-center p-3 w-12 h-12' 
@@ -596,7 +605,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }) {
           }`}
           title={isCollapsed ? "Exit Management" : ""}
         >
-          <LogOut size={16} />
+          <UserMinus size={16} />
           {!isCollapsed && <span className="text-sm whitespace-nowrap">Exit Management</span>}
         </Link>
 

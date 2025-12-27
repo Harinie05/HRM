@@ -46,9 +46,7 @@ export default function Roles() {
 
   const fetchPermissions = async () => {
     try {
-      console.log(`Fetching permissions for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/permissions`);
-      console.log('Permissions loaded:', res.data.permissions);
       setPermissions(res.data.permissions);
     } catch (err) {
       console.error("Permission load error:", err);
@@ -57,9 +55,7 @@ export default function Roles() {
 
   const fetchRoles = async () => {
     try {
-      console.log(`Fetching roles for tenant: ${tenant_db}`);
       const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
-      console.log('Roles loaded:', res.data.roles);
       setRoles(res.data.roles);
     } catch (err) {
       console.error("Role load error:", err);
@@ -90,18 +86,12 @@ export default function Roles() {
     setLoading(true);
 
     try {
-      console.log('Creating role:', {
-        name,
-        description: desc,
-        permissions: selectedPerms
-      });
       await api.post(`/hospitals/roles/${tenant_db}/create`, {
         name,
         description: desc,
         permissions: selectedPerms,
       });
 
-      console.log('Role created successfully');
       setName("");
       setDesc("");
       setSelectedPerms([]);
@@ -123,9 +113,7 @@ export default function Roles() {
     if (!window.confirm("Delete this role?")) return;
 
     try {
-      console.log(`Deleting role with ID: ${id}`);
       await api.delete(`/hospitals/roles/${tenant_db}/delete/${id}`);
-      console.log('Role deleted successfully');
       fetchRoles();
     } catch (err) {
       console.error('Delete role failed:', err);
@@ -158,10 +146,20 @@ export default function Roles() {
               </div>
             </div>
             <div className="text-left lg:text-right flex-shrink-0">
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">Roles {roles.length}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                    <span className="text-xs font-medium">Roles</span>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900">{roles.length}</p>
+                </div>
+                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                    <span className="text-xs font-medium">Permissions</span>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900">{permissions.length}</p>
+                </div>
               </div>
-              <p className="text-base sm:text-lg font-bold text-gray-900">Permissions {permissions.length}</p>
             </div>
           </div>
         </div>
@@ -193,7 +191,10 @@ export default function Roles() {
             {canAdd && (
               <button 
                 onClick={() => setShowCreateModal(true)}
-                className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap"
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -231,7 +232,6 @@ export default function Roles() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="text-sm font-semibold text-gray-900 truncate">{role.name}</h3>
-                          <p className="text-xs text-gray-500">Role #{index + 1}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
@@ -283,14 +283,6 @@ export default function Roles() {
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">
                             {role.permissions.length} permissions
                           </span>
-                          <div className="flex items-center gap-1">
-                            {role.permissions.slice(0, 3).map((perm, idx) => (
-                              <div key={idx} className="w-2 h-2 bg-indigo-400 rounded-full"></div>
-                            ))}
-                            {role.permissions.length > 3 && (
-                              <span className="text-xs text-gray-400">+{role.permissions.length - 3}</span>
-                            )}
-                          </div>
                         </div>
                       </div>
                       
@@ -309,13 +301,13 @@ export default function Roles() {
         </div>
       </div>
 
-      {/* Create Modal matching Department page */}
+      {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-black">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-medium text-gray-900">Create Role</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>
                 <button
                   onClick={() => {
                     setShowCreateModal(false);
@@ -355,21 +347,17 @@ export default function Roles() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Permissions ({selectedPerms.length} selected)
-                  </label>
-                  <div className="border border-black rounded-xl p-4 h-64 overflow-y-auto">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({selectedPerms.length} selected)</label>
+                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-3">
                     {permissions.map((p) => (
-                      <label key={p.name} className="flex items-start mb-3 cursor-pointer">
+                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={selectedPerms.includes(p.name)}
-                          onChange={() =>
-                            togglePerm(p.name, setSelectedPerms, selectedPerms)
-                          }
-                          className="mt-1 h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
+                          onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
                         />
-                        <div className="ml-3">
+                        <div>
                           <p className="text-sm font-medium text-gray-900">{p.description}</p>
                           <p className="text-xs text-gray-500">{p.name}</p>
                         </div>
@@ -387,16 +375,19 @@ export default function Roles() {
                     setDesc("");
                     setSelectedPerms([]);
                   }}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm border border-black"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={addRole}
                   disabled={loading || !name.trim()}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
-                  {loading ? "Creating..." : "Create"}
+                  {loading ? "Creating..." : "Create Role"}
                 </button>
               </div>
             </div>
@@ -404,13 +395,13 @@ export default function Roles() {
         </div>
       )}
 
-      {/* Edit Modal matching Department page */}
+      {/* Edit Modal */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-black">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-medium text-gray-900">Edit Role</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Edit Role</h3>
                 <button
                   onClick={() => setEditing(null)}
                   className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
@@ -443,21 +434,17 @@ export default function Roles() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Permissions ({editPerms.length} selected)
-                  </label>
-                  <div className="border border-black rounded-xl p-4 h-64 overflow-y-auto">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({editPerms.length} selected)</label>
+                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-3">
                     {permissions.map((p) => (
-                      <label key={p.name} className="flex items-start mb-3 cursor-pointer">
+                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={editPerms.includes(p.name)}
-                          onChange={() =>
-                            togglePerm(p.name, setEditPerms, editPerms)
-                          }
-                          className="mt-1 h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
+                          onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
                         />
-                        <div className="ml-3">
+                        <div>
                           <p className="text-sm font-medium text-gray-900">{p.description}</p>
                           <p className="text-xs text-gray-500">{p.name}</p>
                         </div>
@@ -470,19 +457,13 @@ export default function Roles() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setEditing(null)}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm border border-black"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={async () => {
                     try {
-                      console.log('Updating role:', {
-                        id: editing.id,
-                        name: editName,
-                        description: editDesc,
-                        permissions: editPerms
-                      });
                       await api.put(
                         `/hospitals/roles/${tenant_db}/update/${editing.id}`,
                         {
@@ -492,7 +473,6 @@ export default function Roles() {
                         }
                       );
 
-                      console.log('Role updated successfully');
                       alert("Updated successfully!");
                       setEditing(null);
                       fetchRoles();
@@ -501,9 +481,12 @@ export default function Roles() {
                       alert("Update failed");
                     }
                   }}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm border border-black"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
-                  Update
+                  Update Role
                 </button>
               </div>
             </div>

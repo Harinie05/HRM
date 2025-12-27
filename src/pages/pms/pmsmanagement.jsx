@@ -35,10 +35,12 @@ export default function PMSManagement() {
                 </div>
               </div>
               <div className="text-left sm:text-right">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
-                  <span className="text-xs font-medium">{tabs.length} Modules</span>
+                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                    <span className="text-xs font-medium">Modules</span>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
                 </div>
-                <p className="text-sm font-bold text-gray-900">PMS components</p>
               </div>
             </div>
           </div>

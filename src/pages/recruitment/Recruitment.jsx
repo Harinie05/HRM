@@ -166,7 +166,10 @@ export default function Recruitment() {
             
             <button
               onClick={openCreate}
-              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
                 <FiPlus className="w-3 h-3" />
@@ -299,7 +302,10 @@ export default function Recruitment() {
                 
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 text-gray-600 border border-black rounded-xl hover:bg-gray-50 transition-colors"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="px-4 py-2 text-white border border-black rounded-xl transition-colors"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Clear Filters
                 </button>
@@ -323,7 +329,10 @@ export default function Recruitment() {
               <p className="text-gray-600">No jobs found matching your criteria</p>
               <button
                 onClick={clearFilters}
-                className="mt-2 text-blue-600 hover:text-blue-700"
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                className="mt-2 text-white transition-colors"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 Clear filters
               </button>
@@ -774,7 +783,10 @@ function JobFormModal({ mode, job, onClose }) {
                       const newRounds = [...(form.round_names || []), {name: "", description: ""}];
                       setForm({...form, round_names: newRounds, rounds: newRounds.length});
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 transition-colors"
+                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                    className="px-4 py-2 text-white rounded-lg transition-colors flex items-center gap-2"
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                   >
                     <FiPlus size={16} />
                     Add Round
@@ -844,7 +856,10 @@ function JobFormModal({ mode, job, onClose }) {
           {!isView && (
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="px-6 py-2 text-white rounded-lg transition-colors flex items-center gap-2"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               {mode === "create" ? (
                 <>

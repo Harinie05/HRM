@@ -279,7 +279,10 @@ export default function LeaveApplications() {
           <div className="flex justify-center sm:justify-end gap-3">
             <button 
               onClick={() => setShowModal(true)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
               New Application
@@ -524,7 +527,10 @@ export default function LeaveApplications() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-2 text-white rounded-lg transition-colors"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Submit Application
                 </button>
@@ -720,7 +726,10 @@ export default function LeaveApplications() {
               </button>
               <button
                 onClick={() => approve(reviewingApplication.id, "Approved after review")}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                className="flex-1 px-4 py-2 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 <Check size={16} />
                 Approve

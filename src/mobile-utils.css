@@ -1,0 +1,485 @@
+/* ========== MOBILE-SPECIFIC UTILITIES ========== */
+/* Additional responsive utilities for perfect mobile experience */
+
+/* ========== MOBILE NAVIGATION ========== */
+@media (max-width: 1023px) {
+  /* Hide sidebar by default on mobile */
+  .sidebar-scroll {
+    transform: translateX(-100%) !important;
+  }
+  
+  /* Show sidebar when mobile menu is open */
+  .sidebar-scroll.mobile-open {
+    transform: translateX(0) !important;
+  }
+  
+  /* Ensure main content takes full width on mobile */
+  .flex-1.flex.flex-col {
+    margin-left: 0 !important;
+  }
+}
+
+/* ========== MOBILE HEADER ADJUSTMENTS ========== */
+@media (max-width: 640px) {
+  /* Reduce header padding on mobile */
+  .pt-16, .pt-20, .pt-24 {
+    padding-top: 4rem !important;
+  }
+  
+  /* Mobile-friendly header heights */
+  .h-14, .h-16 {
+    height: 3.5rem !important;
+  }
+}
+
+/* ========== MOBILE CARD LAYOUTS ========== */
+@media (max-width: 640px) {
+  /* Stack card content vertically on mobile */
+  .flex.items-center.justify-between {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+  
+  /* Reduce card padding on mobile */
+  .p-8 {
+    padding: 1.5rem !important;
+  }
+  
+  .p-6 {
+    padding: 1rem !important;
+  }
+  
+  .p-4 {
+    padding: 0.75rem !important;
+  }
+  
+  /* Mobile-friendly border radius */
+  .rounded-3xl {
+    border-radius: 1rem !important;
+  }
+  
+  .rounded-2xl {
+    border-radius: 0.75rem !important;
+  }
+}
+
+/* ========== MOBILE GRID SYSTEMS ========== */
+@media (max-width: 640px) {
+  /* Force single column on mobile */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4,
+  .sm\\:grid-cols-2,
+  .sm\\:grid-cols-3,
+  .sm\\:grid-cols-4,
+  .lg\\:grid-cols-2,
+  .lg\\:grid-cols-3,
+  .lg\\:grid-cols-4,
+  .xl\\:grid-cols-2,
+  .xl\\:grid-cols-3,
+  .xl\\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Reduce grid gaps on mobile */
+  .gap-6 {
+    gap: 1rem !important;
+  }
+  
+  .gap-8 {
+    gap: 1.5rem !important;
+  }
+}
+
+/* ========== MOBILE TYPOGRAPHY ========== */
+@media (max-width: 640px) {
+  /* Scale down headings for mobile */
+  .text-3xl {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+  
+  .text-xl {
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+  }
+  
+  .text-lg {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+  
+  /* Ensure readable text on mobile */
+  .text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  .text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+}
+
+/* ========== MOBILE FORM ELEMENTS ========== */
+@media (max-width: 640px) {
+  /* Stack form elements vertically */
+  .flex.flex-row {
+    flex-direction: column !important;
+  }
+  
+  /* Full width inputs on mobile */
+  input, select, textarea {
+    width: 100% !important;
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+  
+  /* Mobile-friendly button sizing */
+  button {
+    min-height: 44px !important;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Full width buttons on mobile */
+  .w-auto {
+    width: 100% !important;
+  }
+}
+
+/* ========== MOBILE TABLE HANDLING ========== */
+@media (max-width: 768px) {
+  /* Make tables horizontally scrollable */
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Minimum width for table content */
+  table {
+    min-width: 600px !important;
+  }
+  
+  /* Compact table cells */
+  th, td {
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Hide less important columns on mobile */
+  .mobile-hide {
+    display: none !important;
+  }
+}
+
+/* ========== MOBILE MODAL ADJUSTMENTS ========== */
+@media (max-width: 640px) {
+  /* Full screen modals on mobile */
+  .fixed.inset-0 > div {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+  
+  /* Modal content padding */
+  .modal-content {
+    padding: 1rem !important;
+  }
+}
+
+/* ========== MOBILE TAB NAVIGATION ========== */
+@media (max-width: 640px) {
+  /* Horizontal scrolling tabs */
+  .tab-container {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  
+  .tab-container::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  /* Compact tab buttons */
+  .tab-button {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ========== MOBILE ICON SIZING ========== */
+@media (max-width: 640px) {
+  /* Consistent icon sizing */
+  .icon-sm {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+  
+  .icon-md {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+  
+  .icon-lg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+  
+  /* Avatar sizing */
+  .avatar-sm {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+  
+  .avatar-md {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+  
+  .avatar-lg {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+}
+
+/* ========== MOBILE SPACING UTILITIES ========== */
+@media (max-width: 640px) {
+  /* Consistent mobile spacing */
+  .mobile-space-y > * + * {
+    margin-top: 1rem !important;
+  }
+  
+  .mobile-space-x > * + * {
+    margin-left: 1rem !important;
+  }
+  
+  /* Mobile padding utilities */
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+  
+  .mobile-px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .mobile-py-4 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+}
+
+/* ========== MOBILE FLEXBOX UTILITIES ========== */
+@media (max-width: 640px) {
+  /* Stack flex items on mobile */
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+  
+  /* Center align on mobile */
+  .mobile-items-center {
+    align-items: center !important;
+  }
+  
+  /* Start align on mobile */
+  .mobile-items-start {
+    align-items: flex-start !important;
+  }
+  
+  /* Full width flex items */
+  .mobile-flex-1 {
+    flex: 1 !important;
+  }
+}
+
+/* ========== MOBILE VISIBILITY UTILITIES ========== */
+@media (max-width: 640px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .desktop-hidden {
+    display: none !important;
+  }
+}
+
+/* ========== MOBILE TOUCH IMPROVEMENTS ========== */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  a, button, [role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Improved tap highlighting */
+  * {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1) !important;
+  }
+  
+  /* Smooth scrolling */
+  * {
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* ========== MOBILE PERFORMANCE OPTIMIZATIONS ========== */
+@media (max-width: 768px) {
+  /* Reduce animations on mobile */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Optimize transforms */
+  .transform {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+}
+
+/* ========== MOBILE ACCESSIBILITY ========== */
+@media (max-width: 768px) {
+  /* High contrast focus states */
+  *:focus {
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* Ensure sufficient color contrast */
+  .text-gray-400 {
+    color: #6b7280 !important;
+  }
+  
+  .text-gray-500 {
+    color: #6b7280 !important;
+  }
+}
+
+/* ========== MOBILE LANDSCAPE OPTIMIZATIONS ========== */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Reduce vertical padding in landscape */
+  .py-8 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .py-6 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  /* Compact headers in landscape */
+  .text-3xl {
+    font-size: 1.25rem !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.125rem !important;
+  }
+}
+
+/* ========== MOBILE SAFE AREAS ========== */
+@media (max-width: 768px) {
+  /* iOS safe area support */
+  .safe-top {
+    padding-top: env(safe-area-inset-top) !important;
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+  
+  .safe-left {
+    padding-left: env(safe-area-inset-left) !important;
+  }
+  
+  .safe-right {
+    padding-right: env(safe-area-inset-right) !important;
+  }
+}
+
+/* ========== MOBILE SPECIFIC COMPONENT FIXES ========== */
+@media (max-width: 640px) {
+  /* Exit Management specific */
+  .exit-header {
+    padding: 1rem !important;
+  }
+  
+  .exit-tabs {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+  
+  /* Compliance specific */
+  .compliance-header {
+    padding: 1rem !important;
+  }
+  
+  .compliance-tabs {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+  
+  /* Dashboard specific */
+  .dashboard-hero {
+    padding: 1rem !important;
+  }
+  
+  .dashboard-kpi {
+    padding: 0.75rem !important;
+  }
+  
+  /* Analytics cards */
+  .analytics-card {
+    padding: 1rem !important;
+  }
+  
+  /* Calendar grid */
+  .calendar-grid {
+    gap: 0.25rem !important;
+  }
+  
+  .calendar-day {
+    height: 2.5rem !important;
+    padding: 0.25rem !important;
+  }
+}
+
+/* ========== MOBILE PRINT STYLES ========== */
+@media print {
+  /* Hide mobile-specific elements when printing */
+  .mobile-only {
+    display: none !important;
+  }
+  
+  /* Ensure proper print layout */
+  .print-full-width {
+    width: 100% !important;
+  }
+}
+
+/* ========== MOBILE DARK MODE ADJUSTMENTS ========== */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  /* Ensure proper contrast in dark mode on mobile */
+  .bg-white {
+    background-color: #1f2937 !important;
+  }
+  
+  .text-gray-900 {
+    color: #f9fafb !important;
+  }
+  
+  .border-black {
+    border-color: #374151 !important;
+  }
+}

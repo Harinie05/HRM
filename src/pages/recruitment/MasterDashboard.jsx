@@ -186,7 +186,7 @@ export default function MasterDashboard() {
     <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-6">
-        <div className="bg-white rounded-3xl border border-black shadow-sm p-8">
+        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
@@ -201,10 +201,12 @@ export default function MasterDashboard() {
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">Active Jobs {metrics.totalJobs}</span>
+              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Active Jobs</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{metrics.totalJobs}</p>
               </div>
-              <p className="text-lg font-bold text-gray-900">{metrics.appliedCandidates} applications received</p>
             </div>
           </div>
         </div>

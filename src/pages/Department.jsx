@@ -7,6 +7,7 @@ export default function Departments() {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [departments, setDepartments] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
@@ -45,8 +46,25 @@ export default function Departments() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const res = await api.get(`/hospitals/users/${tenant_db}/list`);
+      setUsers(res.data.users || []);
+    } catch (err) {
+      console.error("Users fetch error:", err);
+    }
+  };
+
+  const getDepartmentHeadcount = (deptName) => {
+    return users.filter(user => 
+      user.department_name === deptName || 
+      user.department === deptName
+    ).length;
+  };
+
   useEffect(() => {
     fetchDepartments();
+    fetchUsers();
   }, []);
 
   const addDepartment = async () => {
@@ -131,10 +149,12 @@ export default function Departments() {
               </div>
             </div>
             <div className="text-left lg:text-right flex-shrink-0">
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <span className="text-sm font-medium">Departments {departments.length}</span>
+              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Departments</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{departments.length}</p>
               </div>
-              <p className="text-base sm:text-lg font-bold text-gray-900">Active departments</p>
             </div>
           </div>
         </div>
@@ -147,6 +167,27 @@ export default function Departments() {
             </div>
             <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
               Showing: {filteredDepartments.length}
+            </div>
+          </div>
+
+          {/* Department-wise Headcount */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Department-wise Headcount</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {departments.map((dept) => (
+                <div key={dept.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">{dept.name}</h4>
+                      <p className="text-xs text-gray-500 mt-1">Employees</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-gray-900">{getDepartmentHeadcount(dept.name)}</p>
+                      <p className="text-xs text-gray-500">Active</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -206,7 +247,10 @@ export default function Departments() {
               {canAdd && (
                 <button 
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -364,7 +408,10 @@ export default function Departments() {
                 <button
                   onClick={addDepartment}
                   disabled={loading || !name.trim()}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Creating..." : "Create"}
                 </button>
@@ -445,7 +492,10 @@ export default function Departments() {
                       alert("Update failed");
                     }
                   }}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium transition-colors text-sm border border-black"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm border border-black"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Update
                 </button>

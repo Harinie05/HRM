@@ -1,5 +1,10 @@
 /* Tailwind CSS styles will be added via CDN */
 
+/* Import responsive design system */
+@import './responsive.css';
+@import './mobile-utils.css';
+@import './apple-forms.css';
+
 /* Hide all scrollbars completely */
 html {
   overflow-x: hidden !important;

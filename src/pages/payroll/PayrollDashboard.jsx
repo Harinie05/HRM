@@ -179,9 +179,11 @@ const PayrollDashboard = () => {
                 </div>
                 
                 <div className="flex items-center justify-center gap-4">
-                  <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-bold text-gray-900">{payrollData.employeesProcessed}</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Employees Processed</div>
+                  <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                    <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                      <span className="text-xs font-medium">Processed</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">{payrollData.employeesProcessed}</p>
                   </div>
                 </div>
               </div>

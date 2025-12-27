@@ -171,8 +171,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
               rounded-xl shadow-lg overflow-hidden z-50"
             >
               <div className="px-3 sm:px-4 py-3 border-b">
-                <p className="font-semibold text-sm truncate">{userName}</p>
-                <p className="text-xs text-muted truncate">{userEmail}</p>
+                <p className="font-semibold text-sm truncate text-gray-900">{userName}</p>
+                <p className="text-xs text-gray-600 truncate">{userEmail}</p>
                 <p className="text-xs text-blue-600">{userRole}</p>
               </div>
 

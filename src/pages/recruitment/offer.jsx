@@ -56,6 +56,24 @@ export default function Offer() {
   const [generatedLink, setGeneratedLink] = useState("");
   const [linkCandidate, setLinkCandidate] = useState("");
 
+  // Document Verification Modal
+  const [showDocVerificationModal, setShowDocVerificationModal] = useState(false);
+  const [selectedOfferForVerification, setSelectedOfferForVerification] = useState(null);
+  const [docVerificationForm, setDocVerificationForm] = useState({
+    aadhaar: false,
+    pan: false,
+    photo: false,
+    education: false,
+    experience: false,
+    relieving: false,
+    salary_slips: false,
+    bank: false,
+    medical_degree: false,
+    council_registration: false,
+    medical_license: false,
+    specialty_cert: false
+  });
+
   // ------------------------------------------------------------
   // FETCH SELECTED CANDIDATES
   // ------------------------------------------------------------
@@ -162,9 +180,17 @@ export default function Offer() {
   // ------------------------------------------------------------
   const handleOfferResponse = async (offerId, action) => {
     try {
-      const status = action === "accept" ? "Accepted" : "Rejected";
+      let status;
+      if (action === "accept") {
+        status = "Accepted";
+      } else if (action === "reject") {
+        status = "Rejected";
+      } else if (action === "verify_docs") {
+        status = "Documents Submitted";
+      }
+      
       await api.post(`/recruitment/offer/${offerId}/status?status=${status}`);
-      alert(`Offer ${action}ed successfully`);
+      alert(`Offer ${action === "verify_docs" ? "documents verified" : action + "ed"} successfully`);
       fetchOffers();
     } catch {
       alert("Failed to update offer status");
@@ -352,6 +378,32 @@ export default function Offer() {
     alert("Link copied to clipboard!");
   };
 
+  // Handle Document Verification
+  const handleDocumentVerification = async () => {
+    try {
+      await api.post(`/recruitment/offer/${selectedOfferForVerification.id}/status?status=Documents Verified`);
+      alert("Documents verified successfully!");
+      setShowDocVerificationModal(false);
+      setDocVerificationForm({
+        aadhaar: false,
+        pan: false,
+        photo: false,
+        education: false,
+        experience: false,
+        relieving: false,
+        salary_slips: false,
+        bank: false,
+        medical_degree: false,
+        council_registration: false,
+        medical_license: false,
+        specialty_cert: false
+      });
+      fetchOffers();
+    } catch {
+      alert("Failed to verify documents");
+    }
+  };
+
   // ------------------------------------------------------------
   // UI STARTS HERE
   // ------------------------------------------------------------
@@ -432,6 +484,8 @@ export default function Offer() {
                                 ? "bg-red-100 text-red-800"
                                 : o.offer_status === "Documents Submitted"
                                 ? "bg-blue-100 text-blue-800"
+                                : o.offer_status === "Documents Verified"
+                                ? "bg-indigo-100 text-indigo-800"
                                 : o.offer_status === "BGV Cleared"
                                 ? "bg-purple-100 text-purple-800"
                                 : "bg-yellow-100 text-yellow-800"
@@ -440,6 +494,7 @@ export default function Offer() {
                             {o.offer_status === "Accepted" && <FiCheck className="mr-1" size={8} />}
                             {o.offer_status === "Rejected" && <FiX className="mr-1" size={8} />}
                             {o.offer_status === "Documents Submitted" && <FiFileText className="mr-1" size={8} />}
+                            {o.offer_status === "Documents Verified" && <FiFileText className="mr-1" size={8} />}
                             {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={8} />}
                             {o.offer_status === "Sent" && <FiMail className="mr-1" size={8} />}
                             <span className="hidden sm:inline">{o.offer_status}</span>
@@ -473,7 +528,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 1: Generate Document Upload Link */}
-                            {(o.offer_status === "Accepted" || (o.offer_status === "Draft" && o.bgv_status === "Cleared")) && (
+                            {(o.offer_status === "Accepted" || o.offer_status === "Draft") && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
                                 onClick={() => generateDocumentLink(o.id)}
@@ -483,8 +538,22 @@ export default function Offer() {
                               </button>
                             )}
 
+                            {/* Document Verification Button for Draft Status */}
+                            {o.offer_status === "Draft" && (
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                onClick={() => {
+                                  setSelectedOfferForVerification(o);
+                                  setShowDocVerificationModal(true);
+                                }}
+                              >
+                                <FiFileText className="mr-1" size={12} />
+                                Verify Documents
+                              </button>
+                            )}
+
                             {/* Step 2: View Documents */}
-                            {o.offer_status === "Documents Submitted" && (
+                            {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                                 onClick={() => viewDocuments(o.id)}
@@ -495,7 +564,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 3: Manage BGV */}
-                            {o.offer_status === "Documents Submitted" && (
+                            {o.offer_status === "Documents Verified" && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
                                 onClick={() => {
@@ -1304,6 +1373,157 @@ export default function Offer() {
           )}
 
           {/* ================================================================== */}
+          {/*                   DOCUMENT VERIFICATION MODAL                     */}
+          {/* ================================================================== */}
+          {showDocVerificationModal && selectedOfferForVerification && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-xl w-[500px] shadow-xl max-h-[80vh] overflow-y-auto">
+                <h2 className="text-lg font-semibold mb-4">
+                  📄 Document Verification - {selectedOfferForVerification.candidate_name}
+                </h2>
+
+                <div className="space-y-3">
+                  <div className="border p-4 rounded bg-gray-50">
+                    <h4 className="font-medium mb-3 text-sm">Required Documents:</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.aadhaar}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, aadhaar: e.target.checked})}
+                        />
+                        Aadhaar Card (Front & Back)
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.pan}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, pan: e.target.checked})}
+                        />
+                        PAN Card
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.photo}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, photo: e.target.checked})}
+                        />
+                        Passport Size Photo
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.education}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, education: e.target.checked})}
+                        />
+                        Educational Certificates
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.bank}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, bank: e.target.checked})}
+                        />
+                        Bank Passbook/Statement
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.medical_degree}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, medical_degree: e.target.checked})}
+                        />
+                        Medical Degree Certificate
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.council_registration}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, council_registration: e.target.checked})}
+                        />
+                        Medical Council Registration
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.medical_license}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, medical_license: e.target.checked})}
+                        />
+                        Medical License Copy
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="border p-4 rounded bg-gray-50">
+                    <h4 className="font-medium mb-3 text-sm">Optional Documents:</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.experience}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, experience: e.target.checked})}
+                        />
+                        Experience Certificates
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.relieving}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, relieving: e.target.checked})}
+                        />
+                        Relieving Letter
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.salary_slips}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, salary_slips: e.target.checked})}
+                        />
+                        Salary Slips (Last 3 months)
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={docVerificationForm.specialty_cert}
+                          onChange={(e) => setDocVerificationForm({...docVerificationForm, specialty_cert: e.target.checked})}
+                        />
+                        Specialty Certification
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-6">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded"
+                    onClick={() => setShowDocVerificationModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    className="px-4 py-2 bg-green-600 text-white rounded"
+                    onClick={handleDocumentVerification}
+                  >
+                    Verify Documents
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================================================================== */}
           {/*                      LINK GENERATION MODAL                        */}
           {/* ================================================================== */}
           {showLinkModal && (
@@ -1320,20 +1540,6 @@ export default function Offer() {
 
                 <div className="bg-gray-100 p-3 rounded border mb-4">
                   <p className="text-sm font-mono break-all">{generatedLink}</p>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded mb-4">
-                  <h4 className="font-medium text-blue-800 mb-2">📋 Required Documents:</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Aadhaar Card (Front & Back)</li>
-                    <li>• PAN Card</li>
-                    <li>• Passport Size Photo</li>
-                    <li>• Educational Certificates</li>
-                    <li>• Experience Certificates</li>
-                    <li>• Relieving Letter</li>
-                    <li>• Salary Slips (Last 3 months)</li>
-                    <li>• Bank Passbook/Statement</li>
-                  </ul>
                 </div>
 
                 <div className="flex justify-between">

@@ -314,114 +314,130 @@ export default function ATS() {
         {showMoveModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
             <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl">
-              <div className="px-6 py-4 border-b ">
-                <h2 className="text-xl font-semibold text-primary">
+              <div className="px-6 py-4 border-b">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Move Candidate: {selectedCandidate?.name}
                 </h2>
-                <p className="text-sm text-secondary mt-1">
+                <p className="text-sm text-gray-600 mt-1">
                   Update candidate status and schedule next steps
                 </p>
               </div>
 
-              <div className="p-6 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Action *</label>
-                  <select
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={moveForm.action}
-                    onChange={(e) => setMoveForm({ ...moveForm, action: e.target.value })}
-                  >
-                    <option value="">Select Action</option>
-                    <option value="next_round">Move to Next Round</option>
-                    <option value="selected">Select Candidate</option>
-                    <option value="rejected">Reject Candidate</option>
-                  </select>
-                </div>
-
-                {moveForm.action === "next_round" && (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-secondary mb-2">Next Round</label>
-                      <select
-                        className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        value={moveForm.next_round}
-                        onChange={(e) => setMoveForm({ ...moveForm, next_round: parseInt(e.target.value) })}
-                      >
-                        {getRoundNames(selectedJob).map((roundName, index) => {
-                          const roundNumber = index + 1;
-                          if (roundNumber > selectedCandidate?.current_round) {
-                            return (
-                              <option key={roundNumber} value={roundNumber}>
-                                Round {roundNumber}: {roundName}
-                              </option>
-                            );
-                          }
-                          return null;
-                        })}
-                        {selectedCandidate?.current_round >= getRoundNames(selectedJob).length && (
-                          <option value={selectedCandidate.current_round + 1}>
-                            Round {selectedCandidate.current_round + 1}: Additional Round
-                          </option>
-                        )}
-                      </select>
-                    </div>
-
-                    {moveForm.next_round > getRoundNames(selectedJob).length && (
-                      <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">Round Name</label>
-                        <input
-                          type="text"
-                          className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Enter round name (e.g., Final Interview, CEO Round)"
-                          value={moveForm.custom_round_name}
-                          onChange={(e) => setMoveForm({ ...moveForm, custom_round_name: e.target.value })}
-                        />
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
-                          <FiCalendar className="inline mr-1" size={14} />
-                          Interview Date
-                        </label>
-                        <input
-                          type="date"
-                          className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          value={moveForm.interview_date}
-                          onChange={(e) => setMoveForm({ ...moveForm, interview_date: e.target.value })}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-secondary mb-2">
-                          <FiClock className="inline mr-1" size={14} />
-                          Interview Time
-                        </label>
-                        <input
-                          type="time"
-                          className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          value={moveForm.interview_time}
-                          onChange={(e) => setMoveForm({ ...moveForm, interview_time: e.target.value })}
-                        />
-                      </div>
-                    </div>
+              <div className="p-6">
+                <div className="border-2 border-black rounded-xl p-4 space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Action *</label>
+                    <select
+                      className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={moveForm.action}
+                      onChange={(e) => setMoveForm({ ...moveForm, action: e.target.value })}
+                    >
+                      <option value="">Select Action</option>
+                      <option value="next_round">Move to Next Round</option>
+                      <option value="selected">Select Candidate</option>
+                      <option value="rejected">Reject Candidate</option>
+                    </select>
                   </div>
-                )}
+
+                  {moveForm.action === "selected" && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-medium text-green-900 mb-3">✅ Candidate Selected</h4>
+                        <p className="text-sm text-gray-600">
+                          {selectedCandidate?.name} will be marked as selected and moved to the offer stage.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {moveForm.action === "next_round" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Next Round</label>
+                        <select
+                          className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          value={moveForm.next_round}
+                          onChange={(e) => setMoveForm({ ...moveForm, next_round: parseInt(e.target.value) })}
+                        >
+                          {getRoundNames(selectedJob).map((roundName, index) => {
+                            const roundNumber = index + 1;
+                            if (roundNumber > selectedCandidate?.current_round) {
+                              return (
+                                <option key={roundNumber} value={roundNumber}>
+                                  Round {roundNumber}: {roundName}
+                                </option>
+                              );
+                            }
+                            return null;
+                          })}
+                          {selectedCandidate?.current_round >= getRoundNames(selectedJob).length && (
+                            <option value={selectedCandidate.current_round + 1}>
+                              Round {selectedCandidate.current_round + 1}: Additional Round
+                            </option>
+                          )}
+                        </select>
+                      </div>
+
+                      {moveForm.next_round > getRoundNames(selectedJob).length && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Round Name</label>
+                          <input
+                            type="text"
+                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter round name (e.g., Final Interview, CEO Round)"
+                            value={moveForm.custom_round_name}
+                            onChange={(e) => setMoveForm({ ...moveForm, custom_round_name: e.target.value })}
+                          />
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FiCalendar className="inline mr-1" size={14} />
+                            Interview Date
+                          </label>
+                          <input
+                            type="date"
+                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            value={moveForm.interview_date}
+                            onChange={(e) => setMoveForm({ ...moveForm, interview_date: e.target.value })}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FiClock className="inline mr-1" size={14} />
+                            Interview Time
+                          </label>
+                          <input
+                            type="time"
+                            className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            value={moveForm.interview_time}
+                            onChange={(e) => setMoveForm({ ...moveForm, interview_time: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="px-6 py-4 border-t  bg-content flex justify-between">
+              <div className="px-6 py-4 border-t bg-gray-50 flex justify-between">
                 <button
-                  className="px-6 py-2 border-dark text-secondary rounded-lg hover:bg-content transition-colors"
+                  className="px-6 py-2 border border-black text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                   onClick={() => setShowMoveModal(false)}
                 >
                   Cancel
                 </button>
 
                 <button
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="px-6 py-2 text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                   onClick={submitMove}
                   disabled={!moveForm.action}
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   <FiArrowRight size={16} />
                   Send Email & Move

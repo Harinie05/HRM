@@ -93,12 +93,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center px-4">
+    <div className="min-h-screen bg-gray-50 flex justify-center items-center px-4">
 
       {/* POPUP */}
       {popup.show && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center border border-black">
             <h2
               className={`text-xl font-bold mb-3 ${
                 popup.success ? "text-green-600" : "text-red-600"
@@ -107,10 +107,10 @@ export default function Login() {
               {popup.success ? "Success!" : "Error!"}
             </h2>
 
-            <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{popup.message}</p>
+            <p className="text-gray-700 mb-4">{popup.message}</p>
 
             <button
-              className="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800"
+              className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
               onClick={() => setPopup({ ...popup, show: false })}
             >
               OK
@@ -120,46 +120,49 @@ export default function Login() {
       )}
 
       {/* LOGIN CARD */}
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-[#0D3B66] mb-2">
-          HRM Login
-        </h1>
+      <div className="bg-white rounded-2xl border border-black shadow-sm p-8 max-w-md w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            HRM Login
+          </h1>
+          <p className="text-gray-600">Welcome back! Please sign in to continue.</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-
-          {/* EMAIL */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="text-sm font-medium">Email</label>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Email Address
+            </label>
             <input
               type="email"
               name="email"
               required
               onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1 focus:ring-2 focus:ring-blue-400"
-              placeholder="user@example.com"
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-900 bg-white"
             />
           </div>
 
-          {/* PASSWORD */}
           <div>
-            <label className="text-sm font-medium">Password</label>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Password
+            </label>
             <input
               type="password"
               name="password"
               required
               onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1 focus:ring-2 focus:ring-blue-400"
-              placeholder="********"
+              placeholder="Enter your password"
+              className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-900 bg-white"
             />
           </div>
 
-          {/* SUBMIT */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#0D3B66] text-white py-3 rounded-lg text-lg hover:bg-blue-900 transition"
+            className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
       </div>
