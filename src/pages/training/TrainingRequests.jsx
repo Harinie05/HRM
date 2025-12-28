@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Eye, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function TrainingRequests({ showModal, setShowModal }) {
   const [requests, setRequests] = useState([]);
@@ -23,6 +25,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
     action: "",
     comment: ""
   });
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchRequests();
@@ -139,7 +142,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
       handleCloseModal();
     } catch (error) {
       console.error("Error creating training request:", error);
-      alert('Failed to create training request. Please try again.');
+      showToast('Failed to create training request. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -159,7 +162,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
       setApprovalData({ action: "", comment: "" });
     } catch (error) {
       console.error("Error processing approval:", error);
-      alert('Failed to process approval. Please try again.');
+      showToast('Failed to process approval. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -584,6 +587,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

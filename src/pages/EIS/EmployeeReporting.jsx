@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiTrendingUp, FiArrowLeft, FiUsers, FiUser } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeReporting() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     reporting_manager_id: "",
     reporting_manager_name: "",
@@ -59,11 +62,11 @@ export default function EmployeeReporting() {
         await api.post("/employee/reporting/add", payload);
       }
       
-      alert("Reporting structure saved successfully");
+      showToast("Reporting structure saved successfully", "success");
       fetchReportingDetails();
     } catch (err) {
       console.error("Failed to save reporting details", err);
-      alert("Failed to save reporting structure");
+      showToast("Failed to save reporting structure", "error");
     }
     setLoading(false);
   };
@@ -273,6 +276,7 @@ export default function EmployeeReporting() {
           </div>
         </div>
       </div>
+      <Toast {...toast} />
     </Layout>
   );
 }

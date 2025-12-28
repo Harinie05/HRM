@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Insurance() {
+  const { toast, showToast } = useToast();
   const [formData, setFormData] = useState({
     employeeId: "",
     policyType: "",
@@ -107,7 +110,7 @@ export default function Insurance() {
       await fetchPolicies();
       await fetchStats();
       
-      alert('Insurance policy created successfully!');
+      showToast('Insurance policy created successfully!', 'success');
       
       setFormData({
         employeeId: "",
@@ -120,7 +123,7 @@ export default function Insurance() {
       });
     } catch (error) {
       console.error('Error creating policy:', error);
-      alert('Failed to create policy. Please try again.');
+      showToast('Failed to create policy. Please try again.', 'error');
     }
   };
 
@@ -131,10 +134,10 @@ export default function Insurance() {
       await api.delete(`/hr/insurance/${policyId}`);
       await fetchPolicies();
       await fetchStats();
-      alert('Policy deleted successfully!');
+      showToast('Policy deleted successfully!', 'success');
     } catch (error) {
       console.error('Error deleting policy:', error);
-      alert('Failed to delete policy. Please try again.');
+      showToast('Failed to delete policy. Please try again.', 'error');
     }
   };
 
@@ -299,6 +302,7 @@ export default function Insurance() {
           </table>
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

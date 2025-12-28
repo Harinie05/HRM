@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function DocumentUpload() {
   const { token } = useParams();
+  const { toast, showToast } = useToast();
   const [candidateInfo, setCandidateInfo] = useState(null);
   const [uploads, setUploads] = useState({});
   const [uploading, setUploading] = useState({});
@@ -29,9 +32,9 @@ export default function DocumentUpload() {
     try {
       await api.post(`/recruitment/offer/documents/${token}/submit`);
       setSubmitted(true);
-      alert("Documents submitted successfully! HR will review your documents.");
+      showToast("Documents submitted successfully! HR will review your documents.", "success");
     } catch (err) {
-      alert("Failed to submit documents");
+      showToast("Failed to submit documents", "error");
     }
   };
 
@@ -53,7 +56,7 @@ export default function DocumentUpload() {
       const res = await api.get(`/recruitment/offer/documents/${token}`);
       setCandidateInfo(res.data);
     } catch (err) {
-      alert("Invalid or expired link");
+      showToast("Invalid or expired link", "error");
     }
   };
 
@@ -72,10 +75,10 @@ export default function DocumentUpload() {
       });
 
       setUploads({ ...uploads, [docType]: file.name });
-      alert("Document uploaded successfully!");
+      showToast("Document uploaded successfully!", "success");
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Failed to upload document");
+      showToast("Failed to upload document", "error");
     } finally {
       setUploading({ ...uploading, [docType]: false });
     }
@@ -304,6 +307,7 @@ export default function DocumentUpload() {
         </div>
 
       </div>
+      <Toast toast={toast} />
     </div>
   );
 }

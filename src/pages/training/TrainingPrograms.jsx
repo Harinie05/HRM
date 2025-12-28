@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Calendar, BookOpen, Users } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function TrainingPrograms() {
+  const { toast, showToast } = useToast();
   const [programs, setPrograms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -63,7 +66,7 @@ export default function TrainingPrograms() {
       handleCloseModal();
     } catch (error) {
       console.error("Error saving training program:", error);
-      alert('Failed to save training program. Please try again.');
+      showToast('Failed to save training program. Please try again.', "error");
     } finally {
       setLoading(false);
     }
@@ -76,7 +79,7 @@ export default function TrainingPrograms() {
         await fetchPrograms();
       } catch (error) {
         console.error("Error deleting training program:", error);
-        alert('Failed to delete training program. Please try again.');
+        showToast('Failed to delete training program. Please try again.', "error");
       }
     }
   };
@@ -87,7 +90,7 @@ export default function TrainingPrograms() {
       await fetchPrograms();
     } catch (error) {
       console.error("Error publishing training program:", error);
-      alert('Failed to publish training program. Please try again.');
+      showToast('Failed to publish training program. Please try again.', "error");
     }
   };
 
@@ -449,6 +452,7 @@ export default function TrainingPrograms() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

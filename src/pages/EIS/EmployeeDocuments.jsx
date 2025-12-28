@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiFileText, FiEye } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeDocuments() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -179,7 +182,7 @@ export default function EmployeeDocuments() {
                     onClick={() => {
                       const token = localStorage.getItem('access_token');
                       if (!token) {
-                        alert('Authentication token not found. Please login again.');
+                        showToast('Authentication token not found. Please login again.', "error");
                         return;
                       }
                       window.open(`http://localhost:8000${d.view_url}?token=${token}`, '_blank');
@@ -239,6 +242,7 @@ export default function EmployeeDocuments() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

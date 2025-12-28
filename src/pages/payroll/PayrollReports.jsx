@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { BarChart3, Download, FileText, TrendingUp, Users, DollarSign, Calendar } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function PayrollReports() {
   const [employees, setEmployees] = useState([]);
@@ -22,6 +24,7 @@ export default function PayrollReports() {
     esiContribution: 0,
     tdsDeducted: 0
   });
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchData();
@@ -145,7 +148,7 @@ export default function PayrollReports() {
           filename = 'attendance-payroll-report.html';
           break;
         default:
-          alert(`${reportType} report generation is under development.`);
+          showToast(`${reportType} report generation is under development.`, 'error');
           return;
       }
       
@@ -160,7 +163,7 @@ export default function PayrollReports() {
       
     } catch (error) {
       console.error('Error downloading report:', error);
-      alert('Failed to download report. Please try again.');
+      showToast('Failed to download report. Please try again.', 'error');
     }
   };
 
@@ -427,6 +430,7 @@ export default function PayrollReports() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

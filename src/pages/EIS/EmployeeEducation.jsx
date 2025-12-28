@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiBook, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiEye, FiUpload } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeEducation() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
 
   const [education, setEducation] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -118,12 +121,12 @@ export default function EmployeeEducation() {
       }
       
       console.log("Save response:", response);
-      alert("Education saved successfully!");
+      showToast("Education saved successfully!", "success");
       setShowForm(false);
       fetchEducation();
     } catch (err) {
       console.error("Failed to save education", err);
-      alert(`Error saving education: ${err.response?.data?.detail || err.message}`);
+      showToast(`Error saving education: ${err.response?.data?.detail || err.message}`, "error");
     }
   };
 
@@ -236,7 +239,7 @@ export default function EmployeeEducation() {
                           onClick={() => {
                             const token = localStorage.getItem('access_token');
                             if (!token) {
-                              alert('Authentication token not found. Please login again.');
+                              showToast('Authentication token not found. Please login again.', "error");
                               return;
                             }
                             window.open(`http://localhost:8000/employee/education/certificate/${e.id}?token=${token}`, '_blank');
@@ -464,6 +467,7 @@ export default function EmployeeEducation() {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

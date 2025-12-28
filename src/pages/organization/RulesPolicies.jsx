@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function RulesPolicies() {
+  const { toast, showToast } = useToast();
   // Form States
   const [form, setForm] = useState({
     name: "",
@@ -100,11 +103,11 @@ export default function RulesPolicies() {
 
       if (editingId) {
         await api.put(`/policies/hr/update/${editingId}`, cleanedForm);
-        alert("Policy updated successfully!");
+        showToast("Policy updated successfully!", "success");
         setEditingId(null);
       } else {
         await api.post('/policies/hr/create', cleanedForm);
-        alert("Rules & Policies Saved Successfully!");
+        showToast("Policy saved successfully!", "success");
       }
       
       clearForm();
@@ -118,7 +121,7 @@ export default function RulesPolicies() {
           console.log(`Error ${index + 1}:`, error);
         });
       }
-      alert('Failed to save policy. Check console for details.');
+      showToast('Failed to save policy. Check console for details.', 'error');
     } finally {
       setLoading(false);
     }
@@ -167,10 +170,10 @@ export default function RulesPolicies() {
     if (!confirm('Delete this policy?')) return;
     try {
       await api.delete(`/policies/hr/delete/${id}`);
-      alert('Policy deleted successfully');
+      showToast('Policy deleted successfully', 'success');
       fetchPolicies();
     } catch (err) {
-      alert('Failed to delete policy');
+      showToast('Failed to delete policy', 'error');
     }
   };
 
@@ -181,7 +184,7 @@ export default function RulesPolicies() {
         <div className="p-6 border-b border-black bg-gray-50">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-2xl border border-black flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                 </svg>
@@ -193,7 +196,7 @@ export default function RulesPolicies() {
             </div>
             <button
               onClick={() => setShowViewPolicies(!showViewPolicies)}
-              className="inline-flex items-center gap-2 bg-white border border-black text-gray-900 px-4 py-2 rounded-2xl hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -260,7 +263,7 @@ export default function RulesPolicies() {
                     name="probation_period"
                     value={form.probation_period}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                     placeholder="90"
                   />
                 </div>
@@ -277,7 +280,7 @@ export default function RulesPolicies() {
                     name="annual_leave"
                     value={form.annual_leave}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                     placeholder="21"
                   />
                 </div>
@@ -288,7 +291,7 @@ export default function RulesPolicies() {
                     name="sick_leave"
                     value={form.sick_leave}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                     placeholder="12"
                   />
                 </div>
@@ -299,7 +302,7 @@ export default function RulesPolicies() {
                     name="casual_leave"
                     value={form.casual_leave}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                     placeholder="12"
                   />
                 </div>
@@ -316,7 +319,7 @@ export default function RulesPolicies() {
                     name="checkin_time"
                     value={form.checkin_time}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                   />
                 </div>
                 <div>
@@ -326,7 +329,7 @@ export default function RulesPolicies() {
                     name="checkout_time"
                     value={form.checkout_time}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                   />
                 </div>
                 <div>
@@ -336,7 +339,7 @@ export default function RulesPolicies() {
                     name="grace_period"
                     value={form.grace_period}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
                     placeholder="15"
                   />
                 </div>
@@ -367,7 +370,7 @@ export default function RulesPolicies() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -383,7 +386,7 @@ export default function RulesPolicies() {
               value={form.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 border-2 border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm resize-none"
+              className="w-full px-4 py-3 border border-black rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm resize-none"
               placeholder="Policy description and details"
             />
           </div>
@@ -393,7 +396,7 @@ export default function RulesPolicies() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-white border border-black text-gray-900 hover:bg-gray-50 px-8 py-3 rounded-2xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm shadow-sm"
+              className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
             >
               {loading ? (
                 <>
@@ -431,11 +434,11 @@ export default function RulesPolicies() {
                   <p className="text-gray-500 text-sm">Create your first policy to get started with policy management</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {policies.map((policy) => (
-                    <div key={policy.id} className="bg-white rounded-2xl border border-black p-6 hover:bg-gray-50 transition-colors shadow-sm">
+                    <div key={policy.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-sm transition-shadow">
                       <div className="flex items-start justify-between mb-4">
-                        <div className="w-12 h-12 bg-gray-100 rounded-2xl border border-black flex items-center justify-center text-gray-600">
+                        <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white">
                           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                           </svg>
@@ -443,7 +446,7 @@ export default function RulesPolicies() {
                         <div className="flex gap-2">
                           <button 
                             onClick={() => loadPolicyForEdit(policy)}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-2xl border border-black transition-colors" 
+                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,7 +455,7 @@ export default function RulesPolicies() {
                           </button>
                           <button 
                             onClick={() => deletePolicy(policy.id)}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-2xl border border-black transition-colors"
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,77 +467,32 @@ export default function RulesPolicies() {
                       
                       <div className="mb-4">
                         <h3 className="text-lg font-medium text-gray-900 mb-1">{policy.name}</h3>
-                        <p className="text-sm text-gray-600 mb-3">{policy.type}</p>
+                        <p className="text-sm text-gray-600">{policy.type}</p>
                         {policy.description && (
-                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{policy.description}</p>
+                          <p className="text-sm text-gray-600 mt-2 line-clamp-2">{policy.description}</p>
                         )}
                         
                         {/* Policy Details */}
-                        <div className="space-y-2 text-sm">
+                        <div className="mt-3 space-y-1 text-sm">
                           {policy.notice_days && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Notice Period:</span>
-                              <span className="text-gray-900">{policy.notice_days} days</span>
-                            </div>
+                            <p className="text-gray-600">Notice Period: <span className="text-gray-900">{policy.notice_days} days</span></p>
                           )}
                           {policy.probation_period && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Probation:</span>
-                              <span className="text-gray-900">{policy.probation_period} days</span>
-                            </div>
-                          )}
-                          {policy.annual_leave && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Annual Leave:</span>
-                              <span className="text-gray-900">{policy.annual_leave} days</span>
-                            </div>
-                          )}
-                          {policy.sick_leave && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Sick Leave:</span>
-                              <span className="text-gray-900">{policy.sick_leave} days</span>
-                            </div>
-                          )}
-                          {policy.casual_leave && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Casual Leave:</span>
-                              <span className="text-gray-900">{policy.casual_leave} days</span>
-                            </div>
-                          )}
-                          {policy.checkin_time && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Check-in:</span>
-                              <span className="text-gray-900">{policy.checkin_time}</span>
-                            </div>
-                          )}
-                          {policy.checkout_time && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Check-out:</span>
-                              <span className="text-gray-900">{policy.checkout_time}</span>
-                            </div>
-                          )}
-                          {policy.grace_period && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Grace Period:</span>
-                              <span className="text-gray-900">{policy.grace_period} min</span>
-                            </div>
+                            <p className="text-gray-600">Probation: <span className="text-gray-900">{policy.probation_period} days</span></p>
                           )}
                           {policy.work_week && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-500">Work Week:</span>
-                              <span className="text-gray-900">{policy.work_week}</span>
-                            </div>
+                            <p className="text-gray-600">Work Week: <span className="text-gray-900">{policy.work_week}</span></p>
                           )}
                         </div>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-2xl text-xs font-medium border border-black ${
-                          policy.status === 'Active' ? 'bg-white text-gray-800' : 'bg-gray-200 text-gray-800'
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                          policy.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}>
                           {policy.status}
                         </span>
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-2xl text-xs font-medium bg-gray-100 text-gray-800 border border-black">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           {policy.type}
                         </span>
                       </div>
@@ -546,6 +504,7 @@ export default function RulesPolicies() {
           </div>
         )}
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

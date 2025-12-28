@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus, Calendar, Users, Clock, Edit, Trash2, Play, Pause, Target, RefreshCw } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ReviewCycle() {
+  const { toast, showToast } = useToast();
   const [cycles, setCycles] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -138,10 +141,10 @@ export default function ReviewCycle() {
       
       if (editingCycle) {
         await api.put(`/api/pms/reviews/${editingCycle}`, cycleData);
-        alert('Review cycle updated successfully!');
+        showToast('Review cycle updated successfully!', 'success');
       } else {
         await api.post('/api/pms/reviews', cycleData);
-        alert('Review cycle created successfully!');
+        showToast('Review cycle created successfully!', 'success');
       }
       fetchCycles();
       
@@ -159,7 +162,7 @@ export default function ReviewCycle() {
       setShowForm(false);
     } catch (error) {
       console.error('Error creating review cycle:', error);
-      alert('Failed to create review cycle. Please try again.');
+      showToast('Failed to create review cycle. Please try again.', 'error');
     }
   };
 
@@ -167,11 +170,11 @@ export default function ReviewCycle() {
     if (confirm("Are you sure you want to delete this review cycle?")) {
       try {
         await api.delete(`/api/pms/reviews/${id}`);
-        alert('Review cycle deleted successfully!');
+        showToast('Review cycle deleted successfully!', 'success');
         fetchCycles();
       } catch (error) {
         console.error('Error deleting review cycle:', error);
-        alert('Failed to delete review cycle. Please try again.');
+        showToast('Failed to delete review cycle. Please try again.', 'error');
       }
     }
   };
@@ -182,7 +185,7 @@ export default function ReviewCycle() {
       fetchCycles();
     } catch (error) {
       console.error('Error updating review cycle status:', error);
-      alert('Failed to update status. Please try again.');
+      showToast('Failed to update status. Please try again.', 'error');
     }
   };
 
@@ -212,13 +215,13 @@ export default function ReviewCycle() {
         self_score: selfScore ? parseFloat(selfScore) : null,
         manager_score: managerScore ? parseFloat(managerScore) : null
       });
-      alert('Progress updated successfully!');
+      showToast('Progress updated successfully!', 'success');
       fetchCycles();
       setShowProgressModal(false);
       setProgressCycle(null);
     } catch (error) {
       console.error('Error updating progress:', error);
-      alert('Failed to update progress. Please try again.');
+      showToast('Failed to update progress. Please try again.', 'error');
     }
   };
 
@@ -531,6 +534,7 @@ export default function ReviewCycle() {
           </table>
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

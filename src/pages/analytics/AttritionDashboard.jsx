@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 import { TrendingDown, Users, UserMinus, AlertTriangle, BarChart3, Calendar, FileText, Clock, CheckCircle } from 'lucide-react';
 import api from '../../api';
 
 const AttritionDashboard = () => {
   const navigate = useNavigate();
+  const { toast, showToast, hideToast } = useToast();
   const [attritionData, setAttritionData] = useState({
     totalAttrition: 0,
     monthlyAttrition: 0,
@@ -119,6 +122,7 @@ const AttritionDashboard = () => {
       
     } catch (error) {
       console.error('Error fetching attrition data:', error);
+      showToast('Failed to load attrition data', 'error');
     } finally {
       setLoading(false);
     }
@@ -325,6 +329,7 @@ const AttritionDashboard = () => {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

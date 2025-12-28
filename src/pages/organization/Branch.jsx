@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Branch() {
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     branch_name: "",
     branch_code: "",
@@ -36,9 +39,9 @@ export default function Branch() {
     setLoading(true);
     try {
       await api.post("/organization/branch", form);
-      alert("Branch / Unit Saved Successfully!");
+      showToast("Branch / Unit Saved Successfully!", "success");
     } catch (err) {
-      alert('Failed to save branch');
+      showToast('Failed to save branch', "error");
     } finally {
       setLoading(false);
     }
@@ -202,6 +205,7 @@ export default function Branch() {
           </button>
         </div>
       </form>
+      <Toast toast={toast} />
     </div>
   );
 }

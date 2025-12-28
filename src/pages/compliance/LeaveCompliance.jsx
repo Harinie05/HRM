@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Calendar, Users, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function LeaveCompliance() {
   const [form, setForm] = useState({
@@ -28,6 +30,7 @@ export default function LeaveCompliance() {
   const [complianceRecords, setComplianceRecords] = useState([]);
   const [leaveRules, setLeaveRules] = useState(null);
   const [employees, setEmployees] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   // Load leave compliance data
   useEffect(() => {
@@ -116,7 +119,7 @@ export default function LeaveCompliance() {
     e.preventDefault();
     try {
       const res = await api.post("/api/compliance/leave", form);
-      alert("Leave Compliance Check Completed Successfully");
+      showToast("Leave Compliance Check Completed Successfully");
       
       // Reset form
       setForm({
@@ -150,7 +153,7 @@ export default function LeaveCompliance() {
       }
     } catch (err) {
       console.error('Failed to check leave compliance:', err);
-      alert("Failed to check leave compliance");
+      showToast("Failed to check leave compliance", 'error');
     }
   }
 
@@ -533,6 +536,7 @@ export default function LeaveCompliance() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

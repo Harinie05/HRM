@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Lifecycle() {
+  const { toast, showToast } = useToast();
   const [formData, setFormData] = useState({
     employeeId: "",
     actionType: "",
@@ -42,7 +45,7 @@ export default function Lifecycle() {
       setShowEmailModal(true);
     } catch (error) {
       console.error('Error preparing approval:', error);
-      alert('Failed to prepare approval. Please try again.');
+      showToast('Failed to prepare approval. Please try again.', 'error');
     }
   };
 
@@ -52,13 +55,13 @@ export default function Lifecycle() {
       
       // Validate email
       if (!email || !email.trim()) {
-        alert('Please enter a valid email address');
+        showToast('Please enter a valid email address', 'error');
         return;
       }
       
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        alert('Please enter a valid email format');
+        showToast('Please enter a valid email format', 'error');
         return;
       }
       
@@ -94,7 +97,7 @@ export default function Lifecycle() {
       await fetchApprovedActions();
       
       setShowEmailModal(false);
-      alert(approved ? 'Action approved and email sent!' : 'Action rejected and email sent!');
+      showToast(approved ? 'Action approved and email sent!' : 'Action rejected and email sent!', 'success');
     } catch (error) {
       console.error('Error processing approval:', error);
       if (error.response?.status === 404) {
@@ -102,9 +105,9 @@ export default function Lifecycle() {
         fetchPendingActions();
         fetchApprovedActions();
         setShowEmailModal(false);
-        alert('Action not found. Data has been refreshed.');
+        showToast('Action not found. Data has been refreshed.', 'error');
       } else {
-        alert('Failed to process approval. Please try again.');
+        showToast('Failed to process approval. Please try again.', 'error');
       }
     }
   };
@@ -217,7 +220,7 @@ export default function Lifecycle() {
       await fetchPendingActions();
       
       // Show success message
-      alert('Lifecycle action submitted for approval!');
+      showToast('Lifecycle action submitted for approval!', 'success');
       
       // Reset form
       setFormData({
@@ -237,7 +240,7 @@ export default function Lifecycle() {
       });
     } catch (error) {
       console.error('Error saving lifecycle action:', error);
-      alert('Failed to save action. Please try again.');
+      showToast('Failed to save action. Please try again.', 'error');
     }
   };
 
@@ -582,6 +585,7 @@ export default function Lifecycle() {
           </div>
         </div>
       )}
+      <Toast {...toast} />
     </div>
   );
 }

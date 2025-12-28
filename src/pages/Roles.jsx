@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import api from "../api";
 import Layout from "../components/Layout";
+import Toast from "../components/Toast";
+import useToast from "../utils/useToast";
 import { hasPermission, isAdmin } from "../utils/permissions";
 
 export default function Roles() {
@@ -22,6 +24,7 @@ export default function Roles() {
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [editPerms, setEditPerms] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   // ------------------------------------
   // PERMISSION CHECK
@@ -76,10 +79,10 @@ export default function Roles() {
   };
 
   const addRole = async () => {
-    if (!canAdd) return alert("You do not have permission to add roles");
+    if (!canAdd) return showToast("You do not have permission to add roles", 'error');
 
     if (!name.trim()) {
-      alert("Role name required");
+      showToast("Role name required", 'error');
       return;
     }
 
@@ -97,9 +100,9 @@ export default function Roles() {
       setSelectedPerms([]);
       setShowCreateModal(false);
       fetchRoles();
-      alert("Role created!");
+      showToast("Role created!");
     } catch (err) {
-      alert("Create failed");
+      showToast("Create failed", 'error');
       console.error(err);
     }
 
@@ -108,7 +111,7 @@ export default function Roles() {
 
   const deleteRole = async (id) => {
     if (!canDelete)
-      return alert("You do not have permission to delete roles");
+      return showToast("You do not have permission to delete roles", 'error');
 
     if (!window.confirm("Delete this role?")) return;
 
@@ -117,7 +120,7 @@ export default function Roles() {
       fetchRoles();
     } catch (err) {
       console.error('Delete role failed:', err);
-      alert("Delete failed");
+      showToast("Delete failed", 'error');
     }
   };
 
@@ -473,12 +476,12 @@ export default function Roles() {
                         }
                       );
 
-                      alert("Updated successfully!");
+                      showToast("Updated successfully!");
                       setEditing(null);
                       fetchRoles();
                     } catch (err) {
                       console.error('Update role failed:', err);
-                      alert("Update failed");
+                      showToast("Update failed", 'error');
                     }
                   }}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
@@ -493,6 +496,7 @@ export default function Roles() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

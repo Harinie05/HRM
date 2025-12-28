@@ -248,6 +248,7 @@ class JobRequisition(MasterBase):
 
     openings = Column(Integer, default=1)
     experience = Column(String(50))
+    experience_years = Column(Integer, default=0)  # For scoring algorithm
     salary_range = Column(String(100))
     job_type = Column(String(50))
     work_mode = Column(String(100))
@@ -1723,6 +1724,92 @@ class EmployeeProbation(MasterBase):
     probation_status = Column(String(50), default="In Progress")  # In Progress / Confirmed / Extended / Terminated
     extension_end_date = Column(Date, nullable=True)
     remarks = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+# =====================================================
+# STAFF SCHEDULING VS PATIENT LOAD
+# =====================================================
+class PatientLoad(MasterBase):
+    __tablename__ = "patient_loads"
+
+    id = Column(Integer, primary_key=True, index=True)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    shift = Column(String(20), nullable=False)  # Morning / Evening / Night
+    total_patients = Column(Integer, default=0)
+    critical_patients = Column(Integer, default=0)
+    icu_patients = Column(Integer, default=0)
+    opd_patients = Column(Integer, default=0)
+    emergency_patients = Column(Integer, default=0)
+    patient_acuity_score = Column(Float, default=0.0)  # Weighted score based on patient complexity
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class StaffAllocation(MasterBase):
+    __tablename__ = "staff_allocations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
+    date = Column(Date, nullable=False)
+    shift = Column(String(20), nullable=False)  # Morning / Evening / Night
+    required_nurses = Column(Integer, default=0)
+    required_doctors = Column(Integer, default=0)
+    required_support_staff = Column(Integer, default=0)
+    allocated_nurses = Column(Integer, default=0)
+    allocated_doctors = Column(Integer, default=0)
+    allocated_support_staff = Column(Integer, default=0)
+    patient_to_nurse_ratio = Column(Float, default=0.0)
+    allocation_status = Column(String(50), default="Pending")  # Pending / Adequate / Understaffed / Overstaffed
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class StaffScheduleRecommendation(MasterBase):
+    __tablename__ = "staff_schedule_recommendations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_load_id = Column(Integer, ForeignKey("patient_loads.id"), nullable=False)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=False)
+    recommended_nurses = Column(Integer, default=0)
+    recommended_doctors = Column(Integer, default=0)
+    recommended_support_staff = Column(Integer, default=0)
+    priority_level = Column(String(20), default="Normal")  # High / Normal / Low
+    recommendation_reason = Column(Text, nullable=True)
+    auto_generated = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+
+# =====================================================
+# QUALITY INDICATORS (HOSPITAL KPIs)
+# =====================================================
+class QualityIndicator(MasterBase):
+    __tablename__ = "quality_indicators"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kpi_name = Column(String(200), nullable=False)
+    kpi_category = Column(String(100), nullable=False)  # Clinical / Operational / Financial / Patient Safety
+    description = Column(Text, nullable=True)
+    target_value = Column(Float, nullable=False)
+    unit_of_measure = Column(String(50), nullable=False)  # Percentage / Count / Days / Hours
+    frequency = Column(String(50), default="Monthly")  # Daily / Weekly / Monthly / Quarterly
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class KPIRecord(MasterBase):
+    __tablename__ = "kpi_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    quality_indicator_id = Column(Integer, ForeignKey("quality_indicators.id"), nullable=False)
+    recorded_date = Column(Date, nullable=False)
+    actual_value = Column(Float, nullable=False)
+    target_value = Column(Float, nullable=False)
+    variance = Column(Float, nullable=True)  # Calculated: actual - target
+    variance_percentage = Column(Float, nullable=True)  # Calculated: (variance/target) * 100
+    status = Column(String(50), default="On Track")  # On Track / Below Target / Above Target
+    remarks = Column(Text, nullable=True)
+    recorded_by = Column(String(150), nullable=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 

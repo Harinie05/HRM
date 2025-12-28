@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { CheckCircle, Clock, User, AlertCircle } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ClearanceWorkflow() {
+  const { toast, showToast } = useToast();
   const [exits, setExits] = useState([]);
   const [selectedExit, setSelectedExit] = useState(null);
   const [clearances, setClearances] = useState([]);
@@ -51,13 +54,13 @@ export default function ClearanceWorkflow() {
   async function handleApproveClearance(clearanceId) {
     try {
       await api.put(`/api/exit/clearance/${clearanceId}/approve`);
-      alert("Clearance approved successfully");
+      showToast("Clearance approved successfully", "success");
       
       // Refresh clearances
       const res = await api.get(`/api/exit/clearance/${selectedExit.id}`);
       setClearances(res.data);
     } catch (err) {
-      alert("Failed to approve clearance");
+      showToast("Failed to approve clearance", "error");
     }
   }
 
@@ -65,7 +68,7 @@ export default function ClearanceWorkflow() {
     e.preventDefault();
     try {
       await api.put(`/api/resignation/interview/${selectedExit.id}`, interviewForm);
-      alert("Exit interview completed successfully");
+      showToast("Exit interview completed successfully", "success");
       setShowInterviewForm(false);
       setInterviewForm({ rating: "", feedback: "", suggestions: "" });
       
@@ -82,7 +85,7 @@ export default function ClearanceWorkflow() {
       
       setExits(approvedResignations);
     } catch (err) {
-      alert("Failed to complete exit interview");
+      showToast("Failed to complete exit interview", "error");
     }
   }
 
@@ -471,6 +474,7 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
       )}
+      <Toast {...toast} />
     </div>
   );
 }

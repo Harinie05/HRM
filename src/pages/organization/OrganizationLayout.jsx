@@ -80,6 +80,12 @@ export default function OrganizationLayout() {
               ))}
             </div>
           </div>
+          {/* Scroll indicator */}
+          <div className="flex justify-center">
+            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
         </div>
 
         {/* Content */}

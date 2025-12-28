@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { DollarSign, Users, Calculator, FileText, Plus, Edit, Trash2 } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Statutory() {
   const [form, setForm] = useState({
@@ -26,6 +28,7 @@ export default function Statutory() {
   const [statutoryRules, setStatutoryRules] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   // Load statutory rules and calculations
   useEffect(() => {
@@ -124,12 +127,12 @@ export default function Statutory() {
       let response;
       if (editingRecord) {
         response = await api.put(`/api/compliance/statutory/${editingRecord.id}`, form);
-        alert("Statutory Deductions Updated Successfully!");
+        showToast("Statutory Deductions Updated Successfully!");
         setEditingRecord(null);
       } else {
         response = await api.post("/api/compliance/statutory/calculate", form);
         const data = response.data.data;
-        alert(`Statutory Deductions Calculated Successfully!\nPF: ₹${data.pf_employee}\nESI: ₹${data.esi_employee}\nPT: ₹${data.professional_tax}\nTotal: ₹${data.total_deductions}`);
+        showToast(`Statutory Deductions Calculated Successfully! PF: ₹${data.pf_employee}, ESI: ₹${data.esi_employee}, PT: ₹${data.professional_tax}, Total: ₹${data.total_deductions}`);
       }
       
       // Reset form
@@ -158,7 +161,7 @@ export default function Statutory() {
       
     } catch (err) {
       console.error('Failed to save statutory deductions:', err);
-      alert("Failed to save statutory deductions");
+      showToast("Failed to save statutory deductions", 'error');
     }
   }
 
@@ -185,18 +188,18 @@ export default function Statutory() {
   }
 
   async function handleDelete(recordId) {
-    if (!confirm('Are you sure you want to delete this record?')) return;
+    if (!window.confirm('Are you sure you want to delete this record?')) return;
     
     try {
       await api.delete(`/api/compliance/statutory/${recordId}`);
-      alert("Record deleted successfully!");
+      showToast("Record deleted successfully!");
       
       // Refresh calculations list
       const calcRes = await api.get("/api/compliance/statutory/");
       setCalculations(calcRes.data);
     } catch (err) {
       console.error('Failed to delete record:', err);
-      alert("Failed to delete record");
+      showToast("Failed to delete record", 'error');
     }
   }
 
@@ -620,6 +623,7 @@ export default function Statutory() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

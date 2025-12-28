@@ -82,7 +82,6 @@ def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_te
 # ----------------------------------------------------------
 @router.put("/update/{job_id}", response_model=JobReqOut)
 def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db)):
-
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -100,6 +99,9 @@ def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = D
     audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "job_requisitions", job_id, old_values, job.__dict__)
 
     return job
+
+
+
 
 
 # ----------------------------------------------------------
@@ -149,6 +151,23 @@ def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
 
 
 
+
+
+# ----------------------------------------------------------
+# DELETE JOB REQUISITION
+# ----------------------------------------------------------
+@router.delete("/delete/{job_id}")
+def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    old_values = job.__dict__.copy()
+    db.delete(job)
+    db.commit()
+    audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "job_requisitions", job_id, old_values, None)
+    
+    return {"message": "Job requisition deleted successfully"}
 
 
 # ----------------------------------------------------------

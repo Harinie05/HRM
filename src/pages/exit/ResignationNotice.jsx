@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ResignationNotice() {
+  const { toast, showToast, hideToast } = useToast();
   const [resignations, setResignations] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [showApplyForm, setShowApplyForm] = useState(false);
@@ -53,7 +56,7 @@ export default function ResignationNotice() {
     e.preventDefault();
     try {
       await api.post("/api/exit/resignation/apply", form);
-      alert("Resignation application submitted successfully");
+      showToast("Resignation application submitted successfully");
       setShowApplyForm(false);
       setForm({
         employee_id: "",
@@ -69,20 +72,20 @@ export default function ResignationNotice() {
       setResignations(res.data);
     } catch (err) {
       console.error('Failed to submit resignation:', err);
-      alert("Failed to submit resignation application");
+      showToast("Failed to submit resignation application", 'error');
     }
   }
 
   async function handleApprove(exitId) {
     try {
       await api.put(`/api/exit/resignation/${exitId}/approve`);
-      alert("Resignation approved successfully");
+      showToast("Resignation approved successfully");
       
       // Refresh resignations
       const res = await api.get("/api/exit/resignations");
       setResignations(res.data);
     } catch (err) {
-      alert("Failed to approve resignation");
+      showToast("Failed to approve resignation", 'error');
     }
   }
 
@@ -92,13 +95,13 @@ export default function ResignationNotice() {
     
     try {
       await api.put(`/api/exit/resignation/${exitId}/reject?reason=${encodeURIComponent(reason)}`);
-      alert("Resignation rejected");
+      showToast("Resignation rejected");
       
       // Refresh resignations
       const res = await api.get("/api/exit/resignations");
       setResignations(res.data);
     } catch (err) {
-      alert("Failed to reject resignation");
+      showToast("Failed to reject resignation", 'error');
     }
   }
 
@@ -307,6 +310,7 @@ export default function ResignationNotice() {
           </table>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

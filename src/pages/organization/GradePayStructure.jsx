@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function GradePayStructure() {
+  const { toast, showToast, hideToast } = useToast();
   const tenant_db = localStorage.getItem("tenant_db");
 
   // Form States
@@ -78,7 +81,7 @@ export default function GradePayStructure() {
     
     const total = +form.basic_percent + +form.hra_percent + +form.allowance_percent + +form.special_percent;
     if (total !== 100) {
-      alert("Total percentage must equal 100%");
+      showToast("Total percentage must equal 100%", 'error');
       return;
     }
 
@@ -100,17 +103,17 @@ export default function GradePayStructure() {
 
       if (editingGrade) {
         await api.put(`/grades/${editingGrade}`, payload);
-        alert("Grade updated successfully!");
+        showToast("Grade updated successfully!");
         setEditingGrade(null);
       } else {
         await api.post('/grades', payload);
-        alert("Grade & Pay Structure Saved Successfully!");
+        showToast("Grade & Pay Structure Saved Successfully!");
       }
       
       clearForm();
       fetchGrades();
     } catch (err) {
-      alert('Failed to save grade structure');
+      showToast('Failed to save grade structure', 'error');
     } finally {
       setLoading(false);
     }
@@ -156,10 +159,10 @@ export default function GradePayStructure() {
     if (!window.confirm("Delete this grade?")) return;
     try {
       await api.delete(`/grades/${gradeId}`);
-      alert("Grade deleted successfully");
+      showToast("Grade deleted successfully");
       fetchGrades();
     } catch (err) {
-      alert("Failed to delete grade");
+      showToast("Failed to delete grade", 'error');
     }
   };
 
@@ -171,8 +174,8 @@ export default function GradePayStructure() {
   return (
     <div className="space-y-6">
       {/* Grade Configuration */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="p-6 border-b border-black">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -187,7 +190,7 @@ export default function GradePayStructure() {
             </div>
             <button
               onClick={() => setShowViewGrades(!showViewGrades)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -211,7 +214,7 @@ export default function GradePayStructure() {
                 name="code"
                 value={form.code}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="e.g., G1, EXEC, MGR"
               />
             </div>
@@ -227,7 +230,7 @@ export default function GradePayStructure() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="e.g., Executive, Manager"
               />
             </div>
@@ -243,7 +246,7 @@ export default function GradePayStructure() {
                 name="min_salary"
                 value={form.min_salary}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="25000"
               />
             </div>
@@ -259,7 +262,7 @@ export default function GradePayStructure() {
                 name="max_salary"
                 value={form.max_salary}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="50000"
               />
             </div>
@@ -272,7 +275,7 @@ export default function GradePayStructure() {
                 name="basic_percent"
                 value={form.basic_percent}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="40"
               />
             </div>
@@ -285,7 +288,7 @@ export default function GradePayStructure() {
                 name="hra_percent"
                 value={form.hra_percent}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="20"
               />
             </div>
@@ -298,7 +301,7 @@ export default function GradePayStructure() {
                 name="allowance_percent"
                 value={form.allowance_percent}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="30"
               />
             </div>
@@ -311,7 +314,7 @@ export default function GradePayStructure() {
                 name="special_percent"
                 value={form.special_percent}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="10"
               />
             </div>
@@ -334,7 +337,7 @@ export default function GradePayStructure() {
                   name="pf_percent"
                   value={form.pf_percent}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="12"
                 />
               )}
@@ -358,7 +361,7 @@ export default function GradePayStructure() {
                   name="esi_percent"
                   value={form.esi_percent}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="3.25"
                 />
               )}
@@ -375,7 +378,7 @@ export default function GradePayStructure() {
                 name="effective_from"
                 value={form.effective_from}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
             </div>
 
@@ -386,7 +389,7 @@ export default function GradePayStructure() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -402,7 +405,7 @@ export default function GradePayStructure() {
               value={form.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
               placeholder="Grade description and details"
             />
           </div>
@@ -419,7 +422,7 @@ export default function GradePayStructure() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
             >
               {loading ? (
                 <>
@@ -514,6 +517,7 @@ export default function GradePayStructure() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

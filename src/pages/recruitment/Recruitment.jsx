@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import api from "../../api";
-import { FiSearch, FiFilter, FiPlus, FiEye, FiEdit, FiUsers, FiLink, FiPlay, FiPause, FiTrash2 } from "react-icons/fi";
+import React, { useState, useEffect } from 'react';
+import { FiPlus, FiEdit, FiTrash2, FiEye, FiUsers, FiLink, FiPlay, FiPause, FiSearch, FiFilter } from 'react-icons/fi';
+import Layout from '../../components/Layout';
+import Toast from '../../components/Toast';
+import useToast from '../../utils/useToast';
+import api from '../../api';
 
 export default function Recruitment() {
   const [jobs, setJobs] = useState([]);
   const [search, setSearch] = useState("");
   const [generatedLinks, setGeneratedLinks] = useState({});
+  const { toast, showToast, hideToast } = useToast();
   const [filters, setFilters] = useState({
     department: "",
     status: "",
@@ -31,7 +34,7 @@ export default function Recruitment() {
       setJobs(res.data || []);
     } catch (err) {
       console.error("Failed to load jobs", err);
-      alert("Failed to load jobs. Please check your connection.");
+      showToast("Failed to load jobs. Please check your connection.", "error");
     } finally {
       setLoading(false);
     }
@@ -79,10 +82,10 @@ export default function Recruitment() {
         )
       );
       
-      alert(`Job ${newStatus === 'Posted' ? 'published' : 'unpublished'} successfully!`);
+      showToast(`Job ${newStatus === 'Posted' ? 'published' : 'unpublished'} successfully!`);
     } catch (err) {
       console.error("Failed to update job status", err);
-      alert(`Failed to update job status: ${err.message || 'Unknown error'}`);
+      showToast(`Failed to update job status: ${err.message || 'Unknown error'}`, 'error');
     }
   };
 
@@ -99,10 +102,10 @@ export default function Recruitment() {
       
       // Copy to clipboard
       navigator.clipboard.writeText(url);
-      alert("Job link generated and copied to clipboard!");
+      showToast("Job link generated and copied to clipboard!");
     } catch (err) {
       console.error("Failed to generate link", err);
-      alert("Failed to generate job link");
+      showToast("Failed to generate job link", 'error');
     }
   };
 
@@ -113,10 +116,10 @@ export default function Recruitment() {
     try {
       await api.delete(`/recruitment/delete/${job.id}`);
       fetchJobs();
-      alert("Job deleted successfully!");
+      showToast("Job deleted successfully!");
     } catch (err) {
       console.error("Failed to delete job", err);
-      alert("Failed to delete job");
+      showToast("Failed to delete job", 'error');
     }
   };
 
@@ -357,7 +360,7 @@ export default function Recruitment() {
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-medium text-gray-900">{job.title}</div>
-                          <div className="text-sm text-gray-500">{job.experience} experience</div>
+                          <div className="text-sm text-gray-500">{job.experience_years} years experience</div>
                           {job.location && (
                             <div className="text-xs text-gray-500">{job.location}</div>
                           )}
@@ -475,24 +478,27 @@ export default function Recruitment() {
           />
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }
 
 // JobForm Modal Component
 function JobFormModal({ mode, job, onClose }) {
+  const { showToast } = useToast();
   const [form, setForm] = useState({
     title: "",
     department: "",
     hiring_manager: "",
     openings: 1,
-    experience: "",
+    experience_years: 0,
     salary_range: "",
     job_type: "Full-time",
     work_mode: "On-site",
     location: "",
     rounds: 2,
     round_names: [{name: "Technical Round", description: ""}, {name: "HR Round", description: ""}],
+    skills: [],
     description: "",
     status: "Draft"
   });
@@ -546,14 +552,14 @@ function JobFormModal({ mode, job, onClose }) {
     try {
       if (mode === "create") {
         await api.post("/recruitment/create", form);
-        alert("Job created successfully!");
+        showToast("Job created successfully!");
       } else if (mode === "edit") {
         await api.put(`/recruitment/update/${job.id}`, form);
-        alert("Job updated successfully!");
+        showToast("Job updated successfully!");
       }
       onClose();
     } catch (err) {
-      alert("Failed to save job");
+      showToast("Failed to save job", 'error');
     }
   };
 
@@ -561,15 +567,15 @@ function JobFormModal({ mode, job, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white border border-black rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b  bg-content">
-          <h2 className="text-xl font-semibold text-primary">
+        <div className="px-6 py-4 border-b border-black">
+          <h2 className="text-xl font-semibold text-black">
             {mode === "create" && "Create New Job"}
             {mode === "edit" && "Edit Job"}
             {mode === "view" && "Job Details"}
           </h2>
-          <p className="text-sm text-secondary mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             {mode === "create" && "Fill in the details to create a new job posting"}
             {mode === "edit" && "Update the job information"}
             {mode === "view" && "View job posting details"}
@@ -577,14 +583,14 @@ function JobFormModal({ mode, job, onClose }) {
         </div>
 
         {/* Tabs */}
-        <div className="px-6 py-3 border-b ">
+        <div className="px-6 py-3 border-b border-black">
           <div className="flex space-x-6">
             <button
               onClick={() => setActiveTab('basic')}
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'basic'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-muted hover:text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Basic Info
@@ -594,7 +600,7 @@ function JobFormModal({ mode, job, onClose }) {
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'details'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-muted hover:text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Job Details
@@ -604,7 +610,7 @@ function JobFormModal({ mode, job, onClose }) {
               className={`pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'rounds'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-muted hover:text-secondary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Interview Rounds
@@ -620,64 +626,64 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Job Title *</label>
+                  <label className="block text-sm font-medium text-black mb-2">Job Title *</label>
                   <div className="space-y-2">
                     <select
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Select existing job title</option>
                       {existingJobs.map((title, index) => (
                         <option key={index} value={title}>{title}</option>
                       ))}
                     </select>
-                    <div className="text-center text-xs text-muted">OR</div>
+                    <div className="text-center text-xs text-gray-600">OR</div>
                     <input
                       type="text"
                       placeholder="Enter new job title"
                       value={form.title}
                       onChange={(e) => setForm({...form, title: e.target.value})}
                       disabled={isView}
-                      className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Department *</label>
+                  <label className="block text-sm font-medium text-black mb-2">Department *</label>
                   <input
                     type="text"
                     placeholder="e.g., Engineering, Marketing"
                     value={form.department}
                     onChange={(e) => setForm({...form, department: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Hiring Manager</label>
+                  <label className="block text-sm font-medium text-black mb-2">Hiring Manager</label>
                   <input
                     type="text"
                     placeholder="Manager name"
                     value={form.hiring_manager}
                     onChange={(e) => setForm({...form, hiring_manager: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Number of Openings</label>
+                  <label className="block text-sm font-medium text-black mb-2">Number of Openings</label>
                   <input
                     type="number"
                     min="1"
                     value={form.openings}
                     onChange={(e) => setForm({...form, openings: parseInt(e.target.value) || 1})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -689,36 +695,37 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Experience Required</label>
+                  <label className="block text-sm font-medium text-black mb-2">Experience Years</label>
                   <input
-                    type="text"
-                    placeholder="e.g., 2-5 years"
-                    value={form.experience}
-                    onChange={(e) => setForm({...form, experience: e.target.value})}
+                    type="number"
+                    placeholder="e.g., 3"
+                    min="0"
+                    value={form.experience_years || ''}
+                    onChange={(e) => setForm({...form, experience_years: parseInt(e.target.value) || 0})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Salary Range</label>
+                  <label className="block text-sm font-medium text-black mb-2">Salary Range</label>
                   <input
                     type="text"
                     placeholder="e.g., $50,000 - $70,000"
                     value={form.salary_range}
                     onChange={(e) => setForm({...form, salary_range: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Job Type</label>
+                  <label className="block text-sm font-medium text-black mb-2">Job Type</label>
                   <select
                     value={form.job_type}
                     onChange={(e) => setForm({...form, job_type: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -728,12 +735,12 @@ function JobFormModal({ mode, job, onClose }) {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Work Mode</label>
+                  <label className="block text-sm font-medium text-black mb-2">Work Mode</label>
                   <select
                     value={form.work_mode}
                     onChange={(e) => setForm({...form, work_mode: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="On-site">On-site</option>
                     <option value="Remote">Remote</option>
@@ -742,27 +749,39 @@ function JobFormModal({ mode, job, onClose }) {
                 </div>
                 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-secondary mb-2">Location</label>
+                  <label className="block text-sm font-medium text-black mb-2">Location</label>
                   <input
                     type="text"
                     placeholder="e.g., New York, NY"
                     value={form.location}
                     onChange={(e) => setForm({...form, location: e.target.value})}
                     disabled={isView}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-black mb-2">Required Skills</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., React, Node.js, Python (comma-separated)"
+                    value={Array.isArray(form.skills) ? form.skills.join(', ') : (form.skills || '')}
+                    onChange={(e) => setForm({...form, skills: e.target.value ? e.target.value.split(',').map(s => s.trim()) : []})}
+                    disabled={isView}
+                    className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-secondary mb-2">Job Description</label>
+                <label className="block text-sm font-medium text-black mb-2">Job Description</label>
                 <textarea
                   placeholder="Describe the role, responsibilities, and requirements..."
                   value={form.description}
                   onChange={(e) => setForm({...form, description: e.target.value})}
                   disabled={isView}
                   rows={6}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none placeholder-gray-500"
                 />
               </div>
             </div>
@@ -773,8 +792,8 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-medium text-primary">Interview Rounds</h3>
-                  <p className="text-sm text-secondary">Configure the interview process for this position</p>
+                  <h3 className="text-lg font-medium text-white">Interview Rounds</h3>
+                  <p className="text-sm text-gray-300">Configure the interview process for this position</p>
                 </div>
                 {!isView && (
                   <button
@@ -783,10 +802,7 @@ function JobFormModal({ mode, job, onClose }) {
                       const newRounds = [...(form.round_names || []), {name: "", description: ""}];
                       setForm({...form, round_names: newRounds, rounds: newRounds.length});
                     }}
-                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                    className="px-4 py-2 text-white rounded-lg transition-colors flex items-center gap-2"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                    className="px-4 py-2 bg-black text-white border-2 border-black rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-800"
                   >
                     <FiPlus size={16} />
                     Add Round
@@ -796,9 +812,9 @@ function JobFormModal({ mode, job, onClose }) {
               
               <div className="space-y-4">
                 {(form.round_names || []).map((round, index) => (
-                  <div key={index} className="border rounded-lg p-4 bg-content" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                  <div key={index} className="border border-black rounded-lg p-4 bg-white">
                     <div className="flex justify-between items-center mb-3">
-                      <h4 className="font-medium text-primary">Round {index + 1}</h4>
+                      <h4 className="font-medium text-black">Round {index + 1}</h4>
                       {!isView && form.round_names.length > 1 && (
                         <button
                           type="button"
@@ -823,7 +839,7 @@ function JobFormModal({ mode, job, onClose }) {
                           setForm({...form, round_names: newRounds});
                         }}
                         disabled={isView}
-                        className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                       />
                       <textarea
                         placeholder={`Round ${index + 1} Description (e.g., Technical skills assessment)`}
@@ -835,7 +851,7 @@ function JobFormModal({ mode, job, onClose }) {
                         }}
                         disabled={isView}
                         rows={3}
-                        className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        className="w-full bg-white text-black border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none placeholder-gray-500"
                       />
                     </div>
                   </div>
@@ -846,20 +862,17 @@ function JobFormModal({ mode, job, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t  bg-content flex justify-between">
+        <div className="px-6 py-4 border-t border-black flex justify-between">
           <button
             onClick={onClose}
-            className="px-6 py-2 border-dark text-secondary rounded-lg hover:bg-content transition-colors"
+            className="px-6 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 transition-colors"
           >
             {isView ? 'Close' : 'Cancel'}
           </button>
           {!isView && (
             <button
               onClick={handleSubmit}
-              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              className="px-6 py-2 text-white rounded-lg transition-colors flex items-center gap-2"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              className="px-6 py-2 bg-black text-white border border-black rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-800"
             >
               {mode === "create" ? (
                 <>

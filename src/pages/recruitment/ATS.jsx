@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import api from "../../api";
 import { FiUsers, FiCalendar, FiClock, FiArrowRight, FiFilter, FiSearch, FiEye, FiUserCheck, FiUserX } from "react-icons/fi";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ATS() {
+  const { toast, showToast } = useToast();
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [candidates, setCandidates] = useState([]);
@@ -68,12 +71,12 @@ export default function ATS() {
         ...moveForm
       });
 
-      alert(`Candidate ${moveForm.action} successfully!`);
+      showToast(`Candidate ${moveForm.action} successfully!`, "success");
       setShowMoveModal(false);
       fetchCandidates(selectedJob.id);
     } catch (err) {
       console.error("Failed to move candidate");
-      alert("Failed to move candidate");
+      showToast("Failed to move candidate", "error");
     }
   };
 
@@ -447,6 +450,7 @@ export default function ATS() {
           </div>
         )}
         </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

@@ -3,9 +3,12 @@ import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
 import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone } from "react-icons/fi";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Onboarding() {
   const location = useLocation();
+  const { toast, showToast } = useToast();
   const [candidates, setCandidates] = useState([]);
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [showNewOnboardingForm, setShowNewOnboardingForm] = useState(false);
@@ -122,7 +125,7 @@ export default function Onboarding() {
       setShowDocumentsModal(true);
     } catch (err) {
       console.error("Failed to load documents", err);
-      alert("Failed to load documents");
+      showToast("Failed to load documents", "error");
     }
   };
 
@@ -179,11 +182,11 @@ export default function Onboarding() {
         `/recruitment/onboarding/start/${selectedCandidate.id}`,
         onboardingForm
       );
-      alert("Onboarding started successfully!");
+      showToast("Onboarding started successfully!", "success");
       setShowOnboardingModal(false);
       fetchCandidates();
     } catch (err) {
-      alert("Failed to start onboarding");
+      showToast("Failed to start onboarding", "error");
     }
   };
 
@@ -212,12 +215,12 @@ export default function Onboarding() {
         probation_period: "3 Months",
         employee_id: newOnboardingForm.employee_id
       });
-      alert("Onboarding started successfully! Joining formalities email sent to candidate.");
+      showToast("Onboarding started successfully! Joining formalities email sent to candidate.", "success");
       setShowNewOnboardingForm(false);
       fetchCandidates();
     } catch (err) {
       console.error("Error:", err);
-      alert("Failed to submit onboarding form");
+      showToast("Failed to submit onboarding form", "error");
     }
   };
 
@@ -237,11 +240,11 @@ export default function Onboarding() {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      alert("Documents uploaded successfully!");
+      showToast("Documents uploaded successfully!", "success");
       setShowDocModal(false);
       fetchCandidates();
     } catch (err) {
-      alert("Failed to upload documents");
+      showToast("Failed to upload documents", "error");
     }
   };
 
@@ -256,7 +259,7 @@ export default function Onboarding() {
       );
       await sendAppointmentEmail();
     } catch (err) {
-      alert("Failed to generate and send appointment");
+      showToast("Failed to generate and send appointment", "error");
     }
   };
 
@@ -267,10 +270,10 @@ export default function Onboarding() {
         `/recruitment/onboarding/appointment/send/${onboardingDetails.onboarding.id}`,
         {}
       );
-      alert(res.data.message);
+      showToast(res.data.message, "success");
       setShowAppointmentModal(false);
     } catch (err) {
-      alert("Failed to send appointment letter");
+      showToast("Failed to send appointment letter", "error");
     }
   };
 
@@ -283,11 +286,11 @@ export default function Onboarding() {
         `/recruitment/onboarding/create-employee/${onboardingDetails.onboarding.id}`,
         employeeForm
       );
-      alert(`Employee created! Code: ${res.data.employee_code}`);
+      showToast(`Employee created! Code: ${res.data.employee_code}`, "success");
       setShowEmployeeModal(false);
       fetchCandidates();
     } catch (err) {
-      alert("Failed to create employee");
+      showToast("Failed to create employee", "error");
     }
   };
 
@@ -313,11 +316,11 @@ export default function Onboarding() {
       await api.put(
         `/recruitment/onboarding/reject/${onboardingDetails.onboarding.id}`
       );
-      alert("Documents rejected. Candidate can re-upload.");
+      showToast("Documents rejected. Candidate can re-upload.", "success");
       setShowVerifyModal(false);
       fetchCandidates();
     } catch (err) {
-      alert("Failed to reject documents");
+      showToast("Failed to reject documents", "error");
     }
   };
 
@@ -329,11 +332,11 @@ export default function Onboarding() {
       await api.put(
         `/recruitment/onboarding/approve/${onboardingDetails.onboarding.id}`
       );
-      alert("Documents approved!");
+      showToast("Documents approved!", "success");
       setShowVerifyModal(false);
       fetchCandidates();
     } catch (err) {
-      alert("Failed to approve documents");
+      showToast("Failed to approve documents", "error");
     }
   };
 
@@ -341,33 +344,34 @@ export default function Onboarding() {
   // ========================  UI START  ===============================
   // ===================================================================
   return (
-    <Layout>
-      <div className="p-6">
-        {/* Header */}
-        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiUser className="w-7 h-7 text-gray-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Onboarding</h1>
-                <p className="text-gray-600 text-base font-medium">Manage employee onboarding process and documentation</p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500 font-medium">{candidates.filter(c => 
-                      searchTerm === "" || 
-                      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                    ).length} Onboarded Candidates</span>
+    <>
+      <Layout>
+        <div className="p-6">
+          {/* Header */}
+          <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
+                  <FiUser className="w-7 h-7 text-gray-600" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">Onboarding</h1>
+                  <p className="text-gray-600 text-base font-medium">Manage employee onboarding process and documentation</p>
+                  <div className="flex items-center space-x-3 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-500 font-medium">{candidates.filter(c => 
+                        searchTerm === "" || 
+                        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
+                      ).length} Onboarded Candidates</span>
+                    </div>
+                    <div className="w-px h-3 bg-gray-300 rounded-full"></div>
+                    <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
                   </div>
-                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
-                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
         {/* Search Section */}
         <div className="mb-6">
@@ -496,7 +500,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Full Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.full_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, full_name: e.target.value})}
                       required
@@ -507,7 +511,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Date of Birth *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.date_of_birth}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, date_of_birth: e.target.value})}
                       required
@@ -517,7 +521,7 @@ export default function Onboarding() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Gender *</label>
                     <select
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.gender}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, gender: e.target.value})}
                       required
@@ -533,7 +537,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Personal Email *</label>
                     <input
                       type="email"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.personal_email}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, personal_email: e.target.value})}
                       required
@@ -549,7 +553,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Phone Number *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.phone_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, phone_number: e.target.value})}
                       required
@@ -560,7 +564,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.emergency_contact_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, emergency_contact_name: e.target.value})}
                       required
@@ -571,7 +575,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Emergency Contact Phone *</label>
                     <input
                       type="tel"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.emergency_contact_phone}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, emergency_contact_phone: e.target.value})}
                       required
@@ -588,7 +592,7 @@ export default function Onboarding() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        className="border p-2 rounded flex-1" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 flex-1"
                         value={newOnboardingForm.employee_id}
                         onChange={(e) => setNewOnboardingForm({...newOnboardingForm, employee_id: e.target.value})}
                         required
@@ -596,7 +600,7 @@ export default function Onboarding() {
                       />
                       <button
                         type="button"
-                        className="px-3 py-2 bg-blue-600 text-white rounded text-sm"
+                        className="px-4 py-3 bg-white text-black font-semibold border border-black rounded-lg hover:bg-gray-50 transition-colors"
                         onClick={generateEmployeeId}
                       >
                         Generate
@@ -608,7 +612,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Joining Date *</label>
                     <input
                       type="date"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.joining_date}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, joining_date: e.target.value})}
                       required
@@ -619,7 +623,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Department *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-gray-100"
                       value={newOnboardingForm.department}
                       readOnly
                     />
@@ -629,7 +633,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Designation *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full bg-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-gray-100"
                       value={newOnboardingForm.designation}
                       readOnly
                     />
@@ -639,7 +643,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Work Location</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.work_location || ""}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, work_location: e.target.value})}
                       placeholder="Main Office"
@@ -650,7 +654,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Reporting Manager</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.reporting_manager || ""}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, reporting_manager: e.target.value})}
                       placeholder="To be assigned"
@@ -666,7 +670,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Bank Name *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.bank_name}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, bank_name: e.target.value})}
                       required
@@ -677,7 +681,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Account Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.account_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, account_number: e.target.value})}
                       required
@@ -688,7 +692,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">IFSC Code *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.ifsc_code}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, ifsc_code: e.target.value})}
                       required
@@ -704,7 +708,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">Aadhaar Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.aadhar_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, aadhar_number: e.target.value})}
                       required
@@ -715,7 +719,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">PAN Number *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.pan_number}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, pan_number: e.target.value})}
                       required
@@ -730,7 +734,7 @@ export default function Onboarding() {
                   <div className="col-span-2">
                     <label className="block text-sm font-medium mb-1">Current Address *</label>
                     <textarea
-                      className="border p-2 rounded w-full h-20" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none h-20"
                       value={newOnboardingForm.current_address}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, current_address: e.target.value})}
                       required
@@ -741,7 +745,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">City *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.city}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, city: e.target.value})}
                       required
@@ -752,7 +756,7 @@ export default function Onboarding() {
                     <label className="block text-sm font-medium mb-1">State *</label>
                     <input
                       type="text"
-                      className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
+                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={newOnboardingForm.state}
                       onChange={(e) => setNewOnboardingForm({...newOnboardingForm, state: e.target.value})}
                       required
@@ -762,14 +766,14 @@ export default function Onboarding() {
 
                 <div className="flex justify-between mt-8">
                   <button
-                    className="px-6 py-2 bg-gray-300 rounded"
+                    className="px-6 py-3 bg-white text-black font-semibold border border-black rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={() => setShowNewOnboardingForm(false)}
                   >
                     Cancel
                   </button>
 
                   <button
-                    className="px-6 py-2 bg-blue-600 text-white rounded"
+                    className="px-6 py-3 bg-white text-black font-semibold border border-black rounded-lg hover:bg-gray-50 transition-colors"
                     onClick={submitNewOnboarding}
                   >
                     Submit Onboarding Form
@@ -1130,6 +1134,8 @@ export default function Onboarding() {
           )}
 
         </div>
-    </Layout>
+      </Layout>
+      <Toast toast={toast} />
+    </>
   );
 }

@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiHeart, FiArrowLeft, FiUpload, FiEye, FiUser, FiPhone, FiShield, FiBell, FiCalendar, FiAlertTriangle } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeMedical() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     blood_group: "",
     height: "",
@@ -99,11 +102,11 @@ export default function EmployeeMedical() {
       } else {
         await api.post("/employee/medical/add", data);
       }
-      alert("Medical details saved");
+      showToast("Medical details saved", "success");
       fetchMedical();
     } catch (err) {
       console.error("Failed to save medical details", err);
-      alert("Failed to save medical details");
+      showToast("Failed to save medical details", "error");
     }
     setLoading(false);
   };
@@ -667,7 +670,7 @@ export default function EmployeeMedical() {
                       onClick={() => {
                         const token = localStorage.getItem('access_token');
                         if (!token) {
-                          alert('Authentication token not found. Please login again.');
+                          showToast('Authentication token not found. Please login again.', "error");
                           return;
                         }
                         window.open(`http://localhost:8000/employee/medical/certificate/${id}?token=${token}`, '_blank');
@@ -693,6 +696,7 @@ export default function EmployeeMedical() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

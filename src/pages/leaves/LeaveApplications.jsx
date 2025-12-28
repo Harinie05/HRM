@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Check, X, Eye, Filter, Calendar } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function LeaveApplications() {
+  const { toast, showToast } = useToast();
   const [applications, setApplications] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -40,18 +43,18 @@ export default function LeaveApplications() {
       setShowBalanceModal(true);
     } catch (error) {
       console.error("Error fetching leave balances:", error);
-      alert("Error fetching leave balances");
+      showToast("Error fetching leave balances", "error");
     }
   };
 
   const initializeBalances = async (employeeId) => {
     try {
       const res = await api.post(`/api/leave/applications/initialize-balances/${employeeId}`);
-      alert(res.data.message);
+      showToast(res.data.message, "success");
       fetchLeaveBalances(employeeId);
     } catch (error) {
       console.error("Error initializing balances:", error);
-      alert("Error initializing leave balances");
+      showToast("Error initializing leave balances", "error");
     }
   };
 
@@ -212,7 +215,7 @@ export default function LeaveApplications() {
       await api.post(`/api/leave/applications/?employee_id=${formData.employee_id}`, submitData);
       fetchApplications();
       handleCloseModal();
-      alert("Leave application submitted successfully! Balance updated.");
+      showToast("Leave application submitted successfully! Balance updated.", "success");
     } catch (error) {
       console.error("Error creating application:", error);
       let errorMessage = "Failed to submit leave application.";
@@ -220,15 +223,15 @@ export default function LeaveApplications() {
       if (error.response?.data?.detail) {
         const detail = error.response.data.detail;
         if (detail.includes("Insufficient leave balance")) {
-          errorMessage = `❌ ${detail}`;
+          errorMessage = `${detail}`;
         } else if (detail.includes("Exceeds annual limit")) {
-          errorMessage = `❌ ${detail}`;
+          errorMessage = `${detail}`;
         } else {
-          errorMessage = `❌ ${detail}`;
+          errorMessage = `${detail}`;
         }
       }
       
-      alert(errorMessage);
+      showToast(errorMessage, "error");
     }
   };
 
@@ -738,6 +741,7 @@ export default function LeaveApplications() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

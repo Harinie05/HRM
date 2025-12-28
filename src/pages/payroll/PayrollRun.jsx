@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Play, Search, Eye, Download, Calendar, Users } from "lucide-react";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 import api from "../../api";
 
 export default function PayrollRun() {
@@ -19,6 +21,7 @@ export default function PayrollRun() {
   const [validationResult, setValidationResult] = useState(null);
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [validationChecked, setValidationChecked] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchRuns();
@@ -130,7 +133,7 @@ export default function PayrollRun() {
     e.preventDefault();
     
     if (!runData.month || !runData.year) {
-      alert('Please select month and year');
+      showToast('Please select month and year', 'error');
       return;
     }
     
@@ -165,7 +168,7 @@ export default function PayrollRun() {
       });
       
       if (employeesWithSalary.length === 0) {
-        alert('No employees with salary structures found to process payroll.');
+        showToast('No employees with salary structures found to process payroll.', 'error');
         return;
       }
       
@@ -312,7 +315,7 @@ export default function PayrollRun() {
       setShowRunModal(false);
       setRunData({ month: "", year: new Date().getFullYear() });
       
-      alert(`Payroll processed successfully for ${validResults.length} employees!`);
+      showToast(`Payroll processed successfully for ${validResults.length} employees!`);
     } catch (error) {
       console.error("Error running payroll:", error);
       
@@ -327,7 +330,7 @@ export default function PayrollRun() {
         });
         setShowValidationModal(true);
       } else {
-        alert('Failed to process payroll. Please try again.');
+        showToast('Failed to process payroll. Please try again.', 'error');
       }
     } finally {
       setLoading(false);
@@ -649,6 +652,7 @@ export default function PayrollRun() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

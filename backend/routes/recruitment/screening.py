@@ -12,6 +12,78 @@ router = APIRouter(prefix="/recruitment/screening", tags=["Candidate Screening"]
 
 
 # ----------------------------------------------------------
+# DEBUG: CHECK DATA CONSISTENCY
+# ----------------------------------------------------------
+@router.get("/debug/data-check")
+def debug_data_check(db: Session = Depends(get_tenant_db)):
+    """Debug endpoint to check data consistency between PublicCandidate and Candidate tables"""
+    
+    # Get all public candidates
+    public_candidates = db.query(PublicCandidate).all()
+    
+    # Get all ATS candidates
+    ats_candidates = db.query(Candidate).all()
+    
+    # Get all jobs
+    jobs = db.query(JobRequisition).all()
+    
+    return {
+        "public_candidates": [{
+            "id": pc.id,
+            "name": pc.name,
+            "email": pc.email,
+            "job_id": pc.job_id,
+            "applied_at": pc.applied_at
+        } for pc in public_candidates],
+        "ats_candidates": [{
+            "id": c.id,
+            "name": c.name,
+            "email": c.email,
+            "job_id": c.job_id,
+            "stage": c.stage,
+            "created_at": c.created_at
+        } for c in ats_candidates],
+        "jobs": [{
+            "id": j.id,
+            "title": j.title,
+            "department": j.department
+        } for j in jobs]
+    }
+
+
+# ----------------------------------------------------------
+# DEBUG: FIX DATA INCONSISTENCIES
+# ----------------------------------------------------------
+@router.post("/debug/fix-data")
+def fix_data_inconsistencies(request: Request, db: Session = Depends(get_tenant_db)):
+    """Fix data inconsistencies by correcting job_id mappings"""
+    
+    fixed_count = 0
+    
+    # Get all ATS candidates with potentially wrong job_ids
+    ats_candidates = db.query(Candidate).all()
+    
+    for ats_candidate in ats_candidates:
+        # Find corresponding public candidate by email
+        public_candidate = db.query(PublicCandidate).filter(
+            PublicCandidate.email == ats_candidate.email
+        ).first()
+        
+        if public_candidate and public_candidate.job_id != ats_candidate.job_id:
+            logger.info(f"Fixing job_id for {ats_candidate.name}: {ats_candidate.job_id} -> {public_candidate.job_id}")
+            ats_candidate.job_id = public_candidate.job_id
+            fixed_count += 1
+    
+    db.commit()
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "candidate_data_fix", None, None, {"fixed_count": fixed_count})
+    
+    return {
+        "message": f"Fixed {fixed_count} data inconsistencies",
+        "fixed_count": fixed_count
+    }
+
+
+# ----------------------------------------------------------
 # GET PENDING APPLICATIONS FOR REVIEW
 # ----------------------------------------------------------
 @router.get("/pending/{job_id}")
@@ -76,72 +148,87 @@ def shortlist_candidates_with_interviews(
     shortlisted_count = 0
     
     for schedule in schedules:
-        # Get public candidate
-        logger.info(f"🔍 Looking for candidate ID: {schedule.candidate_id}")
-        public_candidate = db.query(PublicCandidate).filter(
-            PublicCandidate.id == schedule.candidate_id
-        ).first()
-        
-        if not public_candidate:
-            logger.warning(f"⚠️ Candidate ID {schedule.candidate_id} not found in PublicCandidate table")
-            continue
-        
-        logger.info(f"✅ Found candidate: {public_candidate.name} ({public_candidate.email})")
+        try:
+            # Get public candidate
+            logger.info(f"🔍 Looking for candidate ID: {schedule.candidate_id}")
+            public_candidate = db.query(PublicCandidate).filter(
+                PublicCandidate.id == schedule.candidate_id
+            ).first()
             
-        # Get job details for email
-        job = db.query(JobRequisition).filter(
-            JobRequisition.id == public_candidate.job_id
-        ).first()
-        
-        if not job:
-            continue
+            if not public_candidate:
+                logger.warning(f"⚠️ Candidate ID {schedule.candidate_id} not found in PublicCandidate table")
+                continue
             
-        # Check if already in ATS
-        existing = db.query(Candidate).filter(
-            Candidate.job_id == public_candidate.job_id,
-            Candidate.email == public_candidate.email
-        ).first()
-        
-        if existing:
-            logger.info(f"🔄 Updating existing ATS candidate: {public_candidate.email}")
-            # Update existing candidate with new interview details
-            existing.interview_date = datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M")
-            existing.interview_time = schedule.interview_time
-            existing.stage = "Shortlisted"
-        else:
-            logger.info(f"➕ Creating new ATS candidate: {public_candidate.email}")
-            # Create ATS candidate
-            ats_candidate = Candidate(
-                job_id=public_candidate.job_id,
-                name=public_candidate.name,
-                email=public_candidate.email,
-                phone=public_candidate.phone,
-                experience=int(public_candidate.experience or 0),
-                resume_url=public_candidate.resume_url,
-                stage="Shortlisted",
-                current_round=1,
-                completed_rounds=[],
-                interview_date=datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M"),
+            logger.info(f"✅ Found candidate: {public_candidate.name} ({public_candidate.email}) for job_id: {public_candidate.job_id}")
+                
+            # Get job details for email
+            job = db.query(JobRequisition).filter(
+                JobRequisition.id == public_candidate.job_id
+            ).first()
+            
+            if not job:
+                logger.warning(f"⚠️ Job ID {public_candidate.job_id} not found")
+                continue
+                
+            # Check if already in ATS (by email AND job_id to avoid duplicates)
+            existing = db.query(Candidate).filter(
+                Candidate.job_id == public_candidate.job_id,
+                Candidate.email == public_candidate.email
+            ).first()
+            
+            if existing:
+                logger.info(f"🔄 Updating existing ATS candidate: {public_candidate.email} for job {public_candidate.job_id}")
+                # Update existing candidate with new interview details
+                existing.interview_date = datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M")
+                existing.interview_time = schedule.interview_time
+                existing.stage = "Shortlisted"
+                existing.current_round = 1
+            else:
+                logger.info(f"➕ Creating new ATS candidate: {public_candidate.email} for job {public_candidate.job_id}")
+                # Create ATS candidate with CORRECT job_id
+                ats_candidate = Candidate(
+                    job_id=public_candidate.job_id,  # CRITICAL: Use the job_id from public_candidate
+                    name=public_candidate.name,
+                    email=public_candidate.email,
+                    phone=public_candidate.phone,
+                    experience=int(public_candidate.experience or 0),
+                    resume_url=public_candidate.resume_url,
+                    stage="Shortlisted",
+                    current_round=1,
+                    completed_rounds=[],
+                    interview_date=datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M"),
+                    interview_time=schedule.interview_time,
+                    created_at=datetime.now()
+                )
+                
+                db.add(ats_candidate)
+                logger.info(f"✅ Added candidate {public_candidate.name} to ATS for job_id {public_candidate.job_id}")
+            
+            # Send shortlist email
+            send_shortlist_email(
+                candidate_name=public_candidate.name,
+                candidate_email=public_candidate.email,
+                job_title=job.title,
+                company_name="NUTRYAH",
+                interview_date=schedule.interview_date,
                 interview_time=schedule.interview_time,
-                created_at=datetime.now()
+                round_names=job.round_names or []
             )
             
-            db.add(ats_candidate)
-        
-        # Send shortlist email
-        send_shortlist_email(
-            candidate_name=public_candidate.name,
-            candidate_email=public_candidate.email,
-            job_title=job.title,
-            company_name="NUTRYAH",
-            interview_date=schedule.interview_date,
-            interview_time=schedule.interview_time,
-            round_names=job.round_names or []
-        )
-        
-        shortlisted_count += 1
+            shortlisted_count += 1
+            
+        except Exception as e:
+            logger.error(f"❌ Error processing candidate {schedule.candidate_id}: {str(e)}")
+            continue
     
-    db.commit()
+    try:
+        db.commit()
+        logger.info(f"✅ Database committed successfully. Shortlisted {shortlisted_count} candidates")
+    except Exception as e:
+        logger.error(f"❌ Database commit failed: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to commit shortlisting changes")
+    
     audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "candidate_shortlist", None, None, {"count": shortlisted_count})
     
     logger.info(f"Shortlisted {shortlisted_count} candidates with interviews scheduled")
@@ -306,27 +393,65 @@ def calculate_match_score(candidate, job):
     
     # Skills matching
     if job.skills and candidate.skills:
-        job_skills = [skill.lower().strip() for skill in job.skills]
-        candidate_skills = [skill.lower().strip() for skill in candidate.skills.split(',')]
-        
-        matching_skills = set(job_skills) & set(candidate_skills)
-        if job_skills:
-            skills_score = (len(matching_skills) / len(job_skills)) * 60
-            score += skills_score
-    
-    # Experience matching (simplified)
-    if job.experience and candidate.experience:
         try:
-            job_exp = int(''.join(filter(str.isdigit, job.experience)))
-            candidate_exp = int(''.join(filter(str.isdigit, candidate.experience)))
+            # Handle job skills (could be JSON array or list)
+            if isinstance(job.skills, list):
+                job_skills = [skill.lower().strip() for skill in job.skills]
+            else:
+                job_skills = [skill.lower().strip() for skill in str(job.skills).split(',')]
             
-            if candidate_exp >= job_exp:
-                score += 40
-            elif candidate_exp >= job_exp * 0.8:
-                score += 30
-            elif candidate_exp >= job_exp * 0.6:
-                score += 20
-        except:
-            pass
+            # Handle candidate skills (could be comma-separated string or JSON)
+            candidate_skills_str = str(candidate.skills).strip()
+            if candidate_skills_str.startswith('[') and candidate_skills_str.endswith(']'):
+                # Try to parse as JSON array
+                import json
+                try:
+                    candidate_skills_list = json.loads(candidate_skills_str)
+                    candidate_skills = [skill.lower().strip() for skill in candidate_skills_list]
+                except:
+                    candidate_skills = [skill.lower().strip() for skill in candidate_skills_str.split(',')]
+            else:
+                # Treat as comma-separated string
+                candidate_skills = [skill.lower().strip() for skill in candidate_skills_str.split(',')]
+            
+            # Remove empty strings
+            job_skills = [skill for skill in job_skills if skill]
+            candidate_skills = [skill for skill in candidate_skills if skill]
+            
+            # Calculate matching skills
+            if job_skills:
+                matching_skills = set(job_skills) & set(candidate_skills)
+                skills_score = (len(matching_skills) / len(job_skills)) * 60
+                score += skills_score
+                logger.info(f"Skills matching: Job skills: {job_skills}, Candidate skills: {candidate_skills}, Matching: {matching_skills}, Score: {skills_score}")
+        except Exception as e:
+            logger.error(f"Error in skills matching: {str(e)}")
     
-    return min(int(score), 100)
+    # Experience matching
+    if job.experience_years and candidate.experience:
+        try:
+            # Use the specific experience_years field from job
+            job_exp = job.experience_years
+            
+            # Extract numbers from candidate experience
+            candidate_exp_str = str(candidate.experience).strip()
+            candidate_exp_numbers = [int(x) for x in candidate_exp_str.split() if x.isdigit()]
+            candidate_exp = candidate_exp_numbers[0] if candidate_exp_numbers else 0
+            
+            logger.info(f"Experience matching: Job exp: {job_exp}, Candidate exp: {candidate_exp}")
+            
+            if job_exp > 0:  # Only calculate if job has experience requirement
+                if candidate_exp >= job_exp:
+                    score += 40
+                elif candidate_exp >= job_exp * 0.8:
+                    score += 30
+                elif candidate_exp >= job_exp * 0.6:
+                    score += 20
+                elif candidate_exp >= job_exp * 0.4:
+                    score += 10
+        except Exception as e:
+            logger.error(f"Error in experience matching: {str(e)}")
+    
+    final_score = min(int(score), 100)
+    logger.info(f"Final match score for candidate {candidate.name}: {final_score}%")
+    return final_score

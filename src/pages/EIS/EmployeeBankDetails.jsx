@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiCreditCard, FiArrowLeft, FiHome } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeBankDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     bank_name: "",
     account_number: "",
@@ -55,11 +58,11 @@ export default function EmployeeBankDetails() {
         await api.post("/employee/bank-details/add", payload);
       }
       
-      alert("Bank details saved successfully");
+      showToast("Bank details saved successfully", "success");
       fetchBankDetails();
     } catch (err) {
       console.error("Failed to save bank details", err);
-      alert("Failed to save bank details");
+      showToast("Failed to save bank details", "error");
     }
     setLoading(false);
   };
@@ -212,6 +215,7 @@ export default function EmployeeBankDetails() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

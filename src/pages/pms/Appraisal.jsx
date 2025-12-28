@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Plus, Award, User, Calendar, FileText, Edit, Trash2, Eye, ClipboardCheck } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Appraisal() {
   const [appraisals, setAppraisals] = useState([]);
@@ -9,6 +11,7 @@ export default function Appraisal() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewAppraisal, setViewAppraisal] = useState(null);
   const [editingAppraisal, setEditingAppraisal] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     employee: "",
     reviewPeriod: "",
@@ -156,10 +159,10 @@ export default function Appraisal() {
       
       if (editingAppraisal) {
         await api.put(`/api/pms/appraisals/${editingAppraisal}`, appraisalData);
-        alert('Appraisal updated successfully!');
+        showToast('Appraisal updated successfully!');
       } else {
         await api.post('/api/pms/appraisals', appraisalData);
-        alert('Appraisal created successfully!');
+        showToast('Appraisal created successfully!');
       }
       fetchAppraisals();
       
@@ -185,19 +188,19 @@ export default function Appraisal() {
       setShowForm(false);
     } catch (error) {
       console.error('Error submitting appraisal:', error);
-      alert(`Failed to ${editingAppraisal ? 'update' : 'create'} appraisal: ${error.response?.data?.detail || error.message}`);
+      showToast(`Failed to ${editingAppraisal ? 'update' : 'create'} appraisal: ${error.response?.data?.detail || error.message}`, 'error');
     }
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this appraisal?")) {
+    if (window.confirm("Are you sure you want to delete this appraisal?")) {
       try {
         await api.delete(`/api/pms/appraisals/${id}`);
-        alert('Appraisal deleted successfully!');
+        showToast('Appraisal deleted successfully!');
         fetchAppraisals();
       } catch (error) {
         console.error('Error deleting appraisal:', error);
-        alert('Failed to delete appraisal. Please try again.');
+        showToast('Failed to delete appraisal. Please try again.', 'error');
       }
     }
   };
@@ -583,6 +586,7 @@ export default function Appraisal() {
           </table>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

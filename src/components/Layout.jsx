@@ -30,7 +30,7 @@ export default function Layout({ children, title, subtitle, stats, breadcrumb })
         <Sidebar 
           isCollapsed={isSidebarCollapsed} 
           onToggle={toggleSidebar}
-          isMobile={true}
+          isMobile={false}
           onMobileClose={() => setIsMobileMenuOpen(false)}
         />
       </div>

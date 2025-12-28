@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function DesignationList() {
+  const { toast, showToast } = useToast();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,19 +44,19 @@ export default function DesignationList() {
 
   const createRole = async () => {
     if (!newRole.name) {
-      alert("Please enter a role name");
+      showToast("Please enter a role name", "error");
       return;
     }
     
     try {
       const response = await api.post(`/hospitals/roles/${tenant_db}/create`, newRole);
-      alert("Role created successfully");
+      showToast("Role created successfully", "success");
       setNewRole({ name: "", description: "", level: "employee", permissions: [] });
       setShowCreateRole(false);
       await fetchRoles();
     } catch (err) {
       console.error("Failed to create role", err);
-      alert(`Failed to create role: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to create role: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
@@ -61,19 +64,18 @@ export default function DesignationList() {
     if (!confirm("Are you sure you want to delete this role?")) return;
     try {
       await api.delete(`/hospitals/roles/${tenant_db}/${id}`);
-      alert("Role deleted successfully");
+      showToast("Role deleted successfully", "success");
       await fetchRoles();
     } catch (err) {
       console.error("Failed to delete role", err);
-      alert(`Failed to delete role: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to delete role: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
   const filteredRoles = roles.filter(role => {
     const matchesSearch = role.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (role.description && role.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesFilter = filterLevel === 'all' || role.level === filterLevel;
-    return matchesSearch && matchesFilter;
+    return matchesSearch;
   });
 
   const getRoleColor = (level) => {
@@ -85,9 +87,9 @@ export default function DesignationList() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-black">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -100,22 +102,11 @@ export default function DesignationList() {
               <p className="text-sm text-gray-600">Overview of all roles and their permission levels</p>
             </div>
           </div>
-          {!showCreateRole && (
-            <button
-              onClick={() => setShowCreateRole(true)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              New Role
-            </button>
-          )}
         </div>
       </div>
 
       <div className="p-6 space-y-6">
-        {/* Search and Filter */}
+        {/* Search */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -127,23 +118,9 @@ export default function DesignationList() {
                 placeholder="Search roles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="pl-10 pr-4 py-2 w-full border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Filter</span>
-            <select
-              value={filterLevel}
-              onChange={(e) => setFilterLevel(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              <option value="all">All Levels</option>
-              <option value="admin">Administrator</option>
-              <option value="manager">Manager</option>
-              <option value="supervisor">Supervisor</option>
-              <option value="employee">Employee</option>
-            </select>
           </div>
         </div>
 
@@ -227,7 +204,7 @@ export default function DesignationList() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRoles.map((role) => (
-              <div key={role.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+              <div key={role.id} className="bg-white rounded-xl border border-black p-6 hover:shadow-sm transition-shadow">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-xl flex items-center justify-center text-white`}>
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -272,6 +249,7 @@ export default function DesignationList() {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </div>
   );
 }

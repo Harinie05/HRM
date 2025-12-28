@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { FileText, Users, CheckCircle, AlertTriangle, Plus, Edit, Trash2 } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function LabourRegister() {
   const [form, setForm] = useState({
@@ -23,6 +25,7 @@ export default function LabourRegister() {
   const [employees, setEmployees] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
   const [showCustomRegisterType, setShowCustomRegisterType] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
 
   // Load existing labour registers and employees
   useEffect(() => {
@@ -124,11 +127,11 @@ export default function LabourRegister() {
       let response;
       if (editingRecord) {
         response = await api.put(`/api/compliance/labour/${editingRecord.id}`, submitData);
-        alert("Labour Register Updated Successfully!");
+        showToast("Labour Register Updated Successfully!");
         setEditingRecord(null);
       } else {
         response = await api.post("/api/compliance/labour", submitData);
-        alert("Labour Register Added Successfully!");
+        showToast("Labour Register Added Successfully!");
       }
       
       // Reset form
@@ -155,7 +158,7 @@ export default function LabourRegister() {
       setRegisters(res.data);
     } catch (err) {
       console.error('Failed to save labour register:', err);
-      alert("Failed to save labour register");
+      showToast("Failed to save labour register", 'error');
     }
   }
 
@@ -179,18 +182,18 @@ export default function LabourRegister() {
   }
 
   async function handleDelete(recordId) {
-    if (!confirm('Are you sure you want to delete this record?')) return;
+    if (!window.confirm('Are you sure you want to delete this record?')) return;
     
     try {
       await api.delete(`/api/compliance/labour/${recordId}`);
-      alert("Record deleted successfully!");
+      showToast("Record deleted successfully!");
       
       // Refresh the list
       const res = await api.get("/api/compliance/labour");
       setRegisters(res.data);
     } catch (err) {
       console.error('Failed to delete record:', err);
-      alert("Failed to delete record");
+      showToast("Failed to delete record", 'error');
     }
   }
 
@@ -533,6 +536,7 @@ export default function LabourRegister() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

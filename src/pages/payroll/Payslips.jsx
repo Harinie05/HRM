@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { FileText, Download, Send, Search, Eye, Calendar } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Payslips() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,6 +16,7 @@ export default function Payslips() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const [emailForm, setEmailForm] = useState({ email: '', payslip: null });
+  const { toast, showToast, hideToast } = useToast();
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -117,16 +120,16 @@ export default function Payslips() {
       const completedRuns = payrollRuns.filter(run => run.status === 'Completed');
       
       if (completedRuns.length === 0) {
-        alert('No completed payroll runs found. Please run payroll first.');
+        showToast('No completed payroll runs found. Please run payroll first.', 'error');
         return;
       }
       
       // In a real implementation, this would call a payslip generation API
-      alert(`Generated ${completedRuns.length} payslips successfully!`);
+      showToast(`Generated ${completedRuns.length} payslips successfully!`);
       await fetchPayrollRuns();
     } catch (error) {
       console.error("Error generating payslips:", error);
-      alert('Failed to generate payslips. Please try again.');
+      showToast('Failed to generate payslips. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -138,7 +141,7 @@ export default function Payslips() {
       const generatedPayslips = payslips.filter(p => p.status === 'Generated');
       
       if (generatedPayslips.length === 0) {
-        alert('No generated payslips found to send.');
+        showToast('No generated payslips found to send.', 'error');
         return;
       }
       
@@ -148,7 +151,7 @@ export default function Payslips() {
       });
       
       if (res.data.success_count > 0) {
-        alert(`Email sending completed. Sent: ${res.data.success_count}, Failed: ${res.data.failed_count}`);
+        showToast(`Email sending completed. Sent: ${res.data.success_count}, Failed: ${res.data.failed_count}`);
         
         // Update status to 'Sent' for successful sends
         const updatedPayslips = payslips.map(p => 
@@ -156,11 +159,11 @@ export default function Payslips() {
         );
         setPayslips(updatedPayslips);
       } else {
-        alert('No emails were sent. Please check employee email addresses.');
+        showToast('No emails were sent. Please check employee email addresses.', 'error');
       }
     } catch (error) {
       console.error("Error sending payslips:", error);
-      alert('Failed to send payslips. Please check your email configuration.');
+      showToast('Failed to send payslips. Please check your email configuration.', 'error');
     } finally {
       setLoading(false);
     }
@@ -206,7 +209,7 @@ export default function Payslips() {
       setShowViewModal(true);
     } catch (error) {
       console.error('Error fetching payslip details:', error);
-      alert(`Error loading payslip details`);
+      showToast(`Error loading payslip details`, 'error');
     }
   };
 
@@ -225,7 +228,7 @@ export default function Payslips() {
       
     } catch (error) {
       console.error('Download error:', error);
-      alert(`Error downloading payslip for ${payslip.employee_name}`);
+      showToast(`Error downloading payslip for ${payslip.employee_name}`, 'error');
     }
   };
 
@@ -612,6 +615,7 @@ export default function Payslips() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

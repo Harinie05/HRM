@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, Filter, Edit, Trash2 } from "lucide-react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function TrainingManagement() {
   const [trainings, setTrainings] = useState([]);
@@ -20,6 +22,7 @@ export default function TrainingManagement() {
     maxParticipants: "",
     status: "Draft"
   });
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchTrainings();
@@ -46,7 +49,7 @@ export default function TrainingManagement() {
       resetForm();
     } catch (error) {
       console.error('Error saving training program:', error);
-      alert('Error saving training program. Please try again.');
+      showToast('Error saving training program. Please try again.', 'error');
     }
   };
 
@@ -79,7 +82,7 @@ export default function TrainingManagement() {
         fetchTrainings();
       } catch (error) {
         console.error('Error deleting training program:', error);
-        alert('Error deleting training program. Please try again.');
+        showToast('Error deleting training program. Please try again.', 'error');
       }
     }
   };
@@ -286,6 +289,7 @@ export default function TrainingManagement() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

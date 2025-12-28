@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
 import { FiMail, FiFileText, FiCheck, FiX, FiEye, FiLink, FiUser, FiCalendar, FiDollarSign, FiShield, FiUpload } from "react-icons/fi";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Offer() {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ export default function Offer() {
   const [attachments, setAttachments] = useState([]);
 
   const [offers, setOffers] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   // ---------- BGV ----------
   const [showBGVModal, setShowBGVModal] = useState(false);
@@ -155,7 +158,7 @@ export default function Offer() {
       setGeneratedOffer(res.data);
       setShowPreview(true);
     } catch (err) {
-      alert("Failed to generate offer.");
+      showToast("Failed to generate offer.", 'error');
     }
   };
 
@@ -166,12 +169,12 @@ export default function Offer() {
     try {
       await api.post(`/recruitment/offer/${generatedOffer.id}/send`);
 
-      alert("Offer letter sent successfully to candidate!");
+      showToast("Offer letter sent successfully to candidate!");
       setShowPreview(false);
       setShowOfferModal(false);
       fetchOffers();
     } catch (err) {
-      alert("Failed to send offer");
+      showToast("Failed to send offer", 'error');
     }
   };
 
@@ -190,10 +193,10 @@ export default function Offer() {
       }
       
       await api.post(`/recruitment/offer/${offerId}/status?status=${status}`);
-      alert(`Offer ${action === "verify_docs" ? "documents verified" : action + "ed"} successfully`);
+      showToast(`Offer ${action === "verify_docs" ? "documents verified" : action + "ed"} successfully`);
       fetchOffers();
     } catch {
-      alert("Failed to update offer status");
+      showToast("Failed to update offer status", 'error');
     }
   };
 
@@ -203,10 +206,10 @@ export default function Offer() {
   const startBGV = async (applicationId) => {
     try {
       await api.post(`/recruitment/offer/bgv/start/${applicationId}`);
-      alert("BGV Started");
+      showToast("BGV Started");
       fetchOffers();
     } catch {
-      alert("Failed");
+      showToast("Failed", 'error');
     }
   };
 
@@ -232,7 +235,7 @@ export default function Offer() {
       setSelectedBGV(offer);
       setShowBGVModal(true);
     } catch (err) {
-      alert("Failed to load BGV details");
+      showToast("Failed to load BGV details", 'error');
     }
   };
 
@@ -251,11 +254,11 @@ export default function Offer() {
         await api.post(`/recruitment/offer/${selectedBGV.id}/status?status=BGV Cleared`);
       }
       
-      alert("BGV Updated!");
+      showToast("BGV Updated!");
       setShowBGVModal(false);
       fetchOffers();
     } catch {
-      alert("Failed to update");
+      showToast("Failed to update", 'error');
     }
   };
 
@@ -336,13 +339,13 @@ export default function Offer() {
         employee_id: onboardingFormData.employee_id
       });
       
-      alert("Onboarding started successfully! Joining formalities email sent to candidate.");
+      showToast("Onboarding started successfully! Joining formalities email sent to candidate.");
       setShowOnboardingForm(false);
       fetchOffers();
       
     } catch (err) {
       console.error("Error:", err);
-      alert("Failed to start onboarding");
+      showToast("Failed to start onboarding", 'error');
     }
   };
 
@@ -355,7 +358,7 @@ export default function Offer() {
       setDocuments(res.data.documents);
       setShowDocuments(true);
     } catch {
-      alert("Failed to load documents");
+      showToast("Failed to load documents", 'error');
     }
   };
 
@@ -369,20 +372,20 @@ export default function Offer() {
       setLinkCandidate(res.data.candidate_name);
       setShowLinkModal(true);
     } catch {
-      alert("Failed to generate link");
+      showToast("Failed to generate link", 'error');
     }
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedLink);
-    alert("Link copied to clipboard!");
+    showToast("Link copied to clipboard!");
   };
 
   // Handle Document Verification
   const handleDocumentVerification = async () => {
     try {
       await api.post(`/recruitment/offer/${selectedOfferForVerification.id}/status?status=Documents Verified`);
-      alert("Documents verified successfully!");
+      showToast("Documents verified successfully!");
       setShowDocVerificationModal(false);
       setDocVerificationForm({
         aadhaar: false,
@@ -400,7 +403,7 @@ export default function Offer() {
       });
       fetchOffers();
     } catch {
-      alert("Failed to verify documents");
+      showToast("Failed to verify documents", 'error');
     }
   };
 
@@ -408,7 +411,8 @@ export default function Offer() {
   // UI STARTS HERE
   // ------------------------------------------------------------
   return (
-    <Layout>
+    <>
+      <Layout>
       <div className="p-4 sm:p-6">
         {/* Header */}
         <div className="bg-white rounded-2xl mb-6 p-4 sm:p-6 border border-black">
@@ -1563,6 +1567,8 @@ export default function Offer() {
           )}
 
         </div>
-    </Layout>
+      </Layout>
+      <Toast toast={toast} />
+    </>
   );
 }

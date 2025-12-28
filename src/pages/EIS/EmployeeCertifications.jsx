@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiAward, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiEye, FiUpload, FiCalendar } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeCertifications() {
   const { id } = useParams(); // employee_id
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
 
   const [certs, setCerts] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -187,7 +190,7 @@ export default function EmployeeCertifications() {
                           onClick={() => {
                             const token = localStorage.getItem('access_token');
                             if (!token) {
-                              alert('Authentication token not found. Please login again.');
+                              showToast('Authentication token not found. Please login again.', "error");
                               return;
                             }
                             window.open(`http://localhost:8000/employee/certifications/certificate/${c.id}?token=${token}`, '_blank');
@@ -307,6 +310,7 @@ export default function EmployeeCertifications() {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Clock, CheckCircle, FileText, Plus, Search } from 'lucide-react';
 import api from '../../api';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 
 const ResignationTracking = () => {
+  const { toast, showToast } = useToast();
   const [resignations, setResignations] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,10 +113,10 @@ const ResignationTracking = () => {
         exit_interview_date: ''
       });
       fetchResignations();
-      alert('Resignation applied successfully!');
+      showToast('Resignation applied successfully!', 'success');
     } catch (error) {
       console.error('Error applying resignation:', error);
-      alert('Error applying resignation: ' + (error.response?.data?.detail || error.message));
+      showToast('Error applying resignation: ' + (error.response?.data?.detail || error.message), 'error');
     }
   };
 
@@ -493,6 +496,7 @@ const ResignationTracking = () => {
           )}
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 };

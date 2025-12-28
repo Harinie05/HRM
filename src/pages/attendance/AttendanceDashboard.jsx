@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { FiClock, FiUsers, FiSettings, FiUserCheck, FiUserX, FiTrendingUp, FiCalendar, FiBarChart } from 'react-icons/fi';
 import api from '../../api';
 import Layout from '../../components/Layout';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 
 const AttendanceDashboard = () => {
+  const { toast, showToast, hideToast } = useToast();
   const [attendanceData, setAttendanceData] = useState({
     totalEmployees: 0,
     presentToday: 0,
@@ -112,6 +115,7 @@ const AttendanceDashboard = () => {
       
     } catch (error) {
       console.error('Error fetching attendance data:', error);
+      showToast('Failed to load attendance data', 'error');
     } finally {
       setLoading(false);
     }
@@ -345,6 +349,7 @@ const AttendanceDashboard = () => {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 };

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function PolicySetup() {
+    const { toast, showToast } = useToast();
     const tenant_db = localStorage.getItem("tenant_db");
 
     const tabs = ["HR Policy", "Leave Policy", "Attendance Policy", "OT Policy"];
@@ -123,12 +126,12 @@ const [statusAtt, setStatusAtt] = useState("Active");
                 console.log('Document uploaded successfully');
             }
 
-            alert(editingId ? "Updated Successfully" : "Saved Successfully");
+            showToast(editingId ? "Updated Successfully" : "Saved Successfully", "success");
             resetForm();
             fetchPolicies();
         } catch (err) {
             console.error(`Error saving ${activeTab}:`, err);
-            alert(err.response?.data?.detail || "Failed");
+            showToast(err.response?.data?.detail || "Failed", "error");
         }
     };
 
@@ -221,18 +224,19 @@ const [statusAtt, setStatusAtt] = useState("Active");
         try {
             await api.delete(endpoint);
             console.log(`${activeTab} deleted successfully`);
-            alert('Deleted Successfully');
+            showToast('Deleted Successfully', 'success');
             fetchPolicies();
         } catch (err) {
             console.error(`Error deleting ${activeTab}:`, err);
-            alert(err.response?.data?.detail || 'Failed to delete');
+            showToast(err.response?.data?.detail || 'Failed to delete', 'error');
         }
     };
 
 
     // ---------------------- UI SECTION ----------------------
     return (
-        <div className="p-6 bg-content min-h-screen space-y-6">
+        <>
+            <div className="p-6 bg-content min-h-screen space-y-6">
 
             {/* Tab Navigation */}
             <div className="flex items-center gap-2 mb-6">
@@ -285,7 +289,9 @@ const [statusAtt, setStatusAtt] = useState("Active");
                 </div>
 
             </div>
-        </div>
+            </div>
+            <Toast toast={toast} />
+        </>
     );
 }
 

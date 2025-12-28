@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Clock, CheckCircle, AlertTriangle, Users } from 'lucide-react';
 import Layout from '../../components/Layout';
 import api from '../../api';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 
 const ProbationTracking = () => {
   const [probations, setProbations] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const { toast, showToast } = useToast();
   const [stats, setStats] = useState({
     pending_actions: 0,
     confirmed: 0,
@@ -75,10 +78,10 @@ const ProbationTracking = () => {
       fetchProbations();
       fetchStats();
       fetchEmployeesWithoutProbation();
-      alert('Probation period added successfully');
+      showToast('Probation period added successfully', 'success');
     } catch (error) {
       console.error('Error saving probation:', error);
-      alert('Failed to save probation');
+      showToast('Failed to save probation', 'error');
     }
   };
 
@@ -103,10 +106,10 @@ const ProbationTracking = () => {
 
       fetchProbations();
       fetchStats();
-      alert(`Probation ${action === 'end' ? 'ended' : action + 'ed'} successfully`);
+      showToast(`Probation ${action === 'end' ? 'ended' : action + 'ed'} successfully`, 'success');
     } catch (error) {
       console.error(`Error ${action}ing probation:`, error);
-      alert(`Failed to ${action} probation`);
+      showToast(`Failed to ${action} probation`, 'error');
     }
   };
 
@@ -401,6 +404,7 @@ const ProbationTracking = () => {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 };

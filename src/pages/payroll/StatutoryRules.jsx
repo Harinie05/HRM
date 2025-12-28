@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function StatutoryRules() {
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     pf_enabled: true,
     pf_percent: "12",
@@ -48,10 +51,10 @@ export default function StatutoryRules() {
 
     try {
       await api.post("/api/payroll/statutory/update", data);
-      alert("Statutory rules updated successfully");
+      showToast("Statutory rules updated successfully", "success");
     } catch (err) {
       console.error("Failed to update rules:", err);
-      alert("Failed to update statutory rules");
+      showToast("Failed to update statutory rules", "error");
     }
   };
 
@@ -219,6 +222,7 @@ export default function StatutoryRules() {
         </button>
       </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

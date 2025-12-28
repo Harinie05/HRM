@@ -93,6 +93,8 @@ from routes.hr.communication import router as hr_communication_router
 from routes.hr.grievances import router as hr_grievances_router
 from routes.hr.assets import router as hr_assets_router
 from routes.hr.insurance import router as hr_insurance_router
+from routes.hr.staff_scheduling import router as staff_scheduling_router
+from routes.hr.quality_indicators import router as quality_indicators_router
 
 # ======================= 🔥 PMS ROUTERS =======================
 from routes.pms.goals import router as pms_goals_router
@@ -270,6 +272,8 @@ app.include_router(hr_communication_router)
 app.include_router(hr_grievances_router)
 app.include_router(hr_assets_router)
 app.include_router(hr_insurance_router)
+app.include_router(staff_scheduling_router, prefix="/api/hr/staff-scheduling")
+app.include_router(quality_indicators_router, prefix="/api/hr/quality-indicators")
 
 # ======================= 🔥 PMS MODULE =======================
 app.include_router(pms_goals_router, prefix="/api/pms")

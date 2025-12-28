@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 import { AppleForm, AppleInput, AppleTextarea, AppleSelect, AppleButton, AppleCheckbox, AppleFormRow, AppleFormSection, AppleFormActions } from "../../components/AppleForms";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function JobForm({ mode, job, onClose }) {
   const isView = mode === "view";
@@ -21,6 +23,7 @@ export default function JobForm({ mode, job, onClose }) {
     status: "Draft",        // backend uses "Draft" | "Posted"
     rounds: ["HR Round"],   // backend expects simple list, not objects
   });
+  const { toast, showToast, hideToast } = useToast();
 
   // ========================= LOAD EXISTING JOB =========================
   useEffect(() => {
@@ -68,27 +71,27 @@ export default function JobForm({ mode, job, onClose }) {
     try {
       if (mode === "create") {
         await api.post("/recruitment/create", form);
-        alert("Job Created Successfully!");
+        showToast("Job Created Successfully!");
       }
 
       if (mode === "edit") {
         await api.put(`/recruitment/update/${job.id}`, form);
-        alert("Job Updated Successfully!");
+        showToast("Job Updated Successfully!");
       }
 
       onClose();
     } catch (err) {
       console.error("Failed to save job", err);
-      alert("Failed to save job.");
+      showToast("Failed to save job.", 'error');
     }
   };
 
   // ========================= RENDER UI =========================
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl mx-4">
+      <div className="bg-black border border-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl mx-4">
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900">
+          <h2 className="text-2xl font-bold mb-6 text-white">
             {mode === "create" && "Create New Job"}
             {mode === "edit" && "Edit Job"}
             {mode === "view" && "Job Details"}
@@ -266,6 +269,7 @@ export default function JobForm({ mode, job, onClose }) {
           </AppleForm>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

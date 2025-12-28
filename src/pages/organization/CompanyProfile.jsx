@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function CompanyProfile() {
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     name: "",
     website: "",
@@ -44,10 +47,10 @@ export default function CompanyProfile() {
       localStorage.setItem("hospital_name", form.name);
       window.dispatchEvent(new Event('organization-updated'));
       
-      alert("Company Profile Saved");
+      showToast("Company Profile Saved", "success");
     } catch (err) {
       console.error('Failed to save company profile:', err);
-      alert("Failed to save company profile");
+      showToast("Failed to save company profile", "error");
     } finally {
       setLoading(false);
     }
@@ -201,6 +204,7 @@ export default function CompanyProfile() {
           </button>
         </div>
       </form>
+      <Toast toast={toast} />
     </div>
   );
 }

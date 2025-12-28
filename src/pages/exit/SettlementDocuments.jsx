@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { DollarSign, FileText, Download, Mail, CheckCircle, Clock } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function SettlementDocuments() {
+  const { toast, showToast } = useToast();
   const [exits, setExits] = useState([]);
   const [selectedExit, setSelectedExit] = useState(null);
   const [settlement, setSettlement] = useState(null);
@@ -184,10 +187,10 @@ export default function SettlementDocuments() {
         calculated_by: 'HR System'
       });
       
-      alert("F&F Settlement calculated and saved successfully");
+      showToast("F&F Settlement calculated and saved successfully", "success");
     } catch (err) {
       console.error('Settlement calculation error:', err);
-      alert("Failed to calculate settlement");
+      showToast("Failed to calculate settlement", "error");
     }
   }
 
@@ -201,10 +204,10 @@ export default function SettlementDocuments() {
         paid_on: new Date().toISOString().split('T')[0]
       }));
       
-      alert("Settlement approved successfully");
+      showToast("Settlement approved successfully", "success");
     } catch (err) {
       console.error('Settlement approval error:', err);
-      alert("Failed to approve settlement");
+      showToast("Failed to approve settlement", "error");
     }
   }
 
@@ -238,10 +241,10 @@ export default function SettlementDocuments() {
         ...letterData
       });
       
-      alert("Experience letter generated and saved successfully");
+      showToast("Experience letter generated and saved successfully", "success");
     } catch (err) {
       console.error('Experience letter generation error:', err);
-      alert("Failed to generate experience letter");
+      showToast("Failed to generate experience letter", "error");
     }
   }
 
@@ -284,7 +287,7 @@ export default function SettlementDocuments() {
       
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      showToast('Failed to generate PDF. Please try again.', 'error');
     }
   };
 
@@ -335,11 +338,11 @@ export default function SettlementDocuments() {
         });
       }
       
-      alert('Experience certificate sent successfully!');
+      showToast('Experience certificate sent successfully!', 'success');
       setShowEmailModal(false);
     } catch (error) {
       console.error('Error sending email:', error);
-      alert('Failed to send email. Please try again.');
+      showToast('Failed to send email. Please try again.', 'error');
     }
   };
 
@@ -791,6 +794,7 @@ export default function SettlementDocuments() {
           )}
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

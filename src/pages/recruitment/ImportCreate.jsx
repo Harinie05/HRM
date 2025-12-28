@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ImportCandidates() {
   const [jobs, setJobs] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const { toast, showToast } = useToast();
 
   const [resumeFile, setResumeFile] = useState(null);
 
@@ -61,7 +64,7 @@ export default function ImportCandidates() {
 
     } catch (err) {
       console.error("Resume upload failed");
-      alert("Resume upload failed");
+      showToast("Resume upload failed", "error");
       return null;
     }
   };
@@ -83,7 +86,7 @@ export default function ImportCandidates() {
 
       await api.post("/recruitment/import-candidate", payload);
 
-      alert("Candidate Imported Successfully!");
+      showToast("Candidate Imported Successfully!", "success");
       setShowForm(false);
       setForm({
         job_id: "",
@@ -99,7 +102,7 @@ export default function ImportCandidates() {
 
     } catch (err) {
       console.error("Failed to import candidate");
-      alert("Failed to import candidate");
+      showToast("Failed to import candidate", "error");
     }
   };
 
@@ -275,6 +278,7 @@ export default function ImportCandidates() {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </div>
   );
 }

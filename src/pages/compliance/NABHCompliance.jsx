@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Shield, Users, TrendingUp, Award, CheckCircle } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function NABHCompliance() {
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     employee_id: "",
     employee_name: "",
@@ -135,7 +138,7 @@ export default function NABHCompliance() {
     e.preventDefault();
     try {
       const res = await api.post("/api/compliance/nabh", form);
-      alert("NABH Compliance Record Saved Successfully");
+      showToast("NABH Compliance Record Saved Successfully", "success");
       
       // Reset form
       setForm({
@@ -180,7 +183,7 @@ export default function NABHCompliance() {
       setComplianceRecords(complianceRes.data);
     } catch (err) {
       console.error('Failed to save NABH compliance:', err);
-      alert("Failed to save NABH compliance record");
+      showToast("Failed to save NABH compliance record", "error");
     }
   }
 
@@ -778,6 +781,7 @@ export default function NABHCompliance() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

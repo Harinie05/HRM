@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Communication() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ export default function Communication() {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('view'); // 'view' or 'edit'
   const [selectedLetter, setSelectedLetter] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     const loadData = async () => {
@@ -134,19 +137,19 @@ export default function Communication() {
       setLetters(prev => [newLetter, ...prev]);
       
       // Show success message
-      alert('Letter saved successfully!');
+      showToast('Letter saved successfully!');
       
       // Reset form
       resetForm();
     } catch (error) {
       console.error('Error saving letter:', error);
-      alert('Failed to save letter. Please try again.');
+      showToast('Failed to save letter. Please try again.', 'error');
     }
   };
 
   const handlePrint = () => {
     if (!formData.content || !formData.subject) {
-      alert('Please fill in the subject and content before printing.');
+      showToast('Please fill in the subject and content before printing.', 'error');
       return;
     }
 
@@ -213,7 +216,7 @@ export default function Communication() {
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching letter:', error);
-      alert('Failed to load letter details.');
+      showToast('Failed to load letter details.', 'error');
     }
   };
 
@@ -225,7 +228,7 @@ export default function Communication() {
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching letter:', error);
-      alert('Failed to load letter details.');
+      showToast('Failed to load letter details.', 'error');
     }
   };
 
@@ -249,10 +252,10 @@ export default function Communication() {
       ));
       
       setShowModal(false);
-      alert('Letter updated and marked as ready!');
+      showToast('Letter updated and marked as ready!', 'success');
     } catch (error) {
       console.error('Error updating letter:', error);
-      alert('Failed to update letter. Please try again.');
+      showToast('Failed to update letter. Please try again.', 'error');
     }
   };
 
@@ -264,10 +267,10 @@ export default function Communication() {
         // Remove the letter from the list
         setLetters(prev => prev.filter(letter => letter.id !== letterId));
         
-        alert('Letter deleted successfully!');
+        showToast('Letter deleted successfully!', 'success');
       } catch (error) {
         console.error('Error deleting letter:', error);
-        alert('Failed to delete letter. Please try again.');
+        showToast('Failed to delete letter. Please try again.', 'error');
       }
     }
   };
@@ -281,10 +284,10 @@ export default function Communication() {
         letter.id === letterId ? { ...letter, status: 'Sent' } : letter
       ));
       
-      alert('Draft sent successfully!');
+      showToast('Draft sent successfully!', 'success');
     } catch (error) {
       console.error('Error sending draft:', error);
-      alert('Failed to send draft. Please try again.');
+      showToast('Failed to send draft. Please try again.', 'error');
     }
   };
 
@@ -361,13 +364,13 @@ export default function Communication() {
       setLetters(prev => [newLetter, ...prev]);
       
       // Show success message
-      alert('Draft saved successfully!');
+      showToast('Draft saved successfully!');
       
       // Reset form
       resetForm();
     } catch (error) {
       console.error('Error saving draft:', error);
-      alert('Failed to save draft. Please try again.');
+      showToast('Failed to save draft. Please try again.', 'error');
     }
   };
 
@@ -665,6 +668,7 @@ export default function Communication() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

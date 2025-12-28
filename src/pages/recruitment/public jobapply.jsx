@@ -148,158 +148,157 @@ export default function JobApply() {
     return <div className="p-6 text-red-500">Job not found or expired.</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center p-6">
-      <div className="bg-white w-full max-w-2xl p-6 shadow-lg rounded-xl">
-
+    <div className="min-h-screen bg-gray-50 flex justify-center p-6">
+      <div className="w-full max-w-2xl">
+        
         {/* JOB HEADER */}
-        <h1 className="text-2xl font-bold mb-2">{job.title}</h1>
-        <p className=" mb-4" style={{color: 'var(--text-secondary, #374151)'}}>{job.department}</p>
-
-        <h2 className="text-lg font-semibold mb-1">Job Description</h2>
-        <p className=" whitespace-pre-line mb-6" style={{color: 'var(--text-secondary, #374151)'}}>
-          {job.description}
-        </p>
-
-        <hr className="my-6" />
+        <div className="bg-white rounded-2xl mb-6 p-8 border border-black">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{job.title}</h1>
+            <p className="text-lg text-gray-600 mb-4">{job.department}</p>
+            
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <h2 className="text-xl font-semibold mb-3 text-gray-900">Job Description</h2>
+              <p className="text-gray-700 whitespace-pre-line leading-relaxed">
+                {job.description}
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* APPLICATION FORM */}
-        <h2 className="text-xl font-semibold mb-4">Apply for this job</h2>
+        <div className="bg-white rounded-2xl border border-black p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Apply for this job</h2>
+          </div>
 
-        <div className="space-y-4">
+          <div className="space-y-6">
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={(e) => updateField("name", e.target.value)}
+              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
+            />
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
+            <input
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
+            />
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => updateField("email", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={(e) => updateField("phone", e.target.value)}
+              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
+            />
 
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={(e) => updateField("phone", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
+            <input
+              type="text"
+              placeholder="Experience (e.g., 3 years)"
+              value={form.experience}
+              onChange={(e) => updateField("experience", e.target.value)}
+              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
+            />
 
-          <input
-            type="text"
-            placeholder="Experience (e.g., 3 years)"
-            value={form.experience}
-            onChange={(e) => updateField("experience", e.target.value)}
-            className="border p-2 rounded w-full" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          />
+            <textarea
+              placeholder="Skills (comma-separated)"
+              value={form.skills}
+              onChange={(e) => updateField("skills", e.target.value)}
+              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all resize-none"
+              rows={4}
+            />
 
-          <textarea
-            placeholder="Skills (comma-separated)"
-            value={form.skills}
-            onChange={(e) => updateField("skills", e.target.value)}
-            className="border p-2 rounded w-full h-24" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-          ></textarea>
+            {/* Referral Section */}
+            <div className="border-t border-gray-200 pt-6">
+              <div className="flex items-center gap-3 mb-4">
+                <input
+                  type="checkbox"
+                  id="referral-checkbox"
+                  checked={isReferral}
+                  onChange={(e) => {
+                    setIsReferral(e.target.checked);
+                    if (!e.target.checked) {
+                      setReferralData({ employee_code: "", employee_name: "", department: "", role: "" });
+                      setReferralValidated(false);
+                    }
+                  }}
+                  className="w-4 h-4 text-blue-600 bg-white border-black rounded focus:ring-blue-500"
+                />
+                <label htmlFor="referral-checkbox" className="text-gray-900 font-medium">
+                  🔗 I was referred by an employee
+                </label>
+              </div>
 
-          {/* Referral Section */}
-          <div className="border-t pt-4" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-            <div className="flex items-center gap-2 mb-4">
-              <input
-                type="checkbox"
-                id="referral-checkbox"
-                checked={isReferral}
-                onChange={(e) => {
-                  setIsReferral(e.target.checked);
-                  if (!e.target.checked) {
-                    setReferralData({ employee_code: "", employee_name: "", department: "", role: "" });
-                    setReferralValidated(false);
-                  }
-                }}
-                className="w-4 h-4 text-blue-600"
-              />
-              <label htmlFor="referral-checkbox" className="text-sm font-medium text-secondary">
-                🔗 I was referred by an employee
-              </label>
-            </div>
-
-            {isReferral && (
-              <div className="bg-blue-50 p-4 rounded-lg space-y-3">
-                <h4 className="font-medium text-blue-800">Referral Information</h4>
-                <p className="text-sm text-blue-600">
-                  Please provide the employee code of the person who referred you.
-                </p>
-                
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-1">
-                    Employee Code *
-                  </label>
-                  <div className="relative">
+              {isReferral && (
+                <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+                  <h4 className="font-semibold text-blue-800 mb-3">Referral Information</h4>
+                  <p className="text-sm text-blue-600 mb-4">
+                    Please provide the employee code of the person who referred you.
+                  </p>
+                  
+                  <div className="space-y-4">
                     <input
                       type="text"
                       placeholder="Enter employee code (e.g., EMP001, 1234)"
                       value={referralData.employee_code}
                       onChange={(e) => updateReferralField("employee_code", e.target.value)}
-                      className={`border p-2 rounded w-full ${
-                        referralValidated ? 'border-green-500' : '-dark'
+                      className={`w-full px-4 py-3 bg-white text-black border rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
+                        referralValidated ? 'border-green-500' : 'border-black'
                       }`}
                     />
-                    {validatingReferral && (
-                      <div className="text-sm text-blue-600 mt-1">Validating...</div>
-                    )}
                     {referralValidated && (
-                      <div className="text-sm text-green-600 mt-1">✓ Valid employee code</div>
+                      <div className="text-sm text-green-600">✓ Valid employee code</div>
                     )}
+                    
+                    <button
+                      type="button"
+                      onClick={() => validateReferral(referralData.employee_code.trim())}
+                      disabled={!referralData.employee_code.trim() || validatingReferral}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {validatingReferral ? 'Validating...' : 'Validate Employee'}
+                    </button>
                   </div>
                 </div>
-                
-                <button
-                  type="button"
-                  onClick={() => validateReferral(referralData.employee_code.trim())}
-                  disabled={!referralData.employee_code.trim() || validatingReferral}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 disabled:bg-gray-400"
-                >
-                  {validatingReferral ? 'Validating...' : 'Validate Employee'}
-                </button>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Resume Upload */}
+            <div className="border-t border-gray-200 pt-6">
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Upload Resume (PDF / DOC) *
+              </label>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setResume(file);
+                  }
+                }}
+                className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
+              />
+              {resume && (
+                <p className="text-sm text-green-600 mt-2">
+                  ✓ Selected: {resume.name}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Resume Upload */}
-          <div>
-            <label className="block mb-1 text-sm font-medium">
-              Upload Resume (PDF / DOC) *
-            </label>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setResume(file);
-                }
-              }}
-              className="border p-2 w-full rounded" style={{borderColor: 'var(--border-color, #e2e8f0)'}}
-            />
-            {resume && (
-              <p className="text-sm text-green-600 mt-1">
-                Selected: {resume.name}
-              </p>
-            )}
-          </div>
-
+          <button
+            onClick={submitApplication}
+            className="mt-8 w-full bg-white text-black font-semibold py-4 px-6 rounded-xl border border-black hover:bg-gray-50 transition-colors"
+          >
+            Submit Application
+          </button>
         </div>
-
-        <button
-          onClick={submitApplication}
-          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
-        >
-          Submit Application
-        </button>
 
       </div>
     </div>

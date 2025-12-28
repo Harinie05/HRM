@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function LeaveTypes({ activeView = "types" }) {
+  const { toast, showToast } = useToast();
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leavePolicies, setLeavePolicies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -798,6 +801,7 @@ export default function LeaveTypes({ activeView = "types" }) {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

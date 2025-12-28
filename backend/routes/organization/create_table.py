@@ -1082,4 +1082,15 @@ with engine.connect() as conn:
     conn.commit()
     print("🎉 License renewal alerts migration completed!")
 
+# ========================= ADD EXPERIENCE_YEARS COLUMN =========================
+print("\nAdding experience_years column to job_requisition table...")
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE job_requisition ADD COLUMN experience_years INT DEFAULT 0"))
+        print("✔️ Added experience_years column")
+        conn.commit()
+        print("🎉 Experience years column added successfully!")
+    except Exception as e:
+        print(f"⚠️ experience_years column: {e}")
+
 print("\n🎉 DONE — All tables created and updated successfully!\n")

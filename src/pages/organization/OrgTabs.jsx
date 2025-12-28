@@ -12,7 +12,7 @@ export default function OrgTabs({ tab, setTab }) {
   ];
 
   return (
-    <div className="w-full bg-white border-b">
+    <div className="w-full bg-white border-b relative">
       <div 
         className="px-4 flex space-x-6 org-tabs-container"
         style={{
@@ -34,6 +34,12 @@ export default function OrgTabs({ tab, setTab }) {
             {item}
           </button>
         ))}
+      </div>
+      {/* Scroll indicator arrow */}
+      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
       </div>
     </div>
   );

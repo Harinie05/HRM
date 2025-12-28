@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ReportingStructure() {
+  const { toast, showToast } = useToast();
   const [levels, setLevels] = useState([]);
   const [hierarchy, setHierarchy] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -64,39 +67,39 @@ export default function ReportingStructure() {
 
   const createLevel = async () => {
     if (!newLevel.level_name || !newLevel.level_order) {
-      alert("Please fill in Level Name and Level Order");
+      showToast("Please fill in Level Name and Level Order", "error");
       return;
     }
     
     try {
       const response = await api.post("/reporting/levels", newLevel);
       console.log("Level creation response:", response.data);
-      alert("Reporting level created successfully");
+      showToast("Reporting level created successfully", "success");
       setNewLevel({ level_name: "", level_order: "", description: "" });
       setShowCreateLevel(false);
       await fetchData();
     } catch (err) {
       console.error("Failed to create level", err.response?.data || err.message);
-      alert(`Failed to create level: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to create level: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
   const createHierarchy = async () => {
     if (!newHierarchy.child_level_id) {
-      alert("Please select a Subordinate Level");
+      showToast("Please select a Subordinate Level", "error");
       return;
     }
     
     try {
       const response = await api.post("/reporting/hierarchy", newHierarchy);
       console.log("Hierarchy creation response:", response.data);
-      alert("Hierarchy rule created successfully");
+      showToast("Hierarchy rule created successfully", "success");
       setNewHierarchy({ parent_level_id: "", child_level_id: "", department_id: "" });
       setShowCreateHierarchy(false);
       await fetchData();
     } catch (err) {
       console.error("Failed to create hierarchy", err.response?.data || err.message);
-      alert(`Failed to create hierarchy: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to create hierarchy: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
@@ -104,11 +107,11 @@ export default function ReportingStructure() {
     if (!confirm("Are you sure you want to delete this level?")) return;
     try {
       await api.delete(`/reporting/levels/${id}`);
-      alert("Level deleted successfully");
+      showToast("Level deleted successfully", "success");
       await fetchData();
     } catch (err) {
       console.error("Failed to delete level", err.response?.data || err.message);
-      alert(`Failed to delete level: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to delete level: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
@@ -116,18 +119,18 @@ export default function ReportingStructure() {
     if (!confirm("Are you sure you want to delete this hierarchy rule?")) return;
     try {
       await api.delete(`/reporting/hierarchy/${id}`);
-      alert("Hierarchy rule deleted successfully");
+      showToast("Hierarchy rule deleted successfully", "success");
       await fetchData();
     } catch (err) {
       console.error("Failed to delete hierarchy", err.response?.data || err.message);
-      alert(`Failed to delete hierarchy: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to delete hierarchy: ${err.response?.data?.message || err.message}`, "error");
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-black overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-black">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
             <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +154,7 @@ export default function ReportingStructure() {
             </div>
             <button
               onClick={() => setShowCreateLevel(!showCreateLevel)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium border border-black"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -161,7 +164,7 @@ export default function ReportingStructure() {
           </div>
 
           {showCreateLevel && (
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 border border-black mb-6">
               <h4 className="text-lg font-medium text-gray-900 mb-4">Create New Level</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -170,7 +173,7 @@ export default function ReportingStructure() {
                     type="text"
                     value={newLevel.level_name}
                     onChange={(e) => setNewLevel({...newLevel, level_name: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     placeholder="e.g., CEO, Manager, Team Lead"
                   />
                 </div>
@@ -180,7 +183,7 @@ export default function ReportingStructure() {
                     type="number"
                     value={newLevel.level_order}
                     onChange={(e) => setNewLevel({...newLevel, level_order: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     placeholder="1=highest, 2=next level"
                   />
                 </div>
@@ -190,7 +193,7 @@ export default function ReportingStructure() {
                     type="text"
                     value={newLevel.description}
                     onChange={(e) => setNewLevel({...newLevel, description: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     placeholder="Optional description"
                   />
                 </div>
@@ -198,13 +201,13 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={createLevel}
-                  className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors border border-black"
                 >
                   Create Level
                 </button>
                 <button
                   onClick={() => setShowCreateLevel(false)}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors border border-black"
                 >
                   Cancel
                 </button>
@@ -212,9 +215,9 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto border border-black rounded-xl">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50 border-b border-gray-200">
+              <thead className="bg-gray-50/50 border-b border-black">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level Name</th>
@@ -291,7 +294,7 @@ export default function ReportingStructure() {
             </div>
             <button
               onClick={() => setShowCreateHierarchy(!showCreateHierarchy)}
-              className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium border border-black"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -301,7 +304,7 @@ export default function ReportingStructure() {
           </div>
 
           {showCreateHierarchy && (
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6">
+            <div className="bg-gray-50 rounded-xl p-6 border border-black mb-6">
               <h4 className="text-lg font-medium text-gray-900 mb-4">Create Hierarchy Rule</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -309,7 +312,7 @@ export default function ReportingStructure() {
                   <select
                     value={newHierarchy.parent_level_id}
                     onChange={(e) => setNewHierarchy({...newHierarchy, parent_level_id: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select Supervisor Level</option>
                     {levels.map((level) => (
@@ -322,7 +325,7 @@ export default function ReportingStructure() {
                   <select
                     value={newHierarchy.child_level_id}
                     onChange={(e) => setNewHierarchy({...newHierarchy, child_level_id: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select Subordinate Level</option>
                     {levels.map((level) => (
@@ -335,7 +338,7 @@ export default function ReportingStructure() {
                   <select
                     value={newHierarchy.department_id}
                     onChange={(e) => setNewHierarchy({...newHierarchy, department_id: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">All Departments</option>
                     {departments.map((dept) => (
@@ -347,13 +350,13 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={createHierarchy}
-                  className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 transition-colors"
+                  className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors border border-black"
                 >
                   Create Rule
                 </button>
                 <button
                   onClick={() => setShowCreateHierarchy(false)}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors border border-black"
                 >
                   Cancel
                 </button>
@@ -361,9 +364,9 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto border border-black rounded-xl">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50 border-b border-gray-200">
+              <thead className="bg-gray-50/50 border-b border-black">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor Level</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subordinate Level</th>
@@ -427,6 +430,7 @@ export default function ReportingStructure() {
           </div>
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

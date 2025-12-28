@@ -7,6 +7,7 @@ import Lifecycle from "./Lifecycle";
 import Communication from "./Communication";
 import Grievances from "./Grievances";
 import Assets from "./Assets";
+import StaffScheduling from "./StaffScheduling";
 
 export default function HRLayout() {
   const location = useLocation();
@@ -19,7 +20,8 @@ export default function HRLayout() {
     "HR Letters", 
     "Grievances Desk",
     "Assets",
-    "Insurance & Benefits"
+    "Insurance & Benefits",
+    "Staff Scheduling"
   ];
 
   return (
@@ -150,6 +152,22 @@ export default function HRLayout() {
                     </div>
                   </div>
                   <Insurance />
+                </div>
+              )}
+              {tab === "Staff Scheduling" && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-medium text-gray-900">Staff Scheduling vs Patient Load</h2>
+                      <p className="text-sm text-gray-600">Optimize staff allocation based on patient demand and acuity</p>
+                    </div>
+                  </div>
+                  <StaffScheduling />
                 </div>
               )}
             </div>

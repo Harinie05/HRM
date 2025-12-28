@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function Assets() {
   const [formData, setFormData] = useState({
@@ -20,6 +22,7 @@ export default function Assets() {
   const [assets, setAssets] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [pendingAssets, setPendingAssets] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     fetchEmployees();
@@ -143,10 +146,10 @@ export default function Assets() {
       // Remove from pending
       setPendingAssets(prev => Array.isArray(prev) ? prev.filter(a => a.id !== assetId) : []);
       
-      alert(approved ? 'Asset approved successfully!' : 'Asset rejected successfully!');
+      showToast(approved ? 'Asset approved successfully!' : 'Asset rejected successfully!');
     } catch (error) {
       console.error('Error processing approval:', error);
-      alert('Failed to process approval. Please try again.');
+      showToast('Failed to process approval. Please try again.', 'error');
     }
   };
 
@@ -163,7 +166,7 @@ export default function Assets() {
       await fetchPendingAssets();
       
       // Show success message
-      alert('Asset assignment request submitted for approval!');
+      showToast('Asset assignment request submitted for approval!');
       
       // Reset form
       setFormData({
@@ -182,7 +185,7 @@ export default function Assets() {
       });
     } catch (error) {
       console.error('Error saving asset:', error);
-      alert('Failed to save asset. Please try again.');
+      showToast('Failed to save asset. Please try again.', 'error');
     }
   };
 
@@ -452,6 +455,7 @@ export default function Assets() {
           </table>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

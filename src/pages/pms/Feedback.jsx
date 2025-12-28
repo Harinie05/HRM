@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus, MessageSquare, Star, User, Calendar, Edit, Trash2, Eye, MessageCircle } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Feedback() {
+  const { toast, showToast } = useToast();
   const [feedbacks, setFeedbacks] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -166,10 +169,10 @@ export default function Feedback() {
       
       if (editingFeedback) {
         await api.put(`/api/pms/feedback/${editingFeedback}`, feedbackData);
-        alert('Feedback updated successfully!');
+        showToast('Feedback updated successfully!', 'success');
       } else {
         await api.post('/api/pms/feedback', feedbackData);
-        alert('Feedback submitted successfully!');
+        showToast('Feedback submitted successfully!', 'success');
       }
       fetchFeedbacks();
       
@@ -191,7 +194,7 @@ export default function Feedback() {
       setShowForm(false);
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      showToast('Failed to submit feedback. Please try again.', 'error');
     }
   };
 
@@ -199,11 +202,11 @@ export default function Feedback() {
     if (confirm("Are you sure you want to delete this feedback?")) {
       try {
         await api.delete(`/api/pms/feedback/${id}`);
-        alert('Feedback deleted successfully!');
+        showToast('Feedback deleted successfully!', 'success');
         fetchFeedbacks();
       } catch (error) {
         console.error('Error deleting feedback:', error);
-        alert('Failed to delete feedback. Please try again.');
+        showToast('Failed to delete feedback. Please try again.', 'error');
       }
     }
   };
@@ -557,6 +560,7 @@ export default function Feedback() {
           </table>
         </div>
       </div>
+      <Toast {...toast} />
     </div>
   );
 }

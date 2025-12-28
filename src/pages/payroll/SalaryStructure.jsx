@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Eye, Users, Link, DollarSign } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function SalaryStructure() {
+  const { toast, showToast } = useToast();
   const [structures, setStructures] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -130,7 +133,7 @@ export default function SalaryStructure() {
       handleCloseModal();
     } catch (error) {
       console.error("Error saving salary structure:", error);
-      alert("Failed to save salary structure. Please try again.");
+      showToast("Failed to save salary structure. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -212,12 +215,12 @@ export default function SalaryStructure() {
         employee_ids: selectedEmployees
       });
       
-      alert(`Successfully linked ${selectedEmployees.length} employee(s) to ${linkingStructure.name}`);
+      showToast(`Successfully linked ${selectedEmployees.length} employee(s) to ${linkingStructure.name}`, "success");
       await fetchStructures();
       handleCloseLinkModal();
     } catch (error) {
       console.error("Error linking employees:", error);
-      alert("Failed to link employees. Please try again.");
+      showToast("Failed to link employees. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -232,7 +235,7 @@ export default function SalaryStructure() {
   };
 
   const handleViewStructure = (structure) => {
-    alert(`Structure Details:\n\nName: ${structure.name}\nAnnual CTC: ₹${structure.ctc?.toLocaleString()}\nMonthly: ₹${((structure.ctc || 0) / 12).toLocaleString()}\nBasic: ${structure.basic_percent}%\nHRA: ${structure.hra_percent}%\nStatus: ${structure.is_active ? 'Active' : 'Inactive'}`);
+    showToast(`Structure Details:\n\nName: ${structure.name}\nAnnual CTC: ₹${structure.ctc?.toLocaleString()}\nMonthly: ₹${((structure.ctc || 0) / 12).toLocaleString()}\nBasic: ${structure.basic_percent}%\nHRA: ${structure.hra_percent}%\nStatus: ${structure.is_active ? 'Active' : 'Inactive'}`, "success");
   };
 
   const filteredStructures = structures.filter(structure =>
@@ -527,6 +530,7 @@ export default function SalaryStructure() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

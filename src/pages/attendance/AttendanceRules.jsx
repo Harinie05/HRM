@@ -3,8 +3,11 @@ import api from "../../api";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function AttendanceRules() {
+  const { toast, showToast } = useToast();
   const [rules, setRules] = useState([]);
   const [locations, setLocations] = useState([]);
   const [showRuleModal, setShowRuleModal] = useState(false);
@@ -41,9 +44,9 @@ export default function AttendanceRules() {
       setShowRuleModal(false);
       setRuleForm({ rule_name: '', rule_type: 'Late', value: 10 });
       loadRules();
-      alert('Rule added successfully!');
+      showToast('Rule added successfully!', "success");
     } catch (err) {
-      alert('Failed to add rule');
+      showToast('Failed to add rule', "error");
     }
   };
 
@@ -52,7 +55,7 @@ export default function AttendanceRules() {
       await api.patch(`/api/attendance/rules/${id}/toggle`);
       loadRules();
     } catch (err) {
-      alert('Failed to toggle rule status');
+      showToast('Failed to toggle rule status', "error");
     }
   };
 
@@ -61,9 +64,9 @@ export default function AttendanceRules() {
     try {
       await api.delete(`/api/attendance/rules/${id}/`);
       loadRules();
-      alert('Rule deleted!');
+      showToast('Rule deleted!', "success");
     } catch (err) {
-      alert('Failed to delete rule');
+      showToast('Failed to delete rule', "error");
     }
   };
 
@@ -73,9 +76,9 @@ export default function AttendanceRules() {
       setShowLocationModal(false);
       setLocationForm({ location_name: '', grace_time: 10, ot_rule: '' });
       loadLocations();
-      alert('Location added successfully!');
+      showToast('Location added successfully!', "success");
     } catch (err) {
-      alert('Failed to add location');
+      showToast('Failed to add location', "error");
     }
   };
 
@@ -84,7 +87,7 @@ export default function AttendanceRules() {
       await api.patch(`/api/attendance/locations/${id}/toggle`);
       loadLocations();
     } catch (err) {
-      alert('Failed to toggle location status');
+      showToast('Failed to toggle location status', "error");
     }
   };
 
@@ -93,9 +96,9 @@ export default function AttendanceRules() {
     try {
       await api.delete(`/api/attendance/locations/${id}/`);
       loadLocations();
-      alert('Location deleted!');
+      showToast('Location deleted!', "success");
     } catch (err) {
-      alert('Failed to delete location');
+      showToast('Failed to delete location', "error");
     }
   };
 
@@ -414,6 +417,7 @@ export default function AttendanceRules() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

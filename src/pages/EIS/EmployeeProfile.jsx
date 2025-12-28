@@ -8,6 +8,9 @@ import {
 } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
+import EmployeeProbation from "./EmployeeProbation";
 
 export default function EmployeeProfile() {
   const { id } = useParams();
@@ -19,6 +22,7 @@ export default function EmployeeProfile() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [viewingDoc, setViewingDoc] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   // Function to get authenticated image URL
   const getAuthenticatedImageUrl = async (docId) => {
@@ -306,6 +310,9 @@ export default function EmployeeProfile() {
           </div>
         </div>
 
+        {/* Probation Tracking */}
+        <EmployeeProbation employeeId={employee.application_id.toString().replace('user_', '')} employee={employee} />
+
         {/* Employee Information Modules */}
         <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 shadow-lg">
           <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
@@ -507,8 +514,12 @@ export default function EmployeeProfile() {
                           setShowPhotoUpload(false);
                           setSelectedFile(null);
                           setPreviewUrl(null);
+                          showToast('Photo uploaded successfully!');
                         })
-                        .catch(err => console.error('Photo upload failed', err));
+                        .catch(err => {
+                          console.error('Photo upload failed', err);
+                          showToast('Photo upload failed', 'error');
+                        });
                     }
                   }}
                   disabled={!selectedFile}
@@ -520,6 +531,7 @@ export default function EmployeeProfile() {
             </div>
           </div>
         )}
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     </Layout>
   );

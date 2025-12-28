@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus, Target, Calendar, User, Edit, Trash2, TrendingUp } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function GoalsKPI() {
+  const { toast, showToast, hideToast } = useToast();
   const [goals, setGoals] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -123,13 +126,13 @@ export default function GoalsKPI() {
       await api.put(`/api/pms/goals/${progressGoal.id}`, {
         current_value: currentValue
       });
-      alert('Progress updated successfully!');
+      showToast('Progress updated successfully!');
       fetchGoals();
       setShowProgressModal(false);
       setProgressGoal(null);
     } catch (error) {
       console.error('Error updating progress:', error);
-      alert('Failed to update progress. Please try again.');
+      showToast('Failed to update progress. Please try again.', 'error');
     }
   };
 
@@ -184,16 +187,16 @@ export default function GoalsKPI() {
 
       if (editingGoal) {
         await api.put(`/api/pms/goals/${editingGoal}`, goalData);
-        alert('Goal updated successfully!');
+        showToast('Goal updated successfully!');
       } else {
         await api.post('/api/pms/goals', goalData);
-        alert('Goal created successfully!');
+        showToast('Goal created successfully!');
       }
       
       fetchGoals();
     } catch (error) {
       console.error('Error saving goal:', error);
-      alert('Failed to save goal. Please try again.');
+      showToast('Failed to save goal. Please try again.', 'error');
     }
     setFormData({
       title: "",
@@ -217,11 +220,11 @@ export default function GoalsKPI() {
     if (confirm("Are you sure you want to delete this goal?")) {
       try {
         await api.delete(`/api/pms/goals/${id}`);
-        alert('Goal deleted successfully!');
+        showToast('Goal deleted successfully!');
         fetchGoals();
       } catch (error) {
         console.error('Error deleting goal:', error);
-        alert('Failed to delete goal. Please try again.');
+        showToast('Failed to delete goal. Please try again.', 'error');
       }
     }
   };
@@ -570,6 +573,7 @@ export default function GoalsKPI() {
           </table>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

@@ -3,10 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiDollarSign, FiArrowLeft, FiPieChart, FiShield } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeSalary() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast } = useToast();
   const [form, setForm] = useState({
     ctc: "",
     basic_percent: "40",
@@ -55,11 +58,11 @@ export default function EmployeeSalary() {
     
     try {
       await api.post("/employee/salary/add", data);
-      alert("Salary structure saved");
+      showToast("Salary structure saved", "success");
       fetchSalary();
     } catch (err) {
       console.error("Failed to save salary", err);
-      alert("Failed to save salary structure");
+      showToast("Failed to save salary structure", "error");
     }
   };
 
@@ -255,6 +258,7 @@ export default function EmployeeSalary() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

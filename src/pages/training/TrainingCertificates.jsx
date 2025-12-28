@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Award, Download, Eye, Search, Plus } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function TrainingCertificates({ showModal, setShowModal }) {
   const [certificates, setCertificates] = useState([]);
@@ -8,6 +10,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
   const [loading, setLoading] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const { toast, showToast } = useToast();
   const [formData, setFormData] = useState({
     training_id: "",
     employee_id: "",
@@ -124,7 +127,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
       });
     } catch (error) {
       console.error("Error generating certificate:", error);
-      alert('Failed to generate certificate. Please try again.');
+      showToast('Failed to generate certificate. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -150,16 +153,16 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } else {
-        alert('Failed to download certificate');
+        showToast('Failed to download certificate', 'error');
       }
     } catch (error) {
       console.error('Download error:', error);
-      alert('Failed to download certificate');
+      showToast('Failed to download certificate', 'error');
     }
   };
 
   const handleView = (certificate) => {
-    alert(`Certificate Details:\n\nEmployee: ${certificate.employee_name}\nProgram: ${certificate.program_title}\nIssued: ${new Date(certificate.issued_date).toLocaleDateString()}\nValid Until: ${certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}`);
+    showToast(`Certificate Details:\n\nEmployee: ${certificate.employee_name}\nProgram: ${certificate.program_title}\nIssued: ${new Date(certificate.issued_date).toLocaleDateString()}\nValid Until: ${certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}`, 'success');
   };
 
   const filteredCertificates = certificates.filter(cert => 
@@ -388,6 +391,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

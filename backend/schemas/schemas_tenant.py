@@ -346,6 +346,7 @@ class JobReqBase(BaseModel):
 
     openings: int = 1
     experience: Optional[str] = None
+    experience_years: Optional[int] = 0  # For scoring algorithm
     salary_range: Optional[str] = None
 
     job_type: Optional[str] = None
@@ -376,6 +377,7 @@ class JobReqUpdate(BaseModel):
 
     openings: Optional[int]
     experience: Optional[str]
+    experience_years: Optional[int]
     salary_range: Optional[str]
 
     job_type: Optional[str]
@@ -1861,6 +1863,76 @@ class EmployeeProbationOut(EmployeeProbationBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+# =====================================================
+# STAFF SCHEDULING VS PATIENT LOAD SCHEMAS
+# =====================================================
+class PatientLoadBase(BaseModel):
+    department_id: int
+    date: date
+    shift: str
+    total_patients: Optional[int] = 0
+    critical_patients: Optional[int] = 0
+    icu_patients: Optional[int] = 0
+    opd_patients: Optional[int] = 0
+    emergency_patients: Optional[int] = 0
+    patient_acuity_score: Optional[float] = 0.0
+
+class PatientLoadCreate(PatientLoadBase):
+    pass
+
+class PatientLoadOut(PatientLoadBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+class StaffAllocationBase(BaseModel):
+    department_id: int
+    date: date
+    shift: str
+    required_nurses: Optional[int] = 0
+    required_doctors: Optional[int] = 0
+    required_support_staff: Optional[int] = 0
+    allocated_nurses: Optional[int] = 0
+    allocated_doctors: Optional[int] = 0
+    allocated_support_staff: Optional[int] = 0
+    patient_to_nurse_ratio: Optional[float] = 0.0
+    allocation_status: Optional[str] = "Pending"
+    created_by: int
+
+class StaffAllocationCreate(StaffAllocationBase):
+    pass
+
+class StaffAllocationOut(StaffAllocationBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+class StaffScheduleRecommendationBase(BaseModel):
+    patient_load_id: int
+    department_id: int
+    recommended_nurses: Optional[int] = 0
+    recommended_doctors: Optional[int] = 0
+    recommended_support_staff: Optional[int] = 0
+    priority_level: Optional[str] = "Normal"
+    recommendation_reason: Optional[str] = None
+    auto_generated: Optional[bool] = True
+
+class StaffScheduleRecommendationCreate(StaffScheduleRecommendationBase):
+    pass
+
+class StaffScheduleRecommendationOut(StaffScheduleRecommendationBase):
+    id: int
+    created_at: datetime
 
     class Config:
         from_attributes = True

@@ -3,6 +3,8 @@ import api from "../../api";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import * as XLSX from 'xlsx';
 
 export default function AttendanceLogs() {
@@ -20,6 +22,7 @@ export default function AttendanceLogs() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [showAddLocation, setShowAddLocation] = useState(false);
   const [newLocationName, setNewLocationName] = useState("");
+  const { toast, showToast, hideToast } = useToast();
   const [regularizationForm, setRegularizationForm] = useState({
     employee_id: "",
     date: "",
@@ -182,7 +185,7 @@ export default function AttendanceLogs() {
 
   const handlePunchIn = async (source) => {
     if (currentStatus === 'checked_in') {
-      alert('You are already checked in today!');
+      showToast('You are already checked in today!', 'error');
       return;
     }
     
@@ -211,7 +214,7 @@ export default function AttendanceLogs() {
           locationStr = await getCurrentLocation();
           locationStr = `GPS: ${locationStr}`;
         } catch (err) {
-          alert('Failed to get GPS location. Please try again.');
+          showToast('Failed to get GPS location. Please try again.', 'error');
           setLoading(false);
           return;
         }
@@ -253,7 +256,7 @@ export default function AttendanceLogs() {
     } catch (err) {
       console.error("Punch-in failed:", err);
       const errorDetail = err.response?.data?.detail?.[0]?.msg || err.response?.data?.detail || err.message;
-      alert(`Check-in failed: ${errorDetail}`);
+      showToast(`Check-in failed: ${errorDetail}`, 'error');
     } finally {
       setLoading(false);
     }
@@ -261,12 +264,12 @@ export default function AttendanceLogs() {
 
   const handlePunchOut = async (source) => {
     if (currentStatus !== 'checked_in') {
-      alert('You need to check in first!');
+      showToast('You need to check in first!', 'error');
       return;
     }
     
     if (checkInSource !== source) {
-      alert(`You checked in via ${checkInSource}. Please use ${checkInSource} check-out.`);
+      showToast(`You checked in via ${checkInSource}. Please use ${checkInSource} check-out.`, 'error');
       return;
     }
     
@@ -329,11 +332,11 @@ export default function AttendanceLogs() {
         setTimeout(() => notification.remove(), 5000);
         
       } else {
-        alert("No active check-in found for today.");
+        showToast("No active check-in found for today.", 'error');
       }
     } catch (err) {
       console.error("Check-out failed:", err);
-      alert("Check-out failed. Please try again.");
+      showToast("Check-out failed. Please try again.", 'error');
     } finally {
       setLoading(false);
     }
@@ -359,7 +362,7 @@ export default function AttendanceLogs() {
 
   const handleRegularizationSubmit = async () => {
     if (!regularizationForm.employee_id || !regularizationForm.date || !regularizationForm.reason.trim()) {
-      alert('Please fill all fields');
+      showToast('Please fill all fields', 'error');
       return;
     }
     
@@ -377,10 +380,10 @@ export default function AttendanceLogs() {
       
       setRegularizationForm({ employee_id: "", date: "", issue_type: "Missed IN", reason: "" });
       fetchRegularizationRequests();
-      alert('Regularization request submitted successfully!');
+      showToast('Regularization request submitted successfully!');
     } catch (err) {
       console.error('Failed to submit regularization:', err);
-      alert('Failed to submit request. Please try again.');
+      showToast('Failed to submit request. Please try again.', 'error');
     }
   };
 
@@ -388,10 +391,10 @@ export default function AttendanceLogs() {
     try {
       await api.patch(`/api/attendance/regularizations/${id}/approve`);
       fetchRegularizationRequests();
-      alert('Request approved successfully!');
+      showToast('Request approved successfully!');
     } catch (err) {
       console.error('Failed to approve:', err);
-      alert('Failed to approve request.');
+      showToast('Failed to approve request.', 'error');
     }
   };
 
@@ -399,10 +402,10 @@ export default function AttendanceLogs() {
     try {
       await api.patch(`/api/attendance/regularizations/${id}/reject`);
       fetchRegularizationRequests();
-      alert('Request rejected!');
+      showToast('Request rejected!');
     } catch (err) {
       console.error('Failed to reject:', err);
-      alert('Failed to reject request.');
+      showToast('Failed to reject request.', 'error');
     }
   };
 
@@ -424,7 +427,7 @@ export default function AttendanceLogs() {
 
   const handleOdSubmit = async () => {
     if (!odForm.employee_id || !odForm.od_date || !odForm.purpose.trim()) {
-      alert('Please fill all required fields');
+      showToast('Please fill all required fields', 'error');
       return;
     }
     
@@ -444,10 +447,10 @@ export default function AttendanceLogs() {
       
       setOdForm({ employee_id: "", od_date: "", purpose: "", from_time: "", to_time: "", location: "" });
       fetchOdApplications();
-      alert('OD application submitted successfully!');
+      showToast('OD application submitted successfully!');
     } catch (err) {
       console.error('Failed to submit OD application:', err);
-      alert('Failed to submit application. Please try again.');
+      showToast('Failed to submit application. Please try again.', 'error');
     }
   };
 
@@ -455,10 +458,10 @@ export default function AttendanceLogs() {
     try {
       await api.patch(`/api/attendance/od-applications/${id}/approve`);
       fetchOdApplications();
-      alert('OD application approved successfully!');
+      showToast('OD application approved successfully!');
     } catch (err) {
       console.error('Failed to approve OD application:', err);
-      alert('Failed to approve application.');
+      showToast('Failed to approve application.', 'error');
     }
   };
 
@@ -466,10 +469,10 @@ export default function AttendanceLogs() {
     try {
       await api.patch(`/api/attendance/od-applications/${id}/reject`);
       fetchOdApplications();
-      alert('OD application rejected!');
+      showToast('OD application rejected!');
     } catch (err) {
       console.error('Failed to reject OD application:', err);
-      alert('Failed to reject application.');
+      showToast('Failed to reject application.', 'error');
     }
   };
 
@@ -486,7 +489,7 @@ export default function AttendanceLogs() {
 
   const exportToExcel = () => {
     if (reportData.length === 0) {
-      alert('Please generate a report first');
+      showToast('Please generate a report first', 'error');
       return;
     }
 
@@ -647,7 +650,7 @@ export default function AttendanceLogs() {
                                     setNewLocationName('');
                                     setShowAddLocation(false);
                                   } catch (err) {
-                                    alert('Failed to add location. Please try again.');
+                                    showToast('Failed to add location. Please try again.', 'error');
                                   }
                                 }
                               }}
@@ -697,7 +700,7 @@ export default function AttendanceLogs() {
                       <button
                         onClick={async () => {
                           if (!navigator.geolocation) {
-                            alert('Geolocation is not supported by this browser.');
+                            showToast('Geolocation is not supported by this browser.', 'error');
                             return;
                           }
                           
@@ -708,7 +711,7 @@ export default function AttendanceLogs() {
                             (position) => {
                               setGpsPermissionGranted(true);
                               setLoading(false);
-                              alert('GPS permission granted! You can now check in.');
+                              showToast('GPS permission granted! You can now check in.');
                             },
                             (error) => {
                               console.error('GPS error:', error);
@@ -724,7 +727,7 @@ export default function AttendanceLogs() {
                               } else {
                                 errorMsg += 'Location request timed out. Please try again.';
                               }
-                              alert(errorMsg);
+                              showToast(errorMsg, 'error');
                             },
                             { 
                               timeout: 15000, 
@@ -1324,6 +1327,7 @@ export default function AttendanceLogs() {
         </div>
         
         <Footer />
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import api from "../api";
 import Layout from "../components/Layout";
+import Toast from "../components/Toast";
+import useToast from "../utils/useToast";
 import { hasPermission, isAdmin } from "../utils/permissions";
 
 export default function Users() {
@@ -23,6 +25,7 @@ export default function Users() {
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState("");
   const [editDepartment, setEditDepartment] = useState("");
+  const { toast, showToast, hideToast } = useToast();
 
   const tenant_db = localStorage.getItem("tenant_db");
 
@@ -82,10 +85,10 @@ export default function Users() {
   }, []);
 
   const createUser = async () => {
-    if (!canAdd) return alert("You do not have permission to add users");
+    if (!canAdd) return showToast("You do not have permission to add users", 'error');
 
     if (!name.trim() || !email.trim() || !password.trim() || !role || !department) {
-      alert("All fields required");
+      showToast("All fields required", 'error');
       return;
     }
 
@@ -107,9 +110,9 @@ export default function Users() {
       setDepartment("");
       setShowCreateModal(false);
       loadUsers();
-      alert("User created!");
+      showToast("User created!");
     } catch (err) {
-      alert("Create failed");
+      showToast("Create failed", 'error');
       console.error(err);
     }
 
@@ -132,7 +135,7 @@ export default function Users() {
 
   const deleteUser = async (id) => {
     if (!canDelete)
-      return alert("You do not have permission to delete users");
+      return showToast("You do not have permission to delete users", 'error');
 
     if (!window.confirm("Delete this user?")) return;
 
@@ -141,7 +144,7 @@ export default function Users() {
       loadUsers();
     } catch (err) {
       console.error('Delete user failed:', err);
-      alert("Delete failed");
+      showToast("Delete failed", 'error');
     }
   };
 
@@ -576,12 +579,12 @@ export default function Users() {
                         }
                       );
 
-                      alert("Updated successfully!");
+                      showToast("Updated successfully!");
                       setEditing(null);
                       loadUsers();
                     } catch (err) {
                       console.error('Update user failed:', err);
-                      alert("Update failed");
+                      showToast("Update failed", 'error');
                     }
                   }}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
@@ -596,6 +599,7 @@ export default function Users() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

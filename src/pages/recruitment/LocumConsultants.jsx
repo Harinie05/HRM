@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Calendar, DollarSign, User, Phone, Mail, MapPin } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, DollarSign, User, Phone, Mail, MapPin, FileText, Send } from 'lucide-react';
 import Layout from '../../components/Layout';
+import Toast from '../../components/Toast';
+import useToast from '../../utils/useToast';
 import api from '../../api';
 
 const LocumConsultants = () => {
@@ -13,6 +15,7 @@ const LocumConsultants = () => {
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [editingConsultant, setEditingConsultant] = useState(null);
   const [activeTab, setActiveTab] = useState('list');
+  const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     specialization: '',
@@ -178,10 +181,10 @@ const LocumConsultants = () => {
       await api.post('/recruitment/consultants/availability', availabilityData);
       resetAvailabilityForm();
       fetchAvailability();
-      alert('Availability added successfully');
+      showToast('Availability added successfully');
     } catch (error) {
       console.error('Error saving availability:', error);
-      alert('Failed to save availability');
+      showToast('Failed to save availability', 'error');
     }
   };
 
@@ -191,10 +194,10 @@ const LocumConsultants = () => {
       await api.post('/recruitment/consultants/payouts', payoutData);
       resetPayoutForm();
       fetchPayouts();
-      alert('Payout added successfully');
+      showToast('Payout added successfully');
     } catch (error) {
       console.error('Error saving payout:', error);
-      alert('Failed to save payout');
+      showToast('Failed to save payout', 'error');
     }
   };
 
@@ -202,10 +205,43 @@ const LocumConsultants = () => {
     try {
       await api.put(`/recruitment/consultants/payouts/${payoutId}/process`);
       fetchPayouts();
-      alert('Payroll processed successfully');
+      showToast('Payroll processed successfully');
     } catch (error) {
       console.error('Error processing payroll:', error);
-      alert('Failed to process payroll');
+      showToast('Failed to process payroll', 'error');
+    }
+  };
+
+  const handleGeneratePayslip = async (payoutId) => {
+    try {
+      const response = await api.get(`/recruitment/consultants/payouts/${payoutId}/payslip`, {
+        responseType: 'blob'
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `consultant-payslip-${payoutId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      showToast('Payslip generated successfully');
+    } catch (error) {
+      console.error('Error generating payslip:', error);
+      showToast('Failed to generate payslip', 'error');
+    }
+  };
+
+  const handleEmailPayslip = async (payoutId) => {
+    try {
+      await api.post(`/recruitment/consultants/payouts/${payoutId}/email-payslip`);
+      showToast('Payslip sent via email successfully');
+    } catch (error) {
+      console.error('Error sending payslip email:', error);
+      showToast('Failed to send payslip email', 'error');
     }
   };
 
@@ -525,14 +561,34 @@ const LocumConsultants = () => {
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              {payout.payout_status === 'Pending' && (
-                                <button
-                                  onClick={() => handleProcessPayroll(payout.id)}
-                                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
-                                >
-                                  Process Payroll
-                                </button>
-                              )}
+                              <div className="flex space-x-2">
+                                {payout.payout_status === 'Pending' && (
+                                  <button
+                                    onClick={() => handleProcessPayroll(payout.id)}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
+                                  >
+                                    Process Payroll
+                                  </button>
+                                )}
+                                {payout.payout_status === 'Processed' && (
+                                  <>
+                                    <button
+                                      onClick={() => handleGeneratePayslip(payout.id)}
+                                      className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                      title="Generate Payslip"
+                                    >
+                                      <FileText size={12} />
+                                    </button>
+                                    <button
+                                      onClick={() => handleEmailPayslip(payout.id)}
+                                      className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                      title="Email Payslip"
+                                    >
+                                      <Send size={12} />
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))
@@ -548,9 +604,9 @@ const LocumConsultants = () => {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-black pb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">
                   {editingConsultant ? 'Edit Consultant' : 'Add New Consultant'}
                 </h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -562,7 +618,7 @@ const LocumConsultants = () => {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -572,7 +628,7 @@ const LocumConsultants = () => {
                         type="text"
                         value={formData.specialization}
                         onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
@@ -584,7 +640,7 @@ const LocumConsultants = () => {
                         type="text"
                         value={formData.registration_number}
                         onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -594,7 +650,7 @@ const LocumConsultants = () => {
                         required
                         value={formData.consultant_type}
                         onChange={(e) => setFormData({ ...formData, consultant_type: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       >
                         <option value="Locum">Locum</option>
                         <option value="Visiting">Visiting</option>
@@ -608,7 +664,7 @@ const LocumConsultants = () => {
                       <select
                         value={formData.department_id}
                         onChange={(e) => setFormData({ ...formData, department_id: parseInt(e.target.value) || '' })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       >
                         <option value="">Select Department</option>
                         {departments.map((dept) => (
@@ -622,7 +678,7 @@ const LocumConsultants = () => {
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       >
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
@@ -640,7 +696,7 @@ const LocumConsultants = () => {
                           ...formData,
                           contact_details: { ...formData.contact_details, phone: e.target.value }
                         })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -653,22 +709,22 @@ const LocumConsultants = () => {
                           ...formData,
                           contact_details: { ...formData.contact_details, email: e.target.value }
                         })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-4 border-t-2 border-black">
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="px-4 py-2 border-2 border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border-2 border-black font-semibold"
+                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
                     >
                       {editingConsultant ? 'Update' : 'Create'}
                     </button>
@@ -682,9 +738,9 @@ const LocumConsultants = () => {
         {/* Availability Modal */}
         {showAvailabilityModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-md">
+            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-md">
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-black pb-3">Add Availability</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">Add Availability</h3>
                 <form onSubmit={handleAvailabilitySubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Consultant *</label>
@@ -692,7 +748,7 @@ const LocumConsultants = () => {
                       required
                       value={availabilityData.consultant_id}
                       onChange={(e) => setAvailabilityData({ ...availabilityData, consultant_id: parseInt(e.target.value) })}
-                      className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     >
                       <option value="">Select Consultant</option>
                       {consultants.map((consultant) => (
@@ -708,7 +764,7 @@ const LocumConsultants = () => {
                       required
                       value={availabilityData.date}
                       onChange={(e) => setAvailabilityData({ ...availabilityData, date: e.target.value })}
-                      className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     />
                   </div>
 
@@ -720,7 +776,7 @@ const LocumConsultants = () => {
                         required
                         value={availabilityData.from_time}
                         onChange={(e) => setAvailabilityData({ ...availabilityData, from_time: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -731,7 +787,7 @@ const LocumConsultants = () => {
                         required
                         value={availabilityData.to_time}
                         onChange={(e) => setAvailabilityData({ ...availabilityData, to_time: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
@@ -742,7 +798,7 @@ const LocumConsultants = () => {
                       required
                       value={availabilityData.availability_type}
                       onChange={(e) => setAvailabilityData({ ...availabilityData, availability_type: e.target.value })}
-                      className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     >
                       <option value="OPD">OPD</option>
                       <option value="Surgery">Surgery</option>
@@ -750,17 +806,17 @@ const LocumConsultants = () => {
                     </select>
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-4 border-t-2 border-black">
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
                     <button
                       type="button"
                       onClick={resetAvailabilityForm}
-                      className="px-4 py-2 border-2 border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border-2 border-black font-semibold"
+                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
                     >
                       Add Availability
                     </button>
@@ -774,9 +830,9 @@ const LocumConsultants = () => {
         {/* Payout Modal */}
         {showPayoutModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl border border-black shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b-2 border-black pb-3">Add Payout</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-black pb-3">Add Payout</h3>
                 <form onSubmit={handlePayoutSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Consultant *</label>
@@ -784,7 +840,7 @@ const LocumConsultants = () => {
                       required
                       value={payoutData.consultant_id}
                       onChange={(e) => setPayoutData({ ...payoutData, consultant_id: parseInt(e.target.value) })}
-                      className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     >
                       <option value="">Select Consultant</option>
                       {consultants.map((consultant) => (
@@ -801,7 +857,7 @@ const LocumConsultants = () => {
                         required
                         value={payoutData.period_start}
                         onChange={(e) => setPayoutData({ ...payoutData, period_start: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -812,7 +868,7 @@ const LocumConsultants = () => {
                         required
                         value={payoutData.period_end}
                         onChange={(e) => setPayoutData({ ...payoutData, period_end: e.target.value })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
@@ -824,7 +880,7 @@ const LocumConsultants = () => {
                         type="number"
                         value={payoutData.total_cases}
                         onChange={(e) => setPayoutData({ ...payoutData, total_cases: parseInt(e.target.value) || 0 })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -835,7 +891,7 @@ const LocumConsultants = () => {
                         step="0.01"
                         value={payoutData.total_revenue}
                         onChange={(e) => setPayoutData({ ...payoutData, total_revenue: parseFloat(e.target.value) || 0 })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
@@ -848,7 +904,7 @@ const LocumConsultants = () => {
                         step="0.01"
                         value={payoutData.consultant_share}
                         onChange={(e) => setPayoutData({ ...payoutData, consultant_share: parseFloat(e.target.value) || 0 })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
 
@@ -859,22 +915,22 @@ const LocumConsultants = () => {
                         step="0.01"
                         value={payoutData.hospital_share}
                         onChange={(e) => setPayoutData({ ...payoutData, hospital_share: parseFloat(e.target.value) || 0 })}
-                        className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                       />
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-4 border-t-2 border-black">
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-black">
                     <button
                       type="button"
                       onClick={resetPayoutForm}
-                      className="px-4 py-2 border-2 border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
+                      className="px-4 py-2 border border-black rounded-lg text-gray-900 hover:bg-gray-100 font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border-2 border-black font-semibold"
+                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
                     >
                       Add Payout
                     </button>
@@ -884,6 +940,8 @@ const LocumConsultants = () => {
             </div>
           </div>
         )}
+
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     </Layout>
   );

@@ -5,6 +5,7 @@ import GoalsKPI from "./GoalsKPI";
 import ReviewCycle from "./ReviewCycle";
 import Feedback from "./Feedback";
 import Appraisal from "./Appraisal";
+import QualityIndicators from "./QualityIndicators";
 
 export default function PMSManagement() {
   const [tab, setTab] = useState("Goals & KPI");
@@ -13,7 +14,8 @@ export default function PMSManagement() {
     "Goals & KPI",
     "Review Cycle",
     "Feedback",
-    "Appraisal"
+    "Appraisal",
+    "Quality Indicators"
   ];
 
   return (
@@ -72,6 +74,7 @@ export default function PMSManagement() {
               {tab === "Review Cycle" && <ReviewCycle />}
               {tab === "Feedback" && <Feedback />}
               {tab === "Appraisal" && <Appraisal />}
+              {tab === "Quality Indicators" && <QualityIndicators />}
             </div>
           </div>
       </div>

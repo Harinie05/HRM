@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Plus, Search, Eye, Edit, Trash2, Users, Building, Calendar, UserCheck } from "lucide-react";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function EmployeeListPage() {
   const [employees, setEmployees] = useState([]);
@@ -11,6 +13,7 @@ export default function EmployeeListPage() {
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     selectedDepartment: '',
     selectedRole: '',
@@ -175,7 +178,7 @@ export default function EmployeeListPage() {
       });
       
       if (response.ok) {
-        alert('Employee code created successfully!');
+        showToast('Employee code created successfully!');
         setShowCreateForm(false);
         setFormData({
           selectedDepartment: '',
@@ -189,14 +192,14 @@ export default function EmployeeListPage() {
       } else {
         const errorData = await response.json().catch(() => null);
         if (response.status === 400 && errorData?.detail === "Employee code already exists") {
-          alert('Employee code already exists. Please use a different code.');
+          showToast('Employee code already exists. Please use a different code.', 'error');
         } else {
-          alert('Failed to create employee code');
+          showToast('Failed to create employee code', 'error');
         }
       }
     } catch (error) {
       console.error('Error creating employee:', error);
-      alert('Failed to create employee code');
+      showToast('Failed to create employee code', 'error');
     }
   };
 
@@ -213,14 +216,39 @@ export default function EmployeeListPage() {
       });
       
       if (response.ok) {
-        alert('Employee code removed successfully!');
+        showToast('Employee code removed successfully!');
         fetchEmployees();
       } else {
-        alert('Failed to remove employee code');
+        showToast('Failed to remove employee code', 'error');
       }
     } catch (error) {
       console.error('Error removing employee code:', error);
-      alert('Failed to remove employee code');
+      showToast('Failed to remove employee code', 'error');
+    }
+  };
+
+  const handleDeleteEmployee = async (employee) => {
+    if (!confirm(`Are you sure you want to delete employee ${employee.name}? This action cannot be undone.`)) return;
+    
+    try {
+      if (employee.source === 'onboarding') {
+        // Delete from onboarding table
+        await api.delete(`/recruitment/onboarding/delete/${employee.id}`);
+      } else if (employee.source === 'user_management') {
+        // Delete from user management
+        const tenant = localStorage.getItem("tenant_db");
+        const token = localStorage.getItem("access_token");
+        await fetch(`http://localhost:8000/users/${tenant}/delete/${employee.original_user_id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      
+      showToast('Employee deleted successfully!');
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      showToast('Failed to delete employee', 'error');
     }
   };
 
@@ -380,15 +408,13 @@ export default function EmployeeListPage() {
                         >
                           <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                         </Link>
-                        {employee.source === 'user_management' && (
-                          <button
-                            onClick={() => handleRemoveEmployeeCode(employee.original_user_id)}
-                            className="group relative p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                            title="Remove Employee Code"
-                          >
-                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleDeleteEmployee(employee)}
+                          className="group relative p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                          title="Delete Employee"
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -409,7 +435,7 @@ export default function EmployeeListPage() {
       {/* Create Employee Code Modal */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 w-full max-w-md shadow-2xl">
+          <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
                 <Plus className="w-5 h-5 text-indigo-600" />
@@ -502,17 +528,17 @@ export default function EmployeeListPage() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <div className="flex gap-3 mt-6">
               <button
                 onClick={handleCreateEmployee}
                 disabled={!formData.selectedUser || !formData.employeeCode}
-                className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium border border-black"
+                className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium border border-black text-sm"
               >
-                Create Employee
+                Create
               </button>
               <button
                 onClick={() => setShowCreateForm(false)}
-                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-black"
+                className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-black text-sm"
               >
                 Cancel
               </button>
@@ -520,6 +546,8 @@ export default function EmployeeListPage() {
           </div>
         </div>
       )}
+      
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

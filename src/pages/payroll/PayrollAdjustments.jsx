@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function PayrollAdjustments() {
+  const { toast, showToast } = useToast();
   const [adjustments, setAdjustments] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -131,10 +134,10 @@ export default function PayrollAdjustments() {
       // Force refresh the adjustments list
       await fetchAdjustments();
       handleCloseModal();
-      alert('Adjustment saved successfully!');
+      showToast('Adjustment saved successfully!', "success");
     } catch (error) {
       console.error("Error saving adjustment:", error);
-      alert('Failed to save adjustment. Please try again.');
+      showToast('Failed to save adjustment. Please try again.', "error");
     } finally {
       setLoading(false);
     }
@@ -426,6 +429,7 @@ export default function PayrollAdjustments() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

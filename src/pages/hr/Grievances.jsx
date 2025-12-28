@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function Grievances() {
+  const { toast, showToast } = useToast();
   const [formData, setFormData] = useState({
     employeeId: "",
     grievanceType: "",
@@ -98,7 +101,7 @@ export default function Grievances() {
       setViewModal({ show: true, grievance: response.data });
     } catch (error) {
       console.error('Error fetching grievance details:', error);
-      alert('Failed to load grievance details');
+      showToast('Failed to load grievance details', 'error');
     }
   };
 
@@ -108,10 +111,10 @@ export default function Grievances() {
     try {
       await api.delete(`/hr/grievances/${id}`);
       setGrievances(prev => prev.filter(g => g.id !== id));
-      alert('Grievance deleted successfully');
+      showToast('Grievance deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting grievance:', error);
-      alert('Failed to delete grievance');
+      showToast('Failed to delete grievance', 'error');
     }
   };
 
@@ -121,10 +124,10 @@ export default function Grievances() {
       setGrievances(prev => prev.map(g => 
         g.id === id ? { ...g, status: 'Resolved' } : g
       ));
-      alert('Investigation marked as completed');
+      showToast('Investigation marked as completed', 'success');
     } catch (error) {
       console.error('Error completing investigation:', error);
-      alert('Failed to complete investigation');
+      showToast('Failed to complete investigation', 'error');
     }
   };
 
@@ -145,7 +148,7 @@ export default function Grievances() {
       }, 500);
       
       // Show success message
-      alert('Grievance submitted successfully!');
+      showToast('Grievance submitted successfully!', 'success');
       
       // Reset form
       setFormData({
@@ -159,7 +162,7 @@ export default function Grievances() {
       });
     } catch (error) {
       console.error('Error saving grievance:', error);
-      alert('Failed to submit grievance. Please try again.');
+      showToast('Failed to submit grievance. Please try again.', 'error');
     }
   };
 
@@ -399,6 +402,7 @@ export default function Grievances() {
           </div>
         </div>
       )}
+      <Toast {...toast} />
     </div>
   );
 }

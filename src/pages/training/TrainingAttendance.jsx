@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Users, CheckCircle, XCircle, Clock, Plus, UserCheck } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function TrainingAttendance({ showModal, setShowModal }) {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { toast, showToast } = useToast();
   const [formData, setFormData] = useState({
     training_id: "",
     employee_id: "",
@@ -123,7 +126,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
       });
     } catch (error) {
       console.error("Error marking attendance:", error);
-      alert('Failed to mark attendance. Please try again.');
+      showToast('Failed to mark attendance. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -317,6 +320,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

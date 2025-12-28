@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function CandidateScreening() {
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("job");
+  const { toast, showToast } = useToast();
   
   const [job, setJob] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -35,7 +38,7 @@ export default function CandidateScreening() {
   // ========================= OPEN SCHEDULE MODAL =========================
   const openScheduleModal = () => {
     if (selectedCandidates.length === 0) {
-      alert("Please select candidates to shortlist");
+      showToast("Please select candidates to shortlist", "error");
       return;
     }
     
@@ -66,7 +69,7 @@ export default function CandidateScreening() {
       }));
       
       await api.post("/recruitment/screening/shortlist-with-interviews", schedules);
-      alert(`Successfully shortlisted ${selectedCandidates.length} candidates with interview invitations sent!`);
+      showToast(`Successfully shortlisted ${selectedCandidates.length} candidates with interview invitations sent!`, "success");
       
       setSelectedCandidates([]);
       setShowScheduleModal(false);
@@ -74,7 +77,7 @@ export default function CandidateScreening() {
       fetchApplications();
     } catch (err) {
       console.error("Failed to shortlist candidates", err);
-      alert("Failed to shortlist candidates");
+      showToast("Failed to shortlist candidates", "error");
     }
   };
 
@@ -330,6 +333,7 @@ export default function CandidateScreening() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </Layout>
   );
 }

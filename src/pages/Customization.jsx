@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
+import useToast from "../utils/useToast";
+import Toast from "../components/Toast";
 
 export default function Customization() {
   const [activeTab, setActiveTab] = useState("branding");
+  const { toast, showToast, hideToast } = useToast();
   const [colors, setColors] = useState({
     primaryColor: "#2862e9",
     primaryDark: "#474e71", 
@@ -83,7 +86,10 @@ export default function Customization() {
       }
     });
     
-    alert('Settings saved successfully!');
+    // Trigger sidebar update
+    window.dispatchEvent(new CustomEvent('organization-updated'));
+    
+    showToast('Settings saved successfully!');
   };
 
   useEffect(() => {
@@ -463,6 +469,8 @@ export default function Customization() {
             Save branding
           </button>
         </div>
+        
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     </Layout>
   );

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import Layout from "../components/Layout";
+import Toast from "../components/Toast";
+import useToast from "../utils/useToast";
 import { hasPermission, isAdmin } from "../utils/permissions";
 
 export default function Departments() {
@@ -15,6 +17,7 @@ export default function Departments() {
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  const { toast, showToast, hideToast } = useToast();
 
   const tenant_db = localStorage.getItem("tenant_db");
   const canView = isAdmin() || hasPermission("view_departments");
@@ -56,10 +59,14 @@ export default function Departments() {
   };
 
   const getDepartmentHeadcount = (deptName) => {
-    return users.filter(user => 
-      user.department_name === deptName || 
-      user.department === deptName
-    ).length;
+    console.log('Calculating headcount for department:', deptName);
+    console.log('Available users:', users);
+    const count = users.filter(user => {
+      console.log(`User ${user.name}: department_name='${user.department_name}', department='${user.department}'`);
+      return user.department_name === deptName || user.department === deptName;
+    }).length;
+    console.log(`Headcount for ${deptName}:`, count);
+    return count;
   };
 
   useEffect(() => {
@@ -69,10 +76,10 @@ export default function Departments() {
 
   const addDepartment = async () => {
     
-    if (!canAdd) return alert("You do not have permission to add departments");
+    if (!canAdd) return showToast("You do not have permission to add departments", 'error');
 
     if (!name.trim()) {
-      alert("Department name required");
+      showToast("Department name required", 'error');
       return;
     }
 
@@ -90,9 +97,9 @@ export default function Departments() {
       setDesc("");
       setShowCreateModal(false);
       fetchDepartments();
-      alert("Department created!");
+      showToast("Department created!");
     } catch (err) {
-      alert("Create failed");
+      showToast("Create failed", 'error');
       console.error(err);
     }
 
@@ -115,7 +122,7 @@ export default function Departments() {
 
   const deleteDepartment = async (id) => {
     if (!canDelete)
-      return alert("You do not have permission to delete departments");
+      return showToast("You do not have permission to delete departments", 'error');
 
     if (!window.confirm("Delete this department?")) return;
 
@@ -126,7 +133,7 @@ export default function Departments() {
       fetchDepartments();
     } catch (err) {
       console.error('Delete department failed:', err);
-      alert("Delete failed");
+      showToast("Delete failed", 'error');
     }
   };
 
@@ -484,12 +491,12 @@ export default function Departments() {
                       );
 
                       console.log('Department updated successfully');
-                      alert("Updated successfully!");
+                      showToast("Updated successfully!");
                       setEditing(null);
                       fetchDepartments();
                     } catch (err) {
                       console.error('Update department failed:', err);
-                      alert("Update failed");
+                      showToast("Update failed", 'error');
                     }
                   }}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
@@ -504,6 +511,7 @@ export default function Departments() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

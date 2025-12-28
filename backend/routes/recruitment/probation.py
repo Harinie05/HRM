@@ -150,6 +150,26 @@ def get_dashboard_stats(db: Session = Depends(get_tenant_db)):
         "total_probations": total_probations
     }
 
+@router.get("/probations/employee/{employee_id}")
+def get_probation_by_employee(employee_id: int, db: Session = Depends(get_tenant_db)):
+    probation = db.query(EmployeeProbation).filter(EmployeeProbation.employee_id == employee_id).first()
+    if not probation:
+        return None
+    
+    employee = db.query(User).filter(User.id == probation.employee_id).first()
+    return {
+        "id": probation.id,
+        "employee_id": probation.employee_id,
+        "employee_name": employee.name if employee else f"Employee {probation.employee_id}",
+        "date_of_joining": probation.date_of_joining,
+        "probation_end_date": probation.probation_end_date,
+        "probation_status": probation.probation_status,
+        "extension_end_date": probation.extension_end_date,
+        "remarks": probation.remarks,
+        "created_at": probation.created_at,
+        "updated_at": probation.updated_at
+    }
+
 @router.get("/employees-without-probation")
 def get_employees_without_probation(db: Session = Depends(get_tenant_db)):
     # Get employees who don't have probation records

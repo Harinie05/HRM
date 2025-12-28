@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Calendar, Download, Copy, Save, Plus, Users, Clock, Settings, Phone, AlertTriangle } from "lucide-react";
 import Layout from "../../components/Layout";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ShiftRoster() {
   const [shifts, setShifts] = useState([]);
@@ -19,6 +21,7 @@ export default function ShiftRoster() {
   const [bulkShift, setBulkShift] = useState("");
   const [viewMode, setViewMode] = useState("week"); // week or month
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { toast, showToast, hideToast } = useToast();
   const [bulkDateRange, setBulkDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -358,7 +361,7 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Night shift rule updated successfully!");
+        showToast("Night shift rule updated successfully!");
         setEditingNightShiftRule(null);
         fetchAllNightShiftRules();
       }
@@ -380,7 +383,7 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Night shift rule deleted successfully!");
+        showToast("Night shift rule deleted successfully!");
         fetchAllNightShiftRules();
       }
     } catch (error) {
@@ -479,7 +482,7 @@ export default function ShiftRoster() {
 
   const bulkAllocateShifts = async () => {
     if (!bulkShift || selectedUsersForBulk.length === 0) {
-      alert("Please select users and shift for bulk allocation");
+      showToast("Please select users and shift for bulk allocation", 'error');
       return;
     }
     
@@ -537,7 +540,7 @@ export default function ShiftRoster() {
       const token = localStorage.getItem("access_token");
       
       if (!newShift.name || !newShift.start_time || !newShift.end_time) {
-        alert("Please fill all fields");
+        showToast("Please fill all fields", 'error');
         return;
       }
       
@@ -551,7 +554,7 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Shift created successfully!");
+        showToast("Shift created successfully!");
         setNewShift({ name: "", start_time: "", end_time: "" });
         setShowCreateShift(false);
         fetchShifts();
@@ -578,14 +581,14 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Shift deleted successfully!");
+        showToast("Shift deleted successfully!");
         fetchShifts();
       } else {
-        alert("Failed to delete shift");
+        showToast("Failed to delete shift", 'error');
       }
     } catch (error) {
       console.error("Error deleting shift:", error);
-      alert("Error deleting shift");
+      showToast("Error deleting shift", 'error');
     }
   };
 
@@ -602,15 +605,15 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Night shift rules saved successfully!");
+        showToast("Night shift rules saved successfully!");
       } else {
         const errorText = await response.text();
         console.error("Failed to save night shift rules:", errorText);
-        alert("Failed to save night shift rules");
+        showToast("Failed to save night shift rules", 'error');
       }
     } catch (error) {
       console.error("Error saving night shift rules:", error);
-      alert("Error saving night shift rules");
+      showToast("Error saving night shift rules", 'error');
     }
   };
 
@@ -658,7 +661,7 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("On-call duty created successfully!");
+        showToast("On-call duty created successfully!");
         setShowOnCallForm(false);
         setOnCallForm({
           employee_id: "",
@@ -690,7 +693,7 @@ export default function ShiftRoster() {
       });
       
       if (response.ok) {
-        alert("Emergency call logged successfully!");
+        showToast("Emergency call logged successfully!");
         setShowEmergencyForm(false);
         setEmergencyForm({
           on_call_duty_id: "",
@@ -1613,6 +1616,8 @@ export default function ShiftRoster() {
             </div>
           </div>
         )}
+        
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     </Layout>
   );

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function HolidayCalendar() {
+  const { toast, showToast } = useToast();
   const tenant_db = localStorage.getItem("tenant_db");
 
   // Form States
@@ -52,17 +55,17 @@ export default function HolidayCalendar() {
     try {
       if (editingId) {
         await api.put(`/holidays/update/${editingId}`, form);
-        alert("Holiday updated successfully!");
+        showToast("Holiday updated successfully!", "success");
         setEditingId(null);
       } else {
         await api.post('/holidays/create', form);
-        alert("Holiday Calendar Saved Successfully!");
+        showToast("Holiday Calendar Saved Successfully!", "success");
       }
       
       clearForm();
       fetchHolidays();
     } catch (err) {
-      alert('Failed to save holiday');
+      showToast('Failed to save holiday', "error");
     } finally {
       setLoading(false);
     }
@@ -97,10 +100,10 @@ export default function HolidayCalendar() {
     if (!window.confirm("Delete this holiday?")) return;
     try {
       await api.delete(`/holidays/delete/${id}`);
-      alert("Holiday deleted successfully!");
+      showToast("Holiday deleted successfully!", "success");
       fetchHolidays();
     } catch (err) {
-      alert("Failed to delete holiday");
+      showToast("Failed to delete holiday", "error");
     }
   };
 
@@ -126,8 +129,8 @@ export default function HolidayCalendar() {
   return (
     <div className="space-y-6">
       {/* Holiday Configuration */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="p-6 border-b border-black">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -142,7 +145,7 @@ export default function HolidayCalendar() {
             </div>
             <button
               onClick={() => setShowViewHolidays(!showViewHolidays)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -166,7 +169,7 @@ export default function HolidayCalendar() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="e.g., Diwali, Christmas"
               />
             </div>
@@ -182,7 +185,7 @@ export default function HolidayCalendar() {
                 name="date"
                 value={form.date}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
             </div>
 
@@ -193,7 +196,7 @@ export default function HolidayCalendar() {
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               >
                 {holidayTypes.map(type => (
                   <option key={type} value={type}>{type}</option>
@@ -208,7 +211,7 @@ export default function HolidayCalendar() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -224,7 +227,7 @@ export default function HolidayCalendar() {
               value={form.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
               placeholder="Holiday description and details"
             />
           </div>
@@ -248,7 +251,7 @@ export default function HolidayCalendar() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
             >
               {loading ? (
                 <>
@@ -286,7 +289,7 @@ export default function HolidayCalendar() {
                       placeholder="Search holidays..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="pl-10 pr-4 py-2 w-full border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                     />
                   </div>
                 </div>
@@ -294,14 +297,14 @@ export default function HolidayCalendar() {
                   <select
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
-                    className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     {years.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
                   <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="All">All Types</option>
                     {holidayTypes.map(type => <option key={type} value={type}>{type}</option>)}
@@ -392,6 +395,7 @@ export default function HolidayCalendar() {
           </div>
         )}
       </div>
+      <Toast toast={toast} />
     </div>
   );
 }

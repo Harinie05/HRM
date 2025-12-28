@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function OrgDepartments() {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCreateDept, setShowCreateDept] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
   const tenant_db = localStorage.getItem("tenant_db");
 
   const [newDept, setNewDept] = useState({
@@ -33,19 +36,19 @@ export default function OrgDepartments() {
 
   const createDepartment = async () => {
     if (!newDept.name) {
-      alert("Please enter a department name");
+      showToast("Please enter a department name", 'error');
       return;
     }
     
     try {
       const response = await api.post(`/hospitals/departments/${tenant_db}/create`, newDept);
-      alert("Department created successfully");
+      showToast("Department created successfully");
       setNewDept({ name: "", description: "", location: "", head: "" });
       setShowCreateDept(false);
       await fetchDepartments();
     } catch (err) {
       console.error("Failed to create department", err);
-      alert(`Failed to create department: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to create department: ${err.response?.data?.message || err.message}`, 'error');
     }
   };
 
@@ -53,11 +56,11 @@ export default function OrgDepartments() {
     if (!confirm("Are you sure you want to delete this department?")) return;
     try {
       await api.delete(`/hospitals/departments/${tenant_db}/delete/${id}`);
-      alert("Department deleted successfully");
+      showToast("Department deleted successfully");
       await fetchDepartments();
     } catch (err) {
       console.error("Failed to delete department", err);
-      alert(`Failed to delete department: ${err.response?.data?.message || err.message}`);
+      showToast(`Failed to delete department: ${err.response?.data?.message || err.message}`, 'error');
     }
   };
 
@@ -82,17 +85,6 @@ export default function OrgDepartments() {
               <p className="text-sm text-gray-600">View all departments configured in the system</p>
             </div>
           </div>
-          {!showCreateDept && (
-            <button
-              onClick={() => setShowCreateDept(true)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              New Department
-            </button>
-          )}
         </div>
       </div>
 
@@ -260,6 +252,8 @@ export default function OrgDepartments() {
           </div>
         )}
       </div>
+      
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

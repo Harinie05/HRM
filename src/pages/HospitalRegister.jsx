@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import useToast from "../utils/useToast";
+import Toast from "../components/Toast";
 
 const SECRET_KEY = "nutryah-admin-key";
 
@@ -8,6 +10,7 @@ const HospitalRegister = () => {
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const hasPrompted = useRef(false);
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     tenant_id: "",
     tenant_db: "",
@@ -45,7 +48,7 @@ const HospitalRegister = () => {
       if (key === SECRET_KEY) {
         setIsAuthorized(true);
       } else {
-        alert("Unauthorized access!");
+        showToast("Unauthorized access!", 'error');
         navigate("/");
       }
     }
@@ -314,6 +317,8 @@ const HospitalRegister = () => {
 
         </form>
       </div>
+      
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

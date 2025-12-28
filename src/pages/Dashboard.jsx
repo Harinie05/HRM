@@ -128,17 +128,17 @@ export default function Dashboard() {
 
   // Mock data for professional dashboard
   const attritionData = {
-    currentMonth: 2.3,
-    lastMonth: 1.8,
-    yearToDate: 12.5,
-    trend: "up"
+    currentMonth: 0,
+    lastMonth: 0,
+    yearToDate: 0,
+    trend: "stable"
   };
 
   const complianceData = {
-    totalCompliant: Math.floor(dashboardData.totalEmployees * 0.92),
-    pendingDocuments: Math.floor(dashboardData.totalEmployees * 0.05),
-    expiringSoon: Math.floor(dashboardData.totalEmployees * 0.03),
-    complianceRate: 92
+    totalCompliant: 0,
+    pendingDocuments: 0,
+    expiringSoon: 0,
+    complianceRate: 0
   };
 
   const upcomingHolidays = holidays
@@ -327,6 +327,15 @@ export default function Dashboard() {
                 <Shield className="h-5 w-5 sm:h-7 sm:w-7 text-gray-700" />
               </div>
             </div>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex justify-between items-center text-xs text-gray-600">
+                <span>0 Active Records</span>
+                <span>Real-time Updates</span>
+              </div>
+              <div className="mt-2">
+                <span className="text-xs text-gray-600">0 Active Rules</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -389,8 +398,7 @@ export default function Dashboard() {
                   <p className="text-xl sm:text-2xl font-bold text-gray-900">{attritionData.currentMonth}%</p>
                 </div>
                 <div className="flex items-center text-gray-600">
-                  <TrendingUp className="h-4 w-4 mr-1" />
-                  <span className="text-sm">+0.5%</span>
+                  <span className="text-sm">No change</span>
                 </div>
               </div>
               
@@ -407,7 +415,7 @@ export default function Dashboard() {
               
               <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
                 <p className="text-sm text-gray-800 font-medium">Industry Benchmark: 15-20%</p>
-                <p className="text-xs text-gray-600 mt-1">Your organization is performing well below industry average</p>
+                <p className="text-xs text-gray-600 mt-1">No attrition data available for new tenant</p>
               </div>
             </div>
           </div>

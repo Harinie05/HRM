@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function ODApplications() {
   const [applications, setApplications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     employee_id: "",
     od_date: "",
@@ -68,10 +71,10 @@ export default function ODApplications() {
         location: ""
       });
       fetchApplications();
-      alert("OD application submitted successfully!");
+      showToast("OD application submitted successfully!");
     } catch (error) {
       console.error("Error submitting OD application:", error);
-      alert("Failed to submit OD application. Please try again.");
+      showToast("Failed to submit OD application. Please try again.", 'error');
     } finally {
       setLoading(false);
     }
@@ -81,10 +84,10 @@ export default function ODApplications() {
     try {
       await api.put(`/api/attendance/od/${id}/approve`);
       fetchApplications();
-      alert("OD application approved!");
+      showToast("OD application approved!");
     } catch (error) {
       console.error("Error approving OD application:", error);
-      alert("Failed to approve OD application.");
+      showToast("Failed to approve OD application.", 'error');
     }
   };
 
@@ -92,10 +95,10 @@ export default function ODApplications() {
     try {
       await api.put(`/api/attendance/od/${id}/reject`);
       fetchApplications();
-      alert("OD application rejected!");
+      showToast("OD application rejected!");
     } catch (error) {
       console.error("Error rejecting OD application:", error);
-      alert("Failed to reject OD application.");
+      showToast("Failed to reject OD application.", 'error');
     }
   };
 
@@ -314,6 +317,8 @@ export default function ODApplications() {
           </div>
         </div>
       )}
+      
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

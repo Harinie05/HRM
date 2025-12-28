@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiUserX, FiArrowLeft, FiCalendar, FiFileText, FiUpload } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function EmployeeExit() {
   const { id } = useParams();
@@ -25,6 +27,7 @@ export default function EmployeeExit() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   const fetchExitDetails = async () => {
     try {
@@ -70,11 +73,11 @@ export default function EmployeeExit() {
         await api.post("/employee/exit/add", data);
       }
       
-      alert("Exit details saved successfully");
+      showToast("Exit details saved successfully");
       fetchExitDetails();
     } catch (err) {
       console.error("Failed to save exit details", err);
-      alert("Failed to save exit details");
+      showToast("Failed to save exit details", 'error');
     }
     setLoading(false);
   };
@@ -332,6 +335,7 @@ export default function EmployeeExit() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }
