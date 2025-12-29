@@ -232,7 +232,7 @@ export default function LeaveTypes({ activeView = "types" }) {
           <div className="flex gap-3">
             <button 
               onClick={() => activeView === "types" ? handleOpenModal() : handleOpenPolicyModal()}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <Plus size={18} />
               {activeView === "types" ? "Add Leave Type" : "Add Leave Policy"}
@@ -339,7 +339,13 @@ export default function LeaveTypes({ activeView = "types" }) {
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       <div className="flex items-center gap-2">
-                        <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        <button 
+                          onClick={() => {
+                            console.log('Viewing leave type:', type);
+                            showToast(`Viewing ${type.name} details`, 'info');
+                          }}
+                          className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
                           <Eye size={16} />
                         </button>
                         <button 
@@ -440,7 +446,13 @@ export default function LeaveTypes({ activeView = "types" }) {
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       <div className="flex items-center gap-2">
-                        <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        <button 
+                          onClick={() => {
+                            console.log('Viewing leave policy:', policy);
+                            showToast(`Viewing ${policy.name} details`, 'info');
+                          }}
+                          className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
                           <Eye size={16} />
                         </button>
                         <button 
@@ -485,7 +497,7 @@ export default function LeaveTypes({ activeView = "types" }) {
       {/* Leave Type Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-black w-full max-w-lg">
+          <div className="bg-white rounded-3xl shadow-2xl border border-black w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-8 border-b border-gray-100">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 {editingType ? "Edit Leave Type" : "Add Leave Type"}
@@ -499,6 +511,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  placeholder="e.g., Annual Leave, Sick Leave"
                   required
                 />
               </div>
@@ -509,6 +522,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                   value={formData.code}
                   onChange={(e) => setFormData({...formData, code: e.target.value})}
                   className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  placeholder="e.g., AL, SL, CL"
                   required
                 />
               </div>
@@ -519,6 +533,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
                   className="w-full border border-black rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
+                  placeholder="e.g., Medical, Personal, Vacation"
                 />
               </div>
               <div>
@@ -609,7 +624,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-1 px-6 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   {editingType ? "Update" : "Create"}
                 </button>
@@ -730,7 +745,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                         setAllocationDays("");
                       }
                     }}
-                    className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    className="px-4 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     Add
                   </button>
@@ -792,7 +807,7 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-1 px-6 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   {editingPolicy ? "Update" : "Create"}
                 </button>

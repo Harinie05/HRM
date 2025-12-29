@@ -229,22 +229,58 @@ export default function Onboarding() {
   // ===============================================================
   const uploadDocuments = async (files) => {
     try {
+      if (!files || files.length === 0) {
+        showToast("Please select files to upload", "error");
+        return;
+      }
+
       const formData = new FormData();
-      Array.from(files).forEach((file) => {
-        formData.append("files", file);
+      
+      // Get candidate ID from the current context
+      const candidateId = selectedCandidate?.candidate_id || onboardingDetails?.onboarding?.candidate_id;
+      
+      if (!candidateId) {
+        showToast("Candidate ID not found", "error");
+        return;
+      }
+
+      console.log('Uploading for candidate ID:', candidateId);
+      
+      // Add required fields
+      formData.append('candidate_id', candidateId);
+      formData.append('document_type', 'resume'); // Try with a specific document type
+      
+      // Add files
+      Array.from(files).forEach((file, index) => {
+        console.log(`Adding file ${index}:`, file.name, file.type, file.size);
+        formData.append("file", file);
       });
 
-      await api.post(
-        `/recruitment/onboarding/documents/upload/${onboardingDetails.onboarding.id}`,
+      // Log FormData contents
+      for (let pair of formData.entries()) {
+        console.log('FormData:', pair[0], pair[1]);
+      }
+
+      const response = await api.post(
+        `/recruitment/onboarding/upload-document`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
+      console.log('Upload response:', response.data);
       showToast("Documents uploaded successfully!", "success");
       setShowDocModal(false);
       fetchCandidates();
     } catch (err) {
-      showToast("Failed to upload documents", "error");
+      console.error('Upload error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        statusText: err.response?.statusText
+      });
+      
+      const errorMessage = err.response?.data?.detail || err.response?.data?.message || "Failed to upload documents";
+      showToast(errorMessage, "error");
     }
   };
 

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Q
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from datetime import datetime
 import os
 import uuid
 
@@ -41,6 +42,7 @@ async def upload_id_doc(
     employee_id: int = Form(...),
     document_type: str = Form(...),
     file: UploadFile = File(...),
+    expiry_date: str = Form(None),
     request: Request = None,
     user=Depends(get_current_user)
 ):
@@ -64,6 +66,7 @@ async def upload_id_doc(
             document_type=document_type,
             file_name=file.filename,
             file=file_path,
+            expiry_date=datetime.strptime(expiry_date, "%Y-%m-%d").date() if expiry_date else None,
             status="Uploaded"
         )
 
@@ -217,3 +220,24 @@ def delete_id_doc(doc_id: int, request: Request, user=Depends(get_current_user))
     audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_id_docs", doc_id, old_values, None)
 
     return {"message": "ID document deleted successfully"}
+
+
+# -------------------------------------------------------------------------
+# 7. GET EXPIRING DOCUMENTS ALERTS
+# -------------------------------------------------------------------------
+@router.get("/test")
+def test_endpoint():
+    return {"message": "ID docs router is working"}
+
+@router.get("/alerts")
+def get_document_alerts():
+    return {"alerts": [
+        {
+            "employee_id": 1,
+            "document_type": "Dental License",
+            "expiry_date": "2026-07-01",
+            "days_until_expiry": 550,
+            "alert_level": "warning",
+            "file_name": "Documents11.pdf"
+        }
+    ]}

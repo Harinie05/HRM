@@ -9,6 +9,41 @@ from datetime import date
 
 router = APIRouter()
 
+# Get all departments for dropdown
+@router.get("/departments")
+async def get_departments(db: Session = Depends(get_tenant_db)):
+    try:
+        departments = db.query(Department).filter(Department.is_active == True).all()
+        print(f"Found {len(departments)} departments")
+        for dept in departments:
+            print(f"Department: {dept.id} - {dept.name}")
+        return [{"id": dept.id, "name": dept.name} for dept in departments]
+    except Exception as e:
+        print(f"Error fetching departments: {e}")
+        return []
+
+# Create sample departments for testing
+@router.post("/departments/seed")
+async def seed_departments(db: Session = Depends(get_tenant_db)):
+    sample_departments = [
+        {"name": "IT Department", "description": "Information Technology"},
+        {"name": "HR Department", "description": "Human Resources"},
+        {"name": "Finance Department", "description": "Finance and Accounting"},
+        {"name": "Operations Department", "description": "Operations Management"},
+        {"name": "Marketing Department", "description": "Marketing and Sales"}
+    ]
+    
+    created_count = 0
+    for dept_data in sample_departments:
+        existing = db.query(Department).filter(Department.name == dept_data["name"]).first()
+        if not existing:
+            dept = Department(**dept_data)
+            db.add(dept)
+            created_count += 1
+    
+    db.commit()
+    return {"message": f"Created {created_count} departments"}
+
 # Pydantic Models
 class QualityIndicatorCreate(BaseModel):
     kpi_name: str
@@ -30,7 +65,6 @@ class KPIRecordCreate(BaseModel):
 @router.post("/quality-indicators")
 async def create_quality_indicator(
     indicator: QualityIndicatorCreate,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     db_indicator = QualityIndicator(**indicator.dict())
@@ -40,7 +74,7 @@ async def create_quality_indicator(
     return {"message": "Quality indicator created successfully", "id": db_indicator.id}
 
 @router.get("/quality-indicators")
-async def get_quality_indicators(tenant_db: str, db: Session = Depends(get_tenant_db)):
+async def get_quality_indicators(db: Session = Depends(get_tenant_db)):
     indicators = db.query(QualityIndicator).filter(QualityIndicator.is_active == True).all()
     
     result = []
@@ -70,7 +104,6 @@ async def get_quality_indicators(tenant_db: str, db: Session = Depends(get_tenan
 async def update_quality_indicator(
     indicator_id: int,
     indicator: QualityIndicatorCreate,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
@@ -86,7 +119,6 @@ async def update_quality_indicator(
 @router.delete("/quality-indicators/{indicator_id}")
 async def delete_quality_indicator(
     indicator_id: int,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
@@ -101,7 +133,6 @@ async def delete_quality_indicator(
 @router.post("/kpi-records")
 async def create_kpi_record(
     record: KPIRecordCreate,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     # Get target value from quality indicator
@@ -137,22 +168,25 @@ async def create_kpi_record(
     return {"message": "KPI record created successfully", "id": db_record.id}
 
 @router.get("/kpi-records")
-async def get_kpi_records(tenant_db: str, db: Session = Depends(get_tenant_db)):
-    records = db.query(KPIRecord).join(QualityIndicator).all()
+async def get_kpi_records(db: Session = Depends(get_tenant_db)):
+    records = db.query(KPIRecord).all()
     
     result = []
     for record in records:
+        # Get the quality indicator separately
+        indicator = db.query(QualityIndicator).filter(QualityIndicator.id == record.quality_indicator_id).first()
+        
         result.append({
             "id": record.id,
-            "kpi_name": record.quality_indicator.kpi_name,
-            "kpi_category": record.quality_indicator.kpi_category,
+            "kpi_name": indicator.kpi_name if indicator else "Unknown",
+            "kpi_category": indicator.kpi_category if indicator else "Unknown",
             "recorded_date": record.recorded_date.strftime("%Y-%m-%d"),
             "actual_value": record.actual_value,
             "target_value": record.target_value,
             "variance": record.variance,
             "variance_percentage": round(record.variance_percentage, 2) if record.variance_percentage else 0,
             "status": record.status,
-            "unit_of_measure": record.quality_indicator.unit_of_measure,
+            "unit_of_measure": indicator.unit_of_measure if indicator else "Unknown",
             "remarks": record.remarks,
             "recorded_by": record.recorded_by
         })
@@ -163,7 +197,6 @@ async def get_kpi_records(tenant_db: str, db: Session = Depends(get_tenant_db)):
 async def update_kpi_record(
     record_id: int,
     record: KPIRecordCreate,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     db_record = db.query(KPIRecord).filter(KPIRecord.id == record_id).first()
@@ -199,7 +232,6 @@ async def update_kpi_record(
 @router.delete("/kpi-records/{record_id}")
 async def delete_kpi_record(
     record_id: int,
-    tenant_db: str,
     db: Session = Depends(get_tenant_db)
 ):
     db_record = db.query(KPIRecord).filter(KPIRecord.id == record_id).first()

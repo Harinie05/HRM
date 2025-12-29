@@ -319,7 +319,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Job Title *</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Job Title"
                       value={form.job_title}
                       onChange={(e) => setForm({ ...form, job_title: e.target.value })}
@@ -331,7 +331,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Department</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Department"
                       value={form.department}
                       onChange={(e) => setForm({ ...form, department: e.target.value })}
@@ -341,7 +341,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Employment Type</label>
                     <select
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.employment_type}
                       onChange={(e) => setForm({ ...form, employment_type: e.target.value })}
                     >
@@ -359,7 +359,7 @@ export default function EmployeeExperience() {
                     <label className="block text-sm font-medium text-secondary mb-2">Start Date *</label>
                     <input
                       type="date"
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.start_date}
                       onChange={(e) => setForm({ ...form, start_date: e.target.value })}
                     />
@@ -369,7 +369,7 @@ export default function EmployeeExperience() {
                     <label className="block text-sm font-medium text-secondary mb-2">End Date</label>
                     <input
                       type="date"
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 disabled:bg-gray-100"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 disabled:bg-gray-100"
                       value={form.end_date}
                       onChange={(e) => setForm({ ...form, end_date: e.target.value })}
                       disabled={form.current_job}
@@ -393,7 +393,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Location</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="City, State, Country"
                       value={form.location}
                       onChange={(e) => setForm({ ...form, location: e.target.value })}
@@ -403,7 +403,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Salary (Optional)</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Annual salary"
                       value={form.salary}
                       onChange={(e) => setForm({ ...form, salary: e.target.value })}
@@ -414,7 +414,7 @@ export default function EmployeeExperience() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Job Description & Responsibilities</label>
                   <textarea
-                    className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     rows="3"
                     placeholder="Describe your role and responsibilities..."
                     value={form.job_description}
@@ -425,7 +425,7 @@ export default function EmployeeExperience() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Key Achievements</label>
                   <textarea
-                    className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     rows="3"
                     placeholder="Notable achievements and accomplishments..."
                     value={form.achievements}
@@ -437,7 +437,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Reporting Manager</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Manager's name"
                       value={form.reporting_manager}
                       onChange={(e) => setForm({ ...form, reporting_manager: e.target.value })}
@@ -447,7 +447,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Manager Contact</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Email or phone number"
                       value={form.manager_contact}
                       onChange={(e) => setForm({ ...form, manager_contact: e.target.value })}
@@ -459,7 +459,7 @@ export default function EmployeeExperience() {
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
                     <input
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="Reason for leaving this position"
                       value={form.reason_for_leaving}
                       onChange={(e) => setForm({ ...form, reason_for_leaving: e.target.value })}
@@ -475,7 +475,7 @@ export default function EmployeeExperience() {
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-3 py-2 border-2 border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     />
                   </div>
                   <p className="text-xs text-muted mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>

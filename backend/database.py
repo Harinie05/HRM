@@ -79,7 +79,7 @@ def get_tenant_db(Authorization: str = Header(None)) -> Generator:
     from utils.token import verify_token
     
     # Try to get tenant DB from Authorization header
-    tenant_db_name = os.getenv("DEFAULT_TENANT_DB", "nutryah")  # Default fallback
+    tenant_db_name = os.getenv("DEFAULT_TENANT_DB", "test")  # Changed default to test
     
     if Authorization:
         try:

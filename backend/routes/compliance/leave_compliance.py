@@ -24,12 +24,12 @@ class LeaveComplianceRequest(BaseModel):
 def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user:
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        if not user_record:
             # Use employee_id as numeric ID if not found by code
             user_id = 1  # Default user ID for testing
         else:
-            user_id = user.id
+            user_id = user_record.id
         
         # Convert form data
         current_date = datetime.now()

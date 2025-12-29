@@ -50,3 +50,83 @@ def get_dashboard_stats(
     except Exception as e:
         logger.error(f"Error fetching dashboard stats: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching dashboard stats: {str(e)}")
+
+@router.get("/id-doc-alerts")
+def get_id_document_alerts(
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Get ID document expiry alerts"""
+    try:
+        tenant_db = user.get("tenant_db")
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        
+        from datetime import date
+        today = date.today()
+        
+        with engine.connect() as conn:
+            # First check all documents and users separately for debugging
+            all_docs = conn.execute(text("""
+                SELECT id, employee_id, document_type, file_name, expiry_date 
+                FROM employee_id_docs
+            """)).fetchall()
+            
+            all_users = conn.execute(text("""
+                SELECT id, name, employee_code, email
+                FROM users
+            """)).fetchall()
+            
+            logger.info(f"=== DEBUGGING EMPLOYEE-DOCUMENT MISMATCH ===")
+            logger.info(f"Total documents: {len(all_docs)}")
+            for row in all_docs:
+                logger.info(f"Doc ID: {row[0]}, Employee ID: {row[1]}, Type: {row[2]}, Expiry: {row[4]}")
+            
+            logger.info(f"Total users: {len(all_users)}")
+            for row in all_users:
+                logger.info(f"User ID: {row[0]}, Name: {row[1]}, Code: {row[2]}, Email: {row[3]}")
+            
+            # Get documents with employee details
+            result = conn.execute(text("""
+                SELECT 
+                    d.employee_id, 
+                    d.document_type, 
+                    d.file_name, 
+                    d.expiry_date,
+                    u.name as employee_name,
+                    u.employee_code,
+                    u.email
+                FROM employee_id_docs d
+                LEFT JOIN users u ON d.employee_id = u.id
+                WHERE d.expiry_date IS NOT NULL
+            """)).fetchall()
+            
+            logger.info(f"=== JOIN RESULTS ===")
+            logger.info(f"Found {len(result)} documents with expiry dates after JOIN")
+            for row in result:
+                logger.info(f"Employee ID: {row[0]}, Name: {row[4]}, Code: {row[5]}, Email: {row[6]}, Document: {row[1]}, Expiry: {row[3]}")
+            
+            alerts = []
+            for row in result:
+                if row[3]:  # expiry_date
+                    days_until_expiry = (row[3] - today).days
+                    alert_level = "critical" if days_until_expiry <= 0 else "warning"
+                    
+                    alert_data = {
+                        "employee_id": row[0],
+                        "employee_name": row[4] or f"Employee {row[0]}",
+                        "employee_code": row[5] or "",
+                        "document_type": row[1],
+                        "file_name": row[2],
+                        "expiry_date": row[3].isoformat(),
+                        "days_until_expiry": days_until_expiry,
+                        "alert_level": alert_level
+                    }
+                    logger.info(f"Creating alert: {alert_data}")
+                    alerts.append(alert_data)
+        
+        return {"alerts": alerts}
+        
+    except Exception as e:
+        logger.error(f"Error fetching ID document alerts: {str(e)}")
+        return {"alerts": []}

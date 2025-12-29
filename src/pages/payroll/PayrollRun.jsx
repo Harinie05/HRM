@@ -548,6 +548,133 @@ export default function PayrollRun() {
         </div>
       </div>
 
+      {/* Run Payroll Modal */}
+      {showRunModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">Run Payroll</h3>
+              <button 
+                onClick={() => setShowRunModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleRunPayroll} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
+                <select
+                  value={runData.month}
+                  onChange={(e) => {
+                    setRunData({...runData, month: e.target.value});
+                    setValidationChecked(false);
+                    setValidationResult(null);
+                  }}
+                  className="w-full border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  required
+                >
+                  <option value="">Select Month</option>
+                  {months.map(month => (
+                    <option key={month} value={month}>{month}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
+                <input
+                  type="number"
+                  value={runData.year}
+                  onChange={(e) => {
+                    setRunData({...runData, year: parseInt(e.target.value)});
+                    setValidationChecked(false);
+                    setValidationResult(null);
+                  }}
+                  className="w-full border border-black rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  min="2020"
+                  max="2030"
+                  required
+                />
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p className="text-sm text-gray-600 mb-2">Employees with salary structures: <span className="font-medium">{activeEmployeesCount}</span></p>
+                <p className="text-xs text-gray-500">Payroll will be processed for employees linked to salary structures.</p>
+                {validationChecked && validationResult && (
+                  <div className={`mt-3 p-2 rounded text-xs ${
+                    validationResult.can_run_payroll 
+                      ? 'bg-green-100 text-green-800 border border-green-200' 
+                      : 'bg-red-100 text-red-800 border border-red-200'
+                  }`}>
+                    {validationResult.can_run_payroll 
+                      ? `✓ Validation passed - Ready to run payroll` 
+                      : `✗ Validation failed - ${validationResult.critical_issues} critical issues found`
+                    }
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowRunModal(false);
+                    setValidationChecked(false);
+                    setValidationResult(null);
+                  }}
+                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-600 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!runData.month || !runData.year) {
+                      showToast('Please select month and year', 'error');
+                      return;
+                    }
+                    try {
+                      setLoading(true);
+                      const validation = await checkPayrollValidation(runData.month, runData.year);
+                      setValidationResult(validation);
+                      setValidationChecked(true);
+                      setShowValidationModal(true);
+                    } catch (error) {
+                      showToast('Validation check failed', 'error');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                  className="flex-1 px-4 py-2 border border-black rounded-xl text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {loading ? 'Checking...' : 'Validation Check'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || !validationChecked}
+                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Play size={16} />
+                      Run Payroll
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* View Payroll Modal */}
       {showViewModal && selectedRun && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -652,6 +779,120 @@ export default function PayrollRun() {
           </div>
         </div>
       )}
+      {/* Validation Results Modal */}
+      {showValidationModal && validationResult && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">Payroll Validation Results</h3>
+              <button 
+                onClick={() => setShowValidationModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Summary */}
+              <div className={`p-4 rounded-lg border ${
+                validationResult.can_run_payroll 
+                  ? 'bg-green-50 border-green-200' 
+                  : 'bg-red-50 border-red-200'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`w-3 h-3 rounded-full ${
+                    validationResult.can_run_payroll ? 'bg-green-500' : 'bg-red-500'
+                  }`}></div>
+                  <h4 className="font-medium">
+                    {validationResult.can_run_payroll 
+                      ? 'Payroll can be processed' 
+                      : 'Payroll cannot be processed'
+                    }
+                  </h4>
+                </div>
+                <div className="text-sm text-gray-600">
+                  <p>Total Issues: {validationResult.total_issues}</p>
+                  <p>Critical Issues: {validationResult.critical_issues}</p>
+                  <p>Warning Issues: {validationResult.warning_issues || 0}</p>
+                </div>
+              </div>
+
+              {/* Issues List */}
+              {validationResult.issues && validationResult.issues.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Issues Found:</h4>
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    {validationResult.issues.map((issue, index) => (
+                      <div key={index} className={`p-3 rounded-lg border ${
+                        issue.severity === 'critical' 
+                          ? 'bg-red-50 border-red-200' 
+                          : 'bg-yellow-50 border-yellow-200'
+                      }`}>
+                        <div className="flex items-start gap-2">
+                          <div className={`w-2 h-2 rounded-full mt-2 ${
+                            issue.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500'
+                          }`}></div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-medium text-sm">{issue.employee_name}</span>
+                              <span className={`px-2 py-1 rounded text-xs ${
+                                issue.severity === 'critical' 
+                                  ? 'bg-red-100 text-red-800' 
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {issue.severity}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-700 mb-1">{issue.issue_description}</p>
+                            <p className="text-xs text-gray-500">Date: {issue.date}</p>
+                            <p className="text-xs text-gray-600 mt-1">Action: {issue.action_required}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {validationResult.issues && validationResult.issues.length === 0 && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">All Clear!</h3>
+                  <p className="text-gray-600">No validation issues found. Payroll is ready to be processed.</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={() => setShowValidationModal(false)}
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-600 hover:bg-gray-50"
+              >
+                Close
+              </button>
+              {validationResult.can_run_payroll && (
+                <button
+                  onClick={() => {
+                    setShowValidationModal(false);
+                    // Trigger payroll run
+                    handleRunPayroll({ preventDefault: () => {} });
+                  }}
+                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"
+                >
+                  <Play size={16} />
+                  Proceed with Payroll
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );

@@ -10,12 +10,20 @@ export default function EmployeeIDDocs() {
   const [docs, setDocs] = useState([]);
   const [file, setFile] = useState(null);
   const [type, setType] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
   const [loading, setLoading] = useState(true);
 
   const fetchDocs = async () => {
     if (!id) return;
     try {
-      const res = await api.get(`/employee/id-docs/${id}`);
+      // Parse employee ID properly, removing any prefix
+      const employeeId = parseInt(id.toString().replace('user_', ''), 10);
+      if (isNaN(employeeId)) {
+        console.error('Invalid employee ID:', id);
+        return;
+      }
+      
+      const res = await api.get(`/employee/id-docs/${employeeId}`);
       setDocs(res.data || []);
     } catch (err) {
       console.error("Failed to load ID documents", err);
@@ -33,13 +41,24 @@ export default function EmployeeIDDocs() {
     
     try {
       const data = new FormData();
-      data.append("employee_id", id);
+      // Ensure employee_id is sent as integer by parsing the id
+      const employeeId = parseInt(id.toString().replace('user_', ''), 10);
+      if (isNaN(employeeId)) {
+        console.error('Invalid employee ID:', id);
+        return;
+      }
+      
+      data.append("employee_id", employeeId.toString());
       data.append("document_type", type);
       data.append("file", file);
+      if (expiryDate) {
+        data.append("expiry_date", expiryDate);
+      }
 
       await api.post("/employee/id-docs/upload", data);
       setType("");
       setFile(null);
+      setExpiryDate("");
       fetchDocs();
     } catch (err) {
       console.error("Failed to upload ID document", err);
@@ -116,7 +135,7 @@ export default function EmployeeIDDocs() {
             <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
               <select
@@ -130,6 +149,12 @@ export default function EmployeeIDDocs() {
                 <option value="Passport">Passport</option>
                 <option value="Driving License">Driving License</option>
                 <option value="Voter ID">Voter ID</option>
+                <option value="Medical License">Medical License</option>
+                <option value="Nursing License">Nursing License</option>
+                <option value="Pharmacy License">Pharmacy License</option>
+                <option value="Dental License">Dental License</option>
+                <option value="Physiotherapy License">Physiotherapy License</option>
+                <option value="Other">Other</option>
               </select>
             </div>
             
@@ -140,6 +165,16 @@ export default function EmployeeIDDocs() {
                 accept=".pdf,.jpg,.jpeg,.png"
                 className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 onChange={(e) => setFile(e.target.files[0])} 
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
+              <input 
+                type="date"
+                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
               />
             </div>
             
@@ -163,6 +198,7 @@ export default function EmployeeIDDocs() {
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Document Type</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">File Name</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Expiry Date</th>
                   <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -171,7 +207,7 @@ export default function EmployeeIDDocs() {
               <tbody className="divide-y divide-gray-200/50">
                 {docs.length === 0 && (
                   <tr>
-                    <td colSpan="4" className="px-6 py-12 text-center">
+                    <td colSpan="5" className="px-6 py-12 text-center">
                       <FiCreditCard className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">No Documents Uploaded</h3>
                       <p className="text-gray-500">Upload identity documents for verification.</p>
@@ -179,54 +215,76 @@ export default function EmployeeIDDocs() {
                   </tr>
                 )}
 
-                {docs.map((d) => (
-                  <tr key={d.id} className="hover:bg-white/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                          <FiFileText className="w-4 h-4 text-black" />
+                {docs.map((d) => {
+                  const isExpiringSoon = d.expiry_date && new Date(d.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                  const isExpired = d.expiry_date && new Date(d.expiry_date) < new Date();
+                  
+                  return (
+                    <tr key={d.id} className={`hover:bg-white/50 transition-colors ${
+                      isExpired ? 'bg-red-50' : isExpiringSoon ? 'bg-yellow-50' : ''
+                    }`}>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                            <FiFileText className="w-4 h-4 text-black" />
+                          </div>
+                          <div className="font-medium text-gray-900">{d.document_type}</div>
                         </div>
-                        <div className="font-medium text-gray-900">{d.document_type}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{d.file_name}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-black ${
-                        d.status === "Verified" 
-                          ? "bg-gray-100 text-black"
-                          : d.status === "Rejected"
-                          ? "bg-gray-100 text-black"
-                          : "bg-gray-100 text-black"
-                      }`}>
-                        {d.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {d.status === "Uploaded" && (
-                        <div className="flex items-center justify-center gap-2">
-                          <button 
-                            onClick={() => verify(d.id, "Verified")} 
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                          >
-                            <FiCheck className="w-4 h-4" />
-                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                              Verify
-                            </span>
-                          </button>
-                          <button 
-                            onClick={() => verify(d.id, "Rejected")} 
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                          >
-                            <FiX className="w-4 h-4" />
-                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                              Reject
-                            </span>
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">{d.file_name}</td>
+                      <td className="px-6 py-4 text-center">
+                        {d.expiry_date ? (
+                          <div className={`text-sm ${
+                            isExpired ? 'text-red-600 font-medium' : 
+                            isExpiringSoon ? 'text-yellow-600 font-medium' : 
+                            'text-gray-600'
+                          }`}>
+                            {new Date(d.expiry_date).toLocaleDateString()}
+                            {isExpired && <div className="text-xs">Expired</div>}
+                            {isExpiringSoon && !isExpired && <div className="text-xs">Expiring Soon</div>}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-black ${
+                          d.status === "Verified" 
+                            ? "bg-gray-100 text-black"
+                            : d.status === "Rejected"
+                            ? "bg-gray-100 text-black"
+                            : "bg-gray-100 text-black"
+                        }`}>
+                          {d.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {d.status === "Uploaded" && (
+                          <div className="flex items-center justify-center gap-2">
+                            <button 
+                              onClick={() => verify(d.id, "Verified")} 
+                              className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            >
+                              <FiCheck className="w-4 h-4" />
+                              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                Verify
+                              </span>
+                            </button>
+                            <button 
+                              onClick={() => verify(d.id, "Rejected")} 
+                              className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            >
+                              <FiX className="w-4 h-4" />
+                              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                Reject
+                              </span>
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

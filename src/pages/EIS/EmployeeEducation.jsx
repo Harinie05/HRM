@@ -330,7 +330,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">University/Board *</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="University or Board name"
                       value={form.university}
                       onChange={(e) => setForm({ ...form, university: e.target.value })}
@@ -340,7 +340,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Institution Name</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="College/School name"
                       value={form.board_university}
                       onChange={(e) => setForm({ ...form, board_university: e.target.value })}
@@ -352,7 +352,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Start Year</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="2020"
                       value={form.start_year}
                       onChange={(e) => setForm({ ...form, start_year: e.target.value })}
@@ -362,7 +362,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">End Year</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="2024"
                       value={form.end_year}
                       onChange={(e) => setForm({ ...form, end_year: e.target.value })}
@@ -372,7 +372,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Percentage/CGPA</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="85% or 8.5"
                       value={form.percentage_cgpa}
                       onChange={(e) => setForm({ ...form, percentage_cgpa: e.target.value })}
@@ -384,7 +384,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Education Type</label>
                     <select
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.education_type}
                       onChange={(e) => setForm({ ...form, education_type: e.target.value })}
                     >
@@ -398,7 +398,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
                     <select
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       value={form.country}
                       onChange={(e) => setForm({ ...form, country: e.target.value })}
                     >
@@ -416,7 +416,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="State name"
                       value={form.state}
                       onChange={(e) => setForm({ ...form, state: e.target.value })}
@@ -426,7 +426,7 @@ export default function EmployeeEducation() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
                     <input
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       placeholder="City name"
                       value={form.city}
                       onChange={(e) => setForm({ ...form, city: e.target.value })}
@@ -442,7 +442,7 @@ export default function EmployeeEducation() {
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>

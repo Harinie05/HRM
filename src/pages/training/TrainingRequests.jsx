@@ -382,7 +382,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                   <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -406,7 +406,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                         requested_training: program ? program.title : formData.requested_training
                       });
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                   >
                     <option value="">Select from Available Programs</option>
                     {programs.map(program => (
@@ -422,7 +422,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                     type="text"
                     value={formData.requested_training}
                     onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     placeholder="Enter training name or description"
                     required
                   />
@@ -432,7 +432,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                   <textarea
                     value={formData.justification}
                     onChange={(e) => setFormData({...formData, justification: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
                     rows="2"
                     placeholder="Explain why this training is needed"
                   />
@@ -442,7 +442,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     {priorities.map(priority => (
@@ -456,7 +456,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -464,7 +464,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 {loading ? "Submitting..." : "Submit Request"}
               </button>
@@ -549,7 +549,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                 <select
                   value={approvalData.action}
                   onChange={(e) => setApprovalData({...approvalData, action: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Action</option>
@@ -562,7 +562,7 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                 <textarea
                   value={approvalData.comment}
                   onChange={(e) => setApprovalData({...approvalData, comment: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Add your comments (optional)"
                 />
@@ -571,14 +571,14 @@ export default function TrainingRequests({ showModal, setShowModal }) {
                 <button
                   type="button"
                   onClick={() => setShowApprovalModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-secondary hover:bg-content"
+                  className="flex-1 px-4 py-2 border border-black rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? "Processing..." : "Submit"}
                 </button>

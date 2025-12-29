@@ -121,45 +121,58 @@ export default function PayrollReports() {
       switch(reportType) {
         case 'pf-challan':
           endpoint = '/api/payroll/reports/pf-challan/pdf';
-          filename = 'pf-challan-report.html';
+          filename = 'pf_challan_report.pdf';
           break;
         case 'esi-challan':
           endpoint = '/api/payroll/reports/esi-challan/pdf';
-          filename = 'esi-challan-report.html';
+          filename = 'esi_challan_report.pdf';
           break;
         case 'tds':
           endpoint = '/api/payroll/reports/tds/pdf';
-          filename = 'tds-report.html';
+          filename = 'tds_report.pdf';
           break;
         case 'bank-transfer':
           endpoint = '/api/payroll/reports/bank-transfer/pdf';
-          filename = 'bank-transfer-report.html';
+          filename = 'bank_transfer_report.pdf';
           break;
         case 'department-wise':
           endpoint = '/api/payroll/reports/department-wise/pdf';
-          filename = 'department-wise-report.html';
+          filename = 'department_wise_report.pdf';
           break;
         case 'grade-wise':
           endpoint = '/api/payroll/reports/grade-wise/pdf';
-          filename = 'grade-wise-report.html';
+          filename = 'grade_wise_report.pdf';
           break;
         case 'attendance-payroll':
           endpoint = '/api/payroll/reports/attendance-payroll/pdf';
-          filename = 'attendance-payroll-report.html';
+          filename = 'attendance_payroll_report.pdf';
+          break;
+        case 'form16':
+          endpoint = '/api/payroll/reports/form16/pdf';
+          filename = 'form16_certificate.pdf';
           break;
         default:
           showToast(`${reportType} report generation is under development.`, 'error');
           return;
       }
       
-      // Download HTML report
-      const downloadUrl = `${api.defaults.baseURL}${endpoint}`;
+      // Make API call to get PDF blob
+      const response = await api.get(endpoint, {
+        responseType: 'blob'
+      });
+      
+      // Create blob URL and download
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = downloadUrl;
+      link.href = url;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      showToast('Report downloaded successfully', 'success');
       
     } catch (error) {
       console.error('Error downloading report:', error);

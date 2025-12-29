@@ -104,9 +104,9 @@ export default function ODApplications() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-yellow-100 text-yellow-800';
+      case 'approved': return 'bg-gray-100 text-gray-800';
+      case 'rejected': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -121,7 +121,7 @@ export default function ODApplications() {
           </div>
           <button 
             onClick={() => setShowModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus size={16} />
             Apply OD
@@ -198,17 +198,17 @@ export default function ODApplications() {
                         <div className="flex items-center gap-2">
                           <button 
                             onClick={() => handleApprove(app.id)}
-                            className="text-green-600 hover:text-green-900 p-1 rounded"
+                            className="bg-black hover:bg-gray-800 text-white px-2 py-1 rounded text-xs"
                             title="Approve"
                           >
-                            <CheckCircle size={16} />
+                            Approve
                           </button>
                           <button 
                             onClick={() => handleReject(app.id)}
-                            className="text-red-600 hover:text-red-900 p-1 rounded"
+                            className="bg-white hover:bg-gray-100 text-black border border-black px-2 py-1 rounded text-xs"
                             title="Reject"
                           >
-                            <XCircle size={16} />
+                            Reject
                           </button>
                         </div>
                       )}
@@ -232,7 +232,7 @@ export default function ODApplications() {
                 <select
                   value={formData.employee_id}
                   onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -248,7 +248,7 @@ export default function ODApplications() {
                   type="date"
                   value={formData.od_date}
                   onChange={(e) => setFormData({...formData, od_date: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   required
                 />
               </div>
@@ -260,7 +260,7 @@ export default function ODApplications() {
                     type="time"
                     value={formData.from_time}
                     onChange={(e) => setFormData({...formData, from_time: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -269,7 +269,7 @@ export default function ODApplications() {
                     type="time"
                     value={formData.to_time}
                     onChange={(e) => setFormData({...formData, to_time: e.target.value})}
-                    className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   />
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function ODApplications() {
                 <textarea
                   value={formData.purpose}
                   onChange={(e) => setFormData({...formData, purpose: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   rows="3"
                   placeholder="Reason for OD..."
                   required
@@ -292,7 +292,7 @@ export default function ODApplications() {
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  className="w-full border-dark rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent"
                   placeholder="OD location (optional)"
                 />
               </div>
@@ -301,14 +301,14 @@ export default function ODApplications() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                  className="flex-1 px-4 py-2 border border-black rounded-lg text-black hover:bg-gray-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-400"
                 >
                   {loading ? "Submitting..." : "Submit"}
                 </button>

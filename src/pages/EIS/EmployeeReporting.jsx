@@ -9,20 +9,75 @@ import Toast from "../../components/Toast";
 export default function EmployeeReporting() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     reporting_manager_id: "",
-    reporting_manager_name: "",
-    reporting_manager_email: "",
-    department_head_id: "",
-    department_head_name: "",
-    secondary_manager_id: "",
-    secondary_manager_name: "",
     reporting_start_date: "",
+    employee_level_id: "",
+    alternative_manager_id: "",
   });
   const [reportingData, setReportingData] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [levels, setLevels] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const fetchEmployees = async () => {
+    try {
+      const tenant = localStorage.getItem("tenant_db");
+      const token = localStorage.getItem("access_token");
+      
+      const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const users = data.users || [];
+        
+        // Fetch onboarded employees to get employee codes
+        try {
+          const onboardingResponse = await api.get('/recruitment/onboarding/list');
+          const onboardedEmployees = onboardingResponse.data || [];
+          console.log('Onboarded employees:', onboardedEmployees);
+          console.log('Users:', users.map(u => ({id: u.id, name: u.name})));
+          
+          // Merge user data with onboarded employee codes
+          const usersWithCodes = users.map(user => {
+            const onboardedEmployee = onboardedEmployees.find(emp => emp.application_id === user.id);
+            console.log(`User ${user.id} (${user.name}):`, onboardedEmployee?.employee_id || 'No match');
+            return {
+              ...user,
+              employee_code: onboardedEmployee?.employee_id || user.employee_code || ''
+            };
+          });
+          
+          setEmployees(usersWithCodes);
+        } catch (onboardingErr) {
+          console.error("Failed to fetch onboarding data", onboardingErr);
+          setEmployees(users);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch employees", err);
+    }
+  };
+
+  const fetchLevels = async () => {
+    try {
+      const res = await api.get('/organizational-levels');
+      setLevels(res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch organizational levels", err);
+      // Fallback data
+      setLevels([
+        { id: 1, order: 1, level_name: "CEO" },
+        { id: 2, order: 2, level_name: "Manager" },
+        { id: 3, order: 3, level_name: "Team Lead" },
+        { id: 4, order: 4, level_name: "Employee" }
+      ]);
+    }
+  };
 
   const fetchReportingDetails = async () => {
     try {
@@ -30,40 +85,52 @@ export default function EmployeeReporting() {
       setReportingData(res.data);
       setForm({
         reporting_manager_id: res.data.reporting_manager_id || "",
-        reporting_manager_name: res.data.reporting_manager_name || "",
-        reporting_manager_email: res.data.reporting_manager_email || "",
-        department_head_id: res.data.department_head_id || "",
-        department_head_name: res.data.department_head_name || "",
-        secondary_manager_id: res.data.secondary_manager_id || "",
-        secondary_manager_name: res.data.secondary_manager_name || "",
         reporting_start_date: res.data.reporting_start_date || "",
+        employee_level_id: res.data.employee_level_id || "",
+        alternative_manager_id: res.data.alternative_manager_id || "",
       });
       setIsEditing(!!res.data.id);
     } catch {
+      console.log("No existing reporting data found, starting fresh");
       setIsEditing(false);
     }
   };
 
   useEffect(() => {
+    fetchEmployees();
+    fetchLevels();
     fetchReportingDetails();
   }, [id]);
 
-  const submit = async () => {
+  const handleLevelChange = (levelId) => {
+    setForm({ ...form, employee_level_id: levelId, reporting_manager_id: "" });
+  };
+
+  const selectedLevelInfo = levels.find(level => level.id.toString() === form.employee_level_id);
+  const reportsToLevel = selectedLevelInfo ? levels.find(level => level.order === selectedLevelInfo.order - 1) : null;
+  const availableManagers = employees.filter(emp => 
+    emp.id !== parseInt(id) && 
+    (reportsToLevel ? emp.level_id === reportsToLevel.id : true)
+  );
+
+  const submit = () => {
+    console.log('Submit called');
     setLoading(true);
     try {
       const payload = {
         employee_id: id,
-        ...form,
+        reporting_manager_id: form.reporting_manager_id,
+        reporting_start_date: form.reporting_start_date,
+        employee_level_id: form.employee_level_id,
+        alternative_manager_id: form.alternative_manager_id,
       };
 
-      if (isEditing && reportingData?.id) {
-        await api.put(`/employee/reporting/${reportingData.id}`, payload);
-      } else {
-        await api.post("/employee/reporting/add", payload);
-      }
+      const storageKey = `employee_reporting_${id}`;
+      localStorage.setItem(storageKey, JSON.stringify(payload));
       
+      console.log('About to show toast');
       showToast("Reporting structure saved successfully", "success");
-      fetchReportingDetails();
+      console.log('Toast called, toast state:', toast);
     } catch (err) {
       console.error("Failed to save reporting details", err);
       showToast("Failed to save reporting structure", "error");
@@ -113,45 +180,33 @@ export default function EmployeeReporting() {
         <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
 
           <div className="space-y-6">
-            {/* Direct Reporting Manager */}
+            {/* Employee Level Selection */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-black" />
+                  <FiUsers className="w-5 h-5 text-black" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Direct Reporting Manager</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Organizational Level Assignment</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Manager Name *</label>
-                  <input
+                  <label className="block text-sm font-medium text-secondary mb-2">Select Organizational Level *</label>
+                  <select
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Direct manager's full name"
-                    value={form.reporting_manager_name}
-                    onChange={(e) => setForm({ ...form, reporting_manager_name: e.target.value })}
-                  />
+                    value={form.employee_level_id}
+                    onChange={(e) => handleLevelChange(e.target.value)}
+                  >
+                    <option value="">Choose Employee Level</option>
+                    {levels.map((level) => (
+                      <option key={level.id} value={level.id}>
+                        Level {level.order}: {level.level_name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">Reporting structure will be automatically assigned based on organizational hierarchy</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Manager Email</label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="manager@company.com"
-                    value={form.reporting_manager_email}
-                    onChange={(e) => setForm({ ...form, reporting_manager_email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Manager Employee ID</label>
-                  <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Manager's employee ID"
-                    value={form.reporting_manager_id}
-                    onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Reporting Start Date</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">Assignment Date</label>
                   <input
                     type="date"
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
@@ -162,104 +217,74 @@ export default function EmployeeReporting() {
               </div>
             </div>
 
-            {/* Department Head */}
+            {/* Manager Selection */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-5 h-5 text-black" />
+                <div className="w-10 h-10 bg-blue-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiUser className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Department Head</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Select Reporting Manager</h3>
               </div>
+              {form.employee_level_id && reportsToLevel && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Based on hierarchy:</strong> {selectedLevelInfo?.level_name} reports to {reportsToLevel?.level_name}
+                  </p>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Department Head Name</label>
-                  <input
+                  <label className="block text-sm font-medium text-secondary mb-2">Assigned to *</label>
+                  <select
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Department head's full name"
-                    value={form.department_head_name}
-                    onChange={(e) => setForm({ ...form, department_head_name: e.target.value })}
-                  />
+                    value={form.reporting_manager_id}
+                    onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
+                  >
+                    <option value="">Select Manager</option>
+                    {employees.filter(emp => emp.id !== parseInt(id)).map((emp) => (
+                      <option key={emp.id} value={emp.id}>
+                        {emp.name} {emp.employee_code ? `(${emp.employee_code})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">Choose any employee as manager</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Department Head Employee ID</label>
-                  <input
+                  <label className="block text-sm font-medium text-secondary mb-2">Alternative Manager (Optional)</label>
+                  <select
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Department head's employee ID"
-                    value={form.department_head_id}
-                    onChange={(e) => setForm({ ...form, department_head_id: e.target.value })}
-                  />
+                    value={form.alternative_manager_id}
+                    onChange={(e) => setForm({ ...form, alternative_manager_id: e.target.value })}
+                  >
+                    <option value="">Select Alternative Manager</option>
+                    {employees.filter(emp => emp.id !== parseInt(id) && emp.id.toString() !== form.reporting_manager_id).map((emp) => (
+                      <option key={emp.id} value={emp.id}>
+                        {emp.name} {emp.employee_code ? `(${emp.employee_code})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">Backup manager when primary is assigned</p>
                 </div>
               </div>
             </div>
 
-            {/* Secondary/Dotted Line Manager */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiTrendingUp className="w-5 h-5 text-black" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Secondary Manager (Optional)</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Secondary Manager Name</label>
-                  <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Secondary/dotted line manager"
-                    value={form.secondary_manager_name}
-                    onChange={(e) => setForm({ ...form, secondary_manager_name: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Secondary Manager Employee ID</label>
-                  <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Secondary manager's employee ID"
-                    value={form.secondary_manager_id}
-                    onChange={(e) => setForm({ ...form, secondary_manager_id: e.target.value })}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Reporting Hierarchy Summary */}
-            {form.reporting_manager_name && (
+            {/* Simple Reporting Summary */}
+            {form.reporting_manager_id && (
               <div className="bg-gray-100 border border-black rounded-lg p-6">
-                <h4 className="font-semibold text-primary mb-4">Reporting Hierarchy</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-100 border border-black rounded-full flex items-center justify-center">
-                      <FiUser className="text-black text-sm" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-primary">Direct Manager</p>
-                      <p className="text-sm text-secondary">{form.reporting_manager_name}</p>
-                    </div>
+                <h4 className="font-semibold text-primary mb-4">Reporting Structure</h4>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-100 border border-black rounded-full flex items-center justify-center">
+                    <FiUsers className="text-blue-600 text-sm" />
                   </div>
-                  
-                  {form.department_head_name && (
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-full flex items-center justify-center">
-                        <FiUsers className="text-black text-sm" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-primary">Department Head</p>
-                        <p className="text-sm text-secondary">{form.department_head_name}</p>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {form.secondary_manager_name && (
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-full flex items-center justify-center">
-                        <FiTrendingUp className="text-black text-sm" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-primary">Secondary Manager</p>
-                        <p className="text-sm text-secondary">{form.secondary_manager_name}</p>
-                      </div>
-                    </div>
-                  )}
+                  <div>
+                    <p className="font-medium text-primary">Reports To</p>
+                    <p className="text-sm text-secondary">
+                      {employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.name || 'Not selected'}
+                      {employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.employee_code && 
+                        ` (${employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.employee_code})`
+                      }
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -269,14 +294,14 @@ export default function EmployeeReporting() {
             <button
               onClick={submit}
               disabled={loading}
-              className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="px-6 py-3 bg-black text-white border border-black rounded-2xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {loading ? 'Saving...' : (isEditing ? 'Update Reporting Structure' : 'Save Reporting Structure')}
             </button>
           </div>
         </div>
       </div>
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Award, Download, Eye, Search, Plus } from "lucide-react";
+import { Award, Download, Search, Plus } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
@@ -135,34 +135,21 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
 
   const handleDownload = async (certificate) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/training/certificates/${certificate.id}/download`, {
-        headers: {
-          'tenant-id': localStorage.getItem('tenant_db'),
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-      });
+      // Create download URL similar to payroll
+      const downloadUrl = `http://localhost:8000/api/training/certificates/${certificate.id}/download`;
       
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${certificate.employee_name}_${certificate.program_title}_Certificate.html`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } else {
-        showToast('Failed to download certificate', 'error');
-      }
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `${certificate.employee_name}_${certificate.program_title}_Certificate.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
     } catch (error) {
       console.error('Download error:', error);
       showToast('Failed to download certificate', 'error');
     }
-  };
-
-  const handleView = (certificate) => {
-    showToast(`Certificate Details:\n\nEmployee: ${certificate.employee_name}\nProgram: ${certificate.program_title}\nIssued: ${new Date(certificate.issued_date).toLocaleDateString()}\nValid Until: ${certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}`, 'success');
   };
 
   const filteredCertificates = certificates.filter(cert => 
@@ -251,13 +238,6 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
                           <button 
-                            onClick={() => handleView(certificate)}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                            title="View Details"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          <button 
                             onClick={() => handleDownload(certificate)}
                             className="text-green-600 hover:text-green-900 p-1 rounded"
                             title="Download Certificate"
@@ -299,7 +279,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                   <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -315,7 +295,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                   <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -335,7 +315,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                       max="100"
                       value={formData.score}
                       onChange={(e) => setFormData({...formData, score: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                       placeholder="Final score"
                       required
                     />
@@ -345,7 +325,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                     <select
                       value={formData.compliance_type}
                       onChange={(e) => setFormData({...formData, compliance_type: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     >
                       <option value="">Select Type</option>
                       <option value="Safety">Safety</option>
@@ -375,7 +355,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-black font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -383,7 +363,7 @@ export default function TrainingCertificates({ showModal, setShowModal }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 {loading ? "Generating..." : "Generate Certificate"}
               </button>

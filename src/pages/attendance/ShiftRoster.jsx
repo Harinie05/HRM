@@ -649,18 +649,52 @@ export default function ShiftRoster() {
   };
 
   const saveOnCallDuty = async () => {
+    console.log('Save on-call duty clicked');
+    console.log('Form data:', onCallForm);
+    
+    // Basic validation
+    if (!onCallForm.employee_id) {
+      showToast("Please select an employee", 'error');
+      return;
+    }
+    
     try {
       const token = localStorage.getItem("access_token");
+      
+      // Extract actual user ID from employee data
+      const selectedEmployee = employees.find(emp => emp.id == onCallForm.employee_id);
+      const actualEmployeeId = selectedEmployee?.original_user_id || selectedEmployee?.id;
+      
+      // Convert to integer if it's a string number
+      const employeeId = typeof actualEmployeeId === 'string' && actualEmployeeId.startsWith('user_') 
+        ? parseInt(actualEmployeeId.replace('user_', ''))
+        : parseInt(actualEmployeeId);
+      
+      console.log('Selected employee:', selectedEmployee);
+      console.log('Actual employee ID:', employeeId);
+      
+      const payload = {
+        ...onCallForm,
+        employee_id: employeeId
+      };
+      
+      console.log('Sending payload:', payload);
+      
       const response = await fetch("http://localhost:8000/api/roster/on-call", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(onCallForm)
+        body: JSON.stringify(payload)
       });
       
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+      
       if (response.ok) {
+        console.log('On-call duty saved successfully');
         showToast("On-call duty created successfully!");
         setShowOnCallForm(false);
         setOnCallForm({
@@ -674,9 +708,13 @@ export default function ShiftRoster() {
           remarks: ""
         });
         fetchOnCallDuties();
+      } else {
+        console.error('API error:', responseText);
+        showToast(`Failed to create on-call duty: ${responseText}`, 'error');
       }
     } catch (error) {
       console.error("Error saving on-call duty:", error);
+      showToast("Error saving on-call duty", 'error');
     }
   };
 
@@ -785,7 +823,7 @@ export default function ShiftRoster() {
             
             <button
               onClick={() => setShowCreateShift(true)}
-              className="bg-white border border-black text-gray-900 px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+              className="bg-black border border-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm sm:text-base"
             >
               <Plus className="w-4 h-4" />
               <span>Create Shift</span>
@@ -891,7 +929,7 @@ export default function ShiftRoster() {
               <button
                 onClick={addEmployeeToRoster}
                 disabled={!selectedUser}
-                className="px-4 py-2 bg-white border border-black text-gray-900 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Add to Roster
               </button>
@@ -946,7 +984,7 @@ export default function ShiftRoster() {
                 <button
                   onClick={bulkAllocateShifts}
                   disabled={!bulkShift}
-                  className="w-full px-4 py-2 bg-white border border-black text-gray-900 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Apply to Selected ({selectedUsersForBulk.length})
                 </button>
@@ -962,7 +1000,7 @@ export default function ShiftRoster() {
               <button
                 onClick={() => setViewMode("week")}
                 className={`px-4 sm:px-6 py-2 sm:py-3 text-sm font-semibold rounded-l-lg transition-colors ${
-                  viewMode === "week" ? "bg-gray-900 text-white" : "text-gray-700 hover:bg-gray-100"
+                  viewMode === "week" ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 Week
@@ -970,7 +1008,7 @@ export default function ShiftRoster() {
               <button
                 onClick={() => setViewMode("month")}
                 className={`px-4 sm:px-6 py-2 sm:py-3 text-sm font-semibold rounded-r-lg transition-colors ${
-                  viewMode === "month" ? "bg-gray-900 text-white" : "text-gray-700 hover:bg-gray-100"
+                  viewMode === "month" ? "bg-black text-white" : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 Month
@@ -1000,7 +1038,7 @@ export default function ShiftRoster() {
           
           <button
             onClick={() => setCurrentDate(new Date())}
-            className="px-4 sm:px-6 py-2 sm:py-3 bg-white border border-black text-gray-900 rounded-lg hover:bg-gray-50 text-sm font-semibold transition-colors"
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-black border border-black text-white rounded-lg hover:bg-gray-800 text-sm font-semibold transition-colors"
           >
             Today
           </button>
@@ -1194,7 +1232,7 @@ export default function ShiftRoster() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowOnCallForm(true)}
-                className="bg-white border border-black text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm"
+                className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add On-Call Duty</span>
@@ -1251,7 +1289,20 @@ export default function ShiftRoster() {
 
         {/* Night Shift Rules Section */}
         <div className="bg-white rounded-lg p-4 sm:p-6 border border-black">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6">Night Shift Rules</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Night Shift Rules</h2>
+            <button
+              onClick={() => {
+                setShowNightShiftRulesList(!showNightShiftRulesList);
+                if (!showNightShiftRulesList) {
+                  fetchAllNightShiftRules();
+                }
+              }}
+              className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+            >
+              {showNightShiftRulesList ? 'Hide Rules' : 'View All Rules'}
+            </button>
+          </div>
 
         {showNightShiftRulesList && (
           <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-black">
@@ -1390,7 +1441,7 @@ export default function ShiftRoster() {
               <div className="text-center">
                 <button
                   onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
-                  className="px-4 py-2 bg-white border border-black text-gray-900 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors"
+                  className="px-4 py-2 bg-black border border-black text-white rounded-lg hover:bg-gray-800 font-medium text-sm transition-colors"
                 >
                   {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
                 </button>
@@ -1601,13 +1652,13 @@ export default function ShiftRoster() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setShowOnCallForm(false)}
-                    className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 border border-black rounded-lg hover:bg-gray-200 font-medium transition-colors"
+                    className="flex-1 px-4 py-3 text-white bg-gray-800 border border-black rounded-lg hover:bg-gray-900 font-medium transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={saveOnCallDuty}
-                    className="flex-1 px-4 py-3 bg-white border border-black text-gray-900 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                    className="flex-1 px-4 py-3 bg-black border border-black text-white rounded-lg hover:bg-gray-800 font-medium transition-colors"
                   >
                     Add On-Call Duty
                   </button>

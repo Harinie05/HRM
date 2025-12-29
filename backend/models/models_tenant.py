@@ -668,6 +668,7 @@ class EmployeeIDDocs(MasterBase):
     document_type = Column(String(100))  # Aadhaar, PAN, Passport
     file = Column(Text)
     file_name = Column(String(255))
+    expiry_date = Column(Date, nullable=True)
 
     status = Column(String(50), default="Pending")
     # Pending / Verified / Rejected
@@ -1057,6 +1058,7 @@ class SalaryStructure(MasterBase):
 
     allowances = Column(Text)   # JSON string
     deductions = Column(Text)   # JSON string
+    employee_ids = Column(Text, nullable=True)  # Comma-separated employee IDs
 
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())

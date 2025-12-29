@@ -38,12 +38,10 @@ def apply_leave(
         if not leave_type:
             raise HTTPException(status_code=404, detail="Leave type not found")
         
-        # Get leave policy - prioritize form selection, then employee assignment, then active policy
+        # Get leave policy - prioritize form selection, then active policy
         leave_policy = None
         if data.policy_id:
             leave_policy = db.query(LeavePolicy).filter(LeavePolicy.id == data.policy_id).first()  # type: ignore
-        elif employee.leave_policy_id is not None:
-            leave_policy = db.query(LeavePolicy).filter(LeavePolicy.id == employee.leave_policy_id).first()  # type: ignore
         else:
             leave_policy = db.query(LeavePolicy).filter(LeavePolicy.status == "Active").first()  # type: ignore
         
@@ -112,10 +110,7 @@ def apply_leave(
         )
         db.add(leave)
         
-        # Update leave balance if exists
-        if leave_balance is not None:
-            leave_balance.used += data.total_days  # type: ignore
-            leave_balance.balance -= data.total_days  # type: ignore
+        # Don't deduct balance until approved
         
         db.commit()
         db.refresh(leave)
@@ -199,21 +194,22 @@ def approve_or_reject_leave(
 @router.post("/initialize-balances/{employee_id}")
 def initialize_leave_balances(
     employee_id: int,
+    policy_id: int = Query(None),
     db: Session = Depends(get_tenant_db)
 ):
-    """Initialize leave balances for an employee based on active leave policy"""
+    """Initialize leave balances for an employee based on specified or active leave policy"""
     employee = db.query(User).filter(User.id == employee_id).first()  # type: ignore
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     
-    # Get employee's assigned leave policy or fallback to active policy
+    # Get specified policy or fallback to active policy
     leave_policy = None
-    if employee.leave_policy_id is not None:
-        leave_policy = db.query(LeavePolicy).filter(LeavePolicy.id == employee.leave_policy_id).first()  # type: ignore
+    if policy_id:
+        leave_policy = db.query(LeavePolicy).filter(LeavePolicy.id == policy_id).first()  # type: ignore
     if not leave_policy:
         leave_policy = db.query(LeavePolicy).filter(LeavePolicy.status == "Active").first()  # type: ignore
     if not leave_policy:
-        raise HTTPException(status_code=404, detail="No leave policy assigned or active")
+        raise HTTPException(status_code=404, detail="No leave policy found")
     
     leave_types = db.query(LeaveType).filter(LeaveType.status == "Active").all()  # type: ignore
     balances_created = []
@@ -226,18 +222,25 @@ def initialize_leave_balances(
         
         if not existing_balance:
             allocation = 0
-            # Only create balance if leave type is defined in policy
-            if leave_type.code.upper() in ['AL', 'ANNUAL'] and hasattr(leave_policy, 'annual') and leave_policy.annual > 0:  # type: ignore
-                allocation = leave_policy.annual
-            elif leave_type.code.upper() in ['SL', 'SICK'] and hasattr(leave_policy, 'sick') and leave_policy.sick > 0:  # type: ignore
-                allocation = leave_policy.sick
-            elif leave_type.code.upper() in ['CL', 'CASUAL'] and hasattr(leave_policy, 'casual') and leave_policy.casual > 0:  # type: ignore
-                allocation = leave_policy.casual
-            elif leave_policy.leave_allocations is not None and leave_type.code.upper() in leave_policy.leave_allocations:
-                allocation = leave_policy.leave_allocations[leave_type.code.upper()]
+            # Match leave types more flexibly
+            code_upper = leave_type.code.upper() if leave_type.code else ""
+            name_upper = leave_type.name.upper() if leave_type.name else ""
+            
+            # Check for Annual Leave
+            if any(x in code_upper for x in ['AL', 'ANNUAL']) or 'ANNUAL' in name_upper:
+                allocation = leave_policy.annual if hasattr(leave_policy, 'annual') else 0
+            # Check for Sick Leave  
+            elif any(x in code_upper for x in ['SL', 'SICK']) or 'SICK' in name_upper:
+                allocation = leave_policy.sick if hasattr(leave_policy, 'sick') else 0
+            # Check for Casual Leave
+            elif any(x in code_upper for x in ['CL', 'CASUAL']) or 'CASUAL' in name_upper:
+                allocation = leave_policy.casual if hasattr(leave_policy, 'casual') else 0
+            # Check dynamic allocations
+            elif leave_policy.leave_allocations is not None and code_upper in leave_policy.leave_allocations:
+                allocation = leave_policy.leave_allocations[code_upper]
             else:
-                # Skip this leave type if not defined in policy
-                continue
+                # Use leave type's own annual limit if no policy match
+                allocation = leave_type.annual_limit or 0
             
             current_year = datetime.now().year
             year_start = date(current_year, 1, 1)
@@ -280,7 +283,7 @@ def initialize_leave_balances(
     
     db.commit()
     return {
-        "message": f"Leave balances initialized for {employee.name}",
+        "message": f"Leave balances initialized for {employee.name} using policy: {leave_policy.name}",
         "balances_created": balances_created
     }
 
@@ -290,18 +293,28 @@ def get_leave_balances(
     employee_id: int,
     db: Session = Depends(get_tenant_db)
 ):
-    """Get all leave balances for an employee regardless of policy"""
+    """Get all leave balances for an employee with pending applications"""
     employee = db.query(User).filter(User.id == employee_id).first()  # type: ignore
     if not employee:
         return []
     
-    # Get all balances for the employee without policy filtering
+    # Get all balances for the employee
     balances = db.query(LeaveBalance, LeaveType).join(
         LeaveType, LeaveBalance.leave_type_id == LeaveType.id
     ).filter(LeaveBalance.employee_id == employee_id).all()  # type: ignore
     
     result = []
     for balance, leave_type in balances:
+        # Get pending applications for this leave type
+        pending_apps = db.query(LeaveApplication).filter(
+            LeaveApplication.employee_id == employee_id,
+            LeaveApplication.leave_type_id == leave_type.id,
+            LeaveApplication.status == "Pending"
+        ).all()
+        
+        pending_days = sum(app.total_days for app in pending_apps)
+        available_balance = balance.balance - pending_days
+        
         is_overused = bool(balance.used > balance.total_allocated)
         overused_days = max(0, balance.used - balance.total_allocated)
         
@@ -312,6 +325,10 @@ def get_leave_balances(
             "total_allocated": balance.total_allocated,
             "used": balance.used,
             "balance": balance.balance,
+            "pending_days": pending_days,
+            "available_balance": max(0, available_balance),
+            "display_balance": balance.balance if pending_days == 0 else balance.total_allocated,
+            "display_used": balance.used if pending_days == 0 else 0,
             "is_overused": is_overused,
             "overused_days": overused_days,
             "status": "Overused" if is_overused else "Normal"

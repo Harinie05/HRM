@@ -275,7 +275,6 @@ def get_payroll_runs(
         
         query = text("""
             SELECT * FROM payroll_runs 
-            GROUP BY employee_id, month, year
             ORDER BY created_at DESC
         """)
         result = db.execute(query)
@@ -737,13 +736,13 @@ def get_payroll_summary(
         current_month = "December"
         current_year = 2025
         
-        # Get actual employee count from employees table
+        # Get actual employee count from payroll runs instead of all employees
         try:
-            emp_query = text("SELECT COUNT(*) as count FROM employees WHERE status = 'Active'")
-            emp_result = db.execute(emp_query).fetchone()
-            actual_employee_count = emp_result[0] if emp_result and emp_result[0] > 0 else 3
+            payroll_emp_query = text("SELECT COUNT(DISTINCT employee_id) as count FROM payroll_runs WHERE month = :month AND year = :year")
+            payroll_emp_result = db.execute(payroll_emp_query, {"month": current_month, "year": current_year}).fetchone()
+            actual_employee_count = payroll_emp_result[0] if payroll_emp_result and payroll_emp_result[0] > 0 else 0
         except:
-            actual_employee_count = 3
+            actual_employee_count = 0
         
         # Get payroll data
         query = text("""

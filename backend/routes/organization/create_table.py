@@ -431,7 +431,13 @@ with engine.connect() as conn:
         ("emergency_contact_phone VARCHAR(20)", "emergency_contact_phone"),
         ("emergency_contact_relation VARCHAR(50)", "emergency_contact_relation"),
         ("medical_insurance_provider VARCHAR(200)", "medical_insurance_provider"),
-        ("medical_insurance_number VARCHAR(100)", "medical_insurance_number")
+        ("medical_insurance_number VARCHAR(100)", "medical_insurance_number"),
+        ("medical_council_state VARCHAR(100)", "medical_council_state"),
+        ("medical_council_country VARCHAR(100)", "medical_council_country"),
+        ("medical_council_issue_date DATE", "medical_council_issue_date"),
+        ("medical_council_status VARCHAR(50) DEFAULT 'Active'", "medical_council_status"),
+        ("medical_degree VARCHAR(100)", "medical_degree"),
+        ("medical_specialization VARCHAR(200)", "medical_specialization")
     ]
     
     for sql_def, name in medical_columns:
@@ -1081,6 +1087,22 @@ with engine.connect() as conn:
     
     conn.commit()
     print("🎉 License renewal alerts migration completed!")
+
+# ========================= UPDATE EMPLOYEE ID DOCS TABLE =========================
+print("\nUpdating employee_id_docs table structure...")
+with engine.connect() as conn:
+    id_docs_columns = [
+        ("expiry_date DATE", "expiry_date")
+    ]
+    
+    for sql_def, name in id_docs_columns:
+        try:
+            conn.execute(text(f"ALTER TABLE employee_id_docs ADD COLUMN {sql_def}"))
+            print(f"✔️ Added: {name}")
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+    
+    conn.commit()
 
 # ========================= ADD EXPERIENCE_YEARS COLUMN =========================
 print("\nAdding experience_years column to job_requisition table...")

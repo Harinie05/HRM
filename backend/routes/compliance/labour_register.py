@@ -29,11 +29,11 @@ class LabourRegisterRequest(BaseModel):
 def create_register(data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user and data.employee_id.isdigit():
-            user = db.query(User).filter(User.id == int(data.employee_id)).first()
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        if not user_record and data.employee_id.isdigit():
+            user_record = db.query(User).filter(User.id == int(data.employee_id)).first()
         
-        if not user:
+        if not user_record:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
         
         # Use current month/year if not provided
@@ -42,7 +42,7 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         year = data.year or current_date.year
         
         record = LabourLawRegister(
-            employee_id=user.id,
+            employee_id=user_record.id,
             register_type=data.register_type,
             month=month,
             year=year,
@@ -99,15 +99,15 @@ def update_register(record_id: int, data: LabourRegisterRequest, request: Reques
         old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "month": record.month, "year": record.year}
         
         # Find user by employee_code
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user and data.employee_id.isdigit():
-            user = db.query(User).filter(User.id == int(data.employee_id)).first()
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        if not user_record and data.employee_id.isdigit():
+            user_record = db.query(User).filter(User.id == int(data.employee_id)).first()
         
-        if not user:
+        if not user_record:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
         
         # Update record using setattr to avoid type issues
-        setattr(record, 'employee_id', user.id)
+        setattr(record, 'employee_id', user_record.id)
         setattr(record, 'register_type', data.register_type)
         setattr(record, 'month', data.month or record.month)
         setattr(record, 'year', data.year or record.year)

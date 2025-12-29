@@ -5,7 +5,7 @@ import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 
 export default function StatutoryRules() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     pf_enabled: true,
     pf_percent: "12",
@@ -222,7 +222,12 @@ export default function StatutoryRules() {
         </button>
       </div>
       </div>
-      <Toast {...toast} />
+      <Toast 
+        show={toast.show} 
+        message={toast.message} 
+        type={toast.type} 
+        hideToast={hideToast} 
+      />
     </div>
   );
 }

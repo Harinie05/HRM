@@ -260,8 +260,8 @@ const ResignationTracking = () => {
 
       {/* Apply Resignation Modal */}
       {showApplyForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-2xl max-w-2xl w-full mx-4 shadow-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-primary">Apply Resignation</h2>
               <button 
@@ -281,7 +281,7 @@ const ResignationTracking = () => {
                   <select 
                     value={formData.employee_id} 
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     required
                   >
                     <option value="">Select Employee ({employees.length} available)</option>
@@ -299,7 +299,7 @@ const ResignationTracking = () => {
                     type="date"
                     value={formData.resignation_date}
                     onChange={(e) => setFormData({...formData, resignation_date: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     required
                   />
                 </div>
@@ -310,7 +310,7 @@ const ResignationTracking = () => {
                     type="date"
                     value={formData.last_working_day}
                     onChange={(e) => setFormData({...formData, last_working_day: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     required
                   />
                 </div>
@@ -321,7 +321,7 @@ const ResignationTracking = () => {
                     type="number"
                     value={formData.notice_period}
                     onChange={(e) => setFormData({...formData, notice_period: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     placeholder="30"
                   />
                 </div>
@@ -332,7 +332,7 @@ const ResignationTracking = () => {
                     type="date"
                     value={formData.exit_interview_date}
                     onChange={(e) => setFormData({...formData, exit_interview_date: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                   />
                 </div>
                 
@@ -341,7 +341,7 @@ const ResignationTracking = () => {
                   <textarea
                     value={formData.reason}
                     onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     placeholder="Please provide reason for resignation"
                     rows="3"
                   />
@@ -352,7 +352,7 @@ const ResignationTracking = () => {
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                    className="w-full border-dark rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     placeholder="Any additional notes or comments"
                     rows="2"
                   />
@@ -362,14 +362,14 @@ const ResignationTracking = () => {
               <div className="flex gap-4 pt-4">
                 <button 
                   type="submit" 
-                  className="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white px-6 py-3 rounded-xl hover:from-slate-700 hover:to-slate-800 font-semibold transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  className="flex-1 bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 font-semibold transition-all duration-200 border border-black"
                 >
                   Apply Resignation
                 </button>
                 <button 
                   type="button" 
                   onClick={() => setShowApplyForm(false)}
-                  className="flex-1 bg-gray-100 text-secondary px-6 py-3 rounded-xl hover:bg-gray-200 font-semibold transition-all duration-200"
+                  className="flex-1 bg-white text-black px-6 py-3 rounded-xl hover:bg-gray-100 font-semibold transition-all duration-200 border border-black"
                 >
                   Cancel
                 </button>

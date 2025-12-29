@@ -10,6 +10,7 @@ const QualityIndicators = () => {
   const [indicators, setIndicators] = useState([]);
   const [records, setRecords] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
   const [showIndicatorForm, setShowIndicatorForm] = useState(false);
   const [showRecordForm, setShowRecordForm] = useState(false);
   const [editingIndicator, setEditingIndicator] = useState(null);
@@ -40,22 +41,70 @@ const QualityIndicators = () => {
 
   useEffect(() => {
     fetchData();
+    // Seed departments on page load
+    seedDepartments();
   }, []);
+
+  const seedDepartments = async () => {
+    try {
+      await api.post('/api/hr/quality-indicators/departments/seed');
+      console.log('Departments seeded');
+    } catch (error) {
+      console.log('Seed error (might already exist):', error.message);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [indicatorsRes, recordsRes, deptRes] = await Promise.all([
-        api.get('/api/hr/quality-indicators/quality-indicators'),
-        api.get('/api/hr/quality-indicators/kpi-records'),
-        api.get('/hospitals/departments/list')
+      console.log('Fetching data...');
+      
+      const [indicatorsRes, recordsRes, departmentsRes] = await Promise.all([
+        api.get('/api/hr/quality-indicators/quality-indicators').catch(err => {
+          console.error('Indicators API error:', err);
+          return { data: [] };
+        }),
+        api.get('/api/hr/quality-indicators/kpi-records').catch(err => {
+          console.error('Records API error:', err);
+          return { data: [] };
+        }),
+        api.get('/api/hr/quality-indicators/departments').catch(err => {
+          console.error('Departments API error:', err);
+          return { data: [] };
+        })
       ]);
+      
+      console.log('API Responses:', {
+        indicators: indicatorsRes.data,
+        records: recordsRes.data,
+        departments: departmentsRes.data
+      });
+      
+      // If no departments found, seed some sample departments
+      if (!departmentsRes.data || departmentsRes.data.length === 0) {
+        console.log('No departments found, seeding sample departments...');
+        try {
+          await api.post('/api/hr/quality-indicators/departments/seed');
+          // Fetch departments again after seeding
+          const newDepartmentsRes = await api.get('/api/hr/quality-indicators/departments');
+          console.log('Departments after seeding:', newDepartmentsRes.data);
+          setDepartments(newDepartmentsRes.data || []);
+        } catch (seedError) {
+          console.error('Error seeding departments:', seedError);
+          setDepartments([]);
+        }
+      } else {
+        setDepartments(departmentsRes.data || []);
+      }
       
       setIndicators(indicatorsRes.data || []);
       setRecords(recordsRes.data || []);
-      setDepartments(deptRes.data || []);
+      
     } catch (error) {
       console.error('Error fetching data:', error);
+      setIndicators([]);
+      setRecords([]);
+      setDepartments([]);
     } finally {
       setLoading(false);
     }
@@ -219,6 +268,40 @@ const QualityIndicators = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Quality Indicators (Hospital KPIs)</h1>
         <p className="text-gray-600">Track and monitor hospital performance metrics and quality indicators</p>
+      </div>
+
+      {/* Department Filter - More Visible */}
+      <div className="mb-6 bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
+        <h3 className="text-lg font-semibold text-blue-900 mb-4">Department Filter</h3>
+        <div className="flex items-center gap-4">
+          <label className="text-sm font-medium text-blue-700">Select Department:</label>
+          <select
+            value={selectedDepartment}
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+            className="px-4 py-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-lg min-w-[200px]"
+          >
+            <option value="">All Departments</option>
+            {departments.map(dept => (
+              <option key={dept.id} value={dept.id}>{dept.name}</option>
+            ))}
+          </select>
+          <span className="text-sm text-blue-600">({departments.length} departments loaded)</span>
+          <button 
+            onClick={async () => {
+              try {
+                const res = await api.get('/api/hr/quality-indicators/departments');
+                console.log('Manual test result:', res.data);
+                alert(`Found ${res.data.length} departments`);
+              } catch (err) {
+                console.error('Manual test error:', err);
+                alert('Error: ' + err.message);
+              }
+            }}
+            className="px-3 py-1 bg-blue-600 text-white rounded text-sm"
+          >
+            Test API
+          </button>
+        </div>
       </div>
 
       {/* Tab Navigation */}
@@ -385,7 +468,9 @@ const QualityIndicators = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {indicators.map((indicator) => (
+                {indicators
+                  .filter(indicator => !selectedDepartment || indicator.department_id == selectedDepartment)
+                  .map((indicator) => (
                   <tr key={indicator.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indicator.kpi_name}
@@ -544,7 +629,13 @@ const QualityIndicators = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {records.map((record) => (
+                {records
+                  .filter(record => {
+                    if (!selectedDepartment) return true;
+                    const indicator = indicators.find(ind => ind.kpi_name === record.kpi_name);
+                    return indicator && indicator.department_id == selectedDepartment;
+                  })
+                  .map((record) => (
                   <tr key={record.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {record.kpi_name}

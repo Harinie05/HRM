@@ -23,7 +23,7 @@ const QualityIndicators = () => {
     target_value: '',
     unit_of_measure: 'Percentage',
     frequency: 'Monthly',
-    department_id: ''
+    department: ''
   });
 
   const [recordForm, setRecordForm] = useState({
@@ -48,7 +48,7 @@ const QualityIndicators = () => {
       const [indicatorsRes, recordsRes, deptRes] = await Promise.all([
         api.get('/api/hr/quality-indicators/quality-indicators'),
         api.get('/api/hr/quality-indicators/kpi-records'),
-        api.get('/hospitals/departments/list')
+        api.get('/api/hr/quality-indicators/departments')
       ]);
       
       setIndicators(indicatorsRes.data || []);
@@ -69,7 +69,7 @@ const QualityIndicators = () => {
       const payload = {
         ...indicatorForm,
         target_value: parseFloat(indicatorForm.target_value),
-        department_id: indicatorForm.department_id ? parseInt(indicatorForm.department_id) : null
+        department_id: null
       };
 
       if (editingIndicator) {
@@ -125,7 +125,7 @@ const QualityIndicators = () => {
       target_value: '',
       unit_of_measure: 'Percentage',
       frequency: 'Monthly',
-      department_id: ''
+      department: ''
     });
     setEditingIndicator(null);
     setShowIndicatorForm(false);
@@ -151,7 +151,7 @@ const QualityIndicators = () => {
       target_value: indicator.target_value.toString(),
       unit_of_measure: indicator.unit_of_measure,
       frequency: indicator.frequency,
-      department_id: indicator.department_id ? indicator.department_id.toString() : ''
+      department: indicator.department || ''
     });
     setEditingIndicator(indicator);
     setShowIndicatorForm(true);
@@ -343,16 +343,13 @@ const QualityIndicators = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                  <select
-                    value={indicatorForm.department_id}
-                    onChange={(e) => setIndicatorForm({...indicatorForm, department_id: e.target.value})}
+                  <input
+                    type="text"
+                    value={indicatorForm.department}
+                    onChange={(e) => setIndicatorForm({...indicatorForm, department: e.target.value})}
                     className="w-full p-2 border border-black rounded-md"
-                  >
-                    <option value="">All Departments</option>
-                    {departments.map(dept => (
-                      <option key={dept.id} value={dept.id}>{dept.name}</option>
-                    ))}
-                  </select>
+                    placeholder="Enter department name"
+                  />
                 </div>
                 <div className="md:col-span-2 flex gap-2">
                   <button

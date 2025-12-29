@@ -145,7 +145,7 @@ export default function AttendanceRules() {
                   </div>
                   <button 
                     onClick={() => setShowRuleModal(true)}
-                    className="bg-white text-black border border-black px-4 py-2 rounded-2xl font-medium hover:bg-gray-50 transition-colors text-sm shadow-sm flex items-center gap-2"
+                    className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
@@ -210,7 +210,7 @@ export default function AttendanceRules() {
                             <td className="px-4 py-3 text-sm">
                               <button
                                 onClick={() => handleDeleteRule(r.id)}
-                                className="text-gray-600 hover:text-gray-800 font-medium transition-colors px-2 py-1 rounded border border-black hover:bg-gray-100"
+                                className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
                               >
                                 Delete
                               </button>
@@ -234,7 +234,7 @@ export default function AttendanceRules() {
                   </div>
                   <button 
                     onClick={() => setShowLocationModal(true)}
-                    className="bg-white text-black border border-black px-4 py-2 rounded-2xl font-medium hover:bg-gray-50 transition-colors text-sm shadow-sm flex items-center gap-2"
+                    className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
@@ -289,7 +289,7 @@ export default function AttendanceRules() {
                             <td className="px-4 py-3 text-sm">
                               <button
                                 onClick={() => handleDeleteLocation(loc.id)}
-                                className="text-gray-600 hover:text-gray-800 font-medium transition-colors px-2 py-1 rounded border border-black hover:bg-gray-100"
+                                className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
                               >
                                 Delete
                               </button>
@@ -349,7 +349,7 @@ export default function AttendanceRules() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleAddRule}
-                className="flex-1 bg-white text-black border border-black py-3 rounded-2xl hover:bg-gray-50 font-medium transition-colors"
+                className="flex-1 bg-black text-white py-3 rounded-2xl hover:bg-gray-800 font-medium transition-colors"
               >
                 Add Rule
               </button>
@@ -403,7 +403,7 @@ export default function AttendanceRules() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleAddLocation}
-                className="flex-1 bg-white text-black border border-black py-3 rounded-2xl hover:bg-gray-50 font-medium transition-colors"
+                className="flex-1 bg-black text-white py-3 rounded-2xl hover:bg-gray-800 font-medium transition-colors"
               >
                 Add Location
               </button>

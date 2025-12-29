@@ -26,15 +26,15 @@ class NABHComplianceRequest(BaseModel):
 def create_nabh_compliance(data: NABHComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Find user by employee_code
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        if not user:
-            user = db.query(User).filter(User.id == int(data.employee_id) if data.employee_id.isdigit() else None).first()
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        if not user_record:
+            user_record = db.query(User).filter(User.id == int(data.employee_id) if data.employee_id.isdigit() else None).first()
         
-        if not user:
+        if not user_record:
             # Use fallback user ID for testing
             user_id = 1
         else:
-            user_id = user.id
+            user_id = user_record.id
         
         record = NABHHRMCompliance(
             employee_id=user_id,

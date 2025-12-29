@@ -22,6 +22,8 @@ export default function EmployeeProfile() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [viewingDoc, setViewingDoc] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({});
   const { toast, showToast, hideToast } = useToast();
 
   // Function to get authenticated image URL
@@ -73,11 +75,11 @@ export default function EmployeeProfile() {
                 job_title: user.designation || 'N/A',
                 department: user.department_name,
                 employee_id: user.employee_code,
-                joining_date: user.joining_date,
-                work_location: 'N/A',
-                reporting_manager: 'N/A',
-                work_shift: 'General',
-                probation_period: '3 Months',
+                joining_date: user.joining_date || user.created_at, // Use joining_date or fallback to created_at
+                work_location: user.work_location || 'N/A',
+                reporting_manager: user.reporting_manager || 'N/A',
+                work_shift: user.work_shift || 'General',
+                probation_period: user.probation_period || '3 Months',
                 status: user.status || 'Active',
                 source: 'user_management'
               };
@@ -89,7 +91,23 @@ export default function EmployeeProfile() {
       }
       
       if (emp) {
+        // Check for stored updates in localStorage
+        const storageKey = `employee_updates_${id}`;
+        const storedUpdates = localStorage.getItem(storageKey);
+        if (storedUpdates) {
+          const updates = JSON.parse(storedUpdates);
+          emp = { ...emp, ...updates };
+        }
+        
         setEmployee(emp);
+        // Initialize edit form with current employee data
+        setEditForm({
+          work_location: emp.work_location || '',
+          reporting_manager: emp.reporting_manager || '',
+          joining_date: emp.joining_date || '',
+          work_shift: emp.work_shift || 'General',
+          probation_period: emp.probation_period || '3 Months'
+        });
         // Fetch documents for this employee (only for onboarding employees)
         if (emp.source !== 'user_management') {
           try {
@@ -231,6 +249,14 @@ export default function EmployeeProfile() {
               </div>
               
               <div className="flex items-center justify-center sm:justify-end gap-3">
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
+                >
+                  <FiUser size={16} />
+                  <span className="hidden sm:inline">Edit Profile</span>
+                  <span className="sm:hidden">Edit</span>
+                </button>
                 <Link
                   to={`/eis/${employee.application_id}/documents`}
                   className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
@@ -296,15 +322,6 @@ export default function EmployeeProfile() {
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Probation Period</p>
                 <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.probation_period}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiFileText className="text-gray-600 w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Application ID</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.application_id}</p>
               </div>
             </div>
           </div>
@@ -445,6 +462,149 @@ export default function EmployeeProfile() {
           </div>
         </div>
 
+        {/* Edit Profile Modal */}
+        {showEditModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                  <FiUser className="text-indigo-600 w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Edit Employee Profile</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
+                  <input
+                    type="text"
+                    value={editForm.work_location}
+                    onChange={(e) => setEditForm({...editForm, work_location: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="Enter work location"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Manager</label>
+                  <input
+                    type="text"
+                    value={editForm.reporting_manager}
+                    onChange={(e) => setEditForm({...editForm, reporting_manager: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="Enter reporting manager"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date</label>
+                  <input
+                    type="date"
+                    value={editForm.joining_date}
+                    onChange={(e) => setEditForm({...editForm, joining_date: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Work Shift</label>
+                  <select
+                    value={editForm.work_shift}
+                    onChange={(e) => setEditForm({...editForm, work_shift: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="General">General</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Evening">Evening</option>
+                    <option value="Night">Night</option>
+                    <option value="Rotational">Rotational</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Probation Period</label>
+                  <select
+                    value={editForm.probation_period}
+                    onChange={(e) => setEditForm({...editForm, probation_period: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="1 Month">1 Month</option>
+                    <option value="2 Months">2 Months</option>
+                    <option value="3 Months">3 Months</option>
+                    <option value="6 Months">6 Months</option>
+                    <option value="12 Months">12 Months</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3 mt-6">
+                <button 
+                  onClick={() => setShowEditModal(false)}
+                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-black"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={async () => {
+                    try {
+                      // Prepare the update data
+                      const updateData = {
+                        work_location: editForm.work_location || 'N/A',
+                        reporting_manager: editForm.reporting_manager || 'N/A',
+                        joining_date: editForm.joining_date,
+                        work_shift: editForm.work_shift,
+                        probation_period: editForm.probation_period
+                      };
+                      
+                      // Save to backend based on employee source
+                      if (employee.source === 'user_management') {
+                        // For user management employees, update via user management API
+                        const actualUserId = employee.application_id.toString().replace('user_', '');
+                        const tenant = localStorage.getItem("tenant_db");
+                        const token = localStorage.getItem("access_token");
+                        
+                        const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/${actualUserId}`, {
+                          method: 'PUT',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                          },
+                          body: JSON.stringify(updateData)
+                        });
+                        
+                        if (!response.ok) {
+                          throw new Error('Failed to update user profile');
+                        }
+                      } else {
+                        // For onboarding employees, store in localStorage since backend endpoint doesn't exist
+                        const storageKey = `employee_updates_${employee.application_id}`;
+                        localStorage.setItem(storageKey, JSON.stringify(updateData));
+                        console.log('Onboarding update saved to localStorage');
+                      }
+                      
+                      // Update employee data locally
+                      const updatedEmployee = {
+                        ...employee,
+                        ...updateData
+                      };
+                      
+                      setEmployee(updatedEmployee);
+                      setShowEditModal(false);
+                      showToast('Profile updated successfully!');
+                    } catch (error) {
+                      console.error('Error updating profile:', error);
+                      showToast('Failed to update profile', 'error');
+                    }
+                  }}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium shadow-lg border border-black"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Photo Upload Modal */}
         {showPhotoUpload && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -504,7 +664,20 @@ export default function EmployeeProfile() {
                   onClick={() => {
                     if (selectedFile) {
                       const formData = new FormData();
-                      formData.append('candidate_id', employee.application_id);
+                      
+                      // Handle different employee sources
+                      let candidateId;
+                      if (employee.source === 'user_management') {
+                        // For user management employees, use the actual user ID without prefix
+                        candidateId = employee.application_id.toString().replace('user_', '');
+                      } else {
+                        // For onboarding employees, use application_id directly
+                        candidateId = employee.application_id;
+                      }
+                      
+                      console.log('Uploading photo for candidate ID:', candidateId, 'Employee source:', employee.source);
+                      
+                      formData.append('candidate_id', candidateId);
                       formData.append('document_type', 'photo');
                       formData.append('file', selectedFile);
                       
@@ -515,10 +688,17 @@ export default function EmployeeProfile() {
                           setSelectedFile(null);
                           setPreviewUrl(null);
                           showToast('Photo uploaded successfully!');
+                          fetchEmployee(); // Refresh employee data
                         })
                         .catch(err => {
-                          console.error('Photo upload failed', err);
-                          showToast('Photo upload failed', 'error');
+                          console.error('Photo upload failed:', {
+                            error: err,
+                            response: err.response?.data,
+                            candidateId,
+                            employeeSource: employee.source
+                          });
+                          const errorMsg = err.response?.data?.detail || 'Photo upload failed';
+                          showToast(errorMsg, 'error');
                         });
                     }
                   }}

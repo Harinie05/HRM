@@ -298,14 +298,10 @@ def check_missing_attendance(db: Session, employee_id: int, employee_code: str, 
             if pending_reg:
                 continue  # Skip - pending regularization exists
             
-            # 5. No record and no pending requests = ABSENT (WARNING - allows payroll with LOP)
-            issues.append({
-                'issue_type': 'Absent',
-                'issue_description': f"No attendance record for {date_str} - marked as absent",
-                'date': date_str,
-                'severity': 'warning',  # Always warning - allows payroll to run with LOP deduction
-                'action_required': 'Apply for leave, OD, or regularization if employee was present'
-            })
+            # 5. No record and no pending requests = ABSENT (Skip - don't report as warning)
+            # Absent days will be handled as LOP during payroll processing
+            # No need to show as validation warning since it's expected behavior
+            continue
         
         return issues
     except Exception as e:

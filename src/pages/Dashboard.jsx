@@ -17,6 +17,7 @@ export default function Dashboard() {
     totalRoles: 0
   });
   const [licenseAlerts, setLicenseAlerts] = useState([]);
+  const [documentAlerts, setDocumentAlerts] = useState([]);
 
   // ========================= FETCH LICENSE ALERTS =========================
   const fetchLicenseAlerts = async () => {
@@ -25,6 +26,24 @@ export default function Dashboard() {
       setLicenseAlerts(res.data?.alerts || []);
     } catch {
       console.error("Failed to load license alerts");
+    }
+  };
+
+  // ========================= FETCH DOCUMENT ALERTS =========================
+  const fetchDocumentAlerts = async () => {
+    try {
+      console.log('🔍 Fetching document alerts...');
+      const res = await api.get("/dashboard/id-doc-alerts");
+      console.log('📄 Document alerts response:', res.data);
+      
+      // Set the document alerts from the response
+      const alerts = res.data?.alerts || res.data || [];
+      console.log('📋 Setting document alerts:', alerts);
+      setDocumentAlerts(alerts);
+    } catch (error) {
+      console.error("❌ Failed to load document alerts:", error);
+      // Fallback to empty array on error
+      setDocumentAlerts([]);
     }
   };
 
@@ -90,6 +109,7 @@ export default function Dashboard() {
     fetchHolidays();
     fetchDashboardData();
     fetchLicenseAlerts();
+    fetchDocumentAlerts();
   }, []);
 
   // ========================= SYNC LISTENER =========================
@@ -341,44 +361,79 @@ export default function Dashboard() {
 
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* License Renewal Alerts */}
+          {/* License & Document Alerts */}
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">License Alerts</h3>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">Document Alerts</h3>
               <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
             </div>
             
             <div className="space-y-3">
-              {licenseAlerts.length > 0 ? (
-                licenseAlerts.slice(0, 3).map((alert, index) => (
-                  <div key={index} className={`p-3 rounded-lg border ${
-                    alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{alert.license_type}</p>
-                        <p className="text-xs text-gray-600">Employee ID: {alert.employee_id}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-xs font-bold ${
-                          alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
-                        }`}>
-                          {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
-                        </p>
+              {/* Medical License Alerts */}
+              {licenseAlerts.length > 0 && (
+                <>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Medical Licenses</h4>
+                  {licenseAlerts.slice(0, 2).map((alert, index) => (
+                    <div key={`license-${index}`} className={`p-3 rounded-lg border ${
+                      alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{alert.license_type}</p>
+                          <p className="text-xs text-gray-600">Employee ID: {alert.employee_id}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-xs font-bold ${
+                            alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                          }`}>
+                            {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
+                  ))}
+                </>
+              )}
+              
+              {/* ID Document Alerts */}
+              {documentAlerts.length > 0 && (
+                <>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">ID Documents</h4>
+                  {documentAlerts.map((alert, index) => (
+                    <div key={`doc-${index}`} className={`p-3 rounded-lg border ${
+                      alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{alert.document_type}</p>
+                          <p className="text-xs text-gray-600">
+                            {alert.employee_name}
+                            {alert.employee_code && ` - ${alert.employee_code}`}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-xs font-bold ${
+                            alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                          }`}>
+                            {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              
+              {licenseAlerts.length === 0 && documentAlerts.length === 0 && (
                 <div className="text-center py-4 text-gray-500">
                   <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p className="text-sm">No license alerts</p>
+                  <p className="text-sm">No document alerts</p>
                 </div>
               )}
               
-              {licenseAlerts.length > 3 && (
+              {(licenseAlerts.length + documentAlerts.length) > 4 && (
                 <div className="text-center pt-2">
-                  <p className="text-xs text-gray-600">+{licenseAlerts.length - 3} more alerts</p>
+                  <p className="text-xs text-gray-600">+{(licenseAlerts.length + documentAlerts.length) - 4} more alerts</p>
                 </div>
               )}
             </div>

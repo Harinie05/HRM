@@ -47,9 +47,9 @@ export default function LeaveApplications() {
     }
   };
 
-  const initializeBalances = async (employeeId) => {
+  const initializeBalances = async (employeeId, policyId) => {
     try {
-      const res = await api.post(`/api/leave/applications/initialize-balances/${employeeId}`);
+      const res = await api.post(`/api/leave/balances/initialize/${employeeId}/${policyId}`);
       showToast(res.data.message, "success");
       fetchLeaveBalances(employeeId);
     } catch (error) {
@@ -436,8 +436,8 @@ export default function LeaveApplications() {
 
       {/* New Application Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">New Leave Application</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -462,8 +462,9 @@ export default function LeaveApplications() {
                   value={formData.policy_id}
                   onChange={(e) => setFormData({...formData, policy_id: e.target.value})}
                   className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
                 >
-                  <option value="">Use Default Policy</option>
+                  <option value="">Select Leave Policy</option>
                   {leavePolicies.map(policy => (
                     <option key={policy.id} value={policy.id}>
                       {policy.name}
@@ -520,22 +521,36 @@ export default function LeaveApplications() {
                   required
                 />
               </div>
-              <div className="flex gap-4 pt-4">
+              <div className="flex gap-2 pt-4">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 px-4 py-2 border border-black rounded-lg text-secondary hover:bg-content"
+                  className="px-3 py-2 border border-black rounded-lg text-secondary hover:bg-content text-sm"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
+                  onClick={() => {
+                    if (formData.employee_id && formData.policy_id) {
+                      initializeBalances(formData.employee_id, formData.policy_id);
+                      showToast('Initializing leave balances...', 'success');
+                    } else {
+                      showToast('Please select both employee and leave policy first', 'error');
+                    }
+                  }}
+                  className="px-3 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm"
+                >
+                  Initialize
+                </button>
+                <button
                   type="submit"
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="flex-1 px-4 py-2 text-white rounded-lg transition-colors"
+                  className="px-3 py-2 text-white rounded-lg transition-colors text-sm"
                   onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
-                  Submit Application
+                  Submit
                 </button>
               </div>
             </form>
@@ -545,8 +560,8 @@ export default function LeaveApplications() {
 
       {/* Leave Balance Modal */}
       {showBalanceModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg border border-black p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Leave Balances</h3>
               <button 

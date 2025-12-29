@@ -757,33 +757,33 @@ export default function AttendanceLogs() {
                 )}
 
                 {selectedEmployee && attendanceMode && (
-                  <div className="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-xl">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-4 h-4 rounded-full ${
-                          currentStatus === 'checked_in' ? 'bg-gray-500' :
+                  <div className="mb-6 p-4 bg-white rounded-lg border border-black">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          currentStatus === 'checked_in' ? 'bg-green-500' :
                           currentStatus === 'checked_out' ? 'bg-gray-500' :
                           'bg-gray-400'
                         }`}></div>
                         <div>
-                          <div className="text-base sm:text-lg font-bold text-gray-900">
+                          <div className="text-sm font-semibold text-gray-900">
                             {currentStatus === 'checked_in' ? 'Currently Checked In' :
                              currentStatus === 'checked_out' ? 'Checked Out for Today' :
                              'Ready to Check In'}
                           </div>
-                          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+                          <div className="text-xs text-gray-500">
                             {new Date().toLocaleDateString()} • {new Date().toLocaleTimeString()}
                           </div>
                         </div>
                       </div>
-                      <div className="text-center sm:text-right">
-                        <div className="text-xs sm:text-sm text-gray-500 font-medium">Employee</div>
-                        <div className="font-bold text-gray-900 text-sm sm:text-base">
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500">Employee</div>
+                        <div className="font-medium text-gray-900 text-sm">
                           {employees.find(e => e.id == selectedEmployee)?.name}
                           {(() => {
                             const employee = employees.find(e => e.id == selectedEmployee);
                             return employee?.employee_code ? (
-                              <span className="ml-3 px-3 py-1 bg-gray-100 text-gray-800 text-xs sm:text-sm rounded-full font-medium border border-black">
+                              <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded font-medium">
                                 {employee.employee_code}
                               </span>
                             ) : null;
@@ -833,25 +833,24 @@ export default function AttendanceLogs() {
                     )}
                     
                     {currentStatus === 'checked_in' && (
-                      <div className="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-xl">
-                        <h3 className="text-lg sm:text-xl font-bold mb-6 text-gray-900">Check Out</h3>
-                        <div className="text-center">
-                          <div className="inline-block p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-2xl">
-                            <p className="text-gray-600 mb-6 text-base sm:text-lg">
-                              You checked in via <span className="font-bold text-gray-900">{checkInSource}</span>. 
-                              Please use the same method to check out.
+                      <div className="mb-6 p-4 bg-white rounded-lg border border-black">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-1">Check Out</h3>
+                            <p className="text-xs text-gray-600">
+                              You checked in via <span className="font-medium text-gray-900">{checkInSource}</span>. Please use the same method to check out.
                             </p>
-                            <button 
-                              onClick={() => handlePunchOut(checkInSource)}
-                              disabled={loading}
-                              className="py-3 sm:py-4 px-6 sm:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-3 mx-auto shadow-xl hover:shadow-2xl bg-white text-black border border-black hover:bg-gray-100"
-                            >
-                              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
-                              </svg>
-                              <span className="text-sm sm:text-base">{checkInSource} Check-Out</span>
-                            </button>
                           </div>
+                          <button 
+                            onClick={() => handlePunchOut(checkInSource)}
+                            disabled={loading}
+                            className="py-2 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl bg-white text-black border border-black hover:bg-gray-100"
+                          >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
+                            </svg>
+                            <span className="text-sm">{checkInSource} Check-Out</span>
+                          </button>
                         </div>
                       </div>
                     )}
@@ -967,7 +966,7 @@ export default function AttendanceLogs() {
                         <select
                           value={regularizationForm.employee_id}
                           onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
                         >
                           <option value="">Select Employee</option>
                           {employees.map((employee) => (
@@ -983,7 +982,7 @@ export default function AttendanceLogs() {
                           type="date"
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
                         />
                       </div>
                       <div>
@@ -991,7 +990,7 @@ export default function AttendanceLogs() {
                         <select
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
                         >
                           <option value="Missed IN">Missed IN</option>
                           <option value="Missed OUT">Missed OUT</option>
@@ -1004,33 +1003,33 @@ export default function AttendanceLogs() {
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
                           rows="4"
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
                           placeholder="Explain the reason for regularization..."
                         ></textarea>
                       </div>
                       <button
                         onClick={handleRegularizationSubmit}
-                        className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                        className="w-full py-2 bg-black text-white border border-black rounded-lg font-medium hover:bg-gray-800 transition-colors"
                       >
                         Submit Request
                       </button>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-gray-200 p-8">
+                  <div className="bg-white rounded-lg border border-black p-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-6">Pending Requests</h3>
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                       {regularizationRequests.map((request) => (
-                        <div key={request.id} className="p-4 border border-gray-200 rounded-lg">
+                        <div key={request.id} className="p-4 border border-black rounded-lg">
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <p className="font-semibold text-gray-900">{request.employee}</p>
                               <p className="text-sm text-gray-600">{request.date} - {request.type}</p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                              request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                              request.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                              'bg-red-100 text-red-800'
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold border border-black ${
+                              request.status === 'Pending' ? 'bg-gray-100 text-gray-800' :
+                              request.status === 'Approved' ? 'bg-gray-100 text-gray-800' :
+                              'bg-gray-100 text-gray-800'
                             }`}>
                               {request.status}
                             </span>
@@ -1040,13 +1039,13 @@ export default function AttendanceLogs() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleApprove(request.id)}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                                className="px-4 py-2 bg-black text-white border border-black rounded-lg text-sm font-medium hover:bg-gray-800"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleReject(request.id)}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                                className="px-4 py-2 bg-white text-black border border-black rounded-lg text-sm font-medium hover:bg-gray-100"
                               >
                                 Reject
                               </button>
@@ -1063,7 +1062,7 @@ export default function AttendanceLogs() {
             {activeTab === 'od' && (
               <div className="p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-8">
+                  <div className="bg-gray-50 rounded-lg border border-black p-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-6">Submit OD Application</h3>
                     <div className="space-y-6">
                       <div>
@@ -1071,7 +1070,7 @@ export default function AttendanceLogs() {
                         <select
                           value={odForm.employee_id}
                           onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                         >
                           <option value="">Select Employee</option>
                           {employees.map((employee) => (
@@ -1087,7 +1086,7 @@ export default function AttendanceLogs() {
                           type="date"
                           value={odForm.od_date}
                           onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -1097,7 +1096,7 @@ export default function AttendanceLogs() {
                             type="time"
                             value={odForm.from_time}
                             onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
-                            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                           />
                         </div>
                         <div>
@@ -1106,7 +1105,7 @@ export default function AttendanceLogs() {
                             type="time"
                             value={odForm.to_time}
                             onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
-                            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                           />
                         </div>
                       </div>
@@ -1116,7 +1115,7 @@ export default function AttendanceLogs() {
                           type="text"
                           value={odForm.location}
                           onChange={(e) => setOdForm({...odForm, location: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                           placeholder="Enter OD location"
                         />
                       </div>
@@ -1126,51 +1125,47 @@ export default function AttendanceLogs() {
                           value={odForm.purpose}
                           onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
                           rows="4"
-                          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                           placeholder="Explain the purpose of OD..."
                         ></textarea>
                       </div>
                       <button
                         onClick={handleOdSubmit}
-                        className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                        className="w-full py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
                       >
                         Submit Application
                       </button>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-gray-200 p-8">
+                  <div className="bg-white rounded-lg border border-black p-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-6">OD Applications</h3>
                     <div className="space-y-4 max-h-96 overflow-y-auto">
                       {odApplications.map((application) => (
-                        <div key={application.id} className="p-4 border border-gray-200 rounded-lg">
+                        <div key={application.id} className="p-4 border border-black rounded-lg">
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <p className="font-semibold text-gray-900">{application.employee}</p>
                               <p className="text-sm text-gray-600">{application.od_date}</p>
                               <p className="text-sm text-gray-600">{application.from_time} - {application.to_time}</p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                              application.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                              application.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800">
                               {application.status}
                             </span>
                           </div>
                           <p className="text-sm text-gray-700 mb-2"><strong>Location:</strong> {application.location}</p>
                           <p className="text-sm text-gray-700 mb-3"><strong>Purpose:</strong> {application.purpose}</p>
-                          {application.status === 'Pending' && (
+                          {(application.status === 'Pending' || application.status === 'pending') && (
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleOdApprove(application.id)}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleOdReject(application.id)}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                                className="px-4 py-2 bg-white text-black border border-black rounded-lg text-sm font-medium hover:bg-gray-100"
                               >
                                 Reject
                               </button>
@@ -1186,7 +1181,7 @@ export default function AttendanceLogs() {
 
             {activeTab === 'reports' && (
               <div className="p-8">
-                <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 mb-8">
+                <div className="bg-gray-50 rounded-lg border border-black p-8 mb-8">
                   <h3 className="text-lg font-semibold text-gray-900 mb-6">Generate Reports</h3>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div>
@@ -1194,7 +1189,7 @@ export default function AttendanceLogs() {
                       <select
                         value={reportFilters.reportType}
                         onChange={(e) => setReportFilters({...reportFilters, reportType: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                       >
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
@@ -1207,7 +1202,7 @@ export default function AttendanceLogs() {
                         type="date"
                         value={reportFilters.fromDate}
                         onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                       />
                     </div>
                     <div>
@@ -1216,7 +1211,7 @@ export default function AttendanceLogs() {
                         type="date"
                         value={reportFilters.toDate}
                         onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                       />
                     </div>
                     <div>
@@ -1224,7 +1219,7 @@ export default function AttendanceLogs() {
                       <select
                         value={reportFilters.employeeId}
                         onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
                       >
                         <option value="">All Employees</option>
                         {employees.map((employee) => (
@@ -1255,13 +1250,13 @@ export default function AttendanceLogs() {
                         });
                         setReportData(filteredLogs);
                       }}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                      className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
                     >
                       Generate Report
                     </button>
                     <button
                       onClick={exportToExcel}
-                      className="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                      className="px-6 py-2 bg-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
                     >
                       Export to Excel
                     </button>
@@ -1269,7 +1264,7 @@ export default function AttendanceLogs() {
                 </div>
 
                 {reportData.length > 0 && (
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="bg-white rounded-lg border border-black overflow-hidden">
                     <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
                       <h4 className="font-semibold text-gray-900">Report Results ({reportData.length} records)</h4>
                     </div>

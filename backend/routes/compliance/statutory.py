@@ -47,8 +47,8 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         year = data.year or current_date.year
         
         # Find user by employee_code, fallback to creating with raw employee_id
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        employee_id = user.id if user else int(data.employee_id) if data.employee_id.isdigit() else None
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        employee_id = user_record.id if user_record else int(data.employee_id) if data.employee_id.isdigit() else None
         
         if not employee_id:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
@@ -132,8 +132,8 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         old_values = {"employee_id": record.employee_id, "basic_salary": record.basic_salary, "pf_employee": record.pf_employee}
         
         # Find user by employee_code, fallback to raw employee_id
-        user = db.query(User).filter(User.employee_code == data.employee_id).first()
-        employee_id = user.id if user else int(data.employee_id) if data.employee_id.isdigit() else record.employee_id
+        user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
+        employee_id = user_record.id if user_record else int(data.employee_id) if data.employee_id.isdigit() else record.employee_id
         
         # Calculate new deductions
         pf_employee = data.basic_salary * (data.pf_percentage / 100) if data.pf_enabled else 0

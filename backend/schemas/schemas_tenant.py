@@ -1297,6 +1297,7 @@ class SalaryStructureCreate(BaseModel):
 
 class SalaryStructureOut(SalaryStructureCreate):
     id: int
+    employee_ids: Optional[str] = None
     is_active: bool
 
     class Config:

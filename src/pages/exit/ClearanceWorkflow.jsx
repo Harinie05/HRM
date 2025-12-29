@@ -387,8 +387,8 @@ export default function ClearanceWorkflow() {
 
       {/* Exit Interview Form Modal */}
       {showInterviewForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-2xl w-full max-w-3xl mx-4 shadow-2xl border border-black">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-black">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-gray-900">Exit Interview</h3>
               <button
@@ -406,7 +406,7 @@ export default function ClearanceWorkflow() {
               <p className="text-gray-600 text-sm">Code: {selectedExit.employee_code || 'N/A'}</p>
             </div>
             
-            <form onSubmit={handleExitInterview} className="space-y-6">
+            <form onSubmit={handleExitInterview} className="space-y-4">
               {/* Rating */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -436,7 +436,7 @@ export default function ClearanceWorkflow() {
                   required
                   value={interviewForm.feedback}
                   onChange={(e) => setInterviewForm({...interviewForm, feedback: e.target.value})}
-                  className="w-full border border-black rounded-xl p-3 h-32 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+                  className="w-full border border-black rounded-xl p-3 h-24 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
                   placeholder="Please share your feedback about the workplace, management, colleagues, etc."
                 />
               </div>
@@ -449,7 +449,7 @@ export default function ClearanceWorkflow() {
                 <textarea
                   value={interviewForm.suggestions}
                   onChange={(e) => setInterviewForm({...interviewForm, suggestions: e.target.value})}
-                  className="w-full border border-black rounded-xl p-3 h-32 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+                  className="w-full border border-black rounded-xl p-3 h-24 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
                   placeholder="Any suggestions to improve the workplace or processes"
                 />
               </div>

@@ -220,7 +220,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
                   <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -236,7 +236,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
                   <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -281,7 +281,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
                       max="100"
                       value={formData.pre_score}
                       onChange={(e) => setFormData({...formData, pre_score: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Pre-score"
                     />
                   </div>
@@ -293,7 +293,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
                       max="100"
                       value={formData.post_score}
                       onChange={(e) => setFormData({...formData, post_score: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Post-score"
                     />
                   </div>
@@ -304,7 +304,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -312,7 +312,7 @@ export default function TrainingAttendance({ showModal, setShowModal }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 {loading ? "Saving..." : "Mark Attendance"}
               </button>

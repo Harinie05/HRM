@@ -121,11 +121,11 @@ export default function Communication() {
   const handleOK = async () => {
     try {
       // Save to database via API
-      await api.post('/hr/communication/', formData);
+      const response = await api.post('/hr/communication/', formData);
       
-      // Add to letters list for immediate UI update
+      // Add to letters list using the actual ID from backend
       const newLetter = {
-        id: Date.now(),
+        id: response.data.id, // Use actual backend ID
         employee: formData.employeeId,
         name: employees.find(emp => emp.employee_code === formData.employeeId)?.name || 'Unknown',
         type: formData.letterType,
@@ -348,11 +348,11 @@ export default function Communication() {
   const handleSaveDraft = async () => {
     try {
       // Save as draft via API
-      await api.post('/hr/communication/draft', formData);
+      const response = await api.post('/hr/communication/draft', formData);
       
-      // Add to letters list for immediate UI update
+      // Add to letters list using the actual ID from backend
       const newLetter = {
-        id: Date.now(),
+        id: response.data.id, // Use actual backend ID
         employee: formData.employeeId,
         name: employees.find(emp => emp.employee_code === formData.employeeId)?.name || 'Unknown',
         type: formData.letterType,

@@ -119,13 +119,13 @@ export default function ResignationNotice() {
 
       {/* Apply Resignation Form Modal */}
       {showApplyForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-black">
             <h3 className="text-lg font-semibold mb-4">Apply for Resignation</h3>
             
-            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Employee Selection */}
-              <div className="col-span-2">
+              <div>
                 <label className="block text-sm font-medium mb-1">
                   Employee <span className="text-red-500">*</span>
                 </label>
@@ -134,9 +134,9 @@ export default function ResignationNotice() {
                   name="employee_id"
                   value={form.employee_id}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content"
+                  className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
                 >
-                  <option value="">Select Employee</option>
+                  <option value="">Select Employee ({employees.length} available)</option>
                   {employees.map((employee) => (
                     <option key={employee.id} value={employee.id}>
                       {employee.employee_code || employee.id} - {employee.name || employee.first_name + ' ' + (employee.last_name || '')}
@@ -145,62 +145,79 @@ export default function ResignationNotice() {
                 </select>
               </div>
 
-              {/* Resignation Date */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Resignation Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  required
-                  name="resignation_date"
-                  value={form.resignation_date}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Resignation Date */}
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Resignation Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    name="resignation_date"
+                    value={form.resignation_date}
+                    onChange={handleChange}
+                    className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
+                    placeholder="dd-mm-yyyy"
+                  />
+                </div>
+
+                {/* Last Working Day */}
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Last Working Day <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    name="last_working_day"
+                    value={form.last_working_day}
+                    onChange={handleChange}
+                    className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
+                    placeholder="dd-mm-yyyy"
+                  />
+                </div>
               </div>
 
-              {/* Last Working Day */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Last Working Day <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  required
-                  name="last_working_day"
-                  value={form.last_working_day}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content"
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Notice Period */}
+                <div>
+                  <label className="block text-sm font-medium mb-1">Notice Period (Days)</label>
+                  <select
+                    name="notice_period"
+                    value={form.notice_period}
+                    onChange={handleChange}
+                    className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
+                  >
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                  </select>
+                </div>
 
-              {/* Notice Period */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Notice Period (Days)</label>
-                <select
-                  name="notice_period"
-                  value={form.notice_period}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content"
-                >
-                  <option value="15">15 Days</option>
-                  <option value="30">30 Days</option>
-                  <option value="60">60 Days</option>
-                  <option value="90">90 Days</option>
-                </select>
+                {/* Exit Interview Date */}
+                <div>
+                  <label className="block text-sm font-medium mb-1">Exit Interview Date (Optional)</label>
+                  <input
+                    type="date"
+                    name="exit_interview_date"
+                    className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
+                    placeholder="dd-mm-yyyy"
+                  />
+                </div>
               </div>
 
               {/* Reason */}
               <div>
-                <label className="block text-sm font-medium mb-1">Reason for Leaving</label>
+                <label className="block text-sm font-medium mb-1">Reason for Resignation</label>
                 <select
                   name="reason"
                   value={form.reason}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content"
+                  className="w-full border-2 border-black rounded-lg p-2 bg-white focus:border-black focus:outline-none"
                 >
-                  <option value="">Select Reason</option>
+                  <option value="">Please provide reason for resignation</option>
                   <option value="Better Opportunity">Better Opportunity</option>
                   <option value="Personal Reasons">Personal Reasons</option>
                   <option value="Relocation">Relocation</option>
@@ -212,29 +229,29 @@ export default function ResignationNotice() {
               </div>
 
               {/* Notes */}
-              <div className="col-span-2">
+              <div>
                 <label className="block text-sm font-medium mb-1">Additional Notes</label>
                 <textarea
                   name="notes"
                   value={form.notes}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2 bg-content h-24"
+                  className="w-full border-2 border-black rounded-lg p-2 bg-white h-24 focus:border-black focus:outline-none"
                   placeholder="Enter any additional notes or comments"
                 />
               </div>
 
               {/* Buttons */}
-              <div className="col-span-2 flex justify-end space-x-4">
+              <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowApplyForm(false)}
-                  className="px-4 py-2 border-dark rounded-lg text-secondary hover:bg-content"
+                  className="px-4 py-2 border-2 border-black rounded-lg text-black hover:bg-gray-100 focus:outline-none"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 focus:outline-none border-2 border-black"
                 >
                   Submit Resignation
                 </button>
