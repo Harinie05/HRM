@@ -1008,11 +1008,8 @@ class ExitBase(BaseModel):
 class ExitCreate(BaseModel):
     employee_id: int
     resignation_date: Optional[date] = None
-    last_working_day: Optional[date] = None
     reason: Optional[str] = None
-    notice_period: Optional[str] = "30"
     notes: Optional[str] = None
-    exit_interview_date: Optional[date] = None
 
 
 class ExitOut(ExitBase):

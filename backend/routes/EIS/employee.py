@@ -206,3 +206,33 @@ def convert_user_to_employee(
         "message": "User converted to employee successfully", 
         "employee_code": existing_user.employee_code
     }
+
+# -------------------------------------------------------------------------
+# 6. CREATE EMPLOYEE FROM ONBOARDING
+# -------------------------------------------------------------------------
+@router.post("/create-from-onboarding/{onboarding_id}")
+def create_employee_from_onboarding(
+    onboarding_id: int,
+    request: Request,
+    user=Depends(get_current_user)
+):
+    db = get_tenant_session(user)
+    
+    from models.models_tenant import OnboardingCandidate
+    
+    # Get onboarding record
+    onboarding = db.query(OnboardingCandidate).filter(
+        OnboardingCandidate.id == onboarding_id
+    ).first()
+    
+    if not onboarding:
+        raise HTTPException(404, "Onboarding record not found")
+    
+    # Audit log
+    audit_crud(request, user.get("tenant_db"), user, "CREATE_EMPLOYEE_FROM_ONBOARDING", "onboarding_candidates", str(onboarding_id), None, {"employee_id": onboarding.employee_id, "candidate_name": onboarding.candidate_name})
+    
+    return {
+        "message": "Employee record created successfully in EIS",
+        "employee_id": onboarding.employee_id,
+        "employee_name": onboarding.candidate_name
+    }

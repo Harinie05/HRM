@@ -226,7 +226,7 @@ app.include_router(consultants_router, prefix="/recruitment")
 app.include_router(probation_router, prefix="/recruitment")
 
 # ======================= 🔥 EIS MODULE =======================
-app.include_router(employee_router)
+app.include_router(employee_router, prefix="/eis")
 app.include_router(family_router)
 app.include_router(education_router)
 app.include_router(experience_router)

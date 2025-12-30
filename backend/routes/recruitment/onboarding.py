@@ -33,6 +33,27 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Reques
         dept_prefix = data.department[:3].upper() if data.department else "EMP"
         timestamp = str(datetime.now().timestamp()).replace('.', '')[-6:]
         employee_id = f"{dept_prefix}{timestamp}"
+    
+    # Validate employee ID is unique
+    existing_onboarding = db.query(OnboardingCandidate).filter(
+        OnboardingCandidate.employee_id == employee_id
+    ).first()
+    
+    if existing_onboarding:
+        raise HTTPException(status_code=400, detail=f"Employee ID {employee_id} already exists. Please use a different ID.")
+    
+    # Also check in User table if it exists
+    try:
+        from models.models_tenant import User
+        existing_user = db.query(User).filter(
+            User.employee_code == employee_id
+        ).first()
+        
+        if existing_user:
+            raise HTTPException(status_code=400, detail=f"Employee ID {employee_id} already exists in user management. Please use a different ID.")
+    except Exception:
+        # User table might not exist, continue
+        pass
 
     record = OnboardingCandidate(
         application_id=candidate_id,

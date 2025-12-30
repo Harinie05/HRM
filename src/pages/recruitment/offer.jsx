@@ -263,6 +263,27 @@ export default function Offer() {
   };
 
   // ------------------------------------------------------------
+  // HANDLE ONBOARDED - COMPLETE ONBOARDING AND CREATE EIS RECORD
+  // ------------------------------------------------------------
+  const handleOnboarded = async (offerId) => {
+    try {
+      // Update offer status to completed
+      await api.post(`/recruitment/offer/${offerId}/status?status=Onboarding completed`);
+      
+      // Find the candidate and create EIS record automatically
+      const offer = offers.find(o => o.id === offerId);
+      if (offer) {
+        await api.post(`/eis/employee/create-from-onboarding/${offer.candidate_id}`);
+      }
+      
+      showToast("Candidate onboarding completed and added to EIS successfully!");
+      fetchOffers();
+    } catch (err) {
+      showToast("Failed to complete onboarding", 'error');
+    }
+  };
+
+  // ------------------------------------------------------------
   // START ONBOARDING - COMPREHENSIVE FORM
   // ------------------------------------------------------------
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
@@ -595,11 +616,22 @@ export default function Offer() {
                               </button>
                             )}
 
-                            {/* Onboarding Started Status */}
+                            {/* Onboarding Started Status - Show Onboarded Button */}
                             {o.offer_status === "Onboarding Started" && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                <FiUser className="mr-1" size={10} />
-                                Onboarding In Progress
+                              <button
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                onClick={() => handleOnboarded(o.id)}
+                              >
+                                <FiCheck className="mr-1" size={12} />
+                                Onboarded
+                              </button>
+                            )}
+
+                            {/* Onboarding Completed Status */}
+                            {o.offer_status === "Onboarding completed" && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <FiCheck className="mr-1" size={10} />
+                                Onboarded
                               </span>
                             )}
 

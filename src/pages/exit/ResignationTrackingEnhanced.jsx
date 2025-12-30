@@ -15,11 +15,8 @@ const ResignationTracking = () => {
   const [formData, setFormData] = useState({
     employee_id: '',
     resignation_date: '',
-    last_working_day: '',
     reason: '',
-    notice_period: '30',
-    notes: '',
-    exit_interview_date: ''
+    notes: ''
   });
 
   useEffect(() => {
@@ -95,9 +92,7 @@ const ResignationTracking = () => {
       const submitData = {
         employee_id: parseInt(formData.employee_id),
         resignation_date: formData.resignation_date,
-        last_working_day: formData.last_working_day,
         reason: formData.reason,
-        notice_period: formData.notice_period,
         notes: formData.notes
       };
       
@@ -106,11 +101,8 @@ const ResignationTracking = () => {
       setFormData({
         employee_id: '',
         resignation_date: '',
-        last_working_day: '',
         reason: '',
-        notice_period: '30',
-        notes: '',
-        exit_interview_date: ''
+        notes: ''
       });
       fetchResignations();
       showToast('Resignation applied successfully!', 'success');
@@ -301,38 +293,6 @@ const ResignationTracking = () => {
                     onChange={(e) => setFormData({...formData, resignation_date: e.target.value})}
                     className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                     required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary mb-2">Last Working Day</label>
-                  <input
-                    type="date"
-                    value={formData.last_working_day}
-                    onChange={(e) => setFormData({...formData, last_working_day: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary mb-2">Notice Period (Days)</label>
-                  <input
-                    type="number"
-                    value={formData.notice_period}
-                    onChange={(e) => setFormData({...formData, notice_period: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
-                    placeholder="30"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-secondary mb-2">Exit Interview Date (Optional)</label>
-                  <input
-                    type="date"
-                    value={formData.exit_interview_date}
-                    onChange={(e) => setFormData({...formData, exit_interview_date: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
                   />
                 </div>
                 

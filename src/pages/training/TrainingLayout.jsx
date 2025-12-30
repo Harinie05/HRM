@@ -45,7 +45,7 @@ export default function TrainingLayout() {
               </div>
               <div className="text-left sm:text-right">
                 <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="text-sm font-medium">{tabs.length} Modules</span>
+                  <span className="text-sm font-medium">5 Modules</span>
                 </div>
                 <p className="text-lg font-bold text-gray-900">Training components</p>
               </div>

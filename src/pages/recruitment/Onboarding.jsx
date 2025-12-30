@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
-import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone } from "react-icons/fi";
+import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone, FiCheck } from "react-icons/fi";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 
@@ -86,8 +86,10 @@ export default function Onboarding() {
         api.get("/recruitment/onboarding/candidates")
       ]);
       
-      // Show only candidates who have started onboarding
-      const onboardedOffers = offersRes.data.filter(offer => offer.offer_status === "Onboarding Started");
+      // Show only candidates who have completed onboarding
+      const onboardedOffers = offersRes.data.filter(offer => 
+        offer.offer_status === "Onboarding completed"
+      );
       
       // Map with employee IDs from onboarding records (get the latest record)
       const candidatesWithEmployeeIds = onboardedOffers.map(offer => {
@@ -191,6 +193,25 @@ export default function Onboarding() {
   };
 
   // ===============================================================
+  // VALIDATE EMPLOYEE ID
+  // ===============================================================
+  const validateEmployeeId = async (employeeId) => {
+    if (!employeeId) return;
+    
+    try {
+      const res = await api.get(`/eis/employee/validate/${employeeId}`);
+      if (res.data.exists) {
+        showToast(`Employee ID ${employeeId} already exists. Please use a different ID.`, "error");
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("Validation error:", err);
+      return true; // Allow if validation fails
+    }
+  };
+
+  // ===============================================================
   // GENERATE EMPLOYEE ID
   // ===============================================================
   const generateEmployeeId = () => {
@@ -205,6 +226,12 @@ export default function Onboarding() {
   // ===============================================================
   const submitNewOnboarding = async () => {
     try {
+      // Validate employee ID first
+      const isValidEmployeeId = await validateEmployeeId(newOnboardingForm.employee_id);
+      if (!isValidEmployeeId) {
+        return; // Stop submission if employee ID is duplicate
+      }
+      
       await api.post(`/recruitment/onboarding/create/${location.state.candidateId}`, {
         job_title: newOnboardingForm.designation,
         department: newOnboardingForm.department,
@@ -220,7 +247,8 @@ export default function Onboarding() {
       fetchCandidates();
     } catch (err) {
       console.error("Error:", err);
-      showToast("Failed to submit onboarding form", "error");
+      const errorMessage = err.response?.data?.detail || "Failed to submit onboarding form";
+      showToast(errorMessage, "error");
     }
   };
 
@@ -631,6 +659,7 @@ export default function Onboarding() {
                         className="w-full px-4 py-3 bg-white text-black border border-black rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 flex-1"
                         value={newOnboardingForm.employee_id}
                         onChange={(e) => setNewOnboardingForm({...newOnboardingForm, employee_id: e.target.value})}
+                        onBlur={() => validateEmployeeId(newOnboardingForm.employee_id)}
                         required
                         placeholder="Auto-generated or enter manually"
                       />

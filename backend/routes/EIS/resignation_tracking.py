@@ -93,19 +93,9 @@ def apply_resignation(data: ExitCreate, request: Request, user=Depends(get_curre
         resignation = EmployeeExit(
             employee_id=data.employee_id,
             resignation_date=data.resignation_date,
-            last_working_day=data.last_working_day,
             reason=data.reason,
-            notice_period=data.notice_period or "30",
             notes=data.notes
         )
-        
-        # Add exit interview date to notes if provided
-        if data.exit_interview_date:
-            interview_note = f"Exit Interview Scheduled: {data.exit_interview_date}"
-            if resignation.notes:
-                resignation.notes += f"\n\n{interview_note}"
-            else:
-                resignation.notes = interview_note
 
         # Update employee status
         if hasattr(emp, 'status'):

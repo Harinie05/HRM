@@ -186,6 +186,21 @@ def update_user(
 
 
 # ============================================================
+# UPDATE USER (Alternative endpoint) 🔒 Protected
+# ============================================================
+@router.put("/users/{tenant_db}/{user_id}")
+def update_user_alt(
+    tenant_db: str,
+    user_id: int,
+    payload: schemas_tenant.UserUpdate,
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    return update_user(tenant_db, user_id, payload, request, db, user)
+
+
+# ============================================================
 # DELETE USER 🔒 Protected
 # ============================================================
 @router.delete("/users/{tenant_db}/delete/{user_id}")

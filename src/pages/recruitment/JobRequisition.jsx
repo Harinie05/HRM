@@ -50,6 +50,20 @@ export default function JobRequisition() {
     setShowForm(true);
   };
 
+  const handleStatusToggle = async (req) => {
+    const newStatus = req.status === 'Active' ? 'Inactive' : 'Active';
+    const action = newStatus === 'Active' ? 'activate' : 'deactivate';
+    
+    try {
+      await api.put(`/recruitment/update-status/${req.id}`, { status: newStatus });
+      showToast(`Job ${action}d successfully!`);
+      fetchRequisitions();
+    } catch (err) {
+      console.error(`Failed to ${action} job`);
+      showToast(`Failed to ${action} job`, 'error');
+    }
+  };
+
   const handleDelete = async (req) => {
     if (window.confirm('Are you sure you want to delete this job requisition?')) {
       try {
@@ -180,10 +194,21 @@ export default function JobRequisition() {
                   )}
                 </div>
                 
-                <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <span className="text-xs font-medium text-gray-600">Active</span>
-                </div>
+                <button
+                  onClick={() => handleStatusToggle(req)}
+                  className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    req.status === 'Active' 
+                      ? 'hover:bg-green-50' 
+                      : 'hover:bg-red-50'
+                  }`}
+                >
+                  <div className={`w-2 h-2 rounded-full ${
+                    req.status === 'Active' ? 'bg-green-400' : 'bg-red-400'
+                  }`}></div>
+                  <span className={`text-xs font-medium ${
+                    req.status === 'Active' ? 'text-green-600' : 'text-red-600'
+                  }`}>{req.status || 'Active'}</span>
+                </button>
               </div>
               
               {/* Location & Type */}

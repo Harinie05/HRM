@@ -65,27 +65,27 @@ export default function Recruitment() {
 
   // ========================= PUBLISH / UNPUBLISH =========================
   const togglePublish = async (job) => {
-    const currentStatus = job.status?.trim();
-    const newStatus = currentStatus === "Posted" ? "Completed" : "Posted";
+    const currentPublishStatus = job.publish_status?.trim();
+    const newPublishStatus = currentPublishStatus === "Published" ? "Draft" : "Published";
     
     try {
       // Use the existing update endpoint with the full job data
       await api.put(`/recruitment/update/${job.id}`, {
         ...job,
-        status: newStatus
+        publish_status: newPublishStatus
       });
       
-      // Update the job status locally for immediate UI feedback
+      // Update the job publish_status locally for immediate UI feedback
       setJobs(prevJobs => 
         prevJobs.map(j => 
-          j.id === job.id ? { ...j, status: newStatus } : j
+          j.id === job.id ? { ...j, publish_status: newPublishStatus } : j
         )
       );
       
-      showToast(`Job ${newStatus === 'Posted' ? 'published' : 'unpublished'} successfully!`);
+      showToast(`Job ${newPublishStatus === 'Published' ? 'published' : 'unpublished'} successfully!`);
     } catch (err) {
-      console.error("Failed to update job status", err);
-      showToast(`Failed to update job status: ${err.message || 'Unknown error'}`, 'error');
+      console.error("Failed to update job publish status", err);
+      showToast(`Failed to update job publish status: ${err.message || 'Unknown error'}`, 'error');
     }
   };
 
@@ -233,7 +233,7 @@ export default function Recruitment() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Published</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Posted').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
               </div>
               <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
                 <FiPlay className="text-gray-600" size={20} />
@@ -245,7 +245,7 @@ export default function Recruitment() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Drafts</p>
-                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Completed').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() !== 'Published').length}</p>
               </div>
               <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
                 <FiPause className="text-gray-600" size={20} />
@@ -256,11 +256,11 @@ export default function Recruitment() {
           <div className="bg-white rounded-2xl p-6 border border-black">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 font-medium">Departments</p>
-                <p className="text-2xl font-bold text-gray-900">{departments.length}</p>
+                <p className="text-sm text-gray-600 font-medium">Closed</p>
+                <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Inactive').length}</p>
               </div>
               <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiUsers className="text-gray-600" size={20} />
+                <FiPause className="text-red-600" size={20} />
               </div>
             </div>
           </div>
@@ -378,17 +378,22 @@ export default function Recruitment() {
                         <span className="text-sm text-gray-600">{job.job_type || 'Full-time'}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {job.status?.trim() === "Posted" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <FiPlay className="mr-1" size={10} />
-                            Published
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            <FiPause className="mr-1" size={10} />
-                            Draft
-                          </span>
-                        )}
+                        <div className="flex flex-col items-center">
+                          {job.publish_status?.trim() === "Published" ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <FiPlay className="mr-1" size={10} />
+                              Published
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              <FiPause className="mr-1" size={10} />
+                              Draft
+                            </span>
+                          )}
+                          {job.status === "Inactive" && (
+                            <span className="text-xs text-red-600 font-medium mt-1">closed</span>
+                          )}
+                        </div>
                       </td>
 
                       <td className="px-6 py-4">
@@ -428,13 +433,13 @@ export default function Recruitment() {
                           <button
                             onClick={() => togglePublish(job)}
                             className={`p-2 rounded-lg transition-colors ${
-                              job.status?.trim() === "Posted"
+                              job.publish_status?.trim() === "Published"
                                 ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
                                 : "text-gray-500 hover:text-green-600 hover:bg-green-50"
                             }`}
-                            title={job.status?.trim() === "Posted" ? "Unpublish" : "Publish"}
+                            title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
                           >
-                            {job.status?.trim() === "Posted" ? <FiPause size={16} /> : <FiPlay size={16} />}
+                            {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
                           </button>
 
                           <button

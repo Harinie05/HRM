@@ -590,6 +590,20 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
           {!isCollapsed && <span className="text-sm whitespace-nowrap">Compliance Module</span>}
         </Link>
 
+        {/* Exit Management */}
+        <Link
+          to="/exit"
+          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
+            location.pathname.startsWith("/exit")
+              ? "bg-white/20 font-semibold"
+              : ""
+          }`}
+          title={isCollapsed ? "Exit Management" : ""}
+        >
+          <UserMinus size={16} />
+          {!isCollapsed && <span className="text-sm whitespace-nowrap">Exit Management</span>}
+        </Link>
+
         {/* Customization & Templates */}
         <Link
           to="/customization"
@@ -604,20 +618,6 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         >
           <Palette size={20} />
           {!isCollapsed && <span className="text-sm whitespace-nowrap">Customization & Templates</span>}
-        </Link>
-
-        {/* Exit Management */}
-        <Link
-          to="/exit"
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
-            location.pathname.startsWith("/exit")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Exit Management" : ""}
-        >
-          <UserMinus size={16} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Exit Management</span>}
         </Link>
 
       </nav>

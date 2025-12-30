@@ -154,6 +154,25 @@ def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
 
 
 # ----------------------------------------------------------
+# UPDATE JOB STATUS (ACTIVATE/DEACTIVATE)
+# ----------------------------------------------------------
+@router.put("/update-status/{job_id}")
+def update_job_status(job_id: int, status_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+    job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    old_values = job.__dict__.copy()
+    setattr(job, 'status', status_data.get('status', 'Active'))
+    setattr(job, 'updated_at', datetime.now())
+    
+    db.commit()
+    db.refresh(job)
+    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE_STATUS", "job_requisitions", job_id, old_values, job.__dict__)
+    
+    return {"message": f"Job status updated to {status_data.get('status')}", "status": job.status}
+
+# ----------------------------------------------------------
 # DELETE JOB REQUISITION
 # ----------------------------------------------------------
 @router.delete("/delete/{job_id}")
