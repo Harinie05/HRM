@@ -116,6 +116,7 @@ from routes.compliance.nabh_compliance import router as nabh_compliance_router
 
 # ======================= 🔥 EXIT MANAGEMENT ROUTERS =======================
 from routes.exit.exit_management import router as exit_management_router
+from routes.exit.knowledge_transfer import router as knowledge_transfer_router
 
 # ============================================================
 
@@ -295,6 +296,7 @@ app.include_router(nabh_compliance_router, prefix="/api")
 
 # ======================= 🔥 EXIT MANAGEMENT MODULE =======================
 app.include_router(exit_management_router, prefix="/api")
+app.include_router(knowledge_transfer_router, prefix="/api")
 
 logger.info("All routers loaded successfully")
 

@@ -12,6 +12,8 @@ export default function LeaveCalendar() {
   const [holidays, setHolidays] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [loading, setLoading] = useState(true);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [selectedDayLeaves, setSelectedDayLeaves] = useState([]);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -29,6 +31,7 @@ export default function LeaveCalendar() {
     try {
       setLoading(true);
       const res = await api.get("/api/leave/applications/");
+      console.log("Raw leaves data:", res.data);
       setLeaves(res.data || []);
     } catch (error) {
       console.error("Error fetching leaves:", error);
@@ -184,21 +187,45 @@ export default function LeaveCalendar() {
     const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
     
-    return leaves.filter(leave => {
+    const dayLeaves = leaves.filter(leave => {
       const fromDate = new Date(leave.from_date);
       const toDate = new Date(leave.to_date);
-      const checkDate = new Date(currentYear, currentMonth - 1, day);
       
+      // Create check date using string format to avoid timezone issues
+      const checkDateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const checkDate = new Date(checkDateStr);
+      
+      // Check if date falls within leave period
       const dateMatch = checkDate >= fromDate && checkDate <= toDate;
+      
+      // Only show approved leaves (case insensitive)
+      const isApproved = leave.status && leave.status.toLowerCase() === 'approved';
+      
+      // Debug logging for day 30 specifically
+      if (day === 30) {
+        console.log(`Day 30 Debug:`);
+        console.log(`  Leave dates: ${leave.from_date} to ${leave.to_date}`);
+        console.log(`  Check date string: ${checkDateStr}`);
+        console.log(`  Check date: ${checkDate.toISOString().split('T')[0]}`);
+        console.log(`  Current month/year: ${currentMonth}/${currentYear}`);
+        console.log(`  FromDate: ${fromDate.toISOString().split('T')[0]}`);
+        console.log(`  ToDate: ${toDate.toISOString().split('T')[0]}`);
+        console.log(`  DateMatch: ${dateMatch}`);
+      }
       
       // Apply department filter
       if (selectedDepartment !== "All Departments") {
         const empInfo = getEmployeeInfo(leave.employee_id);
-        return dateMatch && empInfo.department === selectedDepartment;
+        return dateMatch && isApproved && empInfo.department === selectedDepartment;
       }
       
-      return dateMatch;
+      return dateMatch && isApproved;
     });
+    
+    if (day === 30) {
+      console.log(`Day 30: Found ${dayLeaves.length} approved leaves`);
+    }
+    return dayLeaves;
   };
 
   const getHolidayForDay = (day) => {
@@ -331,22 +358,17 @@ export default function LeaveCalendar() {
                         🏖️ {getHolidayForDay(day).name}
                       </div>
                     )}
-                    {getLeaveForDay(day).map((leave, idx) => {
-                      const empInfo = getEmployeeInfo(leave.employee_id);
-                      const statusColors = {
-                        'Approved': 'bg-green-100 text-green-800',
-                        'Pending': 'bg-yellow-100 text-yellow-800', 
-                        'Rejected': 'bg-red-100 text-red-800'
-                      };
-                      const colorClass = statusColors[leave.status] || 'bg-gray-100 text-primary';
-                      return (
-                        <div key={idx} className={`text-xs p-1 mb-1 rounded ${colorClass} truncate`} title={`${empInfo.code} - ${empInfo.name} (${empInfo.department}) - ${leave.status}`}>
-                          {empInfo.code}
-                          <div className={`text-[10px] ${leave.status === 'Approved' ? 'text-green-600' : leave.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'}`}>{empInfo.name}</div>
-                          <div className="text-[9px] text-muted">{empInfo.department}</div>
-                        </div>
-                      );
-                    })}
+                    {getLeaveForDay(day).length > 0 && (
+                      <div 
+                        className="text-xs p-2 rounded bg-green-100 text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                        onClick={() => {
+                          setSelectedDayLeaves(getLeaveForDay(day));
+                          setShowLeaveModal(true);
+                        }}
+                      >
+                        {getLeaveForDay(day).length} on leave
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -379,22 +401,17 @@ export default function LeaveCalendar() {
                       🏖️ {getHolidayForDay(day).name}
                     </div>
                   )}
-                  {isCurrentMonth && getLeaveForDay(day).map((leave, idx) => {
-                    const empInfo = getEmployeeInfo(leave.employee_id);
-                    const statusColors = {
-                      'Approved': 'bg-green-100 text-green-800',
-                      'Pending': 'bg-yellow-100 text-yellow-800',
-                      'Rejected': 'bg-red-100 text-red-800'
-                    };
-                    const colorClass = statusColors[leave.status] || 'bg-gray-100 text-primary';
-                    return (
-                      <div key={idx} className={`text-xs p-1 mb-1 rounded ${colorClass} truncate`} title={`${empInfo.code} - ${empInfo.name} (${empInfo.department}) - ${leave.status}`}>
-                        {empInfo.code}
-                        <div className={`text-[10px] ${leave.status === 'Approved' ? 'text-green-600' : leave.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'}`}>{empInfo.name}</div>
-                        <div className="text-[9px] text-muted">{empInfo.department}</div>
-                      </div>
-                    );
-                  })}
+                  {isCurrentMonth && getLeaveForDay(day).length > 0 && (
+                    <div 
+                      className="text-xs p-2 rounded bg-green-100 text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                      onClick={() => {
+                        setSelectedDayLeaves(getLeaveForDay(day));
+                        setShowLeaveModal(true);
+                      }}
+                    >
+                      {getLeaveForDay(day).length} on leave
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -461,6 +478,37 @@ export default function LeaveCalendar() {
           </div>
         </div>
       </div>
+
+      {/* Leave Details Modal */}
+      {showLeaveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Employees on Leave</h3>
+              <button 
+                onClick={() => setShowLeaveModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2">
+              {selectedDayLeaves.map((leave, idx) => {
+                const empInfo = getEmployeeInfo(leave.employee_id);
+                return (
+                  <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <div>
+                      <div className="font-medium">{empInfo.name}</div>
+                      <div className="text-sm text-gray-600">{empInfo.code}</div>
+                    </div>
+                    <div className="text-sm text-gray-600">{empInfo.department}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

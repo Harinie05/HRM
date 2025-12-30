@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict, Any, Union
 from schemas.schemas_master import AdminAuth
-from datetime import date, datetime,time
+from datetime import date, datetime, time
 
 # ---------------------------
 # TENANT: DEPARTMENTS
@@ -335,6 +335,47 @@ class OTPolicyOut(OTPolicyBase):
 # ---------- Output ----------
 class HolidayOut(HolidayBase):
     id: int
+
+# ================================================================
+#                      KNOWLEDGE TRANSFER SCHEMAS
+# ================================================================
+class KTItemBase(BaseModel):
+    knowledge_area: str
+    description: Optional[str] = None
+    to_employee_id: int
+    status: str = "Pending"
+
+class KTItemCreate(KTItemBase):
+    pass
+
+class KTItemOut(KTItemBase):
+    id: int
+    from_employee_id: int
+    acknowledged_at: Optional[datetime] = None
+    acknowledged_by: Optional[int] = None
+    
+    class Config:
+        from_attributes = True
+
+class KnowledgeTransferBase(BaseModel):
+    start_date: date
+    end_date: date
+    remarks: Optional[str] = None
+
+class KnowledgeTransferCreate(KnowledgeTransferBase):
+    kt_items: List[KTItemCreate]
+
+class KnowledgeTransferOut(KnowledgeTransferBase):
+    id: int
+    exit_id: int
+    employee_id: int
+    overall_status: str
+    manager_approved: bool
+    hr_approved: bool
+    kt_items: List[KTItemOut] = []
+    
+    class Config:
+        from_attributes = True
 
 # ================================================================
 #                      JOB REQUISITION SCHEMAS
@@ -704,9 +745,6 @@ class BGVOut(BaseModel):
     class Config:
         from_attributes = True
 
-from pydantic import BaseModel
-from typing import Optional, List
-from datetime import date, datetime
 
 
 # ============================================================
@@ -1735,7 +1773,7 @@ class VisitingConsultantOut(VisitingConsultantBase):
 
 class ConsultantAvailabilityBase(BaseModel):
     consultant_id: int
-    date: date
+    availability_date: date
     from_time: time
     to_time: time
     availability_type: str  # OPD / Surgery / On-call
@@ -1776,7 +1814,7 @@ class ConsultantPayoutOut(ConsultantPayoutBase):
 # =====================================================
 class OnCallDutyBase(BaseModel):
     employee_id: int
-    date: date
+    duty_date: date
     from_time: time
     to_time: time
     duty_type: Optional[str] = "On-Call"
@@ -1791,7 +1829,7 @@ class OnCallDutyCreate(OnCallDutyBase):
 
 class OnCallDutyUpdate(BaseModel):
     employee_id: Optional[int] = None
-    date: Optional[date] = None
+    duty_date: Optional[date] = None
     from_time: Optional[time] = None
     to_time: Optional[time] = None
     duty_type: Optional[str] = None
@@ -1870,7 +1908,7 @@ class EmployeeProbationOut(EmployeeProbationBase):
 # =====================================================
 class PatientLoadBase(BaseModel):
     department_id: int
-    date: date
+    load_date: date
     shift: str
     total_patients: Optional[int] = 0
     critical_patients: Optional[int] = 0
@@ -1892,7 +1930,7 @@ class PatientLoadOut(PatientLoadBase):
 
 class StaffAllocationBase(BaseModel):
     department_id: int
-    date: date
+    allocation_date: date
     shift: str
     required_nurses: Optional[int] = 0
     required_doctors: Optional[int] = 0

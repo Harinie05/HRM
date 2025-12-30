@@ -350,8 +350,12 @@ class PublicCandidate(MasterBase):
 
     resume_url = Column(String(500), nullable=True)
 
+    # 🔹 NEW FIELDS (Referral Support)
+    referral_code = Column(String(50), nullable=True)
+    source = Column(String(20), default="direct")  # direct | referral
+
     applied_at = Column(DateTime, default=func.now())
-    
+
     job = relationship("JobRequisition", back_populates="public_candidates")
 
 # ------------------------------
@@ -774,9 +778,49 @@ class EmployeeExit(MasterBase):
     asset_return_status = Column(String(50), default="Pending")
     final_settlement = Column(String(50), default="Pending")
     clearance_status = Column(String(50), default="Pending")
+    kt_status = Column(String(50), default="Pending")  # NEW: KT completion status
     
     notes = Column(Text)
     updated_at = Column(DateTime, default=func.now())
+
+# ========================= KNOWLEDGE TRANSFER =========================
+class ExitKnowledgeTransfer(MasterBase):
+    __tablename__ = "exit_knowledge_transfer"
+
+    id = Column(Integer, primary_key=True, index=True)
+    exit_id = Column(Integer, ForeignKey("employee_exit.id"), nullable=False)
+    employee_id = Column(Integer, nullable=False)  # Resigning employee
+    
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    overall_status = Column(String(50), default="Pending")  # Pending/In Progress/Completed
+    
+    # Approvals
+    manager_approved = Column(Boolean, default=False)
+    hr_approved = Column(Boolean, default=False)
+    
+    remarks = Column(Text)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+class ExitKTItem(MasterBase):
+    __tablename__ = "exit_kt_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kt_id = Column(Integer, ForeignKey("exit_knowledge_transfer.id"), nullable=False)
+    
+    knowledge_area = Column(String(100), nullable=False)  # Project Knowledge, Codebase, etc.
+    description = Column(Text)
+    
+    from_employee_id = Column(Integer, nullable=False)  # Resigning employee
+    to_employee_id = Column(Integer, nullable=False)    # Receiving employee
+    
+    status = Column(String(50), default="Pending")  # Pending/In Progress/Completed
+    acknowledged_at = Column(DateTime, nullable=True)
+    acknowledged_by = Column(Integer, nullable=True)  # Employee who acknowledged
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 
 # ================================================================
 #  🔥 ATTENDANCE & BIOMETRIC MODELS

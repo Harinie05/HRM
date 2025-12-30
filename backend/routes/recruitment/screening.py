@@ -117,6 +117,8 @@ def get_pending_applications(job_id: int, db: Session = Depends(get_tenant_db)):
             "skills": app.skills,
             "resume_url": app.resume_url,
             "applied_at": app.applied_at,
+            "referral_code": app.referral_code,
+            "source": app.source,
             "match_score": calculate_match_score(app, job)
         } for app in applications]
     }

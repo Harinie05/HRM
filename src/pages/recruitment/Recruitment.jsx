@@ -21,6 +21,53 @@ export default function Recruitment() {
   const [showForm, setShowForm] = useState(false);
   const [mode, setMode] = useState("create"); // create | edit | view
   const [selectedJob, setSelectedJob] = useState(null);
+  const [employeeCode, setEmployeeCode] = useState(null);
+  const [openLinkMenu, setOpenLinkMenu] = useState(null);
+
+  const fetchMyProfile = async () => {
+    try {
+      // Get tenant_db from localStorage
+      const tenantDb = localStorage.getItem("tenant_db");
+      if (!tenantDb) {
+        console.error("No tenant_db found");
+        return;
+      }
+      
+      // Get current user's email from token or localStorage
+      const userEmail = localStorage.getItem("user_email") || "";
+      
+      // Try users table first (system users with employee_code)
+      try {
+        const res = await api.get(`/hospitals/users/${tenantDb}/list`);
+        const currentUser = res.data.users?.find(user => user.email === userEmail);
+        
+        if (currentUser?.employee_code) {
+          setEmployeeCode(currentUser.employee_code);
+          return;
+        }
+      } catch (err) {
+        console.log("User not found in users table");
+      }
+      
+      // Try onboarding table for onboarded employees
+      try {
+        const onboardingRes = await api.get("/recruitment/onboarding/list");
+        const onboardedEmployee = onboardingRes.data?.find(emp => 
+          emp.candidate_name && emp.employee_id && 
+          (emp.email === userEmail || emp.candidate_name.toLowerCase().includes(userEmail.split('@')[0]))
+        );
+        
+        if (onboardedEmployee?.employee_id) {
+          setEmployeeCode(onboardedEmployee.employee_id);
+          return;
+        }
+      } catch (err) {
+        console.log("Employee not found in onboarding table");
+      }
+    } catch (err) {
+      console.error("Failed to fetch employee code", err);
+    }
+  };
 
   // ========================= FETCH JOBS =========================
   const fetchJobs = async () => {
@@ -42,6 +89,17 @@ export default function Recruitment() {
 
   useEffect(() => {
     fetchJobs();
+    fetchMyProfile();
+    
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.link-dropdown')) {
+        setOpenLinkMenu(null);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   // ========================= MODALS =========================
@@ -86,26 +144,6 @@ export default function Recruitment() {
     } catch (err) {
       console.error("Failed to update job publish status", err);
       showToast(`Failed to update job publish status: ${err.message || 'Unknown error'}`, 'error');
-    }
-  };
-
-  // ========================= GENERATE APPLY LINK =========================
-  const generateApplyLink = async (job) => {
-    try {
-      const res = await api.post(`/recruitment/generate-link/${job.id}`);
-      const url = res.data.url;
-      
-      setGeneratedLinks(prev => ({
-        ...prev,
-        [job.id]: url
-      }));
-      
-      // Copy to clipboard
-      navigator.clipboard.writeText(url);
-      showToast("Job link generated and copied to clipboard!");
-    } catch (err) {
-      console.error("Failed to generate link", err);
-      showToast("Failed to generate job link", 'error');
     }
   };
 
@@ -422,13 +460,51 @@ export default function Recruitment() {
                             <FiUsers size={16} />
                           </button>
 
-                          <button
-                            onClick={() => generateApplyLink(job)}
-                            className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                            title="Generate Apply Link"
-                          >
-                            <FiLink size={16} />
-                          </button>
+                          <div className="relative link-dropdown">
+                            <button
+                              onClick={() =>
+                                setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
+                              }
+                              className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                              title="Job Links"
+                            >
+                              <FiLink size={16} />
+                            </button>
+
+                            {openLinkMenu === job.id && (
+                              <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                <button
+                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
+                                  onClick={() => {
+                                    const publicLink = `${window.location.origin}/apply/${job.id}`;
+                                    setGeneratedLinks(prev => ({
+                                      ...prev,
+                                      [job.id]: { ...prev[job.id], public: publicLink }
+                                    }));
+                                    showToast("Public job link generated");
+                                  }}
+                                >
+                                  🌍 Generate Public Link
+                                </button>
+
+                                {employeeCode && (
+                                  <button
+                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                    onClick={() => {
+                                      const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                      setGeneratedLinks(prev => ({
+                                        ...prev,
+                                        [job.id]: { ...prev[job.id], referral: referralLink }
+                                      }));
+                                      showToast("Referral link generated");
+                                    }}
+                                  >
+                                    👤 Generate My Referral Link
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
 
                           <button
                             onClick={() => togglePublish(job)}
@@ -450,17 +526,42 @@ export default function Recruitment() {
                             <FiTrash2 size={16} />
                           </button>
                         </div>
-                        
                         {generatedLinks[job.id] && (
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              value={generatedLinks[job.id]}
-                              readOnly
-                              className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none"
-                              onClick={(e) => e.target.select()}
-                              placeholder="Generated link will appear here"
-                            />
+                          <div className="mt-2 space-y-2">
+                            {generatedLinks[job.id]?.public && (
+                              <div>
+                                <label className="text-xs text-gray-600 font-medium">Public Link:</label>
+                                <input
+                                  type="text"
+                                  value={generatedLinks[job.id].public}
+                                  readOnly
+                                  className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                  onClick={(e) => {
+                                    e.target.select();
+                                    navigator.clipboard.writeText(e.target.value);
+                                    showToast("Public link copied to clipboard!");
+                                  }}
+                                  placeholder="Public link will appear here"
+                                />
+                              </div>
+                            )}
+                            {generatedLinks[job.id]?.referral && (
+                              <div>
+                                <label className="text-xs text-gray-600 font-medium">Referral Link:</label>
+                                <input
+                                  type="text"
+                                  value={generatedLinks[job.id].referral}
+                                  readOnly
+                                  className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                  onClick={(e) => {
+                                    e.target.select();
+                                    navigator.clipboard.writeText(e.target.value);
+                                    showToast("Referral link copied to clipboard!");
+                                  }}
+                                  placeholder="Referral link will appear here"
+                                />
+                              </div>
+                            )}
                           </div>
                         )}
                       </td>
@@ -797,8 +898,8 @@ function JobFormModal({ mode, job, onClose }) {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-medium text-white">Interview Rounds</h3>
-                  <p className="text-sm text-gray-300">Configure the interview process for this position</p>
+                  <h3 className="text-lg font-medium text-black">Interview Rounds</h3>
+                  <p className="text-sm text-gray-600">Configure the interview process for this position</p>
                 </div>
                 {!isView && (
                   <button

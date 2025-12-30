@@ -1,9 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_tenant_db
-from models.models_tenant import JobRequisition, PublicCandidate, Candidate
+from models.models_tenant import JobRequisition, PublicCandidate
 import os
-from datetime import datetime
 import uuid
 
 router = APIRouter(prefix="/recruitment/public", tags=["Public Apply"])
@@ -33,7 +32,7 @@ def get_job_details(job_id: int, db: Session = Depends(get_tenant_db)):
 
 
 # -------------------------------------------------------------
-# PUBLIC APPLY ROUTE (Candidate fills form)
+# PUBLIC APPLY ROUTE (Normal + Referral)
 # -------------------------------------------------------------
 @router.post("/apply/{job_id}")
 def apply_to_job(
@@ -43,14 +42,17 @@ def apply_to_job(
     phone: str = Form(""),
     experience: str = Form(""),
     skills: str = Form(""),
+    referral_code: str = Form(None),   # 🔹 NEW (optional)
     resume: UploadFile = File(...),
     db: Session = Depends(get_tenant_db)
 ):
     from database import logger
-    
+
     try:
-        logger.info(f"Applying for job {job_id} - Name: {name}, Email: {email}")
-        
+        logger.info(
+            f"Applying for job {job_id} | Name={name} | Referral={referral_code}"
+        )
+
         job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
@@ -62,10 +64,10 @@ def apply_to_job(
 
         with open(filepath, "wb") as buffer:
             buffer.write(resume.file.read())
-        
+
         logger.info(f"Resume saved: {filename}")
 
-        # ---- Save Public Candidate ----
+        # ---- Save Public Candidate (Normal / Referral) ----
         public = PublicCandidate(
             job_id=job_id,
             name=name,
@@ -74,19 +76,23 @@ def apply_to_job(
             experience=experience,
             skills=skills,
             resume_url=filename,
+            referral_code=referral_code,
+            source="referral" if referral_code else "direct"
         )
 
         db.add(public)
         db.commit()
         db.refresh(public)
-        
-        logger.info(f"Public candidate saved with ID: {public.id}")
 
-        # Applications go to pending review, not directly to ATS
-        logger.info(f"Application saved for HR review - Public ID: {public.id}")
+        logger.info(
+            f"Public candidate saved | ID={public.id} | Source={public.source}"
+        )
 
-        return {"message": "Application submitted successfully", "candidate_id": public.id}
-        
+        return {
+            "message": "Application submitted successfully",
+            "candidate_id": public.id
+        }
+
     except Exception as e:
         logger.error(f"Error in apply_to_job: {str(e)}")
         db.rollback()

@@ -190,6 +190,7 @@ export default function CandidateScreening() {
                   <th className="p-2 sm:p-3 text-left">Candidate</th>
                   <th className="p-2 sm:p-3 text-left hidden sm:table-cell">Experience</th>
                   <th className="p-2 sm:p-3 text-left hidden md:table-cell">Skills</th>
+                  <th className="p-2 sm:p-3 text-left hidden lg:table-cell">Source</th>
                   <th className="p-2 sm:p-3 text-center">Score</th>
                   <th className="p-2 sm:p-3 text-center hidden sm:table-cell">Applied</th>
                   <th className="p-2 sm:p-3 text-center">Resume</th>
@@ -222,6 +223,18 @@ export default function CandidateScreening() {
                       <div className="text-sm max-w-xs truncate" title={app.skills}>
                         {app.skills || "—"}
                       </div>
+                    </td>
+                    
+                    <td className="p-2 sm:p-3 hidden lg:table-cell">
+                      {app.referral_code ? (
+                        <div className="text-xs">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            👤 Referred by {app.referral_code}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-500">Direct</span>
+                      )}
                     </td>
                     
                     <td className="p-2 sm:p-3 text-center">
