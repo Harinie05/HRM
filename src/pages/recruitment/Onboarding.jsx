@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
-import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone, FiCheck } from "react-icons/fi";
+import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone, FiCheck, FiClipboard } from "react-icons/fi";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import OriginalDocumentsModal from "../../components/OriginalDocumentsModal";
 
 export default function Onboarding() {
   const location = useLocation();
@@ -17,6 +18,7 @@ export default function Onboarding() {
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showDocumentsModal, setShowDocumentsModal] = useState(false);
+  const [showOriginalDocsModal, setShowOriginalDocsModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [onboardingDetails, setOnboardingDetails] = useState(null);
   const [candidateDocuments, setCandidateDocuments] = useState([]);
@@ -526,14 +528,24 @@ export default function Onboarding() {
                         </div>
                       </div>
                       
-                      {/* Action Button */}
-                      <div className="mt-3">
+                      {/* Action Buttons */}
+                      <div className="mt-3 space-y-2">
                         <button
                           className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
                           onClick={() => fetchCandidateDocuments(c.candidate_id)}
                         >
                           <FiEye className="mr-1" size={12} />
                           View Documents
+                        </button>
+                        <button
+                          className="w-full text-xs text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
+                          onClick={() => {
+                            setSelectedCandidate(c);
+                            setShowOriginalDocsModal(true);
+                          }}
+                        >
+                          <FiClipboard className="mr-1" size={12} />
+                          Documents Collected
                         </button>
                       </div>
                     </div>
@@ -1201,6 +1213,13 @@ export default function Onboarding() {
         </div>
       </Layout>
       <Toast toast={toast} />
+      
+      {/* Original Documents Collection Modal */}
+      <OriginalDocumentsModal
+        isOpen={showOriginalDocsModal}
+        onClose={() => setShowOriginalDocsModal(false)}
+        employee={selectedCandidate}
+      />
     </>
   );
 }

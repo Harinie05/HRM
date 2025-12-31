@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import DailyUpdates from "./DailyUpdates";
 import * as XLSX from 'xlsx';
 
 export default function AttendanceLogs() {
@@ -515,6 +516,7 @@ export default function AttendanceLogs() {
 
   const tabs = [
     { id: 'logs', label: 'Punch Logs' },
+    { id: 'daily-updates', label: 'Daily Updates' },
     { id: 'regularization', label: 'Regularization' },
     { id: 'od', label: 'OD Applications' },
     { id: 'reports', label: 'Reports' },
@@ -952,6 +954,12 @@ export default function AttendanceLogs() {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'daily-updates' && (
+              <div className="p-0">
+                <DailyUpdates />
               </div>
             )}
 

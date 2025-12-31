@@ -1094,6 +1094,7 @@ class AttendancePunchCreate(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     device_info: Optional[str] = None
+    ip_address: Optional[str] = None
 
 
 class AttendancePunchOut(AttendancePunchCreate):
@@ -1977,3 +1978,76 @@ class StaffScheduleRecommendationOut(StaffScheduleRecommendationBase):
 
 
 
+# =====================================================
+# DAILY WORK UPDATES SCHEMAS
+# =====================================================
+class DailyWorkUpdateCreate(BaseModel):
+    date: date
+    work_done: str
+    blockers: Optional[str] = None
+    plan_for_tomorrow: Optional[str] = None
+    hours_spent: Optional[float] = None
+    status: Optional[str] = "Draft"
+
+class DailyWorkUpdateUpdate(BaseModel):
+    work_done: Optional[str] = None
+    blockers: Optional[str] = None
+    plan_for_tomorrow: Optional[str] = None
+    hours_spent: Optional[float] = None
+    status: Optional[str] = None
+
+class DailyWorkUpdateOut(BaseModel):
+    id: int
+    employee_id: int
+    date: date
+    work_done: str
+    blockers: Optional[str]
+    plan_for_tomorrow: Optional[str]
+    hours_spent: Optional[float]
+    status: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+# Updated Daily Work Updates Schema with employee_id
+class DailyWorkUpdateCreateFixed(BaseModel):
+    employee_id: int
+    date: date
+    work_done: str
+    blockers: Optional[str] = None
+    plan_for_tomorrow: Optional[str] = None
+    hours_spent: Optional[float] = None
+    status: Optional[str] = "Draft"
+# =====================================================
+# ORIGINAL DOCUMENTS COLLECTION SCHEMAS
+# =====================================================
+class OriginalDocumentCreate(BaseModel):
+    employee_id: int
+    document_type: str
+    is_collected: bool = False
+    collected_date: Optional[date] = None
+    collected_by: Optional[int] = None
+    remarks: Optional[str] = None
+
+class OriginalDocumentUpdate(BaseModel):
+    document_type: str
+    is_collected: Optional[bool] = None
+    collected_date: Optional[date] = None
+    collected_by: Optional[int] = None
+    remarks: Optional[str] = None
+
+class OriginalDocumentOut(BaseModel):
+    id: int
+    employee_id: int
+    document_type: str
+    is_collected: bool
+    collected_date: Optional[date]
+    collected_by: Optional[int]
+    remarks: Optional[str]
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True

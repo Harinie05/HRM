@@ -468,6 +468,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                 access = create_access_token({
                     "email": user.email,
                     "role": "user",
+                    "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
                     "permissions": permissions
@@ -476,6 +477,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                 refresh = create_refresh_token({
                     "email": user.email,
                     "role": "user",
+                    "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
                     "permissions": permissions
@@ -496,7 +498,10 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "tenant_db": str(hosp.db_name),
                     "email": user.email,
                     "user_name": user.name,
-                    "role_name": "User",
+                    "user_id": user.id,
+                    "role_id": user.role_id,
+                    "department_id": user.department_id,
+                    "role_name": user.role.name if user.role else "User",
                     "permissions": permissions
                 }
 

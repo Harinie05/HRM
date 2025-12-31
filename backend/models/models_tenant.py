@@ -973,13 +973,14 @@ class AttendancePunch(MasterBase):
     out_time = Column(Time, nullable=True)
 
     location = Column(String(500), nullable=True)
-    source = Column(String(20), default="WEB")  # WEB / MOBILE
+    source = Column(String(20), default="WEB")  # WEB / MOBILE / SWIPE
     status = Column(String(50), default="Present")  # Present / Late / Absent
     
     # GPS and device tracking
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     device_info = Column(String(200), nullable=True)
+    ip_address = Column(String(45), nullable=True)  # IPv4 or IPv6
 
     created_at = Column(DateTime, server_default=func.now())
 
@@ -1826,8 +1827,29 @@ class StaffScheduleRecommendation(MasterBase):
     created_at = Column(DateTime, default=func.now())
 
 # =====================================================
-# QUALITY INDICATORS (HOSPITAL KPIs)
+# DAILY WORK UPDATES
 # =====================================================
+class DailyWorkUpdate(MasterBase):
+    __tablename__ = "daily_work_updates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    date = Column(Date, nullable=False)
+    work_done = Column(Text, nullable=False)
+    blockers = Column(Text, nullable=True)
+    plan_for_tomorrow = Column(Text, nullable=True)
+    hours_spent = Column(Float, nullable=True)
+    
+    status = Column(String(20), default="Draft")  # Draft / Submitted
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+    # Ensure one update per employee per date
+    __table_args__ = ({'extend_existing': True},)
+
+
 class QualityIndicator(MasterBase):
     __tablename__ = "quality_indicators"
 
@@ -1859,3 +1881,18 @@ class KPIRecord(MasterBase):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
+# ============================================================
+# EMPLOYEE ORIGINAL DOCUMENTS COLLECTION
+# ============================================================
+class EmployeeOriginalDocument(MasterBase):
+    __tablename__ = "employee_original_documents"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+    document_type = Column(String(100), nullable=False)
+    is_collected = Column(Boolean, default=False)
+    collected_date = Column(Date, nullable=True)
+    collected_by = Column(Integer, nullable=True)  # HR user id
+    remarks = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())

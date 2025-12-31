@@ -5,6 +5,7 @@ import {
   ChevronDown,
   LogOut,
   Menu,
+  Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
@@ -13,17 +14,21 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   const navigate = useNavigate();
   const [time, setTime] = useState(new Date());
   const [showDropdown, setShowDropdown] = useState(false);
+  const [attendanceStatus, setAttendanceStatus] = useState('not_checked_in');
+  const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    id: null,
+    name: 'Loading...',
+    email: 'loading@mail.com',
+    role: 'Employee',
+    employee_code: null
+  });
 
   // 🔹 Dynamic hospital info
   const hospitalName = localStorage.getItem("hospital_name") || "Your Hospital Name";
   const hospitalTagline = localStorage.getItem("hospital_tagline") || "Smart • Secure • NABH-Standard";
 
-  // 🔹 User info
-  const userEmail = localStorage.getItem("email") || "user@mail.com";
-  const userName =
-    localStorage.getItem("user_name") || userEmail.split("@")[0];
-  const userRole = localStorage.getItem("role_name") || "Employee";
-  const userInitial = userName.charAt(0).toUpperCase();
+  const userInitial = userInfo.name.charAt(0).toUpperCase();
 
   // 🔹 Live clock
   useEffect(() => {
@@ -32,6 +37,212 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch user info from database
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const fetchUserInfo = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const tenant = localStorage.getItem('tenant_db');
+      const currentEmail = localStorage.getItem('email');
+      
+      if (!token || !tenant || !currentEmail) {
+        // Use localStorage as fallback
+        setUserInfo({
+          id: localStorage.getItem('user_id'),
+          name: localStorage.getItem('user_name') || currentEmail?.split('@')[0] || 'User',
+          email: currentEmail || 'user@mail.com',
+          role: localStorage.getItem('role_name') || 'Employee',
+          employee_code: null
+        });
+        return;
+      }
+
+      // Fetch from users table
+      const response = await api.get(`/hospitals/users/${tenant}/list`);
+      const users = response.data.users || [];
+      
+      const currentUser = users.find(user => user.email === currentEmail);
+      let employeeCode = currentUser?.employee_code;
+      
+      // If no employee_code in users table, check onboarded table
+      if (!employeeCode && currentUser?.id) {
+        try {
+          const onboardedResponse = await api.get(`/recruitment/onboarding/list`);
+          const onboardedUser = onboardedResponse.data.find(emp => emp.candidate_email === currentEmail);
+          employeeCode = onboardedUser?.employee_id;
+        } catch (err) {
+          console.log('No onboarded record found');
+        }
+      }
+      
+      if (currentUser) {
+        setUserInfo({
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email,
+          role: currentUser.role_name || currentUser.role || 'Employee',
+          employee_code: employeeCode
+        });
+      } else {
+        // Fallback to localStorage if user not found in database
+        setUserInfo({
+          id: localStorage.getItem('user_id'),
+          name: localStorage.getItem('user_name') || currentEmail.split('@')[0],
+          email: currentEmail,
+          role: localStorage.getItem('role_name') || 'Employee',
+          employee_code: null
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch user info:', err);
+      // Fallback to localStorage on error
+      const currentEmail = localStorage.getItem('email');
+      setUserInfo({
+        id: localStorage.getItem('user_id'),
+        name: localStorage.getItem('user_name') || currentEmail?.split('@')[0] || 'User',
+        email: currentEmail || 'user@mail.com',
+        role: localStorage.getItem('role_name') || 'Employee',
+        employee_code: null
+      });
+    }
+  };
+
+  // Check today's attendance status
+  useEffect(() => {
+    if (userInfo.id) {
+      checkTodayAttendance();
+    }
+  }, [userInfo.id]);
+
+  const checkTodayAttendance = async () => {
+    try {
+      if (!userInfo.id) return;
+      
+      const today = new Date().toISOString().split('T')[0];
+      const res = await api.get('/api/attendance/punches/');
+      const todayLog = res.data.find(log => 
+        log.employee_id == userInfo.id && log.date === today
+      );
+      
+      if (todayLog) {
+        setAttendanceStatus(todayLog.out_time ? 'checked_out' : 'checked_in');
+      } else {
+        setAttendanceStatus('not_checked_in');
+      }
+    } catch (err) {
+      console.error('Failed to check attendance:', err);
+    }
+  };
+
+  const getClientIP = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (err) {
+      return 'Unknown';
+    }
+  };
+
+  const handleSwipeIn = async () => {
+    if (!userInfo.id) {
+      alert('User information not loaded');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const currentTime = new Date().toTimeString().split(' ')[0]; // HH:MM:SS format
+      const ipAddress = await getClientIP();
+      
+      const punchData = {
+        employee_id: parseInt(userInfo.id),
+        date: currentDate,
+        in_time: currentTime,
+        location: `${userInfo.employee_code || userInfo.id} - IP: ${ipAddress}`,
+        source: 'SWIPE',
+        status: 'Present',
+        ip_address: ipAddress
+      };
+      
+      console.log('Sending punch data:', punchData); // Debug log
+      
+      await api.post('/api/attendance/punches/', punchData);
+      setAttendanceStatus('checked_in');
+      
+      // Show success notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+      notification.innerHTML = `<div class="text-sm font-semibold">Swipe In Successful!</div>`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+      
+    } catch (err) {
+      console.error('Swipe in failed:', err);
+      console.error('Error details:', err.response?.data);
+      alert(`Swipe in failed: ${err.response?.data?.detail || err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSwipeOut = async () => {
+    if (!userInfo.id) {
+      alert('User information not loaded');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const currentDate = new Date().toISOString().split('T')[0];
+      const currentTime = new Date().toTimeString().split(' ')[0];
+      const ipAddress = await getClientIP();
+      
+      const res = await api.get('/api/attendance/punches/');
+      const todayLog = res.data.find(log => 
+        log.employee_id == userInfo.id && log.date === currentDate && !log.out_time
+      );
+      
+      if (todayLog) {
+        const updateData = {
+          employee_id: parseInt(todayLog.employee_id),
+          date: todayLog.date,
+          in_time: todayLog.in_time,
+          out_time: currentTime,
+          location: `${userInfo.employee_code || userInfo.id} - IP: ${ipAddress}`,
+          source: todayLog.source,
+          status: todayLog.status,
+          ip_address: ipAddress
+        };
+        
+        console.log('Sending update data:', updateData); // Debug log
+        
+        await api.put(`/api/attendance/punches/${todayLog.id}/`, updateData);
+        setAttendanceStatus('checked_out');
+        
+        // Show success notification
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-20 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        notification.innerHTML = `<div class="text-sm font-semibold">Swipe Out Successful!</div>`;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+        
+      } else {
+        alert('No active check-in found for today.');
+      }
+    } catch (err) {
+      console.error('Swipe out failed:', err);
+      console.error('Error details:', err.response?.data);
+      alert(`Swipe out failed: ${err.response?.data?.detail || err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formattedDate = time.toLocaleDateString("en-GB", {
     weekday: "short",
@@ -148,10 +359,10 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
 
             <div className="text-left hidden lg:block min-w-0">
               <p className="text-sm font-semibold leading-none truncate">
-                {userName}
+                {userInfo.name}
               </p>
               <p className="text-xs text-blue-200 truncate">
-                {userRole}
+                {userInfo.role}
               </p>
             </div>
 
@@ -171,9 +382,42 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
               rounded-xl shadow-lg overflow-hidden z-50"
             >
               <div className="px-3 sm:px-4 py-3 border-b">
-                <p className="font-semibold text-sm truncate text-gray-900">{userName}</p>
-                <p className="text-xs text-gray-600 truncate">{userEmail}</p>
-                <p className="text-xs text-blue-600">{userRole}</p>
+                <p className="font-semibold text-sm truncate text-gray-900">{userInfo.name}</p>
+                <p className="text-xs text-gray-600 truncate">{userInfo.email}</p>
+                <p className="text-xs text-blue-600">{userInfo.role}</p>
+                {userInfo.employee_code && (
+                  <p className="text-xs text-gray-500">ID: {userInfo.employee_code}</p>
+                )}
+              </div>
+
+              {/* Swipe In/Out Buttons */}
+              <div className="px-3 sm:px-4 py-2 border-b">
+                {attendanceStatus === 'not_checked_in' && (
+                  <button
+                    onClick={handleSwipeIn}
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition min-h-[40px]"
+                  >
+                    <Clock size={16} />
+                    {loading ? 'Swiping...' : 'Swipe In'}
+                  </button>
+                )}
+                {attendanceStatus === 'checked_in' && (
+                  <button
+                    onClick={handleSwipeOut}
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition min-h-[40px]"
+                  >
+                    <Clock size={16} />
+                    {loading ? 'Swiping...' : 'Swipe Out'}
+                  </button>
+                )}
+                {attendanceStatus === 'checked_out' && (
+                  <div className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg min-h-[40px]">
+                    <Clock size={16} />
+                    Checked Out
+                  </div>
+                )}
               </div>
 
               <button

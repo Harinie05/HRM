@@ -44,7 +44,7 @@ from routes.recruitment.recruitment_public import router as public_router
 from routes.recruitment.screening import router as screening_router
 from routes.recruitment.dashboard import router as dashboard_router
 from routes.recruitment.consultants import router as consultants_router
-from routes.recruitment.probation import router as probation_router
+from routes.recruitment.original_documents import router as original_documents_router
 
 # ======================= 🔥 EIS ROUTERS =======================
 from routes.EIS.employee import router as employee_router
@@ -65,6 +65,7 @@ from routes.exit.settlement_documents import router as settlement_documents_rout
 # ======================= 🔥 ATTENDANCE ROUTERS =======================
 from routes.attendance.roster import router as roster_router
 from routes.attendance.punch_logs import router as attendance_punch_router
+from routes.attendance.daily_updates import router as daily_updates_router
 from routes.attendance.regularization import router as attendance_regularization_router
 from routes.attendance.rules import router as attendance_rules_router
 from routes.attendance.locations import router as attendance_locations_router
@@ -224,7 +225,7 @@ app.include_router(public_router)
 app.include_router(screening_router)
 app.include_router(dashboard_router)
 app.include_router(consultants_router, prefix="/recruitment")
-app.include_router(probation_router, prefix="/recruitment")
+app.include_router(original_documents_router, prefix="/api")
 
 # ======================= 🔥 EIS MODULE =======================
 app.include_router(employee_router, prefix="/eis")
@@ -245,6 +246,7 @@ app.include_router(settlement_documents_router, prefix="/api")
 # ======================= 🔥 ATTENDANCE MODULE =======================
 app.include_router(roster_router, prefix="/api")
 app.include_router(attendance_punch_router, prefix="/api")
+app.include_router(daily_updates_router, prefix="/api")
 app.include_router(attendance_regularization_router, prefix="/api")
 app.include_router(attendance_rules_router, prefix="/api")
 app.include_router(attendance_locations_router, prefix="/api")

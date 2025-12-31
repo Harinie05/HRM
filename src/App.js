@@ -50,6 +50,7 @@ import ReportingStructure from "./pages/organization/ReportingStructure";
 // Attendance
 import ShiftRoster from "./pages/attendance/ShiftRoster";
 import AttendanceLogs from "./pages/attendance/AttendanceLogs";
+import DailyUpdates from "./pages/attendance/DailyUpdates";
 import AttendanceReports from "./pages/attendance/AttendanceReports";
 import AttendanceRules from "./pages/attendance/AttendanceRules";
 import AttendanceLocations from "./pages/attendance/AttendanceLocations";
@@ -186,6 +187,7 @@ function App() {
         <Route path="/attendance/dashboard" element={<ProtectedRoute><AttendanceDashboard /></ProtectedRoute>} />
         <Route path="/shift-roster" element={<ProtectedRoute><ShiftRoster /></ProtectedRoute>} />
         <Route path="/attendance/logs" element={<ProtectedRoute><AttendanceLogs /></ProtectedRoute>} />
+        <Route path="/attendance/daily-updates" element={<ProtectedRoute><DailyUpdates /></ProtectedRoute>} />
         <Route path="/attendance/reports" element={<ProtectedRoute><AttendanceReports /></ProtectedRoute>} />
         <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
         <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />
