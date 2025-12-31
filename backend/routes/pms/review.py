@@ -46,9 +46,12 @@ async def create_review(review: dict, request: Request, db: Session = Depends(ge
         raise HTTPException(status_code=422, detail=f"Error creating review: {str(e)}")
 
 @router.get("/reviews")
-async def get_reviews(db: Session = Depends(get_tenant_db)):
+async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
     try:
-        reviews = db.query(PMSReview).all()
+        if include_deleted:
+            reviews = db.query(PMSReview).all()
+        else:
+            reviews = db.query(PMSReview).filter(PMSReview.is_active == True).all()
         
         # Calculate progress for each review cycle
         reviews_data = []
@@ -80,6 +83,7 @@ async def get_reviews(db: Session = Depends(get_tenant_db)):
                 "status": review.status,
                 "progress": f"{completion_percentage}%",
                 "progress_percentage": completion_percentage,
+                "is_active": review.is_active,
                 "created_at": review.created_at.strftime('%Y-%m-%d %H:%M:%S') if review.created_at is not None else None
             })
         
@@ -91,7 +95,7 @@ async def get_reviews(db: Session = Depends(get_tenant_db)):
 @router.put("/reviews/{review_id}")
 async def update_review(review_id: int, review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        db_review = db.query(PMSReview).filter(PMSReview.id == review_id).first()
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
         if not db_review:
             raise HTTPException(status_code=404, detail="Review not found")
         
@@ -115,16 +119,44 @@ async def update_review(review_id: int, review: dict, request: Request, db: Sess
 
 @router.delete("/reviews/{review_id}")
 async def delete_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    db_review = db.query(PMSReview).filter(PMSReview.id == review_id).first()
-    if not db_review:
-        raise HTTPException(status_code=404, detail="Review not found")
-    
-    # Store old values for audit
-    old_values = {"employee_id": db_review.employee_id, "cycle": db_review.cycle, "review_type": db_review.review_type}
-    
-    db.delete(db_review)
-    db.commit()
-    
-    # Audit log
-    audit_crud(request, "tenant", user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, None)
-    return {"message": "Review deleted successfully"}
+    try:
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
+        if not db_review:
+            raise HTTPException(status_code=404, detail="Review not found")
+        
+        # Store old values for audit
+        old_values = {"is_active": db_review.is_active}
+        
+        # Soft delete
+        db_review.is_active = False
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": False})
+        return {"message": "Review deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting review: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error deleting review: {str(e)}")
+
+@router.put("/reviews/{review_id}/restore")
+async def restore_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    try:
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == False).first()
+        if not db_review:
+            raise HTTPException(status_code=404, detail="Deleted review not found")
+        
+        # Store old values for audit
+        old_values = {"is_active": db_review.is_active}
+        
+        # Restore
+        db_review.is_active = True
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "RESTORE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": True})
+        return {"message": "Review restored successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error restoring review: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error restoring review: {str(e)}")

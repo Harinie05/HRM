@@ -10,6 +10,7 @@ export default function GoalsKPI() {
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [showDeleted, setShowDeleted] = useState(false); // New state for showing deleted goals
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -37,7 +38,7 @@ export default function GoalsKPI() {
     fetchEmployees();
     fetchDepartments();
     fetchGoals();
-  }, []);
+  }, [showDeleted]); // Add showDeleted to dependency array
 
   const fetchEmployees = async () => {
     try {
@@ -159,7 +160,7 @@ export default function GoalsKPI() {
 
   const fetchGoals = async () => {
     try {
-      const response = await api.get('/api/pms/goals');
+      const response = await api.get(`/api/pms/goals${showDeleted ? '?include_deleted=true' : ''}`);
       setGoals(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching goals:', error);
@@ -217,7 +218,7 @@ export default function GoalsKPI() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this goal?")) {
+    if (confirm("Are you sure you want to delete this goal? It will be moved to deleted items.")) {
       try {
         await api.delete(`/api/pms/goals/${id}`);
         showToast('Goal deleted successfully!');
@@ -225,6 +226,19 @@ export default function GoalsKPI() {
       } catch (error) {
         console.error('Error deleting goal:', error);
         showToast('Failed to delete goal. Please try again.', 'error');
+      }
+    }
+  };
+
+  const handleRestore = async (id) => {
+    if (confirm("Are you sure you want to restore this goal?")) {
+      try {
+        await api.put(`/api/pms/goals/${id}/restore`);
+        showToast('Goal restored successfully!');
+        fetchGoals();
+      } catch (error) {
+        console.error('Error restoring goal:', error);
+        showToast('Failed to restore goal. Please try again.', 'error');
       }
     }
   };
@@ -247,7 +261,7 @@ export default function GoalsKPI() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Add Goal Button */}
+      {/* Header with Add Goal Button and Toggle */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
@@ -258,13 +272,27 @@ export default function GoalsKPI() {
             <p className="text-sm text-gray-600">Set and track employee goals and key performance indicators</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-        >
-          <Plus className="w-4 h-4" />
-          Add Goal
-        </button>
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showDeleted}
+              onChange={(e) => {
+                setShowDeleted(e.target.checked);
+                // Fetch goals will be called by useEffect when showDeleted changes
+              }}
+              className="rounded border-gray-300"
+            />
+            Show Deleted
+          </label>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+          >
+            <Plus className="w-4 h-4" />
+            Add Goal
+          </button>
+        </div>
       </div>
 
       {/* Add Goal Form */}
@@ -516,10 +544,13 @@ export default function GoalsKPI() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {goals.map((goal) => (
-                <tr key={goal.id}>
+                <tr key={goal.id} className={goal.is_active === false ? 'bg-red-50 opacity-75' : ''}>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{goal.title}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {goal.title}
+                        {goal.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </div>
                       <div className="text-sm text-gray-500">{goal.description}</div>
                     </div>
                   </td>
@@ -544,27 +575,39 @@ export default function GoalsKPI() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{goal.end_date || goal.due_date || goal.dueDate || 'No Due Date'}</td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-3">
-                      <button 
-                        onClick={() => handleEdit(goal)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
-                        title="Edit Goal"
-                      >
-                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleProgressUpdate(goal)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
-                        title="Update Progress"
-                      >
-                        <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(goal.id)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
-                        title="Delete Goal"
-                      >
-                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
+                      {goal.is_active === false ? (
+                        <button
+                          onClick={() => handleRestore(goal.id)}
+                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-all duration-200 border border-green-300"
+                          title="Restore Goal"
+                        >
+                          <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </button>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleEdit(goal)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
+                            title="Edit Goal"
+                          >
+                            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleProgressUpdate(goal)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
+                            title="Update Progress"
+                          >
+                            <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(goal.id)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-300"
+                            title="Delete Goal"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

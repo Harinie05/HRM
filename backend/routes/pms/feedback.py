@@ -45,9 +45,12 @@ async def create_feedback(feedback: dict, request: Request, db: Session = Depend
         raise HTTPException(status_code=422, detail=f"Error creating feedback: {str(e)}")
 
 @router.get("/feedback")
-async def get_feedback(db: Session = Depends(get_tenant_db)):
+async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
     try:
-        feedback_list = db.query(PMSFeedback).all()
+        if include_deleted:
+            feedback_list = db.query(PMSFeedback).all()
+        else:
+            feedback_list = db.query(PMSFeedback).filter(PMSFeedback.is_active == True).all()
         
         # Process feedback data with progress tracking
         feedback_data = []
@@ -91,6 +94,7 @@ async def get_feedback(db: Session = Depends(get_tenant_db)):
                 "goals": getattr(feedback, 'goals', '') or '',
                 "progress": f"{completion_percentage}%",
                 "progress_percentage": completion_percentage,
+                "is_active": feedback.is_active,
                 "created_at": feedback.created_at.strftime('%Y-%m-%d %H:%M:%S') if feedback.created_at is not None else None
             })
         
@@ -125,16 +129,34 @@ async def update_feedback(feedback_id: int, feedback: dict, request: Request, db
 
 @router.delete("/feedback/{feedback_id}")
 async def delete_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id).first()
-    if not db_feedback:
-        raise HTTPException(status_code=404, detail="Feedback not found")
-    
-    # Store old values for audit
-    old_values = {"from_employee_id": db_feedback.from_employee_id, "to_employee_id": db_feedback.to_employee_id, "rating": db_feedback.rating}
-    
-    db.delete(db_feedback)
-    db.commit()
-    
-    # Audit log
-    audit_crud(request, "tenant", user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, None)
-    return {"message": "Feedback deleted successfully"}
+    try:
+        db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id, PMSFeedback.is_active == True).first()
+        if not db_feedback:
+            raise HTTPException(status_code=404, detail="Feedback not found")
+        
+        old_values = {"is_active": db_feedback.is_active}
+        db_feedback.is_active = False
+        db.commit()
+        
+        audit_crud(request, "tenant", user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": False})
+        return {"message": "Feedback deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=422, detail=f"Error deleting feedback: {str(e)}")
+
+@router.put("/feedback/{feedback_id}/restore")
+async def restore_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    try:
+        db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id, PMSFeedback.is_active == False).first()
+        if not db_feedback:
+            raise HTTPException(status_code=404, detail="Deleted feedback not found")
+        
+        old_values = {"is_active": db_feedback.is_active}
+        db_feedback.is_active = True
+        db.commit()
+        
+        audit_crud(request, "tenant", user, "RESTORE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": True})
+        return {"message": "Feedback restored successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=422, detail=f"Error restoring feedback: {str(e)}")

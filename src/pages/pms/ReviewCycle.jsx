@@ -10,6 +10,7 @@ export default function ReviewCycle() {
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -31,11 +32,11 @@ export default function ReviewCycle() {
     fetchEmployees();
     fetchDepartments();
     fetchCycles();
-  }, []);
+  }, [showDeleted]);
 
   const fetchCycles = async () => {
     try {
-      const response = await api.get('/api/pms/reviews');
+      const response = await api.get(`/api/pms/reviews${showDeleted ? '?include_deleted=true' : ''}`);
       setCycles(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching review cycles:', error);
@@ -167,7 +168,7 @@ export default function ReviewCycle() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this review cycle?")) {
+    if (confirm("Are you sure you want to delete this review cycle? It will be moved to deleted items.")) {
       try {
         await api.delete(`/api/pms/reviews/${id}`);
         showToast('Review cycle deleted successfully!', 'success');
@@ -175,6 +176,19 @@ export default function ReviewCycle() {
       } catch (error) {
         console.error('Error deleting review cycle:', error);
         showToast('Failed to delete review cycle. Please try again.', 'error');
+      }
+    }
+  };
+
+  const handleRestore = async (id) => {
+    if (confirm("Are you sure you want to restore this review cycle?")) {
+      try {
+        await api.put(`/api/pms/reviews/${id}/restore`);
+        showToast('Review cycle restored successfully!', 'success');
+        fetchCycles();
+      } catch (error) {
+        console.error('Error restoring review cycle:', error);
+        showToast('Failed to restore review cycle. Please try again.', 'error');
       }
     }
   };
@@ -238,13 +252,24 @@ export default function ReviewCycle() {
             <p className="text-sm text-gray-600">Manage performance review cycles and schedules</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-        >
-          <Plus className="w-4 h-4" />
-          Create Review Cycle
-        </button>
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showDeleted}
+              onChange={(e) => setShowDeleted(e.target.checked)}
+              className="rounded border-gray-300"
+            />
+            Show Deleted
+          </label>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+          >
+            <Plus className="w-4 h-4" />
+            Create Review Cycle
+          </button>
+        </div>
       </div>
 
       {/* Add Review Cycle Form */}
@@ -455,10 +480,13 @@ export default function ReviewCycle() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {cycles.map((cycle) => (
-                <tr key={cycle.id}>
+                <tr key={cycle.id} className={cycle.is_active === false ? 'bg-red-50 opacity-75' : ''}>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{cycle.cycle}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {cycle.cycle}
+                        {cycle.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </div>
                       <div className="text-sm text-gray-500">{cycle.review_type}</div>
                     </div>
                   </td>
@@ -489,43 +517,55 @@ export default function ReviewCycle() {
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
-                      {cycle.status === "Draft" && (
+                      {cycle.is_active === false ? (
                         <button
-                          onClick={() => handleStatusChange(cycle.id, "Active")}
-                          className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                          title="Start Cycle"
+                          onClick={() => handleRestore(cycle.id)}
+                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                          title="Restore Cycle"
                         >
-                          <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
+                      ) : (
+                        <>
+                          {cycle.status === "Draft" && (
+                            <button
+                              onClick={() => handleStatusChange(cycle.id, "Active")}
+                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                              title="Start Cycle"
+                            >
+                              <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          )}
+                          {cycle.status === "Active" && (
+                            <button
+                              onClick={() => handleStatusChange(cycle.id, "Completed")}
+                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                              title="Complete Cycle"
+                            >
+                              <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleProgressUpdate(cycle)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            title="Update Progress"
+                          >
+                            <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleEdit(cycle)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                          >
+                            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(cycle.id)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        </>
                       )}
-                      {cycle.status === "Active" && (
-                        <button
-                          onClick={() => handleStatusChange(cycle.id, "Completed")}
-                          className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                          title="Complete Cycle"
-                        >
-                          <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleProgressUpdate(cycle)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                        title="Update Progress"
-                      >
-                        <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleEdit(cycle)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                      >
-                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(cycle.id)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                      >
-                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
                     </div>
                   </td>
                 </tr>

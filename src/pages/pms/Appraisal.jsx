@@ -11,6 +11,7 @@ export default function Appraisal() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewAppraisal, setViewAppraisal] = useState(null);
   const [editingAppraisal, setEditingAppraisal] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false);
   const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     employee: "",
@@ -38,11 +39,11 @@ export default function Appraisal() {
   useEffect(() => {
     fetchEmployees();
     fetchAppraisals();
-  }, []);
+  }, [showDeleted]);
 
   const fetchAppraisals = async () => {
     try {
-      const response = await api.get('/api/pms/appraisals');
+      const response = await api.get(`/api/pms/appraisals${showDeleted ? '?include_deleted=true' : ''}`);
       setAppraisals(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching appraisals:', error);
@@ -193,7 +194,7 @@ export default function Appraisal() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this appraisal?")) {
+    if (window.confirm("Are you sure you want to delete this appraisal? It will be moved to deleted items.")) {
       try {
         await api.delete(`/api/pms/appraisals/${id}`);
         showToast('Appraisal deleted successfully!');
@@ -201,6 +202,19 @@ export default function Appraisal() {
       } catch (error) {
         console.error('Error deleting appraisal:', error);
         showToast('Failed to delete appraisal. Please try again.', 'error');
+      }
+    }
+  };
+
+  const handleRestore = async (id) => {
+    if (window.confirm("Are you sure you want to restore this appraisal?")) {
+      try {
+        await api.put(`/api/pms/appraisals/${id}/restore`);
+        showToast('Appraisal restored successfully!');
+        fetchAppraisals();
+      } catch (error) {
+        console.error('Error restoring appraisal:', error);
+        showToast('Failed to restore appraisal. Please try again.', 'error');
       }
     }
   };
@@ -244,13 +258,24 @@ export default function Appraisal() {
             <p className="text-sm text-gray-600">Conduct performance appraisals and evaluations</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-        >
-          <Plus className="w-4 h-4" />
-          Create Appraisal
-        </button>
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showDeleted}
+              onChange={(e) => setShowDeleted(e.target.checked)}
+              className="rounded border-gray-300"
+            />
+            Show Deleted
+          </label>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+          >
+            <Plus className="w-4 h-4" />
+            Create Appraisal
+          </button>
+        </div>
       </div>
 
       {/* Add Appraisal Form */}
@@ -532,10 +557,13 @@ export default function Appraisal() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {appraisals.map((appraisal) => (
-                <tr key={appraisal.id}>
+                <tr key={appraisal.id} className={appraisal.is_active === false ? 'bg-red-50 opacity-75' : ''}>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{appraisal.employee_name}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {appraisal.employee_name}
+                        {appraisal.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </div>
                       <div className="text-sm text-gray-500">ID: {appraisal.employee_id}</div>
                     </div>
                   </td>
@@ -557,27 +585,39 @@ export default function Appraisal() {
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
-                      <button 
-                        onClick={() => handleView(appraisal)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
-                        title="View Details"
-                      >
-                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleEdit(appraisal)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
-                        title="Edit"
-                      >
-                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(appraisal.id)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
+                      {appraisal.is_active === false ? (
+                        <button
+                          onClick={() => handleRestore(appraisal.id)}
+                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                          title="Restore Appraisal"
+                        >
+                          <Award className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </button>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleView(appraisal)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            title="View Details"
+                          >
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleEdit(appraisal)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            title="Edit"
+                          >
+                            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(appraisal.id)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -14,6 +14,7 @@ const QualityIndicators = () => {
   const [editingIndicator, setEditingIndicator] = useState(null);
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
   const [indicatorForm, setIndicatorForm] = useState({
@@ -40,14 +41,14 @@ const QualityIndicators = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [showDeleted]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const [indicatorsRes, recordsRes, deptRes] = await Promise.all([
-        api.get('/api/hr/quality-indicators/quality-indicators'),
-        api.get('/api/hr/quality-indicators/kpi-records'),
+        api.get(`/api/hr/quality-indicators/quality-indicators${showDeleted ? '?include_deleted=true' : ''}`),
+        api.get(`/api/hr/quality-indicators/kpi-records${showDeleted ? '?include_deleted=true' : ''}`),
         api.get('/api/hr/quality-indicators/departments')
       ]);
       
@@ -171,7 +172,7 @@ const QualityIndicators = () => {
   };
 
   const deleteIndicator = async (id) => {
-    if (window.confirm('Are you sure you want to delete this quality indicator?')) {
+    if (window.confirm('Are you sure you want to delete this quality indicator? It will be moved to deleted items.')) {
       try {
         await api.delete(`/api/hr/quality-indicators/quality-indicators/${id}`);
         fetchData();
@@ -183,8 +184,21 @@ const QualityIndicators = () => {
     }
   };
 
+  const restoreIndicator = async (id) => {
+    if (window.confirm('Are you sure you want to restore this quality indicator?')) {
+      try {
+        await api.put(`/api/hr/quality-indicators/quality-indicators/${id}/restore`);
+        fetchData();
+        showToast('Quality indicator restored successfully!');
+      } catch (error) {
+        console.error('Error restoring indicator:', error);
+        showToast('Error restoring quality indicator', 'error');
+      }
+    }
+  };
+
   const deleteRecord = async (id) => {
-    if (window.confirm('Are you sure you want to delete this KPI record?')) {
+    if (window.confirm('Are you sure you want to delete this KPI record? It will be moved to deleted items.')) {
       try {
         await api.delete(`/api/hr/quality-indicators/kpi-records/${id}`);
         fetchData();
@@ -192,6 +206,19 @@ const QualityIndicators = () => {
       } catch (error) {
         console.error('Error deleting record:', error);
         showToast('Error deleting KPI record', 'error');
+      }
+    }
+  };
+
+  const restoreRecord = async (id) => {
+    if (window.confirm('Are you sure you want to restore this KPI record?')) {
+      try {
+        await api.put(`/api/hr/quality-indicators/kpi-records/${id}/restore`);
+        fetchData();
+        showToast('KPI record restored successfully!');
+      } catch (error) {
+        console.error('Error restoring record:', error);
+        showToast('Error restoring KPI record', 'error');
       }
     }
   };
@@ -255,7 +282,18 @@ const QualityIndicators = () => {
       {activeTab === 'manage' && (
         <div>
           <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Quality Indicators</h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-semibold">Quality Indicators</h2>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={showDeleted}
+                  onChange={(e) => setShowDeleted(e.target.checked)}
+                  className="rounded border-gray-300"
+                />
+                Show Deleted
+              </label>
+            </div>
             <button
               onClick={() => setShowIndicatorForm(true)}
               className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
@@ -387,9 +425,10 @@ const QualityIndicators = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {indicators.map((indicator) => (
-                  <tr key={indicator.id}>
+                  <tr key={indicator.id} className={indicator.is_active === false ? 'bg-red-50 opacity-75' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indicator.kpi_name}
+                      {indicator.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
@@ -410,18 +449,30 @@ const QualityIndicators = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <button
-                          onClick={() => editIndicator(indicator)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteIndicator(indicator.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {indicator.is_active === false ? (
+                          <button
+                            onClick={() => restoreIndicator(indicator.id)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Restore Indicator"
+                          >
+                            <TrendingUp className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => editIndicator(indicator)}
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteIndicator(indicator.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -546,9 +597,10 @@ const QualityIndicators = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {records.map((record) => (
-                  <tr key={record.id}>
+                  <tr key={record.id} className={record.is_active === false ? 'bg-red-50 opacity-75' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {record.kpi_name}
+                      {record.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
@@ -575,18 +627,30 @@ const QualityIndicators = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <button
-                          onClick={() => editRecord(record)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteRecord(record.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {record.is_active === false ? (
+                          <button
+                            onClick={() => restoreRecord(record.id)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Restore Record"
+                          >
+                            <TrendingUp className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => editRecord(record)}
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteRecord(record.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

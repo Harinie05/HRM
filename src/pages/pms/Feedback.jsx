@@ -12,6 +12,7 @@ export default function Feedback() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewFeedback, setViewFeedback] = useState(null);
   const [editingFeedback, setEditingFeedback] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [formData, setFormData] = useState({
     type: "Manager to Employee",
     customType: "",
@@ -51,11 +52,11 @@ export default function Feedback() {
   useEffect(() => {
     fetchEmployees();
     fetchFeedbacks();
-  }, []);
+  }, [showDeleted]);
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await api.get('/api/pms/feedback');
+      const response = await api.get(`/api/pms/feedback${showDeleted ? '?include_deleted=true' : ''}`);
       setFeedbacks(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
@@ -199,7 +200,7 @@ export default function Feedback() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this feedback?")) {
+    if (confirm("Are you sure you want to delete this feedback? It will be moved to deleted items.")) {
       try {
         await api.delete(`/api/pms/feedback/${id}`);
         showToast('Feedback deleted successfully!', 'success');
@@ -207,6 +208,19 @@ export default function Feedback() {
       } catch (error) {
         console.error('Error deleting feedback:', error);
         showToast('Failed to delete feedback. Please try again.', 'error');
+      }
+    }
+  };
+
+  const handleRestore = async (id) => {
+    if (confirm("Are you sure you want to restore this feedback?")) {
+      try {
+        await api.put(`/api/pms/feedback/${id}/restore`);
+        showToast('Feedback restored successfully!', 'success');
+        fetchFeedbacks();
+      } catch (error) {
+        console.error('Error restoring feedback:', error);
+        showToast('Failed to restore feedback. Please try again.', 'error');
       }
     }
   };
@@ -243,13 +257,24 @@ export default function Feedback() {
             <p className="text-sm text-gray-600">Collect and manage employee feedback and 360-degree reviews</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-        >
-          <Plus className="w-4 h-4" />
-          Give Feedback
-        </button>
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showDeleted}
+              onChange={(e) => setShowDeleted(e.target.checked)}
+              className="rounded border-gray-300"
+            />
+            Show Deleted
+          </label>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+          >
+            <Plus className="w-4 h-4" />
+            Give Feedback
+          </button>
+        </div>
       </div>
 
       {/* Add Feedback Form */}
@@ -514,8 +539,11 @@ export default function Feedback() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {feedbacks.map((feedback) => (
-                <tr key={feedback.id}>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{feedback.relationship}</td>
+                <tr key={feedback.id} className={feedback.is_active === false ? 'bg-red-50 opacity-75' : ''}>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {feedback.relationship}
+                    {feedback.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                  </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       <div>From: {feedback.from_employee_name}</div>
@@ -531,27 +559,39 @@ export default function Feedback() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{feedback.created_at ? new Date(feedback.created_at).toLocaleDateString() : 'N/A'}</td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
-                      <button 
-                        onClick={() => handleView(feedback)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
-                        title="View Details"
-                      >
-                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleEdit(feedback)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
-                        title="Edit"
-                      >
-                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(feedback.id)}
-                        className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
+                      {feedback.is_active === false ? (
+                        <button
+                          onClick={() => handleRestore(feedback.id)}
+                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                          title="Restore Feedback"
+                        >
+                          <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </button>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleView(feedback)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            title="View Details"
+                          >
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleEdit(feedback)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            title="Edit"
+                          >
+                            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(feedback.id)}
+                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

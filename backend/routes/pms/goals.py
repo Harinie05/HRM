@@ -129,11 +129,17 @@ async def create_goal(goal: dict, request: Request, db: Session = Depends(get_te
         raise HTTPException(status_code=422, detail=f"Error creating goal: {str(e)}")
 
 @router.get("/goals")
-async def get_goals(db: Session = Depends(get_tenant_db)):
+async def get_goals(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
     try:
         print("Starting to fetch goals...")
-        goals = db.query(PMSGoal).all()
-        print(f"Found {len(goals)} goals")
+        if include_deleted:
+            # Show all goals including deleted ones
+            goals = db.query(PMSGoal).all()
+            print(f"Found {len(goals)} total goals (including deleted)")
+        else:
+            # Filter out deleted goals using is_active
+            goals = db.query(PMSGoal).filter(PMSGoal.is_active == True).all()
+            print(f"Found {len(goals)} active goals")
         
         goals_data = []
         for goal in goals:
@@ -180,6 +186,7 @@ async def get_goals(db: Session = Depends(get_tenant_db)):
                     "department": goal.department or "",
                     "progress": f"{int(progress_percentage)}%",
                     "progress_percentage": int(progress_percentage),
+                    "is_active": goal.is_active,
                     "created_at": goal.created_at.strftime('%Y-%m-%d %H:%M:%S') if goal.created_at is not None else None
                 })
             except Exception as goal_error:
@@ -197,7 +204,7 @@ async def get_goals(db: Session = Depends(get_tenant_db)):
 @router.put("/goals/{goal_id}")
 async def update_goal(goal_id: int, goal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id).first()
+        db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id, PMSGoal.is_active == True).first()
         if not db_goal:
             raise HTTPException(status_code=404, detail="Goal not found")
         
@@ -264,22 +271,46 @@ async def update_goal(goal_id: int, goal: dict, request: Request, db: Session = 
 @router.delete("/goals/{goal_id}")
 async def delete_goal(goal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id).first()
+        db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id, PMSGoal.is_active == True).first()
         if not db_goal:
             raise HTTPException(status_code=404, detail="Goal not found")
         
         # Store old values for audit
-        old_values = {"title": db_goal.title, "goal_type": db_goal.goal_type, "target": db_goal.target}
+        old_values = {"title": db_goal.title, "goal_type": db_goal.goal_type, "target": db_goal.target, "is_active": db_goal.is_active}
         
-        db.delete(db_goal)
+        # Soft delete - set is_active to False
+        db_goal.is_active = False
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_GOAL", "pms_goals", str(goal_id), old_values, None)
+        audit_crud(request, "tenant", user, "DELETE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": False})
         
         return {"message": "Goal deleted successfully"}
     except Exception as e:
         db.rollback()
         print(f"Error deleting goal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error deleting goal: {str(e)}")
+
+@router.put("/goals/{goal_id}/restore")
+async def restore_goal(goal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    try:
+        db_goal = db.query(PMSGoal).filter(PMSGoal.id == goal_id, PMSGoal.is_active == False).first()
+        if not db_goal:
+            raise HTTPException(status_code=404, detail="Deleted goal not found")
+        
+        # Store old values for audit
+        old_values = {"title": db_goal.title, "goal_type": db_goal.goal_type, "target": db_goal.target, "is_active": db_goal.is_active}
+        
+        # Restore - set is_active to True
+        db_goal.is_active = True
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, "tenant", user, "RESTORE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": True})
+        
+        return {"message": "Goal restored successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error restoring goal: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error restoring goal: {str(e)}")
 

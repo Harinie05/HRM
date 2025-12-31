@@ -1237,6 +1237,7 @@ class PMSGoal(MasterBase):
     end_date = Column(Date)
 
     status = Column(String(50), default="Active")
+    is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
 
@@ -1259,6 +1260,7 @@ class PMSReview(MasterBase):
     manager_comments = Column(Text, nullable=True)
 
     status = Column(String(50), default="Pending")
+    is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
 
@@ -1281,6 +1283,7 @@ class PMSFeedback(MasterBase):
     improvements = Column(Text)
     goals = Column(Text)
 
+    is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
 
@@ -1310,6 +1313,7 @@ class PMSAppraisal(MasterBase):
 
     effective_from = Column(Date, nullable=True)
     status = Column(String(50), default="Proposed")
+    is_active = Column(Boolean, default=True)  # For soft delete
 
     created_at = Column(DateTime, default=func.now())
 
@@ -1338,6 +1342,7 @@ class TrainingProgram(MasterBase):
 
     description = Column(Text, nullable=True)
     status = Column(String(50), default="Draft")
+    is_active = Column(Boolean, default=True)  # For soft delete
 
     created_at = Column(DateTime, default=func.now())
 
@@ -1430,6 +1435,7 @@ class TrainingApplication(MasterBase):
     motivation = Column(Text, nullable=True)
     
     status = Column(String(50), default="Pending")  # Pending / Accepted / Rejected
+    is_active = Column(Boolean, default=True)  # For soft delete
     applied_at = Column(DateTime, default=func.now())
     reviewed_at = Column(DateTime, nullable=True)
     reviewed_by = Column(Integer, nullable=True)
@@ -1791,6 +1797,7 @@ class KPIRecord(MasterBase):
     status = Column(String(50), default="On Track")  # On Track / Below Target / Above Target
     remarks = Column(Text, nullable=True)
     recorded_by = Column(String(150), nullable=False)
+    is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
