@@ -162,81 +162,6 @@ class ShiftCreate(ShiftBase):
 class ShiftResponse(ShiftBase):
     id: int
 
-# ------------------------------
-# Base shared fields
-# ------------------------------
-class GradeBase(BaseModel):
-    code: str = Field(..., min_length=1)
-    name: str
-    description: Optional[str] = None
-
-    # salary
-    min_salary: int
-    max_salary: int
-
-    basic_percent: float
-    hra_percent: float
-    allowance_percent: float
-    special_percent: float
-
-    # compliance
-    pf_applicable: bool
-    pf_percent: Optional[float] = None
-
-    esi_applicable: bool
-    esi_percent: Optional[float] = None
-
-    # mapping
-    departments: Optional[List[str]] = None
-    roles: Optional[List[str]] = None
-
-    effective_from: date
-    status: str = "Active"
-
-
-# ------------------------------
-# Create Schema
-# ------------------------------
-class GradeCreate(GradeBase):
-    pass
-
-
-# ------------------------------
-# Response Schema
-# ------------------------------
-class GradeOut(GradeBase):
-    id: int
-
-    class Config:
-        from_attributes = True
-
-
-# ------------------------------
-# Update Schema (optional)
-# ------------------------------
-class GradeUpdate(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
-
-    min_salary: Optional[int]
-    max_salary: Optional[int]
-
-    basic_percent: Optional[float]
-    hra_percent: Optional[float]
-    allowance_percent: Optional[float]
-    special_percent: Optional[float]
-
-    pf_applicable: Optional[bool]
-    pf_percent: Optional[float]
-    esi_applicable: Optional[bool]
-    esi_percent: Optional[float]
-
-    departments: Optional[List[str]]
-    roles: Optional[List[str]]
-
-    effective_from: Optional[date]
-    status: Optional[str]
-
 class HolidayBase(BaseModel):
     name: str = Field(..., min_length=2)
     date: date
@@ -249,88 +174,6 @@ class HolidayBase(BaseModel):
 # ---------- Create ----------
 class HolidayCreate(HolidayBase):
     pass
-
-# ---------------- HR Policy Schema ----------------
-class HRPolicyBase(BaseModel):
-    name: str
-    description: Optional[str]
-    notice_days: Optional[int]
-    probation_period: Optional[str]
-    work_week: Optional[str]
-    holiday_pattern: Optional[str]
-    status: str
-
-class HRPolicyCreate(HRPolicyBase):
-    pass
-
-class HRPolicyOut(HRPolicyBase):
-    id: int
-    document: Optional[str]
-    document_download_url: Optional[str] = None
-    created_at: Optional[datetime] = None
-    class Config: from_attributes = True
-
-
-# ---------------- Leave Policy Schema ----------------
-class LeavePolicyBase(BaseModel):
-    name: str
-    annual: int
-    sick: int
-    casual: int
-    carry_forward: bool
-    max_carry: Optional[int]
-    encashment: bool
-    rule: str
-    status: str
-
-class LeavePolicyCreate(LeavePolicyBase):
-    leave_allocations: Optional[dict] = None
-
-class LeavePolicyOut(LeavePolicyBase):
-    id: int
-    leave_allocations: Optional[dict] = None
-    class Config: from_attributes = True
-
-
-# ---------------- Attendance Policy Schema ----------------
-class AttendancePolicyBase(BaseModel):
-    name: str
-    checkin_start: str
-    checkin_end: str
-    checkout_time: str
-    grace: int
-    lateMax: int
-    lateConvert: str
-    halfHours: int
-    fullHours: int
-    weeklyOff: str
-    status: str
-
-class AttendancePolicyCreate(AttendancePolicyBase):
-    pass
-
-class AttendancePolicyOut(AttendancePolicyBase):
-    id: int
-    class Config: from_attributes = True
-
-
-# ---------------- OT Policy Schema ----------------
-class OTPolicyBase(BaseModel):
-    name: str
-    basis: str
-    rate: str
-    minOT: str
-    maxOT: str
-    grades: List[str]       # UI sends array → backend will convert to text
-    autoOT: bool
-    status: str
-
-class OTPolicyCreate(OTPolicyBase):
-    pass
-
-class OTPolicyOut(OTPolicyBase):
-    id: int
-    class Config: from_attributes = True
 
 # ---------- Output ----------
 class HolidayOut(HolidayBase):
@@ -1555,11 +1398,15 @@ class PMSGoalCreate(BaseModel):
     target: str
     start_date: date
     end_date: date
+    description: Optional[str] = None
+    priority: Optional[str] = "Medium"
+    unit: Optional[str] = None
 
 
 class PMSGoalOut(PMSGoalCreate):
     id: int
     status: str
+    current_value: Optional[str] = "0"
 
     class Config:
         from_attributes = True

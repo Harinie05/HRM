@@ -4,12 +4,13 @@ import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
 
-export default function TrainingRequests({ showModal, setShowModal }) {
+export default function TrainingRequests() {
   const [requests, setRequests] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -224,8 +225,18 @@ export default function TrainingRequests({ showModal, setShowModal }) {
     <div className="space-y-6">
 
       <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        {/* Filters */}
+        {/* Header */}
         <div className="p-6 border-b border-black">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium text-gray-900">Training Requests</h3>
+            <button 
+              onClick={handleOpenModal}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Request
+            </button>
+          </div>
           <div className="flex gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />

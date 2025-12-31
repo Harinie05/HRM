@@ -9,10 +9,10 @@ import DepartmentList from "./DepartmentList";
 import DesignationList from "./Designation";
 import ReportingStructure from "./ReportingStructure";
 import Shifts from "./Shifts";
-import GradePayStructure from "./GradePayStructure";
+
 import HolidayCalender from "./HolidayCalender";
 import PolicySetup from "./PolicySetup";
-import RulesPolicies from "./RulesPolicies";
+
 
 export default function OrganizationLayout() {
   const location = useLocation();
@@ -26,9 +26,7 @@ export default function OrganizationLayout() {
     "Designation",
     "Reporting Structure",
     "Shifts & Roster",
-    "Grades / Pay Structure",
-    "Holiday Calendar",
-    "Rules & Policies"
+    "Holiday Calendar"
   ];
 
   return (
@@ -97,7 +95,9 @@ export default function OrganizationLayout() {
           {tab === "Shifts & Roster" && <Shifts />}
           {tab === "Reporting Structure" && <ReportingStructure />}
           {tab === "Grades / Pay Structure" && <GradePayStructure />}
+          {tab === "Grades / Pay Structure" && <GradePayStructure />}
           {tab === "Holiday Calendar" && <HolidayCalender />}
+          {tab === "Rules & Policies" && <RulesPolicies />}
           {tab === "Rules & Policies" && <RulesPolicies />}
         </div>
       </div>

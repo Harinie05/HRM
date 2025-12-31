@@ -29,9 +29,7 @@ from routes.dashboard import router as main_dashboard_router
 from routes.organization.company_profile import router as company_profile_router
 from routes.organization.branch import router as branch_router
 from routes.organization.shifts import router as shift_router
-from routes.organization.grades import router as grade_router
 from routes.organization.holiday import router as holiday_router
-from routes.organization.policy import router as policy_router
 from routes.organization.reporting import router as reporting_router
 
 # ---------------- RECRUITMENT ----------------
@@ -210,9 +208,7 @@ app.include_router(main_dashboard_router)
 app.include_router(company_profile_router)
 app.include_router(branch_router)
 app.include_router(shift_router)
-app.include_router(grade_router)
 app.include_router(holiday_router)
-app.include_router(policy_router)
 app.include_router(reporting_router)
 
 # ---------------- RECRUITMENT ----------------

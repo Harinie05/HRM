@@ -23,12 +23,7 @@ from models.models_tenant import (
     CompanyProfile,
     Branch,
     Shift,
-    Grade,
     Holiday,
-    HRPolicy,
-    LeavePolicy,
-    AttendancePolicy,
-    OTPolicy,
 
     # Recruitment + ATS
     JobRequisition,

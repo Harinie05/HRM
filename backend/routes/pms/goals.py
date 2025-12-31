@@ -106,7 +106,10 @@ async def create_goal(goal: dict, request: Request, db: Session = Depends(get_te
             measurement_method=goal.get('unit', ''),
             status=goal.get('status', 'Active'),
             weightage=0,
-            department=None
+            department=None,
+            description=goal.get('description', ''),
+            priority=goal.get('priority', 'Medium'),
+            unit=goal.get('unit', '')
         )
         
         db.add(new_goal)

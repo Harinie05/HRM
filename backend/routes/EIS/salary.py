@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
-from models.models_tenant import EmployeeSalary, Grade
+from models.models_tenant import EmployeeSalary
 from schemas.schemas_tenant import SalaryCreate, SalaryOut
 from pydantic import BaseModel
 from typing import Optional

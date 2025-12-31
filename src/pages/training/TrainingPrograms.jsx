@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Edit, Trash2, Calendar, BookOpen, Users } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Calendar, BookOpen, Users, Eye, Link } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 
 export default function TrainingPrograms() {
   const { toast, showToast } = useToast();
+  const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingProgram, setEditingProgram] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [generatedLinks, setGeneratedLinks] = useState({});
+  const [openLinkMenu, setOpenLinkMenu] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -28,6 +32,15 @@ export default function TrainingPrograms() {
 
   useEffect(() => {
     fetchPrograms();
+    
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.link-dropdown')) {
+        setOpenLinkMenu(null);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   const fetchPrograms = async () => {
@@ -92,6 +105,11 @@ export default function TrainingPrograms() {
       console.error("Error publishing training program:", error);
       showToast('Failed to publish training program. Please try again.', "error");
     }
+  };
+
+  const handleViewApplications = (programId) => {
+    console.log('Navigating to applications for program:', programId);
+    navigate(`/training/programs/${programId}/applications`);
   };
 
   const handleOpenModal = (program = null) => {
@@ -265,6 +283,45 @@ export default function TrainingPrograms() {
                           >
                             <Edit size={16} />
                           </button>
+                          {program.status === "Published" && (
+                            <>
+                              <button 
+                                onClick={() => handleViewApplications(program.id)}
+                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                title="View Applications"
+                              >
+                                <Eye size={16} />
+                              </button>
+                              
+                              <div className="relative link-dropdown">
+                                <button
+                                  onClick={() => setOpenLinkMenu(openLinkMenu === program.id ? null : program.id)}
+                                  className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                                  title="Generate Link"
+                                >
+                                  <Link size={16} />
+                                </button>
+
+                                {openLinkMenu === program.id && (
+                                  <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                    <button
+                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                      onClick={() => {
+                                        const applicationLink = `${window.location.origin}/training/program/${program.id}`;
+                                        setGeneratedLinks(prev => ({
+                                          ...prev,
+                                          [program.id]: applicationLink
+                                        }));
+                                        showToast("Application link generated!", "success");
+                                      }}
+                                    >
+                                      🔗 Generate Application Link
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          )}
                           {program.status === "Draft" && (
                             <button 
                               onClick={() => handlePublish(program.id)}
@@ -282,6 +339,22 @@ export default function TrainingPrograms() {
                             <Trash2 size={16} />
                           </button>
                         </div>
+                        {generatedLinks[program.id] && (
+                          <div className="mt-2">
+                            <label className="text-xs text-gray-600 font-medium">Application Link:</label>
+                            <input
+                              type="text"
+                              value={generatedLinks[program.id]}
+                              readOnly
+                              className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                              onClick={(e) => {
+                                e.target.select();
+                                navigator.clipboard.writeText(e.target.value);
+                                showToast("Link copied to clipboard!", "success");
+                              }}
+                            />
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))

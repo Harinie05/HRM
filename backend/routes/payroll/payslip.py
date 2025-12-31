@@ -8,7 +8,7 @@ from sqlalchemy import func
 from models.models_tenant import (
     PayrollRun, User, SalaryStructure, StatutoryRule, 
     AttendancePunch, LeaveApplication, PayrollAdjustment,
-    Employee, EmployeeSalary, EmployeeBankDetails, Grade
+    Employee, EmployeeSalary, EmployeeBankDetails
 )
 
 router = APIRouter(
@@ -51,7 +51,7 @@ def generate_payslip(
         
         # Step 7: Generate Payslip
         payslip = create_payslip_data(employee, final_payroll, month)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payslips", employee_id, None, {"month": month, "net_salary": payslip["net_salary"]})
+        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payslips", str(employee_id), {}, {"month": month, "net_salary": payslip["net_salary"]})
         
         return payslip
         
@@ -134,18 +134,8 @@ def get_salary_structure(db: Session, employee_id: int):
             "hra_percent": emp_salary.hra_percent
         }
     
-    # Then try employee grade-based salary
-    employee = db.query(Employee).filter(Employee.id == employee_id).first()
-    if employee and getattr(employee, 'grade', None):
-        grade = db.query(Grade).filter(Grade.code == employee.grade).first()
-        if grade:
-            return {
-                "ctc": (grade.min_salary + grade.max_salary) / 2,
-                "basic_percent": grade.basic_percent,
-                "hra_percent": grade.hra_percent
-            }
-    
-    # Finally fallback to general salary structure
+    # Remove grade-based salary logic since Grade model is deleted
+    # Fallback to general salary structure
     structure = db.query(SalaryStructure).filter(SalaryStructure.is_active == True).first()
     if structure:
         return {

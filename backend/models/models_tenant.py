@@ -101,44 +101,6 @@ class Shift(MasterBase):
     end_time = Column(String(20), nullable=False)
     created_at = Column(DateTime, default=func.now())
 
-# ------------------------------
-# GRADE / PAY STRUCTURE TABLE
-# ------------------------------
-class Grade(MasterBase):
-    __tablename__ = "grades"
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    code = Column(String(50), unique=True, nullable=False)
-    name = Column(String(150), nullable=False)
-    description = Column(Text, nullable=True)
-
-    # Salary Range
-    min_salary = Column(Integer, nullable=False)
-    max_salary = Column(Integer, nullable=False)
-
-    # Salary Component Split (%)
-    basic_percent = Column(Float, nullable=False)
-    hra_percent = Column(Float, nullable=False)
-    allowance_percent = Column(Float, nullable=False)
-    special_percent = Column(Float, nullable=False)
-
-    # Compliance
-    pf_applicable = Column(Boolean, default=True)
-    pf_percent = Column(Float, nullable=True)
-    esi_applicable = Column(Boolean, default=True)
-    esi_percent = Column(Float, nullable=True)
-
-    # Department & Roles Mapping (JSON for multiple values)
-    departments = Column(JSON, nullable=True)   # list of dept names
-    roles = Column(JSON, nullable=True)         # list of role names
-
-    # Misc
-    effective_from = Column(Date, nullable=False)
-    status = Column(String(50), default="Active")
-
-    created_at = Column(DateTime, default=func.now())
-
 class Holiday(MasterBase):
     __tablename__ = "holidays"
 
@@ -151,83 +113,6 @@ class Holiday(MasterBase):
     repeat_yearly = Column(Boolean, default=True)
     status = Column(String(50), default="Active")
 
-    created_at = Column(DateTime, default=func.now())
-
-# ------------------------------
-# HR POLICY TABLE
-# ------------------------------
-class HRPolicy(MasterBase):
-    __tablename__ = "hr_policies"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(200), nullable=False)
-    description = Column(Text, nullable=True)
-    notice_days = Column(Integer, nullable=True)
-    probation_period = Column(String(100), nullable=True)
-    work_week = Column(String(100), default="Mon-Fri")
-    holiday_pattern = Column(String(150), default="Holiday Calendar")
-    document = Column(String(255), nullable=True)
-    status = Column(String(50), default="Active")
-    created_at = Column(DateTime, default=func.now())
-
-
-# ------------------------------
-# LEAVE POLICY TABLE
-# ------------------------------
-class LeavePolicy(MasterBase):
-    __tablename__ = "leave_policies"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(200), nullable=False)
-    annual = Column(Integer, default=0)
-    sick = Column(Integer, default=0)
-    casual = Column(Integer, default=0)
-    # Dynamic leave allocations for future leave types
-    leave_allocations = Column(JSON, nullable=True)  # {"MAT": 90, "PAT": 15, "STU": 5}
-    carry_forward = Column(Boolean, default=True)
-    max_carry = Column(Integer, nullable=True)
-    encashment = Column(Boolean, default=False)
-    rule = Column(String(100), default="Full Day")
-    status = Column(String(50), default="Active")
-    created_at = Column(DateTime, default=func.now())
-
-
-# ------------------------------
-# ATTENDANCE POLICY TABLE
-# ------------------------------
-class AttendancePolicy(MasterBase):
-    __tablename__ = "attendance_policies"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(200), nullable=False)
-    checkin_start = Column(String(20))
-    checkin_end = Column(String(20))
-    checkout_time = Column(String(20))
-    grace = Column(Integer)
-    lateMax = Column(Integer)
-    lateConvert = Column(String(100))
-    halfHours = Column(Integer)
-    fullHours = Column(Integer)
-    weeklyOff = Column(String(100))
-    status = Column(String(50), default="Active")
-    created_at = Column(DateTime, default=func.now())
-
-
-# ------------------------------
-# OT POLICY TABLE
-# ------------------------------
-class OTPolicy(MasterBase):
-    __tablename__ = "ot_policies"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(200), nullable=False)
-    basis = Column(String(50), default="Hourly")
-    rate = Column(String(50), default="1.5x")
-    minOT = Column(String(50))
-    maxOT = Column(String(50))
-    grades = Column(Text)                # stored as CSV "G1,G2,G3"
-    autoOT = Column(Boolean, default=True)
-    status = Column(String(50), default="Active")
     created_at = Column(DateTime, default=func.now())
 
 # ================================================================
@@ -1344,6 +1229,9 @@ class PMSGoal(MasterBase):
     measurement_method = Column(String(50), nullable=True)  # Unit field
     weightage = Column(Integer, default=0)  # Weightage field
     department = Column(String(100), nullable=True)  # Department field
+    description = Column(Text, nullable=True)
+    priority = Column(String(50), default="Medium")
+    unit = Column(String(50), nullable=True)
 
     start_date = Column(Date)
     end_date = Column(Date)
@@ -1489,10 +1377,12 @@ class TrainingAttendance(MasterBase):
     employee_id = Column(Integer, ForeignKey("users.id"))
 
     present = Column(Boolean, default=False)
+    attendance_days = Column(JSON, nullable=True)  # Store day-wise attendance
+    assessments = Column(JSON, nullable=True)  # Store assessment scores
+    completion_status = Column(String(50), default="Not Started")  # Not Started / In Progress / Completed
 
     pre_score = Column(Float, nullable=True)
     post_score = Column(Float, nullable=True)
-
     result = Column(String(50), nullable=True)  # Pass / Fail
 
     created_at = Column(DateTime, default=func.now())
@@ -1520,6 +1410,29 @@ class TrainingCertificate(MasterBase):
     status = Column(String(50), default="Issued")  # Issued / Pending
 
     issued_at = Column(DateTime, default=func.now())
+
+# -------------------------
+# 5. TRAINING APPLICATIONS
+# -------------------------
+class TrainingApplication(MasterBase):
+    __tablename__ = "training_applications"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    program_id = Column(Integer, ForeignKey("training_programs.id"), nullable=False)
+    
+    name = Column(String(150), nullable=False)
+    email = Column(String(150), nullable=False)
+    phone = Column(String(20), nullable=True)
+    employee_id = Column(String(50), nullable=True)
+    department = Column(String(100), nullable=True)
+    experience = Column(Text, nullable=True)
+    motivation = Column(Text, nullable=True)
+    
+    status = Column(String(50), default="Pending")  # Pending / Accepted / Rejected
+    applied_at = Column(DateTime, default=func.now())
+    reviewed_at = Column(DateTime, nullable=True)
+    reviewed_by = Column(Integer, nullable=True)
 
 # =====================================================
 # COMPLIANCE MODULE

@@ -4,7 +4,7 @@ from database import get_tenant_db
 from datetime import datetime, date
 from utils.audit_logger import audit_crud
 
-from models.models_tenant import LeaveApplication, LeavePolicy, LeaveType, LeaveBalance, User
+from models.models_tenant import LeaveApplication, LeaveType, LeaveBalance, User
 from schemas.schemas_tenant import (
     LeaveApply,
     LeaveApplicationUpdate,

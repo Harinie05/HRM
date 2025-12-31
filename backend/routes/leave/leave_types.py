@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 
-from models.models_tenant import LeaveType, User, LeaveBalance, LeavePolicy
+from models.models_tenant import LeaveType, User, LeaveBalance
 from schemas.schemas_tenant import (
     LeaveTypeCreate,
     LeaveTypeUpdate,

@@ -54,33 +54,41 @@ def generate_certificate(data: dict, request: Request, db: Session = Depends(get
 @router.get("/")
 def list_certificates(db: Session = Depends(get_tenant_db)):
     try:
-        # Join with training programs and users to get complete data
-        certificates_data = db.query(
-            TrainingCertificate,
-            TrainingProgram.title.label('program_title'),
-            User.name.label('employee_name')
-        ).join(
-            TrainingProgram, TrainingCertificate.training_id == TrainingProgram.id, isouter=True
-        ).join(
-            User, TrainingCertificate.employee_id == User.id, isouter=True
-        ).all()
+        from models.models_tenant import TrainingApplication
+        
+        certificates = db.query(TrainingCertificate).all()
         
         result = []
-        for certificate, program_title, employee_name in certificates_data:
-            result.append({
-                "id": certificate.id,
-                "training_id": certificate.training_id,
-                "employee_id": certificate.employee_id,
-                "employee_name": employee_name or f"Employee #{certificate.employee_id}",
-                "program_title": program_title or "Unknown Program",
-                "score": certificate.score,
-                "certificate_number": getattr(certificate, 'certificate_number', f"CERT-{certificate.id:06d}"),
-                "issued_date": certificate.issued_at,
-                "expiry_date": getattr(certificate, 'expiry_date', None),
-                "status": certificate.status,
-                "compliance_type": certificate.compliance_type,
-                "certificate_file": certificate.certificate_file
-            })
+        for certificate in certificates:
+            try:
+                # Get program info
+                program = db.query(TrainingProgram).filter(TrainingProgram.id == certificate.training_id).first()
+                program_title = program.title if program else "Unknown Program"
+                
+                # Get applicant name from training application
+                application = db.query(TrainingApplication).filter(
+                    TrainingApplication.id == certificate.employee_id
+                ).first()
+                
+                employee_name = application.name if application else f"Candidate #{certificate.employee_id}"
+                
+                result.append({
+                    "id": certificate.id,
+                    "training_id": certificate.training_id,
+                    "employee_id": certificate.employee_id,
+                    "employee_name": employee_name,
+                    "program_title": program_title,
+                    "score": certificate.score,
+                    "certificate_number": getattr(certificate, 'certificate_number', f"CERT-{certificate.id:06d}"),
+                    "issued_date": certificate.issued_at,
+                    "expiry_date": getattr(certificate, 'expiry_date', None),
+                    "status": certificate.status,
+                    "compliance_type": certificate.compliance_type,
+                    "certificate_file": certificate.certificate_file
+                })
+            except Exception as inner_e:
+                continue
+                
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching certificates: {str(e)}")
@@ -88,21 +96,22 @@ def list_certificates(db: Session = Depends(get_tenant_db)):
 @router.get("/{certificate_id}/download")
 def download_certificate(certificate_id: int, db: Session = Depends(get_tenant_db)):
     try:
-        # Get certificate data with joins
-        certificate_data = db.query(
-            TrainingCertificate,
-            TrainingProgram.title.label('program_title'),
-            User.name.label('employee_name')
-        ).join(
-            TrainingProgram, TrainingCertificate.training_id == TrainingProgram.id, isouter=True
-        ).join(
-            User, TrainingCertificate.employee_id == User.id, isouter=True
-        ).filter(TrainingCertificate.id == certificate_id).first()
+        from models.models_tenant import TrainingApplication
         
-        if not certificate_data:
+        certificate = db.query(TrainingCertificate).filter(TrainingCertificate.id == certificate_id).first()
+        if not certificate:
             raise HTTPException(status_code=404, detail="Certificate not found")
         
-        certificate, program_title, employee_name = certificate_data
+        # Get program info
+        program = db.query(TrainingProgram).filter(TrainingProgram.id == certificate.training_id).first()
+        program_title = program.title if program else "Unknown Program"
+        
+        # Get applicant name from training application
+        application = db.query(TrainingApplication).filter(
+            TrainingApplication.id == certificate.employee_id
+        ).first()
+        
+        employee_name = application.name if application else "Unknown Candidate"
         
         # Generate PDF using ReportLab
         buffer = BytesIO()
@@ -155,9 +164,9 @@ def download_certificate(certificate_id: int, db: Session = Depends(get_tenant_d
         
         # Certificate content
         story.append(Paragraph("This is to certify that", content_style))
-        story.append(Paragraph(employee_name or 'Unknown Employee', name_style))
+        story.append(Paragraph(employee_name, name_style))
         story.append(Paragraph("has successfully completed the training program", content_style))
-        story.append(Paragraph(program_title or 'Unknown Program', program_style))
+        story.append(Paragraph(program_title, program_style))
         story.append(Paragraph(f"with a score of <b>{certificate.score}%</b>", content_style))
         
         story.append(Spacer(1, 20))

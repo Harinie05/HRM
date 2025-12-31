@@ -13,7 +13,6 @@ from models.models_tenant import (
     CompanyProfile,
     Branch,
     Shift,
-    Grade,
 )
 
 import database

@@ -79,10 +79,6 @@ export default function TrainingCalendar() {
                         <Clock size={16} />
                         <span>{new Date(event.start_date).toLocaleDateString()} - {new Date(event.end_date).toLocaleDateString()}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Users size={16} />
-                        <span>{event.enrolled_count || 0} enrolled</span>
-                      </div>
                       {event.trainer && (
                         <div className="flex items-center gap-1">
                           <span>Trainer: {event.trainer}</span>

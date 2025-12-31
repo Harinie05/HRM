@@ -1,5 +1,6 @@
 from sqlalchemy import text
 from database import get_tenant_engine, logger
+import os
 
 # ========================= IMPORT ALL TENANT MODELS =========================
 from models.models_tenant import (
@@ -14,12 +15,7 @@ from models.models_tenant import (
     CompanyProfile,
     Branch,
     Shift,
-    Grade,
     Holiday,
-    HRPolicy,
-    LeavePolicy,
-    AttendancePolicy,
-    OTPolicy,
 
     # Recruitment + ATS
     JobRequisition,
@@ -91,7 +87,8 @@ from models.models_tenant import (
 from models.models_master import MasterBase as MasterDBBase
 
 # ========================= CONFIG =========================
-tenant = "nutryah"
+# Use environment variable or default tenant name
+tenant = os.getenv('TENANT_NAME', 'nutryah')
 engine = get_tenant_engine(tenant)
 
 print(f"\n🚀 Creating tables for tenant → {tenant}\n")
@@ -114,7 +111,8 @@ with master_engine.connect() as conn:
     
     for sql_def, name in subscription_columns:
         try:
-            conn.execute(text(f"ALTER TABLE hospitals ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE hospitals ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -155,7 +153,8 @@ with engine.connect() as conn:
 
     for sql_def, name in updates:
         try:
-            conn.execute(text(f"ALTER TABLE users ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE users ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -185,7 +184,8 @@ with engine.connect() as conn:
 
     for sql_def, name in offer_updates:
         try:
-            conn.execute(text(f"ALTER TABLE offer_letters ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE offer_letters ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -207,7 +207,8 @@ with engine.connect() as conn:
 
     for sql_def, name in doc_updates:
         try:
-            conn.execute(text(f"ALTER TABLE document_uploads ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE document_uploads ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -223,7 +224,8 @@ with engine.connect() as conn:
 
     for sql_def, name in onboarding_updates:
         try:
-            conn.execute(text(f"ALTER TABLE onboarding_candidates ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE onboarding_candidates ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -250,7 +252,8 @@ with engine.connect() as conn:
     
     for sql_def, name in bgv_columns:
         try:
-            conn.execute(text(f"ALTER TABLE bgv ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE bgv ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -442,7 +445,8 @@ with engine.connect() as conn:
     
     for sql_def, name in medical_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_medical ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_medical ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -463,7 +467,8 @@ with engine.connect() as conn:
     
     for sql_def, name in exit_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_exit ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_exit ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -487,7 +492,8 @@ with engine.connect() as conn:
     
     for sql_def, name in education_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_education ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_education ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -522,7 +528,8 @@ with engine.connect() as conn:
     
     for sql_def, name in experience_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_experience ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_experience ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -610,7 +617,8 @@ with engine.connect() as conn:
     
     for sql_def, name in reporting_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_reporting ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_reporting ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -628,7 +636,8 @@ with engine.connect() as conn:
     
     for sql_def, name in attendance_columns:
         try:
-            conn.execute(text(f"ALTER TABLE attendance_punches ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE attendance_punches ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -723,6 +732,7 @@ print("\nAdding leave_allocations column to all tenant databases...")
 
 # Import required modules for multi-tenant migration
 import pymysql
+import os
 from database import get_master_db
 from models.models_master import Hospital
 
@@ -732,11 +742,16 @@ hospitals = master_db.query(Hospital).all()
 
 for hospital in hospitals:
     try:
-        # Connect to tenant database
+        # Get database credentials from environment or config
+        db_host = os.getenv('DB_HOST', 'localhost')
+        db_user = os.getenv('DB_USER', 'root')
+        db_password = os.getenv('DB_PASSWORD', '')
+        
+        # Connect to tenant database using environment variables
         connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
+            host=db_host,
+            user=db_user,
+            password=db_password,
             database=hospital.db_name,
             charset='utf8mb4'
         )
@@ -765,8 +780,10 @@ for hospital in hospitals:
         
         connection.close()
         
+    except pymysql.Error as db_error:
+        print(f"❌ Database error updating {hospital.db_name}: {db_error}")
     except Exception as e:
-        print(f"❌ Error updating {hospital.db_name}: {e}")
+        print(f"❌ Unexpected error updating {hospital.db_name}: {e}")
 
 master_db.close()
 print("🎉 Leave allocations migration completed for all tenants!")
@@ -912,7 +929,9 @@ with engine.connect() as conn:
         
         for sql_def, name in statutory_updates:
             try:
-                conn.execute(text(f"ALTER TABLE statutory_rules ADD COLUMN {sql_def}"))
+                # Use parameterized query to prevent SQL injection
+                alter_sql = text("ALTER TABLE statutory_rules ADD COLUMN " + sql_def)
+                conn.execute(alter_sql)
                 print(f"  ✅ Added: {name}")
             except Exception as e:
                 print(f"  ⚠️ {name}: {e}")
@@ -983,7 +1002,8 @@ with engine.connect() as conn:
     
     for sql_def, name in asset_columns:
         try:
-            conn.execute(text(f"ALTER TABLE asset_assignments ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE asset_assignments ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -1003,7 +1023,8 @@ with engine.connect() as conn:
 
     for sql_def, name in pms_updates:
         try:
-            conn.execute(text(f"ALTER TABLE pms_goals ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE pms_goals ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -1021,7 +1042,8 @@ with engine.connect() as conn:
 
     for sql_def, name in feedback_updates:
         try:
-            conn.execute(text(f"ALTER TABLE pms_feedback ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE pms_feedback ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -1040,7 +1062,8 @@ with engine.connect() as conn:
 
     for sql_def, name in appraisal_updates:
         try:
-            conn.execute(text(f"ALTER TABLE pms_appraisal ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE pms_appraisal ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -1058,7 +1081,8 @@ with engine.connect() as conn:
     
     for sql_def, name in license_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_medical ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_medical ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")
@@ -1097,7 +1121,8 @@ with engine.connect() as conn:
     
     for sql_def, name in id_docs_columns:
         try:
-            conn.execute(text(f"ALTER TABLE employee_id_docs ADD COLUMN {sql_def}"))
+            alter_sql = text("ALTER TABLE employee_id_docs ADD COLUMN " + sql_def)
+            conn.execute(alter_sql)
             print(f"✔️ Added: {name}")
         except Exception as e:
             print(f"⚠️ {name}: {e}")

@@ -12,7 +12,7 @@ import Users from "./pages/User";
 import OrganizationLayout from "./pages/organization/OrganizationLayout";
 import CompanyProfile from "./pages/organization/CompanyProfile";
 import Branch from "./pages/organization/Branch";
-import GradePayStructure from "./pages/organization/GradePayStructure";
+
 import HolidayCalender from "./pages/organization/HolidayCalender";
 
 // ⭐ Authentication protection
@@ -77,6 +77,8 @@ import TrainingCalendar from "./pages/training/TrainingCalendar";
 import TrainingRequests from "./pages/training/TrainingRequests";
 import TrainingAttendance from "./pages/training/TrainingAttendance";
 import TrainingCertificates from "./pages/training/TrainingCertificates";
+import TrainingApplications from "./pages/training/TrainingApplications";
+import TrainingProgramApplication from "./pages/training/TrainingProgramApplication";
 
 // ======================= 🔥 COMPLIANCE IMPORTS =======================
 import ComplianceLayout from "./pages/compliance/ComplianceLayout";
@@ -149,7 +151,7 @@ function App() {
           <Route index element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
           <Route path="company-profile" element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
           <Route path="branch" element={<ProtectedRoute><Branch /></ProtectedRoute>} />
-          <Route path="grade" element={<ProtectedRoute><GradePayStructure /></ProtectedRoute>} />
+
           <Route path="holiday-calender" element={<ProtectedRoute><HolidayCalender /></ProtectedRoute>} />
           <Route path="policy-setup" element={<ProtectedRoute><PolicySetup /></ProtectedRoute>} />
           <Route path="reporting" element={<ProtectedRoute><ReportingStructure /></ProtectedRoute>} />
@@ -209,6 +211,7 @@ function App() {
         <Route path="/training" element={<ProtectedRoute><TrainingLayout /></ProtectedRoute>}>
           <Route index element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
           <Route path="programs" element={<ProtectedRoute><TrainingPrograms /></ProtectedRoute>} />
+          <Route path="programs/:programId/applications" element={<ProtectedRoute><TrainingApplications /></ProtectedRoute>} />
           <Route path="calendar" element={<ProtectedRoute><TrainingCalendar /></ProtectedRoute>} />
           <Route path="requests" element={<ProtectedRoute><TrainingRequests /></ProtectedRoute>} />
           <Route path="attendance" element={<ProtectedRoute><TrainingAttendance /></ProtectedRoute>} />
@@ -236,6 +239,7 @@ function App() {
 
         {/* PUBLIC */}
         <Route path="/apply/:jobId" element={<JobApply />} />
+        <Route path="/training/program/:programId" element={<TrainingProgramApplication />} />
         <Route path="/document-upload/:token" element={<DocumentUpload />} />
         <Route path="/register-hospital" element={<HospitalRegister />} />
 
