@@ -13,7 +13,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeMedical
 from schemas.schemas_tenant import MedicalCreate, MedicalOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -29,9 +28,7 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/medical", tags=["Employee Medical Details"])
-
 
 # -------------------------------------------------------------------------
 # 1. ADD MEDICAL DETAILS (with optional certificate)
@@ -140,7 +137,6 @@ async def add_medical(
     finally:
         db.close()
 
-
 # -------------------------------------------------------------------------
 # 6. GET LICENSE RENEWAL ALERTS
 # -------------------------------------------------------------------------
@@ -189,7 +185,6 @@ def get_license_alerts(user=Depends(get_current_user)):
     finally:
         db.close()
 
-
 # -------------------------------------------------------------------------
 # 2. GET MEDICAL DETAILS
 # -------------------------------------------------------------------------
@@ -208,7 +203,6 @@ def get_medical(employee_id: str, user=Depends(get_current_user)):
         raise HTTPException(404, "No medical details found")
 
     return med
-
 
 # -------------------------------------------------------------------------
 # 3. UPDATE MEDICAL DETAILS
@@ -301,7 +295,6 @@ async def update_medical(
         raise HTTPException(500, f"Failed to update medical details: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 4. VIEW MEDICAL CERTIFICATE

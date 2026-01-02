@@ -14,7 +14,6 @@ logging.basicConfig(
 
 logger = logging.getLogger("HRM")
 
-
 # MASTER DB
 DB_USER = os.getenv("MASTER_DB_USER", "root")
 DB_PASSWORD = os.getenv("MASTER_DB_PASSWORD", "")
@@ -35,14 +34,12 @@ master_engine = create_engine(
 
 MasterSessionLocal = sessionmaker(bind=master_engine, autoflush=False, autocommit=False)
 
-
 def get_master_db() -> Generator:
     db = MasterSessionLocal()
     try:
         yield db
     finally:
         db.close()
-
 
 # CREATE TENANT
 def create_tenant_database(db_name: str):
@@ -64,7 +61,6 @@ def create_tenant_database(db_name: str):
     from routes.tenant_seed import seed_tenant
     seed_tenant(db_name)
 
-
 # TENANT ENGINE
 def get_tenant_engine(db_name: str):
     url = (
@@ -72,7 +68,6 @@ def get_tenant_engine(db_name: str):
         f"@{DB_HOST}:{DB_PORT}/{db_name}"
     )
     return create_engine(url, pool_pre_ping=True, future=True)
-
 
 # TENANT DB SESSION (for dependency injection)
 def get_tenant_db(Authorization: str = Header(None)) -> Generator:

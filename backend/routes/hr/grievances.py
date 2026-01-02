@@ -17,7 +17,6 @@ logger = logging.getLogger("HRM")
 
 router = APIRouter(prefix="/hr/grievances", tags=["HR Grievances"])
 
-
 @router.post("/", response_model=dict)
 def create_grievance(
     payload: dict,
@@ -72,7 +71,6 @@ def create_grievance(
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.get("/")
 def list_grievances(db: Session = Depends(get_tenant_db)):
     try:
@@ -102,7 +100,6 @@ def list_grievances(db: Session = Depends(get_tenant_db)):
     except Exception as e:
         logger.error(f"❌ Error fetching grievances: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/{ticket_id}", response_model=dict)
 def get_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
@@ -139,7 +136,6 @@ def get_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
         logger.error(f"❌ Error fetching grievance: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.delete("/{ticket_id}", response_model=dict)
 def delete_grievance(
     ticket_id: int, 
@@ -168,7 +164,6 @@ def delete_grievance(
         logger.error(f"❌ Error deleting grievance: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.post("/{ticket_id}/complete", response_model=dict)
 def complete_investigation(

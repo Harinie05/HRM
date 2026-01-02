@@ -17,7 +17,6 @@ router = APIRouter(prefix="/exit", tags=["Exit Management"])
 @router.get("/resignations", response_model=List[ExitOut])
 def get_all_resignations(request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Get all resignation requests"""
-    audit_crud(request, db, user, "VIEW_RESIGNATIONS", "employee_exits", "all", {}, {})
     exits = db.query(EmployeeExit).join(User, EmployeeExit.employee_id == User.id).all()
     return exits
 
@@ -69,8 +68,8 @@ def reject_resignation(exit_id: int, reason: str, request: Request, user=Depends
         raise HTTPException(404, "Resignation request not found")
     
     old_status = exit_record.overall_status
-    exit_record.overall_status = "Rejected"
-    exit_record.notes = f"Rejected: {reason}"
+    setattr(exit_record, 'overall_status', "Rejected")
+    setattr(exit_record, 'notes', f"Rejected: {reason}")
     
     db.commit()
     
@@ -95,8 +94,6 @@ def reject_resignation(exit_id: int, reason: str, request: Request, user=Depends
 @router.get("/dashboard")
 def exit_dashboard(request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Get exit management dashboard data"""
-    audit_crud(request, db, user, "VIEW_EXIT_DASHBOARD", "exit_dashboard", "all", {}, {})
-    
     total_exits = db.query(EmployeeExit).count()
     pending_approvals = db.query(EmployeeExit).filter(EmployeeExit.overall_status == "Initiated").count()
     in_progress = db.query(EmployeeExit).filter(EmployeeExit.overall_status == "In Progress").count()

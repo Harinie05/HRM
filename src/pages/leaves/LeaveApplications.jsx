@@ -51,7 +51,8 @@ export default function LeaveApplications() {
     try {
       const res = await api.post(`/api/leave/balances/initialize/${employeeId}/${policyId}`);
       showToast(res.data.message, "success");
-      fetchLeaveBalances(employeeId);
+      // Refresh the balances after initialization
+      await fetchLeaveBalances(employeeId);
     } catch (error) {
       console.error("Error initializing balances:", error);
       showToast("Error initializing leave balances", "error");
@@ -576,7 +577,7 @@ export default function LeaveApplications() {
               <div className="text-center py-8">
                 <p className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>No leave balances found for this employee.</p>
                 <button 
-                  onClick={() => initializeBalances(selectedEmployeeId)}
+                  onClick={() => initializeBalances(selectedEmployeeId, "undefined")}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
                 >
                   Initialize Leave Balances
@@ -632,7 +633,7 @@ export default function LeaveApplications() {
                 ))}
                 <div className="mt-4 pt-4 border-t">
                   <button 
-                    onClick={() => initializeBalances(selectedEmployeeId)}
+                    onClick={() => initializeBalances(selectedEmployeeId, "undefined")}
                     className="w-full bg-gray-100 hover:bg-gray-200 text-secondary px-4 py-2 rounded-lg text-sm"
                   >
                     Refresh Balances

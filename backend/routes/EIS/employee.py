@@ -82,14 +82,14 @@ def add_exit_details(data: ExitCreate, request: Request, user=Depends(get_curren
     exit_record = EmployeeExit(
         employee_id=data.employee_id,
         resignation_date=data.resignation_date,
-        last_working_day=data.last_working_day,
+        last_working_day=getattr(data, 'last_working_day', None),
         reason=data.reason,
-        notice_period=data.notice_period,
-        exit_interview_date=data.exit_interview_date,
-        handover_status=data.handover_status,
-        asset_return_status=data.asset_return_status,
-        final_settlement=data.final_settlement,
-        clearance_status=data.clearance_status,
+        notice_period=getattr(data, 'notice_period', "30"),
+        exit_interview_date=getattr(data, 'exit_interview_date', None),
+        handover_status=getattr(data, 'handover_status', "Pending"),
+        asset_return_status=getattr(data, 'asset_return_status', "Pending"),
+        final_settlement=getattr(data, 'final_settlement', "Pending"),
+        clearance_status=getattr(data, 'clearance_status', "Pending"),
         notes=data.notes
     )
     
@@ -98,7 +98,7 @@ def add_exit_details(data: ExitCreate, request: Request, user=Depends(get_curren
     db.refresh(exit_record)
     
     # Audit log
-    audit_crud(request, db, user, "CREATE_EXIT_RECORD", "employee_exits", str(exit_record.id), None, {"employee_id": data.employee_id, "reason": data.reason})
+    audit_crud(request, db, user, "CREATE_EXIT_RECORD", "employee_exits", str(exit_record.id), {}, {"employee_id": data.employee_id, "reason": data.reason})
     
     return {"message": "Exit process initiated successfully", "id": exit_record.id}
 
@@ -119,7 +119,6 @@ def get_exit_details(employee_id: int, user=Depends(get_current_user)):
         raise HTTPException(404, "Exit record not found")
     
     return exit_record
-
 
 # -------------------------------------------------------------------------
 # 5. VALIDATE EMPLOYEE CODE
@@ -177,30 +176,34 @@ def convert_user_to_employee(
         
         if existing_code or existing_onboarding:
             raise HTTPException(400, "Employee code already exists")
-        existing_user.employee_code = payload['employee_code']
-    elif not existing_user.employee_code:
+        setattr(existing_user, 'employee_code', payload['employee_code'])
+    elif existing_user.employee_code is None:
         # Generate employee code if not provided
         from datetime import datetime
         year = datetime.now().year
         last_emp = db.query(User).filter(User.employee_code.isnot(None)).order_by(User.id.desc()).first()
         seq_num = 1
-        if last_emp and last_emp.employee_code:
+        if last_emp and last_emp.employee_code is not None:
             try:
                 seq_num = int(last_emp.employee_code.split(str(year))[-1]) + 1
             except:
                 seq_num = 1
-        existing_user.employee_code = f"EMP{year}{seq_num:03d}"
+        setattr(existing_user, 'employee_code', f"EMP{year}{seq_num:03d}")
 
     # Update employee fields
-    existing_user.employee_type = payload.get('employee_type', 'Permanent')
-    existing_user.designation = payload.get('designation')
-    existing_user.joining_date = payload.get('joining_date')
-    existing_user.status = payload.get('status', 'Active')
+    setattr(existing_user, 'employee_type', payload.get('employee_type', 'Permanent'))
+    designation = payload.get('designation')
+    if designation is not None:
+        setattr(existing_user, 'designation', str(designation))
+    joining_date = payload.get('joining_date')
+    if joining_date is not None:
+        setattr(existing_user, 'joining_date', joining_date)
+    setattr(existing_user, 'status', payload.get('status', 'Active'))
 
     db.commit()
     
     # Audit log
-    audit_crud(request, db, user, "CONVERT_USER_TO_EMPLOYEE", "users", str(user_id), None, {"employee_code": existing_user.employee_code, "employee_type": payload.get('employee_type')})
+    audit_crud(request, db, user, "CONVERT_USER_TO_EMPLOYEE", "users", str(user_id), {}, {"employee_code": existing_user.employee_code, "employee_type": payload.get('employee_type')})
     
     return {
         "message": "User converted to employee successfully", 
@@ -229,7 +232,7 @@ def create_employee_from_onboarding(
         raise HTTPException(404, "Onboarding record not found")
     
     # Audit log
-    audit_crud(request, db, user, "CREATE_EMPLOYEE_FROM_ONBOARDING", "onboarding_candidates", str(onboarding_id), None, {"employee_id": onboarding.employee_id, "candidate_name": onboarding.candidate_name})
+    audit_crud(request, db, user, "CREATE_EMPLOYEE_FROM_ONBOARDING", "onboarding_candidates", str(onboarding_id), {}, {"employee_id": onboarding.employee_id, "candidate_name": onboarding.candidate_name})
     
 # -------------------------------------------------------------------------
 # 7. CREATE EMPLOYEE CODE
@@ -248,7 +251,7 @@ def create_employee_code(
     year = datetime.now().year
     last_emp = db.query(User).filter(User.employee_code.isnot(None)).order_by(User.id.desc()).first()
     seq_num = 1
-    if last_emp and last_emp.employee_code:
+    if last_emp and last_emp.employee_code is not None:
         try:
             seq_num = int(last_emp.employee_code.split(str(year))[-1]) + 1
         except:
@@ -257,7 +260,7 @@ def create_employee_code(
     employee_code = f"EMP{year}{seq_num:03d}"
     
     # Audit log
-    audit_crud(request, db, user, "GENERATE_EMPLOYEE_CODE", "system", "0", None, {"employee_code": employee_code})
+    audit_crud(request, db, user, "GENERATE_EMPLOYEE_CODE", "system", "0", {}, {"employee_code": employee_code})
     
     return {
         "employee_code": employee_code,

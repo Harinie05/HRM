@@ -10,7 +10,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeFamily
 from schemas.schemas_tenant import FamilyCreate, FamilyOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -26,9 +25,7 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/family", tags=["Employee Family Details"])
-
 
 # -------------------------------------------------------------------------
 # 1. ADD FAMILY MEMBER
@@ -49,7 +46,7 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
         db.add(new_member)
         db.commit()
         db.refresh(new_member)
-        audit_crud(request, db, user, "CREATE", "employee_family", new_member.id, None, new_member.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_family", str(new_member.id), {}, new_member.__dict__)
 
         return new_member
         
@@ -58,7 +55,6 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
         raise HTTPException(500, f"Failed to add family member: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 2. GET FAMILY DETAILS FOR EMPLOYEE
@@ -75,7 +71,6 @@ def get_family_list(employee_id: int, user=Depends(get_current_user)):
         )
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 3. UPDATE FAMILY MEMBER
@@ -96,7 +91,7 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
 
         db.commit()
         db.refresh(member)
-        audit_crud(request, db, user, "UPDATE", "employee_family", family_id, None, member.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_family", str(family_id), {}, member.__dict__)
 
         return member
         
@@ -108,7 +103,6 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
         raise HTTPException(500, f"Failed to update family member: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 4. DELETE FAMILY MEMBER
@@ -124,7 +118,7 @@ def delete_family_member(family_id: int, request: Request, user=Depends(get_curr
         old_values = member.__dict__.copy()
         db.delete(member)
         db.commit()
-        audit_crud(request, db, user, "DELETE", "employee_family", family_id, old_values, None)
+        audit_crud(request, db, user, "DELETE", "employee_family", str(family_id), old_values, {})
 
         return {"message": "Family member removed successfully"}
         

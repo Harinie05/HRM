@@ -12,7 +12,6 @@ router = APIRouter(
     tags=["Attendance - Rules"]
 )
 
-
 @router.post("/", response_model=AttendanceRuleOut)
 def create_rule(
     data: AttendanceRuleCreate,
@@ -27,13 +26,11 @@ def create_rule(
     audit_crud(request, db, user, "CREATE_ATTENDANCE_RULE", "attendance_rules", str(rule.id), {}, data.dict())
     return rule
 
-
 @router.get("/", response_model=list[AttendanceRuleOut])
 def list_rules(
     db: Session = Depends(get_tenant_db)
 ):
     return db.query(AttendanceRule).all()
-
 
 @router.patch("/{rule_id}/toggle", response_model=AttendanceRuleOut)
 def toggle_rule(
@@ -52,7 +49,6 @@ def toggle_rule(
     db.refresh(rule)
     audit_crud(request, db, user, "TOGGLE_ATTENDANCE_RULE", "attendance_rules", str(rule_id), {"is_active": old_status}, {"is_active": getattr(rule, 'is_active')})
     return rule
-
 
 @router.delete("/{rule_id}/")
 def delete_rule(

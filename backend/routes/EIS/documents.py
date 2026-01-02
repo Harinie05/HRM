@@ -10,7 +10,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeDocuments
 from schemas.schemas_tenant import DocumentCreate, DocumentOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -28,17 +27,15 @@ def get_tenant_session(user):
 
 router = APIRouter(prefix="/employee/documents", tags=["Employee Documents"])
 
-
-
 # -------------------------------------------------------------------------
 # 1. UPLOAD DOCUMENT
 # -------------------------------------------------------------------------
 @router.post("/upload")
 async def upload_document(
+    request: Request,
     employee_id: int = Form(...),
     document_name: str = Form(...),
     file: UploadFile = File(...),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -55,8 +52,7 @@ async def upload_document(
     db.add(document)
     db.commit()
     db.refresh(document)
-    if request:
-        audit_crud(request, db, user, "CREATE", "employee_documents", document.id, None, document.__dict__)
+    audit_crud(request, db, user, "CREATE", "employee_documents", str(document.id), {}, document.__dict__)
 
     return document
 
@@ -88,6 +84,6 @@ def delete_document(document_id: int, request: Request, user=Depends(get_current
     old_values = document.__dict__.copy()
     db.delete(document)
     db.commit()
-    audit_crud(request, db, user, "DELETE", "employee_documents", document_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_documents", str(document_id), old_values, {})
 
     return {"message": "Document deleted successfully"}

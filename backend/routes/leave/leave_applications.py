@@ -30,10 +30,12 @@ def apply_leave(
         print(f"DEBUG: Received data: {data.dict()}")
         print(f"DEBUG: Employee ID: {employee_id}")
         
-        # Get employee details
+        # Get employee details - check both User table and allow onboarding employees
         employee = db.query(User).filter(User.id == employee_id).first()  # type: ignore
         if not employee:
-            raise HTTPException(status_code=400, detail="Employee not found")
+            # For onboarding employees, we'll proceed without the User record
+            # but we need to ensure the employee_id exists in some context
+            print(f"DEBUG: Employee {employee_id} not found in User table, proceeding as onboarding employee")
         
         # Get leave type
         leave_type = db.query(LeaveType).filter(LeaveType.id == data.leave_type_id).first()  # type: ignore
@@ -128,11 +130,9 @@ def apply_leave(
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-
 @router.get("/", response_model=list[LeaveApplicationOut])
 def list_leave_applications(db: Session = Depends(get_tenant_db)):
     return db.query(LeaveApplication).all()
-
 
 @router.put("/{leave_id}", response_model=LeaveApplicationOut)
 def update_leave_application(
@@ -159,7 +159,6 @@ def update_leave_application(
     audit_crud(request, db, user, "UPDATE_LEAVE_APPLICATION", "leave_applications", str(leave_id), old_values, data.dict(exclude_unset=True))
     
     return leave
-
 
 @router.post("/{leave_id}/approve", response_model=LeaveApplicationOut)
 def approve_or_reject_leave(
@@ -291,18 +290,13 @@ def initialize_leave_balances(
         "balances_created": balances_created
     }
 
-
 @router.get("/balances/{employee_id}")
 def get_leave_balances(
     employee_id: int,
     db: Session = Depends(get_tenant_db)
 ):
     """Get all leave balances for an employee with pending applications"""
-    employee = db.query(User).filter(User.id == employee_id).first()  # type: ignore
-    if not employee:
-        return []
-    
-    # Get all balances for the employee
+    # Get all balances for the employee (works for both User table and onboarding employees)
     balances = db.query(LeaveBalance, LeaveType).join(
         LeaveType, LeaveBalance.leave_type_id == LeaveType.id
     ).filter(LeaveBalance.employee_id == employee_id).all()  # type: ignore

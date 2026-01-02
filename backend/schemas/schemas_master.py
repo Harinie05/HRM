@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date
 
-
 # ---------------------------
 # MASTER: HOSPITAL REGISTER
 # ---------------------------
@@ -19,7 +18,6 @@ class HospitalRegister(BaseModel):
     password: str
     subscription_plan: Optional[str] = "Standard"
 
-
 # ---------------------------
 # MASTER: HOSPITAL OUT
 # ---------------------------
@@ -35,7 +33,6 @@ class HospitalOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 # ---------------------------
 # MASTER: ADMIN AUTH

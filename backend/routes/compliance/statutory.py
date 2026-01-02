@@ -50,7 +50,7 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
         employee_id = user_record.id if user_record else int(data.employee_id) if data.employee_id.isdigit() else None
         
-        if not employee_id:
+        if employee_id is None:
             raise HTTPException(status_code=404, detail=f"Employee with code {data.employee_id} not found")
         
         record = EmployeeStatutory(
@@ -92,8 +92,6 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
 @router.get("/")
 def get_statutory_calculations(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        audit_crud(request, db, user, "VIEW_STATUTORY_CALCULATIONS", "employee_statutory", "all", {}, {})
-        
         # Get all statutory records
         records = db.query(EmployeeStatutory).order_by(EmployeeStatutory.created_at.desc()).limit(50).all()
         
@@ -106,7 +104,7 @@ def get_statutory_calculations(request: Request, db: Session = Depends(get_tenan
             
             result.append({
                 "id": record.id,
-                "employee_id": user.employee_code if user and user.employee_code else str(record.employee_id),
+                "employee_id": user.employee_code if user is not None and user.employee_code is not None else str(record.employee_id),
                 "employee_name": user.name if user else f"Employee {record.employee_id}",
                 "basic_salary": record.basic_salary,
                 "pf_amount": record.pf_employee,
@@ -143,15 +141,15 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         pt_amount = data.pt_amount if data.pt_enabled else 0
         
         # Update record
-        record.employee_id = employee_id
-        record.basic_salary = data.basic_salary
-        record.pf_employee = pf_employee
-        record.pf_employer = pf_employee
-        record.esi_employee = esi_employee
-        record.esi_employer = esi_employee * 3.25 / 1.75
-        record.professional_tax = pt_amount
-        record.month = data.month or record.month
-        record.year = data.year or record.year
+        setattr(record, 'employee_id', employee_id)
+        setattr(record, 'basic_salary', data.basic_salary)
+        setattr(record, 'pf_employee', pf_employee)
+        setattr(record, 'pf_employer', pf_employee)
+        setattr(record, 'esi_employee', esi_employee)
+        setattr(record, 'esi_employer', esi_employee * 3.25 / 1.75)
+        setattr(record, 'professional_tax', pt_amount)
+        setattr(record, 'month', data.month or record.month)
+        setattr(record, 'year', data.year or record.year)
         
         db.commit()
         

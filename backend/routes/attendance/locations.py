@@ -12,7 +12,6 @@ router = APIRouter(
     tags=["Attendance - Locations"]
 )
 
-
 @router.post("/", response_model=AttendanceLocationOut)
 def create_location(
     data: AttendanceLocationCreate,
@@ -27,13 +26,11 @@ def create_location(
     audit_crud(request, db, user, "CREATE_ATTENDANCE_LOCATION", "attendance_locations", str(location.id), {}, data.dict())
     return location
 
-
 @router.get("/", response_model=list[AttendanceLocationOut])
 def list_locations(
     db: Session = Depends(get_tenant_db)
 ):
     return db.query(AttendanceLocation).all()
-
 
 @router.patch("/{location_id}/toggle", response_model=AttendanceLocationOut)
 def toggle_location(
@@ -47,12 +44,12 @@ def toggle_location(
         raise HTTPException(status_code=404, detail="Location not found")
 
     old_status = location.is_active
-    setattr(location, 'is_active', not location.is_active)
+    new_status = not bool(location.is_active) if location.is_active is not None else True
+    setattr(location, 'is_active', new_status)
     db.commit()
     db.refresh(location)
     audit_crud(request, db, user, "TOGGLE_ATTENDANCE_LOCATION", "attendance_locations", str(location_id), {"is_active": old_status}, {"is_active": location.is_active})
     return location
-
 
 @router.delete("/{location_id}/")
 def delete_location(

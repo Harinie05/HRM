@@ -41,13 +41,13 @@ def get_bank_details(
         logger.error(f"Error fetching bank details: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # ------------------------------
 # SAVE BANK DETAILS 🔒 Protected
 # ------------------------------
 @router.post("/{employee_id}")
 def save_bank_details(
     employee_id: str,
+    request: Request,
     account_holder_name: str = Form(""),
     bank_name: str = Form(""),
     account_number: str = Form(""),
@@ -58,7 +58,6 @@ def save_bank_details(
     bank_address: Optional[str] = Form(""),
     bank_document: Optional[str] = Form(""),
     document_name: Optional[str] = Form(""),
-    request: Request = None,
     user = Depends(get_current_user)
 ):
     try:
@@ -135,12 +134,11 @@ def save_bank_details(
                 })
             
             conn.commit()
-            if request:
-                audit_crud(request, user.get("tenant_db"), user, "UPDATE" if existing else "CREATE", "employee_bank_details", emp_id, None, {
-                    "account_holder_name": account_holder_name,
-                    "bank_name": bank_name,
-                    "account_number": account_number
-                })
+            audit_crud(request, user.get("tenant_db"), user, "UPDATE" if existing else "CREATE", "employee_bank_details", str(emp_id), {}, {
+                "account_holder_name": account_holder_name,
+                "bank_name": bank_name,
+                "account_number": account_number
+            })
             
         return {"message": "Bank details saved successfully"}
         

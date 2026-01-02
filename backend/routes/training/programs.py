@@ -69,8 +69,6 @@ async def create_training_program(program: dict, request: Request, db: Session =
 @router.get("/programs")
 async def get_training_programs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        audit_crud(request, db, user, "VIEW_TRAINING_PROGRAMS", "training_programs", "all", {}, {})
-        
         programs = db.query(TrainingProgram).all()
         
         programs_data = []

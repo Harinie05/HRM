@@ -34,6 +34,7 @@ router = APIRouter(prefix="/employee/education", tags=["Employee Education"])
 # -------------------------------------------------------------------------
 @router.post("/add")
 async def add_education(
+    request: Request,
     employee_id: int = Form(...),
     degree: str = Form(...),
     specialization: str = Form(""),
@@ -48,7 +49,6 @@ async def add_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -92,8 +92,7 @@ async def add_education(
     db.add(education)
     db.commit()
     db.refresh(education)
-    if request:
-        audit_crud(request, db, user, "CREATE", "employee_education", education.id, None, education.__dict__)
+    audit_crud(request, db, user, "CREATE", "employee_education", str(education.id), {}, education.__dict__)
 
     return education
 
@@ -155,6 +154,7 @@ def get_education(employee_id: int, user=Depends(get_current_user)):
 # -------------------------------------------------------------------------
 @router.put("/{education_id}")
 async def update_education(
+    request: Request,
     education_id: int,
     degree: str = Form(...),
     specialization: str = Form(""),
@@ -169,7 +169,6 @@ async def update_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -210,8 +209,7 @@ async def update_education(
 
     db.commit()
     db.refresh(education)
-    if request:
-        audit_crud(request, db, user, "UPDATE", "employee_education", education_id, None, education.__dict__)
+    audit_crud(request, db, user, "UPDATE", "employee_education", str(education_id), {}, education.__dict__)
 
     return education
 
@@ -221,8 +219,7 @@ async def update_education(
 @router.get("/certificate/{education_id}")
 def view_certificate(
     education_id: int, 
-    token: str = Query(None),
-    request: Request = None
+    token: str = Query(None)
 ):
     if not token:
         raise HTTPException(401, "Token required")
@@ -241,15 +238,6 @@ def view_certificate(
     file_path = getattr(education, 'certificate', None)
     if not file_path or not os.path.exists(file_path):
         raise HTTPException(404, "File not found")
-    
-    # Audit log for education certificate view
-    if request:
-        audit_crud(request, db, user, "VIEW_EDUCATION_CERTIFICATE", "document_access", str(education_id), {}, {
-            "document_type": "education",
-            "file_name": getattr(education, 'file_name', None),
-            "employee_id": education.employee_id,
-            "degree": education.degree
-        })
     
     # Determine media type for inline viewing
     file_name = getattr(education, 'file_name', None) or ''
@@ -305,6 +293,6 @@ def delete_education(education_id: int, request: Request, user=Depends(get_curre
     old_values = education.__dict__.copy()
     db.delete(education)
     db.commit()
-    audit_crud(request, db, user, "DELETE", "employee_education", education_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_education", str(education_id), old_values, {})
 
     return {"message": "Education record deleted successfully"}

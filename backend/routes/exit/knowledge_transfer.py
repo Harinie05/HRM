@@ -28,14 +28,13 @@ KNOWLEDGE_AREAS = [
 @router.get("/knowledge-areas")
 def get_knowledge_areas(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get predefined knowledge areas for KT"""
-    audit_crud(request, db, user, "VIEW_KNOWLEDGE_AREAS", "knowledge_areas", "all", {}, {})
     return {"knowledge_areas": KNOWLEDGE_AREAS}
 
 @router.post("/", response_model=KnowledgeTransferOut)
 def create_knowledge_transfer(
     data: KnowledgeTransferCreate,
+    request: Request,
     exit_id: int = Query(...),
-    request: Request = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
@@ -137,22 +136,23 @@ def acknowledge_kt_item(
         employee_id = first_user.id if first_user else 1
     
     old_status = kt_item.status
-    kt_item.status = "Completed"
-    kt_item.acknowledged_at = datetime.now()
-    kt_item.acknowledged_by = employee_id
+    setattr(kt_item, 'status', "Completed")
+    setattr(kt_item, 'acknowledged_at', datetime.now())
+    setattr(kt_item, 'acknowledged_by', employee_id)
     
     # Check if all items are completed
     kt = db.query(ExitKnowledgeTransfer).filter(ExitKnowledgeTransfer.id == kt_item.kt_id).first()
-    all_items = db.query(ExitKTItem).filter(ExitKTItem.kt_id == kt.id).all()
-    
-    if all(item.status == "Completed" for item in all_items):
-        kt.overall_status = "Completed"
+    if kt is not None:
+        all_items = db.query(ExitKTItem).filter(ExitKTItem.kt_id == kt.id).all()
         
-        # Update exit KT status if both approvals are also done
-        if kt.manager_approved and kt.hr_approved:
-            exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == kt.exit_id).first()
-            if exit_record:
-                exit_record.kt_status = "Completed"
+        if all(item.status == "Completed" for item in all_items):
+            setattr(kt, 'overall_status', "Completed")
+            
+            # Update exit KT status if both approvals are also done
+            if getattr(kt, 'manager_approved', False) is True and getattr(kt, 'hr_approved', False) is True:
+                exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == kt.exit_id).first()
+                if exit_record:
+                    setattr(exit_record, 'kt_status', "Completed")
     
     db.commit()
     
@@ -163,8 +163,8 @@ def acknowledge_kt_item(
 @router.put("/{kt_id}/approve")
 def approve_knowledge_transfer(
     kt_id: int,
+    request: Request,
     approval_type: str = Query(...),  # "manager" or "hr"
-    request: Request = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
@@ -178,16 +178,16 @@ def approve_knowledge_transfer(
     old_values = {"manager_approved": kt.manager_approved, "hr_approved": kt.hr_approved}
     
     if approval_type == "manager":
-        kt.manager_approved = True
+        setattr(kt, 'manager_approved', True)
     elif approval_type == "hr":
-        kt.hr_approved = True
+        setattr(kt, 'hr_approved', True)
     else:
         raise HTTPException(status_code=400, detail="Invalid approval type")
     
     print(f"DEBUG: After {approval_type} approval - Manager: {kt.manager_approved}, HR: {kt.hr_approved}")
     
     # Check if both approvals are complete AND all KT items are completed
-    if kt.manager_approved and kt.hr_approved:
+    if getattr(kt, 'manager_approved', False) is True and getattr(kt, 'hr_approved', False) is True:
         print(f"DEBUG: Both approvals complete, checking KT items status")
         
         # Check if all KT items are completed
@@ -202,7 +202,7 @@ def approve_knowledge_transfer(
             exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == kt.exit_id).first()
             if exit_record:
                 print(f"DEBUG: Found exit record, updating kt_status from {exit_record.kt_status} to Completed")
-                exit_record.kt_status = "Completed"
+                setattr(exit_record, 'kt_status', "Completed")
             else:
                 print(f"DEBUG: Exit record not found for exit_id: {kt.exit_id}")
         else:
@@ -218,6 +218,5 @@ def approve_knowledge_transfer(
 @router.get("/")
 def list_knowledge_transfers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """List all Knowledge Transfers"""
-    audit_crud(request, db, user, "VIEW_KNOWLEDGE_TRANSFERS", "exit_knowledge_transfer", "all", {}, {})
     kts = db.query(ExitKnowledgeTransfer).all()
     return kts

@@ -10,7 +10,6 @@ router = APIRouter(prefix="/recruitment/public", tags=["Public Apply"])
 UPLOAD_DIR = "uploads/resumes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 # -------------------------------------------------------------
 # GET JOB DETAILS FOR PUBLIC PAGE
 # -------------------------------------------------------------
@@ -29,7 +28,6 @@ def get_job_details(job_id: int, db: Session = Depends(get_tenant_db)):
         "experience": job.experience,
         "location": job.location,
     }
-
 
 # -------------------------------------------------------------
 # PUBLIC APPLY ROUTE (Normal + Referral)

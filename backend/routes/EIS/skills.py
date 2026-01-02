@@ -10,7 +10,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeSkills
 from schemas.schemas_tenant import SkillCreate, SkillOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -26,9 +25,7 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/skills", tags=["Employee Skills & Competencies"])
-
 
 # -------------------------------------------------------------------------
 # 1. ADD SKILL
@@ -62,7 +59,6 @@ def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user
     finally:
         db.close()
 
-
 # -------------------------------------------------------------------------
 # 2. LIST SKILLS FOR EMPLOYEE
 # -------------------------------------------------------------------------
@@ -87,7 +83,6 @@ def get_skills(employee_id: int, user=Depends(get_current_user)):
         ]
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 3. UPDATE SKILL
@@ -122,7 +117,6 @@ def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depend
         raise HTTPException(500, f"Failed to update skill: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 4. DELETE SKILL

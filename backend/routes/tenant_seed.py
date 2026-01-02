@@ -17,7 +17,6 @@ from models.models_tenant import (
 
 import database
 
-
 # -------------------------------------------------------------
 # DEFAULT PERMISSIONS  (ONLY PERMISSIONS — NO DEFAULT ROLES)
 # -------------------------------------------------------------
@@ -40,7 +39,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_user", "description": "Can edit users"},
     {"name": "delete_user", "description": "Can delete users"},
 ]
-
 
 # -------------------------------------------------------------
 # SEED TENANT DATABASE AFTER CREATION (ONLY PERMISSIONS)

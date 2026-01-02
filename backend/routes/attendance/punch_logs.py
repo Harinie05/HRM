@@ -58,14 +58,14 @@ def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time
         shift_end_minutes = to_minutes(shift_end)
         
         # Check Late (check-in after shift start + grace)
-        if in_minutes is not None and late_rule is not None:  # type: ignore
-            late_threshold = shift_start_minutes + late_rule.value
+        if in_minutes is not None and late_rule is not None and getattr(late_rule, 'value', None) is not None:
+            late_threshold = shift_start_minutes + getattr(late_rule, 'value')
             if in_minutes > late_threshold:
                 return 'Late'
         
         # Check Early (check-out before shift end - grace)
-        if out_minutes is not None and early_rule is not None:  # type: ignore
-            early_threshold = shift_end_minutes - early_rule.value
+        if out_minutes is not None and early_rule is not None and getattr(early_rule, 'value', None) is not None:
+            early_threshold = shift_end_minutes - getattr(early_rule, 'value')
             if out_minutes < early_threshold:
                 return 'Early'
         
@@ -73,7 +73,6 @@ def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time
     
     except Exception:
         return 'Present'  # Safe default on any error
-
 
 @router.post("/", response_model=AttendancePunchOut)
 def create_punch(
@@ -123,7 +122,6 @@ def create_punch(
         print(f"Error creating punch: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to create punch record: {str(e)}")
 
-
 @router.get("/", response_model=list[AttendancePunchOut])
 def get_all_punches(
     limit: int = 100,
@@ -140,7 +138,6 @@ def get_all_punches(
         query = query.filter(AttendancePunch.date == date)
     
     return query.offset(offset).limit(limit).all()
-
 
 @router.put("/{punch_id}", response_model=AttendancePunchOut)
 def update_punch(

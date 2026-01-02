@@ -11,7 +11,6 @@ from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/shifts", tags=["Shifts"])
 
-
 # ------------------------------
 # CREATE SHIFT 🔒 Protected
 # ------------------------------
@@ -43,7 +42,6 @@ def create_shift(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # ------------------------------
 # LIST SHIFTS 🔒 Protected
 # ------------------------------
@@ -62,7 +60,6 @@ def list_shifts(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # ------------------------------
 # DELETE SHIFT 🔒 Protected

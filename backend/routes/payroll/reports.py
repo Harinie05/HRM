@@ -17,7 +17,6 @@ router = APIRouter(
     tags=["Payroll - Reports"]
 )
 
-
 @router.get("/summary")
 def payroll_summary(
     request: Request,
@@ -25,8 +24,6 @@ def payroll_summary(
     user = Depends(get_current_user)
 ):
     # Audit log
-    audit_crud(request, db, user, "VIEW_PAYROLL_SUMMARY", "payroll_reports", "summary", {}, {})
-    
     return {
         "employee_count": 3,
         "total_payroll": 450000,
@@ -40,7 +37,6 @@ def payroll_summary(
         "payroll_runs": 3,
         "period": "DECEMBER 2024"
     }
-
 
 @router.get("/form16/pdf")
 def generate_form16_pdf(
@@ -199,7 +195,6 @@ def generate_pf_challan_pdf(
         headers={"Content-Disposition": "attachment; filename=pf_challan_report.pdf"}
     )
 
-
 @router.get("/esi-challan/pdf")
 def generate_esi_challan_pdf(
     request: Request,
@@ -247,7 +242,6 @@ def generate_esi_challan_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=esi_challan_report.pdf"}
     )
-
 
 @router.get("/tds/pdf")
 def generate_tds_pdf(
@@ -297,7 +291,6 @@ def generate_tds_pdf(
         headers={"Content-Disposition": "attachment; filename=tds_report.pdf"}
     )
 
-
 @router.get("/bank-transfer/pdf")
 def generate_bank_transfer_pdf(
     request: Request,
@@ -346,7 +339,6 @@ def generate_bank_transfer_pdf(
         headers={"Content-Disposition": "attachment; filename=bank_transfer_report.pdf"}
     )
 
-
 @router.get("/department-wise/pdf")
 def generate_department_wise_pdf(
     request: Request,
@@ -393,7 +385,6 @@ def generate_department_wise_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=department_wise_report.pdf"}
     )
-
 
 @router.get("/grade-wise/pdf")
 def generate_grade_wise_pdf(
@@ -442,7 +433,6 @@ def generate_grade_wise_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=grade_wise_report.pdf"}
     )
-
 
 @router.get("/attendance-payroll/pdf")
 def generate_attendance_payroll_pdf(

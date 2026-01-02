@@ -13,7 +13,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeCertifications
 from schemas.schemas_tenant import CertificationCreate, CertificationOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -29,21 +28,19 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/certifications", tags=["Employee Certifications"])
-
 
 # -------------------------------------------------------------------------
 # 1. ADD CERTIFICATION + OPTIONAL FILE
 # -------------------------------------------------------------------------
-@router.post("/add")
+@router.post("/add", response_model=None)
 async def add_certification(
+    request: Request,
     employee_id: int = Form(...),
     name: str = Form(...),
     issued_by: Optional[str] = Form(None),
     expiry: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -56,8 +53,9 @@ async def add_certification(
             os.makedirs("uploads", exist_ok=True)
             
             # Generate unique filename
-            file_extension = os.path.splitext(file.filename)[1]
-            unique_filename = f"{uuid.uuid4()}_{file.filename}"
+            filename = file.filename or 'unknown'
+            file_extension = os.path.splitext(filename)[1]
+            unique_filename = f"{uuid.uuid4()}_{filename}"
             file_path = f"uploads/{unique_filename}"
             
             # Save file to disk
@@ -65,7 +63,7 @@ async def add_certification(
                 content = await file.read()
                 f.write(content)
             
-            file_name = file.filename
+            file_name = filename
 
         cert = EmployeeCertifications(
             employee_id=employee_id,
@@ -79,8 +77,7 @@ async def add_certification(
         db.add(cert)
         db.commit()
         db.refresh(cert)
-        if request:
-            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_certifications", cert.id, None, cert.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_certifications", str(cert.id), {}, cert.__dict__)
 
         return cert
         
@@ -90,11 +87,10 @@ async def add_certification(
     finally:
         db.close()
 
-
 # -------------------------------------------------------------------------
 # 2. LIST CERTIFICATIONS
 # -------------------------------------------------------------------------
-@router.get("/{employee_id}")
+@router.get("/{employee_id}", response_model=None)
 def get_certifications(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -105,18 +101,17 @@ def get_certifications(employee_id: int, user=Depends(get_current_user)):
         .all()
     )
 
-
 # -------------------------------------------------------------------------
 # 3. UPDATE CERTIFICATION
 # -------------------------------------------------------------------------
-@router.put("/{cert_id}")
+@router.put("/{cert_id}", response_model=None)
 async def update_certification(
+    request: Request,
     cert_id: int,
     name: str = Form(...),
     issued_by: Optional[str] = Form(None),
     expiry: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -125,17 +120,18 @@ async def update_certification(
     if not cert:
         raise HTTPException(404, "Certification not found")
 
-    cert.certification = name
-    cert.issued_by = issued_by or ''
-    cert.expiry_date = expiry
+    setattr(cert, 'certification', name)
+    setattr(cert, 'issued_by', issued_by or '')
+    setattr(cert, 'expiry_date', expiry)
 
     if file:
         # Create uploads directory if it doesn't exist
         os.makedirs("uploads", exist_ok=True)
         
         # Generate unique filename
-        file_extension = os.path.splitext(file.filename)[1]
-        unique_filename = f"{uuid.uuid4()}_{file.filename}"
+        filename = file.filename or 'unknown'
+        file_extension = os.path.splitext(filename)[1]
+        unique_filename = f"{uuid.uuid4()}_{filename}"
         file_path = f"uploads/{unique_filename}"
         
         # Save file to disk
@@ -143,25 +139,23 @@ async def update_certification(
             content = await file.read()
             f.write(content)
         
-        cert.certificate_file = file_path
-        cert.file_name = file.filename
+        setattr(cert, 'certificate_file', file_path)
+        setattr(cert, 'file_name', filename)
 
     db.commit()
     db.refresh(cert)
-    if request:
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_certifications", cert_id, None, cert.__dict__)
+    audit_crud(request, db, user, "UPDATE", "employee_certifications", str(cert_id), {}, cert.__dict__)
 
     return {"message": "Certification updated successfully"}
-
 
 # -------------------------------------------------------------------------
 # 4. VIEW CERTIFICATION CERTIFICATE
 # -------------------------------------------------------------------------
-@router.get("/certificate/{cert_id}")
+@router.get("/certificate/{cert_id}", response_model=None)
 def view_certificate(
+    request: Request,
     cert_id: int, 
-    token: str = Query(None),
-    request: Request = None
+    token: str = Query(None)
 ):
     if not token:
         raise HTTPException(401, "Token required")
@@ -174,23 +168,23 @@ def view_certificate(
     db = get_tenant_session(user)
     
     cert = db.query(EmployeeCertifications).filter(EmployeeCertifications.id == cert_id).first()
-    if not cert or not cert.certificate_file:
+    if not cert or cert.certificate_file is None:
         raise HTTPException(404, "Certificate not found")
     
-    file_path = cert.certificate_file
-    if not os.path.exists(file_path):
+    file_path = getattr(cert, 'certificate_file', None)
+    if not file_path or not os.path.exists(file_path):
         raise HTTPException(404, "File not found")
     
     # Audit log for certificate view
-    if request:
-        audit_crud(request, db, user, "VIEW_EMPLOYEE_CERTIFICATE", "document_access", str(cert_id), {}, {
-            "document_type": "certification",
-            "file_name": cert.file_name,
-            "employee_id": cert.employee_id
-        })
+    audit_crud(request, db, user, "VIEW_EMPLOYEE_CERTIFICATE", "document_access", str(cert_id), {}, {
+        "document_type": "certification",
+        "file_name": getattr(cert, 'file_name', None),
+        "employee_id": cert.employee_id
+    })
     
     # Determine media type for inline viewing
-    file_ext = os.path.splitext(cert.file_name)[1].lower() if cert.file_name else ''
+    file_name = getattr(cert, 'file_name', None)
+    file_ext = os.path.splitext(file_name)[1].lower() if file_name else ''
     
     if file_ext == '.pdf':
         media_type = 'application/pdf'
@@ -210,7 +204,7 @@ def view_certificate(
 # -------------------------------------------------------------------------
 # 5. DELETE CERTIFICATION
 # -------------------------------------------------------------------------
-@router.delete("/{cert_id}")
+@router.delete("/{cert_id}", response_model=None)
 def delete_certification(cert_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -221,6 +215,6 @@ def delete_certification(cert_id: int, request: Request, user=Depends(get_curren
     old_values = cert.__dict__.copy()
     db.delete(cert)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_certifications", cert_id, old_values, None)
+    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_certifications", str(cert_id), old_values, {})
 
     return {"message": "Certification deleted successfully"}

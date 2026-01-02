@@ -13,7 +13,6 @@ router = APIRouter(prefix="/bgv", tags=["BGV"])
 UPLOAD_DIR = "uploads/bgv"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 # -----------------------------------------------------------
 # 1) CREATE BGV ENTRY
 # -----------------------------------------------------------
@@ -40,7 +39,6 @@ def create_bgv(candidate_id: int, data: BGVCreate, request: Request, db: Session
     audit_crud(request, db, user, "CREATE_BGV", "bgv", str(bgv.id), {}, {"candidate_id": candidate_id, "verification_type": data.verification_type, "status": data.status})
     
     return bgv
-
 
 # -----------------------------------------------------------
 # 2) UPLOAD BGV DOCUMENT
@@ -81,7 +79,6 @@ def upload_bgv_document(
         audit_crud(request, db, user, "UPLOAD_BGV_DOCUMENT", "bgv", str(bgv.id), {}, {"candidate_id": candidate_id, "document": filename})
     
     return bgv
-
 
 # -----------------------------------------------------------
 # 3) UPDATE BGV STATUS

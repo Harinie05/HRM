@@ -51,7 +51,6 @@ from models.models_tenant import (
     EmployeeExit
 )
 
-
 from models.models_master import Hospital, MasterUser
 
 from .tenant_seed import seed_tenant
@@ -71,7 +70,6 @@ from utils.token import create_access_token, create_refresh_token, verify_token
 from utils.audit_logger import log_error
 
 router = APIRouter()
-
 
 # =================================================================
 # 🔐 JWT AUTH — MUST COME FIRST
@@ -111,7 +109,6 @@ def check_permission(required_permission: str):
         return user
     return permission_checker
 
-
 # ---------------------------------------------------------
 # PASSWORD HASH/VERIFY
 # ---------------------------------------------------------
@@ -124,8 +121,6 @@ def hash_password(password: str) -> str:
 def verify_password(plain: str, hashed: str) -> bool:
     logger.info("Verifying password")
     return pwd_context.verify(plain, hashed)
-
-
 
 # =================================================================
 # 1. REGISTER HOSPITAL + AUTO CREATE TENANT DB + ADMIN USER
@@ -209,16 +204,14 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
     except Exception as e:
         logger.error(f"Hospital registration failed: {str(e)}")
         log_error(
-            tenant_id=payload.tenant_id,
+            db=db,
             error_type=type(e).__name__,
             error_message=str(e),
             request_url="/auth/register",
             request_method="POST",
-            request_data=payload.dict(exclude={"password"})
+            request_data=payload.model_dump(exclude={"password"})
         )
         raise HTTPException(500, f"Registration failed: {str(e)}")
-
-
 
 # =================================================================
 # ADMIN AUTH CHECK
@@ -248,8 +241,6 @@ def authenticate_admin(db: Session, tenant_id: str, email: str, password: str):
     logger.info("Admin authenticated successfully")
     return hospital
 
-
-
 # =================================================================
 # 2. CREATE TABLE  🔒 PROTECTED
 # =================================================================
@@ -262,7 +253,7 @@ def create_dynamic_table(
 ):
     logger.info(f"User {user.get('email')} creating table '{payload.table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
 
     table_name = payload.table_name
     columns = payload.columns
@@ -291,8 +282,6 @@ def create_dynamic_table(
     logger.info(f"Table '{table_name}' created successfully")
     return {"detail": "Table created", "table": table_name}
 
-
-
 # =================================================================
 # 3. ADD COLUMN 🔒 PROTECTED
 # =================================================================
@@ -306,7 +295,7 @@ def add_column(
 ):
     logger.info(f"User {user.get('email')} adding column to '{table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
 
     col = payload.column
     part = f"`{col.name}` {col.type}"
@@ -326,8 +315,6 @@ def add_column(
     logger.info(f"Column '{col.name}' added to '{table_name}'")
     return {"detail": "Column added", "column": col.name}
 
-
-
 # =================================================================
 # 4. INSERT ROW 🔒 PROTECTED
 # =================================================================
@@ -341,7 +328,7 @@ def insert_row(
 ):
     logger.info(f"User {user.get('email')} inserting row into '{table_name}'")
 
-    hospital = authenticate_admin(db, tenant_id, payload.admin.email, payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
 
     data = payload.row
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -362,8 +349,6 @@ def insert_row(
     logger.info("Row inserted successfully")
     return {"detail": "Row inserted"}
 
-
-
 # =================================================================
 # 5. LIST ROWS 🔒 PROTECTED
 # =================================================================
@@ -377,7 +362,7 @@ def list_rows(
 ):
     logger.info(f"User {user.get('email')} listing rows from '{table_name}'")
 
-    hospital = authenticate_admin(db, tenant_id, auth.email, auth.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=auth.email, password=auth.password)
     engine = database.get_tenant_engine(str(hospital.db_name))
 
     with engine.connect() as conn:
@@ -385,8 +370,6 @@ def list_rows(
 
     logger.info(f"{len(rows)} rows fetched from {table_name}")
     return {"rows": [dict(r._mapping) for r in rows]}
-
-
 
 # =================================================================
 # 6. LOGIN → RETURN ACCESS + REFRESH TOKEN
@@ -506,8 +489,6 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
     logger.warning("Invalid login attempt")
     raise HTTPException(400, "Invalid email/password")
 
-
-
 # =================================================================
 # 7. REFRESH TOKEN
 # =================================================================
@@ -539,8 +520,6 @@ def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
     logger.info("Refresh token regenerated successfully")
     return {"access_token": new_access}
 
-
-
 # =================================================================
 # 8. SEED PERMISSIONS 🔒 PROTECTED
 # =================================================================
@@ -549,8 +528,6 @@ def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
     logger.info(f"Seeding tenant DB: {tenant_db}")
     seed_tenant(tenant_db)
     return {"message": f"Tenant '{tenant_db}' seeded"}
-
-
 
 # =================================================================
 # 9. LOGOUT

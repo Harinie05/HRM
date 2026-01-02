@@ -159,9 +159,7 @@ def get_job_applications(
 @router.get("/dashboard-stats")
 def get_referral_dashboard_stats(request: Request, db: Session = Depends(get_tenant_db)):
     """Get referral statistics for dashboard"""
-    try:
-        audit_crud(request, db, {}, "VIEW_REFERRAL_STATS", "referral_dashboard", "all", {}, {})
-        stats_query = text("""
+    try:        stats_query = text("""
             SELECT 
                 COUNT(DISTINCT rl.id) as total_referral_links,
                 COUNT(DISTINCT ja.id) as total_referral_applications,

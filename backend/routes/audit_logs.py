@@ -12,6 +12,7 @@ router = APIRouter(prefix="/audit", tags=["Audit Logs"])
 
 @router.get("/logs")
 async def get_audit_logs(
+    request: Request,
     page: int = Query(1, ge=1),
     limit: int = Query(50, ge=1, le=1000),
     action: Optional[str] = Query(None),
@@ -19,15 +20,11 @@ async def get_audit_logs(
     employee_name: Optional[str] = Query(None),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    request: Request = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
     """Get audit logs with filtering and pagination"""
     try:
-        # Audit log for viewing audit logs (meta-audit)
-        if request:
-            audit_crud(request, db, user, "VIEW_AUDIT_LOGS", "audit_logs", "all", {}, {"page": page, "limit": limit})
         # Build query
         query = db.query(AuditLog)
         
@@ -66,7 +63,7 @@ async def get_audit_logs(
                 "new_values": log.new_values,
                 "ip_address": log.ip_address,
                 "user_agent": log.user_agent,
-                "created_at": log.created_at.isoformat() if log.created_at else None
+                "created_at": log.created_at.isoformat() if log.created_at is not None else None
             })
         
         return {
@@ -91,7 +88,6 @@ async def get_audit_log_detail(
 ):
     """Get detailed audit log by ID"""
     try:
-        audit_crud(request, db, user, "VIEW_AUDIT_LOG_DETAIL", "audit_logs", str(log_id), {}, {"log_id": log_id})
         log = db.query(AuditLog).filter(AuditLog.id == log_id).first()
         if not log:
             raise HTTPException(status_code=404, detail="Audit log not found")
@@ -109,7 +105,7 @@ async def get_audit_log_detail(
             "new_values": log.new_values,
             "ip_address": log.ip_address,
             "user_agent": log.user_agent,
-            "created_at": log.created_at.isoformat() if log.created_at else None
+            "created_at": log.created_at.isoformat() if log.created_at is not None else None
         }
         
     except HTTPException:
@@ -119,17 +115,14 @@ async def get_audit_log_detail(
 
 @router.get("/stats")
 async def get_audit_stats(
+    request: Request,
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    request: Request = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
     """Get audit log statistics"""
     try:
-        # Audit log for viewing audit stats
-        if request:
-            audit_crud(request, db, user, "VIEW_AUDIT_STATS", "audit_logs", "all", {}, {})
         # Base query
         base_query = db.query(AuditLog)
         
@@ -240,7 +233,7 @@ async def get_error_logs(
                 "request_method": log.request_method,
                 "request_data": log.request_data,
                 "ip_address": log.ip_address,
-                "created_at": log.created_at.isoformat() if log.created_at else None
+                "created_at": log.created_at.isoformat() if log.created_at is not None else None
             })
         
         return {
@@ -258,30 +251,30 @@ async def get_error_logs(
 
 @router.delete("/logs/cleanup")
 async def cleanup_old_logs(
+    request: Request,
     days: int = Query(90, ge=1, le=365),
-    request: Request = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
     """Clean up audit logs older than specified days"""
     try:
-        if request:
-            audit_crud(request, db, user, "CLEANUP_AUDIT_LOGS", "audit_logs", "cleanup", {}, {"days": days})
         # Calculate cutoff date
         cutoff_date = datetime.now().date()
         cutoff_date = cutoff_date.replace(day=cutoff_date.day - days)
         
         # Delete old audit logs
-        audit_deleted = db.execute(text("""
+        audit_result = db.execute(text("""
             DELETE FROM audit_logs 
             WHERE created_at < :cutoff_date
-        """), {"cutoff_date": cutoff_date}).rowcount
+        """), {"cutoff_date": cutoff_date})
+        audit_deleted = getattr(audit_result, 'rowcount', 0)
         
         # Delete old error logs
-        error_deleted = db.execute(text("""
+        error_result = db.execute(text("""
             DELETE FROM error_logs 
             WHERE created_at < :cutoff_date
-        """), {"cutoff_date": cutoff_date}).rowcount
+        """), {"cutoff_date": cutoff_date})
+        error_deleted = getattr(error_result, 'rowcount', 0)
         
         db.commit()
         

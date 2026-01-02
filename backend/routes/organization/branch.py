@@ -11,7 +11,6 @@ from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 
-
 # =============================
 # GET branch details 🔒 Protected
 # =============================
@@ -33,7 +32,6 @@ def get_branch(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # =============================
 # CREATE or UPDATE branch 🔒 Protected

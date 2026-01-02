@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from models.models_tenant import EmployeeLifecycleAction
 from schemas.schemas_tenant import (
@@ -7,6 +7,7 @@ from schemas.schemas_tenant import (
     LifecycleActionOut
 )
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from utils.email import send_email
 import logging
 from datetime import datetime
@@ -14,9 +15,6 @@ from datetime import datetime
 logger = logging.getLogger("HRM")
 
 router = APIRouter(prefix="/hr/lifecycle", tags=["HR Lifecycle"])
-
-
-
 
 @router.post("/pending")
 def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_tenant_db)):
@@ -103,7 +101,7 @@ def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/approve")
-def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tenant_db)):
+def approve_lifecycle_action(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Approve or reject lifecycle action with email notification"""
     try:
         action_id = approval_data.get('actionId')
@@ -303,7 +301,6 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
         logger.error(f"❌ Error processing approval: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/")
 def list_lifecycle_actions(db: Session = Depends(get_tenant_db)):

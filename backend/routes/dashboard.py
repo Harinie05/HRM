@@ -30,12 +30,6 @@ def get_dashboard_stats(
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
         
-        # Audit log for dashboard access
-        with engine.connect() as conn:
-            tdb = Session(bind=engine)
-            with tdb:
-                audit_crud(request, tdb, user, "VIEW_DASHBOARD_STATS", "dashboard", "all", {}, {})
-        
         with engine.connect() as conn:
             # Get total employees
             employees_result = conn.execute(text("SELECT COUNT(*) FROM users")).fetchone()
@@ -71,11 +65,6 @@ def get_id_document_alerts(
         tenant_db = user.get("tenant_db")
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
-        
-        # Audit log for alerts access
-        tdb = Session(bind=engine)
-        with tdb:
-            audit_crud(request, tdb, user, "VIEW_ID_DOC_ALERTS", "dashboard", "all", {}, {})
         
         from datetime import date
         today = date.today()
@@ -157,11 +146,6 @@ def get_audit_summary(
         tenant_db = user.get("tenant_db")
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
-        
-        # Audit log for audit summary access
-        tdb = Session(bind=engine)
-        with tdb:
-            audit_crud(request, tdb, user, "VIEW_AUDIT_SUMMARY", "dashboard", "all", {}, {})
         
         with engine.connect() as conn:
             # Get total audit logs count

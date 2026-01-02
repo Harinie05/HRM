@@ -29,7 +29,6 @@ def get_reporting_levels(user = Depends(get_current_user)):
         logger.error(f"Error fetching reporting levels: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # ------------------------------
 # CREATE REPORTING LEVEL 🔒 Protected
 # ------------------------------
@@ -69,7 +68,6 @@ def create_reporting_level(
         logger.error(f"Error creating reporting level: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # ------------------------------
 # GET HIERARCHY 🔒 Protected
 # ------------------------------
@@ -99,7 +97,6 @@ def get_reporting_hierarchy(user = Depends(get_current_user)):
     except Exception as e:
         logger.error(f"Error fetching hierarchy: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # ------------------------------
 # CREATE HIERARCHY RULE 🔒 Protected
@@ -140,7 +137,6 @@ def create_hierarchy_rule(
         logger.error(f"Error creating hierarchy rule: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # ------------------------------
 # GET EMPLOYEE REPORTING 🔒 Protected
 # ------------------------------
@@ -176,7 +172,6 @@ def get_employee_reporting(
     except Exception as e:
         logger.error(f"Error fetching employee reporting: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # ------------------------------
 # ASSIGN EMPLOYEE REPORTING 🔒 Protected

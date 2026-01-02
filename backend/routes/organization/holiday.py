@@ -39,14 +39,12 @@ def create_holiday(data: HolidayCreate, request: Request, user = Depends(get_cur
     audit_crud(request, db, user, "CREATE_HOLIDAY", "holidays", str(holiday.id), {}, {"name": data.name, "date": str(data.date), "type": data.type})
     return holiday
 
-
 # ---------------- LIST ----------------
 @router.get("/list", response_model=List[HolidayOut])
 def list_holidays(user = Depends(get_current_user)):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY LIST] User:{user.get('email')}")
     return db.query(Holiday).order_by(Holiday.date.asc()).all()
-
 
 # ---------------- DELETE ----------------
 @router.delete("/delete/{id}")
@@ -63,7 +61,6 @@ def delete_holiday(id: int, request: Request, user = Depends(get_current_user)):
     db.commit()
     audit_crud(request, db, user, "DELETE_HOLIDAY", "holidays", str(id), {"name": holiday.name, "date": str(holiday.date), "type": holiday.type}, {})
     return {"message": "Holiday deleted successfully"}
-
 
 # ---------------- UPDATE (For Edit Later) ----------------
 @router.put("/update/{id}", response_model=HolidayOut)

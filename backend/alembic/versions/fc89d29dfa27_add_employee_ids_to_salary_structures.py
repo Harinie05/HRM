@@ -10,19 +10,16 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = 'fc89d29dfa27'
 down_revision: Union[str, Sequence[str], None] = '8f08415706d4'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
 def upgrade() -> None:
     """Upgrade schema."""
     # Add employee_ids column to salary_structures table
     op.add_column('salary_structures', sa.Column('employee_ids', sa.Text(), nullable=True))
-
 
 def downgrade() -> None:
     """Downgrade schema."""

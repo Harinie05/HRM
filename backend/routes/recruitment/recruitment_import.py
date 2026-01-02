@@ -11,7 +11,6 @@ from models.models_tenant import ImportedCandidate, JobRequisition, ATSCandidate
 
 router = APIRouter(prefix="/recruitment", tags=["Candidate Import"])
 
-
 # -------------------------------
 # 1️⃣ UPLOAD RESUME FILE
 # -------------------------------
@@ -34,7 +33,6 @@ async def upload_resume(file: UploadFile = File(...), request: Request = None, u
         audit_crud(request, db, user, "UPLOAD_RESUME", "resume_uploads", filename, {}, {"filename": filename})
 
     return {"resume_url": resume_url}
-
 
 # -------------------------------
 # 2️⃣ SAVE CANDIDATE IN DATABASE
@@ -82,12 +80,10 @@ async def import_candidate(data: dict, request: Request, db: Session = Depends(g
 
     return {"message": "Candidate imported & added to ATS", "candidate": new_cand.id}
 
-
 # -------------------------------
 # 3️⃣ LIST IMPORTED CANDIDATES
 # -------------------------------
 @router.get("/import/list")
 def list_imported(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    audit_crud(request, db, user, "VIEW_IMPORTED_CANDIDATES", "imported_candidates", "all", {}, {})
     data = db.query(ImportedCandidate).order_by(ImportedCandidate.id.desc()).all()
     return data

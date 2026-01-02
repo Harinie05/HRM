@@ -14,14 +14,12 @@ from routes.hospital import get_current_user
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 # --------- helper ---------
 def get_hospital_by_db(db: Session, tenant_db: str):
     hospital = db.query(Hospital).filter(Hospital.db_name == tenant_db).first()
     if not hospital:
         raise HTTPException(404, "Hospital not found")
     return hospital
-
 
 # ============================================================
 # CREATE USER 🔒 Protected
@@ -80,7 +78,6 @@ def create_user(
         traceback.print_exc()
         raise HTTPException(500, f"Error creating user: {str(e)}")
 
-
 # ============================================================
 # LIST USERS 🔒 Protected
 # ============================================================
@@ -125,7 +122,6 @@ def list_users(
 
         return {"users": output}
 
-
 # ============================================================
 # LIST USERS (hospitals endpoint) 🔒 Protected
 # ============================================================
@@ -136,7 +132,6 @@ def list_users_hospitals(
     user = Depends(get_current_user)    # 🔐 Token required
 ):
     return list_users(tenant_db, db, user)
-
 
 # ============================================================
 # UPDATE USER 🔒 Protected
@@ -184,7 +179,6 @@ def update_user(
         logger.info(f"User {user_id} updated successfully")
         return {"detail": "User updated"}
 
-
 # ============================================================
 # UPDATE USER (Alternative endpoint) 🔒 Protected
 # ============================================================
@@ -198,7 +192,6 @@ def update_user_alt(
     user = Depends(get_current_user)
 ):
     return update_user(tenant_db, user_id, payload, request, db, user)
-
 
 # ============================================================
 # DELETE USER 🔒 Protected

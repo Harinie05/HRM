@@ -30,11 +30,9 @@ def create_leave_rule(
     audit_crud(request, db, user, "CREATE_LEAVE_RULE", "leave_rules", str(rule.id), {}, data.dict())
     return rule
 
-
 @router.get("/", response_model=list[LeaveRuleOut])
 def list_leave_rules(db: Session = Depends(get_tenant_db)):
     return db.query(LeaveRule).all()
-
 
 @router.put("/{rule_id}", response_model=LeaveRuleOut)
 def update_leave_rule(

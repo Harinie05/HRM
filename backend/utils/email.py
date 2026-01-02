@@ -15,7 +15,6 @@ SMTP_USER = os.getenv("SMTP_USER", "no-reply@nutryah.com")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "Nutryah@123")
 SMTP_FROM = os.getenv("SMTP_FROM", "NUTRYAH <no-reply@nutryah.com>")
 
-
 def send_email(to_email: str, subject: str, html_content: str, attachments: Optional[List[dict]] = None):
     """
     Sends an HTML email using SMTP (Office365 supported)

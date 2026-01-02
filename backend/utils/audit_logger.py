@@ -11,23 +11,25 @@ import os
 from sqlalchemy import text
 
 def get_employee_details(db: Session, user: dict):
-    """Get employee details from JWT token - match header format"""
+    """Get employee details from JWT token"""
     try:
-        # Get name from JWT token - try different fields
-        name = user.get('user_name') or user.get('name') or 'Shifana'
+        # Get actual user information from JWT token
+        name = user.get('user_name') or user.get('name') or user.get('email', 'Unknown User')
+        user_id = user.get('user_id') or user.get('sub') or 'Unknown ID'
         
-        # Simple format for audit display
-        display_name = f"{name} Employee ID: 1234"
+        # Format display name with actual user info
+        display_name = f"{name} (ID: {user_id})"
         
         return {
             "employee_name": display_name,
-            "employee_code": None,  # Set to None to avoid duplicate display
+            "employee_code": None,
             "employee_id_onboarding": None
         }
         
     except Exception as e:
+        print(f"Error getting employee details: {str(e)}")
         return {
-            "employee_name": "Shifana Employee ID: 1234",
+            "employee_name": "Unknown User",
             "employee_code": None,
             "employee_id_onboarding": None
         }

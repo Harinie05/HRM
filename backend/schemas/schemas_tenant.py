@@ -10,13 +10,11 @@ class DepartmentBase(BaseModel):
     name: str
     description: Optional[str] = None
 
-
 class DepartmentOut(DepartmentBase):
     id: int
 
     class Config:
         from_attributes = True
-
 
 # ---------------------------
 # TENANT: PERMISSIONS
@@ -25,13 +23,11 @@ class PermissionBase(BaseModel):
     name: str
     description: Optional[str] = None
 
-
 class PermissionOut(PermissionBase):
     id: int
 
     class Config:
         from_attributes = True
-
 
 # ---------------------------
 # TENANT: ROLES
@@ -40,10 +36,8 @@ class RoleBase(BaseModel):
     name: str
     description: Optional[str] = None
 
-
 class RoleCreate(RoleBase):
     permission_ids: List[int] = []
-
 
 class RoleOut(RoleBase):
     id: int
@@ -51,7 +45,6 @@ class RoleOut(RoleBase):
 
     class Config:
         from_attributes = True
-
 
 # ---------------------------
 # TENANT: DYNAMIC TABLES
@@ -68,17 +61,14 @@ class AddColumnPayload(BaseModel):
     admin: AdminAuth
     column: ColumnDef
 
-
 class CreateTablePayload(BaseModel):
     admin: AdminAuth
     table_name: str
     columns: List[ColumnDef]
 
-
 class InsertRowPayload(BaseModel):
     admin: AdminAuth
     row: Dict[str, Any]
-
 
 class RowOut(BaseModel):
     rows: List[Dict[str, Any]]
@@ -90,7 +80,6 @@ class UserCreate(BaseModel):
     role_id: int
     department_id: int
 
-
 class UserOut(BaseModel):
     id: int
     name: str
@@ -101,7 +90,6 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
@@ -119,10 +107,8 @@ class CompanyProfileBase(BaseModel):
     contact_email: str | None = None
     address: str | None = None
 
-
 class CompanyProfileCreate(CompanyProfileBase):
     pass
-
 
 class CompanyProfileResponse(CompanyProfileBase):
     id: int
@@ -154,10 +140,8 @@ class ShiftBase(BaseModel):
     start_time: str
     end_time: str
 
-
 class ShiftCreate(ShiftBase):
     pass
-
 
 class ShiftResponse(ShiftBase):
     id: int
@@ -169,7 +153,6 @@ class HolidayBase(BaseModel):
     description: Optional[str] = None
     repeat_yearly: bool = True
     status: str = "Active"
-
 
 # ---------- Create ----------
 class HolidayCreate(HolidayBase):
@@ -247,11 +230,9 @@ class JobReqBase(BaseModel):
     deadline: Optional[date] = None
     status: str = "Draft"                               # Draft / Posted
 
-
 class JobReqCreate(JobReqBase):
     """Used for creating job requisition"""
     pass
-
 
 class JobReqUpdate(BaseModel):
     """Used when editing an existing job"""
@@ -277,7 +258,6 @@ class JobReqUpdate(BaseModel):
     deadline: Optional[date]
     status: Optional[str]
 
-
 class JobReqOut(JobReqBase):
     """Used when job details are returned to UI"""
     id: int
@@ -289,7 +269,6 @@ class JobReqOut(JobReqBase):
     class Config:
         from_attributes = True
 
-
 # ================================================================
 #                JOB APPLICATION (Candidate) SCHEMAS
 # ================================================================
@@ -300,17 +279,14 @@ class ApplicationCreate(BaseModel):
     phone: Optional[str]
     experience: Optional[int] = 0
 
-
 class StageUpdate(BaseModel):
     stage: str
-
 
 class CandidateUpdate(BaseModel):
     name: str
     email: Optional[str] = None
     phone: Optional[str] = None
     experience: Optional[int] = 0
-
 
 class ApplicationOut(BaseModel):
     id: int
@@ -321,7 +297,6 @@ class ApplicationOut(BaseModel):
 
     class Config:
         orm_mode = True
-
 
 class CandidateProfileOut(BaseModel):
     id: int
@@ -353,7 +328,6 @@ class OnboardingBase(BaseModel):
 
     status: Optional[str] = "Pending Docs"
 
-
 class OnboardingCreate(BaseModel):
     """Used during initial onboarding creation"""
     job_title: str
@@ -364,10 +338,6 @@ class OnboardingCreate(BaseModel):
     work_shift: Optional[str] = "General"
     probation_period: Optional[str] = "3 Months"
     employee_id: Optional[str] = None
-
-
-
-
 
 class OnboardingResponse(BaseModel):
     id: int
@@ -390,7 +360,6 @@ class OnboardingResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 # ================================================================
 #                     DOCUMENT VIEWER SCHEMAS
 # ================================================================
@@ -401,10 +370,8 @@ class DocumentUploadBase(BaseModel):
     file_name: str
     file_path: str
 
-
 class DocumentUploadCreate(DocumentUploadBase):
     pass
-
 
 class DocumentUploadResponse(DocumentUploadBase):
     id: int
@@ -418,7 +385,6 @@ class DocumentUploadResponse(DocumentUploadBase):
 # ================================================================
 #                          ATS SCHEMAS
 # ================================================================
-
 
 class CandidateResponse(BaseModel):
     id: int
@@ -441,7 +407,6 @@ class CandidateResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 # ------------------------------
 # Resume Filter Request/Response
 # ------------------------------
@@ -449,7 +414,6 @@ class ResumeFilterRequest(BaseModel):
     job_id: int
     min_experience: Optional[int] = None
     skills: Optional[List[str]] = None
-
 
 class ResumeFilterResponse(BaseModel):
     id: int
@@ -461,7 +425,6 @@ class ResumeFilterResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 # ------------------------------
 # Move Stage / Round
 # ------------------------------
@@ -470,7 +433,6 @@ class MoveStageRequest(BaseModel):
     round_number: Optional[int] = None
     interview_date: Optional[datetime] = None
     interview_time: Optional[str] = None
-
 
 # ------------------------------
 # Interview Scheduling
@@ -483,7 +445,6 @@ class InterviewScheduleCreate(BaseModel):
     interview_date: datetime
     interview_time: str
 
-
 class InterviewScheduleResponse(InterviewScheduleCreate):
     id: int
     status: str
@@ -492,7 +453,6 @@ class InterviewScheduleResponse(InterviewScheduleCreate):
 
     class Config:
         from_attributes = True
-
 
 # ---------------------------- OFFER SCHEMAS ----------------------------
 class OfferCreate(BaseModel):
@@ -506,7 +466,6 @@ class OfferCreate(BaseModel):
     notice_period: Optional[str] = "30 Days"
     terms: Optional[str] = None
 
-
 class OfferUpdate(BaseModel):
     ctc: int
     basic_percent: int
@@ -516,10 +475,8 @@ class OfferUpdate(BaseModel):
     notice_period: str
     terms: Optional[str]
 
-
 class OfferStatusUpdate(BaseModel):
     offer_status: str  # Draft / Sent / Accepted / Rejected
-
 
 class OfferOut(BaseModel):
     id: int
@@ -538,7 +495,6 @@ class OfferOut(BaseModel):
     class Config:
         orm_mode = True
 
-
 # ---------------------------- BGV SCHEMAS ----------------------------
 class BGVCreate(BaseModel):
     verification_type: str = "Internal HR Team"  # "Agency" or "Internal HR Team"
@@ -554,7 +510,6 @@ class BGVCreate(BaseModel):
     
     remarks: Optional[str] = None
 
-
 class BGVUpdate(BaseModel):
     verification_type: Optional[str] = None
     agency_name: Optional[str] = None
@@ -567,7 +522,6 @@ class BGVUpdate(BaseModel):
     criminal_verified: Optional[bool] = None
     
     remarks: Optional[str] = None
-
 
 class BGVOut(BaseModel):
     id: int
@@ -588,8 +542,6 @@ class BGVOut(BaseModel):
     class Config:
         from_attributes = True
 
-
-
 # ============================================================
 # EMPLOYEE CORE SCHEMAS
 # ============================================================
@@ -609,11 +561,9 @@ class EmployeeBase(BaseModel):
     work_mode: Optional[str]
     shift: Optional[str]
 
-
 class EmployeeCreate(EmployeeBase):
     employee_code: Optional[str]
     offer_id: Optional[int]
-
 
 class EmployeeOut(EmployeeBase):
     id: int
@@ -623,7 +573,6 @@ class EmployeeOut(EmployeeBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # FAMILY DETAILS
@@ -636,10 +585,8 @@ class FamilyBase(BaseModel):
     contact: Optional[str]
     dependent: Optional[bool] = False
 
-
 class FamilyCreate(FamilyBase):
     employee_id: int
-
 
 class FamilyOut(FamilyBase):
     id: int
@@ -647,7 +594,6 @@ class FamilyOut(FamilyBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # EDUCATION DETAILS
@@ -666,11 +612,9 @@ class EducationBase(BaseModel):
     state: Optional[str]
     city: Optional[str]
 
-
 class EducationCreate(EducationBase):
     employee_id: int
     file_name: Optional[str]
-
 
 class EducationOut(EducationBase):
     id: int
@@ -679,7 +623,6 @@ class EducationOut(EducationBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # EXPERIENCE DETAILS
@@ -701,11 +644,9 @@ class ExperienceBase(BaseModel):
     reporting_manager: Optional[str]
     manager_contact: Optional[str]
 
-
 class ExperienceCreate(ExperienceBase):
     employee_id: int
     file_name: Optional[str]
-
 
 class ExperienceOut(ExperienceBase):
     id: int
@@ -715,7 +656,6 @@ class ExperienceOut(ExperienceBase):
     class Config:
         from_attributes = True
 
-
 # ============================================================
 # MEDICAL DETAILS
 # ============================================================
@@ -724,11 +664,9 @@ class MedicalBase(BaseModel):
     blood_group: Optional[str]
     remarks: Optional[str]
 
-
 class MedicalCreate(MedicalBase):
     employee_id: int
     file_name: Optional[str]
-
 
 class MedicalOut(MedicalBase):
     id: int
@@ -748,7 +686,6 @@ class MedicalOut(MedicalBase):
     class Config:
         from_attributes = True
 
-
 # ============================================================
 # ID DOCUMENTS
 # ============================================================
@@ -757,11 +694,9 @@ class IDDocBase(BaseModel):
     document_type: str
     status: Optional[str] = "Pending"
 
-
 class IDDocCreate(IDDocBase):
     employee_id: int
     file_name: Optional[str]
-
 
 class IDDocOut(IDDocBase):
     id: int
@@ -771,7 +706,6 @@ class IDDocOut(IDDocBase):
     class Config:
         from_attributes = True
 
-
 # ============================================================
 # SKILLS
 # ============================================================
@@ -780,10 +714,8 @@ class SkillBase(BaseModel):
     skill: str
     rating: int   # 1–5 stars
 
-
 class SkillCreate(SkillBase):
     employee_id: int
-
 
 class SkillOut(SkillBase):
     id: int
@@ -791,7 +723,6 @@ class SkillOut(SkillBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # CERTIFICATIONS
@@ -802,11 +733,9 @@ class CertificationBase(BaseModel):
     issued_by: Optional[str]
     expiry: Optional[str]
 
-
 class CertificationCreate(CertificationBase):
     employee_id: int
     file_name: Optional[str]
-
 
 class CertificationOut(CertificationBase):
     id: int
@@ -815,7 +744,6 @@ class CertificationOut(CertificationBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # SALARY STRUCTURE (AUTO FROM OFFER)
@@ -830,7 +758,6 @@ class SalaryBase(BaseModel):
     pf_eligible: bool
     esi_eligible: bool
 
-
 class SalaryCreate(SalaryBase):
     employee_id: int
     grade: Optional[str] = None
@@ -839,14 +766,12 @@ class SalaryCreate(SalaryBase):
     esi_applicable: Optional[bool] = True
     esi_percent: Optional[float] = None
 
-
 class SalaryOut(SalaryBase):
     id: int
     employee_id: int
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # DOCUMENT VAULT
@@ -857,7 +782,6 @@ class DocumentCreate(BaseModel):
     document_name: str
     file_name: Optional[str]
 
-
 class DocumentOut(BaseModel):
     id: int
     employee_id: int
@@ -867,7 +791,6 @@ class DocumentOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # EXIT DETAILS
@@ -885,13 +808,11 @@ class ExitBase(BaseModel):
     clearance_status: Optional[str] = "Pending"
     notes: Optional[str]
 
-
 class ExitCreate(BaseModel):
     employee_id: int
     resignation_date: Optional[date] = None
     reason: Optional[str] = None
     notes: Optional[str] = None
-
 
 class ExitOut(ExitBase):
     id: int
@@ -900,7 +821,6 @@ class ExitOut(ExitBase):
 
     class Config:
         from_attributes = True
-
 
 # ============================================================
 # FULL EMPLOYEE PROFILE RESPONSE
@@ -939,13 +859,11 @@ class AttendancePunchCreate(BaseModel):
     device_info: Optional[str] = None
     ip_address: Optional[str] = None
 
-
 class AttendancePunchOut(AttendancePunchCreate):
     id: int
 
     class Config:
         from_attributes = True
-
 
 # =====================================================
 # ATTENDANCE REGULARIZATION SCHEMAS
@@ -956,14 +874,12 @@ class AttendanceRegularizationCreate(BaseModel):
     issue_type: str
     reason: Optional[str] = None
 
-
 class AttendanceRegularizationOut(AttendanceRegularizationCreate):
     id: int
     status: str
 
     class Config:
         from_attributes = True
-
 
 # =====================================================
 # ATTENDANCE RULE SCHEMAS
@@ -973,14 +889,12 @@ class AttendanceRuleCreate(BaseModel):
     rule_type: str   # Late / Early / OT
     value: int       # minutes / hours
 
-
 class AttendanceRuleOut(AttendanceRuleCreate):
     id: int
     is_active: bool
 
     class Config:
         from_attributes = True
-
 
 # =====================================================
 # ATTENDANCE LOCATION SCHEMAS
@@ -989,7 +903,6 @@ class AttendanceLocationCreate(BaseModel):
     location_name: str
     grace_time: int = 10
     ot_rule: Optional[str] = None
-
 
 class AttendanceLocationOut(AttendanceLocationCreate):
     id: int
@@ -1014,7 +927,6 @@ class LeaveTypeCreate(BaseModel):
     attachment_required: bool = False
     auto_approve_days: int = 0
 
-
 class LeaveTypeUpdate(BaseModel):
     name: Optional[str] = None
     code: Optional[str] = None
@@ -1029,7 +941,6 @@ class LeaveTypeUpdate(BaseModel):
     auto_approve_days: Optional[int] = None
 
     status: Optional[str] = None
-
 
 class LeaveTypeOut(BaseModel):
     id: int
@@ -1060,7 +971,6 @@ class LeaveRuleCreate(BaseModel):
 
     auto_deduct_lop: bool = True
 
-
 class LeaveRuleUpdate(BaseModel):
     accrual_frequency: Optional[str] = None
     accrual_method: Optional[str] = None
@@ -1071,7 +981,6 @@ class LeaveRuleUpdate(BaseModel):
 
     auto_deduct_lop: Optional[bool] = None
     status: Optional[str] = None
-
 
 class LeaveRuleOut(BaseModel):
     id: int
@@ -1173,7 +1082,6 @@ class SalaryStructureCreate(BaseModel):
     allowances: Optional[str]
     deductions: Optional[str]
 
-
 class SalaryStructureOut(SalaryStructureCreate):
     id: int
     employee_ids: Optional[str] = None
@@ -1181,7 +1089,6 @@ class SalaryStructureOut(SalaryStructureCreate):
 
     class Config:
         from_attributes = True
-
 
 # ---------------- STATUTORY RULES ----------------
 class StatutoryRuleCreate(BaseModel):
@@ -1192,13 +1099,11 @@ class StatutoryRuleCreate(BaseModel):
     pt_amount: float
     tds_enabled: bool
 
-
 class StatutoryRuleOut(StatutoryRuleCreate):
     id: int
 
     class Config:
         from_attributes = True
-
 
 # ---------------- PAYROLL RUN ----------------
 class PayrollRunOut(BaseModel):
@@ -1211,7 +1116,6 @@ class PayrollRunOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 # ---------------- ADJUSTMENTS ----------------
 class PayrollAdjustmentCreate(BaseModel):
@@ -1241,15 +1145,12 @@ class LifecycleActionBase(BaseModel):
     effective_from: date
     reason: Optional[str] = None
 
-
 class LifecycleActionCreate(LifecycleActionBase):
     pass
-
 
 class LifecycleActionUpdate(BaseModel):
     status: Optional[str] = None          # Approved / Rejected / Completed
     approved_by: Optional[int] = None
-
 
 class LifecycleActionOut(LifecycleActionBase):
     id: int
@@ -1274,10 +1175,8 @@ class HRCommunicationBase(BaseModel):
 
     attachment: Optional[str] = None
 
-
 class HRCommunicationCreate(HRCommunicationBase):
     created_by: Optional[int] = None
-
 
 class HRCommunicationOut(HRCommunicationBase):
     id: int
@@ -1300,15 +1199,12 @@ class GrievanceBase(BaseModel):
     assigned_to: Optional[str] = None
     attachment: Optional[str] = None
 
-
 class GrievanceCreate(GrievanceBase):
     pass
-
 
 class GrievanceUpdate(BaseModel):
     status: Optional[str] = None          # Open / In Review / Resolved / Closed
     resolution_notes: Optional[str] = None
-
 
 class GrievanceOut(GrievanceBase):
     id: int
@@ -1334,15 +1230,12 @@ class AssetBase(BaseModel):
     expected_return_date: Optional[date] = None
     terms: Optional[str] = None
 
-
 class AssetCreate(AssetBase):
     pass
-
 
 class AssetUpdate(BaseModel):
     status: Optional[str] = None          # Active / Returned / Lost / Damaged
     actual_return_date: Optional[date] = None
-
 
 class AssetOut(AssetBase):
     id: int
@@ -1366,14 +1259,11 @@ class InsuranceBase(BaseModel):
     start_date: date
     expiry_date: date
 
-
 class InsuranceCreate(InsuranceBase):
     pass
 
-
 class InsuranceUpdate(BaseModel):
     status: Optional[str] = None          # Active / Expired / Cancelled
-
 
 class InsuranceOut(InsuranceBase):
     id: int
@@ -1402,7 +1292,6 @@ class PMSGoalCreate(BaseModel):
     priority: Optional[str] = "Medium"
     unit: Optional[str] = None
 
-
 class PMSGoalOut(PMSGoalCreate):
     id: int
     status: str
@@ -1410,7 +1299,6 @@ class PMSGoalOut(PMSGoalCreate):
 
     class Config:
         from_attributes = True
-
 
 # ---------- REVIEW ----------
 class PMSReviewCreate(BaseModel):
@@ -1420,12 +1308,10 @@ class PMSReviewCreate(BaseModel):
     self_score: Optional[float] = None
     self_comments: Optional[str] = None
 
-
 class PMSReviewUpdate(BaseModel):
     manager_score: Optional[float]
     manager_comments: Optional[str]
     status: Optional[str]
-
 
 class PMSReviewOut(BaseModel):
     id: int
@@ -1439,7 +1325,6 @@ class PMSReviewOut(BaseModel):
     class Config:
         from_attributes = True
 
-
 # ---------- FEEDBACK ----------
 class PMSFeedbackCreate(BaseModel):
     from_employee_id: int
@@ -1449,13 +1334,11 @@ class PMSFeedbackCreate(BaseModel):
     rating: float
     comments: Optional[str]
 
-
 class PMSFeedbackOut(PMSFeedbackCreate):
     id: int
 
     class Config:
         from_attributes = True
-
 
 # ---------- APPRAISAL ----------
 class PMSAppraisalCreate(BaseModel):
@@ -1468,7 +1351,6 @@ class PMSAppraisalCreate(BaseModel):
     increment_percent: Optional[float]
     recommended_role: Optional[str]
     effective_from: Optional[date]
-
 
 class PMSAppraisalOut(PMSAppraisalCreate):
     id: int
@@ -1493,14 +1375,12 @@ class TrainingProgramCreate(BaseModel):
     mandatory: Optional[bool] = False
     compliance_type: Optional[str] = None
 
-
 class TrainingProgramOut(TrainingProgramCreate):
     id: int
     status: str
 
     class Config:
         from_attributes = True
-
 
 # ---------- TRAINING REQUEST ----------
 class TrainingRequestCreate(BaseModel):
@@ -1510,11 +1390,9 @@ class TrainingRequestCreate(BaseModel):
     justification: Optional[str] = None
     priority: Optional[str] = "Medium"
 
-
 class TrainingRequestUpdate(BaseModel):
     status: str                 # Approved / Rejected
     approver: Optional[str]
-
 
 class TrainingRequestOut(TrainingRequestCreate):
     id: int
@@ -1525,7 +1403,6 @@ class TrainingRequestOut(TrainingRequestCreate):
     class Config:
         from_attributes = True
 
-
 # ---------- ATTENDANCE & ASSESSMENT ----------
 class TrainingAttendanceCreate(BaseModel):
     training_id: int
@@ -1534,7 +1411,6 @@ class TrainingAttendanceCreate(BaseModel):
     pre_score: Optional[float]
     post_score: Optional[float]
 
-
 class TrainingAttendanceOut(TrainingAttendanceCreate):
     id: int
     result: Optional[str]
@@ -1542,14 +1418,12 @@ class TrainingAttendanceOut(TrainingAttendanceCreate):
     class Config:
         from_attributes = True
 
-
 # ---------- CERTIFICATE ----------
 class TrainingCertificateCreate(BaseModel):
     training_id: int
     employee_id: int
     score: float
     compliance_type: Optional[str]
-
 
 class TrainingCertificateOut(TrainingCertificateCreate):
     id: int
@@ -1569,14 +1443,12 @@ class StatutoryCreate(BaseModel):
     month: str
     year: int
 
-
 class LabourRegisterCreate(BaseModel):
     employee_id: int
     register_type: str
     month: str
     year: int
     remarks: Optional[str] = None
-
 
 class LeaveComplianceCreate(BaseModel):
     employee_id: int
@@ -1585,7 +1457,6 @@ class LeaveComplianceCreate(BaseModel):
     overtime_hours: float
     month: str
     year: int
-
 
 class NABHCreate(BaseModel):
     employee_id: int
@@ -1820,10 +1691,6 @@ class StaffScheduleRecommendationOut(StaffScheduleRecommendationBase):
 
     class Config:
         from_attributes = True
-
-
-
-
 
 # =====================================================
 # DAILY WORK UPDATES SCHEMAS

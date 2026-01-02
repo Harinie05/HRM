@@ -17,7 +17,6 @@ router = APIRouter(
     tags=["Attendance - Regularization"]
 )
 
-
 @router.post("/", response_model=AttendanceRegularizationOut)
 def create_regularization(
     data: AttendanceRegularizationCreate,
@@ -32,13 +31,11 @@ def create_regularization(
     audit_crud(request, db, user, "CREATE_REGULARIZATION", "attendance_regularizations", str(req.id), {}, req.__dict__)
     return req
 
-
 @router.get("/", response_model=list[AttendanceRegularizationOut])
 def list_regularizations(
     db: Session = Depends(get_tenant_db)
 ):
     return db.query(AttendanceRegularization).all()
-
 
 @router.patch("/{reg_id}/approve", response_model=AttendanceRegularizationOut)
 def approve_regularization(
@@ -54,13 +51,12 @@ def approve_regularization(
     setattr(req, 'status', "Approved")
     
     # Auto sync to payroll when approved
-    sync_attendance_to_payroll(db, req.employee_id, req.punch_date)
+    sync_attendance_to_payroll(db, getattr(req, 'employee_id'), getattr(req, 'punch_date'))
     
     db.commit()
     db.refresh(req)
     audit_crud(request, db, user, "APPROVE_REGULARIZATION", "attendance_regularizations", str(reg_id), {"status": "Pending"}, {"status": "Approved"})
     return req
-
 
 @router.patch("/{reg_id}/reject", response_model=AttendanceRegularizationOut)
 def reject_regularization(

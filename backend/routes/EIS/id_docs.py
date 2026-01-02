@@ -14,7 +14,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeIDDocs
 from schemas.schemas_tenant import IDDocCreate, IDDocOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -30,9 +29,7 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/id-docs", tags=["Employee ID & Verification"])
-
 
 # -------------------------------------------------------------------------
 # 1. UPLOAD ID DOCUMENT (Aadhaar, PAN, Passport etc.)
@@ -84,7 +81,6 @@ async def upload_id_doc(
     finally:
         db.close()
 
-
 # -------------------------------------------------------------------------
 # 2. GET ALL ID DOCUMENTS FOR EMPLOYEE
 # -------------------------------------------------------------------------
@@ -98,7 +94,6 @@ def get_id_docs(employee_id: int, user=Depends(get_current_user)):
         .order_by(EmployeeIDDocs.id.asc())
         .all()
     )
-
 
 # -------------------------------------------------------------------------
 # 3. UPDATE DOCUMENT (Re-upload)
@@ -139,7 +134,6 @@ async def update_id_doc(
         audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_id_docs", doc_id, None, doc.__dict__)
 
     return {"message": "ID document updated successfully"}
-
 
 # -------------------------------------------------------------------------
 # 4. VIEW ID DOCUMENT
@@ -215,7 +209,6 @@ def verify_doc(doc_id: int, action: str, request: Request, user=Depends(get_curr
 
     return {"message": f"Document {action} successfully"}
 
-
 # -------------------------------------------------------------------------
 # 6. DELETE DOCUMENT
 # -------------------------------------------------------------------------
@@ -233,7 +226,6 @@ def delete_id_doc(doc_id: int, request: Request, user=Depends(get_current_user))
     audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_id_docs", doc_id, old_values, None)
 
     return {"message": "ID document deleted successfully"}
-
 
 # -------------------------------------------------------------------------
 # 7. GET EXPIRING DOCUMENTS ALERTS

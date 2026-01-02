@@ -29,7 +29,6 @@ class BGVUpdateRequest(BaseModel):
     criminal_verified: Optional[bool] = None
     remarks: Optional[str] = None
 
-
 # -----------------------------------------------------------
 # 1) CREATE OFFER LETTER DRAFT
 # -----------------------------------------------------------
@@ -84,7 +83,6 @@ def create_offer(candidate_id: int, data: OfferCreate, request: Request, db: Ses
         logger.error(f"Error creating offer: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to create offer: {str(e)}")
 
-
 # -----------------------------------------------------------
 # 2) UPDATE OFFER CONTENT
 # -----------------------------------------------------------
@@ -109,7 +107,6 @@ def update_offer(offer_id: int, data: OfferUpdate, request: Request, db: Session
         pass
     return offer
 
-
 # -----------------------------------------------------------
 # 3) UPLOAD OFFER PDF DOCUMENT
 # -----------------------------------------------------------
@@ -133,7 +130,6 @@ def upload_offer_document(
     db.commit()
     db.refresh(offer)
     return offer
-
 
 # -----------------------------------------------------------
 # 4) SEND OFFER MAIL (WITH TOKEN)
@@ -260,7 +256,6 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
         })
         raise HTTPException(status_code=500, detail="Failed to send offer email")
 
-
 # -----------------------------------------------------------
 # 5) UPDATE ACCEPT / REJECT STATUS
 # -----------------------------------------------------------
@@ -281,7 +276,6 @@ def update_offer_status(offer_id: int, status: str, request: Request, db: Sessio
         pass
     
     return {"message": f"Offer {status.lower()} successfully", "offer": offer}
-
 
 # -----------------------------------------------------------
 # GENERATE DOCUMENT UPLOAD LINK
@@ -307,7 +301,6 @@ def generate_document_link(offer_id: int, db: Session = Depends(get_tenant_db)):
         "candidate_name": offer.candidate_name
     }
 
-
 # -----------------------------------------------------------
 # PUBLIC DOCUMENT UPLOAD BY TOKEN
 # -----------------------------------------------------------
@@ -323,7 +316,6 @@ def get_document_upload_page(token: str, db: Session = Depends(get_tenant_db)):
         "job_title": offer.job_title,
         "offer_id": offer.id
     }
-
 
 from fastapi import Form
 from datetime import timedelta
@@ -362,7 +354,6 @@ def upload_documents(
     
     return {"message": "Document uploaded successfully"}
 
-
 # -----------------------------------------------------------
 # SUBMIT ALL DOCUMENTS
 # -----------------------------------------------------------
@@ -379,7 +370,6 @@ def submit_documents(token: str, db: Session = Depends(get_tenant_db)):
     
     return {"message": "Documents submitted successfully"}
 
-
 # -----------------------------------------------------------
 # VIEW UPLOADED FILE
 # -----------------------------------------------------------
@@ -394,7 +384,6 @@ def view_document_file(file_name: str):
         raise HTTPException(status_code=404, detail="File not found")
     
     return FileResponse(file_path)
-
 
 # -----------------------------------------------------------
 # VIEW UPLOADED DOCUMENTS
@@ -421,7 +410,6 @@ def view_uploaded_documents(offer_id: int, db: Session = Depends(get_tenant_db))
             "uploaded_at": doc.uploaded_at
         } for doc in documents]
     }
-
 
 # -----------------------------------------------------------
 # BGV ENDPOINTS - Realistic Company Process
@@ -548,7 +536,6 @@ def start_bgv(candidate_id: int, request: Request, db: Session = Depends(get_ten
         logger.error(f"Error starting BGV: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to start BGV: {str(e)}")
 
-
 @router.get("/bgv/{bgv_id}")
 def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
     """Get comprehensive BGV details"""
@@ -619,7 +606,6 @@ def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
             "pending": total_checks - completed_checks
         }
     }
-
 
 @router.put("/bgv/update/{bgv_id}")
 def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db: Session = Depends(get_tenant_db)):
@@ -714,7 +700,6 @@ def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db:
         "timeline": bgv["timeline"][-3:]  # Return last 3 timeline entries
     }
 
-
 @router.post("/bgv/{bgv_id}/update-check")
 def update_bgv_check(bgv_id: str, check_type: str, status: str, result: Optional[str] = None, remarks: str = ""):
     """Update individual BGV check status"""
@@ -765,7 +750,6 @@ def update_bgv_check(bgv_id: str, check_type: str, status: str, result: Optional
         "overall_status": bgv["overall_status"]
     }
 
-
 @router.post("/bgv/{bgv_id}/submit-documents")
 def submit_bgv_documents(bgv_id: str, documents: list[str]):
     """Mark documents as submitted for BGV"""
@@ -789,7 +773,6 @@ def submit_bgv_documents(bgv_id: str, documents: list[str]):
         "submitted_count": len(documents),
         "status": bgv["status"]
     }
-
 
 @router.get("/bgv/list")
 def list_all_bgv(db: Session = Depends(get_tenant_db)):
@@ -816,7 +799,6 @@ def list_all_bgv(db: Session = Depends(get_tenant_db)):
         })
     
     return {"bgv_records": bgv_list, "total_count": len(bgv_list)}
-
 
 # -----------------------------------------------------------
 # MANUAL BGV COMPLETION FOR ONBOARDED CANDIDATES
@@ -870,7 +852,6 @@ def complete_bgv_for_candidate(candidate_id: int, db: Session = Depends(get_tena
     except Exception as e:
         logger.error(f"Error completing BGV: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to complete BGV: {str(e)}")
-
 
 # -----------------------------------------------------------
 # RESET BGV STATUS (FOR TESTING)

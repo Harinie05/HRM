@@ -20,13 +20,11 @@ router = APIRouter(prefix="/recruitment", tags=["Recruitment"])
 UPLOAD_DIR = "uploads/recruitment"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 # ----------------------------------------------------------
 # Utility: Generate public apply URL
 # ----------------------------------------------------------
 def generate_apply_url(job_id: int):
     return f"https://yourdomain.com/careers/apply/{job_id}"
-
 
 # ----------------------------------------------------------
 # CREATE JOB REQUISITION
@@ -79,7 +77,6 @@ def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_te
 
     return job
 
-
 # ----------------------------------------------------------
 # UPDATE JOB REQUISITION
 # ----------------------------------------------------------
@@ -104,10 +101,6 @@ def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = D
     audit_crud(request, db, user, "UPDATE_JOB_REQUISITION", "job_requisitions", str(job_id), {"title": old_values.get('title')}, {"title": getattr(job, 'title')})
 
     return job
-
-
-
-
 
 # ----------------------------------------------------------
 # UPLOAD ATTACHMENT (JD PDF or Job Description File)
@@ -134,18 +127,14 @@ def upload_attachment(job_id: int, file: UploadFile = File(...), request: Reques
 
     return {"message": "Attachment uploaded", "filename": filename}
 
-
 # ----------------------------------------------------------
 # GET ALL JOBS
 # ----------------------------------------------------------
 @router.get("/list", response_model=List[JobReqOut])
-def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    audit_crud(request, db, user, "VIEW_JOB_REQUISITIONS", "job_requisitions", "all", {}, {})
-    # Force refresh from database
+def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):    # Force refresh from database
     db.commit()  # Ensure any pending changes are committed
     jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
     return jobs
-
 
 # ----------------------------------------------------------
 # GET SINGLE JOB DETAILS
@@ -158,10 +147,6 @@ def view_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db)
         raise HTTPException(status_code=404, detail="Job not found")
 
     return job
-
-
-
-
 
 # ----------------------------------------------------------
 # UPDATE JOB STATUS (ACTIVATE/DEACTIVATE)
@@ -202,7 +187,6 @@ def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_d
     
     return {"message": "Job requisition deleted successfully"}
 
-
 # ----------------------------------------------------------
 # GENERATE PUBLIC APPLY LINK
 # ----------------------------------------------------------
@@ -222,9 +206,4 @@ def generate_job_link(job_id: int, request: Request, db: Session = Depends(get_t
     audit_crud(request, db, user, "GENERATE_JOB_LINK", "job_requisitions", str(job_id), {}, {"apply_url": apply_url})
     
     return {"url": apply_url, "message": "Apply link generated successfully"}
-
-
-
-
-
 

@@ -14,7 +14,6 @@ from routes.hospital import get_current_user
 
 router = APIRouter()
 
-
 # ---------------------------------------------------
 # GET HOSPITAL BY TENANT DB
 # ---------------------------------------------------
@@ -23,7 +22,6 @@ def get_hospital_by_db(db: Session, tenant_db: str):
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found")
     return hospital
-
 
 # ---------------------------------------------------
 # CREATE ROLE  🔒 Protected
@@ -86,7 +84,6 @@ def create_role(
         logger.error(f"Unexpected error in create_role: {str(e)}")
         raise HTTPException(500, f"Error creating role: {str(e)}")
 
-
 # ---------------------------------------------------
 # LIST ROLES  🔒 Protected
 # ---------------------------------------------------
@@ -128,7 +125,6 @@ def list_roles(
 
         return {"roles": result}
 
-
 # ---------------------------------------------------
 # DELETE ROLE  🔒 Protected
 # ---------------------------------------------------
@@ -162,7 +158,6 @@ def delete_role(
         audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
 
         return {"detail": "Role deleted"}
-
 
 # ---------------------------------------------------
 # UPDATE ROLE  🔒 Protected
@@ -207,7 +202,6 @@ def update_role(
         audit_crud(request, tdb, user, "UPDATE_ROLE", "roles", str(role_id), old_values, {"name": payload["name"], "permissions": payload.get("permissions", [])})
 
         return {"detail": "Role updated"}
-
 
 # ---------------------------------------------------
 # DEBUG ROUTES 🔒 (optional protect)

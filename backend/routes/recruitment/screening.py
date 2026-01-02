@@ -10,7 +10,6 @@ import html
 
 router = APIRouter(prefix="/recruitment/screening", tags=["Candidate Screening"])
 
-
 # ----------------------------------------------------------
 # DEBUG: CHECK DATA CONSISTENCY
 # ----------------------------------------------------------
@@ -50,7 +49,6 @@ def debug_data_check(db: Session = Depends(get_tenant_db)):
         } for j in jobs]
     }
 
-
 # ----------------------------------------------------------
 # DEBUG: FIX DATA INCONSISTENCIES
 # ----------------------------------------------------------
@@ -81,7 +79,6 @@ def fix_data_inconsistencies(request: Request, db: Session = Depends(get_tenant_
         "message": f"Fixed {fixed_count} data inconsistencies",
         "fixed_count": fixed_count
     }
-
 
 # ----------------------------------------------------------
 # GET PENDING APPLICATIONS FOR REVIEW
@@ -122,7 +119,6 @@ def get_pending_applications(job_id: int, db: Session = Depends(get_tenant_db)):
             "match_score": calculate_match_score(app, job)
         } for app in applications]
     }
-
 
 # ----------------------------------------------------------
 # SHORTLIST CANDIDATES WITH INTERVIEW SCHEDULING
@@ -259,7 +255,6 @@ def shortlist_candidates_with_interviews(
         "count": shortlisted_count
     }
 
-
 # ----------------------------------------------------------
 # TEST EMAIL ENDPOINT
 # ----------------------------------------------------------
@@ -281,7 +276,6 @@ def test_email_sending(email: str = "test@example.com"):
     except Exception as e:
         logger.error(f"Test email failed: {str(e)}")
         return {"message": f"Test email failed: {str(e)}"}
-
 
 # ----------------------------------------------------------
 # CALCULATE MATCH SCORE
@@ -406,7 +400,6 @@ def send_shortlist_email(candidate_name, candidate_email, job_title, company_nam
     except Exception as e:
         logger.error(f"Failed to send shortlist email to {candidate_email}: {str(e)}")
         return False
-
 
 def calculate_match_score(candidate, job):
     """Calculate how well candidate matches job requirements"""

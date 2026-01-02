@@ -15,7 +15,6 @@ from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 
-
 # ---------------------------------------------------
 # GET COMPANY PROFILE 🔒 Protected
 # ---------------------------------------------------
@@ -39,7 +38,6 @@ def get_company_profile(
     except Exception as e:
         logger.error(f"Error getting company profile for tenant {tenant}: {e}")
         raise
-
 
 # ---------------------------------------------------
 # CREATE / UPDATE COMPANY PROFILE 🔒 Protected

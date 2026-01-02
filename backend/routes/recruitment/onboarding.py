@@ -17,7 +17,6 @@ router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
 UPLOAD_DIR = "uploads/onboarding"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 # -----------------------------------------------------------
 # 1) CREATE ONBOARDING ENTRY
 # -----------------------------------------------------------
@@ -148,16 +147,8 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Reques
         print(f"BGV marked as completed for candidate {candidate_id}")
     except Exception as e:
         print(f"Failed to update BGV status: {e}")
-    
 
-    
     return record
-
-
-
-
-
-
 
 # -----------------------------------------------------------
 # 4) UPLOAD DOCUMENTS
@@ -233,7 +224,6 @@ def upload_document(
         pass
     return doc
 
-
 # -----------------------------------------------------------
 # 5) VIEW ALL DOCUMENTS OF A CANDIDATE
 # -----------------------------------------------------------
@@ -242,7 +232,6 @@ def get_documents(candidate_id: int, db: Session = Depends(get_tenant_db)):
     docs = db.query(DocumentUpload).filter(DocumentUpload.candidate_id == candidate_id).all()
     return docs
 
-
 # -----------------------------------------------------------
 # 6) LIST ALL ONBOARDING CANDIDATES
 # -----------------------------------------------------------
@@ -250,7 +239,6 @@ def get_documents(candidate_id: int, db: Session = Depends(get_tenant_db)):
 def list_onboarding_candidates(db: Session = Depends(get_tenant_db)):
     candidates = db.query(OnboardingCandidate).all()
     return candidates
-
 
 # -----------------------------------------------------------
 # 7) LIST ALL ONBOARDED EMPLOYEES FOR EIS
@@ -287,7 +275,6 @@ def list_onboarded_employees(db: Session = Depends(get_tenant_db)):
         return enriched_employees
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch employees: {str(e)}")
-
 
 # -----------------------------------------------------------
 # 8) VIEW DOCUMENT FROM DATABASE
@@ -393,7 +380,6 @@ def get_statuses():
         {"value": "Ready for Joining", "label": "Ready for Joining"},
         {"value": "Completed", "label": "Completed"}
     ]
-
 
 # -----------------------------------------------------------
 # EMAIL FUNCTION

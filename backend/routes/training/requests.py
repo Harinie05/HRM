@@ -92,6 +92,4 @@ def approve_request(request_id: int, data: dict, request: Request, db: Session =
     except Exception as e:
         db.rollback()
 @router.get("/", response_model=list[TrainingRequestOut])
-def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    audit_crud(request, db, user, "VIEW_TRAINING_REQUESTS", "training_requests", "all", {}, {})
-    return db.query(TrainingRequest).all()
+def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):    return db.query(TrainingRequest).all()

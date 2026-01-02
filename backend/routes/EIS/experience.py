@@ -13,7 +13,6 @@ from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExperience
 from schemas.schemas_tenant import ExperienceCreate, ExperienceOut
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -29,15 +28,14 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/experience", tags=["Employee Experience Details"])
-
 
 # -------------------------------------------------------------------------
 # 1. ADD EXPERIENCE + RELIEVING LETTER (OPTIONAL FILE)
 # -------------------------------------------------------------------------
 @router.post("/add")
 async def add_experience(
+    request: Request,
     employee_id: int = Form(...),
     company: str = Form(...),
     job_title: str = Form(...),
@@ -58,7 +56,6 @@ async def add_experience(
     from_year: str = Form(""),
     to_year: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -106,8 +103,7 @@ async def add_experience(
         db.add(new_exp)
         db.commit()
         db.refresh(new_exp)
-        if request:
-            audit_crud(request, db, user, "CREATE", "employee_experience", new_exp.id, None, new_exp.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_experience", str(new_exp.id), {}, new_exp.__dict__)
 
         return new_exp
         
@@ -116,7 +112,6 @@ async def add_experience(
         raise HTTPException(500, f"Failed to add experience: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 2. LIST EXPERIENCE RECORDS
@@ -176,13 +171,13 @@ def get_experience_list(employee_id: int, user=Depends(get_current_user)):
         traceback.print_exc()
         raise HTTPException(500, f"Internal server error: {str(e)}")
 
-
 # -------------------------------------------------------------------------
 # 3. UPDATE EXPERIENCE RECORD
 # -------------------------------------------------------------------------
 @router.put("/{experience_id}")
 async def update_experience(
     experience_id: int,
+    request: Request,
     company: str = Form(...),
     job_title: str = Form(...),
     department: str = Form(""),
@@ -198,7 +193,6 @@ async def update_experience(
     reporting_manager: str = Form(""),
     manager_contact: str = Form(""),
     file: Optional[UploadFile] = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
@@ -242,11 +236,9 @@ async def update_experience(
 
     db.commit()
     db.refresh(exp)
-    if request:
-        audit_crud(request, db, user, "UPDATE", "employee_experience", experience_id, None, exp.__dict__)
+    audit_crud(request, db, user, "UPDATE", "employee_experience", str(experience_id), {}, exp.__dict__)
 
     return exp
-
 
 # -------------------------------------------------------------------------
 # 4. VIEW EXPERIENCE DOCUMENT
@@ -254,9 +246,9 @@ async def update_experience(
 @router.get("/document/{experience_id}")
 def view_document(
     experience_id: int, 
+    request: Request,
     token: Optional[str] = Query(None), 
-    Authorization: Optional[str] = None,
-    request: Request = None
+    Authorization: Optional[str] = None
 ):
     # Handle authentication - either from query parameter or header
     user = None
@@ -312,9 +304,9 @@ def view_document(
     if request:
         audit_crud(request, db, user, "VIEW_EXPERIENCE_DOCUMENT", "document_access", str(experience_id), {}, {
             "document_type": "experience",
-            "file_name": getattr(experience, 'file_name', None),
-            "employee_id": experience.employee_id,
-            "company": experience.company
+            "file_name": getattr(exp, 'file_name', None),
+            "employee_id": exp.employee_id,
+            "company": exp.company
         })
     
     return FileResponse(
@@ -337,6 +329,6 @@ def delete_experience(experience_id: int, request: Request, user=Depends(get_cur
     old_values = exp.__dict__.copy()
     db.delete(exp)
     db.commit()
-    audit_crud(request, db, user, "DELETE", "employee_experience", experience_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_experience", str(experience_id), old_values, {})
 
     return {"message": "Experience record deleted successfully"}

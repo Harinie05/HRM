@@ -29,8 +29,6 @@ async def get_employees(db: Session = Depends(get_tenant_db)):
         print(f"Error fetching employees: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching employees: {str(e)}")
 
-
-
 # Get employee review cycle integration
 @router.get("/employee-review-cycle/{employee_id}")
 async def get_employee_review_cycle(employee_id: int, db: Session = Depends(get_tenant_db)):

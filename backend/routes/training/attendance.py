@@ -128,9 +128,6 @@ def get_attendance_record(training_id: int, employee_id: int, request: Request, 
             TrainingAttendance.training_id == training_id,
             TrainingAttendance.employee_id == employee_id
         ).first()
-        
-        audit_crud(request, db, user, "VIEW_TRAINING_ATTENDANCE", "training_attendance", f"{training_id}_{employee_id}", {}, {"training_id": training_id, "employee_id": employee_id})
-        
         if not record:
             return {"attendance_days": {}, "assessments": {}}
         
@@ -146,8 +143,6 @@ def get_attendance_record(training_id: int, employee_id: int, request: Request, 
 @router.get("/")
 def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        audit_crud(request, db, user, "VIEW_TRAINING_ATTENDANCE_LIST", "training_attendance", "all", {}, {})
-        
         attendance_records = db.query(TrainingAttendance).all()
         
         result = []

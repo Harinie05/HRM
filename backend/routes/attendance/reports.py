@@ -12,7 +12,6 @@ router = APIRouter(
     tags=["Attendance - Reports"]
 )
 
-
 @router.get("/daily")
 def daily_report(
     request: Request,
@@ -20,9 +19,6 @@ def daily_report(
     user = Depends(get_current_user)
 ):
     punches = db.query(AttendancePunch).all()
-    
-    # Audit log
-    audit_crud(request, db, user, "VIEW_DAILY_ATTENDANCE_REPORT", "attendance_reports", "daily", {}, {"total_records": len(punches)})
     
     return [{
         "id": p.id,
@@ -34,7 +30,6 @@ def daily_report(
         "source": p.source,
         "status": p.status
     } for p in punches]
-
 
 @router.get("/monthly")
 def monthly_summary(
@@ -50,9 +45,6 @@ def monthly_summary(
         .group_by(AttendancePunch.employee_id)
         .all()
     )
-    
-    # Audit log
-    audit_crud(request, db, user, "VIEW_MONTHLY_ATTENDANCE_REPORT", "attendance_reports", "monthly", {}, {"total_employees": len(results)})
     
     return [{
         "employee_id": r.employee_id,

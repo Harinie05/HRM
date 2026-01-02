@@ -16,6 +16,184 @@ router = APIRouter(
     tags=["Leave - Types & Policies"]
 )
 
+# ======================= LEAVE POLICIES =======================
+
+@router.post("/policies/create")
+def create_leave_policy(
+    payload: dict,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    """Create a new leave policy"""
+    try:
+        policy = LeavePolicy(
+            name=payload.get("name", "Default Policy"),
+            annual=payload.get("annual", 0),
+            sick=payload.get("sick", 0),
+            casual=payload.get("casual", 0),
+            carry_forward=payload.get("carry_forward", False),
+            max_carry=payload.get("max_carry", 0),
+            encashment=payload.get("encashment", False),
+            rule=payload.get("rule", ""),
+            status="Active"
+        )
+        
+        db.add(policy)
+        db.commit()
+        db.refresh(policy)
+        
+        audit_crud(request, db, user, "CREATE", "leave_policies", str(policy.id), {}, payload)
+        
+        return {
+            "message": "Leave policy created successfully",
+            "id": policy.id,
+            "name": policy.name
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Create a separate router for policies with the expected prefix
+policies_router = APIRouter(
+    prefix="/policies/leave",
+    tags=["Leave Policies"]
+)
+
+@policies_router.post("/create")
+def create_leave_policy_alt(
+    payload: dict,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    """Create a new leave policy - alternative route"""
+    return create_leave_policy(payload, request, db, user)
+
+@policies_router.get("/")
+def list_leave_policies_alt(db: Session = Depends(get_tenant_db)):
+    """Get all leave policies - alternative route"""
+    policies = db.query(LeavePolicy).all()
+    return [{
+        "id": p.id,
+        "name": p.name,
+        "annual": p.annual,
+        "sick": p.sick,
+        "casual": p.casual,
+        "carry_forward": p.carry_forward,
+        "max_carry": p.max_carry,
+        "encashment": p.encashment,
+        "status": p.status,
+        "created_at": p.created_at.isoformat() if p.created_at is not None else None
+    } for p in policies]
+
+@policies_router.get("/list")
+def list_leave_policies_list(db: Session = Depends(get_tenant_db)):
+    """Get all leave policies - /list endpoint"""
+    policies = db.query(LeavePolicy).all()
+    return [{
+        "id": p.id,
+        "name": p.name,
+        "annual": p.annual,
+        "sick": p.sick,
+        "casual": p.casual,
+        "carry_forward": p.carry_forward,
+        "max_carry": p.max_carry,
+        "encashment": p.encashment,
+        "status": p.status,
+        "created_at": p.created_at.isoformat() if p.created_at is not None else None
+    } for p in policies]
+
+@policies_router.put("/update/{policy_id}")
+def update_leave_policy(
+    policy_id: int,
+    payload: dict,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    """Update a leave policy"""
+    try:
+        policy = db.query(LeavePolicy).filter(LeavePolicy.id == policy_id).first()
+        if not policy:
+            raise HTTPException(status_code=404, detail="Leave policy not found")
+        
+        old_values = {
+            "name": policy.name,
+            "annual": policy.annual,
+            "sick": policy.sick,
+            "casual": policy.casual
+        }
+        
+        # Update fields
+        policy.name = payload.get("name", policy.name)
+        policy.annual = payload.get("annual", policy.annual)
+        policy.sick = payload.get("sick", policy.sick)
+        policy.casual = payload.get("casual", policy.casual)
+        policy.carry_forward = payload.get("carry_forward", policy.carry_forward)
+        policy.max_carry = payload.get("max_carry", policy.max_carry)
+        policy.encashment = payload.get("encashment", policy.encashment)
+        policy.rule = payload.get("rule", policy.rule)
+        
+        db.commit()
+        audit_crud(request, db, user, "UPDATE", "leave_policies", str(policy_id), old_values, payload)
+        
+        return {
+            "message": "Leave policy updated successfully",
+            "id": policy.id,
+            "name": policy.name
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@policies_router.delete("/delete/{policy_id}")
+def delete_leave_policy(
+    policy_id: int,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    """Delete a leave policy"""
+    try:
+        policy = db.query(LeavePolicy).filter(LeavePolicy.id == policy_id).first()
+        if not policy:
+            raise HTTPException(status_code=404, detail="Leave policy not found")
+        
+        old_values = {
+            "name": policy.name,
+            "annual": policy.annual,
+            "sick": policy.sick,
+            "casual": policy.casual
+        }
+        
+        db.delete(policy)
+        db.commit()
+        audit_crud(request, db, user, "DELETE", "leave_policies", str(policy_id), old_values, {})
+        
+        return {"message": "Leave policy deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/policies")
+def list_leave_policies(db: Session = Depends(get_tenant_db)):
+    """Get all leave policies"""
+    policies = db.query(LeavePolicy).all()
+    return [{
+        "id": p.id,
+        "name": p.name,
+        "annual": p.annual,
+        "sick": p.sick,
+        "casual": p.casual,
+        "carry_forward": p.carry_forward,
+        "max_carry": p.max_carry,
+        "encashment": p.encashment,
+        "status": p.status
+    } for p in policies]
+
+# ======================= LEAVE TYPES =======================
+
 @router.post("/", response_model=LeaveTypeOut)
 def create_leave_type(
     data: LeaveTypeCreate, 
@@ -54,11 +232,9 @@ def create_leave_type(
     db.commit()
     return leave
 
-
 @router.get("/", response_model=list[LeaveTypeOut])
 def list_leave_types(db: Session = Depends(get_tenant_db)):
     return db.query(LeaveType).all()
-
 
 @router.get("/{leave_id}", response_model=LeaveTypeOut)
 def get_leave_type(leave_id: int, db: Session = Depends(get_tenant_db)):
@@ -66,7 +242,6 @@ def get_leave_type(leave_id: int, db: Session = Depends(get_tenant_db)):
     if not leave:
         raise HTTPException(status_code=404, detail="Leave type not found")
     return leave
-
 
 @router.put("/{leave_id}", response_model=LeaveTypeOut)
 def update_leave_type(
@@ -89,7 +264,6 @@ def update_leave_type(
     audit_crud(request, db, user, "UPDATE_LEAVE_TYPE", "leave_types", str(leave_id), old_values, data.dict(exclude_unset=True))
     return leave
 
-
 @router.delete("/{leave_id}")
 def delete_leave_type(
     leave_id: int, 
@@ -106,7 +280,6 @@ def delete_leave_type(
     db.commit()
     audit_crud(request, db, user, "DELETE_LEAVE_TYPE", "leave_types", str(leave_id), old_values, {})
     return {"message": "Leave type deleted"}
-
 
 @router.post("/sync-balances")
 def sync_leave_type_balances(
@@ -137,23 +310,23 @@ def sync_leave_type_balances(
             allocated_days = 0
             
             if policy:
-                # Check if policy-controlled
-                if hasattr(leave_type, 'code') and leave_type.code is not None and str(leave_type.code).upper() in ['AL', 'ANNUAL']:
-                    allocated_days = getattr(policy, 'annual', 0) or 0
-                elif hasattr(leave_type, 'code') and leave_type.code is not None and str(leave_type.code).upper() in ['SL', 'SICK']:
-                    allocated_days = getattr(policy, 'sick', 0) or 0
-                elif hasattr(leave_type, 'code') and leave_type.code is not None and str(leave_type.code).upper() in ['CL', 'CASUAL']:
-                    allocated_days = getattr(policy, 'casual', 0) or 0
-                elif hasattr(policy, 'leave_allocations') and policy.leave_allocations is not None and hasattr(leave_type, 'code') and leave_type.code is not None and str(leave_type.code).upper() in policy.leave_allocations:
-                    allocated_days = policy.leave_allocations[str(leave_type.code).upper()] or 0
+                # Check if policy-controlled by leave type code
+                if hasattr(leave_type, 'code') and leave_type.code is not None:
+                    code = str(leave_type.code).upper()
+                    if code == 'AL':
+                        allocated_days = getattr(policy, 'annual', 0) or 0
+                    elif code == 'SL':
+                        allocated_days = getattr(policy, 'sick', 0) or 0
+                    elif code == 'CL':
+                        allocated_days = getattr(policy, 'casual', 0) or 0
             
-            # If not policy-controlled, don't allocate from policy
+            # If no policy allocation, use leave type's own annual_limit
             if allocated_days == 0:
-                allocated_days = 0  # Other leave types get 0 from policy
+                allocated_days = getattr(leave_type, 'annual_limit', 0) or 0
             
             if balance:
-                balance.total_allocated = allocated_days
-                balance.balance = allocated_days - balance.used
+                setattr(balance, 'total_allocated', allocated_days)
+                setattr(balance, 'balance', allocated_days - balance.used)
             else:
                 balance = LeaveBalance(
                     employee_id=employee.id,

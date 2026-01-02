@@ -33,14 +33,21 @@ async def create_insurance_policy(
         else:
             employee_id_value = user.id
         
+        # Parse dates safely
+        start_date_str = policy_data.get('startDate')
+        expiry_date_str = policy_data.get('expiryDate')
+        
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date() if start_date_str else None
+        expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d').date() if expiry_date_str else None
+        
         insurance = EmployeeInsurance(
             employee_id=employee_id_value,
             policy_type=policy_data.get('policyType'),
             policy_number=policy_data.get('policyNumber'),
             provider=policy_data.get('provider'),
             coverage_amount=float(policy_data.get('coverageAmount', 0)) if policy_data.get('coverageAmount') else 0,
-            start_date=datetime.strptime(policy_data.get('startDate'), '%Y-%m-%d').date() if policy_data.get('startDate') else None,
-            expiry_date=datetime.strptime(policy_data.get('expiryDate'), '%Y-%m-%d').date() if policy_data.get('expiryDate') else None,
+            start_date=start_date,
+            expiry_date=expiry_date,
             status='Active'
         )
         
@@ -113,8 +120,8 @@ async def get_insurance_policies(db: Session = Depends(get_tenant_db)):
                 "policyNumber": policy.policy_number,
                 "provider": policy.provider,
                 "coverageAmount": policy.coverage_amount,
-                "startDate": str(policy.start_date) if policy.start_date else None,
-                "expiryDate": str(policy.expiry_date) if policy.expiry_date else None,
+                "startDate": str(policy.start_date) if policy.start_date is not None else None,
+                "expiryDate": str(policy.expiry_date) if policy.expiry_date is not None else None,
                 "status": policy.status
             })
         

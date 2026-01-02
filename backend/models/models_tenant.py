@@ -12,7 +12,6 @@ class Role(MasterBase):
     name = Column(String(150), unique=True, nullable=False)
     description = Column(String(255))
 
-
 class Permission(MasterBase):
     __tablename__ = "permissions"
 
@@ -20,14 +19,12 @@ class Permission(MasterBase):
     name = Column(String(150), unique=True, nullable=False)
     description = Column(String(255))
 
-
 class RolePermission(MasterBase):
     __tablename__ = "role_permissions"
 
     id = Column(Integer, primary_key=True)
     role_id = Column(Integer, ForeignKey("roles.id", ondelete="CASCADE"))
     permission_id = Column(Integer, ForeignKey("permissions.id", ondelete="CASCADE"))
-
 
 class Department(MasterBase):
     __tablename__ = "departments"
@@ -155,8 +152,6 @@ class JobRequisition(MasterBase):
     updated_at = Column(DateTime, onupdate=func.now())
     public_candidates = relationship("PublicCandidate", back_populates="job")
 
-
-
 # ------------------------------
 # ATS: CANDIDATES (UPDATED)
 # ------------------------------
@@ -200,8 +195,6 @@ class ATSCandidate(MasterBase):
     resume = Column(String(500), nullable=True)
     stage = Column(String(100), default="New")
     created_at = Column(DateTime, default=datetime.utcnow)
-
-
 
 # ------------------------------
 # ATS: STAGE HISTORY
@@ -264,7 +257,6 @@ class InterviewSchedule(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
-
 # ------------------------------
 # OFFER LETTER (UNCHANGED EXCEPT FIELD NAMES)
 # ------------------------------
@@ -292,7 +284,6 @@ class OfferLetter(MasterBase):
     offer_status = Column(String(50), default="Draft")
     token = Column(String(200))
     created_at = Column(DateTime, default=func.now())
-
 
 # ------------------------------
 # BGV TABLE
@@ -346,7 +337,6 @@ class OnboardingCandidate(MasterBase):
     employee_id = Column(String(50), nullable=True)
     
     created_at = Column(DateTime, default=func.now())
-
 
 # ------------------------------
 # ONBOARDING DOCUMENT UPLOADS (UPDATED)
@@ -414,8 +404,6 @@ class ImportedCandidate(MasterBase):
     resume_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-
-
 # ========================= FAMILY DETAILS =========================
 class EmployeeFamily(MasterBase):
     __tablename__ = "employee_family"
@@ -428,7 +416,6 @@ class EmployeeFamily(MasterBase):
     age = Column(Integer)
     contact = Column(String(20))
     dependent = Column(Boolean, default=False)
-
 
 # ========================= EDUCATION DETAILS =========================
 class EmployeeEducation(MasterBase):
@@ -451,7 +438,6 @@ class EmployeeEducation(MasterBase):
     
     certificate = Column(Text)   # Base64 encoded file
     file_name = Column(String(255))
-
 
 # ========================= EXPERIENCE DETAILS =========================
 class EmployeeExperience(MasterBase):
@@ -477,7 +463,6 @@ class EmployeeExperience(MasterBase):
     
     relieving_doc = Column(Text)
     file_name = Column(String(255))
-
 
 # ========================= MEDICAL DETAILS =========================
 class EmployeeMedical(MasterBase):
@@ -527,7 +512,6 @@ class EmployeeMedical(MasterBase):
     medical_certificate = Column(Text)  # File path
     certificate_name = Column(String(255))
 
-
 # ========================= LICENSE RENEWAL ALERTS =========================
 class LicenseRenewalAlert(MasterBase):
     __tablename__ = "license_renewal_alerts"
@@ -546,7 +530,6 @@ class LicenseRenewalAlert(MasterBase):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
-
 # ========================= ID DOCUMENTS =========================
 class EmployeeIDDocs(MasterBase):
     __tablename__ = "employee_id_docs"
@@ -562,7 +545,6 @@ class EmployeeIDDocs(MasterBase):
     status = Column(String(50), default="Pending")
     # Pending / Verified / Rejected
 
-
 # ========================= SKILLS =========================
 class EmployeeSkills(MasterBase):
     __tablename__ = "employee_skills"
@@ -572,7 +554,6 @@ class EmployeeSkills(MasterBase):
 
     skill_name = Column(String(150))
     rating = Column(Integer)    # 1–5 stars
-
 
 # ========================= CERTIFICATIONS =========================
 class EmployeeCertifications(MasterBase):
@@ -587,7 +568,6 @@ class EmployeeCertifications(MasterBase):
 
     certificate_file = Column(Text)
     file_name = Column(String(255))
-
 
 # ========================= SALARY STRUCTURE =========================
 class EmployeeSalary(MasterBase):
@@ -604,7 +584,6 @@ class EmployeeSalary(MasterBase):
 
     pf_eligible = Column(Boolean, default=True)
     esi_eligible = Column(Boolean, default=True)
-
 
 # ========================= BANK DETAILS =========================
 class EmployeeBankDetails(MasterBase):
@@ -631,7 +610,6 @@ class EmployeeBankDetails(MasterBase):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
-
 # ========================= DOCUMENT VAULT =========================
 class EmployeeDocuments(MasterBase):
     __tablename__ = "employee_documents"
@@ -644,7 +622,6 @@ class EmployeeDocuments(MasterBase):
     file_name = Column(String(255))
 
     uploaded_on = Column(DateTime, default=func.now())
-
 
 # ========================= EXIT DETAILS =========================
 class EmployeeExit(MasterBase):
@@ -738,7 +715,6 @@ class NightShiftRule(MasterBase):
     grace_minutes = Column(Integer, default=15)
     created_at = Column(DateTime, default=func.now())
 
-
 # ========================= REPORTING STRUCTURE =========================
 class ReportingLevel(MasterBase):
     __tablename__ = "reporting_levels"
@@ -750,7 +726,6 @@ class ReportingLevel(MasterBase):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
 
-
 class ReportingHierarchy(MasterBase):
     __tablename__ = "reporting_hierarchy"
 
@@ -760,7 +735,6 @@ class ReportingHierarchy(MasterBase):
     department_id = Column(Integer, nullable=True)  # Optional: department-specific hierarchy
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
-
 
 # ========================= EMPLOYEE REPORTING =========================
 class EmployeeReporting(MasterBase):
@@ -795,7 +769,6 @@ class AttendanceRegularization(MasterBase):
     status = Column(String(50), default="Pending")  # Pending / Approved / Rejected
     created_at = Column(DateTime, server_default=func.now())
 
-
 # =====================================================
 # OD APPLICATIONS
 # =====================================================
@@ -812,7 +785,6 @@ class ODApplication(MasterBase):
     status = Column(String(50), default="pending")  # pending/approved/rejected
     created_at = Column(DateTime, server_default=func.now())
 
-
 # =====================================================
 # ATTENDANCE RULES (Late / Early / OT)
 # =====================================================
@@ -826,7 +798,6 @@ class AttendanceRule(MasterBase):
 
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())
-
 
 # =====================================================
 # ATTENDANCE LOCATIONS (NO DEVICES)
@@ -1009,7 +980,6 @@ class SalaryStructure(MasterBase):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())
 
-
 # =====================================================
 # STATUTORY RULES
 # =====================================================
@@ -1039,7 +1009,6 @@ class StatutoryRule(MasterBase):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
-
 # =====================================================
 # PAYROLL RUN
 # =====================================================
@@ -1060,7 +1029,6 @@ class PayrollRun(MasterBase):
     status = Column(String(50), default="Pending")
     created_at = Column(DateTime, server_default=func.now())
 
-
 # =====================================================
 # PAYROLL ADJUSTMENTS
 # =====================================================
@@ -1077,7 +1045,6 @@ class PayrollAdjustment(MasterBase):
     
     status = Column(String(50), default="Active")
     created_at = Column(DateTime, server_default=func.now())
-
 
 # =====================================================
 # TRAINING & DEVELOPMENT TABLES
@@ -1298,7 +1265,6 @@ class PMSGoal(MasterBase):
     is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
-
 # -------------------------
 # 2. PERFORMANCE REVIEW CYCLE
 # -------------------------
@@ -1321,7 +1287,6 @@ class PMSReview(MasterBase):
     is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
-
 # -------------------------
 # 3. 360 DEGREE FEEDBACK
 # -------------------------
@@ -1343,7 +1308,6 @@ class PMSFeedback(MasterBase):
 
     is_active = Column(Boolean, default=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
-
 
 # -------------------------
 # 4. APPRAISAL & PROMOTION
@@ -1404,7 +1368,6 @@ class TrainingProgram(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
-
 # -------------------------
 # 2. TRAINING REQUESTS & WORKFLOW
 # -------------------------
@@ -1425,7 +1388,6 @@ class TrainingRequest(MasterBase):
     approver = Column(String(150), nullable=True)
 
     created_at = Column(DateTime, default=func.now())
-
 
 # -------------------------
 # 3. ATTENDANCE & SKILL ASSESSMENT
@@ -1449,7 +1411,6 @@ class TrainingAttendance(MasterBase):
     result = Column(String(50), nullable=True)  # Pass / Fail
 
     created_at = Column(DateTime, default=func.now())
-
 
 # -------------------------
 # 4. CERTIFICATES & COMPLIANCE
@@ -1526,7 +1487,6 @@ class EmployeeStatutory(MasterBase):
 
     created_at = Column(DateTime, default=func.now())
 
-
 # ------------------------------
 # LABOUR LAW REGISTERS
 # ------------------------------
@@ -1544,7 +1504,6 @@ class LabourLawRegister(MasterBase):
 
     remarks = Column(Text)
     created_at = Column(DateTime, default=func.now())
-
 
 # ------------------------------
 # LEAVE & WORKING HOURS COMPLIANCE
@@ -1566,7 +1525,6 @@ class LeaveWorkingCompliance(MasterBase):
     year = Column(Integer, nullable=True)
 
     created_at = Column(DateTime, default=func.now())
-
 
 # ------------------------------
 # NABH HRM COMPLIANCE (HOSPITAL)
@@ -1825,7 +1783,6 @@ class DailyWorkUpdate(MasterBase):
 
     # Ensure one update per employee per date
     __table_args__ = ({'extend_existing': True},)
-
 
 class QualityIndicator(MasterBase):
     __tablename__ = "quality_indicators"

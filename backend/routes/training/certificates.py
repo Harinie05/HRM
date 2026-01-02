@@ -56,8 +56,6 @@ def generate_certificate(data: dict, request: Request, db: Session = Depends(get
 @router.get("/")
 def list_certificates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        audit_crud(request, db, user, "VIEW_TRAINING_CERTIFICATES", "training_certificates", "all", {}, {})
-        
         from models.models_tenant import TrainingApplication
         
         certificates = db.query(TrainingCertificate).all()

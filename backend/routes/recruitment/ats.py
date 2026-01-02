@@ -31,7 +31,6 @@ router = APIRouter(prefix="/ats", tags=["ATS"])
 UPLOAD_DIR = "uploads/resumes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 # ----------------------------------------------------------
 # HELPER: Calculate Resume Score
 # ----------------------------------------------------------
@@ -57,7 +56,6 @@ def calculate_score(candidate_exp, job_exp, candidate_skills, job_skills):
         score += int((match / total) * 60)
 
     return min(score, 100)
-
 
 # ----------------------------------------------------------
 # CANDIDATE APPLY (VIA PUBLIC URL)
@@ -112,7 +110,6 @@ def apply_candidate(
 
     return candidate
 
-
 # ----------------------------------------------------------
 # FILTER CANDIDATES BASED ON JD + EXPERIENCE + SKILLS
 # ----------------------------------------------------------
@@ -148,7 +145,6 @@ def filter_resumes(req: ResumeFilterRequest, db: Session = Depends(get_tenant_db
     sorted_list = sorted(results, key=lambda x: x.score, reverse=True)
 
     return sorted_list
-
 
 # ----------------------------------------------------------
 # MOVE CANDIDATE TO NEXT STAGE
@@ -197,7 +193,6 @@ def move_stage(
 
     return {"message": "Stage updated", "candidate": c}
 
-
 # ----------------------------------------------------------
 # SCHEDULE INTERVIEW FOR ROUND
 # ----------------------------------------------------------
@@ -244,7 +239,6 @@ def schedule_interview(
 
     return schedule
 
-
 # ----------------------------------------------------------
 # GET ALL JOBS FOR ATS
 # ----------------------------------------------------------
@@ -253,7 +247,6 @@ def get_jobs(db: Session = Depends(get_tenant_db)):
     jobs = db.query(JobRequisition).all()
     return jobs
 
-
 # ----------------------------------------------------------
 # GET ALL CANDIDATES FOR A JOB
 # ----------------------------------------------------------
@@ -261,7 +254,6 @@ def get_jobs(db: Session = Depends(get_tenant_db)):
 def job_candidates(job_id: int, db: Session = Depends(get_tenant_db)):
     candidates = db.query(Candidate).filter(Candidate.job_id == job_id).all()
     return candidates
-
 
 # ----------------------------------------------------------
 # GET SINGLE CANDIDATE PROFILE
@@ -272,7 +264,6 @@ def candidate_profile(candidate_id: int, db: Session = Depends(get_tenant_db)):
     if not candidate:
         raise HTTPException(status_code=404, detail="Candidate not found")
     return candidate
-
 
 # ----------------------------------------------------------
 # MOVE CANDIDATE TO NEXT ROUND WITH EMAIL
@@ -368,7 +359,6 @@ def move_to_next_round(
         logger.error(f"Error in move_to_next_round: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to process candidate action: {str(e)}")
 
-
 def create_offer_and_onboarding(candidate, job, db):
     """Create offer letter and onboarding record for selected candidate"""
     try:
@@ -411,7 +401,6 @@ def create_offer_and_onboarding(candidate, job, db):
     except Exception as e:
         db.rollback()
         logger.error(f"Failed to create offer/onboarding for {candidate.name}: {str(e)}")
-
 
 def send_round_notification_email(candidate, job, action, next_round=None, interview_date=None, interview_time=None):
     """Send email notification for round progression"""
@@ -535,7 +524,6 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
         logger.error(f"Failed to send round notification email: {str(e)}")
         return False
 
-
 # Complete the incomplete function at the end
 def send_rejection_email(candidate, job):
     """Send rejection email to candidate"""
@@ -596,7 +584,6 @@ def send_rejection_email(candidate, job):
     except Exception as e:
         logger.error(f"Failed to send rejection email: {str(e)}")
         return False
-
 
 def complete_function():
     """Placeholder function to complete the file"""

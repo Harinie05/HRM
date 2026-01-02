@@ -11,7 +11,6 @@ logger = logging.getLogger("HRM")
 
 router = APIRouter(prefix="/hr/communication", tags=["HR Communication"])
 
-
 @router.post("/", response_model=dict)
 def create_communication(
     payload: dict,
@@ -34,7 +33,7 @@ def create_communication(
         db.add(record)
         db.commit()
         db.refresh(record)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "hr_communications", record.id, None, record.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "hr_communications", str(record.id), {}, record.__dict__)
         
         logger.info(f"✅ Communication created with ID: {record.id}")
         return {"message": "Communication sent", "id": record.id}
@@ -42,7 +41,6 @@ def create_communication(
         logger.error(f"❌ Error creating communication: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.post("/draft", response_model=dict)
 def save_draft(
@@ -66,7 +64,7 @@ def save_draft(
         db.add(record)
         db.commit()
         db.refresh(record)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "hr_communications", record.id, None, record.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "hr_communications", str(record.id), {}, record.__dict__)
         
         logger.info(f"✅ Draft saved with ID: {record.id}")
         return {"message": "Draft saved", "id": record.id}
@@ -74,7 +72,6 @@ def save_draft(
         logger.error(f"❌ Error saving draft: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/{communication_id}", response_model=dict)
 def get_communication(
@@ -101,7 +98,6 @@ def get_communication(
         logger.error(f"❌ Error fetching communication: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.put("/{communication_id}", response_model=dict)
 def update_communication(
     communication_id: int,
@@ -121,11 +117,12 @@ def update_communication(
         communication.letter_type = payload.get("letterType", communication.letter_type)
         communication.subject = payload.get("subject", communication.subject)
         communication.content = payload.get("content", communication.content)
-        communication.sent_to_ids = [payload.get("employeeId")] if payload.get("employeeId") else communication.sent_to_ids
+        if payload.get("employeeId"):
+            setattr(communication, "sent_to_ids", [payload.get("employeeId")])
         communication.status = payload.get("status", communication.status)
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "hr_communications", communication_id, None, communication.__dict__)
+        audit_crud(request, db, {"email": "system"}, "UPDATE", "hr_communications", str(communication_id), {}, communication.__dict__)
         
         logger.info(f"✅ Communication {communication_id} updated successfully")
         return {"message": "Communication updated successfully", "id": communication.id}
@@ -133,7 +130,6 @@ def update_communication(
         logger.error(f"❌ Error updating communication: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.put("/{communication_id}/send", response_model=dict)
 def send_draft_communication(
@@ -149,7 +145,7 @@ def send_draft_communication(
         if not communication:
             raise HTTPException(status_code=404, detail="Draft communication not found")
         
-        communication.status = "Ready"
+        setattr(communication, "status", "Ready")
         db.commit()
         
         logger.info(f"✅ Draft communication {communication_id} sent successfully")
@@ -158,7 +154,6 @@ def send_draft_communication(
         logger.error(f"❌ Error sending draft communication: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.delete("/{communication_id}", response_model=dict)
 def delete_communication(
@@ -177,7 +172,7 @@ def delete_communication(
         old_values = communication.__dict__.copy()
         db.delete(communication)
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "hr_communications", communication_id, old_values, None)
+        audit_crud(request, db, {"email": "system"}, "DELETE", "hr_communications", str(communication_id), old_values, {})
         
         logger.info(f"✅ Communication {communication_id} deleted successfully")
         return {"message": "Communication deleted successfully"}
@@ -185,7 +180,6 @@ def delete_communication(
         logger.error(f"❌ Error deleting communication: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/", response_model=list)
 def list_communications(db: Session = Depends(get_tenant_db)):
@@ -204,7 +198,7 @@ def list_communications(db: Session = Depends(get_tenant_db)):
                 "sent_to_type": comm.sent_to_type,
                 "sent_to_ids": comm.sent_to_ids,
                 "status": comm.status,
-                "created_at": comm.created_at.isoformat() if comm.created_at else None
+                "created_at": comm.created_at.isoformat() if comm.created_at is not None else None
             })
         
         return result

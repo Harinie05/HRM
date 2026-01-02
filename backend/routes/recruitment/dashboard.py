@@ -11,9 +11,6 @@ router = APIRouter(prefix="/recruitment-dashboard", tags=["Recruitment Dashboard
 @router.get("/metrics")
 def get_recruitment_metrics(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)) -> Dict[str, Any]:
     """Get comprehensive recruitment and onboarding metrics"""
-    
-    audit_crud(request, db, user, "VIEW_RECRUITMENT_METRICS", "recruitment_dashboard", "all", {}, {})
-    
     try:
         # Job Requisition metrics - check if table exists first
         try:
@@ -137,9 +134,6 @@ def get_recruitment_metrics(request: Request, db: Session = Depends(get_tenant_d
 @router.get("/job-status-breakdown")
 def get_job_status_breakdown(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get detailed breakdown of job statuses"""
-    
-    audit_crud(request, db, user, "VIEW_JOB_STATUS_BREAKDOWN", "recruitment_dashboard", "all", {}, {})
-    
     try:
         query = text("""
             SELECT 
@@ -176,9 +170,6 @@ def get_job_status_breakdown(request: Request, db: Session = Depends(get_tenant_
 @router.get("/candidate-pipeline")
 def get_candidate_pipeline(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get candidate pipeline by stage"""
-    
-    audit_crud(request, db, user, "VIEW_CANDIDATE_PIPELINE", "recruitment_dashboard", "all", {}, {})
-    
     try:
         query = text("""
             SELECT 
@@ -213,9 +204,6 @@ def get_candidate_pipeline(request: Request, db: Session = Depends(get_tenant_db
 @router.get("/debug-data")
 def debug_database_data(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Debug endpoint to check actual data in database"""
-    
-    audit_crud(request, db, user, "VIEW_DEBUG_DATA", "recruitment_dashboard", "all", {}, {})
-    
     try:
         # Check job_requisition table
         jobs_query = text("SELECT COUNT(*), GROUP_CONCAT(DISTINCT status) FROM job_requisition")

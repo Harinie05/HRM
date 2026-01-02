@@ -24,7 +24,6 @@ class Hospital(MasterBase):
 
     users = relationship("MasterUser", back_populates="hospital")
 
-
 class MasterUser(MasterBase):
     __tablename__ = "master_users"
 

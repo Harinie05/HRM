@@ -14,8 +14,6 @@ logger = logging.getLogger("HRM")
 
 router = APIRouter(prefix="/hr/assets", tags=["HR Assets"])
 
-
-
 @router.post("/pending")
 async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Create a pending asset assignment request"""
@@ -31,6 +29,24 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
         else:
             employee_id = user.id
         
+        # Safely convert cost to float
+        cost_value = asset_data.get('cost')
+        cost = None
+        if cost_value is not None and cost_value != '' and str(cost_value).strip() != '':
+            try:
+                cost = float(cost_value)
+            except (ValueError, TypeError):
+                cost = None
+        
+        # Safely parse assigned date
+        assigned_date_value = asset_data.get('assignedDate')
+        issue_date = datetime.now().date()
+        if assigned_date_value is not None and assigned_date_value != '' and str(assigned_date_value).strip() != '':
+            try:
+                issue_date = datetime.strptime(assigned_date_value, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                issue_date = datetime.now().date()
+        
         asset_assignment = AssetAssignment(
             employee_id=employee_id,
             asset_type=asset_data.get('assetType'),
@@ -41,8 +57,8 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
             serial_number=asset_data.get('serialNumber'),
             condition=asset_data.get('condition'),
             location=asset_data.get('location'),
-            cost=float(asset_data.get('cost')) if asset_data.get('cost') is not None and asset_data.get('cost') != '' else None,
-            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') is not None and asset_data.get('assignedDate') != '' else datetime.now().date(),
+            cost=cost,
+            issue_date=issue_date,
             terms=asset_data.get('remarks'),
             status='Pending'
         )
@@ -50,7 +66,7 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
-        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", str(asset_assignment.id), {}, asset_assignment.__dict__)
         
         logger.info(f"✅ Pending asset created with ID: {asset_assignment.id}")
         return {"message": "Pending asset created successfully", "data": {
@@ -108,7 +124,7 @@ async def get_pending_assets(db: Session = Depends(get_tenant_db)):
                 "location": asset.location,
                 "cost": asset.cost,
                 "assignedDate": str(asset.issue_date) if asset.issue_date is not None else None,
-                "requestDate": str(asset.created_at.date()) if asset.created_at else None,
+                "requestDate": str(asset.created_at.date()) if asset.created_at is not None else None,
                 "status": asset.status
             })
         
@@ -149,14 +165,14 @@ async def approve_asset(approval_data: dict, request: Request, db: Session = Dep
         
         # Update status
         if approved:
-            asset.status = 'Approved'
+            setattr(asset, "status", "Approved")
             logger.info(f"✅ Asset approved: {asset.asset_name} for {employee_name}")
         else:
-            asset.status = 'Rejected'
+            setattr(asset, "status", "Rejected")
             logger.info(f"❌ Asset rejected: {asset.asset_name} for {employee_name}")
         
         db.commit()
-        audit_crud(request, db, {"email": "system"}, "UPDATE", "asset_assignments", asset_id, None, {"status": asset.status})
+        audit_crud(request, db, {"email": "system"}, "UPDATE", "asset_assignments", str(asset_id), {}, {"status": asset.status})
         
         status = "approved" if approved else "rejected"
         return {"message": f"Asset {status} successfully"}
@@ -209,8 +225,35 @@ async def get_approved_assets(db: Session = Depends(get_tenant_db)):
 async def create_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
     """Create asset directly (legacy endpoint)"""
     try:
+        # Safely convert cost to float
+        cost_value = asset_data.get('cost')
+        cost = None
+        if cost_value is not None and cost_value != '' and str(cost_value).strip() != '':
+            try:
+                cost = float(cost_value)
+            except (ValueError, TypeError):
+                cost = None
+        
+        # Safely parse assigned date
+        assigned_date_value = asset_data.get('assignedDate')
+        issue_date = datetime.now().date()
+        if assigned_date_value is not None and assigned_date_value != '' and str(assigned_date_value).strip() != '':
+            try:
+                issue_date = datetime.strptime(assigned_date_value, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                issue_date = datetime.now().date()
+        
+        # Safely convert employee_id to int
+        employee_id_value = asset_data.get('employeeId')
+        employee_id = None
+        if employee_id_value is not None and employee_id_value != '' and str(employee_id_value).strip() != '':
+            try:
+                employee_id = int(employee_id_value)
+            except (ValueError, TypeError):
+                employee_id = None
+        
         asset_assignment = AssetAssignment(
-            employee_id=int(asset_data.get('employeeId')) if asset_data.get('employeeId') is not None and asset_data.get('employeeId') != '' else None,
+            employee_id=employee_id,
             asset_type=asset_data.get('assetType'),
             asset_name=asset_data.get('assetName'),
             asset_id=asset_data.get('assetId'),
@@ -219,8 +262,8 @@ async def create_asset(asset_data: dict, request: Request, db: Session = Depends
             serial_number=asset_data.get('serialNumber'),
             condition=asset_data.get('condition'),
             location=asset_data.get('location'),
-            cost=float(asset_data.get('cost')) if asset_data.get('cost') is not None and asset_data.get('cost') != '' else None,
-            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') is not None and asset_data.get('assignedDate') != '' else datetime.now().date(),
+            cost=cost,
+            issue_date=issue_date,
             terms=asset_data.get('remarks'),
             status='Assigned'
         )
@@ -228,7 +271,7 @@ async def create_asset(asset_data: dict, request: Request, db: Session = Depends
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
-        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", str(asset_assignment.id), {}, asset_assignment.__dict__)
         
         logger.info(f"✅ Asset created directly: {asset_assignment.asset_name}")
         return {"message": "Asset created successfully", "data": {

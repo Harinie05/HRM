@@ -15,7 +15,6 @@ from routes.hospital import get_current_user, check_permission
 
 router = APIRouter()
 
-
 # --------------------------------------------------------
 # Helper: find hospital by tenant database
 # --------------------------------------------------------
@@ -24,7 +23,6 @@ def get_hospital_by_db(db: Session, tenant_db: str):
     if not hospital:
         raise HTTPException(status_code=404, detail="Hospital not found")
     return hospital
-
 
 # --------------------------------------------------------
 # CREATE DEPARTMENT  🔒 Protected
@@ -76,7 +74,6 @@ def create_department(
         logger.error(f"Error creating department: {str(e)}")
         raise HTTPException(500, f"Error creating department: {str(e)}")
 
-
 # --------------------------------------------------------
 # LIST DEPARTMENTS  🔒 Protected
 # --------------------------------------------------------
@@ -95,7 +92,6 @@ def list_departments(
         rows = conn.execute(text("SELECT * FROM departments")).fetchall()
 
     return {"departments": [dict(r._mapping) for r in rows]}
-
 
 # --------------------------------------------------------
 # UPDATE DEPARTMENT 🔒 Protected
@@ -139,7 +135,6 @@ def update_department(
             audit_crud(request, tdb, user, "UPDATE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {"name": payload.name, "description": payload.description})
 
     return {"detail": "Department updated successfully"}
-
 
 # --------------------------------------------------------
 # DELETE DEPARTMENT 🔒 Protected

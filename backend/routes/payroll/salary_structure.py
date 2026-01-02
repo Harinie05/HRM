@@ -21,7 +21,6 @@ router = APIRouter(
     tags=["Payroll - Salary Structure"]
 )
 
-
 @router.post("/", response_model=SalaryStructureOut)
 def create_salary_structure(
     data: SalaryStructureCreate,
@@ -35,7 +34,6 @@ def create_salary_structure(
     db.refresh(structure)
     audit_crud(request, db, user, "CREATE_SALARY_STRUCTURE", "salary_structures", str(structure.id), {}, data.dict())
     return structure
-
 
 @router.get("/")
 def list_salary_structures(
@@ -63,7 +61,6 @@ def list_salary_structures(
     
     return structures
 
-
 @router.get("/{structure_id}", response_model=SalaryStructureOut)
 def get_salary_structure(
     structure_id: int,
@@ -75,7 +72,6 @@ def get_salary_structure(
     if not structure:
         raise HTTPException(status_code=404, detail="Salary structure not found")
     return structure
-
 
 @router.put("/{structure_id}")
 def update_salary_structure(

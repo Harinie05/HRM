@@ -17,7 +17,6 @@ class SimpleSalaryCreate(BaseModel):
     ctc: float
     grade: Optional[str] = None
 
-
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
     from models.models_master import Hospital
@@ -33,9 +32,7 @@ def get_tenant_session(user):
     engine = get_tenant_engine(hospital.db_name)
     return Session(bind=engine)
 
-
 router = APIRouter(prefix="/employee/salary", tags=["Employee Salary Structure"])
-
 
 # -------------------------------------------------------------------------
 # 1. SAVE SALARY STRUCTURE
@@ -147,7 +144,6 @@ async def add_salary(
         if db:
             db.close()
 
-
 # -------------------------------------------------------------------------
 # 2. GET EMPLOYEE SALARY
 # -------------------------------------------------------------------------
@@ -168,7 +164,6 @@ def get_salary(employee_id: str, user=Depends(get_current_user)):
         return sal
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 3. UPDATE SALARY STRUCTURE
@@ -210,7 +205,6 @@ def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=D
         raise HTTPException(500, f"Failed to update salary: {str(e)}")
     finally:
         db.close()
-
 
 # -------------------------------------------------------------------------
 # 4. SIMPLE SALARY CREATION (MINIMAL INPUT)

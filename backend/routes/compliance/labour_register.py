@@ -64,8 +64,6 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
 @router.get("/")
 def get_registers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
-        audit_crud(request, db, user, "VIEW_LABOUR_REGISTERS", "labour_law_registers", "all", {}, {})
-        
         records = db.query(LabourLawRegister).order_by(LabourLawRegister.created_at.desc()).limit(50).all()
         
         result = []

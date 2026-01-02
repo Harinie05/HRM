@@ -71,12 +71,11 @@ from routes.attendance.reports import router as attendance_reports_router
 from routes.attendance.od_applications import router as od_applications_router
 
 # ======================= 🔥 LEAVE ROUTERS =======================
-from routes.leave.leave_types import router as leave_types_router
+from routes.leave.leave_types import router as leave_types_router, policies_router
 from routes.leave.leave_rules import router as leave_rules_router
 from routes.leave.leave_applications import router as leave_applications_router
 from routes.leave.leave_balances import router as leave_balances_router
 from routes.leave.leave_reports import router as leave_reports_router
-
 
 # ======================= 🔥 PAYROLL ROUTERS =======================
 from routes.payroll.salary_structure import router as salary_structure_router
@@ -247,11 +246,11 @@ app.include_router(od_applications_router, prefix="/api")
 
 # ======================= 🔥 LEAVE MODULE =======================
 app.include_router(leave_types_router, prefix="/api")
+app.include_router(policies_router)  # No prefix for /policies/leave/create
 app.include_router(leave_rules_router, prefix="/api")
 app.include_router(leave_applications_router, prefix="/api")
 app.include_router(leave_balances_router, prefix="/api")
 app.include_router(leave_reports_router, prefix="/api")
-
 
 # ======================= 🔥 PAYROLL MODULE =======================
 app.include_router(salary_structure_router, prefix="/api")

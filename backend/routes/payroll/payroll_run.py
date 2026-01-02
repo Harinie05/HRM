@@ -241,8 +241,6 @@ async def create_payroll_run_internal(data: dict, request: Request, db: Session)
         db.rollback()
         raise e
 
-
-
 @router.get("/runs")
 def get_payroll_runs(
     db: Session = Depends(get_tenant_db)
