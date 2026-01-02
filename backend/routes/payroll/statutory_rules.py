@@ -40,6 +40,10 @@ def get_statutory_rules(user=Depends(get_current_user)):
             db.add(rules)
             db.commit()
             db.refresh(rules)
+            
+            # Audit log for creation
+            if hasattr(rules, 'id'):
+                audit_crud(None, db, user, "CREATE_STATUTORY_RULES", "statutory_rules", str(rules.id), {}, {})
         return rules
     finally:
         db.close()
@@ -85,7 +89,10 @@ def update_statutory_rules(
         db.commit()
         db.refresh(rules)
         if request:
-            audit_crud(request, user.get("tenant_db"), user, "UPDATE", "statutory_rules", getattr(rules, 'id', None), None, rules.__dict__)
+            audit_crud(request, db, user, "UPDATE_STATUTORY_RULES", "statutory_rules", str(getattr(rules, 'id', 'default')), {}, {
+                "pf_enabled": pf_enabled, "pf_percent": pf_percent, "esi_enabled": esi_enabled, 
+                "esi_percent": esi_percent, "pt_enabled": pt_enabled, "tds_enabled": tds_enabled
+            })
         
         return {"message": "Statutory rules updated successfully", "rules": rules}
     except Exception as e:

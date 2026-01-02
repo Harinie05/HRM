@@ -57,7 +57,11 @@ def create_reporting_level(
                 "is_active": payload.get("is_active", True)
             })
             conn.commit()
-            audit_crud(request, user.get("tenant_db"), user, "CREATE", "reporting_levels", None, None, payload)
+            
+        # Audit log with proper database session
+        db = Session(bind=engine)
+        with db:
+            audit_crud(request, db, user, "CREATE_REPORTING_LEVEL", "reporting_levels", "new_level", {}, payload)
             
         return {"message": "Reporting level created successfully"}
         
@@ -124,7 +128,11 @@ def create_hierarchy_rule(
                 "is_active": payload.get("is_active", True)
             })
             conn.commit()
-            audit_crud(request, user.get("tenant_db"), user, "CREATE", "reporting_hierarchy", None, None, payload)
+            
+        # Audit log with proper database session
+        db = Session(bind=engine)
+        with db:
+            audit_crud(request, db, user, "CREATE_HIERARCHY_RULE", "reporting_hierarchy", "new_rule", {}, payload)
             
         return {"message": "Hierarchy rule created successfully"}
         
@@ -211,7 +219,11 @@ def assign_employee_reporting(
             })
             
             conn.commit()
-            audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_reporting", employee_id, None, payload)
+            
+        # Audit log with proper database session
+        db = Session(bind=engine)
+        with db:
+            audit_crud(request, db, user, "UPDATE_EMPLOYEE_REPORTING", "employee_reporting", str(employee_id), {}, payload)
             
         return {"message": "Employee reporting assigned successfully"}
         

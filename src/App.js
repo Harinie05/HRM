@@ -7,6 +7,7 @@ import Departments from "./pages/Department";
 import Roles from "./pages/Roles";
 import HospitalRegister from "./pages/HospitalRegister";
 import Users from "./pages/User";
+import AuditLogs from "./pages/AuditLogs";
 
 // Organization Setup Module
 import OrganizationLayout from "./pages/organization/OrganizationLayout";
@@ -145,6 +146,7 @@ function App() {
         <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
         <Route path="/roles" element={<ProtectedRoute><Roles /></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+        <Route path="/audit-logs" element={<ProtectedRoute><AuditLogs /></ProtectedRoute>} />
 
         {/* ORGANIZATION SETUP */}
         <Route path="/organization" element={<ProtectedRoute><OrganizationLayout /></ProtectedRoute>}>

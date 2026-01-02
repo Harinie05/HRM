@@ -145,7 +145,11 @@ async def update_id_doc(
 # 4. VIEW ID DOCUMENT
 # -------------------------------------------------------------------------
 @router.get("/document/{doc_id}")
-def view_document(doc_id: int, token: str = Query(None)):
+def view_document(
+    doc_id: int, 
+    token: str = Query(None),
+    request: Request = None
+):
     if not token:
         raise HTTPException(401, "Token required")
     
@@ -175,6 +179,15 @@ def view_document(doc_id: int, token: str = Query(None)):
         media_type = 'image/png'
     else:
         media_type = 'application/octet-stream'
+    
+    # Audit log for ID document view
+    if request:
+        audit_crud(request, db, user, "VIEW_ID_DOCUMENT", "document_access", str(doc_id), {}, {
+            "document_type": "id_document",
+            "file_name": getattr(doc, 'file_name', None),
+            "employee_id": doc.employee_id,
+            "doc_type": doc.doc_type
+        })
     
     return FileResponse(
         path=file_path,

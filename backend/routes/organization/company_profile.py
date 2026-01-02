@@ -64,14 +64,14 @@ def save_company_profile(
             old_values = {key: getattr(profile, key) for key in data.dict().keys()}
             for key, value in data.dict().items():
                 setattr(profile, key, value)
-            audit_crud(request, tenant, user, "UPDATE_COMPANY_PROFILE", "company_profiles", str(profile.id), old_values, data.dict())
+            audit_crud(request, db, user, "UPDATE_COMPANY_PROFILE", "company_profiles", str(profile.id), old_values, data.dict())
         else:
             logger.info(f"Creating new company profile for tenant {tenant}")
             profile = CompanyProfile(**data.dict())
             db.add(profile)
             db.commit()
             db.refresh(profile)
-            audit_crud(request, tenant, user, "CREATE_COMPANY_PROFILE", "company_profiles", str(profile.id), {}, data.dict())
+            audit_crud(request, db, user, "CREATE_COMPANY_PROFILE", "company_profiles", str(profile.id), {}, data.dict())
 
         db.commit()
         db.refresh(profile)

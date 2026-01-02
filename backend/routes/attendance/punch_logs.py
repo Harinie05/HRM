@@ -1,10 +1,10 @@
-# type: ignore[misc]
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from datetime import datetime, time
 from typing import Optional
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import AttendancePunch, AttendanceRule, Shift, EmployeeRoster
 from schemas.schemas_tenant import AttendancePunchCreate, AttendancePunchOut
@@ -79,7 +79,8 @@ def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time
 def create_punch(
     data: AttendancePunchCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         punch_data = data.dict()
@@ -111,7 +112,7 @@ def create_punch(
         print(f"Created punch with ID: {punch.id}, Employee ID: {punch.employee_id}")
         
         # Audit log
-        audit_crud(request, "nutryah", {"id": 1}, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), None, punch_data)
+        audit_crud(request, db, user, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), {}, punch_data)
         
         return punch
     
@@ -146,7 +147,8 @@ def update_punch(
     punch_id: int,
     data: AttendancePunchCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     punch = db.query(AttendancePunch).filter(AttendancePunch.id == punch_id).first()
     if not punch:
@@ -184,6 +186,6 @@ def update_punch(
     print(f"Updated punch - Final employee_id: {punch.employee_id}")
     
     # Audit log
-    audit_crud(request, "nutryah", {"id": 1}, "UPDATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch_id), old_values, update_data)
+    audit_crud(request, db, user, "UPDATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch_id), old_values, update_data)
     
     return punch

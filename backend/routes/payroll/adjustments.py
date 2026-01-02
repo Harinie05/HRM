@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from sqlalchemy import text
 
 router = APIRouter(
@@ -11,7 +13,8 @@ router = APIRouter(
 @router.post("/adjustments")
 async def add_adjustment(
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         from utils.audit_logger import audit_crud
@@ -54,7 +57,7 @@ async def add_adjustment(
         })
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payroll_adjustments", None, None, data)
+        audit_crud(request, db, user, "CREATE_PAYROLL_ADJUSTMENT", "payroll_adjustments", "new", {}, data)
         print("Adjustment created successfully")
         return {"message": "Adjustment created successfully"}
     except Exception as e:
@@ -112,7 +115,8 @@ def list_adjustments(
 async def update_adjustment(
     adjustment_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         from utils.audit_logger import audit_crud
@@ -133,7 +137,7 @@ async def update_adjustment(
         })
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "payroll_adjustments", adjustment_id, None, data)
+        audit_crud(request, db, user, "UPDATE_PAYROLL_ADJUSTMENT", "payroll_adjustments", str(adjustment_id), {}, data)
         return {"message": "Adjustment updated successfully"}
     except Exception as e:
         db.rollback()
@@ -143,13 +147,14 @@ async def update_adjustment(
 def delete_adjustment(
     adjustment_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         from utils.audit_logger import audit_crud
         db.execute(text("DELETE FROM payroll_adjustments WHERE id = :id"), {"id": adjustment_id})
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "payroll_adjustments", adjustment_id, None, None)
+        audit_crud(request, db, user, "DELETE_PAYROLL_ADJUSTMENT", "payroll_adjustments", str(adjustment_id), {}, {})
         return {"message": "Adjustment deleted successfully"}
     except Exception as e:
         db.rollback()

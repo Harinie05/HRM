@@ -58,7 +58,7 @@ async def create_training_program(program: dict, request: Request, db: Session =
         db.refresh(db_program)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_TRAINING_PROGRAM", "training_programs", str(db_program.id), {}, program)
+        audit_crud(request, db, user, "CREATE_TRAINING_PROGRAM", "training_programs", str(db_program.id), {}, program)
         
         return {"message": "Training program created successfully", "id": db_program.id}
     except Exception as e:
@@ -67,8 +67,10 @@ async def create_training_program(program: dict, request: Request, db: Session =
         raise HTTPException(status_code=422, detail=f"Error creating training program: {str(e)}")
 
 @router.get("/programs")
-async def get_training_programs(db: Session = Depends(get_tenant_db)):
+async def get_training_programs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_TRAINING_PROGRAMS", "training_programs", "all", {}, {})
+        
         programs = db.query(TrainingProgram).all()
         
         programs_data = []
@@ -129,7 +131,7 @@ async def update_training_program(program_id: int, program: dict, request: Reque
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, program)
+        audit_crud(request, db, user, "UPDATE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, program)
         
         return {"message": "Training program updated successfully"}
     except Exception as e:
@@ -151,7 +153,7 @@ async def delete_training_program(program_id: int, request: Request, db: Session
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, {})
+        audit_crud(request, db, user, "DELETE_TRAINING_PROGRAM", "training_programs", str(program_id), old_values, {})
         
         return {"message": "Training program deleted successfully"}
     except Exception as e:
@@ -160,8 +162,10 @@ async def delete_training_program(program_id: int, request: Request, db: Session
         raise HTTPException(status_code=422, detail=f"Error deleting training program: {str(e)}")
 
 @router.get("/programs/{program_id}")
-async def get_training_program(program_id: int, db: Session = Depends(get_tenant_db)):
+async def get_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_TRAINING_PROGRAM", "training_programs", str(program_id), {}, {"program_id": program_id})
+        
         program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
         if not program:
             raise HTTPException(status_code=404, detail="Training program not found")
@@ -185,7 +189,7 @@ async def get_training_program(program_id: int, db: Session = Depends(get_tenant
         raise HTTPException(status_code=500, detail=f"Error fetching training program: {str(e)}")
 
 @router.post("/programs/{program_id}/apply")
-async def apply_to_program(program_id: int, application: dict, db: Session = Depends(get_tenant_db)):
+async def apply_to_program(program_id: int, application: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Check if program exists
         program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
@@ -208,6 +212,8 @@ async def apply_to_program(program_id: int, application: dict, db: Session = Dep
         db.commit()
         db.refresh(db_application)
         
+        audit_crud(request, db, user, "CREATE_TRAINING_APPLICATION", "training_applications", str(db_application.id), {}, application)
+        
         return {"message": "Application submitted successfully", "id": db_application.id}
     except Exception as e:
         db.rollback()
@@ -215,8 +221,10 @@ async def apply_to_program(program_id: int, application: dict, db: Session = Dep
         raise HTTPException(status_code=422, detail=f"Error submitting application: {str(e)}")
 
 @router.get("/programs/{program_id}/applications")
-async def get_program_applications(program_id: int, db: Session = Depends(get_tenant_db)):
+async def get_program_applications(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_TRAINING_APPLICATIONS", "training_applications", str(program_id), {}, {"program_id": program_id})
+        
         applications = db.query(TrainingApplication).filter(TrainingApplication.program_id == program_id).all()
         
         applications_data = []
@@ -240,8 +248,10 @@ async def get_program_applications(program_id: int, db: Session = Depends(get_te
         raise HTTPException(status_code=500, detail=f"Error fetching applications: {str(e)}")
 
 @router.get("/programs/{program_id}/accepted-applicants")
-async def get_accepted_applicants(program_id: int, db: Session = Depends(get_tenant_db)):
+async def get_accepted_applicants(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_ACCEPTED_APPLICANTS", "training_applications", str(program_id), {}, {"program_id": program_id, "status": "Accepted"})
+        
         applications = db.query(TrainingApplication).filter(
             TrainingApplication.program_id == program_id,
             TrainingApplication.status == 'Accepted'
@@ -279,7 +289,7 @@ async def update_application_status(application_id: int, status_data: dict, requ
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_APPLICATION_STATUS", "training_applications", str(application_id), {"status": old_status}, status_data)
+        audit_crud(request, db, user, "UPDATE_APPLICATION_STATUS", "training_applications", str(application_id), {"status": old_status}, status_data)
         
         return {"message": "Application status updated successfully"}
     except Exception as e:
@@ -288,7 +298,7 @@ async def update_application_status(application_id: int, status_data: dict, requ
         raise HTTPException(status_code=422, detail=f"Error updating application status: {str(e)}")
 
 @router.post("/send-enrollment-emails")
-async def send_enrollment_emails(email_data: dict, db: Session = Depends(get_tenant_db)):
+async def send_enrollment_emails(email_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         from utils.email import send_email
         
@@ -338,8 +348,40 @@ async def send_enrollment_emails(email_data: dict, db: Session = Depends(get_ten
                 if success:
                     sent_count += 1
                     
+                    # Audit successful email
+                    audit_crud(request, db, user, "SEND_TRAINING_EMAIL", "email_communications", str(app.id), {}, {
+                        "recipient": str(app.email),
+                        "subject": subject.replace('[Program Title]', program.title or 'Training Program'),
+                        "email_type": "training_enrollment",
+                        "status": "sent",
+                        "applicant_name": app.name,
+                        "program_title": program.title,
+                        "program_id": program_id
+                    })
+                else:
+                    # Audit failed email
+                    audit_crud(request, db, user, "SEND_TRAINING_EMAIL", "email_communications", str(app.id), {}, {
+                        "recipient": str(app.email),
+                        "subject": subject.replace('[Program Title]', program.title or 'Training Program'),
+                        "email_type": "training_enrollment",
+                        "status": "failed",
+                        "applicant_name": app.name,
+                        "program_title": program.title,
+                        "error": "Email sending failed"
+                    })
+                    
             except Exception as e:
                 print(f"Failed to send email to {app.email}: {str(e)}")
+                # Audit failed email with exception
+                audit_crud(request, db, user, "SEND_TRAINING_EMAIL", "email_communications", str(app.id), {}, {
+                    "recipient": str(app.email),
+                    "subject": subject.replace('[Program Title]', program.title or 'Training Program'),
+                    "email_type": "training_enrollment",
+                    "status": "failed",
+                    "applicant_name": app.name,
+                    "program_title": program.title,
+                    "error": str(e)
+                })
                 continue
         
         return {"message": f"Emails sent successfully to {sent_count} candidates"}

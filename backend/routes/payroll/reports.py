@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import Response
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -7,6 +7,10 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from io import BytesIO
 import datetime
+from sqlalchemy.orm import Session
+from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(
     prefix="/payroll/reports",
@@ -15,7 +19,14 @@ router = APIRouter(
 
 
 @router.get("/summary")
-def payroll_summary():
+def payroll_summary(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    # Audit log
+    audit_crud(request, db, user, "VIEW_PAYROLL_SUMMARY", "payroll_reports", "summary", {}, {})
+    
     return {
         "employee_count": 3,
         "total_payroll": 450000,
@@ -32,8 +43,15 @@ def payroll_summary():
 
 
 @router.get("/form16/pdf")
-def generate_form16_pdf():
+def generate_form16_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate Form 16 PDF certificate"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_FORM16_PDF", "payroll_downloads", "form16", {}, {"document_type": "Form16", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -134,8 +152,15 @@ def generate_form16_pdf():
     buffer.seek(0)
     
 @router.get("/pf-challan/pdf")
-def generate_pf_challan_pdf():
+def generate_pf_challan_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate PF Challan PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_PF_CHALLAN_PDF", "payroll_downloads", "pf_challan", {}, {"document_type": "PF_Challan", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -176,8 +201,15 @@ def generate_pf_challan_pdf():
 
 
 @router.get("/esi-challan/pdf")
-def generate_esi_challan_pdf():
+def generate_esi_challan_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate ESI Challan PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_ESI_CHALLAN_PDF", "payroll_downloads", "esi_challan", {}, {"document_type": "ESI_Challan", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -218,8 +250,15 @@ def generate_esi_challan_pdf():
 
 
 @router.get("/tds/pdf")
-def generate_tds_pdf():
+def generate_tds_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate TDS PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_TDS_PDF", "payroll_downloads", "tds_report", {}, {"document_type": "TDS_Report", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -260,8 +299,15 @@ def generate_tds_pdf():
 
 
 @router.get("/bank-transfer/pdf")
-def generate_bank_transfer_pdf():
+def generate_bank_transfer_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate Bank Transfer PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_BANK_TRANSFER_PDF", "payroll_downloads", "bank_transfer", {}, {"document_type": "Bank_Transfer", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -302,8 +348,15 @@ def generate_bank_transfer_pdf():
 
 
 @router.get("/department-wise/pdf")
-def generate_department_wise_pdf():
+def generate_department_wise_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate Department-wise PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_DEPARTMENT_WISE_PDF", "payroll_downloads", "department_wise", {}, {"document_type": "Department_Wise_Report", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -343,8 +396,15 @@ def generate_department_wise_pdf():
 
 
 @router.get("/grade-wise/pdf")
-def generate_grade_wise_pdf():
+def generate_grade_wise_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate Grade-wise PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_GRADE_WISE_PDF", "payroll_downloads", "grade_wise", {}, {"document_type": "Grade_Wise_Report", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -385,8 +445,15 @@ def generate_grade_wise_pdf():
 
 
 @router.get("/attendance-payroll/pdf")
-def generate_attendance_payroll_pdf():
+def generate_attendance_payroll_pdf(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Generate Attendance vs Payroll PDF report"""
+    # Audit log
+    audit_crud(request, db, user, "DOWNLOAD_ATTENDANCE_PAYROLL_PDF", "payroll_downloads", "attendance_payroll", {}, {"document_type": "Attendance_Payroll_Report", "format": "PDF"})
+    
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()

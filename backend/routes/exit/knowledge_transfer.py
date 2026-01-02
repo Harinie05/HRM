@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Header
+from fastapi import APIRouter, Depends, HTTPException, Query, Header, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from datetime import datetime
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import ExitKnowledgeTransfer, ExitKTItem, EmployeeExit, User
 from schemas.schemas_tenant import KnowledgeTransferCreate, KnowledgeTransferOut, KTItemOut
@@ -24,15 +26,18 @@ KNOWLEDGE_AREAS = [
 ]
 
 @router.get("/knowledge-areas")
-def get_knowledge_areas():
+def get_knowledge_areas(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get predefined knowledge areas for KT"""
+    audit_crud(request, db, user, "VIEW_KNOWLEDGE_AREAS", "knowledge_areas", "all", {}, {})
     return {"knowledge_areas": KNOWLEDGE_AREAS}
 
 @router.post("/", response_model=KnowledgeTransferOut)
 def create_knowledge_transfer(
     data: KnowledgeTransferCreate,
     exit_id: int = Query(...),
-    db: Session = Depends(get_tenant_db)
+    request: Request = None,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Create Knowledge Transfer for an exit"""
     # Verify exit exists
@@ -66,11 +71,15 @@ def create_knowledge_transfer(
     db.commit()
     db.refresh(kt)
     
+    audit_crud(request, db, user, "CREATE_KNOWLEDGE_TRANSFER", "exit_knowledge_transfer", str(kt.id), {}, data.dict())
+    
     return kt
 
 @router.get("/{kt_id}", response_model=KnowledgeTransferOut)
-def get_knowledge_transfer(kt_id: int, db: Session = Depends(get_tenant_db)):
+def get_knowledge_transfer(kt_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get Knowledge Transfer details"""
+    audit_crud(request, db, user, "VIEW_KNOWLEDGE_TRANSFER", "exit_knowledge_transfer", str(kt_id), {}, {"kt_id": kt_id})
+    
     kt = db.query(ExitKnowledgeTransfer).filter(ExitKnowledgeTransfer.id == kt_id).first()
     if not kt:
         raise HTTPException(status_code=404, detail="Knowledge Transfer not found")
@@ -82,8 +91,10 @@ def get_knowledge_transfer(kt_id: int, db: Session = Depends(get_tenant_db)):
     return kt
 
 @router.get("/exit/{exit_id}", response_model=KnowledgeTransferOut)
-def get_kt_by_exit(exit_id: int, db: Session = Depends(get_tenant_db)):
+def get_kt_by_exit(exit_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get Knowledge Transfer by exit ID"""
+    audit_crud(request, db, user, "VIEW_KT_BY_EXIT", "exit_knowledge_transfer", str(exit_id), {}, {"exit_id": exit_id})
+    
     kt = db.query(ExitKnowledgeTransfer).filter(ExitKnowledgeTransfer.exit_id == exit_id).first()
     if not kt:
         raise HTTPException(status_code=404, detail="Knowledge Transfer not found for this exit")
@@ -97,7 +108,9 @@ def get_kt_by_exit(exit_id: int, db: Session = Depends(get_tenant_db)):
 @router.put("/item/{item_id}/acknowledge")
 def acknowledge_kt_item(
     item_id: int,
+    request: Request,
     db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user),
     Authorization: str = Header(None)
 ):
     """Acknowledge a KT item"""
@@ -123,6 +136,7 @@ def acknowledge_kt_item(
         first_user = db.query(User).first()
         employee_id = first_user.id if first_user else 1
     
+    old_status = kt_item.status
     kt_item.status = "Completed"
     kt_item.acknowledged_at = datetime.now()
     kt_item.acknowledged_by = employee_id
@@ -141,13 +155,18 @@ def acknowledge_kt_item(
                 exit_record.kt_status = "Completed"
     
     db.commit()
+    
+    audit_crud(request, db, user, "ACKNOWLEDGE_KT_ITEM", "exit_kt_items", str(item_id), {"status": old_status}, {"status": "Completed"})
+    
     return {"message": "KT Item acknowledged successfully"}
 
 @router.put("/{kt_id}/approve")
 def approve_knowledge_transfer(
     kt_id: int,
     approval_type: str = Query(...),  # "manager" or "hr"
-    db: Session = Depends(get_tenant_db)
+    request: Request = None,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Approve Knowledge Transfer (Manager/HR)"""
     kt = db.query(ExitKnowledgeTransfer).filter(ExitKnowledgeTransfer.id == kt_id).first()
@@ -155,6 +174,8 @@ def approve_knowledge_transfer(
         raise HTTPException(status_code=404, detail="Knowledge Transfer not found")
     
     print(f"DEBUG: Before approval - Manager: {kt.manager_approved}, HR: {kt.hr_approved}")
+    
+    old_values = {"manager_approved": kt.manager_approved, "hr_approved": kt.hr_approved}
     
     if approval_type == "manager":
         kt.manager_approved = True
@@ -189,10 +210,14 @@ def approve_knowledge_transfer(
     
     db.commit()
     print(f"DEBUG: Database committed")
+    
+    audit_crud(request, db, user, "APPROVE_KNOWLEDGE_TRANSFER", "exit_knowledge_transfer", str(kt_id), old_values, {"approval_type": approval_type})
+    
     return {"message": f"{approval_type.title()} approval completed"}
 
 @router.get("/")
-def list_knowledge_transfers(db: Session = Depends(get_tenant_db)):
+def list_knowledge_transfers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """List all Knowledge Transfers"""
+    audit_crud(request, db, user, "VIEW_KNOWLEDGE_TRANSFERS", "exit_knowledge_transfer", "all", {}, {})
     kts = db.query(ExitKnowledgeTransfer).all()
     return kts

@@ -36,7 +36,7 @@ def create_shift(
         db.add(new_shift)
         db.commit()
         db.refresh(new_shift)
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "shifts", new_shift.id, None, new_shift.__dict__)
+        audit_crud(request, db, user, "CREATE_SHIFT", "shifts", str(new_shift.id), {}, {"name": payload.name, "start_time": str(payload.start_time), "end_time": str(payload.end_time)})
         logger.info(f"Shift '{payload.name}' created successfully with ID {new_shift.id}")
         return new_shift
 
@@ -86,7 +86,7 @@ def delete_shift(
         old_values = shift.__dict__.copy()
         db.delete(shift)
         db.commit()
-        audit_crud(request, user.get("tenant_db"), user, "DELETE", "shifts", shift_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_SHIFT", "shifts", str(shift_id), {"name": shift.name, "start_time": str(shift.start_time), "end_time": str(shift.end_time)}, {})
         logger.info(f"Shift {shift_id} deleted successfully")
         return {"message": "Shift deleted successfully"}
 

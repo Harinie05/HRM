@@ -49,7 +49,7 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
         db.add(new_member)
         db.commit()
         db.refresh(new_member)
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_family", new_member.id, None, new_member.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_family", new_member.id, None, new_member.__dict__)
 
         return new_member
         
@@ -96,7 +96,7 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
 
         db.commit()
         db.refresh(member)
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_family", family_id, None, member.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_family", family_id, None, member.__dict__)
 
         return member
         
@@ -124,7 +124,7 @@ def delete_family_member(family_id: int, request: Request, user=Depends(get_curr
         old_values = member.__dict__.copy()
         db.delete(member)
         db.commit()
-        audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_family", family_id, old_values, None)
+        audit_crud(request, db, user, "DELETE", "employee_family", family_id, old_values, None)
 
         return {"message": "Family member removed successfully"}
         

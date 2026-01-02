@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import AttendanceRegularization, AttendancePunch, PayrollRun
 from schemas.schemas_tenant import (
@@ -21,13 +22,14 @@ router = APIRouter(
 def create_regularization(
     data: AttendanceRegularizationCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     req = AttendanceRegularization(**data.dict())
     db.add(req)
     db.commit()
     db.refresh(req)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "attendance_regularizations", req.id, None, req.__dict__)
+    audit_crud(request, db, user, "CREATE_REGULARIZATION", "attendance_regularizations", str(req.id), {}, req.__dict__)
     return req
 
 
@@ -42,7 +44,8 @@ def list_regularizations(
 def approve_regularization(
     reg_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     req = db.query(AttendanceRegularization).filter_by(id=reg_id).first()
     if not req:
@@ -55,7 +58,7 @@ def approve_regularization(
     
     db.commit()
     db.refresh(req)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "attendance_regularizations", reg_id, None, {"status": "Approved"})
+    audit_crud(request, db, user, "APPROVE_REGULARIZATION", "attendance_regularizations", str(reg_id), {"status": "Pending"}, {"status": "Approved"})
     return req
 
 
@@ -63,7 +66,8 @@ def approve_regularization(
 def reject_regularization(
     reg_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     req = db.query(AttendanceRegularization).filter_by(id=reg_id).first()
     if not req:
@@ -72,7 +76,7 @@ def reject_regularization(
     setattr(req, 'status', "Rejected")
     db.commit()
     db.refresh(req)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "attendance_regularizations", reg_id, None, {"status": "Rejected"})
+    audit_crud(request, db, user, "REJECT_REGULARIZATION", "attendance_regularizations", str(reg_id), {"status": "Pending"}, {"status": "Rejected"})
     return req
 
 def sync_attendance_to_payroll(db: Session, employee_id: int, date):
@@ -108,7 +112,8 @@ def sync_attendance_to_payroll(db: Session, employee_id: int, date):
 def sync_payroll_endpoint(
     data: dict,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Manual trigger for attendance-to-payroll sync"""
     try:
@@ -121,7 +126,7 @@ def sync_payroll_endpoint(
         date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
         sync_attendance_to_payroll(db, employee_id, date_obj)
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "payroll_sync", employee_id, None, data)
+        audit_crud(request, db, user, "SYNC_PAYROLL", "payroll_sync", str(employee_id), {}, data)
         
         return {"message": "Payroll sync completed"}
     except Exception as e:

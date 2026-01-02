@@ -207,7 +207,7 @@ def shortlist_candidates_with_interviews(
                 logger.info(f"✅ Added candidate {public_candidate.name} to ATS for job_id {public_candidate.job_id}")
             
             # Send shortlist email
-            send_shortlist_email(
+            email_success = send_shortlist_email(
                 candidate_name=public_candidate.name,
                 candidate_email=public_candidate.email,
                 job_title=job.title,
@@ -216,6 +216,18 @@ def shortlist_candidates_with_interviews(
                 interview_time=schedule.interview_time,
                 round_names=job.round_names or []
             )
+            
+            # Audit email communication
+            audit_crud(request, db, user, "SEND_SHORTLIST_EMAIL", "email_communications", str(public_candidate.id), {}, {
+                "recipient": public_candidate.email,
+                "subject": f"Congratulations! You've been shortlisted for {job.title} position",
+                "email_type": "shortlist_notification",
+                "status": "sent" if email_success else "failed",
+                "candidate_name": public_candidate.name,
+                "job_title": job.title,
+                "interview_date": schedule.interview_date,
+                "interview_time": schedule.interview_time
+            })
             
             shortlisted_count += 1
             
@@ -231,7 +243,14 @@ def shortlist_candidates_with_interviews(
         db.rollback()
         raise HTTPException(status_code=500, detail="Failed to commit shortlisting changes")
     
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "candidate_shortlist", None, None, {"count": shortlisted_count})
+    db.commit()
+    
+    # Audit log with proper parameters
+    try:
+        user = {"email": "system", "user_name": "System"}
+        audit_crud(request, db, user, "SHORTLIST_CANDIDATES", "candidate_shortlist", None, {}, {"count": shortlisted_count})
+    except:
+        pass
     
     logger.info(f"Shortlisted {shortlisted_count} candidates with interviews scheduled")
     

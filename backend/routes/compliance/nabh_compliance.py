@@ -51,7 +51,7 @@ def create_nabh_compliance(data: NABHComplianceRequest, request: Request, db: Se
         db.refresh(record)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), None, data.dict())
+        audit_crud(request, db, user, "CREATE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), {}, data.dict())
         
         return {"message": "NABH compliance record saved successfully"}
         
@@ -60,8 +60,10 @@ def create_nabh_compliance(data: NABHComplianceRequest, request: Request, db: Se
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
-def get_nabh_compliance(db: Session = Depends(get_tenant_db)):
+def get_nabh_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_NABH_COMPLIANCE", "nabh_hrm_compliance", "all", {}, {})
+        
         records = db.query(NABHHRMCompliance).order_by(NABHHRMCompliance.created_at.desc()).all()
         print(f"Found {len(records)} NABH compliance records")
         
@@ -107,7 +109,8 @@ def get_nabh_compliance(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/standards")
-def get_nabh_standards():
+def get_nabh_standards(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    audit_crud(request, db, user, "VIEW_NABH_STANDARDS", "nabh_standards", "all", {}, {})
     return {
         "total_standards": 12,
         "mandatory_requirements": 8,

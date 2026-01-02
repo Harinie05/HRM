@@ -5,6 +5,7 @@ from database import get_tenant_db
 from models.models_tenant import DailyWorkUpdate, User
 from schemas.schemas_tenant import DailyWorkUpdateCreateFixed as DailyWorkUpdateCreate, DailyWorkUpdateUpdate, DailyWorkUpdateOut
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from datetime import date
 from typing import List, Optional
 
@@ -14,7 +15,8 @@ router = APIRouter(prefix="/daily-updates", tags=["Daily Updates"])
 def create_or_update_daily_update(
     update_data: DailyWorkUpdateCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Create or update daily work update for current user"""
     # Get employee_id from the request data
@@ -38,7 +40,7 @@ def create_or_update_daily_update(
         db.commit()
         db.refresh(existing_update)
         
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "daily_work_updates", existing_update.id, None, existing_update.__dict__)
+        audit_crud(request, db, user, "UPDATE_DAILY_WORK_UPDATE", "daily_work_updates", str(existing_update.id), {}, update_data.dict())
         return existing_update
     else:
         # Create new record
@@ -50,7 +52,7 @@ def create_or_update_daily_update(
         db.commit()
         db.refresh(new_update)
         
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "daily_work_updates", new_update.id, None, new_update.__dict__)
+        audit_crud(request, db, user, "CREATE_DAILY_WORK_UPDATE", "daily_work_updates", str(new_update.id), {}, update_data.dict())
         return new_update
 
 @router.get("/my-updates", response_model=List[DailyWorkUpdateOut])
@@ -114,7 +116,8 @@ def update_daily_update(
     update_id: int,
     update_data: DailyWorkUpdateUpdate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Update specific daily update"""
     
@@ -133,5 +136,5 @@ def update_daily_update(
     db.commit()
     db.refresh(update)
     
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "daily_work_updates", update.id, None, update.__dict__)
+    audit_crud(request, db, user, "UPDATE_DAILY_WORK_UPDATE", "daily_work_updates", str(update.id), {}, update_data.dict())
     return update

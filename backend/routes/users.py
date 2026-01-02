@@ -68,7 +68,7 @@ def create_user(
             tdb.refresh(new_user)
             
             # Audit log
-            audit_crud(request, tenant_db, user, "CREATE_USER", "users", str(new_user.id), {}, {"name": payload.name, "email": payload.email})
+            audit_crud(request, tdb, user, "CREATE_USER", "users", str(new_user.id), {}, {"name": payload.name, "email": payload.email})
             
             logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
             return {"detail": "User created", "user_id": new_user.id}
@@ -179,7 +179,7 @@ def update_user(
         tdb.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "UPDATE_USER", "users", str(user_id), old_values, payload.dict(exclude_unset=True))
+        audit_crud(request, tdb, user, "UPDATE_USER", "users", str(user_id), old_values, payload.dict(exclude_unset=True))
         
         logger.info(f"User {user_id} updated successfully")
         return {"detail": "User updated"}
@@ -229,6 +229,6 @@ def delete_user(
         tdb.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "DELETE_USER", "users", str(user_id), old_values, {})
+        audit_crud(request, tdb, user, "DELETE_USER", "users", str(user_id), old_values, {})
 
         return {"detail": "User deleted"}

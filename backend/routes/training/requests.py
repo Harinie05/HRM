@@ -43,7 +43,7 @@ def create_request(data: dict, request: Request, db: Session = Depends(get_tenan
         db.refresh(req)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_TRAINING_REQUEST", "training_requests", str(req.id), None, data)
+        audit_crud(request, db, user, "CREATE_TRAINING_REQUEST", "training_requests", str(req.id), {}, data)
         
         return {"message": "Training request submitted", "id": req.id}
     except Exception as e:
@@ -60,7 +60,7 @@ def update_request(request_id: int, data: TrainingRequestUpdate, request: Reques
     db.commit()
     
     # Audit log
-    audit_crud(request, "tenant", user, "UPDATE_TRAINING_REQUEST", "training_requests", str(request_id), old_values, data.dict(exclude_unset=True))
+    audit_crud(request, db, user, "UPDATE_TRAINING_REQUEST", "training_requests", str(request_id), old_values, data.dict(exclude_unset=True))
     return {"message": "Request updated"}
 
 @router.put("/{request_id}/approve")
@@ -84,7 +84,7 @@ def approve_request(request_id: int, data: dict, request: Request, db: Session =
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "APPROVE_TRAINING_REQUEST", "training_requests", str(request_id), {"status": "Pending"}, {"status": req.status, "action": action})
+        audit_crud(request, db, user, "APPROVE_TRAINING_REQUEST", "training_requests", str(request_id), {"status": "Pending"}, {"status": req.status, "action": action})
         
         return {"message": f"Request {action}d successfully"}
     except HTTPException:
@@ -92,5 +92,6 @@ def approve_request(request_id: int, data: dict, request: Request, db: Session =
     except Exception as e:
         db.rollback()
 @router.get("/", response_model=list[TrainingRequestOut])
-def list_requests(db: Session = Depends(get_tenant_db)):
+def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    audit_crud(request, db, user, "VIEW_TRAINING_REQUESTS", "training_requests", "all", {}, {})
     return db.query(TrainingRequest).all()

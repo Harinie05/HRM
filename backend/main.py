@@ -77,6 +77,7 @@ from routes.leave.leave_applications import router as leave_applications_router
 from routes.leave.leave_balances import router as leave_balances_router
 from routes.leave.leave_reports import router as leave_reports_router
 
+
 # ======================= 🔥 PAYROLL ROUTERS =======================
 from routes.payroll.salary_structure import router as salary_structure_router
 from routes.payroll.statutory_rules import router as statutory_rules_router
@@ -142,15 +143,8 @@ class AuditMiddleware(BaseHTTPMiddleware):
             return response
 
         except Exception as e:
-            log_error(
-                tenant_id=getattr(request.state, "tenant_id", None),
-                error_type="RequestError",
-                error_message=str(e),
-                request_url=str(request.url),
-                request_method=request.method,
-                user_id=getattr(request.state, "user_id", None),
-                ip_address=getattr(request.state, "ip_address", None)
-            )
+            # Simple error logging without tenant_id parameter
+            logger.error(f"Request error: {str(e)}")
             raise
 
 app.add_middleware(AuditMiddleware)
@@ -258,6 +252,7 @@ app.include_router(leave_applications_router, prefix="/api")
 app.include_router(leave_balances_router, prefix="/api")
 app.include_router(leave_reports_router, prefix="/api")
 
+
 # ======================= 🔥 PAYROLL MODULE =======================
 app.include_router(salary_structure_router, prefix="/api")
 app.include_router(statutory_rules_router, prefix="/api")
@@ -301,6 +296,10 @@ app.include_router(nabh_compliance_router, prefix="/api")
 # ======================= 🔥 EXIT MANAGEMENT MODULE =======================
 app.include_router(exit_management_router, prefix="/api")
 app.include_router(knowledge_transfer_router, prefix="/api")
+
+# ======================= 🔥 AUDIT LOGS MODULE =======================
+from routes.audit_logs import router as audit_logs_router
+app.include_router(audit_logs_router, prefix="/api")
 
 logger.info("All routers loaded successfully")
 

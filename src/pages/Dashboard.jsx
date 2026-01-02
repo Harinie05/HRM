@@ -4,7 +4,7 @@ import {
   Users, Building2, UserCheck, TrendingUp, TrendingDown, Calendar, AlertTriangle, 
   CheckCircle, Clock, BarChart3, Target, Award, GraduationCap, DollarSign, 
   FileText, UserPlus, Settings, Shield, Activity, Briefcase, PieChart,
-  ArrowRight, Star, Zap, Globe, Bell
+  ArrowRight, Star, Zap, Globe, Bell, Eye, Database
 } from "lucide-react";
 import api from "../api";
 
@@ -18,6 +18,13 @@ export default function Dashboard() {
   });
   const [licenseAlerts, setLicenseAlerts] = useState([]);
   const [documentAlerts, setDocumentAlerts] = useState([]);
+  const [auditSummary, setAuditSummary] = useState({
+    total_logs: 0,
+    recent_activity: 0,
+    active_users_24h: 0,
+    top_actions: []
+  });
+  const [showAuditLogs, setShowAuditLogs] = useState(false);
 
   // ========================= FETCH LICENSE ALERTS =========================
   const fetchLicenseAlerts = async () => {
@@ -29,7 +36,32 @@ export default function Dashboard() {
     }
   };
 
-  // ========================= FETCH DOCUMENT ALERTS =========================
+  // ========================= FETCH AUDIT SUMMARY =========================
+  const fetchAuditSummary = async () => {
+    try {
+      const res = await api.get("/dashboard/audit-summary");
+      setAuditSummary(res.data || {
+        total_logs: 0,
+        recent_activity: 0,
+        active_users_24h: 0,
+        top_actions: []
+      });
+    } catch (error) {
+      console.error("Failed to load audit summary:", error);
+      setAuditSummary({
+        total_logs: 0,
+        recent_activity: 0,
+        active_users_24h: 0,
+        top_actions: []
+      });
+    }
+  };
+
+  // ========================= VIEW AUDIT LOGS =========================
+  const viewAuditLogs = () => {
+    // Open audit logs in a new window/tab or modal
+    window.open('/audit-logs', '_blank');
+  };
   const fetchDocumentAlerts = async () => {
     try {
       console.log('🔍 Fetching document alerts...');
@@ -110,6 +142,7 @@ export default function Dashboard() {
     fetchDashboardData();
     fetchLicenseAlerts();
     fetchDocumentAlerts();
+    fetchAuditSummary();
   }, []);
 
   // ========================= SYNC LISTENER =========================
@@ -360,7 +393,7 @@ export default function Dashboard() {
         </div>
 
         {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* License & Document Alerts */}
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
@@ -515,6 +548,61 @@ export default function Dashboard() {
                 </div>
                 <p className="text-lg sm:text-xl font-bold text-gray-900">{complianceData.expiringSoon}</p>
               </div>
+            </div>
+          </div>
+
+          {/* Audit Logs Summary */}
+          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">Audit Logs</h3>
+              <Database className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
+                <div>
+                  <p className="text-sm text-gray-700 font-medium">Total Logs</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{auditSummary.total_logs}</p>
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <span className="text-sm">All time</span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
+                  <p className="text-xs text-gray-600">Recent Activity</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-900">{auditSummary.recent_activity}</p>
+                  <p className="text-xs text-gray-500">Last 7 days</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
+                  <p className="text-xs text-gray-600">Active Users</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-900">{auditSummary.active_users_24h}</p>
+                  <p className="text-xs text-gray-500">Last 24 hours</p>
+                </div>
+              </div>
+              
+              {auditSummary.top_actions.length > 0 && (
+                <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
+                  <p className="text-sm text-gray-800 font-medium mb-2">Top Actions</p>
+                  <div className="space-y-1">
+                    {auditSummary.top_actions.slice(0, 3).map((action, index) => (
+                      <div key={index} className="flex justify-between items-center">
+                        <span className="text-xs text-gray-600">{action.action}</span>
+                        <span className="text-xs font-semibold text-gray-900">{action.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <button
+                onClick={viewAuditLogs}
+                className="w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium border border-black shadow-md flex items-center justify-center gap-2"
+              >
+                <Eye className="h-4 w-4" />
+                View All Audit Logs
+              </button>
             </div>
           </div>
         </div>

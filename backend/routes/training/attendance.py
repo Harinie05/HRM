@@ -70,7 +70,7 @@ def mark_attendance(data: dict, request: Request, db: Session = Depends(get_tena
         
         db.commit()
         
-        audit_crud(request, "tenant", user, "CREATE_TRAINING_ATTENDANCE", "training_attendance", str(training_id), {}, data)
+        audit_crud(request, db, user, "CREATE_TRAINING_ATTENDANCE", "training_attendance", str(training_id), {}, data)
         
         return {"message": "Attendance marked successfully"}
     except Exception as e:
@@ -113,7 +113,7 @@ def update_attendance(training_id: int, employee_id: int, data: dict, request: R
         
         db.commit()
         
-        audit_crud(request, "tenant", user, "UPDATE_TRAINING_ATTENDANCE", "training_attendance", str(training_id), {}, data)
+        audit_crud(request, db, user, "UPDATE_TRAINING_ATTENDANCE", "training_attendance", str(training_id), {}, data)
         
         return {"message": "Attendance updated successfully"}
         
@@ -122,12 +122,14 @@ def update_attendance(training_id: int, employee_id: int, data: dict, request: R
         raise HTTPException(status_code=422, detail=f"Error updating attendance: {str(e)}")
 
 @router.get("/{training_id}/{employee_id}")
-def get_attendance_record(training_id: int, employee_id: int, db: Session = Depends(get_tenant_db)):
+def get_attendance_record(training_id: int, employee_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         record = db.query(TrainingAttendance).filter(
             TrainingAttendance.training_id == training_id,
             TrainingAttendance.employee_id == employee_id
         ).first()
+        
+        audit_crud(request, db, user, "VIEW_TRAINING_ATTENDANCE", "training_attendance", f"{training_id}_{employee_id}", {}, {"training_id": training_id, "employee_id": employee_id})
         
         if not record:
             return {"attendance_days": {}, "assessments": {}}
@@ -142,8 +144,10 @@ def get_attendance_record(training_id: int, employee_id: int, db: Session = Depe
         raise HTTPException(status_code=500, detail=f"Error fetching attendance record: {str(e)}")
 
 @router.get("/")
-def list_attendance(db: Session = Depends(get_tenant_db)):
+def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_TRAINING_ATTENDANCE_LIST", "training_attendance", "all", {}, {})
+        
         attendance_records = db.query(TrainingAttendance).all()
         
         result = []

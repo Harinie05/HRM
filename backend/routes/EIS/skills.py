@@ -46,7 +46,7 @@ def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user
         db.add(new_skill)
         db.commit()
         db.refresh(new_skill)
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_skills", new_skill.id, None, new_skill.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_skills", new_skill.id, None, new_skill.__dict__)
 
         # Convert to response format
         return SkillOut(
@@ -105,7 +105,7 @@ def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depend
 
         db.commit()
         db.refresh(sk)
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_skills", skill_id, None, sk.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_skills", skill_id, None, sk.__dict__)
 
         return SkillOut(
             id=getattr(sk, 'id'),
@@ -138,7 +138,7 @@ def delete_skill(skill_id: int, request: Request, user=Depends(get_current_user)
         old_values = sk.__dict__.copy()
         db.delete(sk)
         db.commit()
-        audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_skills", skill_id, old_values, None)
+        audit_crud(request, db, user, "DELETE", "employee_skills", skill_id, old_values, None)
 
         return {"message": "Skill deleted successfully"}
         

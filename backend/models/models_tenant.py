@@ -897,6 +897,22 @@ class LeaveType(MasterBase):
     status = Column(String(50), default="Active")
     created_at = Column(DateTime, default=func.now())
 
+class LeavePolicy(MasterBase):
+    __tablename__ = "leave_policies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(150), nullable=False)
+    annual = Column(Integer, default=0)
+    sick = Column(Integer, default=0)
+    casual = Column(Integer, default=0)
+    leave_allocations = Column(JSON, nullable=True)
+    carry_forward = Column(Boolean, default=False)
+    max_carry = Column(Integer, default=0)
+    encashment = Column(Boolean, default=False)
+    rule = Column(Text, nullable=True)
+    status = Column(String(50), default="Active")
+    created_at = Column(DateTime, default=func.now())
+
 # ------------------------------
 # LEAVE RULES (ACCRUAL / ENCASH)
 # ------------------------------
@@ -1858,3 +1874,39 @@ class EmployeeOriginalDocument(MasterBase):
     remarks = Column(Text, nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
+
+# ============================================================
+# TENANT-SPECIFIC AUDIT LOGGING
+# ============================================================
+class AuditLog(MasterBase):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=True)
+    employee_name = Column(String(150), nullable=True)  # Name of person who made changes
+    employee_code = Column(String(50), nullable=True)   # Employee code from users table
+    employee_id_onboarding = Column(String(50), nullable=True)  # Employee ID from onboarding_candidates
+    action = Column(String(100), nullable=False)
+    table_name = Column(String(100), nullable=False)
+    record_id = Column(String(50), nullable=True)
+    old_values = Column(JSON, nullable=True)
+    new_values = Column(JSON, nullable=True)
+    ip_address = Column(String(45), nullable=True)
+    user_agent = Column(String(500), nullable=True)
+    created_at = Column(DateTime, default=func.now())
+
+class ErrorLog(MasterBase):
+    __tablename__ = "error_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=True)
+    employee_name = Column(String(150), nullable=True)
+    employee_code = Column(String(50), nullable=True)
+    error_type = Column(String(100), nullable=False)
+    error_message = Column(Text, nullable=False)
+    stack_trace = Column(Text, nullable=True)
+    request_url = Column(String(500), nullable=True)
+    request_method = Column(String(10), nullable=True)
+    request_data = Column(JSON, nullable=True)
+    ip_address = Column(String(45), nullable=True)
+    created_at = Column(DateTime, default=func.now())

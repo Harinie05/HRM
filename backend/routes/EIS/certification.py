@@ -158,7 +158,11 @@ async def update_certification(
 # 4. VIEW CERTIFICATION CERTIFICATE
 # -------------------------------------------------------------------------
 @router.get("/certificate/{cert_id}")
-def view_certificate(cert_id: int, token: str = Query(None)):
+def view_certificate(
+    cert_id: int, 
+    token: str = Query(None),
+    request: Request = None
+):
     if not token:
         raise HTTPException(401, "Token required")
     
@@ -176,6 +180,14 @@ def view_certificate(cert_id: int, token: str = Query(None)):
     file_path = cert.certificate_file
     if not os.path.exists(file_path):
         raise HTTPException(404, "File not found")
+    
+    # Audit log for certificate view
+    if request:
+        audit_crud(request, db, user, "VIEW_EMPLOYEE_CERTIFICATE", "document_access", str(cert_id), {}, {
+            "document_type": "certification",
+            "file_name": cert.file_name,
+            "employee_id": cert.employee_id
+        })
     
     # Determine media type for inline viewing
     file_ext = os.path.splitext(cert.file_name)[1].lower() if cert.file_name else ''

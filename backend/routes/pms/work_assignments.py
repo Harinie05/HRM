@@ -160,7 +160,12 @@ async def get_assignments(db: Session = Depends(get_tenant_db)):
 
 # Create work assignment
 @router.post("/work-assignments/assignments")
-async def create_assignment(assignment: dict, db: Session = Depends(get_tenant_db)):
+async def create_assignment(
+    request: Request,
+    assignment: dict, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     try:
         # First create the tables if they don't exist
         db.execute(text("""
@@ -190,6 +195,13 @@ async def create_assignment(assignment: dict, db: Session = Depends(get_tenant_d
             INSERT INTO work_assignments (title, category, weightage_percentage, frequency, review_cycle_id, assigned_employee_id, status, is_active, created_at, updated_at)
             VALUES (:title, :category, :weightage_percentage, :frequency, :review_cycle_id, :assigned_employee_id, 'Active', 1, NOW(), NOW())
         """), assignment)
+        
+        # Get the inserted ID
+        result = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
+        
+        # Log the audit trail
+        audit_crud(request, db, user, "CREATE_WORK_ASSIGNMENT", "work_assignments", str(result), {}, assignment)
+        
         db.commit()
         return {"message": "Assignment created successfully"}
     except Exception as e:

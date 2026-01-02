@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import AttendancePunch
 
@@ -13,9 +15,15 @@ router = APIRouter(
 
 @router.get("/daily")
 def daily_report(
-    db: Session = Depends(get_tenant_db)
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     punches = db.query(AttendancePunch).all()
+    
+    # Audit log
+    audit_crud(request, db, user, "VIEW_DAILY_ATTENDANCE_REPORT", "attendance_reports", "daily", {}, {"total_records": len(punches)})
+    
     return [{
         "id": p.id,
         "employee_id": p.employee_id,
@@ -30,7 +38,9 @@ def daily_report(
 
 @router.get("/monthly")
 def monthly_summary(
-    db: Session = Depends(get_tenant_db)
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     results = (
         db.query(
@@ -40,6 +50,10 @@ def monthly_summary(
         .group_by(AttendancePunch.employee_id)
         .all()
     )
+    
+    # Audit log
+    audit_crud(request, db, user, "VIEW_MONTHLY_ATTENDANCE_REPORT", "attendance_reports", "monthly", {}, {"total_employees": len(results)})
+    
     return [{
         "employee_id": r.employee_id,
         "total_days": r.total_days

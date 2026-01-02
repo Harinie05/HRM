@@ -1,8 +1,10 @@
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from datetime import datetime
 import shutil
 import os
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from database import get_tenant_db
 from models.models_tenant import ImportedCandidate, JobRequisition, ATSCandidate
@@ -14,7 +16,7 @@ router = APIRouter(prefix="/recruitment", tags=["Candidate Import"])
 # 1️⃣ UPLOAD RESUME FILE
 # -------------------------------
 @router.post("/import/upload-resume")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...), request: Request = None, user = Depends(get_current_user)):
     upload_dir = "uploads/resumes/"
     os.makedirs(upload_dir, exist_ok=True)
 
@@ -25,6 +27,11 @@ async def upload_resume(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     resume_url = f"/static/resumes/{filename}"  # adjust if you use CDN
+    
+    if request:
+        from database import get_tenant_db
+        db = next(get_tenant_db())
+        audit_crud(request, db, user, "UPLOAD_RESUME", "resume_uploads", filename, {}, {"filename": filename})
 
     return {"resume_url": resume_url}
 
@@ -33,7 +40,7 @@ async def upload_resume(file: UploadFile = File(...)):
 # 2️⃣ SAVE CANDIDATE IN DATABASE
 # -------------------------------
 @router.post("/import-candidate")
-async def import_candidate(data: dict, db: Session = Depends(get_tenant_db)):
+async def import_candidate(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
 
     job = db.query(JobRequisition).filter(JobRequisition.id == data["job_id"]).first()
     if not job:
@@ -70,6 +77,8 @@ async def import_candidate(data: dict, db: Session = Depends(get_tenant_db)):
 
     db.add(ats_entry)
     db.commit()
+    
+    audit_crud(request, db, user, "IMPORT_CANDIDATE", "imported_candidates", str(new_cand.id), {}, {"name": data["name"], "email": data["email"]})
 
     return {"message": "Candidate imported & added to ATS", "candidate": new_cand.id}
 
@@ -78,6 +87,7 @@ async def import_candidate(data: dict, db: Session = Depends(get_tenant_db)):
 # 3️⃣ LIST IMPORTED CANDIDATES
 # -------------------------------
 @router.get("/import/list")
-def list_imported(db: Session = Depends(get_tenant_db)):
+def list_imported(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    audit_crud(request, db, user, "VIEW_IMPORTED_CANDIDATES", "imported_candidates", "all", {}, {})
     data = db.query(ImportedCandidate).order_by(ImportedCandidate.id.desc()).all()
     return data

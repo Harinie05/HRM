@@ -37,28 +37,44 @@ def create_department(
     db: Session = Depends(database.get_master_db),
     user = Depends(check_permission("add_department"))
 ):
-    logger.info(f"Creating department '{payload.name}' in tenant {tenant_db} by user {user.get('email')}")
+    try:
+        logger.info(f"Creating department '{payload.name}' in tenant {tenant_db} by user {user.get('email')}")
 
-    hospital = get_hospital_by_db(db, tenant_db)
-    engine = database.get_tenant_engine(str(hospital.db_name))
-
-    sql = text("""
-        INSERT INTO departments (name, description)
-        VALUES (:name, :description)
-    """)
-
-    with engine.connect() as conn:
-        result = conn.execute(sql, {
-            "name": payload.name,
-            "description": payload.description
-        })
-        conn.commit()
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
         
-        # Audit log
-        audit_crud(request, tenant_db, user, "CREATE_DEPARTMENT", "departments", "", {}, {"name": payload.name, "description": payload.description})
+        # Check if department already exists
+        with engine.connect() as conn:
+            existing = conn.execute(text("SELECT id, name FROM departments WHERE LOWER(name) = LOWER(:name)"), {"name": payload.name}).fetchone()
+            if existing:
+                logger.warning(f"Department creation failed - '{payload.name}' already exists as '{existing.name}' (ID: {existing.id})")
+                raise HTTPException(400, f"Department '{existing.name}' already exists")
+
+        sql = text("""
+            INSERT INTO departments (name, description)
+            VALUES (:name, :description)
+        """)
+
+        with engine.connect() as conn:
+            result = conn.execute(sql, {
+                "name": payload.name,
+                "description": payload.description
+            })
+            conn.commit()
+            
+            # Get tenant database session for audit logging
+            tdb = Session(bind=engine)
+            with tdb:
+                audit_crud(request, tdb, user, "CREATE_DEPARTMENT", "departments", "", {}, {"name": payload.name, "description": payload.description})
+            
+        logger.info(f"Department '{payload.name}' created successfully")
+        return {"detail": "Department added successfully"}
         
-    logger.info(f"Department '{payload.name}' created successfully")
-    return {"detail": "Department added successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating department: {str(e)}")
+        raise HTTPException(500, f"Error creating department: {str(e)}")
 
 
 # --------------------------------------------------------
@@ -118,7 +134,9 @@ def update_department(
         conn.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "UPDATE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {"name": payload.name, "description": payload.description})
+        tdb = Session(bind=engine)
+        with tdb:
+            audit_crud(request, tdb, user, "UPDATE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {"name": payload.name, "description": payload.description})
 
     return {"detail": "Department updated successfully"}
 
@@ -151,6 +169,8 @@ def delete_department(
         conn.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "DELETE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {})
+        tdb = Session(bind=engine)
+        with tdb:
+            audit_crud(request, tdb, user, "DELETE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {})
 
     return {"detail": "Department deleted successfully"}

@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 import database
 from database import logger
 from models.models_master import Hospital
+from models.models_tenant import AuditLog
 from routes.hospital import get_current_user
+from utils.audit_logger import audit_crud
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -16,6 +18,7 @@ def get_hospital_by_db(db: Session, tenant_db: str):
 
 @router.get("/stats")
 def get_dashboard_stats(
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)
 ):
@@ -26,6 +29,12 @@ def get_dashboard_stats(
         
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
+        
+        # Audit log for dashboard access
+        with engine.connect() as conn:
+            tdb = Session(bind=engine)
+            with tdb:
+                audit_crud(request, tdb, user, "VIEW_DASHBOARD_STATS", "dashboard", "all", {}, {})
         
         with engine.connect() as conn:
             # Get total employees
@@ -53,6 +62,7 @@ def get_dashboard_stats(
 
 @router.get("/id-doc-alerts")
 def get_id_document_alerts(
+    request: Request,
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)
 ):
@@ -61,6 +71,11 @@ def get_id_document_alerts(
         tenant_db = user.get("tenant_db")
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
+        
+        # Audit log for alerts access
+        tdb = Session(bind=engine)
+        with tdb:
+            audit_crud(request, tdb, user, "VIEW_ID_DOC_ALERTS", "dashboard", "all", {}, {})
         
         from datetime import date
         today = date.today()
@@ -130,3 +145,65 @@ def get_id_document_alerts(
     except Exception as e:
         logger.error(f"Error fetching ID document alerts: {str(e)}")
         return {"alerts": []}
+
+@router.get("/audit-summary")
+def get_audit_summary(
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Get audit log summary for dashboard"""
+    try:
+        tenant_db = user.get("tenant_db")
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        
+        # Audit log for audit summary access
+        tdb = Session(bind=engine)
+        with tdb:
+            audit_crud(request, tdb, user, "VIEW_AUDIT_SUMMARY", "dashboard", "all", {}, {})
+        
+        with engine.connect() as conn:
+            # Get total audit logs count
+            total_logs = conn.execute(text("""
+                SELECT COUNT(*) FROM audit_logs
+            """)).scalar() or 0
+            
+            # Get recent activity (last 7 days)
+            recent_activity = conn.execute(text("""
+                SELECT COUNT(*) FROM audit_logs 
+                WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            """)).scalar() or 0
+            
+            # Get top actions
+            top_actions = conn.execute(text("""
+                SELECT action, COUNT(*) as count
+                FROM audit_logs
+                WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                GROUP BY action
+                ORDER BY count DESC
+                LIMIT 5
+            """)).fetchall()
+            
+            # Get active users (users who performed actions in last 24 hours)
+            active_users = conn.execute(text("""
+                SELECT COUNT(DISTINCT employee_name) FROM audit_logs 
+                WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+                AND employee_name IS NOT NULL
+            """)).scalar() or 0
+        
+        return {
+            "total_logs": total_logs,
+            "recent_activity": recent_activity,
+            "active_users_24h": active_users,
+            "top_actions": [{"action": row[0], "count": row[1]} for row in top_actions]
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching audit summary: {str(e)}")
+        return {
+            "total_logs": 0,
+            "recent_activity": 0,
+            "active_users_24h": 0,
+            "top_actions": []
+        }

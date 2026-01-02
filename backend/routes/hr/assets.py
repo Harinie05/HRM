@@ -6,6 +6,7 @@ from datetime import datetime
 
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from models.models_tenant import AssetAssignment
 from utils.email import send_email
 
@@ -40,8 +41,8 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
             serial_number=asset_data.get('serialNumber'),
             condition=asset_data.get('condition'),
             location=asset_data.get('location'),
-            cost=float(asset_data.get('cost')) if asset_data.get('cost') else None,
-            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') else datetime.now().date(),
+            cost=float(asset_data.get('cost')) if asset_data.get('cost') is not None and asset_data.get('cost') != '' else None,
+            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') is not None and asset_data.get('assignedDate') != '' else datetime.now().date(),
             terms=asset_data.get('remarks'),
             status='Pending'
         )
@@ -49,7 +50,7 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
         
         logger.info(f"✅ Pending asset created with ID: {asset_assignment.id}")
         return {"message": "Pending asset created successfully", "data": {
@@ -106,7 +107,7 @@ async def get_pending_assets(db: Session = Depends(get_tenant_db)):
                 "condition": asset.condition,
                 "location": asset.location,
                 "cost": asset.cost,
-                "assignedDate": str(asset.issue_date) if asset.issue_date else None,
+                "assignedDate": str(asset.issue_date) if asset.issue_date is not None else None,
                 "requestDate": str(asset.created_at.date()) if asset.created_at else None,
                 "status": asset.status
             })
@@ -155,7 +156,7 @@ async def approve_asset(approval_data: dict, request: Request, db: Session = Dep
             logger.info(f"❌ Asset rejected: {asset.asset_name} for {employee_name}")
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "asset_assignments", asset_id, None, {"status": asset.status})
+        audit_crud(request, db, {"email": "system"}, "UPDATE", "asset_assignments", asset_id, None, {"status": asset.status})
         
         status = "approved" if approved else "rejected"
         return {"message": f"Asset {status} successfully"}
@@ -195,7 +196,7 @@ async def get_approved_assets(db: Session = Depends(get_tenant_db)):
                 "condition": asset.condition,
                 "location": asset.location,
                 "cost": asset.cost,
-                "assignedDate": str(asset.issue_date) if asset.issue_date else None,
+                "assignedDate": str(asset.issue_date) if asset.issue_date is not None else None,
                 "status": asset.status
             })
         
@@ -209,7 +210,7 @@ async def create_asset(asset_data: dict, request: Request, db: Session = Depends
     """Create asset directly (legacy endpoint)"""
     try:
         asset_assignment = AssetAssignment(
-            employee_id=int(asset_data.get('employeeId')) if asset_data.get('employeeId') else None,
+            employee_id=int(asset_data.get('employeeId')) if asset_data.get('employeeId') is not None and asset_data.get('employeeId') != '' else None,
             asset_type=asset_data.get('assetType'),
             asset_name=asset_data.get('assetName'),
             asset_id=asset_data.get('assetId'),
@@ -218,8 +219,8 @@ async def create_asset(asset_data: dict, request: Request, db: Session = Depends
             serial_number=asset_data.get('serialNumber'),
             condition=asset_data.get('condition'),
             location=asset_data.get('location'),
-            cost=float(asset_data.get('cost')) if asset_data.get('cost') else None,
-            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') else datetime.now().date(),
+            cost=float(asset_data.get('cost')) if asset_data.get('cost') is not None and asset_data.get('cost') != '' else None,
+            issue_date=datetime.strptime(asset_data.get('assignedDate'), '%Y-%m-%d').date() if asset_data.get('assignedDate') is not None and asset_data.get('assignedDate') != '' else datetime.now().date(),
             terms=asset_data.get('remarks'),
             status='Assigned'
         )
@@ -227,7 +228,7 @@ async def create_asset(asset_data: dict, request: Request, db: Session = Depends
         db.add(asset_assignment)
         db.commit()
         db.refresh(asset_assignment)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
+        audit_crud(request, db, {"email": "system"}, "CREATE", "asset_assignments", asset_assignment.id, None, asset_assignment.__dict__)
         
         logger.info(f"✅ Asset created directly: {asset_assignment.asset_name}")
         return {"message": "Asset created successfully", "data": {

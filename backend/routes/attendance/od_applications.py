@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from typing import List
 from datetime import date
 from pydantic import BaseModel
@@ -28,7 +30,7 @@ class ODApplicationOut(BaseModel):
     created_at: str
 
 @router.post("/", response_model=ODApplicationOut)
-def create_od_application(data: ODApplicationCreate, db: Session = Depends(get_tenant_db)):
+def create_od_application(data: ODApplicationCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         query = text("""
             INSERT INTO od_applications (employee_id, od_date, purpose, from_time, to_time, location, status, created_at)
@@ -48,6 +50,9 @@ def create_od_application(data: ODApplicationCreate, db: Session = Depends(get_t
         # Get the created record
         get_query = text("SELECT * FROM od_applications WHERE id = LAST_INSERT_ID()")
         od_app = db.execute(get_query).fetchone()
+        
+        # Audit log
+        audit_crud(request, db, user, "CREATE_OD_APPLICATION", "od_applications", str(od_app.id), {}, data.dict())
         
         return ODApplicationOut(
             id=od_app.id,
@@ -97,7 +102,7 @@ def get_od_applications(employee_id: int = None, status: str = None, db: Session
         raise HTTPException(status_code=500, detail=f"Failed to fetch OD applications: {str(e)}")
 
 @router.patch("/{od_id}/approve")
-def approve_od_application(od_id: int, db: Session = Depends(get_tenant_db)):
+def approve_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         # Get OD application details
         od_query = text("SELECT employee_id, od_date, from_time, to_time FROM od_applications WHERE id = :od_id")
@@ -147,6 +152,10 @@ def approve_od_application(od_id: int, db: Session = Depends(get_tenant_db)):
             })
         
         db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "APPROVE_OD_APPLICATION", "od_applications", str(od_id), {"status": "pending"}, {"status": "approved", "employee_id": od_app.employee_id})
+        
         return {"message": "OD application approved and attendance marked as present"}
         
     except Exception as e:
@@ -154,7 +163,7 @@ def approve_od_application(od_id: int, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Failed to approve OD application: {str(e)}")
 
 @router.patch("/{od_id}/reject")
-def reject_od_application(od_id: int, db: Session = Depends(get_tenant_db)):
+def reject_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
         query = text("UPDATE od_applications SET status = 'rejected' WHERE id = :od_id")
         result = db.execute(query, {'od_id': od_id})
@@ -162,6 +171,9 @@ def reject_od_application(od_id: int, db: Session = Depends(get_tenant_db)):
         
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="OD application not found")
+        
+        # Audit log
+        audit_crud(request, db, user, "REJECT_OD_APPLICATION", "od_applications", str(od_id), {"status": "pending"}, {"status": "rejected"})
             
         return {"message": "OD application rejected successfully"}
     except Exception as e:

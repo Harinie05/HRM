@@ -56,7 +56,7 @@ def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: 
         db.refresh(record)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_LEAVE_COMPLIANCE", "leave_working_compliance", str(record.id), None, data.dict())
+        audit_crud(request, db, user, "CREATE_LEAVE_COMPLIANCE", "leave_working_compliance", str(record.id), {}, data.dict())
         
         return {"message": "Leave compliance record saved to database successfully"}
         
@@ -65,8 +65,10 @@ def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: 
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.get("/")
-def get_leave_compliance(db: Session = Depends(get_tenant_db)):
+def get_leave_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_LEAVE_COMPLIANCE", "leave_working_compliance", "all", {}, {})
+        
         records = db.query(LeaveWorkingCompliance).order_by(LeaveWorkingCompliance.created_at.desc()).all()
         print(f"Found {len(records)} leave compliance records")
         

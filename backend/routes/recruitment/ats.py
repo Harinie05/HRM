@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from typing import List, Optional
 from pydantic import BaseModel
 from models.models_tenant import (
@@ -69,7 +70,6 @@ def apply_candidate(
     phone: Optional[str] = None,
     experience: int = 0,
     resume: UploadFile = File(None),
-    request: Request = None,
     db: Session = Depends(get_tenant_db)
 ):
 
@@ -106,8 +106,9 @@ def apply_candidate(
     db.add(candidate)
     db.commit()
     db.refresh(candidate)
-    if request:
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "candidates", candidate.id, None, candidate.__dict__)
+    
+    # Skip audit logging for public endpoint
+    # No audit needed for public candidate applications
 
     return candidate
 
@@ -157,7 +158,8 @@ def move_stage(
     candidate_id: int,
     req: MoveStageRequest,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
 
     c = db.query(Candidate).filter(Candidate.id == candidate_id).first()
@@ -189,7 +191,9 @@ def move_stage(
 
     db.commit()
     db.refresh(c)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "candidates", candidate_id, None, c.__dict__)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "UPDATE_CANDIDATE_STAGE", "candidates", str(candidate_id), {"stage": history.old_stage}, {"stage": req.new_stage})
 
     return {"message": "Stage updated", "candidate": c}
 
@@ -201,7 +205,8 @@ def move_stage(
 def schedule_interview(
     req: InterviewScheduleCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
 
     candidate = db.query(Candidate).filter(Candidate.id == req.candidate_id).first()
@@ -233,7 +238,9 @@ def schedule_interview(
 
     db.commit()
     db.refresh(schedule)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "interview_schedules", schedule.id, None, schedule.__dict__)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "CREATE_INTERVIEW_SCHEDULE", "interview_schedules", str(schedule.id), {}, {"candidate_id": req.candidate_id, "round_number": req.round_number, "interview_date": str(req.interview_date)})
 
     return schedule
 
@@ -279,13 +286,14 @@ class MoveToNextRoundRequest(BaseModel):
     interview_date: str
     interview_time: str
     action: str  # "selected", "rejected", "next_round"
-    custom_round_name: str = None
+    custom_round_name: Optional[str] = None
 
 @router.post("/move-to-next-round")
 def move_to_next_round(
     req: MoveToNextRoundRequest,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Move candidate to next round and send email notification"""
     try:
@@ -312,7 +320,17 @@ def move_to_next_round(
             setattr(candidate, 'stage', "Rejected")
             
             # Send rejection email
-            send_rejection_email(candidate, job)
+            rejection_success = send_rejection_email(candidate, job)
+            
+            # Audit rejection email
+            audit_crud(request, db, user, "SEND_REJECTION_EMAIL", "email_communications", str(candidate.id), {}, {
+                "recipient": candidate.email,
+                "subject": f"Application Update - {job.title} Position",
+                "email_type": "rejection_notification",
+                "status": "sent" if rejection_success else "failed",
+                "candidate_name": candidate.name,
+                "job_title": job.title
+            })
         elif req.action == "next_round":
             setattr(candidate, 'stage', f"Round {req.next_round} Scheduled")
             setattr(candidate, 'current_round', req.next_round)
@@ -323,7 +341,7 @@ def move_to_next_round(
         
         # Send email notification
         if req.action in ["selected", "next_round"]:
-            send_round_notification_email(
+            email_success = send_round_notification_email(
                 candidate=candidate,
                 job=job,
                 action=req.action,
@@ -331,6 +349,17 @@ def move_to_next_round(
                 interview_date=req.interview_date if req.action == "next_round" else None,
                 interview_time=req.interview_time if req.action == "next_round" else None
             )
+            
+            # Audit email communication
+            audit_crud(request, db, user, "SEND_INTERVIEW_EMAIL", "email_communications", str(candidate.id), {}, {
+                "recipient": candidate.email,
+                "subject": f"Interview notification - {req.action}",
+                "email_type": "interview_notification",
+                "action": req.action,
+                "status": "sent" if email_success else "failed",
+                "candidate_name": candidate.name,
+                "job_title": job.title if job else "Unknown"
+            })
         
         return {"message": f"Candidate {req.action} successfully", "candidate": candidate}
     
@@ -437,10 +466,7 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
                 round_name = f"Round {next_round} - {round_names[str(next_round)]}"
             else:
                 # Check if custom round name is provided for additional rounds
-                if hasattr(req, 'custom_round_name') and req.custom_round_name:
-                    round_name = f"Round {next_round} - {req.custom_round_name}"
-                else:
-                    round_name = f"Round {next_round} - Interview"
+                round_name = f"Round {next_round} - Interview"
             
             subject = f"🎯 You've been selected for {round_name} - {job.title} position"
             html_body = f"""<!DOCTYPE html>
@@ -503,8 +529,11 @@ def send_round_notification_email(candidate, job, action, next_round=None, inter
         else:
             logger.error(f"❌ Failed to send round notification to {candidate.email}")
             
+        return success
+            
     except Exception as e:
         logger.error(f"Failed to send round notification email: {str(e)}")
+        return False
 
 
 # Complete the incomplete function at the end
@@ -562,8 +591,11 @@ def send_rejection_email(candidate, job):
         else:
             logger.error(f"❌ Failed to send rejection email to {candidate.email}")
             
+        return success
+            
     except Exception as e:
         logger.error(f"Failed to send rejection email: {str(e)}")
+        return False
 
 
 def complete_function():

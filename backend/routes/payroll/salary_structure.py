@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from pydantic import BaseModel
 from typing import List, Union
 
@@ -25,13 +26,14 @@ router = APIRouter(
 def create_salary_structure(
     data: SalaryStructureCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     structure = SalaryStructure(**data.dict())
     db.add(structure)
     db.commit()
     db.refresh(structure)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "salary_structures", structure.id, None, structure.__dict__)
+    audit_crud(request, db, user, "CREATE_SALARY_STRUCTURE", "salary_structures", str(structure.id), {}, data.dict())
     return structure
 
 
@@ -80,7 +82,8 @@ def update_salary_structure(
     structure_id: int,
     data: SalaryStructureCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     structure = db.query(SalaryStructure).filter(
         SalaryStructure.id == structure_id
@@ -89,11 +92,12 @@ def update_salary_structure(
         raise HTTPException(status_code=404, detail="Salary structure not found")
     
     try:
+        old_values = {"name": structure.name, "ctc": structure.ctc, "is_active": structure.is_active}
         for key, value in data.dict().items():
             setattr(structure, key, value)
         db.commit()
         db.refresh(structure)
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "salary_structures", structure_id, None, structure.__dict__)
+        audit_crud(request, db, user, "UPDATE_SALARY_STRUCTURE", "salary_structures", str(structure_id), old_values, data.dict())
         return structure
     except Exception as e:
         db.rollback()
@@ -149,7 +153,8 @@ def link_employees_to_structure(
 def delete_salary_structure(
     structure_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     structure = db.query(SalaryStructure).filter(
         SalaryStructure.id == structure_id
@@ -158,10 +163,10 @@ def delete_salary_structure(
         raise HTTPException(status_code=404, detail="Salary structure not found")
 
     try:
-        old_values = structure.__dict__.copy()
+        old_values = {"name": structure.name, "ctc": structure.ctc, "is_active": structure.is_active}
         db.delete(structure)
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "salary_structures", structure_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_SALARY_STRUCTURE", "salary_structures", str(structure_id), old_values, {})
         return {"message": "Salary structure deleted"}
     except Exception as e:
         db.rollback()

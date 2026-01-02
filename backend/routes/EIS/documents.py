@@ -56,7 +56,7 @@ async def upload_document(
     db.commit()
     db.refresh(document)
     if request:
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_documents", document.id, None, document.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_documents", document.id, None, document.__dict__)
 
     return document
 
@@ -88,6 +88,6 @@ def delete_document(document_id: int, request: Request, user=Depends(get_current
     old_values = document.__dict__.copy()
     db.delete(document)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_documents", document_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_documents", document_id, old_values, None)
 
     return {"message": "Document deleted successfully"}

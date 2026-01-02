@@ -54,7 +54,7 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         db.refresh(record)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_LABOUR_REGISTER", "labour_law_registers", str(record.id), {}, data.dict())
+        audit_crud(request, db, user, "CREATE_LABOUR_REGISTER", "labour_law_registers", str(record.id), {}, data.dict())
         
         return {"message": "Labour register added successfully"}
         
@@ -62,8 +62,10 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
-def get_registers(db: Session = Depends(get_tenant_db)):
+def get_registers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_LABOUR_REGISTERS", "labour_law_registers", "all", {}, {})
+        
         records = db.query(LabourLawRegister).order_by(LabourLawRegister.created_at.desc()).limit(50).all()
         
         result = []
@@ -116,7 +118,7 @@ def update_register(record_id: int, data: LabourRegisterRequest, request: Reques
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, data.dict())
+        audit_crud(request, db, user, "UPDATE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, data.dict())
         
         return {"message": "Record updated successfully"}
         
@@ -137,7 +139,7 @@ def delete_register(record_id: int, request: Request, db: Session = Depends(get_
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {})
+        audit_crud(request, db, user, "DELETE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {})
         
         return {"message": "Record deleted successfully"}
         

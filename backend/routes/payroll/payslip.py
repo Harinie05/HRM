@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from datetime import datetime
 from sqlalchemy import func
 
@@ -21,7 +22,8 @@ def generate_payslip(
     employee_id: int,
     month: str,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Generate complete payslip with full workflow"""
     try:
@@ -51,7 +53,7 @@ def generate_payslip(
         
         # Step 7: Generate Payslip
         payslip = create_payslip_data(employee, final_payroll, month)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "payslips", str(employee_id), {}, {"month": month, "net_salary": payslip["net_salary"]})
+        audit_crud(request, db, user, "GENERATE_PAYSLIP", "payslips", str(employee_id), {}, {"month": month, "net_salary": payslip["net_salary"]})
         
         return payslip
         
@@ -267,7 +269,9 @@ def create_payslip_data(employee, payroll: dict, month: str):
 @router.get("/bank-file/{month}")
 def generate_bank_file(
     month: str,
-    db: Session = Depends(get_tenant_db)
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     """Generate bank file for salary transfer"""
     try:

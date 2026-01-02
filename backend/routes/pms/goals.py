@@ -325,7 +325,7 @@ async def create_goal(goal: dict, request: Request, db: Session = Depends(get_te
         db.refresh(new_goal)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_GOAL", "pms_goals", str(new_goal.id), None, goal)
+        audit_crud(request, db, user, "CREATE_GOAL", "pms_goals", str(new_goal.id), {}, goal)
         
         print(f"Goal created successfully with ID: {new_goal.id}")
         return {"message": "Goal created successfully", "id": new_goal.id}
@@ -468,7 +468,7 @@ async def update_goal(goal_id: int, goal: dict, request: Request, db: Session = 
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_GOAL", "pms_goals", str(goal_id), old_values, goal)
+        audit_crud(request, db, user, "UPDATE_GOAL", "pms_goals", str(goal_id), old_values, goal)
         
         return {"message": "Goal updated successfully"}
     except Exception as e:
@@ -491,7 +491,7 @@ async def delete_goal(goal_id: int, request: Request, db: Session = Depends(get_
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": False})
+        audit_crud(request, db, user, "DELETE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": False})
         
         return {"message": "Goal deleted successfully"}
     except Exception as e:
@@ -514,7 +514,7 @@ async def restore_goal(goal_id: int, request: Request, db: Session = Depends(get
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "RESTORE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": True})
+        audit_crud(request, db, user, "RESTORE_GOAL", "pms_goals", str(goal_id), old_values, {"is_active": True})
         
         return {"message": "Goal restored successfully"}
     except Exception as e:

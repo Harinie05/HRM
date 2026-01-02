@@ -38,9 +38,16 @@ def create_role(
 ):
     try:
         logger.info(f"Creating role for tenant {tenant_db} by user {user.get('email')}")
+        logger.info(f"Received payload: {payload}")
         
-        if "name" not in payload or not payload["name"]:
-            raise HTTPException(400, "Role name is required")
+        if not payload:
+            raise HTTPException(400, "Request payload is empty")
+        
+        if "name" not in payload:
+            raise HTTPException(400, "Role name field is missing from payload")
+            
+        if not payload["name"] or not payload["name"].strip():
+            raise HTTPException(400, "Role name cannot be empty")
         
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
@@ -68,13 +75,15 @@ def create_role(
             tdb.commit()
             
             # Audit log
-            audit_crud(request, tenant_db, user, "CREATE_ROLE", "roles", str(new_role.id), {}, {"name": payload["name"], "permissions": permission_names})
+            audit_crud(request, tdb, user, "CREATE_ROLE", "roles", str(new_role.id), {}, {"name": payload["name"], "permissions": permission_names})
             
             logger.info(f"Role '{payload['name']}' created successfully with ID {new_role.id}")
             return {"detail": "Role created", "role_id": new_role.id}
     except HTTPException as he:
+        logger.error(f"HTTP Exception in create_role: {he.detail}")
         raise
     except Exception as e:
+        logger.error(f"Unexpected error in create_role: {str(e)}")
         raise HTTPException(500, f"Error creating role: {str(e)}")
 
 
@@ -150,7 +159,7 @@ def delete_role(
         tdb.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
+        audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
 
         return {"detail": "Role deleted"}
 
@@ -195,7 +204,7 @@ def update_role(
         tdb.commit()
         
         # Audit log
-        audit_crud(request, tenant_db, user, "UPDATE_ROLE", "roles", str(role_id), old_values, {"name": payload["name"], "permissions": payload.get("permissions", [])})
+        audit_crud(request, tdb, user, "UPDATE_ROLE", "roles", str(role_id), old_values, {"name": payload["name"], "permissions": payload.get("permissions", [])})
 
         return {"detail": "Role updated"}
 

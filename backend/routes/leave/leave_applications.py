@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from datetime import datetime, date
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
-from models.models_tenant import LeaveApplication, LeaveType, LeaveBalance, User
+from models.models_tenant import LeaveApplication, LeaveType, LeaveBalance, User, LeavePolicy
 from schemas.schemas_tenant import (
     LeaveApply,
     LeaveApplicationUpdate,
@@ -22,7 +23,8 @@ def apply_leave(
     data: LeaveApply,
     request: Request,
     employee_id: int = Query(...),
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         print(f"DEBUG: Received data: {data.dict()}")
@@ -116,7 +118,7 @@ def apply_leave(
         db.refresh(leave)
         
         # Audit log
-        audit_crud(request, "nutryah", {"id": employee_id}, "CREATE_LEAVE_APPLICATION", "leave_applications", str(leave.id), None, leave_data)
+        audit_crud(request, db, user, "CREATE_LEAVE_APPLICATION", "leave_applications", str(leave.id), {}, leave_data)
         
         return leave
     
@@ -137,7 +139,8 @@ def update_leave_application(
     leave_id: int,
     data: LeaveApplicationUpdate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     leave = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()  # type: ignore
     if not leave:
@@ -153,7 +156,7 @@ def update_leave_application(
     db.refresh(leave)
     
     # Audit log
-    audit_crud(request, "nutryah", {"id": 1}, "UPDATE_LEAVE_APPLICATION", "leave_applications", str(leave_id), old_values, data.dict(exclude_unset=True))
+    audit_crud(request, db, user, "UPDATE_LEAVE_APPLICATION", "leave_applications", str(leave_id), old_values, data.dict(exclude_unset=True))
     
     return leave
 
@@ -164,7 +167,8 @@ def approve_or_reject_leave(
     data: LeaveApproval,
     request: Request,
     approver_id: int = Query(...),
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     leave = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()  # type: ignore
     if not leave:
@@ -187,7 +191,7 @@ def approve_or_reject_leave(
     db.refresh(leave)
     
     # Audit log
-    audit_crud(request, "nutryah", {"id": approver_id}, "APPROVE_LEAVE_APPLICATION", "leave_applications", str(leave_id), {"old_status": old_status}, {"status": data.status, "approver_comment": data.approver_comment})
+    audit_crud(request, db, user, "APPROVE_LEAVE_APPLICATION", "leave_applications", str(leave_id), {"old_status": old_status}, {"status": data.status, "approver_comment": data.approver_comment})
     
     return leave
 
@@ -227,20 +231,20 @@ def initialize_leave_balances(
             name_upper = leave_type.name.upper() if leave_type.name else ""
             
             # Check for Annual Leave
-            if any(x in code_upper for x in ['AL', 'ANNUAL']) or 'ANNUAL' in name_upper:
+            if code_upper in ['AL', 'ANNUAL'] or any(x in name_upper for x in ['ANNUAL']):
                 allocation = leave_policy.annual if hasattr(leave_policy, 'annual') else 0
             # Check for Sick Leave  
-            elif any(x in code_upper for x in ['SL', 'SICK']) or 'SICK' in name_upper:
+            elif code_upper in ['SL', 'SICK'] or any(x in name_upper for x in ['SICK']):
                 allocation = leave_policy.sick if hasattr(leave_policy, 'sick') else 0
             # Check for Casual Leave
-            elif any(x in code_upper for x in ['CL', 'CASUAL']) or 'CASUAL' in name_upper:
+            elif code_upper in ['CL', 'CASUAL'] or any(x in name_upper for x in ['CASUAL']):
                 allocation = leave_policy.casual if hasattr(leave_policy, 'casual') else 0
             # Check dynamic allocations
             elif leave_policy.leave_allocations is not None and code_upper in leave_policy.leave_allocations:
                 allocation = leave_policy.leave_allocations[code_upper]
             else:
-                # Use leave type's own annual limit if no policy match
-                allocation = leave_type.annual_limit or 0
+                # For other leave types (PL, ML, etc.), use leave type's own annual limit or 0
+                allocation = 0
             
             current_year = datetime.now().year
             year_start = date(current_year, 1, 1)

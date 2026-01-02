@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import LeaveRule
 from schemas.schemas_tenant import (
@@ -16,12 +17,17 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=LeaveRuleOut)
-def create_leave_rule(data: LeaveRuleCreate, request: Request, db: Session = Depends(get_tenant_db)):
+def create_leave_rule(
+    data: LeaveRuleCreate, 
+    request: Request, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     rule = LeaveRule(**data.dict())
     db.add(rule)
     db.commit()
     db.refresh(rule)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "leave_rules", rule.id, None, rule.__dict__)
+    audit_crud(request, db, user, "CREATE_LEAVE_RULE", "leave_rules", str(rule.id), {}, data.dict())
     return rule
 
 
@@ -35,16 +41,18 @@ def update_leave_rule(
     rule_id: int,
     data: LeaveRuleUpdate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     rule = db.query(LeaveRule).filter(LeaveRule.id == rule_id).first()
     if not rule:
-        return {"detail": "Rule not found"}
+        raise HTTPException(status_code=404, detail="Rule not found")
 
+    old_values = {"rule_type": rule.rule_type, "value": rule.value}
     for key, value in data.dict(exclude_unset=True).items():
         setattr(rule, key, value)
 
     db.commit()
     db.refresh(rule)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "leave_rules", rule_id, None, rule.__dict__)
+    audit_crud(request, db, user, "UPDATE_LEAVE_RULE", "leave_rules", str(rule_id), old_values, data.dict(exclude_unset=True))
     return rule

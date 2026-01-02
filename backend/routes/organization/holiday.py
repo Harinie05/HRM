@@ -36,7 +36,7 @@ def create_holiday(data: HolidayCreate, request: Request, user = Depends(get_cur
     db.add(holiday)
     db.commit()
     db.refresh(holiday)
-    audit_crud(request, user.get("tenant_db"), user, "CREATE", "holidays", str(holiday.id), {}, holiday.__dict__)
+    audit_crud(request, db, user, "CREATE_HOLIDAY", "holidays", str(holiday.id), {}, {"name": data.name, "date": str(data.date), "type": data.type})
     return holiday
 
 
@@ -61,7 +61,7 @@ def delete_holiday(id: int, request: Request, user = Depends(get_current_user)):
     old_values = holiday.__dict__.copy()
     db.delete(holiday)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "holidays", str(id), old_values, {})
+    audit_crud(request, db, user, "DELETE_HOLIDAY", "holidays", str(id), {"name": holiday.name, "date": str(holiday.date), "type": holiday.type}, {})
     return {"message": "Holiday deleted successfully"}
 
 
@@ -81,5 +81,5 @@ def update_holiday(id: int, data: HolidayCreate, request: Request, user = Depend
 
     db.commit()
     db.refresh(holiday)
-    audit_crud(request, user.get("tenant_db"), user, "UPDATE", "holidays", str(id), old_values, holiday.__dict__)
+    audit_crud(request, db, user, "UPDATE_HOLIDAY", "holidays", str(id), {"name": old_values.get('name'), "date": str(old_values.get('date')), "type": old_values.get('type')}, {"name": data.name, "date": str(data.date), "type": data.type})
     return holiday

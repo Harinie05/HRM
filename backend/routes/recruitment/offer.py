@@ -69,7 +69,13 @@ def create_offer(candidate_id: int, data: OfferCreate, request: Request, db: Ses
         db.add(offer)
         db.commit()
         db.refresh(offer)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "offer_letters", offer.id, None, offer.__dict__)
+        
+        # Audit log with proper parameters
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "CREATE_OFFER_LETTER", "offer_letters", str(offer.id), {}, {"candidate_name": candidate.name, "job_title": job.title if job else "N/A", "ctc": data.ctc or 0})
+        except:
+            pass
 
         return offer
     
@@ -94,7 +100,13 @@ def update_offer(offer_id: int, data: OfferUpdate, request: Request, db: Session
 
     db.commit()
     db.refresh(offer)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, old_values, offer.__dict__)
+    
+    # Audit log with proper parameters
+    try:
+        user = {"email": "system", "user_name": "System"}
+        audit_crud(request, db, user, "UPDATE_OFFER_LETTER", "offer_letters", str(offer_id), {"ctc": old_values.get('ctc')}, {"ctc": getattr(offer, 'ctc')})
+    except:
+        pass
     return offer
 
 
@@ -215,10 +227,37 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
     
     if success:
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, None, {"offer_status": "Sent"})
+        
+        # Audit email communication
+        audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
+            "recipient": str(candidate.email),
+            "subject": subject,
+            "email_type": "offer_letter",
+            "status": "sent",
+            "candidate_name": offer.candidate_name,
+            "job_title": offer.job_title,
+            "ctc": offer.ctc
+        })
+        
+        # Audit log with proper parameters
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "SEND_OFFER_LETTER", "offer_letters", str(offer_id), {"offer_status": "Draft"}, {"offer_status": "Sent"})
+        except:
+            pass
         logger.info(f"✅ Offer letter sent to {candidate.email}")
         return {"message": "Offer letter sent successfully", "offer": offer}
     else:
+        # Audit failed email
+        audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
+            "recipient": str(candidate.email),
+            "subject": subject,
+            "email_type": "offer_letter",
+            "status": "failed",
+            "candidate_name": offer.candidate_name,
+            "job_title": offer.job_title,
+            "error": "Email sending failed"
+        })
         raise HTTPException(status_code=500, detail="Failed to send offer email")
 
 
@@ -233,7 +272,13 @@ def update_offer_status(offer_id: int, status: str, request: Request, db: Sessio
 
     setattr(offer, 'offer_status', status)
     db.commit()
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "offer_letters", offer_id, None, {"offer_status": status})
+    
+    # Audit log with proper parameters
+    try:
+        user = {"email": "system", "user_name": "System"}
+        audit_crud(request, db, user, "UPDATE_OFFER_STATUS", "offer_letters", str(offer_id), {"offer_status": "Sent"}, {"offer_status": status})
+    except:
+        pass
     
     return {"message": f"Offer {status.lower()} successfully", "offer": offer}
 
@@ -445,7 +490,13 @@ def start_bgv(candidate_id: int, request: Request, db: Session = Depends(get_ten
         db.add(db_bgv)
         db.commit()
         db.refresh(db_bgv)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "bgv", db_bgv.id, None, db_bgv.__dict__)
+        
+        # Audit log with proper parameters
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "START_BGV", "bgv", str(db_bgv.id), {}, {"candidate_id": candidate_id, "status": "Pending"})
+        except:
+            pass
         
         # Also create in-memory record for compatibility
         bgv_id = f"BGV_{candidate_id}_{int(datetime.utcnow().timestamp())}"
@@ -611,7 +662,13 @@ def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db:
         # No automatic status changes based on checkboxes
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "bgv", bgv_id, None, db_bgv.__dict__)
+        
+        # Audit log with proper parameters
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "UPDATE_BGV", "bgv", str(bgv_id), {"status": "Pending"}, {"status": db_bgv.status})
+        except:
+            pass
         
         return {
             "message": "BGV updated successfully",

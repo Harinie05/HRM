@@ -36,7 +36,7 @@ async def create_feedback(feedback: dict, request: Request, db: Session = Depend
         db.refresh(db_feedback)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_FEEDBACK", "pms_feedback", str(db_feedback.id), None, feedback)
+        audit_crud(request, db, user, "CREATE_FEEDBACK", "pms_feedback", str(db_feedback.id), {}, feedback)
         
         return {"message": "Feedback created successfully", "id": db_feedback.id}
     except Exception as e:
@@ -120,7 +120,7 @@ async def update_feedback(feedback_id: int, feedback: dict, request: Request, db
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, feedback)
+        audit_crud(request, db, user, "UPDATE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, feedback)
         return {"message": "Feedback updated successfully"}
     except Exception as e:
         db.rollback()
@@ -138,7 +138,7 @@ async def delete_feedback(feedback_id: int, request: Request, db: Session = Depe
         db_feedback.is_active = False
         db.commit()
         
-        audit_crud(request, "tenant", user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": False})
+        audit_crud(request, db, user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": False})
         return {"message": "Feedback deleted successfully"}
     except Exception as e:
         db.rollback()
@@ -155,7 +155,7 @@ async def restore_feedback(feedback_id: int, request: Request, db: Session = Dep
         db_feedback.is_active = True
         db.commit()
         
-        audit_crud(request, "tenant", user, "RESTORE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": True})
+        audit_crud(request, db, user, "RESTORE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": True})
         return {"message": "Feedback restored successfully"}
     except Exception as e:
         db.rollback()

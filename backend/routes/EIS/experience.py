@@ -107,7 +107,7 @@ async def add_experience(
         db.commit()
         db.refresh(new_exp)
         if request:
-            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_experience", new_exp.id, None, new_exp.__dict__)
+            audit_crud(request, db, user, "CREATE", "employee_experience", new_exp.id, None, new_exp.__dict__)
 
         return new_exp
         
@@ -243,7 +243,7 @@ async def update_experience(
     db.commit()
     db.refresh(exp)
     if request:
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_experience", experience_id, None, exp.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_experience", experience_id, None, exp.__dict__)
 
     return exp
 
@@ -252,7 +252,12 @@ async def update_experience(
 # 4. VIEW EXPERIENCE DOCUMENT
 # -------------------------------------------------------------------------
 @router.get("/document/{experience_id}")
-def view_document(experience_id: int, token: Optional[str] = Query(None), Authorization: Optional[str] = None):
+def view_document(
+    experience_id: int, 
+    token: Optional[str] = Query(None), 
+    Authorization: Optional[str] = None,
+    request: Request = None
+):
     # Handle authentication - either from query parameter or header
     user = None
     
@@ -303,6 +308,15 @@ def view_document(experience_id: int, token: Optional[str] = Query(None), Author
     else:
         media_type = 'application/octet-stream'
     
+    # Audit log for experience document view
+    if request:
+        audit_crud(request, db, user, "VIEW_EXPERIENCE_DOCUMENT", "document_access", str(experience_id), {}, {
+            "document_type": "experience",
+            "file_name": getattr(experience, 'file_name', None),
+            "employee_id": experience.employee_id,
+            "company": experience.company
+        })
+    
     return FileResponse(
         path=file_path,
         media_type=media_type,
@@ -323,6 +337,6 @@ def delete_experience(experience_id: int, request: Request, user=Depends(get_cur
     old_values = exp.__dict__.copy()
     db.delete(exp)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_experience", experience_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_experience", experience_id, old_values, None)
 
     return {"message": "Experience record deleted successfully"}

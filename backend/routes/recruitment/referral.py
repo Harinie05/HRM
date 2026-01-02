@@ -27,10 +27,12 @@ class ReferralApplication(BaseModel):
 @router.get("/validate-employee/{employee_code}")
 def validate_employee(
     employee_code: str,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     """Validate if employee exists in organization"""
     try:
+        audit_crud(request, db, {"employee_code": employee_code}, "VALIDATE_EMPLOYEE", "employee_validation", employee_code, {}, {"employee_code": employee_code})
         query = text("""
             SELECT u.id, u.name, u.employee_code, d.name as department, r.name as role
             FROM users u
@@ -101,7 +103,7 @@ def generate_referral_link(
         db.commit()
         
         # Audit log
-        audit_crud(request, "nutryah", {"id": data.referrer_employee_id}, "CREATE_REFERRAL_LINK", "referral_links", referral_code, {}, data.dict())
+        audit_crud(request, db, {"id": data.referrer_employee_id}, "CREATE_REFERRAL_LINK", "referral_links", referral_code, {}, data.dict())
         
         return {
             "referral_code": referral_code,
@@ -116,10 +118,12 @@ def generate_referral_link(
 @router.get("/applications/{job_id}")
 def get_job_applications(
     job_id: int,
+    request: Request,
     db: Session = Depends(get_tenant_db)
 ):
     """Get all applications for a job with referral information"""
     try:
+        audit_crud(request, db, {"job_id": job_id}, "VIEW_JOB_APPLICATIONS", "job_applications", str(job_id), {}, {"job_id": job_id})
         query = text("""
             SELECT 
                 id, job_id, candidate_name, candidate_email, candidate_phone,
@@ -153,9 +157,10 @@ def get_job_applications(
         raise HTTPException(status_code=500, detail=f"Failed to fetch applications: {str(e)}")
 
 @router.get("/dashboard-stats")
-def get_referral_dashboard_stats(db: Session = Depends(get_tenant_db)):
+def get_referral_dashboard_stats(request: Request, db: Session = Depends(get_tenant_db)):
     """Get referral statistics for dashboard"""
     try:
+        audit_crud(request, db, {}, "VIEW_REFERRAL_STATS", "referral_dashboard", "all", {}, {})
         stats_query = text("""
             SELECT 
                 COUNT(DISTINCT rl.id) as total_referral_links,

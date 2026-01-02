@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models.models_tenant import HRCommunication
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 import logging
 from datetime import datetime
 

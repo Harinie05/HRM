@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 from models.models_tenant import AttendanceRule
 from schemas.schemas_tenant import AttendanceRuleCreate, AttendanceRuleOut
@@ -16,13 +17,14 @@ router = APIRouter(
 def create_rule(
     data: AttendanceRuleCreate,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     rule = AttendanceRule(**data.dict())
     db.add(rule)
     db.commit()
     db.refresh(rule)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "attendance_rules", rule.id, None, rule.__dict__)
+    audit_crud(request, db, user, "CREATE_ATTENDANCE_RULE", "attendance_rules", str(rule.id), {}, data.dict())
     return rule
 
 
@@ -37,16 +39,18 @@ def list_rules(
 def toggle_rule(
     rule_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     rule = db.query(AttendanceRule).filter_by(id=rule_id).first()
     if not rule:
         raise HTTPException(status_code=404, detail="Rule not found")
 
+    old_status = getattr(rule, 'is_active')
     setattr(rule, 'is_active', not getattr(rule, 'is_active'))
     db.commit()
     db.refresh(rule)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "attendance_rules", rule_id, None, rule.__dict__)
+    audit_crud(request, db, user, "TOGGLE_ATTENDANCE_RULE", "attendance_rules", str(rule_id), {"is_active": old_status}, {"is_active": getattr(rule, 'is_active')})
     return rule
 
 
@@ -54,15 +58,16 @@ def toggle_rule(
 def delete_rule(
     rule_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     rule = db.query(AttendanceRule).filter_by(id=rule_id).first()
     if not rule:
         raise HTTPException(status_code=404, detail="Rule not found")
     
-    old_values = rule.__dict__.copy()
+    old_values = {"rule_type": rule.rule_type, "value": rule.value, "is_active": getattr(rule, 'is_active')}
     db.delete(rule)
     db.commit()
-    audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "attendance_rules", rule_id, old_values, None)
+    audit_crud(request, db, user, "DELETE_ATTENDANCE_RULE", "attendance_rules", str(rule_id), old_values, {})
     return {"message": "Rule deleted"}
 

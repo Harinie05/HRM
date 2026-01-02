@@ -126,7 +126,7 @@ async def add_medical(
         db.commit()
         db.refresh(med)
         if request:
-            audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_medical", med.id, None, med.__dict__)
+            audit_crud(request, db, user, "CREATE", "employee_medical", med.id, None, med.__dict__)
 
         return {"message": "Medical details added successfully", "id": med.id}
         
@@ -292,7 +292,7 @@ async def update_medical(
         db.commit()
         db.refresh(med)
         if request:
-            audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_medical", employee_id, None, med.__dict__)
+            audit_crud(request, db, user, "UPDATE", "employee_medical", employee_id, None, med.__dict__)
 
         return {"message": "Medical details updated successfully"}
         
@@ -307,7 +307,11 @@ async def update_medical(
 # 4. VIEW MEDICAL CERTIFICATE
 # -------------------------------------------------------------------------
 @router.get("/certificate/{employee_id}")
-def view_certificate(employee_id: int, token: str = Query(None)):
+def view_certificate(
+    employee_id: int, 
+    token: str = Query(None),
+    request: Request = None
+):
     if not token:
         raise HTTPException(401, "Token required")
     
@@ -338,6 +342,15 @@ def view_certificate(employee_id: int, token: str = Query(None)):
     else:
         media_type = 'application/octet-stream'
     
+    # Audit log for medical certificate view
+    if request:
+        audit_crud(request, db, user, "VIEW_MEDICAL_CERTIFICATE", "document_access", str(employee_id), {}, {
+            "document_type": "medical",
+            "file_name": getattr(medical, 'file_name', None),
+            "employee_id": employee_id,
+            "license_type": getattr(medical, 'license_type', None)
+        })
+    
     return FileResponse(
         path=file_path,
         media_type=media_type,
@@ -358,6 +371,6 @@ def delete_medical(employee_id: int, request: Request, user=Depends(get_current_
     old_values = med.__dict__.copy()
     db.delete(med)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_medical", employee_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_medical", employee_id, old_values, None)
 
     return {"message": "Medical record removed successfully"}

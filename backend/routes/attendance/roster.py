@@ -208,7 +208,7 @@ def save_roster_entry(
                 print(f"DEBUG: Created new roster entry: {new_roster.__dict__}")
         
         db.commit()
-        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "employee_roster", request.employee_id, None, request.dict())
+        audit_crud(req, db, user, "SAVE_ROSTER", "employee_roster", str(request.employee_id), {}, request.dict())
         print("DEBUG: Transaction committed successfully")
         return {"message": "Roster saved successfully"}
         
@@ -259,7 +259,7 @@ def copy_last_week_roster(
                 db.add(new_entry)
         
         db.commit()
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_roster", None, None, {"action": "copy_last_week", "start_date": start_date})
+        audit_crud(request, db, user, "COPY_ROSTER", "employee_roster", "0", {}, {"action": "copy_last_week", "start_date": start_date})
         return {"message": "Last week roster copied successfully"}
         
     except Exception as e:
@@ -315,7 +315,7 @@ def save_night_shift_rules(
             db.add(rules)
         
         db.commit()
-        audit_crud(req, user.get("tenant_db"), user, "UPDATE" if rules else "CREATE", "night_shift_rules", getattr(rules, 'id', None), None, request.dict())
+        audit_crud(req, db, user, "UPDATE_NIGHT_SHIFT_RULES", "night_shift_rules", str(getattr(rules, 'id', 0)), {}, request.dict())
         return {"message": "Night shift rules saved successfully"}
         
     except Exception as e:
@@ -373,7 +373,7 @@ def update_night_shift_rule(
         rule.grace_minutes = request.grace_minutes
         
         db.commit()
-        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "night_shift_rules", rule_id, None, request.dict())
+        audit_crud(req, db, user, "UPDATE_NIGHT_SHIFT_RULE", "night_shift_rules", str(rule_id), {}, request.dict())
         return {"message": "Night shift rule updated successfully"}
         
     except HTTPException:
@@ -396,7 +396,7 @@ def delete_night_shift_rule(rule_id: int, request: Request, user=Depends(get_cur
         old_values = rule.__dict__.copy()
         db.delete(rule)
         db.commit()
-        audit_crud(request, user.get("tenant_db"), user, "DELETE", "night_shift_rules", rule_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_NIGHT_SHIFT_RULE", "night_shift_rules", str(rule_id), old_values, {})
         return {"message": "Night shift rule deleted successfully"}
         
     except HTTPException:
@@ -513,7 +513,7 @@ def create_on_call_duty(
         db.commit()
         db.refresh(new_duty)
         
-        audit_crud(req, user.get("tenant_db"), user, "CREATE", "on_call_duties", new_duty.id, None, request.dict())
+        audit_crud(req, db, user, "CREATE_ON_CALL_DUTY", "on_call_duties", str(new_duty.id), {}, request.dict())
         return {"message": "On-call duty created successfully", "duty_id": new_duty.id}
         
     except Exception as e:
@@ -551,7 +551,7 @@ def update_on_call_duty(
         duty.remarks = request.remarks
         
         db.commit()
-        audit_crud(req, user.get("tenant_db"), user, "UPDATE", "on_call_duties", duty_id, None, request.dict())
+        audit_crud(req, db, user, "UPDATE_ON_CALL_DUTY", "on_call_duties", str(duty_id), {}, request.dict())
         return {"message": "On-call duty updated successfully"}
         
     except HTTPException:
@@ -579,7 +579,7 @@ def delete_on_call_duty(
         db.delete(duty)
         db.commit()
         
-        audit_crud(request, user.get("tenant_db"), user, "DELETE", "on_call_duties", duty_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_ON_CALL_DUTY", "on_call_duties", str(duty_id), old_values, {})
         return {"message": "On-call duty deleted successfully"}
         
     except HTTPException:
@@ -617,7 +617,7 @@ def log_emergency_call(
         db.commit()
         db.refresh(new_call)
         
-        audit_crud(req, user.get("tenant_db"), user, "CREATE", "emergency_call_logs", new_call.id, None, request.dict())
+        audit_crud(req, db, user, "LOG_EMERGENCY_CALL", "emergency_call_logs", str(new_call.id), {}, request.dict())
         return {"message": "Emergency call logged successfully", "call_id": new_call.id}
         
     except Exception as e:

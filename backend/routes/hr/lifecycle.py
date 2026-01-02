@@ -271,8 +271,27 @@ def approve_lifecycle_action(approval_data: dict, db: Session = Depends(get_tena
         if employee_email:
             try:
                 email_sent = send_email(employee_email, subject, html_content)
+                # Audit email communication
+                audit_crud(request, db, user, "SEND_LIFECYCLE_EMAIL", "email_communications", str(action.id), {}, {
+                    "recipient": employee_email,
+                    "subject": subject,
+                    "email_type": "lifecycle_notification",
+                    "action_type": action.action_type,
+                    "status": "sent" if email_sent else "failed",
+                    "employee_name": employee_name
+                })
             except Exception as e:
                 logger.error(f"Email error: {e}")
+                # Audit failed email
+                audit_crud(request, db, user, "SEND_LIFECYCLE_EMAIL", "email_communications", str(action.id), {}, {
+                    "recipient": employee_email,
+                    "subject": subject,
+                    "email_type": "lifecycle_notification",
+                    "action_type": action.action_type,
+                    "status": "failed",
+                    "error": str(e),
+                    "employee_name": employee_name
+                })
         
         return {
             "message": f"Action {'approved' if is_approved else 'rejected'} successfully",

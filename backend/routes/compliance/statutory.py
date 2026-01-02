@@ -70,7 +70,7 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         db.refresh(record)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_STATUTORY_CALCULATION", "employee_statutory", str(record.id), None, data.dict())
+        audit_crud(request, db, user, "CREATE_STATUTORY_CALCULATION", "employee_statutory", str(record.id), {}, data.dict())
         
         return {
             "message": "Statutory deductions calculated and saved successfully",
@@ -90,8 +90,10 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
-def get_statutory_calculations(db: Session = Depends(get_tenant_db)):
+def get_statutory_calculations(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     try:
+        audit_crud(request, db, user, "VIEW_STATUTORY_CALCULATIONS", "employee_statutory", "all", {}, {})
+        
         # Get all statutory records
         records = db.query(EmployeeStatutory).order_by(EmployeeStatutory.created_at.desc()).limit(50).all()
         
@@ -154,7 +156,7 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, data.dict())
+        audit_crud(request, db, user, "UPDATE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, data.dict())
         
         return {"message": "Record updated successfully"}
         
@@ -175,7 +177,7 @@ def delete_statutory_calculation(record_id: int, request: Request, db: Session =
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, None)
+        audit_crud(request, db, user, "DELETE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, {})
         
         return {"message": "Record deleted successfully"}
         

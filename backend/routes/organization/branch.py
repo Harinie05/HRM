@@ -58,7 +58,7 @@ def save_branch(
             old_values = {key: getattr(branch, key) for key in data.dict().keys()}
             for key, value in data.dict().items():
                 setattr(branch, key, value)
-            audit_crud(request, tenant, user, "UPDATE_BRANCH", "branches", str(branch.id), old_values, data.dict())
+            audit_crud(request, db, user, "UPDATE_BRANCH", "branches", str(branch.id), old_values, data.dict())
         else:
             # CREATE
             logger.info(f"Creating new branch for tenant {tenant}")
@@ -66,7 +66,7 @@ def save_branch(
             db.add(branch)
             db.commit()
             db.refresh(branch)
-            audit_crud(request, tenant, user, "CREATE_BRANCH", "branches", str(branch.id), {}, data.dict())
+            audit_crud(request, db, user, "CREATE_BRANCH", "branches", str(branch.id), {}, data.dict())
 
         db.commit()
         db.refresh(branch)

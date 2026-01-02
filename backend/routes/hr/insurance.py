@@ -6,6 +6,7 @@ from datetime import datetime, date, timedelta
 
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from models.models_tenant import EmployeeInsurance
 
 logger = logging.getLogger("HRM")
@@ -13,7 +14,12 @@ logger = logging.getLogger("HRM")
 router = APIRouter(prefix="/hr/insurance", tags=["HR Insurance"])
 
 @router.post("/")
-async def create_insurance_policy(policy_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+async def create_insurance_policy(
+    policy_data: dict, 
+    request: Request, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Create a new insurance policy"""
     try:
         # Find user by employee_code
@@ -41,7 +47,7 @@ async def create_insurance_policy(policy_data: dict, request: Request, db: Sessi
         db.add(insurance)
         db.commit()
         db.refresh(insurance)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "employee_insurance", insurance.id, None, insurance.__dict__)
+        audit_crud(request, db, user, "CREATE_INSURANCE_POLICY", "employee_insurance", str(insurance.id), {}, policy_data)
         
         logger.info(f"✅ Insurance policy created with ID: {insurance.id}")
         return {"message": "Insurance policy created successfully", "data": {
@@ -118,7 +124,12 @@ async def get_insurance_policies(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{policy_id}")
-async def delete_insurance_policy(policy_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+async def delete_insurance_policy(
+    policy_id: int, 
+    request: Request, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     """Delete an insurance policy"""
     try:
         policy = db.query(EmployeeInsurance).filter(EmployeeInsurance.id == policy_id).first()
@@ -126,10 +137,10 @@ async def delete_insurance_policy(policy_id: int, request: Request, db: Session 
         if not policy:
             raise HTTPException(status_code=404, detail="Policy not found")
         
-        old_values = policy.__dict__.copy()
+        old_values = {"policy_type": policy.policy_type, "policy_number": policy.policy_number, "status": policy.status}
         db.delete(policy)
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "employee_insurance", policy_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_INSURANCE_POLICY", "employee_insurance", str(policy_id), old_values, {})
         
         return {"message": "Insurance policy deleted successfully"}
     except Exception as e:

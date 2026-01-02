@@ -52,7 +52,7 @@ async def create_appraisal(appraisal: dict, request: Request, db: Session = Depe
         db.refresh(db_appraisal)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_APPRAISAL", "pms_appraisals", str(db_appraisal.id), None, appraisal)
+        audit_crud(request, db, user, "CREATE_APPRAISAL", "pms_appraisals", str(db_appraisal.id), {}, appraisal)
         
         return {"message": "Appraisal created successfully", "id": db_appraisal.id}
     except Exception as e:
@@ -148,7 +148,7 @@ async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request,
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, appraisal)
+        audit_crud(request, db, user, "UPDATE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, appraisal)
         return {"message": "Appraisal updated successfully"}
     except Exception as e:
         db.rollback()
@@ -168,5 +168,5 @@ async def delete_appraisal(appraisal_id: int, request: Request, db: Session = De
     db.commit()
     
     # Audit log
-    audit_crud(request, "tenant", user, "DELETE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, None)
+    audit_crud(request, db, user, "DELETE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, {})
     return {"message": "Appraisal deleted successfully"}

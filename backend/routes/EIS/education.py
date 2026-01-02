@@ -93,7 +93,7 @@ async def add_education(
     db.commit()
     db.refresh(education)
     if request:
-        audit_crud(request, user.get("tenant_db"), user, "CREATE", "employee_education", education.id, None, education.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_education", education.id, None, education.__dict__)
 
     return education
 
@@ -211,7 +211,7 @@ async def update_education(
     db.commit()
     db.refresh(education)
     if request:
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_education", education_id, None, education.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_education", education_id, None, education.__dict__)
 
     return education
 
@@ -219,7 +219,11 @@ async def update_education(
 # 4. VIEW EDUCATION CERTIFICATE
 # -------------------------------------------------------------------------
 @router.get("/certificate/{education_id}")
-def view_certificate(education_id: int, token: str = Query(None)):
+def view_certificate(
+    education_id: int, 
+    token: str = Query(None),
+    request: Request = None
+):
     if not token:
         raise HTTPException(401, "Token required")
     
@@ -237,6 +241,15 @@ def view_certificate(education_id: int, token: str = Query(None)):
     file_path = getattr(education, 'certificate', None)
     if not file_path or not os.path.exists(file_path):
         raise HTTPException(404, "File not found")
+    
+    # Audit log for education certificate view
+    if request:
+        audit_crud(request, db, user, "VIEW_EDUCATION_CERTIFICATE", "document_access", str(education_id), {}, {
+            "document_type": "education",
+            "file_name": getattr(education, 'file_name', None),
+            "employee_id": education.employee_id,
+            "degree": education.degree
+        })
     
     # Determine media type for inline viewing
     file_name = getattr(education, 'file_name', None) or ''
@@ -292,6 +305,6 @@ def delete_education(education_id: int, request: Request, user=Depends(get_curre
     old_values = education.__dict__.copy()
     db.delete(education)
     db.commit()
-    audit_crud(request, user.get("tenant_db"), user, "DELETE", "employee_education", education_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_education", education_id, old_values, None)
 
     return {"message": "Education record deleted successfully"}

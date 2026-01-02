@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.orm import Session
-from database import get_master_db
+from database import get_tenant_db
+from utils.audit_logger import audit_crud
 from models.models_tenant import Candidate, BGV
 from schemas.schemas_tenant import BGVCreate, BGVUpdate, BGVOut
+from routes.hospital import get_current_user
 from datetime import datetime
 import os, uuid
 
@@ -16,7 +18,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # 1) CREATE BGV ENTRY
 # -----------------------------------------------------------
 @router.post("/{candidate_id}/create", response_model=BGVOut)
-def create_bgv(candidate_id: int, data: BGVCreate, db: Session = Depends(get_master_db)):
+def create_bgv(candidate_id: int, data: BGVCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
 
     candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
     if not candidate:
@@ -33,6 +35,10 @@ def create_bgv(candidate_id: int, data: BGVCreate, db: Session = Depends(get_mas
     db.add(bgv)
     db.commit()
     db.refresh(bgv)
+    
+    # Audit log
+    audit_crud(request, db, user, "CREATE_BGV", "bgv", str(bgv.id), {}, {"candidate_id": candidate_id, "verification_type": data.verification_type, "status": data.status})
+    
     return bgv
 
 
@@ -43,7 +49,9 @@ def create_bgv(candidate_id: int, data: BGVCreate, db: Session = Depends(get_mas
 def upload_bgv_document(
     candidate_id: int,
     file: UploadFile = File(...),
-    db: Session = Depends(get_master_db)
+    request: Request = None,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
 
     bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
@@ -67,6 +75,11 @@ def upload_bgv_document(
 
     db.commit()
     db.refresh(bgv)
+    
+    # Audit log
+    if request:
+        audit_crud(request, db, user, "UPLOAD_BGV_DOCUMENT", "bgv", str(bgv.id), {}, {"candidate_id": candidate_id, "document": filename})
+    
     return bgv
 
 
@@ -74,11 +87,12 @@ def upload_bgv_document(
 # 3) UPDATE BGV STATUS
 # -----------------------------------------------------------
 @router.put("/{candidate_id}/update", response_model=BGVOut)
-def update_bgv(candidate_id: int, data: BGVUpdate, db: Session = Depends(get_master_db)):
+def update_bgv(candidate_id: int, data: BGVUpdate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
     if not bgv:
         raise HTTPException(status_code=404, detail="BGV record not found")
 
+    old_status = bgv.status
     for key, value in data.dict(exclude_unset=True).items():
         setattr(bgv, key, value)
 
@@ -86,4 +100,8 @@ def update_bgv(candidate_id: int, data: BGVUpdate, db: Session = Depends(get_mas
 
     db.commit()
     db.refresh(bgv)
+    
+    # Audit log
+    audit_crud(request, db, user, "UPDATE_BGV", "bgv", str(bgv.id), {"status": old_status}, {"status": bgv.status})
+    
     return bgv

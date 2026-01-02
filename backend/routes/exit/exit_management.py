@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from routes.hospital import get_current_user
@@ -6,6 +6,7 @@ from models.models_tenant import User, EmployeeExit
 from schemas.schemas_tenant import ExitCreate, ExitOut
 from typing import List
 from datetime import datetime, date
+from utils.audit_logger import audit_crud
 
 router = APIRouter(prefix="/exit", tags=["Exit Management"])
 
@@ -14,13 +15,14 @@ router = APIRouter(prefix="/exit", tags=["Exit Management"])
 # =====================================================
 
 @router.get("/resignations", response_model=List[ExitOut])
-def get_all_resignations(user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
+def get_all_resignations(request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Get all resignation requests"""
+    audit_crud(request, db, user, "VIEW_RESIGNATIONS", "employee_exits", "all", {}, {})
     exits = db.query(EmployeeExit).join(User, EmployeeExit.employee_id == User.id).all()
     return exits
 
 @router.post("/resignation/apply", response_model=ExitOut)
-def apply_resignation(data: ExitCreate, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
+def apply_resignation(data: ExitCreate, request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Employee applies for resignation"""
     # Check if employee already has an active resignation
     existing = db.query(EmployeeExit).filter(
@@ -37,32 +39,43 @@ def apply_resignation(data: ExitCreate, user=Depends(get_current_user), db: Sess
     db.add(exit_record)
     db.commit()
     db.refresh(exit_record)
+    
+    audit_crud(request, db, user, "CREATE_RESIGNATION", "employee_exits", str(exit_record.id), {}, data.dict())
+    
     return exit_record
 
 @router.put("/resignation/{exit_id}/approve")
-def approve_resignation(exit_id: int, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
+def approve_resignation(exit_id: int, request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """HR approves resignation request"""
     exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == exit_id).first()
     if not exit_record:
         raise HTTPException(404, "Resignation request not found")
     
+    old_status = exit_record.overall_status
     exit_record.overall_status = "Approved"
     exit_record.notice_served = True
     
     db.commit()
+    
+    audit_crud(request, db, user, "APPROVE_RESIGNATION", "employee_exits", str(exit_id), {"status": old_status}, {"status": "Approved"})
+    
     return {"message": "Resignation approved successfully"}
 
 @router.put("/resignation/{exit_id}/reject")
-def reject_resignation(exit_id: int, reason: str, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
+def reject_resignation(exit_id: int, reason: str, request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """HR rejects resignation request"""
     exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == exit_id).first()
     if not exit_record:
         raise HTTPException(404, "Resignation request not found")
     
+    old_status = exit_record.overall_status
     exit_record.overall_status = "Rejected"
     exit_record.notes = f"Rejected: {reason}"
     
     db.commit()
+    
+    audit_crud(request, db, user, "REJECT_RESIGNATION", "employee_exits", str(exit_id), {"status": old_status}, {"status": "Rejected", "reason": reason})
+    
     return {"message": "Resignation rejected"}
 
 # =====================================================
@@ -80,8 +93,10 @@ def reject_resignation(exit_id: int, reason: str, user=Depends(get_current_user)
 # =====================================================
 
 @router.get("/dashboard")
-def exit_dashboard(user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
+def exit_dashboard(request: Request, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Get exit management dashboard data"""
+    audit_crud(request, db, user, "VIEW_EXIT_DASHBOARD", "exit_dashboard", "all", {}, {})
+    
     total_exits = db.query(EmployeeExit).count()
     pending_approvals = db.query(EmployeeExit).filter(EmployeeExit.overall_status == "Initiated").count()
     in_progress = db.query(EmployeeExit).filter(EmployeeExit.overall_status == "In Progress").count()

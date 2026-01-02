@@ -37,7 +37,7 @@ async def create_review(review: dict, request: Request, db: Session = Depends(ge
         db.refresh(db_review)
         
         # Audit log
-        audit_crud(request, "tenant", user, "CREATE_REVIEW", "pms_reviews", str(db_review.id), None, review)
+        audit_crud(request, db, user, "CREATE_REVIEW", "pms_reviews", str(db_review.id), {}, review)
         
         return {"message": "Review created successfully", "id": db_review.id}
     except Exception as e:
@@ -110,7 +110,7 @@ async def update_review(review_id: int, review: dict, request: Request, db: Sess
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "UPDATE_REVIEW", "pms_reviews", str(review_id), old_values, review)
+        audit_crud(request, db, user, "UPDATE_REVIEW", "pms_reviews", str(review_id), old_values, review)
         return {"message": "Review updated successfully"}
     except Exception as e:
         db.rollback()
@@ -132,7 +132,7 @@ async def delete_review(review_id: int, request: Request, db: Session = Depends(
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": False})
+        audit_crud(request, db, user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": False})
         return {"message": "Review deleted successfully"}
     except Exception as e:
         db.rollback()
@@ -154,7 +154,7 @@ async def restore_review(review_id: int, request: Request, db: Session = Depends
         db.commit()
         
         # Audit log
-        audit_crud(request, "tenant", user, "RESTORE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": True})
+        audit_crud(request, db, user, "RESTORE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": True})
         return {"message": "Review restored successfully"}
     except Exception as e:
         db.rollback()

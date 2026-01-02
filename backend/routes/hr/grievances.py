@@ -9,6 +9,7 @@ from schemas.schemas_tenant import (
 )
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 import logging
 from datetime import datetime
 
@@ -21,7 +22,8 @@ router = APIRouter(prefix="/hr/grievances", tags=["HR Grievances"])
 def create_grievance(
     payload: dict,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         from models.models_tenant import User
@@ -60,7 +62,7 @@ def create_grievance(
         db.add(ticket)
         db.commit()
         db.refresh(ticket)
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "grievance_tickets", ticket.id, None, ticket.__dict__)
+        audit_crud(request, db, user, "CREATE_GRIEVANCE", "grievance_tickets", str(ticket.id), {}, payload)
         logger.info(f"✅ Grievance created: {ticket.ticket_code}")
         return {"message": "Grievance created", "ticket_code": ticket.ticket_code}
     except HTTPException:
@@ -93,7 +95,7 @@ def list_grievances(db: Session = Depends(get_tenant_db)):
                 "priority": grievance.priority,
                 "status": grievance.status,
                 "assigned_to": grievance.assigned_to,
-                "created_at": grievance.created_at.isoformat() if grievance.created_at else None
+                "created_at": grievance.created_at.isoformat() if grievance.created_at is not None else None
             })
         
         return result
@@ -128,8 +130,8 @@ def get_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
             "assigned_to": grievance.assigned_to,
             "attachment": grievance.attachment,
             "resolution_notes": grievance.resolution_notes,
-            "created_at": grievance.created_at.isoformat() if grievance.created_at else None,
-            "resolved_at": grievance.resolved_at.isoformat() if grievance.resolved_at else None
+            "created_at": grievance.created_at.isoformat() if grievance.created_at is not None else None,
+            "resolved_at": grievance.resolved_at.isoformat() if grievance.resolved_at is not None else None
         }
     except HTTPException:
         raise
@@ -139,7 +141,12 @@ def get_grievance(ticket_id: int, db: Session = Depends(get_tenant_db)):
 
 
 @router.delete("/{ticket_id}", response_model=dict)
-def delete_grievance(ticket_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+def delete_grievance(
+    ticket_id: int, 
+    request: Request, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     try:
         grievance = db.query(GrievanceTicket).filter(
             GrievanceTicket.id == ticket_id
@@ -148,10 +155,10 @@ def delete_grievance(ticket_id: int, request: Request, db: Session = Depends(get
         if not grievance:
             raise HTTPException(status_code=404, detail="Grievance not found")
         
-        old_values = grievance.__dict__.copy()
+        old_values = {"ticket_code": grievance.ticket_code, "status": grievance.status}
         db.delete(grievance)
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "grievance_tickets", ticket_id, old_values, None)
+        audit_crud(request, db, user, "DELETE_GRIEVANCE", "grievance_tickets", str(ticket_id), old_values, {})
         
         logger.info(f"✅ Grievance {grievance.ticket_code} deleted")
         return {"message": "Grievance deleted successfully"}
@@ -164,7 +171,12 @@ def delete_grievance(ticket_id: int, request: Request, db: Session = Depends(get
 
 
 @router.post("/{ticket_id}/complete", response_model=dict)
-def complete_investigation(ticket_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+def complete_investigation(
+    ticket_id: int, 
+    request: Request, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
     try:
         grievance = db.query(GrievanceTicket).filter(
             GrievanceTicket.id == ticket_id
@@ -173,11 +185,11 @@ def complete_investigation(ticket_id: int, request: Request, db: Session = Depen
         if not grievance:
             raise HTTPException(status_code=404, detail="Grievance not found")
         
-        grievance.status = "Resolved"
-        grievance.resolved_at = datetime.now()
+        setattr(grievance, 'status', "Resolved")
+        setattr(grievance, 'resolved_at', datetime.now())
         
         db.commit()
-        audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "grievance_tickets", ticket_id, None, {"status": "Resolved"})
+        audit_crud(request, db, user, "COMPLETE_GRIEVANCE_INVESTIGATION", "grievance_tickets", str(ticket_id), {"old_status": "Under Investigation"}, {"status": "Resolved"})
         
         logger.info(f"✅ Grievance {grievance.ticket_code} marked as Investigation Completed")
         return {"message": "Investigation marked as completed"}

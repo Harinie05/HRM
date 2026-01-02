@@ -1,22 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_tenant_db
-from models.models_tenant import EmployeeProbation, User
-from schemas.schemas_tenant import (
-    EmployeeProbationCreate, 
-    EmployeeProbationOut, 
-    EmployeeProbationUpdate
-)
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
-
-router = APIRouter()
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
-from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from models.models_tenant import EmployeeProbation, User
 from schemas.schemas_tenant import (
     EmployeeProbationCreate, 
@@ -52,11 +39,15 @@ def get_all_probations(db: Session = Depends(get_tenant_db)):
     return result
 
 @router.post("/probations", response_model=EmployeeProbationOut)
-def create_probation(probation: EmployeeProbationCreate, db: Session = Depends(get_tenant_db)):
+def create_probation(probation: EmployeeProbationCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_probation = EmployeeProbation(**probation.model_dump())
     db.add(db_probation)
     db.commit()
     db.refresh(db_probation)
+    
+    # Audit log
+    audit_crud(request, db, user, "CREATE_PROBATION", "employee_probation", str(db_probation.id), {}, {"employee_id": probation.employee_id, "probation_status": "In Progress"})
+    
     return db_probation
 
 @router.put("/probations/{probation_id}", response_model=EmployeeProbationOut)
@@ -73,48 +64,70 @@ def update_probation(probation_id: int, probation: EmployeeProbationUpdate, db: 
     return db_probation
 
 @router.post("/probations/{probation_id}/confirm")
-def confirm_probation(probation_id: int, db: Session = Depends(get_tenant_db)):
+def confirm_probation(probation_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_probation = db.query(EmployeeProbation).filter(EmployeeProbation.id == probation_id).first()
     if not db_probation:
         raise HTTPException(status_code=404, detail="Probation not found")
     
+    old_status = db_probation.probation_status
     db_probation.probation_status = "Confirmed"
     db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "CONFIRM_PROBATION", "employee_probation", str(probation_id), {"status": old_status}, {"status": "Confirmed"})
+    
     return {"message": "Probation confirmed successfully"}
 
 @router.post("/probations/{probation_id}/extend")
-def extend_probation(probation_id: int, request: dict, db: Session = Depends(get_tenant_db)):
+def extend_probation(probation_id: int, request: Request, months_data: dict, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_probation = db.query(EmployeeProbation).filter(EmployeeProbation.id == probation_id).first()
     if not db_probation:
         raise HTTPException(status_code=404, detail="Probation not found")
     
-    months = request.get("months", 3)
+    months = months_data.get("months", 3)
+    old_status = db_probation.probation_status
+    old_end_date = db_probation.extension_end_date
+    
     db_probation.probation_status = "Extended"
     db_probation.extension_end_date = db_probation.probation_end_date + relativedelta(months=months)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "EXTEND_PROBATION", "employee_probation", str(probation_id), {"status": old_status, "end_date": str(old_end_date)}, {"status": "Extended", "months": months, "new_end_date": str(db_probation.extension_end_date)})
+    
     return {"message": f"Probation extended by {months} months"}
 
 @router.post("/probations/{probation_id}/end")
-def end_probation(probation_id: int, remarks: str = "", db: Session = Depends(get_tenant_db)):
+def end_probation(probation_id: int, request: Request, remarks: str = "", db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_probation = db.query(EmployeeProbation).filter(EmployeeProbation.id == probation_id).first()
     if not db_probation:
         raise HTTPException(status_code=404, detail="Probation not found")
     
+    old_status = db_probation.probation_status
     db_probation.probation_status = "Confirmed"
     if remarks:
         db_probation.remarks = remarks
     db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "END_PROBATION", "employee_probation", str(probation_id), {"status": old_status}, {"status": "Confirmed", "remarks": remarks})
+    
     return {"message": "Probation ended and employee confirmed"}
 
 @router.post("/probations/{probation_id}/terminate")
-def terminate_probation(probation_id: int, remarks: str, db: Session = Depends(get_tenant_db)):
+def terminate_probation(probation_id: int, request: Request, remarks: str, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_probation = db.query(EmployeeProbation).filter(EmployeeProbation.id == probation_id).first()
     if not db_probation:
         raise HTTPException(status_code=404, detail="Probation not found")
     
+    old_status = db_probation.probation_status
     db_probation.probation_status = "Terminated"
     db_probation.remarks = remarks
     db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "TERMINATE_PROBATION", "employee_probation", str(probation_id), {"status": old_status}, {"status": "Terminated", "remarks": remarks})
+    
     return {"message": "Probation terminated"}
 
 @router.get("/probations/pending-actions")

@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from typing import Optional, Union
 import io
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from models.models_tenant import Candidate, OnboardingCandidate, DocumentUpload, Employee, BGV
 from schemas.schemas_tenant import OnboardingCreate, OnboardingResponse, DocumentUploadResponse
 from datetime import datetime
@@ -20,7 +22,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # 1) CREATE ONBOARDING ENTRY
 # -----------------------------------------------------------
 @router.post("/create/{candidate_id}", response_model=OnboardingResponse)
-def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Request, db: Session = Depends(get_tenant_db)):
+def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
 
     candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
     if not candidate:
@@ -72,13 +74,36 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Reques
     db.add(record)
     db.commit()
     db.refresh(record)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "onboarding_candidates", record.id, None, record.__dict__)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "CREATE_ONBOARDING", "onboarding_candidates", str(record.id), {}, {"candidate_name": candidate.name, "job_title": data.job_title, "employee_id": employee_id})
     
     # Send joining formalities email
     try:
-        send_joining_email(candidate.email, candidate.name, data.job_title, data.joining_date, employee_id)
+        email_success = send_joining_email(str(candidate.email), str(candidate.name), data.job_title, data.joining_date, employee_id)
+        
+        # Audit email communication
+        audit_crud(request, db, user, "SEND_JOINING_EMAIL", "email_communications", str(record.id), {}, {
+            "recipient": candidate.email,
+            "subject": "Welcome to the Team - Joining Formalities",
+            "email_type": "joining_formalities",
+            "status": "sent" if email_success else "failed",
+            "candidate_name": candidate.name,
+            "job_title": data.job_title,
+            "employee_id": employee_id
+        })
     except Exception as e:
         print(f"Failed to send email: {e}")
+        # Audit failed email
+        audit_crud(request, db, user, "SEND_JOINING_EMAIL", "email_communications", str(record.id), {}, {
+            "recipient": candidate.email,
+            "subject": "Welcome to the Team - Joining Formalities",
+            "email_type": "joining_formalities",
+            "status": "failed",
+            "error": str(e),
+            "candidate_name": candidate.name,
+            "job_title": data.job_title
+        })
     
     # Update offer status to indicate onboarding has started
     try:
@@ -111,13 +136,13 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Reques
             db.add(bgv_record)
         else:
             # Update existing BGV record
-            bgv_record.status = "Cleared"
-            bgv_record.identity_verified = True
-            bgv_record.address_verified = True
-            bgv_record.employment_verified = True
-            bgv_record.education_verified = True
-            bgv_record.criminal_verified = True
-            bgv_record.remarks = "BGV completed successfully. Candidate cleared for onboarding."
+            setattr(bgv_record, 'status', "Cleared")
+            setattr(bgv_record, 'identity_verified', True)
+            setattr(bgv_record, 'address_verified', True)
+            setattr(bgv_record, 'employment_verified', True)
+            setattr(bgv_record, 'education_verified', True)
+            setattr(bgv_record, 'criminal_verified', True)
+            setattr(bgv_record, 'remarks', "BGV completed successfully. Candidate cleared for onboarding.")
         
         db.commit()
         print(f"BGV marked as completed for candidate {candidate_id}")
@@ -139,11 +164,12 @@ def create_onboarding(candidate_id: int, data: OnboardingCreate, request: Reques
 # -----------------------------------------------------------
 @router.post("/upload-document")
 def upload_document_form(
+    request: Request,
     candidate_id: int = Form(...),
     document_type: str = Form(...),
     file: UploadFile = File(...),
-    request: Request = None,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     filename = f"{uuid.uuid4()}_{file.filename}"
     path = os.path.join(UPLOAD_DIR, filename)
@@ -163,17 +189,22 @@ def upload_document_form(
     db.add(doc)
     db.commit()
     db.refresh(doc)
-    if request:
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "document_uploads", doc.id, None, doc.__dict__)
+    
+    # Audit log with proper parameters
+    try:
+        audit_crud(request, db, user, "UPLOAD_DOCUMENT", "document_uploads", str(doc.id), {}, {"document_type": document_type, "file_name": filename, "candidate_id": candidate_id})
+    except:
+        pass
     return {"message": "Document uploaded successfully", "document_id": doc.id}
 
 @router.post("/{candidate_id}/upload-document", response_model=DocumentUploadResponse)
 def upload_document(
     candidate_id: int,
     document_type: str,
+    request: Request,
     file: UploadFile = File(...),
-    request: Request = None,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
 
     filename = f"{uuid.uuid4()}_{file.filename}"
@@ -194,8 +225,12 @@ def upload_document(
     db.add(doc)
     db.commit()
     db.refresh(doc)
-    if request:
-        audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "document_uploads", doc.id, None, doc.__dict__)
+    
+    # Audit log with proper parameters
+    try:
+        audit_crud(request, db, user, "UPLOAD_DOCUMENT", "document_uploads", str(doc.id), {}, {"document_type": document_type, "file_name": filename, "candidate_id": candidate_id})
+    except:
+        pass
     return doc
 
 
@@ -264,7 +299,7 @@ def view_document(doc_id: int, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=404, detail="Document not found")
     
     try:
-        with open(doc.file_path, "rb") as f:
+        with open(str(doc.file_path), "rb") as f:
             file_content = f.read()
         
         # Determine content type based on file extension
@@ -292,15 +327,15 @@ def view_document(doc_id: int, db: Session = Depends(get_tenant_db)):
 # 9) DELETE DOCUMENT
 # -----------------------------------------------------------
 @router.delete("/document/{doc_id}")
-def delete_document(doc_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+def delete_document(doc_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     doc = db.query(DocumentUpload).filter(DocumentUpload.id == doc_id).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
     
     # Delete file from disk
     try:
-        if os.path.exists(doc.file_path):
-            os.remove(doc.file_path)
+        if os.path.exists(str(doc.file_path)):
+            os.remove(str(doc.file_path))
     except Exception as e:
         print(f"Failed to delete file from disk: {e}")
     
@@ -308,7 +343,9 @@ def delete_document(doc_id: int, request: Request, db: Session = Depends(get_ten
     old_values = doc.__dict__.copy()
     db.delete(doc)
     db.commit()
-    audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "document_uploads", doc_id, old_values, None)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "DELETE_DOCUMENT", "document_uploads", str(doc_id), {"document_type": old_values.get('document_type'), "file_name": old_values.get('file_name')}, {})
     
     return {"message": "Document deleted successfully"}
 
@@ -333,9 +370,7 @@ def get_managers(db: Session = Depends(get_tenant_db)):
 
 @router.get("/grades")
 def get_grades(db: Session = Depends(get_tenant_db)):
-    from models.models_tenant import Grade
-    grades = db.query(Grade).all()
-    return [{"code": g.code, "name": g.name} for g in grades] if grades else [
+    return [
         {"code": "G1", "name": "Grade 1"},
         {"code": "G2", "name": "Grade 2"},
         {"code": "G3", "name": "Grade 3"}

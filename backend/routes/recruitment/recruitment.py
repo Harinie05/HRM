@@ -9,6 +9,7 @@ from schemas.schemas_tenant import (
     JobReqUpdate,
     JobReqOut
 )
+from routes.hospital import get_current_user
 import uuid
 import os
 from datetime import datetime
@@ -39,7 +40,7 @@ async def debug_create_job(request: Request):
     return {"received": body.decode()}
 
 @router.post("/create", response_model=JobReqOut)
-def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_tenant_db)):
+def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     logger.info(f"Creating job with data: {req.dict()}")
 
     job = JobRequisition(
@@ -68,7 +69,9 @@ def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_te
     db.add(job)
     db.commit()
     db.refresh(job)
-    audit_crud(request, "tenant_db", {"email": "system"}, "CREATE", "job_requisitions", job.id, None, job.__dict__)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "CREATE_JOB_REQUISITION", "job_requisitions", str(job.id), {}, {"title": req.title, "department": req.department})
 
     # After commit → we now have job.id
     setattr(job, 'apply_url', generate_apply_url(getattr(job, 'id')))
@@ -81,7 +84,7 @@ def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_te
 # UPDATE JOB REQUISITION
 # ----------------------------------------------------------
 @router.put("/update/{job_id}", response_model=JobReqOut)
-def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db)):
+def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -96,7 +99,9 @@ def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = D
 
     db.commit()
     db.refresh(job)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "job_requisitions", job_id, old_values, job.__dict__)
+    
+    # Audit log with proper parameters
+    audit_crud(request, db, user, "UPDATE_JOB_REQUISITION", "job_requisitions", str(job_id), {"title": old_values.get('title')}, {"title": getattr(job, 'title')})
 
     return job
 
@@ -108,7 +113,7 @@ def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = D
 # UPLOAD ATTACHMENT (JD PDF or Job Description File)
 # ----------------------------------------------------------
 @router.post("/upload-attachment/{job_id}")
-def upload_attachment(job_id: int, file: UploadFile = File(...), db: Session = Depends(get_tenant_db)):
+def upload_attachment(job_id: int, file: UploadFile = File(...), request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
 
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
@@ -123,6 +128,9 @@ def upload_attachment(job_id: int, file: UploadFile = File(...), db: Session = D
 
     setattr(job, 'attachment', filename)
     db.commit()
+    
+    if request:
+        audit_crud(request, db, user, "UPLOAD_JOB_ATTACHMENT", "job_requisitions", str(job_id), {}, {"filename": filename})
 
     return {"message": "Attachment uploaded", "filename": filename}
 
@@ -131,7 +139,8 @@ def upload_attachment(job_id: int, file: UploadFile = File(...), db: Session = D
 # GET ALL JOBS
 # ----------------------------------------------------------
 @router.get("/list", response_model=List[JobReqOut])
-def list_jobs(db: Session = Depends(get_tenant_db)):
+def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    audit_crud(request, db, user, "VIEW_JOB_REQUISITIONS", "job_requisitions", "all", {}, {})
     # Force refresh from database
     db.commit()  # Ensure any pending changes are committed
     jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
@@ -142,7 +151,8 @@ def list_jobs(db: Session = Depends(get_tenant_db)):
 # GET SINGLE JOB DETAILS
 # ----------------------------------------------------------
 @router.get("/view/{job_id}", response_model=JobReqOut)
-def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
+def view_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    audit_crud(request, db, user, "VIEW_JOB_REQUISITION", "job_requisitions", str(job_id), {}, {"job_id": job_id})
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -157,18 +167,20 @@ def view_job(job_id: int, db: Session = Depends(get_tenant_db)):
 # UPDATE JOB STATUS (ACTIVATE/DEACTIVATE)
 # ----------------------------------------------------------
 @router.put("/update-status/{job_id}")
-def update_job_status(job_id: int, status_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+def update_job_status(job_id: int, status_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    old_values = job.__dict__.copy()
+    old_status = job.status
     setattr(job, 'status', status_data.get('status', 'Active'))
     setattr(job, 'updated_at', datetime.now())
     
     db.commit()
     db.refresh(job)
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE_STATUS", "job_requisitions", job_id, old_values, job.__dict__)
+    
+    # Audit log with actual user
+    audit_crud(request, db, user, "UPDATE_JOB_STATUS", "job_requisitions", str(job_id), {"status": old_status}, {"status": job.status})
     
     return {"message": f"Job status updated to {status_data.get('status')}", "status": job.status}
 
@@ -176,7 +188,7 @@ def update_job_status(job_id: int, status_data: dict, request: Request, db: Sess
 # DELETE JOB REQUISITION
 # ----------------------------------------------------------
 @router.delete("/delete/{job_id}")
-def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -184,7 +196,9 @@ def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_d
     old_values = job.__dict__.copy()
     db.delete(job)
     db.commit()
-    audit_crud(request, "tenant_db", {"email": "system"}, "DELETE", "job_requisitions", job_id, old_values, None)
+    
+    # Audit log with proper parameters
+    audit_crud(request, db, user, "DELETE_JOB_REQUISITION", "job_requisitions", str(job_id), {"title": old_values.get('title')}, {})
     
     return {"message": "Job requisition deleted successfully"}
 
@@ -193,7 +207,7 @@ def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_d
 # GENERATE PUBLIC APPLY LINK
 # ----------------------------------------------------------
 @router.post("/generate-link/{job_id}")
-def generate_job_link(job_id: int, db: Session = Depends(get_tenant_db)):
+def generate_job_link(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -204,6 +218,8 @@ def generate_job_link(job_id: int, db: Session = Depends(get_tenant_db)):
     # Update job with apply URL
     setattr(job, 'apply_url', apply_url)
     db.commit()
+    
+    audit_crud(request, db, user, "GENERATE_JOB_LINK", "job_requisitions", str(job_id), {}, {"apply_url": apply_url})
     
     return {"url": apply_url, "message": "Apply link generated successfully"}
 

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -8,6 +8,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from datetime import datetime
 from database import get_tenant_db
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from models.models_tenant import VisitingConsultant, ConsultantAvailability, ConsultantPayout
 from schemas.schemas_tenant import (
     VisitingConsultantCreate, VisitingConsultantOut,
@@ -32,34 +34,48 @@ def get_consultants(db: Session = Depends(get_tenant_db)):
     return db.query(VisitingConsultant).all()
 
 @router.post("/consultants", response_model=VisitingConsultantOut)
-def create_consultant(consultant: VisitingConsultantCreate, db: Session = Depends(get_tenant_db)):
+def create_consultant(consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_consultant = VisitingConsultant(**consultant.model_dump())
     db.add(db_consultant)
     db.commit()
     db.refresh(db_consultant)
+    
+    # Audit log
+    audit_crud(request, db, user, "CREATE_CONSULTANT", "visiting_consultants", str(db_consultant.id), {}, {"name": consultant.name, "specialization": consultant.specialization})
+    
     return db_consultant
 
 @router.put("/consultants/{consultant_id}", response_model=VisitingConsultantOut)
-def update_consultant(consultant_id: int, consultant: VisitingConsultantCreate, db: Session = Depends(get_tenant_db)):
+def update_consultant(consultant_id: int, consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == consultant_id).first()
     if not db_consultant:
         raise HTTPException(status_code=404, detail="Consultant not found")
     
+    old_name = db_consultant.name
     for key, value in consultant.model_dump().items():
         setattr(db_consultant, key, value)
     
     db.commit()
     db.refresh(db_consultant)
+    
+    # Audit log
+    audit_crud(request, db, user, "UPDATE_CONSULTANT", "visiting_consultants", str(consultant_id), {"name": old_name}, {"name": consultant.name})
+    
     return db_consultant
 
 @router.delete("/consultants/{consultant_id}")
-def delete_consultant(consultant_id: int, db: Session = Depends(get_tenant_db)):
+def delete_consultant(consultant_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == consultant_id).first()
     if not db_consultant:
         raise HTTPException(status_code=404, detail="Consultant not found")
     
+    consultant_name = db_consultant.name
     db.delete(db_consultant)
     db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "DELETE_CONSULTANT", "visiting_consultants", str(consultant_id), {"name": consultant_name}, {})
+    
     return {"message": "Consultant deleted successfully"}
 
 # =====================================================
@@ -101,11 +117,15 @@ def get_all_payouts(db: Session = Depends(get_tenant_db)):
     return db.query(ConsultantPayout).all()
 
 @router.post("/consultants/payouts", response_model=ConsultantPayoutOut)
-def create_payout_general(payout: ConsultantPayoutCreate, db: Session = Depends(get_tenant_db)):
+def create_payout_general(payout: ConsultantPayoutCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_payout = ConsultantPayout(**payout.model_dump())
     db.add(db_payout)
     db.commit()
     db.refresh(db_payout)
+    
+    # Audit log
+    audit_crud(request, db, user, "CREATE_CONSULTANT_PAYOUT", "consultant_payouts", str(db_payout.id), {}, {"consultant_id": payout.consultant_id, "consultant_share": payout.consultant_share})
+    
     return db_payout
 
 @router.get("/consultants/{consultant_id}/payouts", response_model=List[ConsultantPayoutOut])
@@ -123,14 +143,19 @@ def create_payout(consultant_id: int, payout: ConsultantPayoutCreate, db: Sessio
     return db_payout
 
 @router.put("/consultants/payouts/{payout_id}/process", response_model=ConsultantPayoutOut)
-def process_payroll(payout_id: int, db: Session = Depends(get_tenant_db)):
+def process_payroll(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
     if not db_payout:
         raise HTTPException(status_code=404, detail="Payout not found")
     
-    db_payout.payout_status = "Processed"
+    old_status = str(db_payout.payout_status)
+    setattr(db_payout, 'payout_status', "Processed")
     db.commit()
     db.refresh(db_payout)
+    
+    # Audit log
+    audit_crud(request, db, user, "PROCESS_CONSULTANT_PAYOUT", "consultant_payouts", str(payout_id), {"status": old_status}, {"status": "Processed"})
+    
     return db_payout
 
 @router.put("/payouts/{payout_id}", response_model=ConsultantPayoutOut)
@@ -223,7 +248,7 @@ def generate_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
     )
 
 @router.post("/consultants/payouts/{payout_id}/email-payslip")
-def email_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
+def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     # Get payout and consultant details
     db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
     if not db_payout:
@@ -234,7 +259,8 @@ def email_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=404, detail="Consultant not found")
     
     # Check if consultant has email
-    if not db_consultant.contact_details or not db_consultant.contact_details.get('email'):
+    contact_details = getattr(db_consultant, 'contact_details', None)
+    if not contact_details or not contact_details.get('email'):
         raise HTTPException(status_code=400, detail="Consultant email not found")
     
     try:
@@ -308,11 +334,19 @@ def email_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
         
         # Send email using existing utility
         success = send_email(
-            to_email=db_consultant.contact_details['email'],
+            to_email=contact_details['email'],
             subject=subject,
             html_content=html_content,
             attachments=attachments
         )
+        
+        # Audit log for email sending
+        audit_crud(request, db, user, "SEND_CONSULTANT_PAYSLIP_EMAIL", "email_communications", str(payout_id), {}, {
+            "recipient": contact_details['email'],
+            "consultant_name": db_consultant.name,
+            "subject": subject,
+            "status": "Success" if success else "Failed"
+        })
         
         if success:
             return {"message": "Payslip sent successfully"}
@@ -320,4 +354,12 @@ def email_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
             raise HTTPException(status_code=500, detail="Failed to send email")
         
     except Exception as e:
+        # Audit log for failed email
+        contact_details = getattr(db_consultant, 'contact_details', None)
+        audit_crud(request, db, user, "SEND_CONSULTANT_PAYSLIP_EMAIL", "email_communications", str(payout_id), {}, {
+            "recipient": contact_details.get('email', 'Unknown') if contact_details else 'Unknown',
+            "consultant_name": db_consultant.name,
+            "status": "Failed",
+            "error": str(e)
+        })
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")

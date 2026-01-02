@@ -1,14 +1,18 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
 from typing import Dict, Any
+from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 
 router = APIRouter(prefix="/recruitment-dashboard", tags=["Recruitment Dashboard"])
 
 @router.get("/metrics")
-def get_recruitment_metrics(db: Session = Depends(get_tenant_db)) -> Dict[str, Any]:
+def get_recruitment_metrics(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)) -> Dict[str, Any]:
     """Get comprehensive recruitment and onboarding metrics"""
+    
+    audit_crud(request, db, user, "VIEW_RECRUITMENT_METRICS", "recruitment_dashboard", "all", {}, {})
     
     try:
         # Job Requisition metrics - check if table exists first
@@ -131,8 +135,10 @@ def get_recruitment_metrics(db: Session = Depends(get_tenant_db)) -> Dict[str, A
         }
 
 @router.get("/job-status-breakdown")
-def get_job_status_breakdown(db: Session = Depends(get_tenant_db)):
+def get_job_status_breakdown(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get detailed breakdown of job statuses"""
+    
+    audit_crud(request, db, user, "VIEW_JOB_STATUS_BREAKDOWN", "recruitment_dashboard", "all", {}, {})
     
     try:
         query = text("""
@@ -168,8 +174,10 @@ def get_job_status_breakdown(db: Session = Depends(get_tenant_db)):
         }
 
 @router.get("/candidate-pipeline")
-def get_candidate_pipeline(db: Session = Depends(get_tenant_db)):
+def get_candidate_pipeline(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get candidate pipeline by stage"""
+    
+    audit_crud(request, db, user, "VIEW_CANDIDATE_PIPELINE", "recruitment_dashboard", "all", {}, {})
     
     try:
         query = text("""
@@ -203,8 +211,10 @@ def get_candidate_pipeline(db: Session = Depends(get_tenant_db)):
         }
 
 @router.get("/debug-data")
-def debug_database_data(db: Session = Depends(get_tenant_db)):
+def debug_database_data(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Debug endpoint to check actual data in database"""
+    
+    audit_crud(request, db, user, "VIEW_DEBUG_DATA", "recruitment_dashboard", "all", {}, {})
     
     try:
         # Check job_requisition table

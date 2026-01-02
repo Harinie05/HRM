@@ -4,6 +4,7 @@ from database import get_tenant_db
 from sqlalchemy import text
 from utils.email import send_email
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user
 from datetime import datetime
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -181,7 +182,7 @@ async def create_payroll_run_internal(data: dict, request: Request, db: Session)
             })
             
             # Audit log for update
-            audit_crud(request, "nutryah", {"id": 1}, "UPDATE_PAYROLL_RUN", "payroll_runs", str(existing.id), {}, data)
+            audit_crud(request, db, {"id": 1}, "UPDATE_PAYROLL_RUN", "payroll_runs", str(existing.id), {}, data)
             
             message = "Payroll run updated successfully"
         else:
@@ -230,7 +231,7 @@ async def create_payroll_run_internal(data: dict, request: Request, db: Session)
             record_id = str(inserted_record.id) if inserted_record else "unknown"
             
             # Audit log for create
-            audit_crud(request, "nutryah", {"id": 1}, "CREATE_PAYROLL_RUN", "payroll_runs", record_id, {}, data)
+            audit_crud(request, db, {"id": 1}, "CREATE_PAYROLL_RUN", "payroll_runs", record_id, {}, data)
             
             message = "Payroll run created successfully"
         
@@ -525,7 +526,8 @@ def export_payroll_runs(
 async def send_payslip_email(
     payroll_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
 ):
     try:
         data = await request.json()
@@ -660,6 +662,17 @@ async def send_payslip_email(
         # Send email
         subject = f"Payslip for {result.month} {result.year} - {result.employee_name}"
         success = send_email(employee_email, subject, html_content)
+        
+        # Audit email communication
+        audit_crud(request, db, user, "SEND_PAYSLIP_EMAIL", "email_communications", str(payroll_id), {}, {
+            "recipient": employee_email,
+            "subject": subject,
+            "email_type": "payslip",
+            "status": "sent" if success else "failed",
+            "employee_name": result.employee_name,
+            "month": result.month,
+            "year": result.year
+        })
         
         if success:
             return {"message": f"Payslip sent successfully to {employee_email}"}
