@@ -1214,6 +1214,48 @@ class EmployeeInsurance(MasterBase):
 # =====================================================
 
 # -------------------------
+# WORK ASSIGNMENTS MODELS
+# -------------------------
+class WorkAssignment(MasterBase):
+    __tablename__ = "work_assignments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    category = Column(String(50), nullable=False)  # Operational/Admin/Compliance/Support
+    weightage_percentage = Column(Float, nullable=False)
+    frequency = Column(String(50), nullable=False)  # Daily/Weekly/Monthly/One-time
+    review_cycle_id = Column(Integer, ForeignKey("pms_review_cycles.id"), nullable=False)
+    assigned_employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(50), default="Active")  # Active/Inactive
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+class AssignmentStatus(MasterBase):
+    __tablename__ = "assignment_status"
+
+    id = Column(Integer, primary_key=True, index=True)
+    assignment_id = Column(Integer, ForeignKey("work_assignments.id"), nullable=False)
+    employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    completion_status = Column(String(50), default="Not Completed")  # Completed/Partially Completed/Not Completed
+    completion_percentage = Column(Float, default=0.0)
+    remarks = Column(Text, nullable=True)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    is_active = Column(Boolean, default=True)
+
+class PMSReviewCycle(MasterBase):
+    __tablename__ = "pms_review_cycles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    cycle_name = Column(String(100), nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    status = Column(String(50), default="Open")  # Open/Closed
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+# -------------------------
 # 1. GOALS & KPI / KRA
 # -------------------------
 class PMSGoal(MasterBase):

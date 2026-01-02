@@ -50,7 +50,6 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       const currentEmail = localStorage.getItem('email');
       
       if (!token || !tenant || !currentEmail) {
-        // Use localStorage as fallback
         setUserInfo({
           id: localStorage.getItem('user_id'),
           name: localStorage.getItem('user_name') || currentEmail?.split('@')[0] || 'User',
@@ -61,34 +60,48 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         return;
       }
 
-      // Fetch from users table
       const response = await api.get(`/hospitals/users/${tenant}/list`);
       const users = response.data.users || [];
-      
       const currentUser = users.find(user => user.email === currentEmail);
-      let employeeCode = currentUser?.employee_code;
       
-      // If no employee_code in users table, check onboarded table
-      if (!employeeCode && currentUser?.id) {
-        try {
-          const onboardedResponse = await api.get(`/recruitment/onboarding/list`);
-          const onboardedUser = onboardedResponse.data.find(emp => emp.candidate_email === currentEmail);
-          employeeCode = onboardedUser?.employee_id;
-        } catch (err) {
-          console.log('No onboarded record found');
-        }
-      }
+      let displayId = null;
       
       if (currentUser) {
+        // Check employee_code from users table first
+        if (currentUser.employee_code) {
+          displayId = currentUser.employee_code;
+          console.log('Found employee_code:', displayId);
+        } else {
+          // Check employee_id from onboarding table
+          try {
+            const onboardedResponse = await api.get(`/recruitment/onboarding/list`);
+            console.log('Onboarded data:', onboardedResponse.data);
+            console.log('Looking for email:', currentEmail, 'name:', currentUser.name);
+            
+            const onboardedUser = onboardedResponse.data.find(emp => 
+              emp.candidate_email === currentEmail && emp.candidate_name === currentUser.name && emp.employee_id
+            );
+            console.log('Found onboarded user:', onboardedUser);
+            
+            if (onboardedUser?.employee_id) {
+              displayId = onboardedUser.employee_id;
+              console.log('Found employee_id:', displayId);
+            } else {
+              console.log('No employee_id found for onboarded user');
+            }
+          } catch (err) {
+            console.log('No onboarded record found:', err);
+          }
+        }
+        
         setUserInfo({
           id: currentUser.id,
           name: currentUser.name,
           email: currentUser.email,
           role: currentUser.role_name || currentUser.role || 'Employee',
-          employee_code: employeeCode
+          employee_code: displayId
         });
       } else {
-        // Fallback to localStorage if user not found in database
         setUserInfo({
           id: localStorage.getItem('user_id'),
           name: localStorage.getItem('user_name') || currentEmail.split('@')[0],
@@ -99,7 +112,6 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       }
     } catch (err) {
       console.error('Failed to fetch user info:', err);
-      // Fallback to localStorage on error
       const currentEmail = localStorage.getItem('email');
       setUserInfo({
         id: localStorage.getItem('user_id'),
@@ -386,7 +398,7 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
                 <p className="text-xs text-gray-600 truncate">{userInfo.email}</p>
                 <p className="text-xs text-blue-600">{userInfo.role}</p>
                 {userInfo.employee_code && (
-                  <p className="text-xs text-gray-500">ID: {userInfo.employee_code}</p>
+                  <p className="text-xs text-gray-500">Employee ID: {userInfo.employee_code}</p>
                 )}
               </div>
 

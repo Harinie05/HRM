@@ -100,6 +100,7 @@ from routes.pms.goals import router as pms_goals_router
 from routes.pms.review import router as pms_review_router
 from routes.pms.feedback import router as pms_feedback_router
 from routes.pms.appraisal import router as pms_appraisal_router
+from routes.pms.work_assignments import router as pms_work_assignments_router
 
 # ======================= 🔥 TRAINING & DEVELOPMENT ROUTERS =======================
 from routes.training.programs import router as training_programs_router
@@ -225,6 +226,7 @@ app.include_router(original_documents_router, prefix="/api")
 
 # ======================= 🔥 EIS MODULE =======================
 app.include_router(employee_router, prefix="/eis")
+app.include_router(employee_router)  # Also include without prefix for backward compatibility
 app.include_router(family_router)
 app.include_router(education_router)
 app.include_router(experience_router)
@@ -275,10 +277,14 @@ app.include_router(staff_scheduling_router, prefix="/api/hr/staff-scheduling")
 app.include_router(quality_indicators_router, prefix="/api/hr/quality-indicators")
 
 # ======================= 🔥 PMS MODULE =======================
+app.include_router(pms_work_assignments_router, prefix="/api/pms")
 app.include_router(pms_goals_router, prefix="/api/pms")
 app.include_router(pms_review_router, prefix="/api/pms")
 app.include_router(pms_feedback_router, prefix="/api/pms")
 app.include_router(pms_appraisal_router, prefix="/api/pms")
+
+# PMS routes without /api prefix for backward compatibility
+app.include_router(pms_work_assignments_router, prefix="/pms")
 
 # ======================= 🔥 TRAINING & DEVELOPMENT MODULE =======================
 app.include_router(training_programs_router, prefix="/api/training")

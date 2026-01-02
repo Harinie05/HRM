@@ -36,7 +36,7 @@ export default function ReviewCycle() {
 
   const fetchCycles = async () => {
     try {
-      const response = await api.get(`/api/pms/reviews${showDeleted ? '?include_deleted=true' : ''}`);
+      const response = await api.get('/api/pms/work-assignments/review-cycles');
       setCycles(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching review cycles:', error);
@@ -134,17 +134,17 @@ export default function ReviewCycle() {
     e.preventDefault();
     try {
       const cycleData = {
-        employee_id: employees[0]?.id || 1,
-        cycle: formData.name,
-        review_type: formData.type,
+        cycle_name: formData.name,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
         status: formData.status
       };
       
       if (editingCycle) {
-        await api.put(`/api/pms/reviews/${editingCycle}`, cycleData);
+        await api.put(`/api/pms/work-assignments/review-cycles/${editingCycle}`, cycleData);
         showToast('Review cycle updated successfully!', 'success');
       } else {
-        await api.post('/api/pms/reviews', cycleData);
+        await api.post('/api/pms/work-assignments/review-cycles', cycleData);
         showToast('Review cycle created successfully!', 'success');
       }
       fetchCycles();
@@ -402,64 +402,6 @@ export default function ReviewCycle() {
         </div>
       )}
 
-      {/* Progress Update Modal */}
-      {showProgressModal && progressCycle && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4 border border-black">
-            <div className="px-4 sm:px-6 py-4 border-b border-black">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Update Review Progress</h3>
-              <p className="text-sm text-gray-600">{progressCycle.cycle} - {progressCycle.review_type}</p>
-            </div>
-            <form onSubmit={handleProgressSubmit} className="p-4 sm:p-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Self Score (1-5)</label>
-                  <input
-                    type="number"
-                    name="selfScore"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    defaultValue={progressCycle.self_score || ''}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Manager Score (1-5)</label>
-                  <input
-                    type="number"
-                    name="managerScore"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    defaultValue={progressCycle.manager_score || ''}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                  />
-                </div>
-              </div>
-              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowProgressModal(false);
-                    setProgressCycle(null);
-                  }}
-                  className="w-full sm:w-auto px-4 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 border border-black text-sm sm:text-base"
-                >
-                  Update Progress
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       {/* Review Cycles List */}
       <div className="bg-white rounded-lg shadow-sm border border-black">
         <div className="px-4 sm:px-6 py-4 border-b border-black">
@@ -484,15 +426,15 @@ export default function ReviewCycle() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {cycle.cycle}
+                        {cycle.cycle_name}
                         {cycle.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
                       </div>
-                      <div className="text-sm text-gray-500">{cycle.review_type}</div>
+                      <div className="text-sm text-gray-500">{cycle.status}</div>
                     </div>
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{cycle.review_type}</td>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{cycle.status}</td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {cycle.created_at ? new Date(cycle.created_at).toLocaleDateString() : 'N/A'}
+                    {cycle.start_date} to {cycle.end_date}
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     1 employee
@@ -545,13 +487,6 @@ export default function ReviewCycle() {
                               <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                           )}
-                          <button
-                            onClick={() => handleProgressUpdate(cycle)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                            title="Update Progress"
-                          >
-                            <Target className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
                           <button 
                             onClick={() => handleEdit(cycle)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"

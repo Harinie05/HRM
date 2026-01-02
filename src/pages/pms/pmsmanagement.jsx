@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Target, RotateCcw, MessageSquare, Award } from "lucide-react";
 import Layout from "../../components/Layout";
+import WorkAssignments from "./WorkAssignments";
 import GoalsKPI from "./GoalsKPI";
 import ReviewCycle from "./ReviewCycle";
 import Feedback from "./Feedback";
@@ -8,9 +9,10 @@ import Appraisal from "./Appraisal";
 import QualityIndicators from "./QualityIndicators";
 
 export default function PMSManagement() {
-  const [tab, setTab] = useState("Goals & KPI");
+  const [tab, setTab] = useState("Work Assignments");
 
   const tabs = [
+    "Work Assignments",
     "Goals & KPI",
     "Review Cycle",
     "Feedback",
@@ -32,7 +34,7 @@ export default function PMSManagement() {
                 </div>
                 <div>
                   <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Performance Management System</h1>
-                  <p className="text-gray-600 text-sm sm:text-base mb-1">Manage employee goals, reviews, feedback, and performance appraisals</p>
+                  <p className="text-gray-600 text-sm sm:text-base mb-1">Automated PMS driven by Work Assignments</p>
                   <p className="text-gray-500 text-xs">Performance Management</p>
                 </div>
               </div>
@@ -70,6 +72,7 @@ export default function PMSManagement() {
               </div>
 
               {/* Tab Content */}
+              {tab === "Work Assignments" && <WorkAssignments />}
               {tab === "Goals & KPI" && <GoalsKPI />}
               {tab === "Review Cycle" && <ReviewCycle />}
               {tab === "Feedback" && <Feedback />}

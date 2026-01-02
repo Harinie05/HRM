@@ -1129,6 +1129,43 @@ with engine.connect() as conn:
     
     conn.commit()
 
+# ========================= CREATE PMS WORK ASSIGNMENTS TABLES =========================
+print("\nCreating PMS Work Assignments tables...")
+with engine.connect() as conn:
+    try:
+        # Review Cycles table
+        create_review_cycles = text("""
+            CREATE TABLE IF NOT EXISTS pms_review_cycles (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                cycle_name VARCHAR(100) NOT NULL,
+                start_date DATE NOT NULL,
+                end_date DATE NOT NULL,
+                status VARCHAR(50) DEFAULT 'Open',
+                is_active BOOLEAN DEFAULT 1,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute(create_review_cycles)
+        print("✅ Created pms_review_cycles table")
+        
+        # Insert sample review cycle if none exists
+        check_cycles = conn.execute(text("SELECT COUNT(*) FROM pms_review_cycles")).scalar()
+        if check_cycles == 0:
+            sample_cycle = text("""
+                INSERT INTO pms_review_cycles (cycle_name, start_date, end_date, status)
+                VALUES ('2024 Annual Review', '2024-01-01', '2024-12-31', 'Open')
+            """)
+            conn.execute(sample_cycle)
+            print("✅ Added sample review cycle")
+        
+        conn.commit()
+        print("🎉 PMS tables created successfully!")
+        
+    except Exception as e:
+        print(f"⚠️ Error creating PMS tables: {e}")
+        conn.rollback()
+
 # ========================= ADD EXPERIENCE_YEARS COLUMN =========================
 print("\nAdding experience_years column to job_requisition table...")
 with engine.connect() as conn:

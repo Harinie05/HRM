@@ -63,78 +63,67 @@ async def create_appraisal(appraisal: dict, request: Request, db: Session = Depe
 @router.get("/appraisals")
 async def get_appraisals(db: Session = Depends(get_tenant_db)):
     try:
-        appraisals = db.query(PMSAppraisal).all()
+        from sqlalchemy import text
         
-        # Process appraisal data with progress tracking
+        # Get all employees with work assignments and auto-generate appraisals
+        employees_result = db.execute(text("""
+            SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
+            FROM work_assignments wa
+            LEFT JOIN users u ON wa.assigned_employee_id = u.id
+            WHERE wa.is_active = 1 AND u.name IS NOT NULL
+        """)).fetchall()
+        
         appraisal_data = []
-        for appraisal in appraisals:
-            # Get employee name
-            employee_name = "Unknown"
-            if appraisal.employee_id is not None:
-                employee = db.query(User).filter(User.id == appraisal.employee_id).first()
-                if employee is not None:
-                    employee_name = employee.name
+        current_year = "2025"
+        
+        for row in employees_result:
+            employee_id = row[0]
+            employee_name = row[1]
+            employee_code = row[2]
             
-            # Calculate completion progress based on status
-            completion_percentage = 0
-            status_value = str(appraisal.status) if appraisal.status is not None else ""
+            # Get employee identifier
+            employee_identifier = employee_code
+            if not employee_identifier:
+                onboarded_result = db.execute(text("""
+                    SELECT employee_id FROM onboarding_candidates 
+                    WHERE candidate_name = :name AND employee_id IS NOT NULL
+                    LIMIT 1
+                """), {"name": employee_name}).fetchone()
+                if onboarded_result:
+                    employee_identifier = onboarded_result[0]
             
-            if status_value == "Draft":
-                completion_percentage = 10
-            elif status_value == "Proposed":
-                completion_percentage = 25
-            elif status_value == "In Progress":
-                completion_percentage = 50
-            elif status_value == "Completed":
-                completion_percentage = 75
-            elif status_value == "Approved":
-                completion_percentage = 100
+            # Calculate KPI score
+            kpi_result = db.execute(text("""
+                SELECT SUM(CASE WHEN ast.completion_status = 'Completed' THEN wa.weightage_percentage ELSE 0 END) as completed_score
+                FROM work_assignments wa
+                LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = :employee_identifier
+                WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
+            """), {"employee_id": employee_id, "employee_identifier": employee_identifier}).fetchone()
+            
+            kpi_score = kpi_result[0] if kpi_result[0] else 0.0
+            
+            # Auto-calculate rating
+            if kpi_score >= 90:
+                final_rating = 5.0
+                status = "Excellent"
+            elif kpi_score >= 75:
+                final_rating = 4.0
+                status = "Good"
+            elif kpi_score >= 60:
+                final_rating = 3.0
+                status = "Satisfactory"
             else:
-                # Fallback to field-based calculation
-                completed_fields = 0
-                total_fields = 4
-                if appraisal.kpi_score is not None:
-                    completed_fields += 1
-                if appraisal.feedback_score is not None:
-                    completed_fields += 1
-                if appraisal.final_rating is not None:
-                    completed_fields += 1
-                
-                # Check recommendation field safely
-                recommendation_value = appraisal.recommendation
-                has_recommendation = False
-                if recommendation_value is not None:
-                    try:
-                        rec_str = str(recommendation_value).strip()
-                        has_recommendation = bool(rec_str and rec_str != '')
-                    except:
-                        has_recommendation = False
-                
-                if has_recommendation:
-                    completed_fields += 1
-                    
-                completion_percentage = int((completed_fields / total_fields) * 100)
-            
+                final_rating = 2.0
+                status = "Needs Improvement"
             appraisal_data.append({
-                "id": appraisal.id,
-                "employee_id": appraisal.employee_id,
+                "id": employee_id,
+                "employee_id": employee_identifier or employee_id,
                 "employee_name": employee_name,
-                "cycle": appraisal.cycle,
-                "kpi_score": appraisal.kpi_score,
-                "feedback_score": appraisal.feedback_score,
-                "final_rating": appraisal.final_rating,
-                "recommendation": appraisal.recommendation,
-                "increment_percent": appraisal.increment_percent,
-                "recommended_role": appraisal.recommended_role,
-                "strengths": appraisal.strengths,
-                "improvements": appraisal.improvements,
-                "development_plan": appraisal.development_plan,
-                "comments": appraisal.comments,
-                "effective_from": appraisal.effective_from.strftime('%Y-%m-%d') if appraisal.effective_from is not None else None,
-                "status": appraisal.status,
-                "progress": f"{int(completion_percentage)}%",
-                "progress_percentage": int(completion_percentage),
-                "created_at": appraisal.created_at.strftime('%Y-%m-%d %H:%M:%S') if appraisal.created_at is not None else None
+                "cycle": current_year,
+                "kpi_score": round(kpi_score, 1),
+                "final_rating": final_rating,
+                "status": status,
+                "rating_display": f"{final_rating}/5"
             })
         
         return {"data": appraisal_data}

@@ -84,9 +84,14 @@ def create_punch(
     try:
         punch_data = data.dict()
         
+        # Debug logging
+        print(f"Received punch data: {punch_data}")
+        
         # Validate required fields
         if not punch_data.get('employee_id') or not punch_data.get('date'):
             raise HTTPException(status_code=400, detail="Employee ID and date are required")
+        
+        print(f"Employee ID being used: {punch_data['employee_id']}")
         
         # Auto-calculate status based on shift and rules
         if punch_data.get('in_time'):
@@ -103,6 +108,8 @@ def create_punch(
         db.commit()
         db.refresh(punch)
         
+        print(f"Created punch with ID: {punch.id}, Employee ID: {punch.employee_id}")
+        
         # Audit log
         audit_crud(request, "nutryah", {"id": 1}, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), None, punch_data)
         
@@ -112,6 +119,7 @@ def create_punch(
         raise
     except Exception as e:
         db.rollback()
+        print(f"Error creating punch: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to create punch record: {str(e)}")
 
 
@@ -149,6 +157,10 @@ def update_punch(
     
     update_data = data.dict(exclude_unset=True)
     
+    # Debug logging
+    print(f"Updating punch {punch_id} with data: {update_data}")
+    print(f"Original employee_id: {punch.employee_id}")
+    
     # Recalculate status when updating times
     if 'in_time' in update_data or 'out_time' in update_data:
         in_time = update_data.get('in_time', punch.in_time)
@@ -168,6 +180,8 @@ def update_punch(
     
     db.commit()
     db.refresh(punch)
+    
+    print(f"Updated punch - Final employee_id: {punch.employee_id}")
     
     # Audit log
     audit_crud(request, "nutryah", {"id": 1}, "UPDATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch_id), old_values, update_data)

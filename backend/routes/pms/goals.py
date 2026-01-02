@@ -31,6 +31,214 @@ async def get_employees(db: Session = Depends(get_tenant_db)):
 
 
 
+# Get employee review cycle integration
+@router.get("/employee-review-cycle/{employee_id}")
+async def get_employee_review_cycle(employee_id: int, db: Session = Depends(get_tenant_db)):
+    try:
+        # Get current active review cycle for employee
+        cycle_result = db.execute(text("""
+            SELECT rc.*, COUNT(wa.id) as assignment_count
+            FROM pms_review_cycles rc
+            LEFT JOIN work_assignments wa ON rc.id = wa.review_cycle_id AND wa.assigned_employee_id = :employee_id
+            WHERE rc.is_active = 1 AND rc.status = 'Open'
+            GROUP BY rc.id
+            ORDER BY rc.created_at DESC
+            LIMIT 1
+        """), {"employee_id": employee_id}).fetchone()
+        
+        if not cycle_result:
+            return {"message": "No active review cycle found", "data": None}
+        
+        # Get KPI score for this employee in this cycle
+        kpi_result = db.execute(text("""
+            SELECT SUM(wa.weightage_percentage * COALESCE(ast.completion_percentage, 0) / 100) as kpi_score
+            FROM work_assignments wa
+            LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = wa.assigned_employee_id
+            WHERE wa.assigned_employee_id = :employee_id AND wa.review_cycle_id = :cycle_id AND wa.is_active = 1
+        """), {"employee_id": employee_id, "cycle_id": cycle_result[0]}).fetchone()
+        
+        kpi_score = kpi_result[0] if kpi_result[0] else 0.0
+        
+        # Get feedback status
+        feedback_result = db.execute(text("""
+            SELECT COUNT(*) FROM pms_feedback 
+            WHERE to_employee_id = :employee_id AND cycle = :cycle_name
+        """), {"employee_id": employee_id, "cycle_name": cycle_result[1]}).scalar()
+        
+        # Get appraisal status
+        appraisal_result = db.execute(text("""
+            SELECT * FROM pms_appraisal 
+            WHERE employee_id = :employee_id AND cycle = :cycle_name AND is_active = 1
+        """), {"employee_id": employee_id, "cycle_name": cycle_result[1]}).fetchone()
+        
+        return {
+            "data": {
+                "cycle_id": cycle_result[0],
+                "cycle_name": cycle_result[1],
+                "start_date": cycle_result[2],
+                "end_date": cycle_result[3],
+                "status": cycle_result[4],
+                "assignment_count": cycle_result[6],
+                "kpi_score": round(kpi_score, 2),
+                "feedback_given": feedback_result > 0,
+                "appraisal_completed": appraisal_result is not None,
+                "can_give_feedback": cycle_result[4] == "Closed",
+                "performance_status": "On Track" if kpi_score >= 75 else "Needs Improvement"
+            }
+        }
+    except Exception as e:
+        print(f"Error fetching employee review cycle: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching employee review cycle: {str(e)}")
+
+# Get integrated PMS data for employee
+@router.get("/employee-pms-data/{employee_id}")
+async def get_employee_pms_data(employee_id: int, db: Session = Depends(get_tenant_db)):
+    try:
+        # Get employee info
+        employee = db.query(User).filter(User.id == employee_id).first()
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        
+        # Get work assignments
+        assignments_result = db.execute(text("""
+            SELECT wa.*, ast.completion_status, ast.completion_percentage, ast.remarks, rc.cycle_name, rc.status as cycle_status
+            FROM work_assignments wa
+            LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = wa.assigned_employee_id
+            LEFT JOIN pms_review_cycles rc ON wa.review_cycle_id = rc.id
+            WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
+        """), {"employee_id": employee_id}).fetchall()
+        
+        assignments = []
+        total_score = 0
+        for row in assignments_result:
+            completion_pct = row[10] or 0.0
+            weighted_score = (row[3] * completion_pct) / 100
+            total_score += weighted_score
+            
+            assignments.append({
+                "id": row[0],
+                "title": row[1],
+                "category": row[2],
+                "weightage_percentage": row[3],
+                "frequency": row[4],
+                "completion_status": row[9] or "Not Completed",
+                "completion_percentage": completion_pct,
+                "remarks": row[11] or "",
+                "cycle_name": row[12],
+                "cycle_status": row[13],
+                "weighted_score": round(weighted_score, 2)
+            })
+        
+        # Get feedback
+        feedback_result = db.execute(text("""
+            SELECT * FROM pms_feedback 
+            WHERE to_employee_id = :employee_id AND is_active = 1
+            ORDER BY created_at DESC
+        """), {"employee_id": employee_id}).fetchall()
+        
+        feedback = []
+        for row in feedback_result:
+            feedback.append({
+                "id": row[0],
+                "from_employee_id": row[1],
+                "relationship": row[3],
+                "cycle": row[4],
+                "rating": row[5],
+                "comments": row[6],
+                "strengths": row[7],
+                "improvements": row[8],
+                "created_at": row[10]
+            })
+        
+        # Get appraisal
+        appraisal_result = db.execute(text("""
+            SELECT * FROM pms_appraisal 
+            WHERE employee_id = :employee_id AND is_active = 1
+            ORDER BY created_at DESC
+            LIMIT 1
+        """), {"employee_id": employee_id}).fetchone()
+        
+        appraisal = None
+        if appraisal_result:
+            appraisal = {
+                "id": appraisal_result[0],
+                "cycle": appraisal_result[2],
+                "kpi_score": appraisal_result[3],
+                "final_rating": appraisal_result[5],
+                "recommendation": appraisal_result[6],
+                "strengths": appraisal_result[9],
+                "improvements": appraisal_result[10],
+                "development_plan": appraisal_result[11],
+                "comments": appraisal_result[12],
+                "status": appraisal_result[15]
+            }
+        
+        return {
+            "data": {
+                "employee": {
+                    "id": employee.id,
+                    "name": employee.name,
+                    "email": employee.email,
+                    "employee_code": employee.employee_code
+                },
+                "kpi_score": round(total_score, 2),
+                "performance_status": "On Track" if total_score >= 75 else "Needs Improvement",
+                "assignments": assignments,
+                "feedback": feedback,
+                "appraisal": appraisal
+            }
+        }
+    except Exception as e:
+        print(f"Error fetching employee PMS data: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching employee PMS data: {str(e)}")
+@router.get("/kpi-dashboard")
+async def get_kpi_dashboard(db: Session = Depends(get_tenant_db)):
+    try:
+        # Get all employees with work assignments
+        result = db.execute(text("""
+            SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name
+            FROM work_assignments wa
+            LEFT JOIN users u ON wa.assigned_employee_id = u.id
+            WHERE wa.is_active = 1
+        """)).fetchall()
+        
+        kpi_data = []
+        for row in result:
+            employee_id = row[0]
+            employee_name = row[1]
+            
+            # Get KPI score for this employee
+            score_result = db.execute(text("""
+                SELECT SUM(wa.weightage_percentage * COALESCE(ast.completion_percentage, 0) / 100) as total_score
+                FROM work_assignments wa
+                LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = wa.assigned_employee_id
+                WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
+            """), {"employee_id": employee_id}).fetchone()
+            
+            score = score_result[0] if score_result[0] else 0.0
+            status = "On Track" if score >= 75 else "Needs Improvement"
+            
+            # Get assignment count
+            assignment_count = db.execute(text("""
+                SELECT COUNT(*) FROM work_assignments 
+                WHERE assigned_employee_id = :employee_id AND is_active = 1
+            """), {"employee_id": employee_id}).scalar()
+            
+            kpi_data.append({
+                "employee_id": employee_id,
+                "employee_name": employee_name,
+                "target_value": 100,  # Always locked at 100
+                "current_value": round(score, 2),
+                "progress": f"{round(score, 1)}%",
+                "status": status,
+                "assignment_count": assignment_count
+            })
+        
+        return {"data": kpi_data}
+    except Exception as e:
+        print(f"Error fetching KPI dashboard: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching KPI dashboard: {str(e)}")
+
 @router.get("/test-response")
 async def test_response(db: Session = Depends(get_tenant_db)):
     try:
