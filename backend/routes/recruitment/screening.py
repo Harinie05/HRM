@@ -6,6 +6,7 @@ from models.models_tenant import PublicCandidate, Candidate, JobRequisition
 from datetime import datetime
 from database import logger
 from utils.email import send_email
+from routes.hospital import get_current_user, check_permission
 import html
 
 router = APIRouter(prefix="/recruitment/screening", tags=["Candidate Screening"])
@@ -67,13 +68,16 @@ def fix_data_inconsistencies(request: Request, db: Session = Depends(get_tenant_
             PublicCandidate.email == ats_candidate.email
         ).first()
         
-        if public_candidate and public_candidate.job_id != ats_candidate.job_id:
-            logger.info(f"Fixing job_id for {ats_candidate.name}: {ats_candidate.job_id} -> {public_candidate.job_id}")
-            ats_candidate.job_id = public_candidate.job_id
-            fixed_count += 1
+        if public_candidate is not None:
+            public_job_id = getattr(public_candidate, 'job_id')
+            ats_job_id = getattr(ats_candidate, 'job_id')
+            if public_job_id != ats_job_id:
+                logger.info(f"Fixing job_id for {ats_candidate.name}: {ats_job_id} -> {public_job_id}")
+                ats_candidate.job_id = public_job_id
+                fixed_count += 1
     
     db.commit()
-    audit_crud(request, "tenant_db", {"email": "system"}, "UPDATE", "candidate_data_fix", None, None, {"fixed_count": fixed_count})
+    audit_crud(request, db, {"email": "system"}, "UPDATE", "candidate_data_fix", "0", {}, {"fixed_count": fixed_count})
     
     return {
         "message": f"Fixed {fixed_count} data inconsistencies",
@@ -84,7 +88,7 @@ def fix_data_inconsistencies(request: Request, db: Session = Depends(get_tenant_
 # GET PENDING APPLICATIONS FOR REVIEW
 # ----------------------------------------------------------
 @router.get("/pending/{job_id}")
-def get_pending_applications(job_id: int, db: Session = Depends(get_tenant_db)):
+def get_pending_applications(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_candidates"))):
     """Get all pending applications for a specific job"""
     
     # Get job details
@@ -135,7 +139,8 @@ class InterviewSchedule(BaseModel):
 def shortlist_candidates_with_interviews(
     schedules: List[InterviewSchedule],
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(check_permission("schedule_interviews"))
 ):
     """Shortlist candidates with interview scheduling and email notifications"""
     
@@ -177,10 +182,10 @@ def shortlist_candidates_with_interviews(
             if existing:
                 logger.info(f"🔄 Updating existing ATS candidate: {public_candidate.email} for job {public_candidate.job_id}")
                 # Update existing candidate with new interview details
-                existing.interview_date = datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M")
-                existing.interview_time = schedule.interview_time
-                existing.stage = "Shortlisted"
-                existing.current_round = 1
+                setattr(existing, 'interview_date', datetime.strptime(f"{schedule.interview_date} {schedule.interview_time}", "%Y-%m-%d %H:%M"))
+                setattr(existing, 'interview_time', schedule.interview_time)
+                setattr(existing, 'stage', "Shortlisted")
+                setattr(existing, 'current_round', 1)
             else:
                 logger.info(f"➕ Creating new ATS candidate: {public_candidate.email} for job {public_candidate.job_id}")
                 # Create ATS candidate with CORRECT job_id
@@ -189,7 +194,7 @@ def shortlist_candidates_with_interviews(
                     name=public_candidate.name,
                     email=public_candidate.email,
                     phone=public_candidate.phone,
-                    experience=int(public_candidate.experience or 0),
+                    experience=int(getattr(public_candidate, 'experience', 0) or 0),
                     resume_url=public_candidate.resume_url,
                     stage="Shortlisted",
                     current_round=1,
@@ -244,7 +249,7 @@ def shortlist_candidates_with_interviews(
     # Audit log with proper parameters
     try:
         user = {"email": "system", "user_name": "System"}
-        audit_crud(request, db, user, "SHORTLIST_CANDIDATES", "candidate_shortlist", None, {}, {"count": shortlisted_count})
+        audit_crud(request, db, user, "SHORTLIST_CANDIDATES", "candidate_shortlist", "0", {}, {"count": shortlisted_count})
     except:
         pass
     

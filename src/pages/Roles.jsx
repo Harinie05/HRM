@@ -364,21 +364,321 @@ export default function Roles() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({selectedPerms.length} selected)</label>
-                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-3">
-                    {permissions.map((p) => (
-                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedPerms.includes(p.name)}
-                          onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                        />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                          <p className="text-xs text-gray-500">{p.name}</p>
+                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
+                    {/* 👥 USER MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>👥</span> USER MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🏢 ORGANIZATION SETUP */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🏢</span> ORGANIZATION SETUP
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('company') || p.name.includes('branch') || 
+                          (p.name.includes('department') && !p.name.includes('user')) ||
+                          p.name.includes('designation')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 📊 REPORTING STRUCTURE */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📊</span> REPORTING STRUCTURE
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('reporting') || p.name.includes('hierarchy')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 📅 HOLIDAY CALENDAR */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📅</span> HOLIDAY CALENDAR
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('holiday')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 💼 JOB REQUISITION */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>💼</span> JOB REQUISITION
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('job_requisition')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🎯 RECRUITMENT SETUP */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🎯</span> RECRUITMENT SETUP
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Screen Candidates Page</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_candidate' || p.name === 'select_candidates' || p.name === 'schedule_interviews' || p.name === 'view_resumes' || p.name === 'view_ats_pipeline'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
                         </div>
-                      </label>
-                    ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">ATS Page</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'move_candidates' || p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 📄 OFFERS & CONTRACTS */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📄</span> OFFERS & CONTRACTS
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🎓 ONBOARDING */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🎓</span> ONBOARDING
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🩺 CONSULTANTS */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🩺</span> CONSULTANTS
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_consultants' || p.name === 'add_consultant' || p.name === 'edit_consultant' || p.name === 'delete_consultant'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Availability Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_availability' || p.name === 'add_availability'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Payout Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_payouts' || p.name === 'generate_payslip' || p.name === 'send_payslip_email' || p.name === 'process_payroll'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -451,21 +751,321 @@ export default function Roles() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({editPerms.length} selected)</label>
-                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-3">
-                    {permissions.map((p) => (
-                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={editPerms.includes(p.name)}
-                          onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
-                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                        />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                          <p className="text-xs text-gray-500">{p.name}</p>
+                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
+                    {/* 👥 USER MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>👥</span> USER MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🏢 ORGANIZATION SETUP */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🏢</span> ORGANIZATION SETUP
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('company') || p.name.includes('branch') || 
+                          (p.name.includes('department') && !p.name.includes('user')) ||
+                          p.name.includes('designation')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 📊 REPORTING STRUCTURE */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📊</span> REPORTING STRUCTURE
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('reporting') || p.name.includes('hierarchy')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 📅 HOLIDAY CALENDAR */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📅</span> HOLIDAY CALENDAR
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('holiday')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 💼 JOB REQUISITION */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>💼</span> JOB REQUISITION
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('job_requisition')
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🎯 RECRUITMENT SETUP */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🎯</span> RECRUITMENT SETUP
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Screen Candidates Page</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_candidate' || p.name === 'select_candidates' || p.name === 'schedule_interviews' || p.name === 'view_resumes' || p.name === 'view_ats_pipeline'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
                         </div>
-                      </label>
-                    ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">ATS Page</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'move_candidates' || p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 📄 OFFERS & CONTRACTS */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>📄</span> OFFERS & CONTRACTS
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🎓 ONBOARDING */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🎓</span> ONBOARDING
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 🩺 CONSULTANTS */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🩺</span> CONSULTANTS
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_consultants' || p.name === 'add_consultant' || p.name === 'edit_consultant' || p.name === 'delete_consultant'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Availability Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_availability' || p.name === 'add_availability'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Payout Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_payouts' || p.name === 'generate_payslip' || p.name === 'send_payslip_email' || p.name === 'process_payroll'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

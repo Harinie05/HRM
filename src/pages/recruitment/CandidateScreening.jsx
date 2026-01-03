@@ -4,6 +4,7 @@ import Layout from "../../components/Layout";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function CandidateScreening() {
   const [searchParams] = useSearchParams();
@@ -16,6 +17,27 @@ export default function CandidateScreening() {
   const [loading, setLoading] = useState(true);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [interviewSchedules, setInterviewSchedules] = useState({});
+
+  // Check permissions
+  const canViewCandidates = hasPermission('view_candidates');
+  const canScreenCandidates = hasPermission('screen_candidates');
+  const canSelectCandidates = hasPermission('select_candidates');
+  const canScheduleInterviews = hasPermission('schedule_interviews');
+  const canViewATS = hasPermission('view_ats_pipeline');
+  const canViewResumes = hasPermission('view_resumes');
+
+  if (!canViewCandidates) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Access Denied</h2>
+            <p className="text-red-600">You don't have permission to view candidates.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   // ========================= FETCH APPLICATIONS =========================
   const fetchApplications = async () => {
@@ -150,26 +172,30 @@ export default function CandidateScreening() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
-              <button
-                onClick={openScheduleModal}
-                disabled={selectedCandidates.length === 0}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="text-white px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-400 text-sm"
-                onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
-                onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
-              >
-                Schedule Interviews ({selectedCandidates.length})
-              </button>
+              {canScheduleInterviews && (
+                <button
+                  onClick={openScheduleModal}
+                  disabled={selectedCandidates.length === 0}
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="text-white px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-400 text-sm"
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                >
+                  Schedule Interviews ({selectedCandidates.length})
+                </button>
+              )}
               
-              <button
-                onClick={() => window.location.href = `/ats?job=${jobId}`}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-              >
-                View ATS Pipeline
-              </button>
+              {canViewATS && (
+                <button
+                  onClick={() => window.location.href = `/ats?job=${jobId}`}
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                >
+                  View ATS Pipeline
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -181,11 +207,13 @@ export default function CandidateScreening() {
               <thead className="bg-gray-100 text-gray-600 text-sm border-b border-black">
                 <tr>
                   <th className="p-2 sm:p-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedCandidates.length === applications.length && applications.length > 0}
-                      onChange={selectAll}
-                    />
+                    {canSelectCandidates && (
+                      <input
+                        type="checkbox"
+                        checked={selectedCandidates.length === applications.length && applications.length > 0}
+                        onChange={selectAll}
+                      />
+                    )}
                   </th>
                   <th className="p-2 sm:p-3 text-left">Candidate</th>
                   <th className="p-2 sm:p-3 text-left hidden sm:table-cell">Experience</th>
@@ -201,11 +229,13 @@ export default function CandidateScreening() {
                 {applications.map((app) => (
                   <tr key={app.id} className="border-t hover:bg-gray-50 border-black">
                     <td className="p-2 sm:p-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedCandidates.includes(app.id)}
-                        onChange={() => toggleSelection(app.id)}
-                      />
+                      {canSelectCandidates && (
+                        <input
+                          type="checkbox"
+                          checked={selectedCandidates.includes(app.id)}
+                          onChange={() => toggleSelection(app.id)}
+                        />
+                      )}
                     </td>
                     
                     <td className="p-2 sm:p-3">
@@ -252,7 +282,7 @@ export default function CandidateScreening() {
                     </td>
                     
                     <td className="p-2 sm:p-3 text-center">
-                      {app.resume_url ? (
+                      {canViewResumes && app.resume_url ? (
                         <a
                           href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
                           target="_blank"

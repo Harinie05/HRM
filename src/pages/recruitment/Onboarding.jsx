@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import api from "../../api";
 import { FiSearch, FiUser, FiFileText, FiEye, FiCalendar, FiMapPin, FiMail, FiPhone, FiCheck, FiClipboard } from "react-icons/fi";
+import { hasPermission } from "../../utils/permissions";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import OriginalDocumentsModal from "../../components/OriginalDocumentsModal";
@@ -11,6 +12,12 @@ export default function Onboarding() {
   const location = useLocation();
   const { toast, showToast } = useToast();
   const [candidates, setCandidates] = useState([]);
+
+  // Check permissions
+  const canViewOnboardingDocuments = hasPermission('view_onboarding_documents');
+  const canViewOnboardingCandidates = hasPermission('view_onboarding_candidates');
+  const canViewDocumentCollected = hasPermission('view_document_collected');
+  const canAddDocumentCollected = hasPermission('add_document_collected');
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [showNewOnboardingForm, setShowNewOnboardingForm] = useState(false);
   const [showDocModal, setShowDocModal] = useState(false);
@@ -82,6 +89,10 @@ export default function Onboarding() {
   // FETCH ONBOARDED CANDIDATES
   // ===============================================================
   const fetchCandidates = async () => {
+    if (!canViewOnboardingCandidates) {
+      return; // Don't make API call if no permission
+    }
+    
     try {
       const [offersRes, onboardingRes] = await Promise.all([
         api.get("/recruitment/offer/list"),
@@ -116,6 +127,9 @@ export default function Onboarding() {
       setCandidates(candidatesWithEmployeeIds);
     } catch (err) {
       console.error("Failed to load onboarded candidates", err);
+      if (err.response?.status === 403) {
+        showToast("Access denied: You don't have permission to view onboarding candidates", "error");
+      }
     }
   };
 
@@ -409,6 +423,29 @@ export default function Onboarding() {
   // ===================================================================
   // ========================  UI START  ===============================
   // ===================================================================
+  
+  // Show access denied if user lacks basic permission
+  if (!canViewOnboardingCandidates) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <div className="bg-white rounded-2xl border border-red-200 p-8 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiUser className="w-8 h-8 text-red-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+            <p className="text-gray-600 mb-4">
+              You don't have permission to view onboarding candidates.
+            </p>
+            <p className="text-sm text-gray-500">
+              Please contact your administrator to request access to the onboarding module.
+            </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+  
   return (
     <>
       <Layout>
@@ -532,11 +569,18 @@ export default function Onboarding() {
                       <div className="mt-3 space-y-2">
                         <button
                           className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
-                          onClick={() => fetchCandidateDocuments(c.candidate_id)}
+                          onClick={() => {
+                            if (!canViewOnboardingDocuments) {
+                              showToast("You don't have permission to view documents", "error");
+                              return;
+                            }
+                            fetchCandidateDocuments(c.candidate_id);
+                          }}
                         >
                           <FiEye className="mr-1" size={12} />
                           View Documents
                         </button>
+                        {canAddDocumentCollected && (
                         <button
                           className="w-full text-xs text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
                           onClick={() => {
@@ -547,6 +591,7 @@ export default function Onboarding() {
                           <FiClipboard className="mr-1" size={12} />
                           Documents Collected
                         </button>
+                        )}
                       </div>
                     </div>
                   </div>

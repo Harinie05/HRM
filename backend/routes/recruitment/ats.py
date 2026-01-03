@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, check_permission
 from typing import List, Optional
 from pydantic import BaseModel
 from models.models_tenant import (
@@ -155,7 +155,7 @@ def move_stage(
     req: MoveStageRequest,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(check_permission("move_candidates"))
 ):
 
     c = db.query(Candidate).filter(Candidate.id == candidate_id).first()
@@ -201,7 +201,7 @@ def schedule_interview(
     req: InterviewScheduleCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(check_permission("schedule_interviews"))
 ):
 
     candidate = db.query(Candidate).filter(Candidate.id == req.candidate_id).first()
@@ -243,7 +243,7 @@ def schedule_interview(
 # GET ALL JOBS FOR ATS
 # ----------------------------------------------------------
 @router.get("/jobs")
-def get_jobs(db: Session = Depends(get_tenant_db)):
+def get_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_active_jobs"))):
     jobs = db.query(JobRequisition).all()
     return jobs
 
@@ -251,7 +251,7 @@ def get_jobs(db: Session = Depends(get_tenant_db)):
 # GET ALL CANDIDATES FOR A JOB
 # ----------------------------------------------------------
 @router.get("/job/{job_id}", response_model=List[CandidateResponse])
-def job_candidates(job_id: int, db: Session = Depends(get_tenant_db)):
+def job_candidates(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_ats_candidates"))):
     candidates = db.query(Candidate).filter(Candidate.job_id == job_id).all()
     return candidates
 
@@ -259,7 +259,7 @@ def job_candidates(job_id: int, db: Session = Depends(get_tenant_db)):
 # GET SINGLE CANDIDATE PROFILE
 # ----------------------------------------------------------
 @router.get("/candidate/{candidate_id}", response_model=CandidateResponse)
-def candidate_profile(candidate_id: int, db: Session = Depends(get_tenant_db)):
+def candidate_profile(candidate_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_ats_candidates"))):
     candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
     if not candidate:
         raise HTTPException(status_code=404, detail="Candidate not found")
@@ -284,7 +284,7 @@ def move_to_next_round(
     req: MoveToNextRoundRequest,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(check_permission("move_candidates"))
 ):
     """Move candidate to next round and send email notification"""
     try:

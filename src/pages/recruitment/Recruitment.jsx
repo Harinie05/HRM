@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
 import api from '../../api';
+import { hasPermission } from '../../utils/permissions';
 
 export default function Recruitment() {
   const [jobs, setJobs] = useState([]);
@@ -23,6 +24,35 @@ export default function Recruitment() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [employeeCode, setEmployeeCode] = useState(null);
   const [openLinkMenu, setOpenLinkMenu] = useState(null);
+
+  // Check permissions
+  const canViewJobs = hasPermission('view_job_requisition');
+  const canViewCandidates = hasPermission('view_candidates');
+  const canGenerateLinks = hasPermission('generate_job_link');
+  const canPublishJobs = hasPermission('publish_job');
+
+  // Debug permissions
+  console.log('Permission Debug:', {
+    canViewJobs,
+    canViewCandidates,
+    canGenerateLinks,
+    canPublishJobs,
+    isAdmin: localStorage.getItem('login_type') === 'admin' || localStorage.getItem('is_admin') === 'true',
+    permissions: JSON.parse(localStorage.getItem('permissions') || '[]')
+  });
+
+  if (!canViewJobs) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Access Denied</h2>
+            <p className="text-red-600">You don't have permission to view job requisitions.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   const fetchMyProfile = async () => {
     try {
@@ -204,19 +234,6 @@ export default function Recruitment() {
                 </div>
               </div>
             </div>
-            
-            <button
-              onClick={openCreate}
-              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              className="text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-            >
-              <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
-                <FiPlus className="w-3 h-3" />
-              </div>
-              <span className="text-sm">Create Job</span>
-            </button>
           </div>
         </div>
 
@@ -444,87 +461,87 @@ export default function Recruitment() {
                             <FiEye size={16} />
                           </button>
 
-                          <button
-                            onClick={() => openEdit(job)}
-                            className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                            title="Edit Job"
-                          >
-                            <FiEdit size={16} />
-                          </button>
-
-                          <button
-                            onClick={() => window.location.href = `/screening?job=${job.id}`}
-                            className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                            title="Screen Candidates"
-                          >
-                            <FiUsers size={16} />
-                          </button>
-
-                          <div className="relative link-dropdown">
+                          {hasPermission('edit_job_requisition') && (
                             <button
-                              onClick={() =>
-                                setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
-                              }
-                              className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                              title="Job Links"
+                              onClick={() => openEdit(job)}
+                              className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                              title="Edit Job"
                             >
-                              <FiLink size={16} />
+                              <FiEdit size={16} />
                             </button>
+                          )}
 
-                            {openLinkMenu === job.id && (
-                              <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
-                                <button
-                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
-                                  onClick={() => {
-                                    const publicLink = `${window.location.origin}/apply/${job.id}`;
-                                    setGeneratedLinks(prev => ({
-                                      ...prev,
-                                      [job.id]: { ...prev[job.id], public: publicLink }
-                                    }));
-                                    showToast("Public job link generated");
-                                  }}
-                                >
-                                  🌍 Generate Public Link
-                                </button>
+                          {canViewCandidates && (
+                            <button
+                              onClick={() => window.location.href = `/screening?job=${job.id}`}
+                              className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                              title="Screen Candidates"
+                            >
+                              <FiUsers size={16} />
+                            </button>
+                          )}
 
-                                {employeeCode && (
+                          {canGenerateLinks && (
+                            <div className="relative link-dropdown">
+                              <button
+                                onClick={() =>
+                                  setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
+                                }
+                                className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                title="Job Links"
+                              >
+                                <FiLink size={16} />
+                              </button>
+
+                              {openLinkMenu === job.id && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
                                   <button
-                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
                                     onClick={() => {
-                                      const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                      const publicLink = `${window.location.origin}/apply/${job.id}`;
                                       setGeneratedLinks(prev => ({
                                         ...prev,
-                                        [job.id]: { ...prev[job.id], referral: referralLink }
+                                        [job.id]: { ...prev[job.id], public: publicLink }
                                       }));
-                                      showToast("Referral link generated");
+                                      showToast("Public job link generated");
                                     }}
                                   >
-                                    👤 Generate My Referral Link
+                                    🌍 Generate Public Link
                                   </button>
-                                )}
-                              </div>
-                            )}
-                          </div>
 
-                          <button
-                            onClick={() => togglePublish(job)}
-                            className={`p-2 rounded-lg transition-colors ${
-                              job.publish_status?.trim() === "Published"
-                                ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
-                                : "text-gray-500 hover:text-green-600 hover:bg-green-50"
-                            }`}
-                            title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
-                          >
-                            {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
-                          </button>
+                                  {employeeCode && (
+                                    <button
+                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                      onClick={() => {
+                                        const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                        setGeneratedLinks(prev => ({
+                                          ...prev,
+                                          [job.id]: { ...prev[job.id], referral: referralLink }
+                                        }));
+                                        showToast("Referral link generated");
+                                      }}
+                                    >
+                                      👤 Generate My Referral Link
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
 
-                          <button
-                            onClick={() => deleteJob(job)}
-                            className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete Job"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
+                          {canPublishJobs && (
+                            <button
+                              onClick={() => togglePublish(job)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                job.publish_status?.trim() === "Published"
+                                  ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                  : "text-gray-500 hover:text-green-600 hover:bg-green-50"
+                              }`}
+                              title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
+                            >
+                              {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
+                            </button>
+                          )}
                         </div>
                         {generatedLinks[job.id] && (
                           <div className="mt-2 space-y-2">

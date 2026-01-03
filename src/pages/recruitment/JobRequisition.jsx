@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 import { 
   Plus, 
   Search, 
@@ -19,6 +20,25 @@ import {
 
 export default function JobRequisition() {
   const { toast, showToast, hideToast } = useToast();
+  
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_job_requisition");
+  const canAdd = isAdmin() || hasPermission("add_job_requisition");
+  const canDelete = isAdmin() || hasPermission("delete_job_requisition");
+  
+  // Block access if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view Job Requisitions.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   const [requisitions, setRequisitions] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("active");
@@ -40,6 +60,10 @@ export default function JobRequisition() {
   }, []);
 
   const openCreate = () => {
+    if (!canAdd) {
+      showToast("You do not have permission to create job requisitions", 'error');
+      return;
+    }
     setMode("create");
     setSelectedReq(null);
     setShowForm(true);
@@ -52,6 +76,11 @@ export default function JobRequisition() {
   };
 
   const handleDelete = async (req) => {
+    if (!canDelete) {
+      showToast("You do not have permission to delete job requisitions", 'error');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this job requisition?')) {
       try {
         await api.put(`/recruitment/update-status/${req.id}`, { status: 'Inactive' });
@@ -98,15 +127,17 @@ export default function JobRequisition() {
               </div>
             </div>
             
-            <button
-              onClick={openCreate}
-              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
-            >
-              <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
-                <Plus className="w-3 h-3" />
-              </div>
-              <span className="text-sm">Create Job</span>
-            </button>
+            {canAdd && (
+              <button
+                onClick={openCreate}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+              >
+                <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
+                  <Plus className="w-3 h-3" />
+                </div>
+                <span className="text-sm">Create Job</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -173,17 +204,19 @@ export default function JobRequisition() {
                     </div>
                   </div>
                   
-                  <div className="relative group">
-                    <button
-                      onClick={() => handleDelete(req)}
-                      className="p-2 hover:bg-red-50 rounded-xl transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </button>
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      Delete
+                  {canDelete && (
+                    <div className="relative group">
+                      <button
+                        onClick={() => handleDelete(req)}
+                        className="p-2 hover:bg-red-50 rounded-xl transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </button>
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        Delete
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
               
@@ -260,12 +293,14 @@ export default function JobRequisition() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No job requisitions found</h3>
             <p className="text-gray-500 mb-6">Get started by creating your first job requisition</p>
-            <button
-              onClick={openCreate}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
-            >
-              Create Job Requisition
-            </button>
+            {canAdd && (
+              <button
+                onClick={openCreate}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+              >
+                Create Job Requisition
+              </button>
+            )}
           </div>
         )}
 

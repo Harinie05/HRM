@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
 import api from '../../api';
+import { hasPermission } from '../../utils/permissions';
 
 const LocumConsultants = () => {
   const [consultants, setConsultants] = useState([]);
@@ -15,7 +16,51 @@ const LocumConsultants = () => {
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [editingConsultant, setEditingConsultant] = useState(null);
   const [activeTab, setActiveTab] = useState('list');
+  const [filters, setFilters] = useState({
+    status: '',
+    consultant_type: '',
+    search: ''
+  });
   const { toast, showToast, hideToast } = useToast();
+  
+  // Permission checks
+  const canViewConsultants = hasPermission('view_consultants');
+  const canAddConsultant = hasPermission('add_consultant');
+  const canEditConsultant = hasPermission('edit_consultant');
+  const canDeleteConsultant = hasPermission('delete_consultant');
+  const canViewAvailability = hasPermission('view_availability');
+  const canAddAvailability = hasPermission('add_availability');
+  const canViewPayouts = hasPermission('view_payouts');
+  const canAddPayout = hasPermission('add_payout');
+  const canGeneratePayslip = hasPermission('generate_payslip');
+  const canSendPayslipEmail = hasPermission('send_payslip_email');
+  const canProcessPayroll = hasPermission('process_payroll');
+  
+  // Debug log
+  console.log('Permissions:', {
+    canViewConsultants,
+    canAddConsultant,
+    canEditConsultant,
+    canDeleteConsultant,
+    canViewAvailability,
+    canAddAvailability,
+    canViewPayouts,
+    canAddPayout
+  });
+  
+  // If user does NOT have view permission → block entire page
+  if (!canViewConsultants) {
+    return (
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view Consultants.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   const [formData, setFormData] = useState({
     name: '',
     specialization: '',
@@ -51,18 +96,21 @@ const LocumConsultants = () => {
     fetchDepartments();
     fetchAvailability();
     fetchPayouts();
-  }, []);
+  }, [filters.status, filters.consultant_type]);
 
   const fetchConsultants = async () => {
     try {
       console.log('Fetching consultants...');
-      const response = await api.get('/recruitment/consultants');
+      const params = new URLSearchParams();
+      if (filters.status) params.append('status', filters.status);
+      if (filters.consultant_type) params.append('consultant_type', filters.consultant_type);
+      
+      const response = await api.get(`/recruitment/consultants?${params.toString()}`);
       console.log('Consultants response:', response.data);
       setConsultants(response.data);
     } catch (error) {
       console.error('Error fetching consultants:', error);
       console.error('Error details:', error.response?.data);
-      // Set empty array if API fails
       setConsultants([]);
     }
   };
@@ -118,6 +166,10 @@ const LocumConsultants = () => {
   };
 
   const handleEdit = (consultant) => {
+    if (!canEditConsultant) {
+      showToast("You don't have permission to edit consultants", "error");
+      return;
+    }
     setEditingConsultant(consultant);
     setFormData({
       ...consultant,
@@ -127,12 +179,21 @@ const LocumConsultants = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this consultant?')) {
+    if (!canDeleteConsultant) {
+      showToast("You don't have permission to delete consultants", "error");
+      return;
+    }
+    if (window.confirm('Are you sure you want to deactivate this consultant?')) {
       try {
         await api.delete(`/recruitment/consultants/${id}`);
-        fetchConsultants();
+        // Update the consultant status locally to show immediate change
+        setConsultants(prev => prev.map(consultant => 
+          consultant.id === id ? { ...consultant, status: 'Inactive' } : consultant
+        ));
+        showToast('Consultant deactivated successfully');
       } catch (error) {
-        console.error('Error deleting consultant:', error);
+        console.error('Error deactivating consultant:', error);
+        showToast('Failed to deactivate consultant', 'error');
       }
     }
   };
@@ -177,6 +238,10 @@ const LocumConsultants = () => {
 
   const handleAvailabilitySubmit = async (e) => {
     e.preventDefault();
+    if (!canAddAvailability) {
+      showToast("You don't have permission to add availability", "error");
+      return;
+    }
     try {
       await api.post('/recruitment/consultants/availability', availabilityData);
       resetAvailabilityForm();
@@ -202,6 +267,10 @@ const LocumConsultants = () => {
   };
 
   const handleProcessPayroll = async (payoutId) => {
+    if (!canProcessPayroll) {
+      showToast("You don't have permission to process payroll", "error");
+      return;
+    }
     try {
       await api.put(`/recruitment/consultants/payouts/${payoutId}/process`);
       fetchPayouts();
@@ -213,6 +282,10 @@ const LocumConsultants = () => {
   };
 
   const handleGeneratePayslip = async (payoutId) => {
+    if (!canGeneratePayslip) {
+      showToast("You don't have permission to generate payslips", "error");
+      return;
+    }
     try {
       const response = await api.get(`/recruitment/consultants/payouts/${payoutId}/payslip`, {
         responseType: 'blob'
@@ -236,6 +309,10 @@ const LocumConsultants = () => {
   };
 
   const handleEmailPayslip = async (payoutId) => {
+    if (!canSendPayslipEmail) {
+      showToast("You don't have permission to send payslip emails", "error");
+      return;
+    }
     try {
       await api.post(`/recruitment/consultants/payouts/${payoutId}/email-payslip`);
       showToast('Payslip sent via email successfully');
@@ -254,6 +331,15 @@ const LocumConsultants = () => {
     const dept = departments.find(d => d.id === deptId);
     return dept ? dept.name : 'N/A';
   };
+
+  // Filter consultants based on search term
+  const filteredConsultants = consultants.filter(consultant => {
+    const matchesSearch = !filters.search || 
+      consultant.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      consultant.specialization.toLowerCase().includes(filters.search.toLowerCase()) ||
+      consultant.registration_number.toLowerCase().includes(filters.search.toLowerCase());
+    return matchesSearch;
+  });
 
   const tabs = ['list', 'availability', 'payouts'];
 
@@ -325,13 +411,63 @@ const LocumConsultants = () => {
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Consultant List</h3>
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
-                  >
-                    <Plus size={16} />
-                    Add Consultant
-                  </button>
+                  {canAddConsultant && (
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                    >
+                      <Plus size={16} />
+                      Add Consultant
+                    </button>
+                  )}
+                </div>
+                
+                {/* Filters */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                      <input
+                        type="text"
+                        placeholder="Search by name, specialization..."
+                        value={filters.search}
+                        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                      <select
+                        value={filters.status}
+                        onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      >
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                      <select
+                        value={filters.consultant_type}
+                        onChange={(e) => setFilters({ ...filters, consultant_type: e.target.value })}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      >
+                        <option value="">All Types</option>
+                        <option value="Locum">Locum</option>
+                        <option value="Visiting">Visiting</option>
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        onClick={() => setFilters({ status: '', consultant_type: '', search: '' })}
+                        className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -358,7 +494,7 @@ const LocumConsultants = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {consultants.length === 0 ? (
+                    {filteredConsultants.length === 0 ? (
                       <tr>
                         <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
                           <User size={48} className="mx-auto mb-4 text-gray-300" />
@@ -367,7 +503,7 @@ const LocumConsultants = () => {
                         </td>
                       </tr>
                     ) : (
-                      consultants.map((consultant) => (
+                      filteredConsultants.map((consultant) => (
                         <tr key={consultant.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
@@ -415,18 +551,23 @@ const LocumConsultants = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
-                              <button
-                                onClick={() => handleEdit(consultant)}
-                                className="text-blue-600 hover:text-blue-900"
-                              >
-                                <Edit size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(consultant.id)}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                              {canEditConsultant && (
+                                <button
+                                  onClick={() => handleEdit(consultant)}
+                                  className="text-blue-600 hover:text-blue-900"
+                                >
+                                  <Edit size={16} />
+                                </button>
+                              )}
+                              {canDeleteConsultant && (
+                                <button
+                                  onClick={() => handleDelete(consultant.id)}
+                                  className="text-red-600 hover:text-red-900"
+                                  title="Deactivate Consultant"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -440,15 +581,26 @@ const LocumConsultants = () => {
 
             {activeTab === 'availability' && (
               <div>
+                {!canViewAvailability ? (
+                  <div className="p-8 text-center">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+                      <p className="text-gray-600">You do not have permission to view Availability.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Availability Management</h3>
-                  <button
-                    onClick={() => setShowAvailabilityModal(true)}
-                    className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
-                  >
-                    <Plus size={16} />
-                    Add Availability
-                  </button>
+                  {canAddAvailability && (
+                    <button
+                      onClick={() => setShowAvailabilityModal(true)}
+                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                    >
+                      <Plus size={16} />
+                      Add Availability
+                    </button>
+                  )}
                 </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -496,20 +648,33 @@ const LocumConsultants = () => {
                     </tbody>
                   </table>
                 </div>
+                  </>
+                )}
               </div>
             )}
 
             {activeTab === 'payouts' && (
               <div>
+                {!canViewPayouts ? (
+                  <div className="p-8 text-center">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+                      <p className="text-gray-600">You do not have permission to view Payouts.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Payout Management</h3>
-                  <button
-                    onClick={() => setShowPayoutModal(true)}
-                    className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
-                  >
-                    <Plus size={16} />
-                    Add Payout
-                  </button>
+                  {canAddPayout && (
+                    <button
+                      onClick={() => setShowPayoutModal(true)}
+                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                    >
+                      <Plus size={16} />
+                      Add Payout
+                    </button>
+                  )}
                 </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -562,7 +727,7 @@ const LocumConsultants = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-2">
-                                {payout.payout_status === 'Pending' && (
+                                {payout.payout_status === 'Pending' && canProcessPayroll && (
                                   <button
                                     onClick={() => handleProcessPayroll(payout.id)}
                                     className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
@@ -572,20 +737,24 @@ const LocumConsultants = () => {
                                 )}
                                 {payout.payout_status === 'Processed' && (
                                   <>
-                                    <button
-                                      onClick={() => handleGeneratePayslip(payout.id)}
-                                      className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
-                                      title="Generate Payslip"
-                                    >
-                                      <FileText size={12} />
-                                    </button>
-                                    <button
-                                      onClick={() => handleEmailPayslip(payout.id)}
-                                      className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
-                                      title="Email Payslip"
-                                    >
-                                      <Send size={12} />
-                                    </button>
+                                    {canGeneratePayslip && (
+                                      <button
+                                        onClick={() => handleGeneratePayslip(payout.id)}
+                                        className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                        title="Generate Payslip"
+                                      >
+                                        <FileText size={12} />
+                                      </button>
+                                    )}
+                                    {canSendPayslipEmail && (
+                                      <button
+                                        onClick={() => handleEmailPayslip(payout.id)}
+                                        className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                        title="Email Payslip"
+                                      >
+                                        <Send size={12} />
+                                      </button>
+                                    )}
                                   </>
                                 )}
                               </div>
@@ -596,6 +765,8 @@ const LocumConsultants = () => {
                     </tbody>
                   </table>
                 </div>
+                  </>
+                )}
               </div>
             )}
           </div>

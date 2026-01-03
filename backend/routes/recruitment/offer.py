@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from routes.hospital import get_current_user, check_permission
 from models.models_tenant import Candidate, OfferLetter, JobRequisition, BGV
 from schemas.schemas_tenant import OfferCreate, OfferUpdate, OfferStatusUpdate, OfferOut
 from utils.email import send_email
@@ -225,15 +226,19 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
         db.commit()
         
         # Audit email communication
-        audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
-            "recipient": str(candidate.email),
-            "subject": subject,
-            "email_type": "offer_letter",
-            "status": "sent",
-            "candidate_name": offer.candidate_name,
-            "job_title": offer.job_title,
-            "ctc": offer.ctc
-        })
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
+                "recipient": str(candidate.email),
+                "subject": subject,
+                "email_type": "offer_letter",
+                "status": "sent",
+                "candidate_name": offer.candidate_name,
+                "job_title": offer.job_title,
+                "ctc": offer.ctc
+            })
+        except:
+            pass
         
         # Audit log with proper parameters
         try:
@@ -245,15 +250,19 @@ def send_offer(offer_id: int, request: Request, db: Session = Depends(get_tenant
         return {"message": "Offer letter sent successfully", "offer": offer}
     else:
         # Audit failed email
-        audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
-            "recipient": str(candidate.email),
-            "subject": subject,
-            "email_type": "offer_letter",
-            "status": "failed",
-            "candidate_name": offer.candidate_name,
-            "job_title": offer.job_title,
-            "error": "Email sending failed"
-        })
+        try:
+            user = {"email": "system", "user_name": "System"}
+            audit_crud(request, db, user, "SEND_OFFER_EMAIL", "email_communications", str(offer_id), {}, {
+                "recipient": str(candidate.email),
+                "subject": subject,
+                "email_type": "offer_letter",
+                "status": "failed",
+                "candidate_name": offer.candidate_name,
+                "job_title": offer.job_title,
+                "error": "Email sending failed"
+            })
+        except:
+            pass
         raise HTTPException(status_code=500, detail="Failed to send offer email")
 
 # -----------------------------------------------------------
@@ -281,7 +290,7 @@ def update_offer_status(offer_id: int, status: str, request: Request, db: Sessio
 # GENERATE DOCUMENT UPLOAD LINK
 # -----------------------------------------------------------
 @router.post("/{offer_id}/generate-link")
-def generate_document_link(offer_id: int, db: Session = Depends(get_tenant_db)):
+def generate_document_link(offer_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("generate_offer_link"))):
     """Generate document upload link for manual sharing"""
     offer = db.query(OfferLetter).filter(OfferLetter.id == offer_id).first()
     if not offer:
@@ -325,7 +334,8 @@ def upload_documents(
     token: str,
     file: UploadFile = File(...),
     document_type: str = Form(...),
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(check_permission("verify_documents"))
 ):
     """Upload document via public link"""
     offer = db.query(OfferLetter).filter(OfferLetter.token == token).first()
@@ -389,7 +399,7 @@ def view_document_file(file_name: str):
 # VIEW UPLOADED DOCUMENTS
 # -----------------------------------------------------------
 @router.get("/documents/view/{offer_id}")
-def view_uploaded_documents(offer_id: int, db: Session = Depends(get_tenant_db)):
+def view_uploaded_documents(offer_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_documents"))):
     """View all documents uploaded by candidate"""
     offer = db.query(OfferLetter).filter(OfferLetter.id == offer_id).first()
     if not offer:
@@ -440,7 +450,7 @@ BGV_CHECKS = {
 bgv_records = {}
 
 @router.post("/bgv/start/{candidate_id}")
-def start_bgv(candidate_id: int, request: Request, db: Session = Depends(get_tenant_db)):
+def start_bgv(candidate_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("manage_bgv"))):
     """Start comprehensive BGV process for a candidate"""
     try:
         candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
@@ -544,22 +554,22 @@ def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
     
     if db_bgv:
         # Reset status to Pending if it was auto-set to Cleared
-        if db_bgv.status == "Cleared" and not all([
-            db_bgv.identity_verified,
-            db_bgv.address_verified,
-            db_bgv.employment_verified,
-            db_bgv.education_verified,
-            db_bgv.criminal_verified
-        ]):
-            db_bgv.status = "Pending"
+        if (str(db_bgv.status) == "Cleared" and not (
+            bool(db_bgv.identity_verified) and
+            bool(db_bgv.address_verified) and
+            bool(db_bgv.employment_verified) and
+            bool(db_bgv.education_verified) and
+            bool(db_bgv.criminal_verified)
+        )):
+            setattr(db_bgv, 'status', "Pending")
             db.commit()
         # Calculate progress from database record
         checks = [
-            db_bgv.identity_verified,
-            db_bgv.address_verified,
-            db_bgv.employment_verified,
-            db_bgv.education_verified,
-            db_bgv.criminal_verified
+            bool(db_bgv.identity_verified),
+            bool(db_bgv.address_verified),
+            bool(db_bgv.employment_verified),
+            bool(db_bgv.education_verified),
+            bool(db_bgv.criminal_verified)
         ]
         completed_checks = sum(1 for check in checks if check)
         total_checks = len(checks)
@@ -608,7 +618,7 @@ def get_bgv_details(bgv_id: int, db: Session = Depends(get_tenant_db)):
     }
 
 @router.put("/bgv/update/{bgv_id}")
-def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db: Session = Depends(get_tenant_db)):
+def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("manage_bgv"))):
     """Update BGV status and progress"""
     # Try to find BGV in database first
     db_bgv = db.query(BGV).filter(BGV.id == bgv_id).first()
@@ -616,33 +626,33 @@ def update_bgv_status(bgv_id: int, data: BGVUpdateRequest, request: Request, db:
     if db_bgv:
         # Update database record
         if data.verification_type is not None:
-            db_bgv.verification_type = data.verification_type
+            setattr(db_bgv, 'verification_type', data.verification_type)
         
         if data.agency_name is not None:
-            db_bgv.agency_name = data.agency_name
+            setattr(db_bgv, 'agency_name', data.agency_name)
             if data.agency_name and data.verification_type != "Internal HR Team":
-                db_bgv.verification_type = "Agency"
+                setattr(db_bgv, 'verification_type', "Agency")
         
         if data.status is not None:
-            db_bgv.status = data.status
+            setattr(db_bgv, 'status', data.status)
         
         if data.identity_verified is not None:
-            db_bgv.identity_verified = data.identity_verified
+            setattr(db_bgv, 'identity_verified', data.identity_verified)
         
         if data.address_verified is not None:
-            db_bgv.address_verified = data.address_verified
+            setattr(db_bgv, 'address_verified', data.address_verified)
         
         if data.employment_verified is not None:
-            db_bgv.employment_verified = data.employment_verified
+            setattr(db_bgv, 'employment_verified', data.employment_verified)
         
         if data.education_verified is not None:
-            db_bgv.education_verified = data.education_verified
+            setattr(db_bgv, 'education_verified', data.education_verified)
         
         if data.criminal_verified is not None:
-            db_bgv.criminal_verified = data.criminal_verified
+            setattr(db_bgv, 'criminal_verified', data.criminal_verified)
         
         if data.remarks is not None:
-            db_bgv.remarks = data.remarks
+            setattr(db_bgv, 'remarks', data.remarks)
         
         # Status is only updated when explicitly set through the form
         # No automatic status changes based on checkboxes
@@ -804,7 +814,7 @@ def list_all_bgv(db: Session = Depends(get_tenant_db)):
 # MANUAL BGV COMPLETION FOR ONBOARDED CANDIDATES
 # -----------------------------------------------------------
 @router.post("/bgv/complete/{candidate_id}")
-def complete_bgv_for_candidate(candidate_id: int, db: Session = Depends(get_tenant_db)):
+def complete_bgv_for_candidate(candidate_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("manage_bgv"))):
     """Mark BGV as completed for candidates who have started onboarding"""
     try:
         # Check if candidate exists
@@ -831,13 +841,13 @@ def complete_bgv_for_candidate(candidate_id: int, db: Session = Depends(get_tena
             db.add(db_bgv)
         else:
             # Update existing BGV record
-            db_bgv.status = "Cleared"
-            db_bgv.identity_verified = True
-            db_bgv.address_verified = True
-            db_bgv.employment_verified = True
-            db_bgv.education_verified = True
-            db_bgv.criminal_verified = True
-            db_bgv.remarks = "BGV completed successfully. All verifications cleared."
+            setattr(db_bgv, 'status', "Cleared")
+            setattr(db_bgv, 'identity_verified', True)
+            setattr(db_bgv, 'address_verified', True)
+            setattr(db_bgv, 'employment_verified', True)
+            setattr(db_bgv, 'education_verified', True)
+            setattr(db_bgv, 'criminal_verified', True)
+            setattr(db_bgv, 'remarks', "BGV completed successfully. All verifications cleared.")
         
         db.commit()
         
@@ -861,13 +871,13 @@ def reset_bgv_status(candidate_id: int, db: Session = Depends(get_tenant_db)):
     """Reset BGV status to Pending for testing"""
     db_bgv = db.query(BGV).filter(BGV.candidate_id == candidate_id).first()
     if db_bgv:
-        db_bgv.status = "Pending"
-        db_bgv.identity_verified = False
-        db_bgv.address_verified = False
-        db_bgv.employment_verified = False
-        db_bgv.education_verified = False
-        db_bgv.criminal_verified = False
-        db_bgv.remarks = "BGV reset to pending status"
+        setattr(db_bgv, 'status', "Pending")
+        setattr(db_bgv, 'identity_verified', False)
+        setattr(db_bgv, 'address_verified', False)
+        setattr(db_bgv, 'employment_verified', False)
+        setattr(db_bgv, 'education_verified', False)
+        setattr(db_bgv, 'criminal_verified', False)
+        setattr(db_bgv, 'remarks', "BGV reset to pending status")
         db.commit()
         return {"message": "BGV status reset to Pending"}
     return {"message": "No BGV record found"}
@@ -895,23 +905,14 @@ def list_offers(db: Session = Depends(get_tenant_db)):
         candidate_bgv = None
         bgv_id_found = None
         
-        if db_bgv:
+        if db_bgv is not None:
             # Use database BGV record
-            bgv_status = db_bgv.status
+            bgv_status = str(db_bgv.status)
             # Map database status to display status
-            if bgv_status == "Cleared":
-                display_status = "Cleared"
-            elif bgv_status == "Pending":
-                display_status = "Pending"
-            elif bgv_status == "In Progress":
-                display_status = "In Progress"
-            elif bgv_status == "Failed":
-                display_status = "Failed"
-            else:
-                display_status = bgv_status
+            display_status = bgv_status
         else:
             # If candidate has onboarding record but no BGV, assume BGV is cleared
-            if onboarding_record:
+            if onboarding_record is not None:
                 display_status = "Cleared"
             else:
                 # Fallback to in-memory records
@@ -952,8 +953,8 @@ def list_offers(db: Session = Depends(get_tenant_db)):
             "application_id": offer.candidate_id,
             "bgv_status": display_status,
             "bgv_overall_status": display_status,
-            "bgv_id": db_bgv.id if db_bgv else bgv_id_found,
-            "bgv_agency": db_bgv.agency_name if db_bgv else (candidate_bgv["agency"] if candidate_bgv else None)
+            "bgv_id": db_bgv.id if db_bgv is not None else bgv_id_found,
+            "bgv_agency": str(db_bgv.agency_name) if db_bgv is not None and db_bgv.agency_name is not None else (candidate_bgv["agency"] if candidate_bgv else None)
         }
         
         enriched_offers.append(offer_dict)

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import io
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -17,6 +17,7 @@ from schemas.schemas_tenant import (
     ConsultantPayoutCreate, ConsultantPayoutOut
 )
 from utils.email import send_email
+from routes.hospital import get_current_user, check_permission
 
 router = APIRouter()
 
@@ -30,11 +31,18 @@ def test_endpoint():
 # =====================================================
 
 @router.get("/consultants", response_model=List[VisitingConsultantOut])
-def get_consultants(db: Session = Depends(get_tenant_db)):
-    return db.query(VisitingConsultant).all()
+def get_consultants(status: Optional[str] = None, consultant_type: Optional[str] = None, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_consultants"))):
+    query = db.query(VisitingConsultant)
+    
+    if status:
+        query = query.filter(VisitingConsultant.status == status)
+    if consultant_type:
+        query = query.filter(VisitingConsultant.consultant_type == consultant_type)
+    
+    return query.all()
 
 @router.post("/consultants", response_model=VisitingConsultantOut)
-def create_consultant(consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_consultant(consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("add_consultant"))):
     db_consultant = VisitingConsultant(**consultant.model_dump())
     db.add(db_consultant)
     db.commit()
@@ -46,7 +54,7 @@ def create_consultant(consultant: VisitingConsultantCreate, request: Request, db
     return db_consultant
 
 @router.put("/consultants/{consultant_id}", response_model=VisitingConsultantOut)
-def update_consultant(consultant_id: int, consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_consultant(consultant_id: int, consultant: VisitingConsultantCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("edit_consultant"))):
     db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == consultant_id).first()
     if not db_consultant:
         raise HTTPException(status_code=404, detail="Consultant not found")
@@ -64,30 +72,32 @@ def update_consultant(consultant_id: int, consultant: VisitingConsultantCreate, 
     return db_consultant
 
 @router.delete("/consultants/{consultant_id}")
-def delete_consultant(consultant_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def delete_consultant(consultant_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("delete_consultant"))):
     db_consultant = db.query(VisitingConsultant).filter(VisitingConsultant.id == consultant_id).first()
     if not db_consultant:
         raise HTTPException(status_code=404, detail="Consultant not found")
     
-    consultant_name = db_consultant.name
-    db.delete(db_consultant)
+    old_status = db_consultant.status
+    # Soft delete - set status to Inactive instead of deleting
+    setattr(db_consultant, 'status', 'Inactive')
     db.commit()
+    db.refresh(db_consultant)
     
     # Audit log
-    audit_crud(request, db, user, "DELETE_CONSULTANT", "visiting_consultants", str(consultant_id), {"name": consultant_name}, {})
+    audit_crud(request, db, user, "DEACTIVATE_CONSULTANT", "visiting_consultants", str(consultant_id), {"status": old_status}, {"status": "Inactive"})
     
-    return {"message": "Consultant deleted successfully"}
+    return {"message": "Consultant deactivated successfully"}
 
 # =====================================================
 # CONSULTANT AVAILABILITY
 # =====================================================
 
 @router.get("/consultants/availability", response_model=List[ConsultantAvailabilityOut])
-def get_all_availability(db: Session = Depends(get_tenant_db)):
+def get_all_availability(db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_availability"))):
     return db.query(ConsultantAvailability).all()
 
 @router.post("/consultants/availability", response_model=ConsultantAvailabilityOut)
-def create_availability_general(availability: ConsultantAvailabilityCreate, db: Session = Depends(get_tenant_db)):
+def create_availability_general(availability: ConsultantAvailabilityCreate, db: Session = Depends(get_tenant_db), user = Depends(check_permission("add_availability"))):
     db_availability = ConsultantAvailability(**availability.model_dump())
     db.add(db_availability)
     db.commit()
@@ -113,7 +123,7 @@ def create_availability(consultant_id: int, availability: ConsultantAvailability
 # =====================================================
 
 @router.get("/consultants/payouts", response_model=List[ConsultantPayoutOut])
-def get_all_payouts(db: Session = Depends(get_tenant_db)):
+def get_all_payouts(db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_payouts"))):
     return db.query(ConsultantPayout).all()
 
 @router.post("/consultants/payouts", response_model=ConsultantPayoutOut)
@@ -143,7 +153,7 @@ def create_payout(consultant_id: int, payout: ConsultantPayoutCreate, db: Sessio
     return db_payout
 
 @router.put("/consultants/payouts/{payout_id}/process", response_model=ConsultantPayoutOut)
-def process_payroll(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def process_payroll(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("process_payroll"))):
     db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
     if not db_payout:
         raise HTTPException(status_code=404, detail="Payout not found")
@@ -173,7 +183,7 @@ def update_payout(payout_id: int, payout: ConsultantPayoutCreate, db: Session = 
     return db_payout
 
 @router.get("/consultants/payouts/{payout_id}/payslip")
-def generate_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
+def generate_payslip(payout_id: int, db: Session = Depends(get_tenant_db), user = Depends(check_permission("generate_payslip"))):
     # Get payout and consultant details
     db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
     if not db_payout:
@@ -248,7 +258,7 @@ def generate_payslip(payout_id: int, db: Session = Depends(get_tenant_db)):
     )
 
 @router.post("/consultants/payouts/{payout_id}/email-payslip")
-def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def email_payslip(payout_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("send_payslip_email"))):
     # Get payout and consultant details
     db_payout = db.query(ConsultantPayout).filter(ConsultantPayout.id == payout_id).first()
     if not db_payout:

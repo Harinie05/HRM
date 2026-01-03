@@ -4,6 +4,7 @@ import api from "../../api";
 import { FiUsers, FiCalendar, FiClock, FiArrowRight, FiFilter, FiSearch, FiEye, FiUserCheck, FiUserX } from "react-icons/fi";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function ATS() {
   const { toast, showToast } = useToast();
@@ -21,6 +22,24 @@ export default function ATS() {
     interview_time: "",
     custom_round_name: ""
   });
+
+  // Check permissions
+  const canViewActiveJobs = hasPermission('view_active_jobs');
+  const canViewATSCandidates = hasPermission('view_ats_candidates');
+  const canMoveCandidates = hasPermission('move_candidates');
+
+  if (!canViewActiveJobs) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Access Denied</h2>
+            <p className="text-red-600">You don't have permission to view active jobs.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   // Fetch jobs
   const fetchJobs = async () => {
@@ -47,11 +66,19 @@ export default function ATS() {
   }, []);
 
   const handleJobSelect = (job) => {
+    if (!canViewATSCandidates) {
+      showToast("You don't have permission to view ATS candidates", "error");
+      return;
+    }
     setSelectedJob(job);
     fetchCandidates(job.id);
   };
 
   const handleMoveCandidate = (candidate) => {
+    if (!canMoveCandidates) {
+      showToast("You don't have permission to move candidates", "error");
+      return;
+    }
     setSelectedCandidate(candidate);
     const nextRound = candidate.current_round + 1;
     setMoveForm({
@@ -295,13 +322,15 @@ export default function ATS() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center space-x-2">
-                          <button
-                            onClick={() => handleMoveCandidate(candidate)}
-                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                          >
-                            <FiArrowRight className="mr-1" size={12} />
-                            Move
-                          </button>
+                          {canMoveCandidates && (
+                            <button
+                              onClick={() => handleMoveCandidate(candidate)}
+                              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                            >
+                              <FiArrowRight className="mr-1" size={12} />
+                              Move
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

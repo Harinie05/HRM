@@ -23,7 +23,7 @@ import database
 DEFAULT_PERMISSIONS = [
 
     # =====================================================
-    # USER MANAGEMENT
+    # 👥 USER MANAGEMENT
     # =====================================================
 
     # Users
@@ -46,26 +46,26 @@ DEFAULT_PERMISSIONS = [
 
 
     # =====================================================
-    # ORGANIZATION SETUP
+    # 🏢 ORGANIZATION SETUP
     # =====================================================
 
-    # Company Profile (view + create)
+    # Company Profile
     {"name": "view_company_profile", "description": "Can view company profile"},
     {"name": "add_company_profile", "description": "Can add company profile"},
 
-    # Branch / Unit (view + create)
+    # Branch / Unit
     {"name": "view_branch", "description": "Can view branch"},
     {"name": "add_branch", "description": "Can add branch"},
 
-    # Department (view only)
+    # Department
     {"name": "view_department", "description": "Can view department"},
 
-    # Designation (view only)
+    # Designation
     {"name": "view_designation", "description": "Can view designation"},
 
 
     # =====================================================
-    # REPORTING STRUCTURE
+    # 📊 REPORTING STRUCTURE
     # =====================================================
 
     # Reporting Levels
@@ -82,13 +82,93 @@ DEFAULT_PERMISSIONS = [
 
 
     # =====================================================
-    # HOLIDAY CALENDAR
+    # 📅 HOLIDAY CALENDAR
     # =====================================================
 
     {"name": "view_holiday", "description": "Can view holiday"},
     {"name": "add_holiday", "description": "Can add holiday"},
     {"name": "edit_holiday", "description": "Can edit holiday"},
     {"name": "delete_holiday", "description": "Can delete holiday"},
+
+
+    # =====================================================
+    # 💼 JOB REQUISITION
+    # =====================================================
+
+    {"name": "view_job_requisition", "description": "Can view job requisitions"},
+    {"name": "add_job_requisition", "description": "Can add job requisition"},
+    {"name": "edit_job_requisition", "description": "Can edit job requisition"},
+    {"name": "delete_job_requisition", "description": "Can delete job requisition"},
+   
+
+    # =====================================================
+    # 🎯 RECRUITMENT SETUP
+    # =====================================================
+
+    {"name": "view_candidates", "description": "Can view candidates"},
+    {"name": "edit_candidates", "description": "Can edit candidates"},
+    {"name": "screen_candidates", "description": "Can screen candidates"},
+    {"name": "generate_job_link", "description": "Can generate job application links"},
+    {"name": "publish_job", "description": "Can publish job requisitions"},
+    {"name": "delete_candidates", "description": "Can delete candidates"},
+
+    # Screen Candidates Page
+    {"name": "view_candidate", "description": "Can view candidate details in screening"},
+    {"name": "select_candidates", "description": "Can select candidates"},
+    {"name": "schedule_interviews", "description": "Can schedule interviews"},
+    {"name": "view_resumes", "description": "Can view candidate resumes"},
+    {"name": "view_ats_pipeline", "description": "Can view ATS pipeline"},
+
+    # ATS Page
+    {"name": "move_candidates", "description": "Can move candidates in ATS pipeline"},
+    {"name": "view_active_jobs", "description": "Can view active jobs in ATS"},
+    {"name": "view_ats_candidates", "description": "Can view candidates in ATS"},
+
+
+    # =====================================================
+    # 📄 OFFERS & CONTRACTS
+    # =====================================================
+
+    {"name": "generate_offer_link", "description": "Can generate offer links"},
+    {"name": "verify_documents", "description": "Can verify candidate documents"},
+    {"name": "view_documents", "description": "Can view candidate documents"},
+    {"name": "manage_bgv", "description": "Can manage background verification"},
+    {"name": "start_onboarding", "description": "Can start candidate onboarding"},
+    {"name": "mark_onboarded", "description": "Can mark candidates as onboarded"},
+    {"name": "view_offers_sent", "description": "Can view offers sent table"},
+    {"name": "view_selected_candidates", "description": "Can view selected candidates table"},
+
+
+    # =====================================================
+    # 🎓 ONBOARDING
+    # =====================================================
+
+    {"name": "view_onboarding_documents", "description": "Can view onboarding documents"},
+    {"name": "view_onboarding_candidates", "description": "Can view onboarding candidates"},
+    {"name": "view_document_collected", "description": "Can view document collected status"},
+    {"name": "add_document_collected", "description": "Can add document collected status"},
+
+
+    # =====================================================
+    # 🩺 CONSULTANTS
+    # =====================================================
+
+    # Consultant Management
+    {"name": "view_consultants", "description": "Can view consultants"},
+    {"name": "add_consultant", "description": "Can add consultant"},
+    {"name": "edit_consultant", "description": "Can edit consultant"},
+    {"name": "delete_consultant", "description": "Can delete/deactivate consultant"},
+
+    # Availability Management
+    {"name": "view_availability", "description": "Can view consultant availability"},
+    {"name": "add_availability", "description": "Can add consultant availability"},
+
+    # Payout Management
+    {"name": "view_payouts", "description": "Can view consultant payouts"},
+    {"name": "generate_payslip", "description": "Can generate payslips"},
+    {"name": "send_payslip_email", "description": "Can send payslip emails"},
+    {"name": "process_payroll", "description": "Can process payroll"},
+
 ]
 
 # -------------------------------------------------------------

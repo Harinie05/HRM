@@ -9,7 +9,7 @@ from schemas.schemas_tenant import (
     JobReqUpdate,
     JobReqOut
 )
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, check_permission
 import uuid
 import os
 from datetime import datetime
@@ -38,7 +38,7 @@ async def debug_create_job(request: Request):
     return {"received": body.decode()}
 
 @router.post("/create", response_model=JobReqOut)
-def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("add_job_requisition"))):
     logger.info(f"Creating job with data: {req.dict()}")
 
     job = JobRequisition(
@@ -81,7 +81,7 @@ def create_job(req: JobReqCreate, request: Request, db: Session = Depends(get_te
 # UPDATE JOB REQUISITION
 # ----------------------------------------------------------
 @router.put("/update/{job_id}", response_model=JobReqOut)
-def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("edit_job_requisition"))):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -106,7 +106,7 @@ def update_job(job_id: int, req: JobReqUpdate, request: Request, db: Session = D
 # UPLOAD ATTACHMENT (JD PDF or Job Description File)
 # ----------------------------------------------------------
 @router.post("/upload-attachment/{job_id}")
-def upload_attachment(job_id: int, file: UploadFile = File(...), request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def upload_attachment(job_id: int, request: Request, file: UploadFile = File(...), db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
 
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
@@ -131,7 +131,7 @@ def upload_attachment(job_id: int, file: UploadFile = File(...), request: Reques
 # GET ALL JOBS
 # ----------------------------------------------------------
 @router.get("/list", response_model=List[JobReqOut])
-def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):    # Force refresh from database
+def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_job_requisition"))):    # Force refresh from database
     db.commit()  # Ensure any pending changes are committed
     jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
     return jobs
@@ -140,7 +140,7 @@ def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Dep
 # GET SINGLE JOB DETAILS
 # ----------------------------------------------------------
 @router.get("/view/{job_id}", response_model=JobReqOut)
-def view_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def view_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_job_requisition"))):
     audit_crud(request, db, user, "VIEW_JOB_REQUISITION", "job_requisitions", str(job_id), {}, {"job_id": job_id})
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
@@ -152,7 +152,7 @@ def view_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db)
 # UPDATE JOB STATUS (ACTIVATE/DEACTIVATE)
 # ----------------------------------------------------------
 @router.put("/update-status/{job_id}")
-def update_job_status(job_id: int, status_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_job_status(job_id: int, status_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("publish_job"))):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -173,7 +173,7 @@ def update_job_status(job_id: int, status_data: dict, request: Request, db: Sess
 # DELETE JOB REQUISITION
 # ----------------------------------------------------------
 @router.delete("/delete/{job_id}")
-def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("delete_job_requisition"))):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -191,7 +191,7 @@ def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_d
 # GENERATE PUBLIC APPLY LINK
 # ----------------------------------------------------------
 @router.post("/generate-link/{job_id}")
-def generate_job_link(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def generate_job_link(job_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("generate_job_link"))):
     job = db.query(JobRequisition).filter(JobRequisition.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")

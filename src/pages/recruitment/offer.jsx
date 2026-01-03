@@ -8,12 +8,23 @@ import Layout from "../../components/Layout";
 import api from "../../api";
 import { FiMail, FiFileText, FiCheck, FiX, FiEye, FiLink, FiUser, FiCalendar, FiDollarSign, FiShield, FiUpload } from "react-icons/fi";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 import useToast from "../../utils/useToast";
 
 export default function Offer() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState([]);
   const [selected, setSelected] = useState(null);
+
+  // Check permissions
+  const canGenerateOfferLink = hasPermission('generate_offer_link');
+  const canVerifyDocuments = hasPermission('verify_documents');
+  const canViewDocuments = hasPermission('view_documents');
+  const canManageBGV = hasPermission('manage_bgv');
+  const canStartOnboarding = hasPermission('start_onboarding');
+  const canMarkOnboarded = hasPermission('mark_onboarded');
+  const canViewOffersSent = hasPermission('view_offers_sent');
+  const canViewSelectedCandidates = hasPermission('view_selected_candidates');
 
   const [offerForm, setOfferForm] = useState({
     candidate_id: "",
@@ -458,7 +469,7 @@ export default function Offer() {
         </div>
 
         {/* ==================== SENT OFFERS TABLE ==================== */}
-        {offers.length > 0 && (
+        {offers.length > 0 && canViewOffersSent && (
           <div className="mb-10">
             <div className="bg-white rounded-2xl border border-black">
               <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
@@ -553,7 +564,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 1: Generate Document Upload Link */}
-                            {(o.offer_status === "Accepted" || o.offer_status === "Draft") && (
+                            {(o.offer_status === "Accepted" || o.offer_status === "Draft") && canGenerateOfferLink && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
                                 onClick={() => generateDocumentLink(o.id)}
@@ -564,7 +575,7 @@ export default function Offer() {
                             )}
 
                             {/* Document Verification Button for Draft Status */}
-                            {o.offer_status === "Draft" && (
+                            {o.offer_status === "Draft" && canVerifyDocuments && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                                 onClick={() => {
@@ -578,7 +589,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 2: View Documents */}
-                            {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && (
+                            {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && canViewDocuments && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                                 onClick={() => viewDocuments(o.id)}
@@ -589,7 +600,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 3: Manage BGV */}
-                            {o.offer_status === "Documents Verified" && (
+                            {o.offer_status === "Documents Verified" && canManageBGV && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
                                 onClick={() => {
@@ -606,7 +617,7 @@ export default function Offer() {
                             )}
 
                             {/* Step 4: Start Onboarding */}
-                            {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && (
+                            {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && canStartOnboarding && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
                                 onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
@@ -617,7 +628,7 @@ export default function Offer() {
                             )}
 
                             {/* Onboarding Started Status - Show Onboarded Button */}
-                            {o.offer_status === "Onboarding Started" && (
+                            {o.offer_status === "Onboarding Started" && canMarkOnboarded && (
                               <button
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                                 onClick={() => handleOnboarded(o.id)}
@@ -647,6 +658,7 @@ export default function Offer() {
         )}
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
+        {canViewSelectedCandidates && (
         <div className="bg-white rounded-2xl border border-black">
           <div className="px-6 py-4 border-b border-gray-100">
             <div className="flex items-center justify-between">
@@ -732,6 +744,7 @@ export default function Offer() {
             </div>
           )}
         </div>
+        )}
 
           {/* ================================================================== */}
           {/*                         OFFER MODAL                               */}
