@@ -2,10 +2,32 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function HolidayCalendar() {
   const { toast, showToast } = useToast();
   const tenant_db = localStorage.getItem("tenant_db");
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_holiday");
+  const canAdd = isAdmin() || hasPermission("add_holiday");
+  const canEdit = isAdmin() || hasPermission("edit_holiday");
+  const canDelete = isAdmin() || hasPermission("delete_holiday");
+
+  // Block access if no view permission
+  if (!canView) {
+    return (
+      <div className="bg-white rounded-2xl border border-black p-8 text-center">
+        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+        <p className="text-gray-600">You do not have permission to view Holiday Calendar.</p>
+      </div>
+    );
+  }
 
   // Form States
   const [form, setForm] = useState({
@@ -51,6 +73,17 @@ export default function HolidayCalendar() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
+    if (editingId && !canEdit) {
+      showToast("You do not have permission to edit holidays", "error");
+      return;
+    }
+    
+    if (!editingId && !canAdd) {
+      showToast("You do not have permission to add holidays", "error");
+      return;
+    }
+    
     setLoading(true);
     try {
       if (editingId) {
@@ -97,6 +130,11 @@ export default function HolidayCalendar() {
   };
 
   const deleteHoliday = async (id) => {
+    if (!canDelete) {
+      showToast("You do not have permission to delete holidays", "error");
+      return;
+    }
+    
     if (!window.confirm("Delete this holiday?")) return;
     try {
       await api.delete(`/holidays/delete/${id}`);
@@ -247,30 +285,32 @@ export default function HolidayCalendar() {
           </div>
 
           {/* Submit Button */}
-          <div className="mt-8 flex justify-end">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
-            >
-              {loading ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  {editingId ? 'Update Holiday' : 'Save Changes'}
-                </>
-              )}
-            </button>
-          </div>
+          {(canAdd || (editingId && canEdit)) && (
+            <div className="mt-8 flex justify-end">
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {editingId ? 'Update Holiday' : 'Save Changes'}
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </form>
 
         {/* View All Holidays Section */}
@@ -334,24 +374,28 @@ export default function HolidayCalendar() {
                           </svg>
                         </div>
                         <div className="flex gap-2">
-                          <button 
-                            onClick={() => loadHolidayForEdit(holiday)}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
-                            title="Edit"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button 
-                            onClick={() => deleteHoliday(holiday.id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
+                          {canEdit && (
+                            <button 
+                              onClick={() => loadHolidayForEdit(holiday)}
+                              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
+                              title="Edit"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button 
+                              onClick={() => deleteHoliday(holiday.id)}
+                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Delete"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
                         </div>
                       </div>
                       

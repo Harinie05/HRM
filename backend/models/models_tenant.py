@@ -11,6 +11,8 @@ class Role(MasterBase):
     id = Column(Integer, primary_key=True)
     name = Column(String(150), unique=True, nullable=False)
     description = Column(String(255))
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
 
 class Permission(MasterBase):
     __tablename__ = "permissions"

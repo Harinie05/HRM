@@ -12,6 +12,7 @@ export default function Roles() {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // NEW ROLE
@@ -29,10 +30,10 @@ export default function Roles() {
   // ------------------------------------
   // PERMISSION CHECK
   // ------------------------------------
-  const canView = isAdmin() || hasPermission("view_roles");
-  const canAdd = isAdmin() || hasPermission("add_role");
-  const canEdit = isAdmin() || hasPermission("edit_role");
-  const canDelete = isAdmin() || hasPermission("delete_role");
+  const canView = isAdmin() || hasPermission("view_user_roles");
+  const canAdd = isAdmin() || hasPermission("add_user_role");
+  const canEdit = isAdmin() || hasPermission("edit_user_role");
+  const canDelete = isAdmin() || hasPermission("delete_user_role");
 
   if (!canView) {
     return (
@@ -56,9 +57,9 @@ export default function Roles() {
     }
   };
 
-  const fetchRoles = async () => {
+  const fetchRoles = async (status = statusFilter) => {
     try {
-      const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/roles/${tenant_db}/list?status=${status}`);
       setRoles(res.data.roles);
     } catch (err) {
       console.error("Role load error:", err);
@@ -68,7 +69,7 @@ export default function Roles() {
   useEffect(() => {
     fetchPermissions();
     fetchRoles();
-  }, []);
+  }, [statusFilter]);
 
   const togglePerm = (perm, setter, list) => {
     if (list.includes(perm)) {
@@ -179,6 +180,18 @@ export default function Roles() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">Status:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
             <div className="relative flex-1">
               <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -291,8 +304,8 @@ export default function Roles() {
                       
                       <div className="pt-3 border-t border-gray-100">
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>Active Role</span>
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                          <span>{role.is_active !== false ? 'Active Role' : 'Inactive Role'}</span>
+                          <div className={`w-2 h-2 rounded-full ${role.is_active !== false ? 'bg-green-400' : 'bg-red-400'}`}></div>
                         </div>
                       </div>
                     </div>

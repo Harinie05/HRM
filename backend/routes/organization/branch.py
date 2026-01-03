@@ -7,7 +7,7 @@ from models.models_tenant import Branch
 from schemas.schemas_tenant import BranchBase, BranchResponse
 
 # 🔐 added for authentication
-from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 @router.get("/branch", response_model=BranchResponse | dict)
 def get_branch(
     tenant: str = Header(...),
-    user = Depends(get_current_user)  # 🔐 Token required
+    user = Depends(require_permission("view_branch"))  # 🔐 Token required
 ):
     try:
         logger.info(f"Getting branch info for tenant {tenant} by user {user.get('email')}")
@@ -41,7 +41,7 @@ def save_branch(
     data: BranchBase,
     request: Request,
     tenant: str = Header(...),
-    user = Depends(get_current_user)  # 🔐 Token required
+    user = Depends(require_permission("add_branch"))  # 🔐 Token required
 ):
     try:
         logger.info(f"Saving branch data for tenant {tenant} by user {user.get('email')}")

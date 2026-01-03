@@ -61,8 +61,15 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       }
 
       const response = await api.get(`/hospitals/users/${tenant}/list`);
+      console.log('🔍 Full API response:', response.data);
       const users = response.data.users || [];
+      console.log('🔍 All users from API:', users);
+      users.forEach((user, index) => {
+        console.log(`User ${index}:`, user.name, user.email, user.employee_code);
+      });
       const currentUser = users.find(user => user.email === currentEmail);
+      console.log('🎯 Found current user:', currentUser);
+      console.log('🔍 Looking for email:', currentEmail);
       
       let displayId = null;
       
@@ -95,6 +102,13 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         }
         
         setUserInfo({
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email,
+          role: currentUser.role_name || currentUser.role || 'Employee',
+          employee_code: displayId
+        });
+        console.log('Final userInfo set:', {
           id: currentUser.id,
           name: currentUser.name,
           email: currentUser.email,
@@ -374,7 +388,7 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
                 {userInfo.name}
               </p>
               <p className="text-xs text-blue-200 truncate">
-                {userInfo.role}
+                {userInfo.employee_code ? `${userInfo.employee_code} • ${userInfo.role}` : userInfo.role}
               </p>
             </div>
 

@@ -59,8 +59,8 @@ export default function Dashboard() {
 
   // ========================= VIEW AUDIT LOGS =========================
   const viewAuditLogs = () => {
-    // Open audit logs in a new window/tab or modal
-    window.open('/audit-logs', '_blank');
+    // Navigate to audit logs in the same tab
+    window.location.href = '/audit-logs';
   };
   const fetchDocumentAlerts = async () => {
     try {

@@ -6,7 +6,7 @@ from utils.audit_logger import audit_crud
 from models.models_master import Hospital
 from models.models_tenant import Holiday
 from schemas.schemas_tenant import HolidayCreate, HolidayOut
-from routes.hospital import get_current_user
+from utils.permission import require_permission
 from typing import List
 
 router = APIRouter(prefix="/holidays", tags=["Holiday Calendar"])
@@ -22,7 +22,7 @@ def get_tenant_session(user):
 
 # ---------------- CREATE ----------------
 @router.post("/create", response_model=HolidayOut)
-def create_holiday(data: HolidayCreate, request: Request, user = Depends(get_current_user)):
+def create_holiday(data: HolidayCreate, request: Request, user = Depends(require_permission("add_holiday"))):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY CREATE] User:{user.get('email')} - {data.name}")
 
@@ -41,14 +41,14 @@ def create_holiday(data: HolidayCreate, request: Request, user = Depends(get_cur
 
 # ---------------- LIST ----------------
 @router.get("/list", response_model=List[HolidayOut])
-def list_holidays(user = Depends(get_current_user)):
+def list_holidays(user = Depends(require_permission("view_holiday"))):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY LIST] User:{user.get('email')}")
     return db.query(Holiday).order_by(Holiday.date.asc()).all()
 
 # ---------------- DELETE ----------------
 @router.delete("/delete/{id}")
-def delete_holiday(id: int, request: Request, user = Depends(get_current_user)):
+def delete_holiday(id: int, request: Request, user = Depends(require_permission("delete_holiday"))):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY DELETE] ID:{id} User:{user.get('email')}")
 
@@ -64,7 +64,7 @@ def delete_holiday(id: int, request: Request, user = Depends(get_current_user)):
 
 # ---------------- UPDATE (For Edit Later) ----------------
 @router.put("/update/{id}", response_model=HolidayOut)
-def update_holiday(id: int, data: HolidayCreate, request: Request, user = Depends(get_current_user)):
+def update_holiday(id: int, data: HolidayCreate, request: Request, user = Depends(require_permission("edit_holiday"))):
     db = get_tenant_session(user)
     logger.info(f"[HOLIDAY UPDATE] ID:{id} User:{user.get('email')}")
 

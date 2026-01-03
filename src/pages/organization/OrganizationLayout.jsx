@@ -8,7 +8,6 @@ import Branch from "./Branch";
 import DepartmentList from "./DepartmentList";
 import DesignationList from "./Designation";
 import ReportingStructure from "./ReportingStructure";
-import Shifts from "./Shifts";
 
 import HolidayCalender from "./HolidayCalender";
 import PolicySetup from "./PolicySetup";
@@ -25,7 +24,6 @@ export default function OrganizationLayout() {
     "Department",
     "Designation",
     "Reporting Structure",
-    "Shifts & Roster",
     "Holiday Calendar"
   ];
 
@@ -92,7 +90,6 @@ export default function OrganizationLayout() {
           {tab === "Branch / Unit" && <Branch />}
           {tab === "Department" && <DepartmentList />}
           {tab === "Designation" && <DesignationList />}
-          {tab === "Shifts & Roster" && <Shifts />}
           {tab === "Reporting Structure" && <ReportingStructure />}
           {tab === "Grades / Pay Structure" && <GradePayStructure />}
           {tab === "Grades / Pay Structure" && <GradePayStructure />}

@@ -33,7 +33,7 @@ def create_department(
     payload: DepartmentBase,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(check_permission("add_department"))
+    user = Depends(check_permission("add_user_department"))
 ):
     try:
         logger.info(f"Creating department '{payload.name}' in tenant {tenant_db} by user {user.get('email')}")
@@ -49,8 +49,8 @@ def create_department(
                 raise HTTPException(400, f"Department '{existing.name}' already exists")
 
         sql = text("""
-            INSERT INTO departments (name, description)
-            VALUES (:name, :description)
+            INSERT INTO departments (name, description, is_active)
+            VALUES (:name, :description, 1)
         """)
 
         with engine.connect() as conn:
@@ -80,8 +80,9 @@ def create_department(
 @router.get("/departments/{tenant_db}/list")
 def list_departments(
     tenant_db: str,
+    status: str = "active",
     db: Session = Depends(database.get_master_db),
-    user = Depends(check_permission("view_departments"))
+    user = Depends(check_permission("view_user_departments"))
 ):
     logger.info(f"Listing departments for tenant {tenant_db} by user {user.get('email')}")
 
@@ -89,9 +90,28 @@ def list_departments(
     engine = database.get_tenant_engine(str(hospital.db_name))
 
     with engine.connect() as conn:
-        rows = conn.execute(text("SELECT * FROM departments")).fetchall()
+        if status == "active":
+            query = "SELECT * FROM departments WHERE is_active = 1"
+        elif status == "inactive":
+            query = "SELECT * FROM departments WHERE is_active = 0"
+        else:  # all
+            query = "SELECT * FROM departments"
+            
+        rows = conn.execute(text(query)).fetchall()
 
     return {"departments": [dict(r._mapping) for r in rows]}
+
+# --------------------------------------------------------
+# LIST DEPARTMENTS (hospitals endpoint) 🔒 Protected
+# --------------------------------------------------------
+@router.get("/hospitals/departments/{tenant_db}/list")
+def list_departments_hospitals(
+    tenant_db: str,
+    status: str = "active",
+    db: Session = Depends(database.get_master_db),
+    user = Depends(check_permission("view_user_departments"))
+):
+    return list_departments(tenant_db, status, db, user)
 
 # --------------------------------------------------------
 # UPDATE DEPARTMENT 🔒 Protected
@@ -103,7 +123,7 @@ def update_department(
     payload: DepartmentBase,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(check_permission("edit_department"))
+    user = Depends(check_permission("edit_user_department"))
 ):
     logger.info(f"Updating department {dept_id} in tenant {tenant_db} by user {user.get('email')}")
 
@@ -137,7 +157,7 @@ def update_department(
     return {"detail": "Department updated successfully"}
 
 # --------------------------------------------------------
-# DELETE DEPARTMENT 🔒 Protected
+# DELETE DEPARTMENT 🔒 Protected (Soft Delete)
 # --------------------------------------------------------
 @router.delete("/departments/{tenant_db}/delete/{dept_id}")
 def delete_department(
@@ -145,19 +165,20 @@ def delete_department(
     dept_id: int,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(check_permission("delete_department"))
+    user = Depends(check_permission("delete_user_department"))
 ):
-    logger.info(f"Deleting department {dept_id} from tenant {tenant_db} by user {user.get('email')}")
+    logger.info(f"Soft deleting department {dept_id} from tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
 
     # Get old values for audit
     with engine.connect() as conn:
-        old_dept = conn.execute(text("SELECT name, description FROM departments WHERE id = :id"), {"id": dept_id}).fetchone()
+        old_dept = conn.execute(text("SELECT name, description, is_active FROM departments WHERE id = :id"), {"id": dept_id}).fetchone()
         old_values = dict(old_dept._mapping) if old_dept else None
 
-    sql = text("DELETE FROM departments WHERE id = :id")
+    # Soft delete by setting is_active = 0
+    sql = text("UPDATE departments SET is_active = 0 WHERE id = :id")
 
     with engine.connect() as conn:
         conn.execute(sql, {"id": dept_id})
@@ -169,3 +190,16 @@ def delete_department(
             audit_crud(request, tdb, user, "DELETE_DEPARTMENT", "departments", str(dept_id), old_values or {}, {})
 
     return {"detail": "Department deleted successfully"}
+
+# --------------------------------------------------------
+# DELETE DEPARTMENT (hospitals endpoint) 🔒 Protected
+# --------------------------------------------------------
+@router.delete("/hospitals/departments/{tenant_db}/delete/{dept_id}")
+def delete_department_hospitals(
+    tenant_db: str,
+    dept_id: int,
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(check_permission("delete_user_department"))
+):
+    return delete_department(tenant_db, dept_id, request, db, user)

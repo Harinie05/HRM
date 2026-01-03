@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from models.models_master import Hospital
-from models.models_tenant import User, Role, Department
+from models.models_tenant import User, Role, Department, OnboardingCandidate
 import schemas.schemas_tenant as schemas_tenant
 import database
 from database import logger
@@ -84,6 +84,7 @@ def create_user(
 @router.get("/users/{tenant_db}/list")
 def list_users(
     tenant_db: str,
+    status: str = "active",
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
@@ -94,12 +95,27 @@ def list_users(
     tdb = Session(bind=engine)
 
     with tdb:
-        users = tdb.query(User).all()
+        if status == "active":
+            users = tdb.query(User).filter(User.status == "Active").all()
+        elif status == "inactive":
+            users = tdb.query(User).filter(User.status == "Inactive").all()
+        else:  # all
+            users = tdb.query(User).all()
 
         output = []
         for u in users:
             role_name = u.role.name if u.role else "No Role"
             dept_name = u.department.name if u.department else "No Department"
+            
+            # Get employee code from user table or onboarding table
+            employee_code = getattr(u, 'employee_code', None)
+            if not employee_code:
+                # Check onboarding_candidates table for employee_id
+                onboarding = tdb.query(OnboardingCandidate).filter(
+                    OnboardingCandidate.candidate_name == u.name
+                ).first()
+                if onboarding:
+                    employee_code = onboarding.employee_id
             
             output.append({
                 "id": u.id,
@@ -111,12 +127,12 @@ def list_users(
                 "department_id": u.department_id,
                 "department": dept_name,
                 "department_name": dept_name,
-                "employee_code": getattr(u, 'employee_code', None),
+                "employee_code": employee_code,
                 "employee_type": getattr(u, 'employee_type', None),
                 "designation": getattr(u, 'designation', None),
                 "joining_date": str(getattr(u, 'joining_date', None)) if getattr(u, 'joining_date', None) else None,
                 "status": getattr(u, 'status', 'Active'),
-                "is_employee": bool(getattr(u, 'employee_code', None)),
+                "is_employee": bool(employee_code),
                 "created_at": str(u.created_at)
             })
 
@@ -128,10 +144,11 @@ def list_users(
 @router.get("/hospitals/users/{tenant_db}/list")
 def list_users_hospitals(
     tenant_db: str,
+    status: str = "active",
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    return list_users(tenant_db, db, user)
+    return list_users(tenant_db, status, db, user)
 
 # ============================================================
 # UPDATE USER 🔒 Protected
@@ -194,7 +211,7 @@ def update_user_alt(
     return update_user(tenant_db, user_id, payload, request, db, user)
 
 # ============================================================
-# DELETE USER 🔒 Protected
+# DELETE USER 🔒 Protected (Soft Delete)
 # ============================================================
 @router.delete("/users/{tenant_db}/delete/{user_id}")
 def delete_user(
@@ -204,7 +221,7 @@ def delete_user(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    logger.info(f"Deleting user {user_id} from tenant {tenant_db} by user {user.get('email')}")
+    logger.info(f"Soft deleting user {user_id} from tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -216,12 +233,26 @@ def delete_user(
             raise HTTPException(404, "User not found")
 
         # Store old values for audit
-        old_values = {"name": user_to_delete.name, "email": user_to_delete.email}
+        old_values = {"name": user_to_delete.name, "email": user_to_delete.email, "status": user_to_delete.status}
 
-        tdb.delete(user_to_delete)
+        # Soft delete by setting status to Inactive
+        user_to_delete.status = "Inactive"
         tdb.commit()
         
         # Audit log
-        audit_crud(request, tdb, user, "DELETE_USER", "users", str(user_id), old_values, {})
+        audit_crud(request, tdb, user, "DELETE_USER", "users", str(user_id), old_values, {"status": "Inactive"})
 
         return {"detail": "User deleted"}
+
+# ============================================================
+# DELETE USER (hospitals endpoint) 🔒 Protected
+# ============================================================
+@router.delete("/hospitals/users/{tenant_db}/delete/{user_id}")
+def delete_user_hospitals(
+    tenant_db: str,
+    user_id: int,
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    return delete_user(tenant_db, user_id, request, db, user)

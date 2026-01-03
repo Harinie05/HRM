@@ -11,7 +11,7 @@ from schemas.schemas_tenant import (
 )
 
 # 🔐 added for authentication
-from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/organization", tags=["Organization Setup"])
 @router.get("/company-profile", response_model=CompanyProfileResponse | dict)
 def get_company_profile(
     tenant: str = Header(...),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(require_permission("view_company_profile"))    # 🔐 Token required
 ):
     logger.info(f"Getting company profile for tenant {tenant} by user {user.get('email')}")
     try:
@@ -47,7 +47,7 @@ def save_company_profile(
     data: CompanyProfileBase,
     request: Request,
     tenant: str = Header(...),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(require_permission("add_company_profile"))    # 🔐 Token required
 ):
     logger.info(f"Saving company profile for tenant {tenant} by user {user.get('email')}")
 

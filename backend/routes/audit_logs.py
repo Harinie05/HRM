@@ -47,13 +47,21 @@ async def get_audit_logs(
         offset = (page - 1) * limit
         logs = query.order_by(desc(AuditLog.created_at)).offset(offset).limit(limit).all()
         
-        # Format response
+        # Format response with enhanced employee information
         audit_logs = []
         for log in logs:
+            # Get employee details from User table if user_id exists
+            employee_display = log.employee_name or "Unknown User"
+            if log.user_id is not None:
+                from models.models_tenant import User
+                user_record = db.query(User).filter(User.id == log.user_id).first()
+                if user_record:
+                    employee_display = f"{user_record.name} (Employee ID: {user_record.employee_code})"
+            
             audit_logs.append({
                 "id": log.id,
                 "user_id": log.user_id,
-                "employee_name": log.employee_name,
+                "employee_name": employee_display,
                 "employee_code": log.employee_code,
                 "employee_id_onboarding": log.employee_id_onboarding,
                 "action": log.action,

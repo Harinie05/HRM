@@ -17,6 +17,7 @@ export default function Users() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // --- EDIT STATE ---
@@ -51,9 +52,9 @@ export default function Users() {
     );
   }
 
-  const loadUsers = async () => {
+  const loadUsers = async (status = statusFilter) => {
     try {
-      const res = await api.get(`/hospitals/users/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/users/${tenant_db}/list?status=${status}`);
       setUsers(res.data.users || []);
     } catch (err) {
       console.error("User load error:", err);
@@ -62,7 +63,7 @@ export default function Users() {
 
   const loadRoles = async () => {
     try {
-      const res = await api.get(`/hospitals/roles/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/roles/${tenant_db}/list?status=active`);
       setRoles(res.data.roles || []);
     } catch (err) {
       console.error("Role load error:", err);
@@ -71,7 +72,7 @@ export default function Users() {
 
   const loadDepartments = async () => {
     try {
-      const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/departments/${tenant_db}/list?status=active`);
       setDepartments(res.data.departments || []);
     } catch (err) {
       console.error("Dept load error:", err);
@@ -82,7 +83,7 @@ export default function Users() {
     loadUsers();
     loadRoles();
     loadDepartments();
-  }, []);
+  }, [statusFilter]);
 
   const createUser = async () => {
     if (!canAdd) return showToast("You do not have permission to add users", 'error');
@@ -189,6 +190,18 @@ export default function Users() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Status</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Filter</span>
               <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black">
@@ -323,6 +336,13 @@ export default function Users() {
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Email</p>
                         <p className="text-sm text-gray-700 truncate">{u.email}</p>
                       </div>
+                      
+                      {u.employee_code && (
+                        <div>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Employee Code</p>
+                          <p className="text-sm text-gray-700 font-mono">{u.employee_code}</p>
+                        </div>
+                      )}
                       
                       <div className="grid grid-cols-1 gap-3">
                         <div>

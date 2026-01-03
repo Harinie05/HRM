@@ -68,32 +68,13 @@ from schemas.schemas_tenant import (
 import database
 from utils.token import create_access_token, create_refresh_token, verify_token
 from utils.audit_logger import log_error
+from utils.permission import require_permission, get_current_user
 
 router = APIRouter()
 
 # =================================================================
-# 🔐 JWT AUTH — MUST COME FIRST
+# 🔐 JWT AUTH — MOVED TO utils/permission.py
 # =================================================================
-def get_current_user(Authorization: str = Header(None)):
-    logger.info("Validating JWT token...")
-
-    if not Authorization:
-        logger.warning("Authorization header missing")
-        raise HTTPException(401, "Token required")
-
-    try:
-        token = Authorization.split(" ")[1]
-    except:
-        logger.warning("Malformed Authorization header")
-        raise HTTPException(401, "Invalid token format")
-
-    payload = verify_token(token)
-    if not payload:
-        logger.warning("Token expired or invalid")
-        raise HTTPException(401, "Token expired/invalid")
-
-    logger.info(f"Token validated for user {payload.get('email')}")
-    return payload
 
 def check_permission(required_permission: str):
     def permission_checker(user = Depends(get_current_user)):

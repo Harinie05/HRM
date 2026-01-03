@@ -10,7 +10,7 @@ import database
 from database import logger
 
 # 🔐 Added import for token protection
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, check_permission
 
 router = APIRouter()
 
@@ -32,7 +32,7 @@ def create_role(
     payload: dict,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)   # 🔐 Token required
+    user = Depends(check_permission("add_user_role"))   # 🔐 Token required
 ):
     try:
         logger.info(f"Creating role for tenant {tenant_db} by user {user.get('email')}")
@@ -90,8 +90,9 @@ def create_role(
 @router.get("/roles/{tenant_db}/list")
 def list_roles(
     tenant_db: str,
+    status: str = "active",
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)   # 🔐 Token required
+    user = Depends(check_permission("view_user_roles"))   # 🔐 Token required
 ):
     logger.info(f"Listing roles for tenant {tenant_db} by user {user.get('email')}")
 
@@ -100,7 +101,18 @@ def list_roles(
     tdb = Session(bind=engine)
 
     with tdb:
-        roles = tdb.query(Role).all()
+        try:
+            # Try to query with is_active filter
+            if status == "active":
+                roles = tdb.query(Role).filter(Role.is_active == True).all()
+            elif status == "inactive":
+                roles = tdb.query(Role).filter(Role.is_active == False).all()
+            else:  # all
+                roles = tdb.query(Role).all()
+        except Exception:
+            # Fallback if is_active column doesn't exist
+            roles = tdb.query(Role).all()
+            
         result = []
 
         for role in roles:
@@ -120,13 +132,26 @@ def list_roles(
                 "id": role.id,
                 "name": role.name,
                 "description": role.description,
+                "is_active": getattr(role, 'is_active', True),
                 "permissions": perm_names
             })
 
         return {"roles": result}
 
 # ---------------------------------------------------
-# DELETE ROLE  🔒 Protected
+# LIST ROLES (hospitals endpoint) 🔒 Protected
+# ---------------------------------------------------
+@router.get("/hospitals/roles/{tenant_db}/list")
+def list_roles_hospitals(
+    tenant_db: str,
+    status: str = "active",
+    db: Session = Depends(database.get_master_db),
+    user = Depends(check_permission("view_user_roles"))
+):
+    return list_roles(tenant_db, status, db, user)
+
+# ---------------------------------------------------
+# DELETE ROLE  🔒 Protected (Soft Delete)
 # ---------------------------------------------------
 @router.delete("/roles/{tenant_db}/delete/{role_id}")
 def delete_role(
@@ -134,9 +159,9 @@ def delete_role(
     role_id: int,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)   # 🔐 Token required
+    user = Depends(check_permission("delete_user_role"))   # 🔐 Token required
 ):
-    logger.info(f"Deleting role {role_id} from tenant {tenant_db} by user {user.get('email')}")
+    logger.info(f"Soft deleting role {role_id} from tenant {tenant_db} by user {user.get('email')}")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -149,15 +174,34 @@ def delete_role(
 
         # Store old values for audit
         old_values = {"name": role.name, "description": role.description}
-
-        tdb.query(RolePermission).filter(RolePermission.role_id == role_id).delete()
-        tdb.delete(role)
-        tdb.commit()
         
-        # Audit log
-        audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
+        try:
+            # Try soft delete if is_active column exists
+            old_values["is_active"] = getattr(role, 'is_active', True)
+            role.is_active = False
+            tdb.commit()
+            audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {"is_active": False})
+        except Exception:
+            # Fallback to hard delete if is_active column doesn't exist
+            tdb.query(RolePermission).filter(RolePermission.role_id == role_id).delete()
+            tdb.delete(role)
+            tdb.commit()
+            audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
 
         return {"detail": "Role deleted"}
+
+# ---------------------------------------------------
+# DELETE ROLE (hospitals endpoint) 🔒 Protected
+# ---------------------------------------------------
+@router.delete("/hospitals/roles/{tenant_db}/delete/{role_id}")
+def delete_role_hospitals(
+    tenant_db: str,
+    role_id: int,
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(check_permission("delete_user_role"))
+):
+    return delete_role(tenant_db, role_id, request, db, user)
 
 # ---------------------------------------------------
 # UPDATE ROLE  🔒 Protected
@@ -169,7 +213,7 @@ def update_role(
     payload: dict,
     request: Request,
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)   # 🔐 Token required
+    user = Depends(check_permission("edit_user_role"))   # 🔐 Token required
 ):
     logger.info(f"Updating role {role_id} in tenant {tenant_db} by user {user.get('email')}")
 

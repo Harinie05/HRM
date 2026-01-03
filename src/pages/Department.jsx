@@ -13,6 +13,7 @@ export default function Departments() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
@@ -20,10 +21,10 @@ export default function Departments() {
   const { toast, showToast, hideToast } = useToast();
 
   const tenant_db = localStorage.getItem("tenant_db");
-  const canView = isAdmin() || hasPermission("view_departments");
-  const canAdd = isAdmin() || hasPermission("add_department");
-  const canEdit = isAdmin() || hasPermission("edit_department");
-  const canDelete = isAdmin() || hasPermission("delete_department");
+  const canView = isAdmin() || hasPermission("view_user_departments");
+  const canAdd = isAdmin() || hasPermission("add_user_department");
+  const canEdit = isAdmin() || hasPermission("edit_user_department");
+  const canDelete = isAdmin() || hasPermission("delete_user_department");
 
   if (!canView) {
     return (
@@ -38,10 +39,10 @@ export default function Departments() {
     );
   }
 
-  const fetchDepartments = async () => {
+  const fetchDepartments = async (status = statusFilter) => {
     try {
       console.log(`Fetching departments for tenant: ${tenant_db}`);
-      const res = await api.get(`/hospitals/departments/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/departments/${tenant_db}/list?status=${status}`);
       console.log('Departments loaded:', res.data.departments);
       setDepartments(res.data.departments || []);
     } catch (err) {
@@ -49,9 +50,9 @@ export default function Departments() {
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (status = statusFilter) => {
     try {
-      const res = await api.get(`/hospitals/users/${tenant_db}/list`);
+      const res = await api.get(`/hospitals/users/${tenant_db}/list?status=${status}`);
       setUsers(res.data.users || []);
     } catch (err) {
       console.error("Users fetch error:", err);
@@ -72,7 +73,7 @@ export default function Departments() {
   useEffect(() => {
     fetchDepartments();
     fetchUsers();
-  }, []);
+  }, [statusFilter]);
 
   const addDepartment = async () => {
     
@@ -201,6 +202,18 @@ export default function Departments() {
           {/* Search and Filter matching Dashboard */}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Status</span>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
                 <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black">
@@ -343,8 +356,8 @@ export default function Departments() {
                       
                       <div className="pt-3 border-t border-gray-100">
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>Created</span>
-                          <span>Active</span>
+                          <span>{dept.is_active === 1 || dept.is_active === true ? 'Active' : 'Inactive'}</span>
+                          <div className={`w-2 h-2 rounded-full ${dept.is_active === 1 || dept.is_active === true ? 'bg-green-400' : 'bg-red-400'}`}></div>
                         </div>
                       </div>
                     </div>

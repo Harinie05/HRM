@@ -1,15 +1,23 @@
+import { hasPermission, isAdmin } from "../../utils/permissions";
+
 export default function OrgTabs({ tab, setTab }) {
-  const tabs = [
-    "Company Profile",
-    "Branch / Unit",
-    "Department",
-    "Designation",
-    "Reporting Structure",
-    "Shifts & Roster",
-    "Grades / Pay Structure",
-    "Holiday Calendar",
-    "Rules & Policies"
+  // Define all tabs with their permission requirements
+  const allTabs = [
+    { name: "Company Profile", permission: "view_company_profile" },
+    { name: "Branch / Unit", permission: "view_branch" },
+    { name: "Department", permission: "view_department" },
+    { name: "Designation", permission: "view_designation" },
+    { name: "Reporting Structure", permission: "view_reporting_levels" }, // Updated to use new permission
+    { name: "Grades / Pay Structure", permission: null }, // No permission check for now
+    { name: "Holiday Calendar", permission: "view_holiday" },
+    { name: "Rules & Policies", permission: null } // No permission check for now
   ];
+
+  // Filter tabs based on permissions
+  const visibleTabs = allTabs.filter(tabItem => {
+    if (!tabItem.permission) return true; // Show tabs without permission requirements
+    return isAdmin() || hasPermission(tabItem.permission);
+  });
 
   return (
     <div className="w-full bg-white border-b relative">
@@ -21,17 +29,17 @@ export default function OrgTabs({ tab, setTab }) {
           msOverflowStyle: 'none'
         }}
       >
-        {tabs.map((item) => (
+        {visibleTabs.map((tabItem) => (
           <button
-            key={item}
-            onClick={() => setTab(item)}
+            key={tabItem.name}
+            onClick={() => setTab(tabItem.name)}
             className={`py-4 text-sm whitespace-nowrap flex-shrink-0 ${
-              tab === item
+              tab === tabItem.name
                 ? "border-b-2 border-blue-600 text-blue-600 font-semibold"
                 : "text-muted hover:text-secondary"
             }`}
           >
-            {item}
+            {tabItem.name}
           </button>
         ))}
       </div>

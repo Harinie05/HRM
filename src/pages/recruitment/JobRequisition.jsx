@@ -21,6 +21,7 @@ export default function JobRequisition() {
   const { toast, showToast, hideToast } = useToast();
   const [requisitions, setRequisitions] = useState([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [showForm, setShowForm] = useState(false);
   const [mode, setMode] = useState("create");
   const [selectedReq, setSelectedReq] = useState(null);
@@ -50,35 +51,29 @@ export default function JobRequisition() {
     setShowForm(true);
   };
 
-  const handleStatusToggle = async (req) => {
-    const newStatus = req.status === 'Active' ? 'Inactive' : 'Active';
-    const action = newStatus === 'Active' ? 'activate' : 'deactivate';
-    
-    try {
-      await api.put(`/recruitment/update-status/${req.id}`, { status: newStatus });
-      showToast(`Job ${action}d successfully!`);
-      fetchRequisitions();
-    } catch (err) {
-      console.error(`Failed to ${action} job`);
-      showToast(`Failed to ${action} job`, 'error');
-    }
-  };
-
   const handleDelete = async (req) => {
     if (window.confirm('Are you sure you want to delete this job requisition?')) {
       try {
-        await api.delete(`/recruitment/delete/${req.id}`);
+        await api.put(`/recruitment/update-status/${req.id}`, { status: 'Inactive' });
+        showToast('Job requisition deleted successfully!');
         fetchRequisitions();
       } catch (err) {
         console.error("Failed to delete requisition");
+        showToast('Failed to delete job requisition', 'error');
       }
     }
   };
 
-  const filteredRequisitions = requisitions.filter((r) =>
-    r.title?.toLowerCase().includes(search.toLowerCase()) ||
-    r.department?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredRequisitions = requisitions.filter((r) => {
+    const matchesSearch = r.title?.toLowerCase().includes(search.toLowerCase()) ||
+                         r.department?.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesStatus = statusFilter === "all" || 
+                         (statusFilter === "active" && (r.status === "Active" || !r.status)) ||
+                         (statusFilter === "inactive" && r.status === "Inactive");
+    
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <Layout>
@@ -115,21 +110,36 @@ export default function JobRequisition() {
           </div>
         </div>
 
-        {/* Enhanced Search */}
+        {/* Enhanced Search and Filter */}
         <div className="mb-6">
-          <div className="relative max-w-md mx-auto">
-            <div className="bg-white border border-black rounded-xl p-1">
-              <div className="flex items-center space-x-2 px-3 py-2">
-                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
-                  <Search className="w-3 h-3 text-gray-600" />
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">Status:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            
+            <div className="relative max-w-md">
+              <div className="bg-white border border-black rounded-xl p-1">
+                <div className="flex items-center space-x-2 px-3 py-2">
+                  <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                    <Search className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search jobs..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
+                  />
                 </div>
-                <input
-                  type="text"
-                  placeholder="Search jobs..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
-                />
               </div>
             </div>
           </div>
@@ -194,21 +204,16 @@ export default function JobRequisition() {
                   )}
                 </div>
                 
-                <button
-                  onClick={() => handleStatusToggle(req)}
-                  className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                    req.status === 'Active' 
-                      ? 'hover:bg-green-50' 
-                      : 'hover:bg-red-50'
-                  }`}
-                >
+                <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg ${
+                  req.status === 'Active' ? 'bg-green-50' : 'bg-red-50'
+                }`}>
                   <div className={`w-2 h-2 rounded-full ${
                     req.status === 'Active' ? 'bg-green-400' : 'bg-red-400'
                   }`}></div>
                   <span className={`text-xs font-medium ${
                     req.status === 'Active' ? 'text-green-600' : 'text-red-600'
                   }`}>{req.status || 'Active'}</span>
-                </button>
+                </div>
               </div>
               
               {/* Location & Type */}

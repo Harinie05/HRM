@@ -21,23 +21,74 @@ import database
 # DEFAULT PERMISSIONS  (ONLY PERMISSIONS — NO DEFAULT ROLES)
 # -------------------------------------------------------------
 DEFAULT_PERMISSIONS = [
-    # Departments
-    {"name": "view_departments", "description": "Can view departments"},
-    {"name": "add_department", "description": "Can add department"},
-    {"name": "edit_department", "description": "Can edit department"},
-    {"name": "delete_department", "description": "Can delete department"},
 
-    # Roles
-    {"name": "view_roles", "description": "Can view roles"},
-    {"name": "add_role", "description": "Can add role"},
-    {"name": "edit_role", "description": "Can edit role"},
-    {"name": "delete_role", "description": "Can delete role"},
+    # =====================================================
+    # USER MANAGEMENT
+    # =====================================================
 
     # Users
-     {"name": "view_users", "description": "Can view users"},
+    {"name": "view_users", "description": "Can view users"},
     {"name": "add_user", "description": "Can add users"},
     {"name": "edit_user", "description": "Can edit users"},
     {"name": "delete_user", "description": "Can delete users"},
+
+    # User Management – Departments
+    {"name": "view_user_departments", "description": "Can view departments in user management"},
+    {"name": "add_user_department", "description": "Can add department in user management"},
+    {"name": "edit_user_department", "description": "Can edit department in user management"},
+    {"name": "delete_user_department", "description": "Can delete department in user management"},
+
+    # User Management – Roles
+    {"name": "view_user_roles", "description": "Can view roles in user management"},
+    {"name": "add_user_role", "description": "Can add role in user management"},
+    {"name": "edit_user_role", "description": "Can edit role in user management"},
+    {"name": "delete_user_role", "description": "Can delete role in user management"},
+
+
+    # =====================================================
+    # ORGANIZATION SETUP
+    # =====================================================
+
+    # Company Profile (view + create)
+    {"name": "view_company_profile", "description": "Can view company profile"},
+    {"name": "add_company_profile", "description": "Can add company profile"},
+
+    # Branch / Unit (view + create)
+    {"name": "view_branch", "description": "Can view branch"},
+    {"name": "add_branch", "description": "Can add branch"},
+
+    # Department (view only)
+    {"name": "view_department", "description": "Can view department"},
+
+    # Designation (view only)
+    {"name": "view_designation", "description": "Can view designation"},
+
+
+    # =====================================================
+    # REPORTING STRUCTURE
+    # =====================================================
+
+    # Reporting Levels
+    {"name": "view_reporting_levels", "description": "Can view reporting levels"},
+    {"name": "add_reporting_level", "description": "Can add reporting level"},
+    {"name": "edit_reporting_level", "description": "Can edit reporting level"},
+    {"name": "delete_reporting_level", "description": "Can delete reporting level"},
+
+    # Hierarchy Rules
+    {"name": "view_hierarchy_rules", "description": "Can view hierarchy rules"},
+    {"name": "add_hierarchy_rule", "description": "Can add hierarchy rule"},
+    {"name": "edit_hierarchy_rule", "description": "Can edit hierarchy rule"},
+    {"name": "delete_hierarchy_rule", "description": "Can delete hierarchy rule"},
+
+
+    # =====================================================
+    # HOLIDAY CALENDAR
+    # =====================================================
+
+    {"name": "view_holiday", "description": "Can view holiday"},
+    {"name": "add_holiday", "description": "Can add holiday"},
+    {"name": "edit_holiday", "description": "Can edit holiday"},
+    {"name": "delete_holiday", "description": "Can delete holiday"},
 ]
 
 # -------------------------------------------------------------
