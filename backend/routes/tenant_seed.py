@@ -260,6 +260,42 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_deleted_nabh_compliance", "description": "Can view deleted NABH compliance records"},
     {"name": "restore_nabh_compliance", "description": "Can restore deleted NABH compliance records"},
 
+    # =====================================================
+    # 🎓 TRAINING & DEVELOPMENT
+    # =====================================================
+
+    # Training Programs
+    {"name": "view_training_programs", "description": "Can view training programs"},
+    {"name": "add_training_program", "description": "Can add new training programs"},
+    {"name": "edit_training_program", "description": "Can edit training programs"},
+    {"name": "delete_training_program", "description": "Can delete training programs"},
+    {"name": "view_enrolled_trainees", "description": "Can view enrolled trainees in programs"},
+    {"name": "generate_training_link", "description": "Can generate training enrollment links"},
+    {"name": "approve_training_applications", "description": "Can approve/reject training applications"},
+    {"name": "select_send_training_emails", "description": "Can select candidates and send training emails"},
+
+    # Training Calendar
+    {"name": "view_training_calendar", "description": "Can view training calendar"},
+
+    # Training Requests
+    {"name": "view_training_requests", "description": "Can view training requests"},
+    {"name": "add_training_request", "description": "Can add training requests"},
+    {"name": "approve_training_request", "description": "Can approve training requests"},
+    {"name": "reject_training_request", "description": "Can reject training requests"},
+
+    # Attendance & Assessment
+    {"name": "view_training_attendance", "description": "Can view training attendance"},
+    {"name": "mark_training_attendance", "description": "Can mark training attendance"},
+    {"name": "view_training_assessments", "description": "Can view training assessments"},
+    {"name": "conduct_training_assessment", "description": "Can conduct training assessments"},
+    {"name": "grade_training_assessment", "description": "Can grade training assessments"},
+
+    # Certificates
+    {"name": "view_training_certificates", "description": "Can view training certificates"},
+    {"name": "generate_training_certificate", "description": "Can generate training certificates"},
+    {"name": "download_training_certificate", "description": "Can download training certificates"},
+    {"name": "email_training_certificate", "description": "Can email training certificates"},
+
 ]
 
 # -------------------------------------------------------------

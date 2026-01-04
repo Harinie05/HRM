@@ -8,12 +8,12 @@ from schemas.schemas_tenant import (
     TrainingRequestOut
 )
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter(prefix="/requests", tags=["Training Requests"])
 
 @router.post("/")
-def create_request(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_request(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_training_request"))):
     try:
         # Handle employee_id - extract actual ID from user_ prefix
         employee_id_raw = data.get('employee_id')
@@ -64,7 +64,7 @@ def update_request(request_id: int, data: TrainingRequestUpdate, request: Reques
     return {"message": "Request updated"}
 
 @router.put("/{request_id}/approve")
-def approve_request(request_id: int, data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def approve_request(request_id: int, data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("approve_training_request"))):
     try:
         req = db.query(TrainingRequest).filter(TrainingRequest.id == request_id).first()
         if not req:
@@ -92,4 +92,5 @@ def approve_request(request_id: int, data: dict, request: Request, db: Session =
     except Exception as e:
         db.rollback()
 @router.get("/", response_model=list[TrainingRequestOut])
-def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):    return db.query(TrainingRequest).all()
+def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_requests"))):
+    return db.query(TrainingRequest).all()

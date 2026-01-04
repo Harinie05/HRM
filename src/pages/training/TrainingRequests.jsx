@@ -3,6 +3,7 @@ import { Plus, Search, Eye, CheckCircle, XCircle, Clock, FileText } from "lucide
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingRequests() {
   const [requests, setRequests] = useState([]);
@@ -27,6 +28,19 @@ export default function TrainingRequests() {
     comment: ""
   });
   const { toast, showToast, hideToast } = useToast();
+
+  // Check permissions
+  if (!hasPermission('view_training_requests') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view training requests.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchRequests();
@@ -229,13 +243,15 @@ export default function TrainingRequests() {
         <div className="p-6 border-b border-black">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Requests</h3>
-            <button 
-              onClick={handleOpenModal}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              New Request
-            </button>
+            {(hasPermission('add_training_request') || isAdmin()) && (
+              <button 
+                onClick={handleOpenModal}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                New Request
+              </button>
+            )}
           </div>
           <div className="flex gap-4">
             <div className="relative flex-1 max-w-md">
@@ -288,7 +304,7 @@ export default function TrainingRequests() {
                       <p className="mt-1 text-sm text-muted">
                         {searchTerm || statusFilter ? "No requests match your search criteria." : "No training requests have been submitted yet."}
                       </p>
-                      {!searchTerm && !statusFilter && (
+                      {!searchTerm && !statusFilter && (hasPermission('add_training_request') || isAdmin()) && (
                         <div className="mt-6">
                           <button 
                             onClick={handleOpenModal}
@@ -347,7 +363,7 @@ export default function TrainingRequests() {
                           >
                             <Eye size={16} />
                           </button>
-                          {(request.status === "Pending" || request.status === "Manager Approved") && (
+                          {(request.status === "Pending" || request.status === "Manager Approved") && (hasPermission('approve_training_request') || hasPermission('reject_training_request') || isAdmin()) && (
                             <>
                               <button 
                                 onClick={() => handleOpenApprovalModal(request)}

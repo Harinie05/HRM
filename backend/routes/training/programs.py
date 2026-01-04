@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -22,7 +22,7 @@ class TrainingProgramCreate(BaseModel):
     status: str = "Draft"
 
 @router.post("/programs")
-async def create_training_program(program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def create_training_program(program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_training_program"))):
     try:
         # Parse dates
         start_date = None
@@ -67,7 +67,7 @@ async def create_training_program(program: dict, request: Request, db: Session =
         raise HTTPException(status_code=422, detail=f"Error creating training program: {str(e)}")
 
 @router.get("/programs")
-async def get_training_programs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def get_training_programs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_programs"))):
     try:
         programs = db.query(TrainingProgram).all()
         
@@ -93,7 +93,7 @@ async def get_training_programs(request: Request, db: Session = Depends(get_tena
         raise HTTPException(status_code=500, detail=f"Error fetching training programs: {str(e)}")
 
 @router.put("/programs/{program_id}")
-async def update_training_program(program_id: int, program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def update_training_program(program_id: int, program: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_training_program"))):
     try:
         db_program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
         if not db_program:
@@ -138,7 +138,7 @@ async def update_training_program(program_id: int, program: dict, request: Reque
         raise HTTPException(status_code=422, detail=f"Error updating training program: {str(e)}")
 
 @router.delete("/programs/{program_id}")
-async def delete_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def delete_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_training_program"))):
     try:
         db_program = db.query(TrainingProgram).filter(TrainingProgram.id == program_id).first()
         if not db_program:
@@ -160,7 +160,7 @@ async def delete_training_program(program_id: int, request: Request, db: Session
         raise HTTPException(status_code=422, detail=f"Error deleting training program: {str(e)}")
 
 @router.get("/programs/{program_id}")
-async def get_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def get_training_program(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_programs"))):
     try:
         audit_crud(request, db, user, "VIEW_TRAINING_PROGRAM", "training_programs", str(program_id), {}, {"program_id": program_id})
         
@@ -219,7 +219,7 @@ async def apply_to_program(program_id: int, application: dict, request: Request,
         raise HTTPException(status_code=422, detail=f"Error submitting application: {str(e)}")
 
 @router.get("/programs/{program_id}/applications")
-async def get_program_applications(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def get_program_applications(program_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_enrolled_trainees"))):
     try:
         audit_crud(request, db, user, "VIEW_TRAINING_APPLICATIONS", "training_applications", str(program_id), {}, {"program_id": program_id})
         
@@ -296,7 +296,7 @@ async def update_application_status(application_id: int, status_data: dict, requ
         raise HTTPException(status_code=422, detail=f"Error updating application status: {str(e)}")
 
 @router.post("/send-enrollment-emails")
-async def send_enrollment_emails(email_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def send_enrollment_emails(email_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("select_send_training_emails"))):
     try:
         from utils.email import send_email
         

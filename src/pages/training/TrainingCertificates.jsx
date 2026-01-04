@@ -3,6 +3,7 @@ import { Award, Download, Search, Plus } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingCertificates() {
   const [certificates, setCertificates] = useState([]);
@@ -18,6 +19,19 @@ export default function TrainingCertificates() {
     score: "",
     has_expiry: false
   });
+
+  // Check permissions
+  if (!hasPermission('view_training_certificates') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view training certificates.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchCertificates();
@@ -128,13 +142,15 @@ export default function TrainingCertificates() {
         <div className="p-6 border-b border-black">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Certificates</h3>
-            <button 
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Award className="w-4 h-4" />
-              Generate Certificate
-            </button>
+            {(hasPermission('generate_training_certificate') || isAdmin()) && (
+              <button 
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Award className="w-4 h-4" />
+                Generate Certificate
+              </button>
+            )}
           </div>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -210,13 +226,15 @@ export default function TrainingCertificates() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleDownload(certificate)}
-                            className="text-green-600 hover:text-green-900 p-1 rounded"
-                            title="Download Certificate"
-                          >
-                            <Download size={16} />
-                          </button>
+                          {(hasPermission('download_training_certificate') || isAdmin()) && (
+                            <button 
+                              onClick={() => handleDownload(certificate)}
+                              className="text-green-600 hover:text-green-900 p-1 rounded"
+                              title="Download Certificate"
+                            >
+                              <Download size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

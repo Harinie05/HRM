@@ -3,6 +3,7 @@ import { Users, CheckCircle, XCircle, Clock, Plus, UserCheck } from "lucide-reac
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingAttendance() {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -20,6 +21,19 @@ export default function TrainingAttendance() {
     attendance: {},
     assessments: {}
   });
+
+  // Check permissions
+  if (!hasPermission('view_training_attendance') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view training attendance.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchAttendanceRecords();
@@ -198,13 +212,15 @@ export default function TrainingAttendance() {
         <div className="p-6 border-b border-black">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Attendance & Assessment</h3>
-            <button 
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <UserCheck className="w-4 h-4" />
-              Mark Attendance
-            </button>
+            {(hasPermission('mark_training_attendance') || isAdmin()) && (
+              <button 
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <UserCheck className="w-4 h-4" />
+                Mark Attendance
+              </button>
+            )}
           </div>
         </div>
         {/* Content */}
@@ -267,37 +283,39 @@ export default function TrainingAttendance() {
                           }`}>
                             {record.completion_status || 'Not Started'}
                           </span>
-                          <button
-                            onClick={async () => {
-                              setEditingRecord(record);
-                              setFormData({
-                                training_id: record.training_id || "",
-                                employee_id: record.employee_id || "",
-                                attendance: {},
-                                assessments: {}
-                              });
-                              setShowModal(true);
-                              
-                              // Load existing data after modal opens
-                              if (record.training_id && record.employee_id) {
-                                try {
-                                  const res = await api.get(`/api/training/attendance/${record.training_id}/${record.employee_id}`);
-                                  const existingData = res.data;
-                                  
-                                  setFormData(prev => ({
-                                    ...prev,
-                                    attendance: existingData.attendance_days || {},
-                                    assessments: existingData.assessments || {}
-                                  }));
-                                } catch (error) {
-                                  console.error("Error loading existing attendance:", error);
+                          {(hasPermission('mark_training_attendance') || isAdmin()) && (
+                            <button
+                              onClick={async () => {
+                                setEditingRecord(record);
+                                setFormData({
+                                  training_id: record.training_id || "",
+                                  employee_id: record.employee_id || "",
+                                  attendance: {},
+                                  assessments: {}
+                                });
+                                setShowModal(true);
+                                
+                                // Load existing data after modal opens
+                                if (record.training_id && record.employee_id) {
+                                  try {
+                                    const res = await api.get(`/api/training/attendance/${record.training_id}/${record.employee_id}`);
+                                    const existingData = res.data;
+                                    
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      attendance: existingData.attendance_days || {},
+                                      assessments: existingData.assessments || {}
+                                    }));
+                                  } catch (error) {
+                                    console.error("Error loading existing attendance:", error);
+                                  }
                                 }
-                              }
-                            }}
-                            className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                          >
-                            Update
-                          </button>
+                              }}
+                              className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                            >
+                              Update
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

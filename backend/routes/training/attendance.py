@@ -5,12 +5,12 @@ from models.models_tenant import TrainingAttendance, TrainingProgram, User
 from schemas.schemas_tenant import TrainingAttendanceCreate, TrainingAttendanceOut
 from sqlalchemy import func
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter(prefix="/attendance", tags=["Training Attendance"])
 
 @router.post("/")
-def mark_attendance(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def mark_attendance(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("mark_training_attendance"))):
     try:
         training_id = data.get('training_id')
         employee_id = data.get('employee_id')
@@ -141,7 +141,7 @@ def get_attendance_record(training_id: int, employee_id: int, request: Request, 
         raise HTTPException(status_code=500, detail=f"Error fetching attendance record: {str(e)}")
 
 @router.get("/")
-def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_attendance"))):
     try:
         attendance_records = db.query(TrainingAttendance).all()
         

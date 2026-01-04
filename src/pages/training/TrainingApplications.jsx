@@ -4,6 +4,7 @@ import { ArrowLeft, User, Mail, Phone, Calendar, CheckCircle, XCircle, Clock, Se
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingApplications() {
   const { programId } = useParams();
@@ -11,6 +12,19 @@ export default function TrainingApplications() {
   const { toast, showToast } = useToast();
   
   console.log('TrainingApplications component loaded with programId:', programId);
+  
+  // Check permissions
+  if (!hasPermission('view_enrolled_trainees') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view training applications.</p>
+        </div>
+      </div>
+    );
+  }
   
   const [program, setProgram] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -175,7 +189,7 @@ export default function TrainingApplications() {
       )}
 
       {/* Actions Bar */}
-      {selectedApplications.length > 0 && (
+      {selectedApplications.length > 0 && (hasPermission('select_send_training_emails') || isAdmin()) && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-blue-900">
@@ -295,7 +309,7 @@ export default function TrainingApplications() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {application.status === "Pending" && (
+                      {application.status === "Pending" && (hasPermission('approve_training_applications') || isAdmin()) && (
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleStatusUpdate(application.id, "Accepted")}

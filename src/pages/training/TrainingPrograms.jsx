@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingPrograms() {
   const { toast, showToast } = useToast();
@@ -29,6 +30,25 @@ export default function TrainingPrograms() {
     max_participants: "",
     status: "Draft"
   });
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_training_programs");
+  const canAdd = isAdmin() || hasPermission("add_training_program");
+  const canEdit = isAdmin() || hasPermission("edit_training_program");
+  const canDelete = isAdmin() || hasPermission("delete_training_program");
+  const canViewEnrolled = isAdmin() || hasPermission("view_enrolled_trainees");
+  const canGenerateLink = isAdmin() || hasPermission("generate_training_link");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view training programs.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchPrograms();
@@ -169,13 +189,15 @@ export default function TrainingPrograms() {
       <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">Training Programs</h3>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Program
-          </button>
+          {canAdd && (
+            <button 
+              onClick={() => handleOpenModal()}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Program
+            </button>
+          )}
         </div>
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
@@ -229,7 +251,7 @@ export default function TrainingPrograms() {
                       <p className="mt-1 text-sm text-muted">
                         {searchTerm || statusFilter ? "No programs match your search criteria." : "No training programs have been created yet."}
                       </p>
-                      {!searchTerm && !statusFilter && (
+                      {!searchTerm && !statusFilter && canAdd && (
                         <div className="mt-6">
                           <button 
                             onClick={() => handleOpenModal()}
@@ -276,53 +298,55 @@ export default function TrainingPrograms() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleOpenModal(program)}
-                            className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                            title="Edit"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          {program.status === "Published" && (
-                            <>
-                              <button 
-                                onClick={() => handleViewApplications(program.id)}
-                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                                title="View Applications"
-                              >
-                                <Eye size={16} />
-                              </button>
-                              
-                              <div className="relative link-dropdown">
-                                <button
-                                  onClick={() => setOpenLinkMenu(openLinkMenu === program.id ? null : program.id)}
-                                  className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-all duration-200"
-                                  title="Generate Link"
-                                >
-                                  <Link size={16} />
-                                </button>
-
-                                {openLinkMenu === program.id && (
-                                  <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
-                                    <button
-                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
-                                      onClick={() => {
-                                        const applicationLink = `${window.location.origin}/training/program/${program.id}`;
-                                        setGeneratedLinks(prev => ({
-                                          ...prev,
-                                          [program.id]: applicationLink
-                                        }));
-                                        showToast("Application link generated!", "success");
-                                      }}
-                                    >
-                                      🔗 Generate Application Link
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </>
+                          {canEdit && (
+                            <button 
+                              onClick={() => handleOpenModal(program)}
+                              className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                              title="Edit"
+                            >
+                              <Edit size={16} />
+                            </button>
                           )}
-                          {program.status === "Draft" && (
+                          {program.status === "Published" && canViewEnrolled && (
+                            <button 
+                              onClick={() => handleViewApplications(program.id)}
+                              className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                              title="View Applications"
+                            >
+                              <Eye size={16} />
+                            </button>
+                          )}
+                          
+                          {program.status === "Published" && canGenerateLink && (
+                            <div className="relative link-dropdown">
+                              <button
+                                onClick={() => setOpenLinkMenu(openLinkMenu === program.id ? null : program.id)}
+                                className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                                title="Generate Link"
+                              >
+                                <Link size={16} />
+                              </button>
+
+                              {openLinkMenu === program.id && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                  <button
+                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                    onClick={() => {
+                                      const applicationLink = `${window.location.origin}/training/program/${program.id}`;
+                                      setGeneratedLinks(prev => ({
+                                        ...prev,
+                                        [program.id]: applicationLink
+                                      }));
+                                      showToast("Application link generated!", "success");
+                                    }}
+                                  >
+                                    🔗 Generate Application Link
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {program.status === "Draft" && canEdit && (
                             <button 
                               onClick={() => handlePublish(program.id)}
                               className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-all duration-200"
@@ -331,13 +355,15 @@ export default function TrainingPrograms() {
                               <Calendar size={16} />
                             </button>
                           )}
-                          <button 
-                            onClick={() => handleDelete(program.id)}
-                            className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
-                            title="Delete"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {canDelete && (
+                            <button 
+                              onClick={() => handleDelete(program.id)}
+                              className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
+                              title="Delete"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                         {generatedLinks[program.id] && (
                           <div className="mt-2">

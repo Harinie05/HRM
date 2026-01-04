@@ -6,7 +6,7 @@ from schemas.schemas_tenant import TrainingCertificateCreate, TrainingCertificat
 from datetime import datetime, timedelta
 import uuid
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -17,7 +17,7 @@ from io import BytesIO
 router = APIRouter(prefix="/certificates", tags=["Training Certificates"])
 
 @router.post("/")
-def generate_certificate(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def generate_certificate(data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("generate_training_certificate"))):
     try:
         # Handle employee_id conversion
         employee_id_raw = data.get('employee_id')
@@ -54,7 +54,7 @@ def generate_certificate(data: dict, request: Request, db: Session = Depends(get
         raise HTTPException(status_code=422, detail=f"Error generating certificate: {str(e)}")
 
 @router.get("/")
-def list_certificates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def list_certificates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_certificates"))):
     try:
         from models.models_tenant import TrainingApplication
         
@@ -100,7 +100,7 @@ def download_certificate(
     certificate_id: int, 
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("download_training_certificate"))
 ):
     try:
         from models.models_tenant import TrainingApplication
