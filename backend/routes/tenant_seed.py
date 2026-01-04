@@ -224,6 +224,42 @@ DEFAULT_PERMISSIONS = [
     {"name": "email_settlement_docs", "description": "Can email settlement documents"},
     {"name": "edit_settlements", "description": "Can edit F&F settlements"},
 
+    # =====================================================
+    # 💰 STATUTORY RULES & COMPLIANCE
+    # =====================================================
+
+    # Statutory Calculations
+    {"name": "view_statutory_calculations", "description": "Can view statutory deduction calculations"},
+    {"name": "add_statutory_calculation", "description": "Can add statutory deduction calculations"},
+    {"name": "edit_statutory_calculation", "description": "Can edit statutory deduction calculations"},
+    {"name": "delete_statutory_calculation", "description": "Can delete statutory deduction calculations"},
+    {"name": "view_deleted_statutory", "description": "Can view deleted statutory calculations"},
+    {"name": "restore_statutory_calculation", "description": "Can restore deleted statutory calculations"},
+
+    # Labour Register
+    {"name": "view_labour_register", "description": "Can view labour law registers"},
+    {"name": "add_labour_register", "description": "Can add labour law register entries"},
+    {"name": "edit_labour_register", "description": "Can edit labour law register entries"},
+    {"name": "delete_labour_register", "description": "Can delete labour law register entries"},
+    {"name": "view_deleted_labour_register", "description": "Can view deleted labour register entries"},
+    {"name": "restore_labour_register", "description": "Can restore deleted labour register entries"},
+
+    # Leave Compliance
+    {"name": "view_leave_compliance", "description": "Can view leave compliance records"},
+    {"name": "add_leave_compliance", "description": "Can add leave compliance records"},
+    {"name": "edit_leave_compliance", "description": "Can edit leave compliance records"},
+    {"name": "delete_leave_compliance", "description": "Can delete leave compliance records"},
+    {"name": "view_deleted_leave_compliance", "description": "Can view deleted leave compliance records"},
+    {"name": "restore_leave_compliance", "description": "Can restore deleted leave compliance records"},
+
+    # NABH Compliance
+    {"name": "view_nabh_compliance", "description": "Can view NABH compliance records"},
+    {"name": "add_nabh_compliance", "description": "Can add NABH compliance records"},
+    {"name": "edit_nabh_compliance", "description": "Can edit NABH compliance records"},
+    {"name": "delete_nabh_compliance", "description": "Can delete NABH compliance records"},
+    {"name": "view_deleted_nabh_compliance", "description": "Can view deleted NABH compliance records"},
+    {"name": "restore_nabh_compliance", "description": "Can restore deleted NABH compliance records"},
+
 ]
 
 # -------------------------------------------------------------

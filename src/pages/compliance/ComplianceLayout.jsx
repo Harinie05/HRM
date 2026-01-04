@@ -9,19 +9,26 @@ import Statutory from "./Statutory";
 import LabourRegister from "./LabourRegister";
 import LeaveCompliance from "./LeaveCompliance";
 import NABHCompliance from "./NABHCompliance";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ComplianceLayout() {
   const location = useLocation();
   
-  const initialTab = location.state?.tab || "Statutory Rules";
-  const [tab, setTab] = useState(initialTab);
+  const canViewStatutory = isAdmin() || hasPermission('view_statutory_calculations');
+  const canViewLabour = isAdmin() || hasPermission('view_labour_register');
+  const canViewLeave = isAdmin() || hasPermission('view_leave_compliance');
+  const canViewNABH = isAdmin() || hasPermission('view_nabh_compliance');
 
   const tabs = [
-    "Statutory Rules",
-    "Labour Register", 
-    "Leave Compliance",
-    "NABH Compliance"
-  ];
+    canViewStatutory && "Statutory Rules",
+    canViewLabour && "Labour Register", 
+    canViewLeave && "Leave Compliance",
+    canViewNABH && "NABH Compliance"
+  ].filter(Boolean);
+  
+  const initialTab = location.state?.tab || "Statutory Rules";
+  const validInitialTab = tabs.includes(initialTab) ? initialTab : tabs[0];
+  const [tab, setTab] = useState(validInitialTab);
 
   return (
     <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
@@ -39,12 +46,12 @@ export default function ComplianceLayout() {
               icon={Shield}
               actions={
                 <div className="text-left lg:text-right">
-                  <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                    <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
-                      <span className="text-xs font-medium">Modules</span>
+                    <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+                      <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                        <span className="text-xs font-medium">Modules</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
                     </div>
-                    <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
-                  </div>
                 </div>
               }
             />
@@ -61,7 +68,7 @@ export default function ComplianceLayout() {
 
               {/* Tab Content */}
               <div className="min-h-0">
-                {tab === "Statutory Rules" && (
+                {tab === "Statutory Rules" && canViewStatutory && (
                   <div>
                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
@@ -77,7 +84,7 @@ export default function ComplianceLayout() {
                     <Statutory />
                   </div>
                 )}
-                {tab === "Labour Register" && (
+                {tab === "Labour Register" && canViewLabour && (
                   <div>
                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
@@ -93,7 +100,7 @@ export default function ComplianceLayout() {
                     <LabourRegister />
                   </div>
                 )}
-                {tab === "Leave Compliance" && (
+                {tab === "Leave Compliance" && canViewLeave && (
                   <div>
                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
@@ -109,7 +116,7 @@ export default function ComplianceLayout() {
                     <LeaveCompliance />
                   </div>
                 )}
-                {tab === "NABH Compliance" && (
+                {tab === "NABH Compliance" && canViewNABH && (
                   <div>
                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">

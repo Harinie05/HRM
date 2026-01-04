@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter(prefix="/compliance/statutory", tags=["Compliance"])
 
@@ -30,7 +30,7 @@ class StatutoryDeductionRequest(BaseModel):
     designation: Optional[str] = None
 
 @router.post("/calculate")
-def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_statutory_calculation"))):
     try:
         # Calculate deductions
         pf_employee = data.basic_salary * (data.pf_percentage / 100) if data.pf_enabled else 0
@@ -90,10 +90,10 @@ def calculate_statutory(data: StatutoryDeductionRequest, request: Request, db: S
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
-def get_statutory_calculations(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def get_statutory_calculations(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_statutory_calculations"))):
     try:
-        # Get all statutory records
-        records = db.query(EmployeeStatutory).order_by(EmployeeStatutory.created_at.desc()).limit(50).all()
+        # Get all non-deleted statutory records
+        records = db.query(EmployeeStatutory).filter(getattr(EmployeeStatutory, 'is_deleted', False) != True).order_by(EmployeeStatutory.created_at.desc()).limit(50).all()
         
         result = []
         for record in records:
@@ -122,7 +122,7 @@ def get_statutory_calculations(request: Request, db: Session = Depends(get_tenan
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/{record_id}")
-def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_statutory_calculation"))):
     try:
         record = db.query(EmployeeStatutory).filter(EmployeeStatutory.id == record_id).first()
         if not record:
@@ -162,22 +162,78 @@ def update_statutory_calculation(record_id: int, data: StatutoryDeductionRequest
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/{record_id}")
-def delete_statutory_calculation(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def soft_delete_statutory_calculation(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_statutory_calculation"))):
     try:
         record = db.query(EmployeeStatutory).filter(EmployeeStatutory.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
         
         # Store old values for audit
-        old_values = {"employee_id": record.employee_id, "basic_salary": record.basic_salary, "pf_employee": record.pf_employee}
+        old_values = {"employee_id": record.employee_id, "basic_salary": record.basic_salary, "is_deleted": getattr(record, 'is_deleted', False)}
         
-        db.delete(record)
+        # Soft delete by setting is_deleted flag
+        setattr(record, 'is_deleted', True)
+        setattr(record, 'deleted_at', datetime.now())
         db.commit()
         
         # Audit log
-        audit_crud(request, db, user, "DELETE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, {})
+        audit_crud(request, db, user, "SOFT_DELETE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, {"is_deleted": True})
         
         return {"message": "Record deleted successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/deleted")
+def get_deleted_statutory_calculations(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_deleted_statutory"))):
+    try:
+        # Get all soft-deleted statutory records
+        records = db.query(EmployeeStatutory).filter(getattr(EmployeeStatutory, 'is_deleted', False) == True).order_by(EmployeeStatutory.created_at.desc()).limit(50).all()
+        
+        result = []
+        for record in records:
+            user_record = db.query(User).filter(User.id == record.employee_id).first()
+            if not user_record:
+                user_record = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
+            
+            result.append({
+                "id": record.id,
+                "employee_id": user_record.employee_code if user_record is not None and user_record.employee_code is not None else str(record.employee_id),
+                "employee_name": user_record.name if user_record else f"Employee {record.employee_id}",
+                "basic_salary": record.basic_salary,
+                "pf_amount": record.pf_employee,
+                "esi_amount": record.esi_employee,
+                "pt_amount": record.professional_tax,
+                "total_deductions": record.pf_employee + record.esi_employee + record.professional_tax,
+                "month": record.month,
+                "year": record.year,
+                "deleted_at": getattr(record, 'deleted_at', None)
+            })
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.put("/restore/{record_id}")
+def restore_statutory_calculation(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_statutory_calculation"))):
+    try:
+        record = db.query(EmployeeStatutory).filter(EmployeeStatutory.id == record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        # Store old values for audit
+        old_values = {"is_deleted": getattr(record, 'is_deleted', False)}
+        
+        # Restore by setting is_deleted to False
+        setattr(record, 'is_deleted', False)
+        setattr(record, 'deleted_at', None)
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_STATUTORY_CALCULATION", "employee_statutory", str(record_id), old_values, {"is_deleted": False})
+        
+        return {"message": "Record restored successfully"}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")

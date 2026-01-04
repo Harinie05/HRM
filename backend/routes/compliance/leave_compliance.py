@@ -6,7 +6,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
+
 
 router = APIRouter(prefix="/compliance/leave", tags=["Compliance"])
 
@@ -21,7 +22,7 @@ class LeaveComplianceRequest(BaseModel):
     year: str = ""
 
 @router.post("/")
-def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_leave_compliance"))):
     try:
         # Find user by employee_code
         user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -65,7 +66,7 @@ def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: 
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.get("/")
-def get_leave_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def get_leave_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_leave_compliance"))):
     try:
         records = db.query(LeaveWorkingCompliance).order_by(LeaveWorkingCompliance.created_at.desc()).all()
         print(f"Found {len(records)} leave compliance records")

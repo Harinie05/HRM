@@ -1502,6 +1502,10 @@ class EmployeeStatutory(MasterBase):
 
     professional_tax = Column(Float, default=0.0)
 
+    # Soft delete fields
+    is_deleted = Column(Boolean, default=False)
+    deleted_at = Column(DateTime, nullable=True)
+
     created_at = Column(DateTime, default=func.now())
 
 # ------------------------------
@@ -1520,6 +1524,11 @@ class LabourLawRegister(MasterBase):
     year = Column(Integer, nullable=False)
 
     remarks = Column(Text)
+    
+    # Soft delete fields
+    is_deleted = Column(Boolean, default=False)
+    deleted_at = Column(DateTime, nullable=True)
+    
     created_at = Column(DateTime, default=func.now())
 
 # ------------------------------

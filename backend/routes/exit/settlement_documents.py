@@ -79,8 +79,8 @@ def calculate_settlement(data: SettlementCreate, request: Request, user=Depends(
             for field, value in data.dict().items():
                 if field != 'resignation_id':
                     setattr(existing, field, value)
-            existing.calculated_on = date.today()
-            existing.updated_at = datetime.now()
+            setattr(existing, 'calculated_on', date.today())
+            setattr(existing, 'updated_at', datetime.now())
             db.commit()
             db.refresh(existing)
             
@@ -117,9 +117,9 @@ def approve_settlement(settlement_id: int, request: Request, user=Depends(requir
         raise HTTPException(404, "Settlement not found")
     
     old_status = settlement.payment_status
-    settlement.payment_status = "Approved"
-    settlement.paid_on = date.today()
-    settlement.updated_at = datetime.now()
+    setattr(settlement, 'payment_status', "Approved")
+    setattr(settlement, 'paid_on', date.today())
+    setattr(settlement, 'updated_at', datetime.now())
     
     db.commit()
     
@@ -208,17 +208,17 @@ def update_experience_letter(letter_id: int, data: dict, request: Request, user=
         else:
             last_working_day = datetime.strptime(data["last_working_day"], "%Y-%m-%d").date()
         
-        letter.employee_name = data["employee_name"]
-        letter.employee_code = data["employee_code"]
-        letter.company_name = data["company_name"]
-        letter.designation = data["designation"]
-        letter.department = data["department"]
-        letter.joining_date = joining_date
-        letter.last_working_day = last_working_day
-        letter.place = data.get("place", "Bangalore")
-        letter.issued_by = data.get("issued_by", "HR Department")
-        letter.authorized_signatory = data.get("authorized_signatory", "HR Manager")
-        letter.updated_at = datetime.now()
+        setattr(letter, 'employee_name', data["employee_name"])
+        setattr(letter, 'employee_code', data["employee_code"])
+        setattr(letter, 'company_name', data["company_name"])
+        setattr(letter, 'designation', data["designation"])
+        setattr(letter, 'department', data["department"])
+        setattr(letter, 'joining_date', joining_date)
+        setattr(letter, 'last_working_day', last_working_day)
+        setattr(letter, 'place', data.get("place", "Bangalore"))
+        setattr(letter, 'issued_by', data.get("issued_by", "HR Department"))
+        setattr(letter, 'authorized_signatory', data.get("authorized_signatory", "HR Manager"))
+        setattr(letter, 'updated_at', datetime.now())
         
         db.commit()
         db.refresh(letter)
@@ -241,10 +241,10 @@ def update_email_status(letter_id: int, email_to: str, request: Request, user=De
         raise HTTPException(404, "Experience letter not found")
     
     old_values = {"email_sent": letter.email_sent, "email_sent_to": letter.email_sent_to}
-    letter.email_sent = True
-    letter.email_sent_to = email_to
-    letter.email_sent_at = datetime.now()
-    letter.updated_at = datetime.now()
+    setattr(letter, 'email_sent', True)
+    setattr(letter, 'email_sent_to', email_to)
+    setattr(letter, 'email_sent_at', datetime.now())
+    setattr(letter, 'updated_at', datetime.now())
     
     db.commit()
     

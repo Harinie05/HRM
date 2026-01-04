@@ -143,9 +143,9 @@ def approve_clearance(clearance_id: int, request: Request, user=Depends(get_curr
     if user.get('role') != 'admin' and required_permission not in user_permissions:
         raise HTTPException(403, f"You don't have permission to approve {department.upper()} clearance")
     
-    clearance.status = "Completed"
-    clearance.completed_by = user.get("user_id")
-    clearance.completed_at = datetime.now()
+    setattr(clearance, 'status', "Completed")
+    setattr(clearance, 'completed_by', user.get("user_id"))
+    setattr(clearance, 'completed_at', datetime.now())
     
     # Check if all clearances are completed
     all_clearances = db.query(ExitClearance).filter(ExitClearance.exit_id == clearance.exit_id).all()
@@ -154,8 +154,8 @@ def approve_clearance(clearance_id: int, request: Request, user=Depends(get_curr
     if all_completed:
         exit_record = db.query(EmployeeExit).filter(EmployeeExit.id == clearance.exit_id).first()
         if exit_record:
-            exit_record.overall_status = "Completed"
-            exit_record.clearance_status = "Completed"
+            setattr(exit_record, 'overall_status', "Completed")
+            setattr(exit_record, 'clearance_status', "Completed")
     
     db.commit()
     audit_crud(request, db, user, "APPROVE_CLEARANCE", "exit_clearances", str(clearance_id), {"status": "Pending"}, {"status": "Completed"})
@@ -213,10 +213,10 @@ def reject_clearance(clearance_id: int, reason: str, request: Request, user=Depe
     if user.get('role') != 'admin' and required_permission not in user_permissions:
         raise HTTPException(403, f"You don't have permission to reject {department.upper()} clearance")
     
-    clearance.status = "Rejected"
-    clearance.completed_by = user.get("user_id")
-    clearance.completed_at = datetime.now()
-    clearance.notes = f"Rejected: {reason}"
+    setattr(clearance, 'status', "Rejected")
+    setattr(clearance, 'completed_by', user.get("user_id"))
+    setattr(clearance, 'completed_at', datetime.now())
+    setattr(clearance, 'notes', f"Rejected: {reason}")
     
     db.commit()
     audit_crud(request, db, user, "REJECT_CLEARANCE", "exit_clearances", str(clearance_id), {"status": "Pending"}, {"status": "Rejected", "reason": reason})
@@ -261,8 +261,8 @@ def get_kt_by_exit(exit_id: int, request: Request, user=Depends(require_permissi
     return {
         "id": kt_plan.id,
         "exit_id": kt_plan.exit_id,
-        "start_date": kt_plan.start_date.isoformat() if kt_plan.start_date else None,
-        "end_date": kt_plan.end_date.isoformat() if kt_plan.end_date else None,
+        "start_date": kt_plan.start_date.isoformat() if kt_plan.start_date is not None else None,
+        "end_date": kt_plan.end_date.isoformat() if kt_plan.end_date is not None else None,
         "remarks": kt_plan.remarks,
         "overall_status": kt_plan.overall_status,
         "manager_approved": kt_plan.manager_approved,
@@ -274,7 +274,7 @@ def get_kt_by_exit(exit_id: int, request: Request, user=Depends(require_permissi
                 "description": item.description,
                 "to_employee_id": item.to_employee_id,
                 "status": item.status,
-                "acknowledged_at": item.acknowledged_at.isoformat() if item.acknowledged_at else None
+                "acknowledged_at": item.acknowledged_at.isoformat() if item.acknowledged_at is not None else None
             } for item in kt_items
         ]
     }
@@ -289,12 +289,19 @@ def create_kt_for_exit(exit_id: int, kt_data: dict, request: Request, user=Depen
     if not exit_record:
         raise HTTPException(404, "Exit record not found")
     
+    # Validate required date fields
+    start_date_str = kt_data.get("start_date")
+    end_date_str = kt_data.get("end_date")
+    
+    if not start_date_str or not end_date_str:
+        raise HTTPException(400, "start_date and end_date are required")
+    
     # Create KT plan
     kt_plan = ExitKnowledgeTransfer(
         exit_id=exit_id,
         employee_id=exit_record.employee_id,
-        start_date=datetime.strptime(kt_data.get("start_date"), "%Y-%m-%d").date(),
-        end_date=datetime.strptime(kt_data.get("end_date"), "%Y-%m-%d").date(),
+        start_date=datetime.strptime(start_date_str, "%Y-%m-%d").date(),
+        end_date=datetime.strptime(end_date_str, "%Y-%m-%d").date(),
         remarks=kt_data.get("remarks", ""),
         overall_status="Pending",
         manager_approved=False,
@@ -359,9 +366,9 @@ def acknowledge_kt_item(item_id: int, request: Request, user=Depends(require_per
     if not kt_item:
         raise HTTPException(404, "KT item not found")
     
-    kt_item.status = "Completed"
-    kt_item.acknowledged_at = datetime.now()
-    kt_item.acknowledged_by = user.get("user_id")
+    setattr(kt_item, 'status', "Completed")
+    setattr(kt_item, 'acknowledged_at', datetime.now())
+    setattr(kt_item, 'acknowledged_by', user.get("user_id"))
     
     db.commit()
     return {"message": "KT item acknowledged successfully"}
@@ -382,13 +389,13 @@ def approve_kt_plan(kt_id: int, approval_type: str, request: Request, user=Depen
         raise HTTPException(404, "KT plan not found")
     
     if approval_type == "manager":
-        kt_plan.manager_approved = True
+        setattr(kt_plan, 'manager_approved', True)
     elif approval_type == "hr":
-        kt_plan.hr_approved = True
+        setattr(kt_plan, 'hr_approved', True)
     
     # Update overall status if both approvals are done
-    if kt_plan.manager_approved and kt_plan.hr_approved:
-        kt_plan.overall_status = "Completed"
+    if kt_plan.manager_approved is True and kt_plan.hr_approved is True:
+        setattr(kt_plan, 'overall_status', "Completed")
     
     db.commit()
     return {"message": f"Knowledge transfer plan approved by {approval_type}"}

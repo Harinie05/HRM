@@ -287,7 +287,7 @@ def soft_delete_employee(
         user_employee = db.query(User).filter(User.id == int(actual_user_id)).first()
         if user_employee:
             # Soft delete by setting status to Inactive
-            user_employee.status = "Inactive"
+            setattr(user_employee, 'status', "Inactive")
             db.commit()
             
             # Audit log
@@ -303,7 +303,7 @@ def soft_delete_employee(
     
     if onboarding_employee:
         # Soft delete by setting status to Inactive
-        onboarding_employee.status = "Inactive"
+        setattr(onboarding_employee, 'status', "Inactive")
         db.commit()
         
         # Audit log

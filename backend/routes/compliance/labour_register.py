@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter(prefix="/compliance/labour", tags=["Compliance"])
 
@@ -26,7 +26,7 @@ class LabourRegisterRequest(BaseModel):
     remarks: Optional[str] = None
 
 @router.post("/")
-def create_register(data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_register(data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_labour_register"))):
     try:
         # Find user by employee_code
         user_record = db.query(User).filter(User.employee_code == data.employee_id).first()
@@ -62,9 +62,9 @@ def create_register(data: LabourRegisterRequest, request: Request, db: Session =
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.get("/")
-def get_registers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def get_registers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_labour_register"))):
     try:
-        records = db.query(LabourLawRegister).order_by(LabourLawRegister.created_at.desc()).limit(50).all()
+        records = db.query(LabourLawRegister).filter(getattr(LabourLawRegister, 'is_deleted', False) != True).order_by(LabourLawRegister.created_at.desc()).limit(50).all()
         
         result = []
         for record in records:
@@ -89,7 +89,7 @@ def get_registers(request: Request, db: Session = Depends(get_tenant_db), user =
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.put("/{record_id}")
-def update_register(record_id: int, data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_register(record_id: int, data: LabourRegisterRequest, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_labour_register"))):
     try:
         record = db.query(LabourLawRegister).filter(LabourLawRegister.id == record_id).first()
         if not record:
@@ -124,22 +124,75 @@ def update_register(record_id: int, data: LabourRegisterRequest, request: Reques
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.delete("/{record_id}")
-def delete_register(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def soft_delete_register(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_labour_register"))):
     try:
         record = db.query(LabourLawRegister).filter(LabourLawRegister.id == record_id).first()
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
         
         # Store old values for audit
-        old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "month": record.month, "year": record.year}
+        old_values = {"employee_id": record.employee_id, "register_type": record.register_type, "is_deleted": getattr(record, 'is_deleted', False)}
         
-        db.delete(record)
+        # Soft delete by setting is_deleted flag
+        setattr(record, 'is_deleted', True)
+        setattr(record, 'deleted_at', datetime.now())
         db.commit()
         
         # Audit log
-        audit_crud(request, db, user, "DELETE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {})
+        audit_crud(request, db, user, "SOFT_DELETE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {"is_deleted": True})
         
         return {"message": "Record deleted successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/deleted")
+def get_deleted_registers(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_deleted_labour_register"))):
+    try:
+        records = db.query(LabourLawRegister).filter(getattr(LabourLawRegister, 'is_deleted', False) == True).order_by(LabourLawRegister.created_at.desc()).limit(50).all()
+        
+        result = []
+        for record in records:
+            user_record = db.query(User).filter(User.id == record.employee_id).first()
+            if not user_record:
+                user_record = db.query(User).filter(User.employee_code == str(record.employee_id)).first()
+            
+            result.append({
+                "id": record.id,
+                "employee_id": user_record.employee_code if user_record else str(record.employee_id),
+                "employee_name": user_record.name if user_record else f"Employee {record.employee_id}",
+                "register_type": record.register_type,
+                "compliance_status": "Deleted",
+                "month": record.month,
+                "year": record.year,
+                "remarks": record.remarks,
+                "deleted_at": getattr(record, 'deleted_at', None)
+            })
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.put("/restore/{record_id}")
+def restore_register(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_labour_register"))):
+    try:
+        record = db.query(LabourLawRegister).filter(LabourLawRegister.id == record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        # Store old values for audit
+        old_values = {"is_deleted": getattr(record, 'is_deleted', False)}
+        
+        # Restore by setting is_deleted to False
+        setattr(record, 'is_deleted', False)
+        setattr(record, 'deleted_at', None)
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_LABOUR_REGISTER", "labour_law_registers", str(record_id), old_values, {"is_deleted": False})
+        
+        return {"message": "Record restored successfully"}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")

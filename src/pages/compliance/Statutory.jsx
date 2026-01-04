@@ -1,10 +1,29 @@
 import { useEffect, useState } from "react";
-import { DollarSign, Users, Calculator, FileText, Plus, Edit, Trash2 } from "lucide-react";
+import { DollarSign, Users, Calculator, FileText, Plus, Edit, Trash2, RotateCcw, Eye, EyeOff } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Statutory() {
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_statutory_calculations");
+  const canAdd = isAdmin() || hasPermission("add_statutory_calculation");
+  const canEdit = isAdmin() || hasPermission("edit_statutory_calculation");
+  const canDelete = isAdmin() || hasPermission("delete_statutory_calculation");
+  const canViewDeleted = isAdmin() || hasPermission("view_deleted_statutory");
+  const canRestore = isAdmin() || hasPermission("restore_statutory_calculation");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view Statutory Rules.</p>
+        </div>
+      </div>
+    );
+  }
   const [form, setForm] = useState({
     employee_id: "",
     employee_name: "",
@@ -25,6 +44,8 @@ export default function Statutory() {
   });
 
   const [calculations, setCalculations] = useState([]);
+  const [deletedCalculations, setDeletedCalculations] = useState([]);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [statutoryRules, setStatutoryRules] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
@@ -104,6 +125,10 @@ export default function Statutory() {
         
         const calcRes = await api.get("/api/compliance/statutory");
         setCalculations(calcRes.data);
+        
+        // Load deleted records
+        const deletedRes = await api.get("/api/compliance/statutory/deleted");
+        setDeletedCalculations(deletedRes.data);
       } catch (err) {
         console.log("No data found", err);
       }
@@ -159,6 +184,10 @@ export default function Statutory() {
       const calcRes = await api.get("/api/compliance/statutory/");
       setCalculations(calcRes.data);
       
+      // Refresh deleted list
+      const deletedRes = await api.get("/api/compliance/statutory/deleted");
+      setDeletedCalculations(deletedRes.data);
+      
     } catch (err) {
       console.error('Failed to save statutory deductions:', err);
       showToast("Failed to save statutory deductions", 'error');
@@ -197,9 +226,32 @@ export default function Statutory() {
       // Refresh calculations list
       const calcRes = await api.get("/api/compliance/statutory/");
       setCalculations(calcRes.data);
+      
+      // Refresh deleted list
+      const deletedRes = await api.get("/api/compliance/statutory/deleted");
+      setDeletedCalculations(deletedRes.data);
     } catch (err) {
       console.error('Failed to delete record:', err);
       showToast("Failed to delete record", 'error');
+    }
+  }
+
+  async function handleRestore(recordId) {
+    if (!window.confirm('Are you sure you want to restore this record?')) return;
+    
+    try {
+      await api.put(`/api/compliance/statutory/restore/${recordId}`);
+      showToast("Record restored successfully!");
+      
+      // Refresh both lists
+      const calcRes = await api.get("/api/compliance/statutory/");
+      setCalculations(calcRes.data);
+      
+      const deletedRes = await api.get("/api/compliance/statutory/deleted");
+      setDeletedCalculations(deletedRes.data);
+    } catch (err) {
+      console.error('Failed to restore record:', err);
+      showToast("Failed to restore record", 'error');
     }
   }
 
@@ -565,9 +617,28 @@ export default function Statutory() {
         </form>
 
         {/* Display existing calculations */}
-        {calculations.length > 0 && (
+        {(calculations.length > 0 || deletedCalculations.length > 0) && (
           <div>
-            <h3 className="text-lg font-semibold mb-4">Statutory Deduction History</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">
+                {showDeleted ? 'Deleted Statutory Deduction History' : 'Statutory Deduction History'}
+              </h3>
+              <div className="flex gap-2">
+                {canViewDeleted && (
+                  <button
+                    onClick={() => setShowDeleted(!showDeleted)}
+                    className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
+                      showDeleted 
+                        ? 'bg-gray-800 text-white border-black hover:bg-gray-900' 
+                        : 'bg-white text-gray-800 border-black hover:bg-gray-50'
+                    }`}
+                  >
+                    {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? calculations.length : deletedCalculations.length})
+                  </button>
+                )}
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full border border-black">
                 <thead className="bg-gray-50">
@@ -579,12 +650,13 @@ export default function Statutory() {
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PT</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Total</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
+                    {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-black">
-                  {calculations.map((calc, index) => (
-                    <tr key={index} className="hover:bg-gray-50 border-b border-black">
+                  {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
+                    <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
                       <td className="px-4 py-2 text-sm border-r border-black">
                         <div>
                           <div className="font-medium">{calc.employee_name}</div>
@@ -597,22 +669,45 @@ export default function Statutory() {
                       <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pt_amount}</td>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-black">₹{calc.total_deductions}</td>
                       <td className="px-4 py-2 text-sm border-r border-black">{calc.month}/{calc.year}</td>
+                      {showDeleted && (
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          {calc.deleted_at ? new Date(calc.deleted_at).toLocaleDateString() : 'N/A'}
+                        </td>
+                      )}
                       <td className="px-4 py-2 text-sm">
                         <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEdit(calc)}
-                            className="text-blue-600 hover:text-blue-800 p-1 rounded"
-                            title="Edit"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(calc.id)}
-                            className="text-red-600 hover:text-red-800 p-1 rounded"
-                            title="Delete"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {showDeleted ? (
+                            canRestore && (
+                              <button
+                                onClick={() => handleRestore(calc.id)}
+                                className="text-green-600 hover:text-green-800 p-1 rounded"
+                                title="Restore"
+                              >
+                                <RotateCcw size={16} />
+                              </button>
+                            )
+                          ) : (
+                            <>
+                              {canEdit && (
+                                <button
+                                  onClick={() => handleEdit(calc)}
+                                  className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                                  title="Edit"
+                                >
+                                  <Edit size={16} />
+                                </button>
+                              )}
+                              {canDelete && (
+                                <button
+                                  onClick={() => handleDelete(calc.id)}
+                                  className="text-red-600 hover:text-red-800 p-1 rounded"
+                                  title="Delete"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              )}
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>

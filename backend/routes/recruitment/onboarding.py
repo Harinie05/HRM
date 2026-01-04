@@ -244,7 +244,7 @@ def list_onboarding_candidates(request: Request, db: Session = Depends(get_tenan
 # 7) LIST ALL ONBOARDED EMPLOYEES FOR EIS
 # -----------------------------------------------------------
 @router.get("/list")
-def list_onboarded_employees(status: str = "active", request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(check_permission("mark_onboarded"))):
+def list_onboarded_employees(status: str = "active", db: Session = Depends(get_tenant_db), user = Depends(check_permission("mark_onboarded"))):
     """Get all onboarded employees with their details for EIS"""
     try:
         # Filter by status
@@ -471,7 +471,7 @@ def soft_delete_onboarding_employee(
     old_values = {"status": employee.status}
     
     # Soft delete by setting status to Inactive
-    employee.status = "Inactive"
+    setattr(employee, 'status', "Inactive")
     db.commit()
     
     # Audit log

@@ -38,6 +38,11 @@ export default function CompanyProfile() {
 
   useEffect(() => {
     async function fetchData() {
+      // Only fetch data if user has permission
+      if (!canView) {
+        return;
+      }
+      
       try {
         console.log('Loading company profile data');
         const res = await api.get("/organization/company-profile");
@@ -48,7 +53,7 @@ export default function CompanyProfile() {
       }
     }
     fetchData();
-  }, []);
+  }, [canView]);
 
   function handleChange(e) {
     console.log(`Company profile field changed: ${e.target.name} = ${e.target.value}`);
