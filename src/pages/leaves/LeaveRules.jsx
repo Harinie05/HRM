@@ -1,10 +1,43 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Settings } from "lucide-react";
 import api from "../../api";
+import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveRules() {
+  // Check if user has permission to view leave rules
+  if (!hasPermission("view_leave_rules")) {
+    return (
+      <div className="">
+        {/* Header */}
+        <div className="p-8 border-b border-gray-100">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Rules</h2>
+                <p className="text-gray-600 text-base">Configure accrual, carry forward and encashment policies</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Access Denied */}
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view leave rules.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [rules, setRules] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [showModal, setShowModal] = useState(false);
   const [editingRule, setEditingRule] = useState(null);
   const [formData, setFormData] = useState({
@@ -19,11 +52,11 @@ export default function LeaveRules() {
 
   useEffect(() => {
     fetchRules();
-  }, []);
+  }, [statusFilter]);
 
   const fetchRules = async () => {
     try {
-      const res = await api.get("/api/leave/rules/");
+      const res = await api.get(`/api/leave/rules/?status=${statusFilter}`);
       setRules(res.data);
     } catch (error) {
       console.error("Error fetching leave rules:", error);
@@ -109,47 +142,78 @@ export default function LeaveRules() {
               <p className="text-gray-600 text-base">Configure accrual, carry forward and encashment policies</p>
             </div>
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          >
-            <Plus size={18} />
-            Add Rule
-          </button>
+          {hasPermission("add_leave_rule") && (
+            <button 
+              onClick={() => handleOpenModal()}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <Plus size={18} />
+              Add Rule
+            </button>
+          )}
         </div>
       </div>
 
       {/* Search */}
-      <div className="p-8 border-b border-gray-100">
-        <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search rules..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 pr-4 py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors"
-          />
+      {hasPermission("view_leave_rules") && (
+        <div className="p-8 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Status</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-3 sm:ml-auto">
+              <div className="relative max-w-md">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search rules..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 pr-4 py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+              Total: {rules.length}
+            </div>
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+              Showing: {filteredRules.length}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-            <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Accrual Settings</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Carry Forward</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Encashment</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Auto Deduction</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
+      {hasPermission("view_leave_rules") && (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Accrual Settings</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Carry Forward</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Encashment</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Auto Deduction</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                )}
+              </tr>
+            </thead>
           <tbody className="bg-white divide-y divide-gray-100">
             {filteredRules.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
                   <div className="flex flex-col items-center space-y-3">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                       <Settings className="w-8 h-8 text-gray-400" />
@@ -199,39 +263,50 @@ export default function LeaveRules() {
                       {rule.status || "Active"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center gap-2">
-                      <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                        <Settings size={16} />
-                      </button>
-                      <button 
-                        onClick={() => handleOpenModal(rule)}
-                        className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(rule.id)}
-                        className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
+                  {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        {hasPermission("view_leave_rules") && (
+                          <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                            <Settings size={16} />
+                          </button>
+                        )}
+                        {hasPermission("edit_leave_rule") && (
+                          <button 
+                            onClick={() => handleOpenModal(rule)}
+                            className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                          >
+                            <Edit size={16} />
+                          </button>
+                        )}
+                        {hasPermission("delete_leave_rule") && (
+                          <button 
+                            onClick={() => handleDelete(rule.id)}
+                            className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+      )}
 
       {/* Stats Footer */}
-      <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <span className="font-medium">Total: {rules.length} rules</span>
-          <span className="font-medium">Active: {rules.filter(r => r.status === "Active" || !r.status).length}</span>
+      {hasPermission("view_leave_rules") && (
+        <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <span className="font-medium">Total: {rules.length} rules</span>
+            <span className="font-medium">Active: {rules.filter(r => r.status === "Active" || !r.status).length}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Modal */}
       {showModal && (

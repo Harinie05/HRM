@@ -4,6 +4,7 @@ from sqlalchemy import func
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 from models.models_tenant import LeaveApplication
 
@@ -16,7 +17,7 @@ router = APIRouter(
 def leave_summary(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("view_leave_reports"))
 ):
     results = (
         db.query(

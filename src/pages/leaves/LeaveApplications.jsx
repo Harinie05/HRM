@@ -3,9 +3,42 @@ import { Plus, Search, Check, X, Eye, Filter, Calendar } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveApplications() {
   const { toast, showToast } = useToast();
+  
+  // Check if user has permission to view leave applications
+  if (!hasPermission("view_leave_applications")) {
+    return (
+      <div className="">
+        {/* Header */}
+        <div className="p-4 sm:p-8 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="text-center sm:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Applications & Approvals</h2>
+                <p className="text-gray-600 text-sm sm:text-base">Review and manage employee leave requests</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Access Denied */}
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view leave applications.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [applications, setApplications] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [leaveTypes, setLeaveTypes] = useState([]);
@@ -281,67 +314,74 @@ export default function LeaveApplications() {
             </div>
           </div>
           <div className="flex justify-center sm:justify-end gap-3">
-            <button 
-              onClick={() => setShowModal(true)}
-              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-            >
-              <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
-              New Application
-            </button>
+            {hasPermission("apply_leave") && (
+              <button 
+                onClick={() => setShowModal(true)}
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              >
+                <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+                New Application
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="p-4 sm:p-8 border-b border-gray-100">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 max-w-full sm:max-w-md">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <input
-              type="text"
-              placeholder="Search applications..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
-            />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
-            >
-              <option value="All">All Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Approved">Approved</option>
-              <option value="Rejected">Rejected</option>
-            </select>
+      {hasPermission("view_leave_applications") && (
+        <div className="p-4 sm:p-8 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-full sm:max-w-md">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search applications..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
+              />
+            </div>
+            <div className="relative">
+              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
+              >
+                <option value="All">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-              <tr>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Leave Details</th>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Duration</th>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reason</th>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
+      {hasPermission("view_leave_applications") && (
+        <div className="overflow-x-auto">
+          <div className="min-w-[800px]">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
+                <tr>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Leave Details</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Duration</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reason</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                  )}
+                </tr>
+              </thead>
             <tbody className="bg-white divide-y divide-gray-100">
             {filteredApplications.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={hasPermission("view_leave_balance") || hasPermission("approve_leave") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
                   <div className="flex flex-col items-center space-y-3">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                       <Calendar className="w-8 h-8 text-gray-400" />
@@ -386,35 +426,39 @@ export default function LeaveApplications() {
                       <div className="text-xs text-gray-500 mt-1">{app.approver_comment}</div>
                     )}
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => fetchLeaveBalances(app.employee_id)}
-                        className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                        title="View Leave Balances"
-                      >
-                        <Eye size={14} />
-                      </button>
-                      {app.status === "Pending" && (
-                        <>
+                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        {hasPermission("view_leave_balance") && (
                           <button 
-                            onClick={() => openReviewModal(app)}
-                            className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50 transition-colors"
-                            title="Review & Approve"
+                            onClick={() => fetchLeaveBalances(app.employee_id)}
+                            className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                            title="View Leave Balances"
                           >
-                            <Check size={14} />
+                            <Eye size={14} />
                           </button>
-                          <button 
-                            onClick={() => reject(app.id, "Rejected")}
-                            className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                            title="Reject"
-                          >
-                            <X size={14} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
+                        )}
+                        {app.status === "Pending" && hasPermission("approve_leave") && (
+                          <>
+                            <button 
+                              onClick={() => openReviewModal(app)}
+                              className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                              title="Review & Approve"
+                            >
+                              <Check size={14} />
+                            </button>
+                            <button 
+                              onClick={() => reject(app.id, "Rejected")}
+                              className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                              title="Reject"
+                            >
+                              <X size={14} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
@@ -422,18 +466,21 @@ export default function LeaveApplications() {
           </table>
         </div>
       </div>
+      )}
 
       {/* Stats Footer */}
-      <div className="px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs sm:text-sm text-gray-600">
-          <span className="font-medium text-center sm:text-left">Total: {applications.length} applications</span>
-          <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-4">
-            <span className="font-medium">Pending: {applications.filter(a => a.status === "Pending").length}</span>
-            <span className="font-medium">Approved: {applications.filter(a => a.status === "Approved").length}</span>
-            <span className="font-medium">Rejected: {applications.filter(a => a.status === "Rejected").length}</span>
+      {hasPermission("view_leave_applications") && (
+        <div className="px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs sm:text-sm text-gray-600">
+            <span className="font-medium text-center sm:text-left">Total: {applications.length} applications</span>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-4">
+              <span className="font-medium">Pending: {applications.filter(a => a.status === "Pending").length}</span>
+              <span className="font-medium">Approved: {applications.filter(a => a.status === "Approved").length}</span>
+              <span className="font-medium">Rejected: {applications.filter(a => a.status === "Rejected").length}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* New Application Modal */}
       {showModal && (

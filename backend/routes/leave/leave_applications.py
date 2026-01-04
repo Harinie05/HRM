@@ -4,6 +4,7 @@ from database import get_tenant_db
 from datetime import datetime, date
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 from models.models_tenant import LeaveApplication, LeaveType, LeaveBalance, User, LeavePolicy
 from schemas.schemas_tenant import (
@@ -24,7 +25,7 @@ def apply_leave(
     request: Request,
     employee_id: int = Query(...),
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("apply_leave"))
 ):
     try:
         print(f"DEBUG: Received data: {data.dict()}")
@@ -131,7 +132,10 @@ def apply_leave(
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/", response_model=list[LeaveApplicationOut])
-def list_leave_applications(db: Session = Depends(get_tenant_db)):
+def list_leave_applications(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_applications"))
+):
     return db.query(LeaveApplication).all()
 
 @router.put("/{leave_id}", response_model=LeaveApplicationOut)
@@ -140,7 +144,7 @@ def update_leave_application(
     data: LeaveApplicationUpdate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("edit_leave_application"))
 ):
     leave = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()  # type: ignore
     if not leave:
@@ -167,7 +171,7 @@ def approve_or_reject_leave(
     request: Request,
     approver_id: int = Query(...),
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("approve_leave"))
 ):
     leave = db.query(LeaveApplication).filter(LeaveApplication.id == leave_id).first()  # type: ignore
     if not leave:
@@ -293,7 +297,8 @@ def initialize_leave_balances(
 @router.get("/balances/{employee_id}")
 def get_leave_balances(
     employee_id: int,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_balance"))
 ):
     """Get all leave balances for an employee with pending applications"""
     # Get all balances for the employee (works for both User table and onboarding employees)

@@ -1,8 +1,40 @@
 import { useEffect, useState } from "react";
 import { Download, Calendar, Users, TrendingUp, BarChart3, Filter } from "lucide-react";
 import api from "../../api";
+import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveReports() {
+  // Check if user has permission to view leave reports
+  if (!hasPermission("view_leave_reports")) {
+    return (
+      <div className="p-6 space-y-6">
+        {/* Header with gradient background matching Organization setup */}
+        <div className="p-8 border-b border-gray-100">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">Leave Reports</h2>
+                <p className="text-gray-600 text-base">Comprehensive leave usage analysis and insights</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Access Denied */}
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view leave reports.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [report, setReport] = useState([]);
   const [dateRange, setDateRange] = useState("thisMonth");
   const [department, setDepartment] = useState("all");
@@ -226,115 +258,122 @@ export default function LeaveReports() {
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <span className="text-sm font-medium">Export Available</span>
             </div>
-            <button 
-              onClick={exportToCSV}
-              className="bg-white text-black px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold"
-            >
-              <Download size={18} />
-              Export Report
-            </button>
+            {hasPermission("export_leave_reports") && (
+              <button 
+                onClick={exportToCSV}
+                className="bg-white text-black px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold"
+              >
+                <Download size={18} />
+                Export Report
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="p-4 sm:p-8 border-b border-gray-100">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 max-w-full sm:max-w-md">
-            <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <select 
-              value={dateRange} 
-              onChange={(e) => setDateRange(e.target.value)}
-              className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
-            >
-              <option value="thisMonth">This Month</option>
-              <option value="lastMonth">Last Month</option>
-              <option value="thisQuarter">This Quarter</option>
-              <option value="thisYear">This Year</option>
-            </select>
-          </div>
-          <div className="relative">
-            <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-            <select 
-              value={department} 
-              onChange={(e) => setDepartment(e.target.value)}
-              className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
-            >
-              <option value="all">All Departments</option>
-              {departments.map(dept => (
-                <option key={dept.id} value={dept.name.toLowerCase()}>{dept.name}</option>
-              ))}
-            </select>
+      {hasPermission("view_leave_reports") && (
+        <div className="p-4 sm:p-8 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-full sm:max-w-md">
+              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <select 
+                value={dateRange} 
+                onChange={(e) => setDateRange(e.target.value)}
+                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base"
+              >
+                <option value="thisMonth">This Month</option>
+                <option value="lastMonth">Last Month</option>
+                <option value="thisQuarter">This Quarter</option>
+                <option value="thisYear">This Year</option>
+              </select>
+            </div>
+            <div className="relative">
+              <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <select 
+                value={department} 
+                onChange={(e) => setDepartment(e.target.value)}
+                className="pl-10 sm:pl-12 pr-8 py-2 sm:py-3 border border-black rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-colors text-sm sm:text-base w-full sm:w-auto"
+              >
+                <option value="all">All Departments</option>
+                {departments.map(dept => (
+                  <option key={dept.id} value={dept.name.toLowerCase()}>{dept.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <div className="bg-white p-3 sm:p-6 rounded-2xl border border-black shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs sm:text-sm font-semibold">Total Applications</p>
-              <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1">{stats.totalApplications}</p>
+      {hasPermission("view_leave_reports") && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="bg-white p-3 sm:p-6 rounded-2xl border border-black shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs sm:text-sm font-semibold">Total Applications</p>
+                <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1">{stats.totalApplications}</p>
+              </div>
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <Users className="text-gray-600" size={16} />
+              </div>
             </div>
-            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <Users className="text-gray-600" size={16} />
+          </div>
+          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-semibold">Approved</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{stats.approvedLeaves}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <TrendingUp className="text-gray-600" size={24} />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-semibold">Pending</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{stats.pendingApprovals}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <Calendar className="text-gray-600" size={24} />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-semibold">Rejected</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{stats.rejectedLeaves}</p>
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                <BarChart3 className="text-gray-600" size={24} />
+              </div>
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-semibold">Approved</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.approvedLeaves}</p>
-            </div>
-            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <TrendingUp className="text-gray-600" size={24} />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-semibold">Pending</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.pendingApprovals}</p>
-            </div>
-            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <Calendar className="text-gray-600" size={24} />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border border-black shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-semibold">Rejected</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats.rejectedLeaves}</p>
-            </div>
-            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <BarChart3 className="text-gray-600" size={24} />
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Department Breakdown */}
-      <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-black bg-gray-50">
-          <h3 className="text-xl font-bold text-gray-900">Department-wise Leave Summary</h3>
-        </div>
-        <div className="p-6">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Applications</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approved</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Rejected</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approval Rate</th>
-                </tr>
-              </thead>
+      {hasPermission("view_leave_reports") && (
+        <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-black bg-gray-50">
+            <h3 className="text-xl font-bold text-gray-900">Department-wise Leave Summary</h3>
+          </div>
+          <div className="p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Applications</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approved</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Rejected</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approval Rate</th>
+                  </tr>
+                </thead>
             <tbody className="bg-white divide-y divide-gray-100">
               {departmentData.length === 0 ? (
                 <tr>
@@ -396,6 +435,7 @@ export default function LeaveReports() {
           </div>
         </div>
       </div>
+      )}
 
     </div>
   );

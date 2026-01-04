@@ -475,6 +475,50 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_compliance_reports", "description": "Can view compliance reports"},
     {"name": "generate_compliance_reports", "description": "Can generate compliance reports"},
 
+    # =====================================================
+    # 📅 LEAVE MANAGEMENT
+    # =====================================================
+
+    # Leave Types
+    {"name": "view_leave_types", "description": "Can view leave types"},
+    {"name": "add_leave_type", "description": "Can add leave types"},
+    {"name": "edit_leave_type", "description": "Can edit leave types"},
+    {"name": "delete_leave_type", "description": "Can delete leave types"},
+
+    # Leave Policies
+    {"name": "view_leave_policies", "description": "Can view leave policies"},
+    {"name": "add_leave_policy", "description": "Can add leave policies"},
+    {"name": "edit_leave_policy", "description": "Can edit leave policies"},
+    {"name": "delete_leave_policy", "description": "Can delete leave policies"},
+    {"name": "assign_leave_policy", "description": "Can assign leave policies to employees"},
+
+    # Leave Rules
+    {"name": "view_leave_rules", "description": "Can view leave rules"},
+    {"name": "add_leave_rule", "description": "Can add leave rules"},
+    {"name": "edit_leave_rule", "description": "Can edit leave rules"},
+    {"name": "delete_leave_rule", "description": "Can delete leave rules"},
+
+    # Leave Applications & Approvals
+    {"name": "view_leave_applications", "description": "Can view leave applications"},
+    {"name": "apply_leave", "description": "Can apply for leave"},
+    {"name": "edit_leave_application", "description": "Can edit leave applications"},
+    {"name": "cancel_leave_application", "description": "Can cancel leave applications"},
+    {"name": "approve_leave", "description": "Can approve leave applications"},
+    {"name": "reject_leave", "description": "Can reject leave applications"},
+    {"name": "view_team_leaves", "description": "Can view team leave applications"},
+    {"name": "view_all_leaves", "description": "Can view all employee leave applications"},
+
+    # Leave Calendar
+    {"name": "view_leave_calendar", "description": "Can view leave calendar"},
+    {"name": "export_leave_calendar", "description": "Can export leave calendar"},
+
+    # Leave Reports
+    {"name": "view_leave_reports", "description": "Can view leave reports"},
+    {"name": "generate_leave_reports", "description": "Can generate leave reports"},
+    {"name": "export_leave_reports", "description": "Can export leave reports"},
+    {"name": "view_leave_balance", "description": "Can view leave balance reports"},
+    {"name": "view_leave_trends", "description": "Can view leave trend analysis"},
+
 ]
 
 # -------------------------------------------------------------

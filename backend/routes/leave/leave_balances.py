@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 from models.models_tenant import LeaveBalance
 from schemas.schemas_tenant import (
@@ -37,7 +38,11 @@ def create_balance(
     return balance
 
 @router.get("/{employee_id}", response_model=list[LeaveBalanceOut])
-def get_employee_balances(employee_id: int, db: Session = Depends(get_tenant_db)):
+def get_employee_balances(
+    employee_id: int, 
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_balance"))
+):
     return db.query(LeaveBalance).filter(
         LeaveBalance.employee_id == employee_id
     ).all()

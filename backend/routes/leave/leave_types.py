@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 from models.models_tenant import LeaveType, User, LeaveBalance, LeavePolicy
 from schemas.schemas_tenant import (
@@ -23,7 +24,7 @@ def create_leave_policy(
     payload: dict,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("add_leave_policy"))
 ):
     """Create a new leave policy"""
     try:
@@ -65,15 +66,22 @@ def create_leave_policy_alt(
     payload: dict,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("add_leave_policy"))
 ):
     """Create a new leave policy - alternative route"""
     return create_leave_policy(payload, request, db, user)
 
 @policies_router.get("/")
-def list_leave_policies_alt(db: Session = Depends(get_tenant_db)):
+def list_leave_policies_alt(
+    status: str = Query("active", description="Filter by status: active, inactive, or all"),
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_policies"))
+):
     """Get all leave policies - alternative route"""
-    policies = db.query(LeavePolicy).all()
+    query = db.query(LeavePolicy)
+    if status != "all":
+        query = query.filter(LeavePolicy.status == status.title())
+    policies = query.all()
     return [{
         "id": p.id,
         "name": p.name,
@@ -88,9 +96,16 @@ def list_leave_policies_alt(db: Session = Depends(get_tenant_db)):
     } for p in policies]
 
 @policies_router.get("/list")
-def list_leave_policies_list(db: Session = Depends(get_tenant_db)):
+def list_leave_policies_list(
+    status: str = Query("active", description="Filter by status: active, inactive, or all"),
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_policies"))
+):
     """Get all leave policies - /list endpoint"""
-    policies = db.query(LeavePolicy).all()
+    query = db.query(LeavePolicy)
+    if status != "all":
+        query = query.filter(LeavePolicy.status == status.title())
+    policies = query.all()
     return [{
         "id": p.id,
         "name": p.name,
@@ -110,7 +125,7 @@ def update_leave_policy(
     payload: dict,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("edit_leave_policy"))
 ):
     """Update a leave policy"""
     try:
@@ -152,7 +167,7 @@ def delete_leave_policy(
     policy_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("delete_leave_policy"))
 ):
     """Delete a leave policy"""
     try:
@@ -164,22 +179,31 @@ def delete_leave_policy(
             "name": policy.name,
             "annual": policy.annual,
             "sick": policy.sick,
-            "casual": policy.casual
+            "casual": policy.casual,
+            "status": policy.status
         }
         
-        db.delete(policy)
+        # Soft delete - set status to Inactive instead of deleting
+        policy.status = "Inactive"
         db.commit()
-        audit_crud(request, db, user, "DELETE", "leave_policies", str(policy_id), old_values, {})
+        audit_crud(request, db, user, "DELETE", "leave_policies", str(policy_id), old_values, {"status": "Inactive"})
         
-        return {"message": "Leave policy deleted successfully"}
+        return {"message": "Leave policy deactivated successfully"}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/policies")
-def list_leave_policies(db: Session = Depends(get_tenant_db)):
+def list_leave_policies(
+    status: str = Query("active", description="Filter by status: active, inactive, or all"),
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_policies"))
+):
     """Get all leave policies"""
-    policies = db.query(LeavePolicy).all()
+    query = db.query(LeavePolicy)
+    if status != "all":
+        query = query.filter(LeavePolicy.status == status.title())
+    policies = query.all()
     return [{
         "id": p.id,
         "name": p.name,
@@ -199,7 +223,7 @@ def create_leave_type(
     data: LeaveTypeCreate, 
     request: Request, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("add_leave_type"))
 ):
     leave = LeaveType(**data.dict())
     db.add(leave)
@@ -233,8 +257,15 @@ def create_leave_type(
     return leave
 
 @router.get("/", response_model=list[LeaveTypeOut])
-def list_leave_types(db: Session = Depends(get_tenant_db)):
-    return db.query(LeaveType).all()
+def list_leave_types(
+    status: str = Query("active", description="Filter by status: active, inactive, or all"),
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_leave_types"))
+):
+    query = db.query(LeaveType)
+    if status != "all":
+        query = query.filter(LeaveType.status == status.title())
+    return query.all()
 
 @router.get("/{leave_id}", response_model=LeaveTypeOut)
 def get_leave_type(leave_id: int, db: Session = Depends(get_tenant_db)):
@@ -249,7 +280,7 @@ def update_leave_type(
     data: LeaveTypeUpdate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("edit_leave_type"))
 ):
     leave = db.query(LeaveType).filter(LeaveType.id == leave_id).first()
     if not leave:
@@ -269,17 +300,18 @@ def delete_leave_type(
     leave_id: int, 
     request: Request, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("delete_leave_type"))
 ):
     leave = db.query(LeaveType).filter(LeaveType.id == leave_id).first()
     if not leave:
         raise HTTPException(status_code=404, detail="Leave type not found")
 
     old_values = {"name": leave.name, "code": leave.code, "status": leave.status}
-    db.delete(leave)
+    # Soft delete - set status to Inactive instead of deleting
+    leave.status = "Inactive"
     db.commit()
-    audit_crud(request, db, user, "DELETE_LEAVE_TYPE", "leave_types", str(leave_id), old_values, {})
-    return {"message": "Leave type deleted"}
+    audit_crud(request, db, user, "DELETE_LEAVE_TYPE", "leave_types", str(leave_id), old_values, {"status": "Inactive"})
+    return {"message": "Leave type deactivated"}
 
 @router.post("/sync-balances")
 def sync_leave_type_balances(
