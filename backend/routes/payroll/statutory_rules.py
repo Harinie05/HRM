@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from routes.hospital import get_current_user
 from database import get_tenant_engine
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from models.models_tenant import StatutoryRule
 from pydantic import BaseModel
 from typing import Optional
@@ -30,7 +31,10 @@ router = APIRouter(prefix="/payroll/statutory", tags=["Statutory Rules"])
 # 1. GET STATUTORY RULES
 # -------------------------------------------------------------------------
 @router.get("/")
-def get_statutory_rules(user=Depends(get_current_user)):
+def get_statutory_rules(
+    user=Depends(get_current_user),
+    _: dict = Depends(require_permission("view_statutory_rules"))
+):
     db = get_tenant_session(user)
     try:
         rules = db.query(StatutoryRule).first()
@@ -64,7 +68,8 @@ def update_statutory_rules(
     tds_enabled: str = Form("true"),
     tds_percent: str = Form("10"),
     request: Request = None,
-    user=Depends(get_current_user)
+    user=Depends(get_current_user),
+    _: dict = Depends(require_permission("edit_statutory_rule"))
 ):
     db = get_tenant_session(user)
     try:

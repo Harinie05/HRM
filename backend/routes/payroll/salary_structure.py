@@ -4,6 +4,7 @@ from sqlalchemy import text
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 from pydantic import BaseModel
 from typing import List, Union
 
@@ -26,7 +27,8 @@ def create_salary_structure(
     data: SalaryStructureCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("add_salary_structure"))
 ):
     structure = SalaryStructure(**data.dict())
     db.add(structure)
@@ -37,10 +39,18 @@ def create_salary_structure(
 
 @router.get("/")
 def list_salary_structures(
-    db: Session = Depends(get_tenant_db)
+    status: str = "active",
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_salary_structure"))
 ):
     # Use raw SQL to ensure we get the employee_ids column
-    query = text("SELECT * FROM salary_structures")
+    if status == "active":
+        query = text("SELECT * FROM salary_structures WHERE is_active = 1")
+    elif status == "inactive":
+        query = text("SELECT * FROM salary_structures WHERE is_active = 0")
+    else:  # all
+        query = text("SELECT * FROM salary_structures")
+    
     result = db.execute(query).fetchall()
     
     structures = []
@@ -64,7 +74,8 @@ def list_salary_structures(
 @router.get("/{structure_id}", response_model=SalaryStructureOut)
 def get_salary_structure(
     structure_id: int,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_salary_structure"))
 ):
     structure = db.query(SalaryStructure).filter(
         SalaryStructure.id == structure_id
@@ -79,7 +90,8 @@ def update_salary_structure(
     data: SalaryStructureCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("edit_salary_structure"))
 ):
     structure = db.query(SalaryStructure).filter(
         SalaryStructure.id == structure_id
@@ -150,7 +162,8 @@ def delete_salary_structure(
     structure_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("delete_salary_structure"))
 ):
     structure = db.query(SalaryStructure).filter(
         SalaryStructure.id == structure_id
@@ -160,9 +173,10 @@ def delete_salary_structure(
 
     try:
         old_values = {"name": structure.name, "ctc": structure.ctc, "is_active": structure.is_active}
-        db.delete(structure)
+        # Soft delete by setting is_active to False
+        structure.is_active = False
         db.commit()
-        audit_crud(request, db, user, "DELETE_SALARY_STRUCTURE", "salary_structures", str(structure_id), old_values, {})
+        audit_crud(request, db, user, "DELETE_SALARY_STRUCTURE", "salary_structures", str(structure_id), old_values, {"is_active": False})
         return {"message": "Salary structure deleted"}
     except Exception as e:
         db.rollback()

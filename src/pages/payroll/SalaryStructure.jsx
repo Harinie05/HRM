@@ -3,6 +3,7 @@ import { Plus, Search, Edit, Trash2, Eye, Users, Link, DollarSign } from "lucide
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function SalaryStructure() {
   const { toast, showToast } = useToast();
@@ -10,6 +11,7 @@ export default function SalaryStructure() {
   const [employees, setEmployees] = useState([]);
   const [grades, setGrades] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("active");
   const [showModal, setShowModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [editingStructure, setEditingStructure] = useState(null);
@@ -26,15 +28,34 @@ export default function SalaryStructure() {
     is_active: true
   });
 
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_salary_structure");
+  const canAdd = isAdmin() || hasPermission("add_salary_structure");
+  const canEdit = isAdmin() || hasPermission("edit_salary_structure");
+  const canDelete = isAdmin() || hasPermission("delete_salary_structure");
+  const canViewDetails = isAdmin() || hasPermission("view_salary_structure");
+  const canLinkEmployees = isAdmin() || hasPermission("edit_salary_structure");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view salary structures.</p>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     fetchStructures();
     fetchEmployees();
-  }, []);
+  }, [statusFilter]);
 
   const fetchStructures = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/api/payroll/salary-structures");
+      const res = await api.get(`/api/payroll/salary-structures?status=${statusFilter}`);
       setStructures(res.data || []);
     } catch (error) {
       console.error("Error fetching salary structures:", error);
@@ -116,6 +137,14 @@ export default function SalaryStructure() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (editingStructure && !canEdit) {
+      showToast("You do not have permission to edit salary structures", "error");
+      return;
+    }
+    if (!editingStructure && !canAdd) {
+      showToast("You do not have permission to add salary structures", "error");
+      return;
+    }
     try {
       setLoading(true);
       const payload = {
@@ -140,6 +169,10 @@ export default function SalaryStructure() {
   };
 
   const handleDelete = async (id) => {
+    if (!canDelete) {
+      showToast("You do not have permission to delete salary structures", "error");
+      return;
+    }
     if (window.confirm("Are you sure you want to delete this salary structure?")) {
       try {
         await api.delete(`/api/payroll/salary-structures/${id}`);
@@ -183,6 +216,10 @@ export default function SalaryStructure() {
   };
 
   const handleOpenLinkModal = (structure) => {
+    if (!canLinkEmployees) {
+      showToast("You do not have permission to link employees to salary structures", "error");
+      return;
+    }
     setLinkingStructure(structure);
     // Get currently linked employees from database
     const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id.trim()) : [];
@@ -235,6 +272,10 @@ export default function SalaryStructure() {
   };
 
   const handleViewStructure = (structure) => {
+    if (!canViewDetails) {
+      showToast("You do not have permission to view salary structure details", "error");
+      return;
+    }
     showToast(`Structure Details:\n\nName: ${structure.name}\nAnnual CTC: ₹${structure.ctc?.toLocaleString()}\nMonthly: ₹${((structure.ctc || 0) / 12).toLocaleString()}\nBasic: ${structure.basic_percent}%\nHRA: ${structure.hra_percent}%\nStatus: ${structure.is_active ? 'Active' : 'Inactive'}`, "success");
   };
 
@@ -261,19 +302,38 @@ export default function SalaryStructure() {
       <div className="p-6">
         {/* Search and Add Button */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-          <div className="relative max-w-md w-full sm:w-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search salary structures..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
-            />
+          <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">Status:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            <div className="relative max-w-md w-full sm:w-auto">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="text"
+                placeholder="Search salary structures..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
+              />
+            </div>
           </div>
           <button 
             onClick={() => handleOpenModal()}
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center"
+            disabled={!canAdd}
+            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center ${
+              canAdd 
+                ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
             <Plus size={18} />
             Add Structure
@@ -330,41 +390,49 @@ export default function SalaryStructure() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                            structure.is_active ? "bg-gray-100 text-gray-800 border-gray-300" : "bg-gray-50 text-gray-600 border-gray-200"
+                            structure.is_active ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"
                           }`}>
                             {structure.is_active ? "Active" : "Inactive"}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex items-center gap-1 flex-wrap">
-                            <button 
-                              onClick={() => handleViewStructure(structure)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="View Details"
-                            >
-                              <Eye size={16} />
-                            </button>
-                            <button 
-                              onClick={() => handleOpenLinkModal(structure)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="Link Employees"
-                            >
-                              <Link size={16} />
-                            </button>
-                            <button 
-                              onClick={() => handleOpenModal(structure)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="Edit Structure"
-                            >
-                              <Edit size={16} />
-                            </button>
-                            <button 
-                              onClick={() => handleDelete(structure.id)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="Delete Structure"
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {canViewDetails && (
+                              <button 
+                                onClick={() => handleViewStructure(structure)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="View Details"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            )}
+                            {canLinkEmployees && (
+                              <button 
+                                onClick={() => handleOpenLinkModal(structure)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Link Employees"
+                              >
+                                <Link size={16} />
+                              </button>
+                            )}
+                            {canEdit && (
+                              <button 
+                                onClick={() => handleOpenModal(structure)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Edit Structure"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button 
+                                onClick={() => handleDelete(structure.id)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Delete Structure"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

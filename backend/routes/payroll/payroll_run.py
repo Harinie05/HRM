@@ -5,6 +5,7 @@ from sqlalchemy import text
 from utils.email import send_email
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 from datetime import datetime
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -35,7 +36,8 @@ def validate_before_payroll_run(
 @router.post("/runs")
 async def create_payroll_run(
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("create_payroll_run"))
 ):
     try:
         data = await request.json()
@@ -243,7 +245,8 @@ async def create_payroll_run_internal(data: dict, request: Request, db: Session)
 
 @router.get("/runs")
 def get_payroll_runs(
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_payroll_run"))
 ):
     try:
         create_table_query = text("""
@@ -306,7 +309,8 @@ def get_payroll_runs(
 @router.get("/payslip/{payroll_id}/download")
 def download_payslip(
     payroll_id: int,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("download_salary_slips"))
 ):
     try:
         result = db.execute(text("SELECT * FROM payroll_runs WHERE id = :id"), {"id": payroll_id}).fetchone()
@@ -499,7 +503,8 @@ def download_payslip(
 
 @router.get("/runs/export")
 def export_payroll_runs(
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("export_payroll_data"))
 ):
     try:
         result = db.execute(text("SELECT * FROM payroll_runs ORDER BY created_at DESC"))
@@ -525,7 +530,8 @@ async def send_payslip_email(
     payroll_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("email_salary_slips"))
 ):
     try:
         data = await request.json()
@@ -741,7 +747,8 @@ async def send_bulk_payslip_emails(
 
 @router.get("/reports/summary")
 def get_payroll_summary(
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_payroll_reports"))
 ):
     try:
         current_month = "December"

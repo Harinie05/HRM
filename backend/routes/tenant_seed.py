@@ -428,6 +428,53 @@ DEFAULT_PERMISSIONS = [
     {"name": "restore_staff_schedule", "description": "Can restore deleted staff schedules"},
     {"name": "show_deleted_staff_schedules", "description": "Can access show deleted staff schedules button"},
 
+    # =====================================================
+    # 💰 PAYROLL MANAGEMENT
+    # =====================================================
+
+    # Salary Structure
+    {"name": "view_salary_structure", "description": "Can view salary structures"},
+    {"name": "add_salary_structure", "description": "Can add salary structures"},
+    {"name": "edit_salary_structure", "description": "Can edit salary structures"},
+    {"name": "delete_salary_structure", "description": "Can delete salary structures"},
+    {"name": "view_salary_structure_details", "description": "Can view salary structure details"},
+    {"name": "link_employees_salary_structure", "description": "Can link employees to salary structures"},
+
+    # Statutory Rules
+    {"name": "view_statutory_rules", "description": "Can view statutory rules"},
+    {"name": "add_statutory_rule", "description": "Can add statutory rules"},
+    {"name": "edit_statutory_rule", "description": "Can edit statutory rules"},
+    {"name": "delete_statutory_rule", "description": "Can delete statutory rules"},
+
+    # Payroll Run
+    {"name": "view_payroll_run", "description": "Can view payroll runs"},
+    {"name": "create_payroll_run", "description": "Can create payroll runs"},
+    {"name": "process_payroll_run", "description": "Can process payroll runs"},
+    {"name": "approve_payroll_run", "description": "Can approve payroll runs"},
+    {"name": "delete_payroll_run", "description": "Can delete payroll runs"},
+
+    # Adjustments
+    {"name": "view_payroll_adjustments", "description": "Can view payroll adjustments"},
+    {"name": "add_payroll_adjustment", "description": "Can add payroll adjustments"},
+    {"name": "edit_payroll_adjustment", "description": "Can edit payroll adjustments"},
+    {"name": "delete_payroll_adjustment", "description": "Can delete payroll adjustments"},
+    {"name": "approve_payroll_adjustment", "description": "Can approve payroll adjustments"},
+
+    # Salary Slip & Payment
+    {"name": "view_salary_slips", "description": "Can view salary slips"},
+    {"name": "generate_salary_slips", "description": "Can generate salary slips"},
+    {"name": "download_salary_slips", "description": "Can download salary slips"},
+    {"name": "email_salary_slips", "description": "Can email salary slips"},
+    {"name": "process_payments", "description": "Can process salary payments"},
+    {"name": "view_payment_status", "description": "Can view payment status"},
+
+    # Reports & Compliance
+    {"name": "view_payroll_reports", "description": "Can view payroll reports"},
+    {"name": "generate_payroll_reports", "description": "Can generate payroll reports"},
+    {"name": "export_payroll_data", "description": "Can export payroll data"},
+    {"name": "view_compliance_reports", "description": "Can view compliance reports"},
+    {"name": "generate_compliance_reports", "description": "Can generate compliance reports"},
+
 ]
 
 # -------------------------------------------------------------

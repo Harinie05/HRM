@@ -3,6 +3,7 @@ import { FileText, Download, Send, Search, Eye, Calendar } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Payslips() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,6 +18,23 @@ export default function Payslips() {
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const [emailForm, setEmailForm] = useState({ email: '', payslip: null });
   const { toast, showToast, hideToast } = useToast();
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_salary_slips");
+  const canGenerate = isAdmin() || hasPermission("generate_salary_slips");
+  const canDownload = isAdmin() || hasPermission("download_salary_slips");
+  const canEmail = isAdmin() || hasPermission("email_salary_slips");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view salary slips.</p>
+        </div>
+      </div>
+    );
+  }
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -114,6 +132,10 @@ export default function Payslips() {
   };
 
   const handleGeneratePayslips = async () => {
+    if (!canGenerate) {
+      showToast("You do not have permission to generate payslips", "error");
+      return;
+    }
     try {
       setLoading(true);
       // Generate payslips for completed payroll runs
@@ -136,6 +158,10 @@ export default function Payslips() {
   };
 
   const handleSendEmail = async () => {
+    if (!canEmail) {
+      showToast("You do not have permission to email payslips", "error");
+      return;
+    }
     try {
       setLoading(true);
       const generatedPayslips = payslips.filter(p => p.status === 'Generated');
@@ -214,6 +240,10 @@ export default function Payslips() {
   };
 
   const handleDownloadPayslip = async (payslip) => {
+    if (!canDownload) {
+      showToast("You do not have permission to download payslips", "error");
+      return;
+    }
     try {
       // Create download URL
       const downloadUrl = `${api.defaults.baseURL}/api/payroll/payslip/${payslip.id}/download`;
@@ -233,6 +263,10 @@ export default function Payslips() {
   };
 
   const handleSendIndividual = async (payslip) => {
+    if (!canEmail) {
+      showToast("You do not have permission to email payslips", "error");
+      return;
+    }
     try {
       // Try to fetch employee email from database
       const empRes = await api.get('/api/employees/list');
@@ -288,22 +322,26 @@ export default function Payslips() {
       <div className="p-6">
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <button 
-            onClick={handleGeneratePayslips}
-            disabled={loading}
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black justify-center"
-          >
-            <FileText size={18} />
-            {loading ? "Generating..." : "Generate Payslips"}
-          </button>
-          <button 
-            onClick={handleSendEmail}
-            disabled={loading}
-            className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black justify-center"
-          >
-            <Send size={18} />
-            {loading ? "Sending..." : "Send via Email"}
-          </button>
+          {canGenerate && (
+            <button 
+              onClick={handleGeneratePayslips}
+              disabled={loading}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FileText size={18} />
+              {loading ? "Generating..." : "Generate Payslips"}
+            </button>
+          )}
+          {canEmail && (
+            <button 
+              onClick={handleSendEmail}
+              disabled={loading}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Send size={18} />
+              {loading ? "Sending..." : "Send via Email"}
+            </button>
+          )}
         </div>
         {/* Filters */}
         <div className="mb-6">
@@ -409,7 +447,7 @@ export default function Payslips() {
                       <p className="mt-1 text-sm text-gray-500">
                         {searchTerm || selectedMonth ? "No payslips match your search criteria." : "Generate payslips for employees to view them here."}
                       </p>
-                      {!searchTerm && !selectedMonth && (
+                      {!searchTerm && !selectedMonth && canGenerate && (
                         <div className="mt-6">
                           <button 
                             onClick={handleGeneratePayslips}
@@ -452,20 +490,24 @@ export default function Payslips() {
                           >
                             <Eye size={16} />
                           </button>
-                          <button 
-                            onClick={() => handleDownloadPayslip(payslip)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                            title="Download Payslip"
-                          >
-                            <Download size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handleSendIndividual(payslip)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                            title="Send via Email"
-                          >
-                            <Send size={16} />
-                          </button>
+                          {canDownload && (
+                            <button 
+                              onClick={() => handleDownloadPayslip(payslip)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="Download Payslip"
+                            >
+                              <Download size={16} />
+                            </button>
+                          )}
+                          {canEmail && (
+                            <button 
+                              onClick={() => handleSendIndividual(payslip)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="Send via Email"
+                            >
+                              <Send size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -3,6 +3,7 @@ import { Play, Search, Eye, Download, Calendar, Users } from "lucide-react";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
 import api from "../../api";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollRun() {
   const [runs, setRuns] = useState([]);
@@ -22,6 +23,23 @@ export default function PayrollRun() {
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [validationChecked, setValidationChecked] = useState(false);
   const { toast, showToast, hideToast } = useToast();
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_payroll_run");
+  const canCreate = isAdmin() || hasPermission("create_payroll_run");
+  const canProcess = isAdmin() || hasPermission("process_payroll_run");
+  const canViewDetails = isAdmin() || hasPermission("view_payroll_run");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view payroll runs.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchRuns();
@@ -131,6 +149,11 @@ export default function PayrollRun() {
 
   const handleRunPayroll = async (e) => {
     e.preventDefault();
+    
+    if (!canCreate && !canProcess) {
+      showToast("You do not have permission to run payroll", "error");
+      return;
+    }
     
     if (!runData.month || !runData.year) {
       showToast('Please select month and year', 'error');
@@ -396,7 +419,12 @@ export default function PayrollRun() {
         <div className="flex justify-center sm:justify-end mb-6">
           <button 
             onClick={() => setShowRunModal(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center"
+            disabled={!canCreate}
+            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center ${
+              canCreate 
+                ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
             <Play size={18} />
             Run Payroll
@@ -494,7 +522,12 @@ export default function PayrollRun() {
                       <div className="mt-6">
                         <button 
                           onClick={() => setShowRunModal(true)}
-                          className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                          disabled={!canCreate}
+                          className={`px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black ${
+                            canCreate 
+                              ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          }`}
                         >
                           <Play size={16} />
                           Run First Payroll
@@ -531,13 +564,15 @@ export default function PayrollRun() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleViewPayroll(run)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                            title="View Details"
-                          >
-                            <Eye size={16} />
-                          </button>
+                          {canViewDetails && (
+                            <button 
+                              onClick={() => handleViewPayroll(run)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="View Details"
+                            >
+                              <Eye size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

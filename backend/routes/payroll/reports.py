@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 router = APIRouter(
     prefix="/payroll/reports",
@@ -21,7 +22,8 @@ router = APIRouter(
 def payroll_summary(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("view_payroll_reports"))
 ):
     # Audit log
     return {
@@ -42,7 +44,8 @@ def payroll_summary(
 def generate_form16_pdf(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("generate_compliance_reports"))
 ):
     """Generate Form 16 PDF certificate"""
     # Audit log
@@ -151,7 +154,8 @@ def generate_form16_pdf(
 def generate_pf_challan_pdf(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("generate_payroll_reports"))
 ):
     """Generate PF Challan PDF report"""
     # Audit log
@@ -199,7 +203,8 @@ def generate_pf_challan_pdf(
 def generate_esi_challan_pdf(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("generate_payroll_reports"))
 ):
     """Generate ESI Challan PDF report"""
     # Audit log
@@ -247,7 +252,8 @@ def generate_esi_challan_pdf(
 def generate_tds_pdf(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("generate_compliance_reports"))
 ):
     """Generate TDS PDF report"""
     # Audit log
@@ -295,7 +301,8 @@ def generate_tds_pdf(
 def generate_bank_transfer_pdf(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("generate_payroll_reports"))
 ):
     """Generate Bank Transfer PDF report"""
     # Audit log

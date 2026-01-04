@@ -3,6 +3,7 @@ import { BarChart3, Download, FileText, TrendingUp, Users, DollarSign, Calendar 
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollReports() {
   const [employees, setEmployees] = useState([]);
@@ -25,6 +26,23 @@ export default function PayrollReports() {
     tdsDeducted: 0
   });
   const { toast, showToast, hideToast } = useToast();
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_payroll_reports");
+  const canGenerate = isAdmin() || hasPermission("generate_payroll_reports");
+  const canGenerateCompliance = isAdmin() || hasPermission("generate_compliance_reports");
+  const canExport = isAdmin() || hasPermission("export_payroll_data");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view payroll reports.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchData();
@@ -95,6 +113,10 @@ export default function PayrollReports() {
   };
 
   const handleExportReport = () => {
+    if (!canExport) {
+      showToast("You do not have permission to export payroll data", "error");
+      return;
+    }
     const reportData = {
       period: selectedPeriod,
       stats,
@@ -114,6 +136,18 @@ export default function PayrollReports() {
   };
 
   const handleDownloadReport = async (reportType) => {
+    const isComplianceReport = ['pf-challan', 'esi-challan', 'tds', 'form16'].includes(reportType);
+    const isPayrollReport = ['bank-transfer', 'department-wise', 'grade-wise', 'attendance-payroll'].includes(reportType);
+    
+    if (isComplianceReport && !canGenerateCompliance) {
+      showToast("You do not have permission to generate compliance reports", "error");
+      return;
+    }
+    if (isPayrollReport && !canGenerate) {
+      showToast("You do not have permission to generate payroll reports", "error");
+      return;
+    }
+    
     try {
       let endpoint = '';
       let filename = '';
@@ -211,14 +245,16 @@ export default function PayrollReports() {
               <option value="quarter">This Quarter</option>
               <option value="year">This Year</option>
             </select>
-            <button 
-              onClick={handleExportReport}
-              disabled={loading}
-              className="bg-white text-black border border-black px-4 py-2 rounded-full flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium hover:bg-gray-100 justify-center"
-            >
-              <Download size={16} />
-              {loading ? "Loading..." : "Export"}
-            </button>
+            {canExport && (
+              <button 
+                onClick={handleExportReport}
+                disabled={loading}
+                className="px-4 py-2 rounded-full flex items-center gap-2 transition-colors text-sm font-medium justify-center bg-white text-black border border-black hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Download size={16} />
+                {loading ? "Loading..." : "Export"}
+              </button>
+            )}
           </div>
         </div>
 
@@ -308,48 +344,56 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">PF Challan Report</p>
                   <p className="text-sm text-gray-600">Monthly PF contribution summary</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('pf-challan')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerateCompliance && (
+                  <button 
+                    onClick={() => handleDownloadReport('pf-challan')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">ESI Challan Report</p>
                   <p className="text-sm text-gray-600">Monthly ESI contribution summary</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('esi-challan')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerateCompliance && (
+                  <button 
+                    onClick={() => handleDownloadReport('esi-challan')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">TDS Report</p>
                   <p className="text-sm text-gray-600">Tax deduction summary</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('tds')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerateCompliance && (
+                  <button 
+                    onClick={() => handleDownloadReport('tds')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">Form 16 Generation</p>
                   <p className="text-sm text-gray-600">Annual tax certificate</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('form16')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerateCompliance && (
+                  <button 
+                    onClick={() => handleDownloadReport('form16')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -366,48 +410,56 @@ export default function PayrollReports() {
                   <p className="font-medium text-gray-900">Department-wise Report</p>
                   <p className="text-sm text-gray-600">Payroll breakdown by department</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('department-wise')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerate && (
+                  <button 
+                    onClick={() => handleDownloadReport('department-wise')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">Grade-wise Report</p>
                   <p className="text-sm text-gray-600">Salary distribution by grade</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('grade-wise')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerate && (
+                  <button 
+                    onClick={() => handleDownloadReport('grade-wise')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">Bank Transfer Report</p>
                   <p className="text-sm text-gray-600">Salary transfer summary</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('bank-transfer')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerate && (
+                  <button 
+                    onClick={() => handleDownloadReport('bank-transfer')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-black">
                 <div>
                   <p className="font-medium text-gray-900">Attendance vs Payroll</p>
                   <p className="text-sm text-gray-600">Attendance impact analysis</p>
                 </div>
-                <button 
-                  onClick={() => handleDownloadReport('attendance-payroll')}
-                  className="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Download size={16} />
-                </button>
+                {canGenerate && (
+                  <button 
+                    onClick={() => handleDownloadReport('attendance-payroll')}
+                    className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    <Download size={16} />
+                  </button>
+                )}
               </div>
             </div>
           </div>

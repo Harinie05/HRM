@@ -3,6 +3,7 @@ import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollAdjustments() {
   const { toast, showToast } = useToast();
@@ -19,6 +20,23 @@ export default function PayrollAdjustments() {
     amount: 0,
     description: ""
   });
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_payroll_adjustments");
+  const canAdd = isAdmin() || hasPermission("add_payroll_adjustment");
+  const canEdit = isAdmin() || hasPermission("edit_payroll_adjustment");
+  const canDelete = isAdmin() || hasPermission("delete_payroll_adjustment");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view payroll adjustments.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchAdjustments();
@@ -103,6 +121,14 @@ export default function PayrollAdjustments() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (editingAdjustment && !canEdit) {
+      showToast("You do not have permission to edit adjustments", "error");
+      return;
+    }
+    if (!editingAdjustment && !canAdd) {
+      showToast("You do not have permission to add adjustments", "error");
+      return;
+    }
     try {
       setLoading(true);
       
@@ -144,6 +170,10 @@ export default function PayrollAdjustments() {
   };
 
   const handleDelete = async (id) => {
+    if (!canDelete) {
+      showToast("You do not have permission to delete adjustments", "error");
+      return;
+    }
     if (window.confirm("Are you sure you want to delete this adjustment?")) {
       try {
         await api.delete(`/api/payroll/adjustments/${id}`);
@@ -249,13 +279,15 @@ export default function PayrollAdjustments() {
               className="pl-12 pr-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent w-full text-sm"
             />
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center"
-          >
-            <Plus size={18} />
-            Add Adjustment
-          </button>
+          {canAdd && (
+            <button 
+              onClick={() => handleOpenModal()}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+            >
+              <Plus size={18} />
+              Add Adjustment
+            </button>
+          )}
         </div>
 
         {/* Table */}
@@ -306,18 +338,22 @@ export default function PayrollAdjustments() {
                       <button className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400">
                         <Eye size={16} />
                       </button>
-                      <button 
-                        onClick={() => handleOpenModal(adjustment)}
-                        className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(adjustment.id)}
-                        className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      {canEdit && (
+                        <button 
+                          onClick={() => handleOpenModal(adjustment)}
+                          className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                        >
+                          <Edit size={16} />
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button 
+                          onClick={() => handleDelete(adjustment.id)}
+                          className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

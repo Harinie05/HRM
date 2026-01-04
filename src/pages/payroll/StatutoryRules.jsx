@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function StatutoryRules() {
   const { toast, showToast, hideToast } = useToast();
@@ -18,6 +19,21 @@ export default function StatutoryRules() {
     tds_enabled: true,
     tds_percent: "10"
   });
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_statutory_rules");
+  const canEdit = isAdmin() || hasPermission("edit_statutory_rule");
+
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view statutory rules.</p>
+        </div>
+      </div>
+    );
+  }
 
   const fetchRules = async () => {
     try {
@@ -44,6 +60,11 @@ export default function StatutoryRules() {
   }, []);
 
   const submit = async () => {
+    if (!canEdit) {
+      showToast("You do not have permission to edit statutory rules", "error");
+      return;
+    }
+    
     const data = new FormData();
     Object.keys(form).forEach(key => {
       data.append(key, form[key]);
@@ -209,18 +230,20 @@ export default function StatutoryRules() {
         </div>
       </div>
 
-      {/* Submit Button */}
-      <div className="mt-8 flex justify-center sm:justify-end">
-        <button
-          onClick={submit}
-          className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 text-sm border border-black w-full sm:w-auto justify-center"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          Save Changes
-        </button>
-      </div>
+      {/* Submit Button - Only show if user has edit permission */}
+      {canEdit && (
+        <div className="mt-8 flex justify-center sm:justify-end">
+          <button
+            onClick={submit}
+            className="px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 text-sm border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Save Changes
+          </button>
+        </div>
+      )}
       </div>
       <Toast 
         show={toast.show} 

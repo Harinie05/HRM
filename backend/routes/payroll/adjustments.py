@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
+from utils.permission import require_permission
 from sqlalchemy import text
 
 router = APIRouter(
@@ -14,7 +15,8 @@ router = APIRouter(
 async def add_adjustment(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("add_payroll_adjustment"))
 ):
     try:
         from utils.audit_logger import audit_crud
@@ -67,7 +69,8 @@ async def add_adjustment(
 
 @router.get("/adjustments")
 def list_adjustments(
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_payroll_adjustments"))
 ):
     try:
         # Create table if not exists
@@ -116,7 +119,8 @@ async def update_adjustment(
     adjustment_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("edit_payroll_adjustment"))
 ):
     try:
         from utils.audit_logger import audit_crud
@@ -148,7 +152,8 @@ def delete_adjustment(
     adjustment_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("delete_payroll_adjustment"))
 ):
     try:
         from utils.audit_logger import audit_crud
