@@ -1,8 +1,35 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Check, Clock, AlertCircle } from "lucide-react";
 import api from "../../api";
+import { hasPermission, isAdmin, getUserPermissions } from "../../utils/permissions";
 
 export default function KnowledgeTransfer() {
+  // Permission checks
+  const canView = isAdmin() || hasPermission('view_kt_plans');
+  const canAdd = isAdmin() || hasPermission('add_kt_plan');
+  const canCreate = isAdmin() || hasPermission('create_kt_plan');
+  const canComplete = isAdmin() || hasPermission('complete_kt_items');
+  const canHRApprove = isAdmin() || hasPermission('hr_approve_kt');
+  const canManagerApprove = isAdmin() || hasPermission('manager_approve_kt');
+  
+  // Debug: Check actual permissions
+  console.log('Permission Debug:', {
+    isAdmin: isAdmin(),
+    allPermissions: getUserPermissions(),
+    hasManagerApprove: hasPermission('manager_approve_kt'),
+    canManagerApprove
+  });
+  
+  if (!canView) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view knowledge transfer plans.</p>
+        </div>
+      </div>
+    );
+  }
   const [exits, setExits] = useState([]);
   const [selectedExit, setSelectedExit] = useState(null);
   const [ktData, setKtData] = useState(null);
@@ -212,7 +239,7 @@ export default function KnowledgeTransfer() {
                   <p className="text-gray-600">Code: {selectedExit.employee_code}</p>
                   <p className="text-gray-600">Last Working Day: {selectedExit.last_working_day}</p>
                 </div>
-                {!ktData && !showCreateForm && (
+                {!ktData && !showCreateForm && canCreate && (
                   <button
                     onClick={() => setShowCreateForm(true)}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -250,13 +277,15 @@ export default function KnowledgeTransfer() {
                   <div>
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="font-medium">Knowledge Transfer Items</h4>
-                      <button
-                        type="button"
-                        onClick={addKTItem}
-                        className="flex items-center gap-2 px-3 py-1 text-blue-600 hover:bg-blue-50 rounded"
-                      >
-                        <Plus className="w-4 h-4" /> Add Item
-                      </button>
+                      {canAdd && (
+                        <button
+                          type="button"
+                          onClick={addKTItem}
+                          className="flex items-center gap-2 px-3 py-1 text-blue-600 hover:bg-blue-50 rounded"
+                        >
+                          <Plus className="w-4 h-4" /> Add Item
+                        </button>
+                      )}
                     </div>
 
                     {formData.kt_items.map((item, index) => (
@@ -369,7 +398,7 @@ export default function KnowledgeTransfer() {
                                 {getStatusIcon(item.status)}
                                 <span className="font-medium">{item.knowledge_area}</span>
                               </div>
-                              {item.status !== "Completed" && (
+                              {item.status !== "Completed" && canComplete && (
                                 <button
                                   onClick={() => acknowledgeItem(item.id)}
                                   className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
@@ -403,7 +432,8 @@ export default function KnowledgeTransfer() {
 
                   {ktData && (
                     <div className="flex gap-3 mt-4">
-                      {!ktData.manager_approved && (
+                      {console.log('Button render check:', { manager_approved: ktData.manager_approved, canManagerApprove })}
+                      {!ktData.manager_approved && canManagerApprove && (
                         <button
                           onClick={() => approveKT("manager")}
                           className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
@@ -411,7 +441,7 @@ export default function KnowledgeTransfer() {
                           Manager Approve
                         </button>
                       )}
-                      {ktData.manager_approved && !ktData.hr_approved && (
+                      {ktData.manager_approved && !ktData.hr_approved && canHRApprove && (
                         <button
                           onClick={() => approveKT("hr")}
                           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"

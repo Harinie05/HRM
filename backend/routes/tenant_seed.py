@@ -206,6 +206,24 @@ DEFAULT_PERMISSIONS = [
     {"name": "conduct_exit_interview", "description": "Can conduct exit interviews"},
     {"name": "view_exit_interviews", "description": "Can view exit interview records"},
 
+    # Knowledge Transfer
+    {"name": "view_kt_plans", "description": "Can view knowledge transfer plans"},
+    {"name": "add_kt_plan", "description": "Can add knowledge transfer plans"},
+    {"name": "create_kt_plan", "description": "Can create knowledge transfer plans"},
+    {"name": "complete_kt_items", "description": "Can mark knowledge transfer items as complete"},
+    {"name": "hr_approve_kt", "description": "Can approve knowledge transfer plans as HR"},
+    {"name": "manager_approve_kt", "description": "Can approve knowledge transfer plans as Manager"},
+
+    # F&F Settlement & Documents
+    {"name": "view_settlements", "description": "Can view F&F settlements"},
+    {"name": "calculate_settlements", "description": "Can calculate F&F settlements"},
+    {"name": "approve_settlements", "description": "Can approve F&F settlements"},
+    {"name": "generate_experience_letter", "description": "Can generate experience letters"},
+    {"name": "edit_experience_letter", "description": "Can edit experience letters"},
+    {"name": "download_settlement_pdf", "description": "Can download settlement PDFs"},
+    {"name": "email_settlement_docs", "description": "Can email settlement documents"},
+    {"name": "edit_settlements", "description": "Can edit F&F settlements"},
+
 ]
 
 # -------------------------------------------------------------

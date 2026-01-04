@@ -647,6 +647,21 @@ class EmployeeExit(MasterBase):
     notes = Column(Text)
     updated_at = Column(DateTime, default=func.now())
 
+# ========================= EXIT CLEARANCE =========================
+class ExitClearance(MasterBase):
+    __tablename__ = "exit_clearances"
+
+    id = Column(Integer, primary_key=True, index=True)
+    exit_id = Column(Integer, ForeignKey("employee_exit.id"), nullable=False)
+    department = Column(String(50), nullable=False)  # HR, IT, Finance, Admin
+    status = Column(String(50), default="Pending")  # Pending, Completed
+    description = Column(Text, nullable=True)
+    completed_by = Column(Integer, nullable=True)  # User ID who completed
+    completed_at = Column(DateTime, nullable=True)
+    remarks = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
 # ========================= KNOWLEDGE TRANSFER =========================
 class ExitKnowledgeTransfer(MasterBase):
     __tablename__ = "exit_knowledge_transfer"

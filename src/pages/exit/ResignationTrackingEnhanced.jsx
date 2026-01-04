@@ -465,7 +465,7 @@ const ResignationTracking = () => {
                         )}
                         
                         {!canManageHandover && !canManageClearance && !canManageAssets && !canManageSettlement && (
-                          <span className="text-xs text-gray-500">No permissions</span>
+                          <span className="text-xs text-gray-500">View only</span>
                         )}
                       </div>
                     </td>

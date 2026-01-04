@@ -823,6 +823,27 @@ class ExitOut(ExitBase):
         from_attributes = True
 
 # ============================================================
+# EXIT CLEARANCE SCHEMAS
+# ============================================================
+
+class ExitClearanceBase(BaseModel):
+    department: str
+    description: Optional[str] = None
+    status: str = "Pending"
+
+class ExitClearanceCreate(ExitClearanceBase):
+    exit_id: int
+
+class ExitClearanceOut(ExitClearanceBase):
+    id: int
+    exit_id: int
+    completed_by: Optional[int] = None
+    completed_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+# ============================================================
 # FULL EMPLOYEE PROFILE RESPONSE
 # (Single API returns entire EIS data)
 # ============================================================

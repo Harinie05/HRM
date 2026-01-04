@@ -4,11 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import date, datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
+from database import get_tenant_db, get_tenant_engine
 
 from routes.hospital import get_current_user
-from database import get_tenant_engine
 from models.models_tenant import EmployeeSettlement, ExperienceLetter, EmployeeExit, User
 
 # ---------------------- TENANT SESSION ----------------------
@@ -53,8 +54,8 @@ class ExperienceLetterCreate(BaseModel):
     company_name: str
     designation: str
     department: str
-    joining_date: date
-    last_working_day: date
+    joining_date: str
+    last_working_day: str
     place: str = "Bangalore"
     issued_by: str = "HR Department"
     authorized_signatory: str = "HR Manager"
@@ -63,7 +64,7 @@ class ExperienceLetterCreate(BaseModel):
 # 1. CALCULATE & SAVE SETTLEMENT
 # -------------------------------------------------------------------------
 @router.post("/calculate")
-def calculate_settlement(data: SettlementCreate, request: Request, user=Depends(get_current_user)):
+def calculate_settlement(data: SettlementCreate, request: Request, user=Depends(require_permission("calculate_settlements"))):
     db = get_tenant_session(user)
     
     try:
@@ -108,7 +109,7 @@ def calculate_settlement(data: SettlementCreate, request: Request, user=Depends(
 # 2. APPROVE SETTLEMENT
 # -------------------------------------------------------------------------
 @router.put("/approve/{settlement_id}")
-def approve_settlement(settlement_id: int, request: Request, user=Depends(get_current_user)):
+def approve_settlement(settlement_id: int, request: Request, user=Depends(require_permission("approve_settlements"))):
     db = get_tenant_session(user)
     
     settlement = db.query(EmployeeSettlement).filter(EmployeeSettlement.id == settlement_id).first()
@@ -130,52 +131,109 @@ def approve_settlement(settlement_id: int, request: Request, user=Depends(get_cu
 # 3. GENERATE & SAVE EXPERIENCE LETTER
 # -------------------------------------------------------------------------
 @router.post("/experience-letter")
-def generate_experience_letter(data: ExperienceLetterCreate, request: Request, user=Depends(get_current_user)):
+def generate_experience_letter(data: dict, request: Request, user=Depends(get_current_user)):
+    print(f"Received data: {data}")
+    
+    try:
+        db = get_tenant_session(user)
+        print("Database session created")
+        
+        joining_date = datetime.strptime(data["joining_date"], "%Y-%m-%d").date()
+        
+        # Handle None value for last_working_day
+        if data["last_working_day"] is None:
+            last_working_day = date.today()  # Use today's date as default
+        else:
+            last_working_day = datetime.strptime(data["last_working_day"], "%Y-%m-%d").date()
+        print(f"Dates parsed: {joining_date}, {last_working_day}")
+        
+        existing = db.query(ExperienceLetter).filter(
+            ExperienceLetter.resignation_id == data["resignation_id"]
+        ).first()
+        print(f"Existing letter check: {existing}")
+        
+        if existing:
+            return {"message": "Experience letter already exists", "id": existing.id}
+        
+        letter = ExperienceLetter(
+            employee_id=data["employee_id"],
+            resignation_id=data["resignation_id"],
+            employee_name=data["employee_name"],
+            employee_code=data["employee_code"],
+            company_name=data["company_name"],
+            designation=data["designation"],
+            department=data["department"],
+            joining_date=joining_date,
+            last_working_day=last_working_day,
+            place=data.get("place", "Bangalore"),
+            issued_by=data.get("issued_by", "HR Department"),
+            authorized_signatory=data.get("authorized_signatory", "HR Manager"),
+            issued_date=date.today()
+        )
+        print("Letter object created")
+        
+        db.add(letter)
+        print("Letter added to session")
+        
+        db.commit()
+        print("Database committed")
+        
+        db.refresh(letter)
+        print(f"Letter saved with ID: {letter.id}")
+        
+        return {"message": "Experience letter generated successfully", "id": letter.id}
+        
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        if 'db' in locals():
+            db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+# -------------------------------------------------------------------------
+# 4. UPDATE EXPERIENCE LETTER
+# -------------------------------------------------------------------------
+@router.put("/experience-letter/{letter_id}")
+def update_experience_letter(letter_id: int, data: dict, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     
     try:
-        # Check if experience letter already exists
-        existing = db.query(ExperienceLetter).filter(
-            ExperienceLetter.resignation_id == data.resignation_id
-        ).first()
+        letter = db.query(ExperienceLetter).filter(ExperienceLetter.id == letter_id).first()
+        if not letter:
+            raise HTTPException(404, "Experience letter not found")
         
-        if existing:
-            # Update existing letter
-            old_values = {"employee_name": existing.employee_name, "designation": existing.designation}
-            for field, value in data.dict().items():
-                if field != 'resignation_id':
-                    setattr(existing, field, value)
-            existing.issued_date = date.today()
-            existing.updated_at = datetime.now()
-            db.commit()
-            db.refresh(existing)
-            
-            audit_crud(request, db, user, "UPDATE_EXPERIENCE_LETTER", "experience_letters", str(existing.id), old_values, data.dict())
-            
-            return {"message": "Experience letter updated successfully", "id": existing.id}
+        joining_date = datetime.strptime(data["joining_date"], "%Y-%m-%d").date()
+        
+        if data["last_working_day"] is None:
+            last_working_day = date.today()
         else:
-            # Create new experience letter
-            letter = ExperienceLetter(
-                **data.dict(),
-                issued_date=date.today()
-            )
-            db.add(letter)
-            db.commit()
-            db.refresh(letter)
-            
-            audit_crud(request, db, user, "CREATE_EXPERIENCE_LETTER", "experience_letters", str(letter.id), {}, data.dict())
-            
-            return {"message": "Experience letter generated successfully", "id": letter.id}
+            last_working_day = datetime.strptime(data["last_working_day"], "%Y-%m-%d").date()
+        
+        letter.employee_name = data["employee_name"]
+        letter.employee_code = data["employee_code"]
+        letter.company_name = data["company_name"]
+        letter.designation = data["designation"]
+        letter.department = data["department"]
+        letter.joining_date = joining_date
+        letter.last_working_day = last_working_day
+        letter.place = data.get("place", "Bangalore")
+        letter.issued_by = data.get("issued_by", "HR Department")
+        letter.authorized_signatory = data.get("authorized_signatory", "HR Manager")
+        letter.updated_at = datetime.now()
+        
+        db.commit()
+        db.refresh(letter)
+        
+        return {"message": "Experience letter updated successfully", "id": letter.id}
         
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
 # -------------------------------------------------------------------------
-# 4. UPDATE EMAIL STATUS
+# 5. UPDATE EMAIL STATUS
 # -------------------------------------------------------------------------
 @router.put("/experience-letter/{letter_id}/email")
-def update_email_status(letter_id: int, email_to: str, request: Request, user=Depends(get_current_user)):
+def update_email_status(letter_id: int, email_to: str, request: Request, user=Depends(require_permission("email_settlement_docs"))):
     db = get_tenant_session(user)
     
     letter = db.query(ExperienceLetter).filter(ExperienceLetter.id == letter_id).first()
@@ -198,7 +256,7 @@ def update_email_status(letter_id: int, email_to: str, request: Request, user=De
 # 5. GET SETTLEMENT BY RESIGNATION ID
 # -------------------------------------------------------------------------
 @router.get("/by-resignation/{resignation_id}")
-def get_settlement_by_resignation(resignation_id: int, request: Request, user=Depends(get_current_user)):
+def get_settlement_by_resignation(resignation_id: int, request: Request, user=Depends(require_permission("view_settlements"))):
     db = get_tenant_session(user)
     
     audit_crud(request, db, user, "VIEW_SETTLEMENT_BY_RESIGNATION", "employee_settlements", str(resignation_id), {}, {"resignation_id": resignation_id})

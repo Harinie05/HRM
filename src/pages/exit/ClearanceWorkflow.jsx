@@ -3,9 +3,29 @@ import { CheckCircle, Clock, User, AlertCircle } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ClearanceWorkflow() {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canView = isAdmin() || hasPermission('view_resignations');
+  const canManageHR = isAdmin() || hasPermission('hr_clearance');
+  const canManageIT = isAdmin() || hasPermission('it_clearance');
+  const canManageFinance = isAdmin() || hasPermission('finance_clearance');
+  const canManageAdmin = isAdmin() || hasPermission('admin_clearance');
+  const canConductInterview = isAdmin() || hasPermission('conduct_exit_interview');
+  
+  if (!canView) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view exit clearances.</p>
+        </div>
+      </div>
+    );
+  }
   const [exits, setExits] = useState([]);
   const [selectedExit, setSelectedExit] = useState(null);
   const [clearances, setClearances] = useState([]);
@@ -45,9 +65,23 @@ export default function ClearanceWorkflow() {
   // Load clearances for selected exit
   useEffect(() => {
     if (selectedExit) {
-      // For now, we'll use the default clearance items since the clearance API doesn't exist
-      // In a real implementation, this would fetch from `/api/exit/clearance/${selectedExit.id}`
-      setClearances([]);
+      async function fetchClearances() {
+        try {
+          const res = await api.get(`/api/exit/clearance/${selectedExit.id}`);
+          setClearances(res.data);
+          
+          // If no clearances exist, create them
+          if (res.data.length === 0) {
+            await api.post(`/api/exit/clearance/${selectedExit.id}/create`);
+            const newRes = await api.get(`/api/exit/clearance/${selectedExit.id}`);
+            setClearances(newRes.data);
+          }
+        } catch (err) {
+          console.log("Error loading clearances", err);
+          setClearances([]);
+        }
+      }
+      fetchClearances();
     }
   }, [selectedExit]);
 
@@ -103,9 +137,9 @@ export default function ClearanceWorkflow() {
     return departmentClearances[resignationId]?.[department] || 'Pending';
   };
 
-  const areAllClearancesCompleted = (resignationId) => {
-    const departments = ['HR', 'IT', 'Finance', 'Admin'];
-    return departments.every(dept => getDepartmentStatus(resignationId, dept) === 'Completed');
+  const areAllClearancesCompleted = () => {
+    if (clearances.length === 0) return false;
+    return clearances.every(clearance => clearance.status === 'Completed');
   };
 
   const defaultClearanceItems = [
@@ -178,7 +212,10 @@ export default function ClearanceWorkflow() {
             <div>
               <p className="text-gray-600 text-sm font-medium">Pending Clearance</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">
-                {exits.filter(e => !areAllClearancesCompleted(e.id)).length}
+                {exits.filter(e => {
+                  // This is just for display, we'll use actual clearance data when exit is selected
+                  return true; // Show all as pending for now in stats
+                }).length}
               </p>
             </div>
             <div className="p-3 bg-gray-100 rounded-xl border border-black">
@@ -192,7 +229,7 @@ export default function ClearanceWorkflow() {
             <div>
               <p className="text-gray-600 text-sm font-medium">Clearance Completed</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">
-                {exits.filter(e => areAllClearancesCompleted(e.id)).length}
+                {exits.filter(e => e.clearance_status === 'Completed').length}
               </p>
             </div>
             <div className="p-3 bg-gray-100 rounded-xl border border-black">
@@ -237,7 +274,7 @@ export default function ClearanceWorkflow() {
               ) : (
                 exits.map((exit) => {
                   const isSelected = selectedExit?.id === exit.id;
-                  const clearanceCompleted = areAllClearancesCompleted(exit.id);
+                  const clearanceCompleted = selectedExit && clearances.length > 0 && clearances.every(c => c.status === 'Completed');
                   
                   return (
                     <div
@@ -291,7 +328,7 @@ export default function ClearanceWorkflow() {
                     <h3 className="text-xl font-bold text-gray-900">Clearance Status</h3>
                     <p className="text-gray-600 text-sm mt-1">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
                   </div>
-                  {!selectedExit.exit_interview_completed && areAllClearancesCompleted(selectedExit.id) && (
+                  {!selectedExit.exit_interview_completed && areAllClearancesCompleted() && canConductInterview && (
                     <button
                       onClick={() => setShowInterviewForm(true)}
                       className="bg-gray-800 px-4 py-2 text-white text-sm rounded-xl border border-black hover:bg-gray-900 font-semibold transition-all duration-200"
@@ -299,7 +336,7 @@ export default function ClearanceWorkflow() {
                       Conduct Exit Interview
                     </button>
                   )}
-                  {!areAllClearancesCompleted(selectedExit.id) && (
+                  {!areAllClearancesCompleted() && (
                     <div className="text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg border border-black">
                       Complete all clearances to conduct interview
                     </div>
@@ -308,49 +345,119 @@ export default function ClearanceWorkflow() {
               </div>
 
               <div className="p-6">
-                {/* Department Clearance Status */}
                 <div className="grid grid-cols-1 gap-4">
-                  {defaultClearanceItems.map((clearance, index) => {
-                    const currentStatus = getDepartmentStatus(selectedExit.id, clearance.department);
-                    const IconComponent = clearance.icon;
-                    
-                    return (
-                      <div key={index} className="border border-black rounded-xl p-4 hover:shadow-md transition-all duration-200">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4 flex-1">
-                            <div className="p-3 rounded-xl bg-gray-100 border border-black">
-                              <IconComponent className="h-5 w-5 text-gray-500" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-semibold text-gray-900">{clearance.department}</div>
-                              <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
-                              currentStatus === 'Pending' ? 'bg-gray-100 text-gray-800 border-gray-300' :
-                              'bg-gray-100 text-gray-800 border-gray-300'
-                            }`}>
-                              {currentStatus}
-                            </span>
-                            {currentStatus === 'Pending' && (
-                              <button
-                                onClick={() => updateDepartmentClearance(selectedExit.id, clearance.department, 'Completed')}
-                                className="text-gray-800 hover:text-gray-900 text-sm px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200"
-                              >
-                                Mark Completed
-                              </button>
-                            )}
-                            {currentStatus === 'Completed' && (
-                              <div className="text-gray-600">
-                                <CheckCircle className="h-5 w-5" />
+                  {clearances.length > 0 ? (
+                    clearances.filter(clearance => {
+                      // Only show clearances for departments the user has permission for
+                      return (
+                        (clearance.department === 'HR' && canManageHR) ||
+                        (clearance.department === 'IT' && canManageIT) ||
+                        (clearance.department === 'Finance' && canManageFinance) ||
+                        (clearance.department === 'Admin' && canManageAdmin)
+                      );
+                    }).map((clearance, index) => {
+                      const IconComponent = defaultClearanceItems.find(item => item.department === clearance.department)?.icon || User;
+                      const canManage = (
+                        (clearance.department === 'HR' && canManageHR) ||
+                        (clearance.department === 'IT' && canManageIT) ||
+                        (clearance.department === 'Finance' && canManageFinance) ||
+                        (clearance.department === 'Admin' && canManageAdmin)
+                      );
+                      
+                      return (
+                        <div key={clearance.id} className="border border-black rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 flex-1">
+                              <div className="p-3 rounded-xl bg-gray-100 border border-black">
+                                <IconComponent className="h-5 w-5 text-gray-500" />
                               </div>
-                            )}
+                              <div className="flex-1">
+                                <div className="font-semibold text-gray-900">{clearance.department}</div>
+                                <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                                clearance.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                                'bg-green-100 text-green-800 border-green-200'
+                              }`}>
+                                {clearance.status}
+                              </span>
+                              {clearance.status === 'Pending' && canManage && (
+                                <button
+                                  onClick={() => handleApproveClearance(clearance.id)}
+                                  className="text-gray-800 hover:text-gray-900 text-sm px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200"
+                                >
+                                  Mark Completed
+                                </button>
+                              )}
+                              {clearance.status === 'Completed' && (
+                                <div className="text-green-600">
+                                  <CheckCircle className="h-5 w-5" />
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ) : (
+                    defaultClearanceItems.filter(clearance => {
+                      // Only show clearances for departments the user has permission for
+                      return (
+                        (clearance.department === 'HR' && canManageHR) ||
+                        (clearance.department === 'IT' && canManageIT) ||
+                        (clearance.department === 'Finance' && canManageFinance) ||
+                        (clearance.department === 'Admin' && canManageAdmin)
+                      );
+                    }).map((clearance, index) => {
+                      const currentStatus = getDepartmentStatus(selectedExit.id, clearance.department);
+                      const IconComponent = clearance.icon;
+                      const canManage = (
+                        (clearance.department === 'HR' && canManageHR) ||
+                        (clearance.department === 'IT' && canManageIT) ||
+                        (clearance.department === 'Finance' && canManageFinance) ||
+                        (clearance.department === 'Admin' && canManageAdmin)
+                      );
+                      
+                      return (
+                        <div key={index} className="border border-black rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 flex-1">
+                              <div className="p-3 rounded-xl bg-gray-100 border border-black">
+                                <IconComponent className="h-5 w-5 text-gray-500" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-semibold text-gray-900">{clearance.department}</div>
+                                <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                                currentStatus === 'Pending' ? 'bg-gray-100 text-gray-800 border-gray-300' :
+                                'bg-gray-100 text-gray-800 border-gray-300'
+                              }`}>
+                                {currentStatus}
+                              </span>
+                              {currentStatus === 'Pending' && canManage && (
+                                <button
+                                  onClick={() => updateDepartmentClearance(selectedExit.id, clearance.department, 'Completed')}
+                                  className="text-gray-800 hover:text-gray-900 text-sm px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200"
+                                >
+                                  Mark Completed
+                                </button>
+                              )}
+                              {currentStatus === 'Completed' && (
+                                <div className="text-gray-600">
+                                  <CheckCircle className="h-5 w-5" />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
 
                 {/* Exit Interview Status */}
@@ -363,6 +470,11 @@ export default function ClearanceWorkflow() {
                     <div className="flex items-center gap-2 text-gray-800">
                       <CheckCircle className="h-5 w-5" />
                       <span className="font-medium">Completed on {selectedExit.exit_interview_date}</span>
+                    </div>
+                  ) : areAllClearancesCompleted() ? (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle className="h-5 w-5" />
+                      <span className="font-medium">Ready for Exit Interview</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-gray-600">

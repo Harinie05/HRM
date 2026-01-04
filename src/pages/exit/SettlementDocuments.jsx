@@ -3,9 +3,30 @@ import { DollarSign, FileText, Download, Mail, CheckCircle, Clock } from "lucide
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function SettlementDocuments() {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canView = isAdmin() || hasPermission('view_settlements');
+  const canCalculate = isAdmin() || hasPermission('calculate_settlements');
+  const canApprove = isAdmin() || hasPermission('approve_settlements');
+  const canGenerateLetter = isAdmin() || hasPermission('generate_experience_letter');
+  const canDownloadPDF = isAdmin() || hasPermission('download_settlement_pdf');
+  const canEmail = isAdmin() || hasPermission('email_settlement_docs');
+  const canEdit = isAdmin() || hasPermission('edit_settlements');
+  
+  if (!canView) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view F&F settlements.</p>
+        </div>
+      </div>
+    );
+  }
   const [exits, setExits] = useState([]);
   const [selectedExit, setSelectedExit] = useState(null);
   const [settlement, setSettlement] = useState(null);
@@ -255,6 +276,31 @@ export default function SettlementDocuments() {
     }));
   };
 
+  const handleSaveExperienceLetter = async () => {
+    try {
+      const letterData = {
+        employee_name: experienceLetter.employee_name,
+        employee_code: experienceLetter.employee_code,
+        company_name: experienceLetter.company_name,
+        designation: experienceLetter.designation,
+        department: experienceLetter.department,
+        joining_date: experienceLetter.joining_date,
+        last_working_day: experienceLetter.last_working_day,
+        place: experienceLetter.place,
+        issued_by: experienceLetter.issued_by,
+        authorized_signatory: experienceLetter.authorized_signatory
+      };
+      
+      await api.put(`/api/settlement/experience-letter/${experienceLetter.id}`, letterData);
+      
+      showToast("Experience letter updated successfully", "success");
+      setIsEditingLetter(false);
+    } catch (err) {
+      console.error('Experience letter update error:', err);
+      showToast("Failed to update experience letter", "error");
+    }
+  };
+
   const handleDownloadPDF = async () => {
     try {
       const pdfData = {
@@ -461,7 +507,7 @@ export default function SettlementDocuments() {
             <>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-900">F&F Settlement</h3>
-                {!settlement && (
+                {!settlement && canCalculate && (
                   <button
                     onClick={handleCalculateSettlement}
                     className="bg-gray-900 px-3 py-1 text-white text-sm rounded-lg hover:bg-gray-700 border border-black"
@@ -559,7 +605,7 @@ export default function SettlementDocuments() {
                       </span>
                     </div>
                     
-                    {settlement.payment_status === 'Pending' && (
+                    {settlement.payment_status === 'Pending' && canApprove && (
                       <button
                         onClick={handleApproveSettlement}
                         className="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 border border-black"
@@ -602,21 +648,21 @@ export default function SettlementDocuments() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium">Experience Letter</h3>
                 <div className="space-x-2">
-                  {!experienceLetter ? (
+                  {!experienceLetter && canGenerateLetter ? (
                     <button
                       onClick={handleGenerateExperienceLetter}
                       className="bg-green-600 px-3 py-1 text-white text-sm rounded hover:bg-green-700"
                     >
                       Generate Letter
                     </button>
-                  ) : (
+                  ) : experienceLetter && canEdit ? (
                     <button
                       onClick={() => setIsEditingLetter(!isEditingLetter)}
                       className="bg-blue-600 px-3 py-1 text-white text-sm rounded hover:bg-blue-700"
                     >
                       {isEditingLetter ? 'Preview' : 'Edit'}
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
 
@@ -719,6 +765,16 @@ export default function SettlementDocuments() {
                           />
                         </div>
                       </div>
+                      
+                      {/* Save Button */}
+                      <div className="mt-4">
+                        <button
+                          onClick={handleSaveExperienceLetter}
+                          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="bg-content p-4 rounded-lg text-sm">
@@ -767,18 +823,22 @@ export default function SettlementDocuments() {
 
                   {/* Actions */}
                   <div className="space-y-2">
-                    <button 
-                      onClick={handleDownloadPDF}
-                      className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                    >
-                      Download PDF
-                    </button>
-                    <button 
-                      onClick={handleEmailEmployee}
-                      className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
-                    >
-                      Email to Employee
-                    </button>
+                    {canDownloadPDF && (
+                      <button 
+                        onClick={handleDownloadPDF}
+                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                      >
+                        Download PDF
+                      </button>
+                    )}
+                    {canEmail && (
+                      <button 
+                        onClick={handleEmailEmployee}
+                        className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                      >
+                        Email to Employee
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
