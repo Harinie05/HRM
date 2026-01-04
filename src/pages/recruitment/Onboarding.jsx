@@ -18,6 +18,7 @@ export default function Onboarding() {
   const canViewOnboardingCandidates = hasPermission('view_onboarding_candidates');
   const canViewDocumentCollected = hasPermission('view_document_collected');
   const canAddDocumentCollected = hasPermission('add_document_collected');
+  const canMarkOnboarded = hasPermission('mark_onboarded');
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [showNewOnboardingForm, setShowNewOnboardingForm] = useState(false);
   const [showDocModal, setShowDocModal] = useState(false);
@@ -89,7 +90,8 @@ export default function Onboarding() {
   // FETCH ONBOARDED CANDIDATES
   // ===============================================================
   const fetchCandidates = async () => {
-    if (!canViewOnboardingCandidates) {
+    if (!canViewOnboardingCandidates || !canMarkOnboarded) {
+      setCandidates([]); // Set empty array if no permission
       return; // Don't make API call if no permission
     }
     
@@ -127,6 +129,7 @@ export default function Onboarding() {
       setCandidates(candidatesWithEmployeeIds);
     } catch (err) {
       console.error("Failed to load onboarded candidates", err);
+      setCandidates([]); // Set empty array on error
       if (err.response?.status === 403) {
         showToast("Access denied: You don't have permission to view onboarding candidates", "error");
       }
@@ -425,7 +428,7 @@ export default function Onboarding() {
   // ===================================================================
   
   // Show access denied if user lacks basic permission
-  if (!canViewOnboardingCandidates) {
+  if (!canViewOnboardingCandidates || !canMarkOnboarded) {
     return (
       <Layout>
         <div className="p-6">
@@ -433,7 +436,7 @@ export default function Onboarding() {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FiUser className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">🔒 Access Denied</h2>
             <p className="text-gray-600 mb-4">
               You don't have permission to view onboarding candidates.
             </p>

@@ -5,7 +5,7 @@ from models.models_tenant import PMSFeedback, User
 from pydantic import BaseModel
 from typing import Optional
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -18,7 +18,7 @@ class FeedbackCreate(BaseModel):
     comments: str
 
 @router.post("/feedback")
-async def create_feedback(feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def create_feedback(feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("give_feedback"))):
     try:
         db_feedback = PMSFeedback(
             from_employee_id=feedback.get('from_employee_id'),
@@ -45,7 +45,11 @@ async def create_feedback(feedback: dict, request: Request, db: Session = Depend
         raise HTTPException(status_code=422, detail=f"Error creating feedback: {str(e)}")
 
 @router.get("/feedback")
-async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
+async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_feedback"))):
+    # Check for show deleted permission if requesting deleted items
+    if include_deleted and not user.has_permission("show_deleted_feedback"):
+        raise HTTPException(status_code=403, detail="You don't have permission to view deleted feedback")
+    
     try:
         if include_deleted:
             feedback_list = db.query(PMSFeedback).all()
@@ -104,7 +108,7 @@ async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_
         raise HTTPException(status_code=500, detail=f"Error fetching feedback: {str(e)}")
 
 @router.put("/feedback/{feedback_id}")
-async def update_feedback(feedback_id: int, feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def update_feedback(feedback_id: int, feedback: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_feedback"))):
     try:
         db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id).first()
         if not db_feedback:
@@ -128,7 +132,7 @@ async def update_feedback(feedback_id: int, feedback: dict, request: Request, db
         raise HTTPException(status_code=422, detail=f"Error updating feedback: {str(e)}")
 
 @router.delete("/feedback/{feedback_id}")
-async def delete_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def delete_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_feedback"))):
     try:
         db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id, PMSFeedback.is_active == True).first()
         if not db_feedback:
@@ -145,7 +149,7 @@ async def delete_feedback(feedback_id: int, request: Request, db: Session = Depe
         raise HTTPException(status_code=422, detail=f"Error deleting feedback: {str(e)}")
 
 @router.put("/feedback/{feedback_id}/restore")
-async def restore_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def restore_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_feedback"))):
     try:
         db_feedback = db.query(PMSFeedback).filter(PMSFeedback.id == feedback_id, PMSFeedback.is_active == False).first()
         if not db_feedback:

@@ -6,6 +6,7 @@ from models.models_tenant import QualityIndicator, KPIRecord, Department
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
+from routes.hospital import require_permission
 
 router = APIRouter()
 
@@ -65,7 +66,8 @@ class KPIRecordCreate(BaseModel):
 @router.post("/quality-indicators")
 async def create_quality_indicator(
     indicator: QualityIndicatorCreate,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("add_quality_indicator"))
 ):
     db_indicator = QualityIndicator(**indicator.dict())
     db.add(db_indicator)
@@ -74,8 +76,15 @@ async def create_quality_indicator(
     return {"message": "Quality indicator created successfully", "id": db_indicator.id}
 
 @router.get("/quality-indicators")
-async def get_quality_indicators(db: Session = Depends(get_tenant_db)):
-    indicators = db.query(QualityIndicator).filter(QualityIndicator.is_active == True).all()
+async def get_quality_indicators(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_quality_indicators"))):
+    # Check for show deleted permission if requesting deleted items
+    if include_deleted and not user.has_permission("show_deleted_quality_indicators"):
+        raise HTTPException(status_code=403, detail="You don't have permission to view deleted quality indicators")
+    
+    if include_deleted:
+        indicators = db.query(QualityIndicator).all()
+    else:
+        indicators = db.query(QualityIndicator).filter(QualityIndicator.is_active == True).all()
     
     result = []
     for indicator in indicators:
@@ -104,7 +113,8 @@ async def get_quality_indicators(db: Session = Depends(get_tenant_db)):
 async def update_quality_indicator(
     indicator_id: int,
     indicator: QualityIndicatorCreate,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("edit_quality_indicator"))
 ):
     db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
     if not db_indicator:
@@ -119,7 +129,8 @@ async def update_quality_indicator(
 @router.delete("/quality-indicators/{indicator_id}")
 async def delete_quality_indicator(
     indicator_id: int,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("delete_quality_indicator"))
 ):
     db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
     if not db_indicator:
@@ -129,11 +140,26 @@ async def delete_quality_indicator(
     db.commit()
     return {"message": "Quality indicator deleted successfully"}
 
+@router.put("/quality-indicators/{indicator_id}/restore")
+async def restore_quality_indicator(
+    indicator_id: int,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("restore_quality_indicator"))
+):
+    db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
+    if not db_indicator:
+        raise HTTPException(status_code=404, detail="Quality indicator not found")
+    
+    db_indicator.is_active = True
+    db.commit()
+    return {"message": "Quality indicator restored successfully"}
+
 # KPI Records CRUD
 @router.post("/kpi-records")
 async def create_kpi_record(
     record: KPIRecordCreate,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("measure_quality_metrics"))
 ):
     # Get target value from quality indicator
     indicator = db.query(QualityIndicator).filter(QualityIndicator.id == record.quality_indicator_id).first()
@@ -197,7 +223,8 @@ async def get_kpi_records(db: Session = Depends(get_tenant_db)):
 async def update_kpi_record(
     record_id: int,
     record: KPIRecordCreate,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("measure_quality_metrics"))
 ):
     db_record = db.query(KPIRecord).filter(KPIRecord.id == record_id).first()
     if not db_record:
@@ -232,7 +259,8 @@ async def update_kpi_record(
 @router.delete("/kpi-records/{record_id}")
 async def delete_kpi_record(
     record_id: int,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("measure_quality_metrics"))
 ):
     db_record = db.query(KPIRecord).filter(KPIRecord.id == record_id).first()
     if not db_record:
@@ -241,3 +269,13 @@ async def delete_kpi_record(
     db.delete(db_record)
     db.commit()
     return {"message": "KPI record deleted successfully"}
+
+@router.put("/kpi-records/{record_id}/restore")
+async def restore_kpi_record(
+    record_id: int,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("measure_quality_metrics"))
+):
+    # Note: This is a placeholder since KPI records are hard deleted
+    # In a real implementation, you would restore a soft-deleted record
+    raise HTTPException(status_code=404, detail="KPI record not found or cannot be restored")

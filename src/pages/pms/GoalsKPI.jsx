@@ -3,8 +3,21 @@ import { TrendingUp, Lock, Calculator } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function GoalsKPI() {
+  // Check permissions
+  if (!hasPermission('view_goals_kpi') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view goals and KPIs.</p>
+        </div>
+      </div>
+    );
+  }
   const { toast, showToast, hideToast } = useToast();
   const [employees, setEmployees] = useState([]);
   const [kpiData, setKpiData] = useState([]);

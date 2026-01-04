@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import date
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -270,7 +270,7 @@ async def test_response(db: Session = Depends(get_tenant_db)):
         return {"error": str(e)}
 
 @router.post("/goals")
-async def create_goal(goal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def create_goal(goal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_goal_kpi"))):
     try:
         print(f"Received goal data: {goal}")
         
@@ -335,7 +335,7 @@ async def create_goal(goal: dict, request: Request, db: Session = Depends(get_te
         raise HTTPException(status_code=422, detail=f"Error creating goal: {str(e)}")
 
 @router.get("/goals")
-async def get_goals(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
+async def get_goals(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_goals_kpi"))):
     try:
         print("Starting to fetch goals...")
         if include_deleted:

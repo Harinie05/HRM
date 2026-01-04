@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -127,7 +127,7 @@ async def create_review_cycle_for_assignments(cycle: dict, db: Session = Depends
 
 # Get work assignments
 @router.get("/work-assignments/assignments")
-async def get_assignments(db: Session = Depends(get_tenant_db)):
+async def get_assignments(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_work_assignments"))):
     try:
         result = db.execute(text("""
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency, 
@@ -164,7 +164,7 @@ async def create_assignment(
     request: Request,
     assignment: dict, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("add_work_assignment"))
 ):
     try:
         # First create the tables if they don't exist
@@ -211,7 +211,7 @@ async def create_assignment(
 
 # Get employee assignments with status
 @router.get("/work-assignments/my-assignments")
-async def get_my_assignments(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def get_my_assignments(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_my_assignments"))):
     try:
         user_employee_code = user.get('employee_code') if isinstance(user, dict) else getattr(user, 'employee_code', None)
         user_name = user.get('name') if isinstance(user, dict) else getattr(user, 'name', None)

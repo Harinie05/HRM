@@ -3,8 +3,21 @@ import { Plus, MessageSquare, Star, User, Calendar, Edit, Trash2, Eye, MessageCi
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Feedback() {
+  // Check permissions
+  if (!hasPermission('view_feedback') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view feedback.</p>
+        </div>
+      </div>
+    );
+  }
   const { toast, showToast } = useToast();
   const [feedbacks, setFeedbacks] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -264,12 +277,14 @@ export default function Feedback() {
               checked={showDeleted}
               onChange={(e) => setShowDeleted(e.target.checked)}
               className="rounded border-gray-300"
+              style={{ display: (hasPermission('show_deleted_feedback') || isAdmin()) ? 'inline' : 'none' }}
             />
-            Show Deleted
+            {(hasPermission('show_deleted_feedback') || isAdmin()) && 'Show Deleted'}
           </label>
           <button
             onClick={() => setShowForm(true)}
             className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+            style={{ display: (hasPermission('give_feedback') || isAdmin()) ? 'flex' : 'none' }}
           >
             <Plus className="w-4 h-4" />
             Give Feedback
@@ -560,6 +575,7 @@ export default function Feedback() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       {feedback.is_active === false ? (
+                        (hasPermission('restore_feedback') || isAdmin()) && (
                         <button
                           onClick={() => handleRestore(feedback.id)}
                           className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
@@ -567,15 +583,18 @@ export default function Feedback() {
                         >
                           <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
+                        )
                       ) : (
                         <>
                           <button 
                             onClick={() => handleView(feedback)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
                             title="View Details"
+                            style={{ display: (hasPermission('view_feedback') || isAdmin()) ? 'inline-block' : 'none' }}
                           >
                             <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          {(hasPermission('edit_feedback') || isAdmin()) && (
                           <button 
                             onClick={() => handleEdit(feedback)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
@@ -583,6 +602,8 @@ export default function Feedback() {
                           >
                             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          )}
+                          {(hasPermission('delete_feedback') || isAdmin()) && (
                           <button
                             onClick={() => handleDelete(feedback.id)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
@@ -590,6 +611,7 @@ export default function Feedback() {
                           >
                             <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          )}
                         </>
                       )}
                     </div>

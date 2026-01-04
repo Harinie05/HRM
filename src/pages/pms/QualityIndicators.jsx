@@ -3,8 +3,21 @@ import { Edit, Trash2, Plus, TrendingUp, TrendingDown, Minus } from 'lucide-reac
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
 import api from '../../api';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const QualityIndicators = () => {
+  // Check permissions
+  if (!hasPermission('view_quality_indicators') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view quality indicators.</p>
+        </div>
+      </div>
+    );
+  }
   const [activeTab, setActiveTab] = useState('manage');
   const [indicators, setIndicators] = useState([]);
   const [records, setRecords] = useState([]);
@@ -290,13 +303,15 @@ const QualityIndicators = () => {
                   checked={showDeleted}
                   onChange={(e) => setShowDeleted(e.target.checked)}
                   className="rounded border-gray-300"
+                  style={{ display: (hasPermission('show_deleted_quality_indicators') || isAdmin()) ? 'inline' : 'none' }}
                 />
-                Show Deleted
+                {(hasPermission('show_deleted_quality_indicators') || isAdmin()) && 'Show Deleted'}
               </label>
             </div>
             <button
               onClick={() => setShowIndicatorForm(true)}
               className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
+              style={{ display: (hasPermission('add_quality_indicator') || isAdmin()) ? 'flex' : 'none' }}
             >
               <Plus className="w-4 h-4" />
               Add Quality Indicator
@@ -450,6 +465,7 @@ const QualityIndicators = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         {indicator.is_active === false ? (
+                          (hasPermission('restore_quality_indicator') || isAdmin()) && (
                           <button
                             onClick={() => restoreIndicator(indicator.id)}
                             className="text-green-600 hover:text-green-900"
@@ -457,20 +473,25 @@ const QualityIndicators = () => {
                           >
                             <TrendingUp className="w-4 h-4" />
                           </button>
+                          )
                         ) : (
                           <>
+                            {(hasPermission('edit_quality_indicator') || isAdmin()) && (
                             <button
                               onClick={() => editIndicator(indicator)}
                               className="text-blue-600 hover:text-blue-900"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
+                            )}
+                            {(hasPermission('delete_quality_indicator') || isAdmin()) && (
                             <button
                               onClick={() => deleteIndicator(indicator.id)}
                               className="text-red-600 hover:text-red-900"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+                            )}
                           </>
                         )}
                       </div>
@@ -491,6 +512,7 @@ const QualityIndicators = () => {
             <button
               onClick={() => setShowRecordForm(true)}
               className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
+              style={{ display: (hasPermission('measure_quality_metrics') || isAdmin()) ? 'flex' : 'none' }}
             >
               <Plus className="w-4 h-4" />
               Add KPI Record
@@ -628,6 +650,7 @@ const QualityIndicators = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         {record.is_active === false ? (
+                          (hasPermission('measure_quality_metrics') || isAdmin()) && (
                           <button
                             onClick={() => restoreRecord(record.id)}
                             className="text-green-600 hover:text-green-900"
@@ -635,20 +658,25 @@ const QualityIndicators = () => {
                           >
                             <TrendingUp className="w-4 h-4" />
                           </button>
+                          )
                         ) : (
                           <>
+                            {(hasPermission('measure_quality_metrics') || isAdmin()) && (
                             <button
                               onClick={() => editRecord(record)}
                               className="text-blue-600 hover:text-blue-900"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
+                            )}
+                            {(hasPermission('measure_quality_metrics') || isAdmin()) && (
                             <button
                               onClick={() => deleteRecord(record.id)}
                               className="text-red-600 hover:text-red-900"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+                            )}
                           </>
                         )}
                       </div>

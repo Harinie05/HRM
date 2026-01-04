@@ -3,8 +3,21 @@ import { Plus, Calendar, Users, Clock, Edit, Trash2, Play, Pause, Target, Refres
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ReviewCycle() {
+  // Check permissions
+  if (!hasPermission('view_review_cycles') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view review cycles.</p>
+        </div>
+      </div>
+    );
+  }
   const { toast, showToast } = useToast();
   const [cycles, setCycles] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -253,22 +266,26 @@ export default function ReviewCycle() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-              className="rounded border-gray-300"
-            />
-            Show Deleted
-          </label>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-          >
-            <Plus className="w-4 h-4" />
-            Create Review Cycle
-          </button>
+          {(hasPermission('show_deleted_review_cycles') || isAdmin()) && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showDeleted}
+                onChange={(e) => setShowDeleted(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              Show Deleted
+            </label>
+          )}
+          {(hasPermission('create_review_cycle') || isAdmin()) && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+            >
+              <Plus className="w-4 h-4" />
+              Create Review Cycle
+            </button>
+          )}
         </div>
       </div>
 
@@ -460,16 +477,18 @@ export default function ReviewCycle() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       {cycle.is_active === false ? (
-                        <button
-                          onClick={() => handleRestore(cycle.id)}
-                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
-                          title="Restore Cycle"
-                        >
-                          <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </button>
+                        (hasPermission('restore_review_cycle') || isAdmin()) && (
+                          <button
+                            onClick={() => handleRestore(cycle.id)}
+                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                            title="Restore Cycle"
+                          >
+                            <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        )
                       ) : (
                         <>
-                          {cycle.status === "Draft" && (
+                          {cycle.status === "Draft" && (hasPermission('start_review_cycle') || isAdmin()) && (
                             <button
                               onClick={() => handleStatusChange(cycle.id, "Active")}
                               className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
@@ -478,7 +497,7 @@ export default function ReviewCycle() {
                               <Play className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                           )}
-                          {cycle.status === "Active" && (
+                          {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
                             <button
                               onClick={() => handleStatusChange(cycle.id, "Completed")}
                               className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
@@ -487,18 +506,22 @@ export default function ReviewCycle() {
                               <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                           )}
-                          <button 
-                            onClick={() => handleEdit(cycle)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                          >
-                            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(cycle.id)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                          >
-                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
+                          {(hasPermission('edit_review_cycle') || isAdmin()) && (
+                            <button 
+                              onClick={() => handleEdit(cycle)}
+                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            >
+                              <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          )}
+                          {(hasPermission('delete_review_cycle') || isAdmin()) && (
+                            <button
+                              onClick={() => handleDelete(cycle.id)}
+                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            >
+                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                          )}
                         </>
                       )}
                     </div>

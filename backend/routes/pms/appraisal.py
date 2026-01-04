@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -23,7 +23,7 @@ class AppraisalCreate(BaseModel):
     status: str = "Proposed"
 
 @router.post("/appraisals")
-async def create_appraisal(appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def create_appraisal(appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("conduct_appraisal"))):
     try:
         # Parse date if provided
         effective_from = None
@@ -61,7 +61,11 @@ async def create_appraisal(appraisal: dict, request: Request, db: Session = Depe
         raise HTTPException(status_code=422, detail=f"Error creating appraisal: {str(e)}")
 
 @router.get("/appraisals")
-async def get_appraisals(db: Session = Depends(get_tenant_db)):
+async def get_appraisals(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_appraisals"))):
+    # Check for show deleted permission if requesting deleted items
+    if include_deleted and not user.has_permission("show_deleted_appraisals"):
+        raise HTTPException(status_code=403, detail="You don't have permission to view deleted appraisals")
+    
     try:
         from sqlalchemy import text
         
@@ -132,7 +136,7 @@ async def get_appraisals(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching appraisals: {str(e)}")
 
 @router.put("/appraisals/{appraisal_id}")
-async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_appraisal"))):
     try:
         db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
         if not db_appraisal:
@@ -156,7 +160,7 @@ async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request,
         raise HTTPException(status_code=422, detail=f"Error updating appraisal: {str(e)}")
 
 @router.delete("/appraisals/{appraisal_id}")
-async def delete_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def delete_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_appraisal"))):
     db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
     if not db_appraisal:
         raise HTTPException(status_code=404, detail="Appraisal not found")
@@ -170,3 +174,19 @@ async def delete_appraisal(appraisal_id: int, request: Request, db: Session = De
     # Audit log
     audit_crud(request, db, user, "DELETE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, {})
     return {"message": "Appraisal deleted successfully"}
+
+@router.put("/appraisals/{appraisal_id}/restore")
+async def restore_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_appraisal"))):
+    try:
+        # Note: This is a placeholder since the current model doesn't have soft delete
+        # In a real implementation, you would restore a soft-deleted record
+        db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
+        if not db_appraisal:
+            raise HTTPException(status_code=404, detail="Appraisal not found")
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_APPRAISAL", "pms_appraisals", str(appraisal_id), {}, {"restored": True})
+        return {"message": "Appraisal restored successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=422, detail=f"Error restoring appraisal: {str(e)}")

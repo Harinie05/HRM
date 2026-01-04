@@ -296,6 +296,66 @@ DEFAULT_PERMISSIONS = [
     {"name": "download_training_certificate", "description": "Can download training certificates"},
     {"name": "email_training_certificate", "description": "Can email training certificates"},
 
+    # =====================================================
+    # 📊 PERFORMANCE MANAGEMENT SYSTEM
+    # =====================================================
+
+    # Work Assignments
+    {"name": "view_work_assignments", "description": "Can view work assignments"},
+    {"name": "add_work_assignment", "description": "Can create new work assignments"},
+    {"name": "edit_work_assignment", "description": "Can edit work assignments"},
+    {"name": "delete_work_assignment", "description": "Can delete work assignments"},
+    {"name": "view_deleted_work_assignments", "description": "Can view deleted work assignments"},
+    {"name": "restore_work_assignment", "description": "Can restore deleted work assignments"},
+    {"name": "show_deleted_work_assignments", "description": "Can access show deleted work assignments button"},
+    {"name": "view_my_assignments", "description": "Can view own assignments"},
+    {"name": "assign_to_employees", "description": "Can assign work to employees"},
+
+    # Goals & KPI (Read-Only Auto-Calculated)
+    {"name": "view_goals_kpi", "description": "Can view goals and KPIs"},
+
+    # Review Cycle
+    {"name": "view_review_cycles", "description": "Can view performance review cycles"},
+    {"name": "create_review_cycle", "description": "Can create performance review cycles"},
+    {"name": "edit_review_cycle", "description": "Can edit performance review cycles"},
+    {"name": "delete_review_cycle", "description": "Can delete performance review cycles"},
+    {"name": "view_deleted_review_cycles", "description": "Can view deleted performance review cycles"},
+    {"name": "restore_review_cycle", "description": "Can restore deleted performance review cycles"},
+    {"name": "start_review_cycle", "description": "Can start performance review cycles"},
+    {"name": "close_review_cycle", "description": "Can close performance review cycles"},
+    {"name": "show_deleted_review_cycles", "description": "Can access show deleted review cycles button"},
+
+    # Feedback
+    {"name": "view_feedback", "description": "Can view performance feedback"},
+    {"name": "give_feedback", "description": "Can provide performance feedback"},
+    {"name": "request_feedback", "description": "Can request performance feedback"},
+    {"name": "view_360_feedback", "description": "Can view 360-degree feedback"},
+    {"name": "manage_feedback_forms", "description": "Can manage feedback forms and templates"},
+    {"name": "edit_feedback", "description": "Can edit performance feedback"},
+    {"name": "delete_feedback", "description": "Can delete performance feedback"},
+    {"name": "restore_feedback", "description": "Can restore deleted performance feedback"},
+    {"name": "show_deleted_feedback", "description": "Can access show deleted feedback button"},
+
+    # Appraisal
+    {"name": "view_appraisals", "description": "Can view performance appraisals"},
+    {"name": "conduct_appraisal", "description": "Can conduct performance appraisals"},
+    {"name": "submit_self_appraisal", "description": "Can submit self-appraisal"},
+    {"name": "approve_appraisal", "description": "Can approve performance appraisals"},
+    {"name": "view_appraisal_reports", "description": "Can view appraisal reports and analytics"},
+    {"name": "edit_appraisal", "description": "Can edit performance appraisals"},
+    {"name": "delete_appraisal", "description": "Can delete performance appraisals"},
+    {"name": "restore_appraisal", "description": "Can restore deleted performance appraisals"},
+    {"name": "show_deleted_appraisals", "description": "Can access show deleted appraisals button"},
+
+    # Quality Indicators
+    {"name": "view_quality_indicators", "description": "Can view quality performance indicators"},
+    {"name": "add_quality_indicator", "description": "Can add quality performance indicators"},
+    {"name": "edit_quality_indicator", "description": "Can edit quality performance indicators"},
+    {"name": "delete_quality_indicator", "description": "Can delete quality performance indicators"},
+    {"name": "measure_quality_metrics", "description": "Can measure and record quality metrics"},
+    {"name": "restore_quality_indicator", "description": "Can restore deleted quality indicators"},
+    {"name": "show_deleted_quality_indicators", "description": "Can access show deleted quality indicators button"},
+
 ]
 
 # -------------------------------------------------------------

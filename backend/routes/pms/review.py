@@ -5,7 +5,7 @@ from models.models_tenant import PMSReview, User
 from pydantic import BaseModel
 from typing import Optional
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 
 router = APIRouter()
 
@@ -20,7 +20,7 @@ class ReviewCreate(BaseModel):
     status: str = "Pending"
 
 @router.post("/reviews")
-async def create_review(review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def create_review(review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("create_review_cycle"))):
     try:
         db_review = PMSReview(
             employee_id=review.get('employee_id'),
@@ -46,7 +46,7 @@ async def create_review(review: dict, request: Request, db: Session = Depends(ge
         raise HTTPException(status_code=422, detail=f"Error creating review: {str(e)}")
 
 @router.get("/reviews")
-async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
+async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_review_cycles"))):
     try:
         if include_deleted:
             reviews = db.query(PMSReview).all()
@@ -93,7 +93,7 @@ async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_t
         raise HTTPException(status_code=500, detail=f"Error fetching reviews: {str(e)}")
 
 @router.put("/reviews/{review_id}")
-async def update_review(review_id: int, review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def update_review(review_id: int, review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_review_cycle"))):
     try:
         db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
         if not db_review:
@@ -118,7 +118,7 @@ async def update_review(review_id: int, review: dict, request: Request, db: Sess
         raise HTTPException(status_code=422, detail=f"Error updating review: {str(e)}")
 
 @router.delete("/reviews/{review_id}")
-async def delete_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def delete_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_review_cycle"))):
     try:
         db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
         if not db_review:
@@ -140,7 +140,7 @@ async def delete_review(review_id: int, request: Request, db: Session = Depends(
         raise HTTPException(status_code=422, detail=f"Error deleting review: {str(e)}")
 
 @router.put("/reviews/{review_id}/restore")
-async def restore_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+async def restore_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_review_cycle"))):
     try:
         db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == False).first()
         if not db_review:

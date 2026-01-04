@@ -3,8 +3,21 @@ import { Plus, Award, User, Calendar, FileText, Edit, Trash2, Eye, ClipboardChec
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Appraisal() {
+  // Check permissions
+  if (!hasPermission('view_appraisals') && !isAdmin()) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600">You don't have permission to view appraisals.</p>
+        </div>
+      </div>
+    );
+  }
   const [appraisals, setAppraisals] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -265,12 +278,14 @@ export default function Appraisal() {
               checked={showDeleted}
               onChange={(e) => setShowDeleted(e.target.checked)}
               className="rounded border-gray-300"
+              style={{ display: (hasPermission('show_deleted_appraisals') || isAdmin()) ? 'inline' : 'none' }}
             />
-            Show Deleted
+            {(hasPermission('show_deleted_appraisals') || isAdmin()) && 'Show Deleted'}
           </label>
           <button
             onClick={() => setShowForm(true)}
             className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
+            style={{ display: (hasPermission('conduct_appraisal') || isAdmin()) ? 'flex' : 'none' }}
           >
             <Plus className="w-4 h-4" />
             Create Appraisal
@@ -586,6 +601,7 @@ export default function Appraisal() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       {appraisal.is_active === false ? (
+                        (hasPermission('restore_appraisal') || isAdmin()) && (
                         <button
                           onClick={() => handleRestore(appraisal.id)}
                           className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
@@ -593,15 +609,18 @@ export default function Appraisal() {
                         >
                           <Award className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
+                        )
                       ) : (
                         <>
                           <button 
                             onClick={() => handleView(appraisal)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
                             title="View Details"
+                            style={{ display: (hasPermission('view_appraisals') || isAdmin()) ? 'inline-block' : 'none' }}
                           >
                             <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          {(hasPermission('edit_appraisal') || isAdmin()) && (
                           <button 
                             onClick={() => handleEdit(appraisal)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
@@ -609,6 +628,8 @@ export default function Appraisal() {
                           >
                             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          )}
+                          {(hasPermission('delete_appraisal') || isAdmin()) && (
                           <button
                             onClick={() => handleDelete(appraisal.id)}
                             className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
@@ -616,6 +637,7 @@ export default function Appraisal() {
                           >
                             <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
+                          )}
                         </>
                       )}
                     </div>
