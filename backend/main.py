@@ -42,6 +42,7 @@ from routes.recruitment.screening import router as screening_router
 from routes.recruitment.dashboard import router as dashboard_router
 from routes.recruitment.consultants import router as consultants_router
 from routes.recruitment.original_documents import router as original_documents_router
+from routes.recruitment.probation import router as probation_router
 
 # ======================= 🔥 EIS ROUTERS =======================
 from routes.EIS.employee import router as employee_router
@@ -214,6 +215,7 @@ app.include_router(screening_router)
 app.include_router(dashboard_router)
 app.include_router(consultants_router, prefix="/recruitment")
 app.include_router(original_documents_router, prefix="/api")
+app.include_router(probation_router, prefix="/recruitment")
 
 # ======================= 🔥 EIS MODULE =======================
 app.include_router(employee_router, prefix="/eis")

@@ -7,6 +7,7 @@ from datetime import date
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.permission import require_permission
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExit, User
 from schemas.schemas_tenant import ExitOut, ExitCreate
@@ -32,7 +33,7 @@ router = APIRouter(prefix="/resignation", tags=["Resignation Tracking"])
 # 1. LIST ALL RESIGNATIONS
 # -------------------------------------------------------------------------
 @router.get("/list")
-def list_resignations(user=Depends(get_current_user)):
+def list_resignations(user=Depends(require_permission("view_resignations"))):
     db = get_tenant_session(user)
     
     try:
@@ -73,7 +74,7 @@ def list_resignations(user=Depends(get_current_user)):
 # 2. APPLY RESIGNATION
 # -------------------------------------------------------------------------
 @router.post("/apply")
-def apply_resignation(data: ExitCreate, request: Request, user=Depends(get_current_user)):
+def apply_resignation(data: ExitCreate, request: Request, user=Depends(require_permission("apply_resignation"))):
     db = get_tenant_session(user)
     
     try:
@@ -123,7 +124,7 @@ def update_resignation_status(
     status_field: str,
     status_value: str,
     request: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("manage_handover"))  # Will check specific permission based on field
 ):
     db = get_tenant_session(user)
     

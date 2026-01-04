@@ -5,6 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeListPage() {
   const [employees, setEmployees] = useState([]);
@@ -13,6 +14,7 @@ export default function EmployeeListPage() {
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("active");
   const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     selectedDepartment: '',
@@ -23,14 +25,33 @@ export default function EmployeeListPage() {
     joiningDate: ''
   });
 
-  const fetchEmployees = async () => {
+  // Permission checks
+  const canView = isAdmin() || hasPermission("view_employees");
+  const canCreate = isAdmin() || hasPermission("create_employee_code");
+  const canViewProfile = isAdmin() || hasPermission("view_employee_profile");
+  const canDelete = isAdmin() || hasPermission("delete_employee");
+
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view Employee Directory.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const fetchEmployees = async (status = statusFilter) => {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
       const [onboardingRes, usersRes, offersRes] = await Promise.all([
-        api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+        api.get(`/recruitment/onboarding/list?status=${status}`).catch(() => ({ data: [] })),
+        fetch(`http://localhost:8000/hospitals/users/${tenant}/list?status=${status}`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] })),
         api.get('/recruitment/offer/list').catch(() => ({ data: [] }))
@@ -166,6 +187,11 @@ export default function EmployeeListPage() {
   };
 
   const handleCreateEmployee = async () => {
+    if (!canCreate) {
+      showToast('You do not have permission to create employee codes', 'error');
+      return;
+    }
+    
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
@@ -237,24 +263,28 @@ export default function EmployeeListPage() {
   };
 
   const handleDeleteEmployee = async (employee) => {
-    if (!confirm(`Are you sure you want to delete employee ${employee.name}? This action cannot be undone.`)) return;
+    if (!canDelete) {
+      showToast('You do not have permission to delete employees', 'error');
+      return;
+    }
+    
+    if (!confirm(`Are you sure you want to delete employee ${employee.name}? This will mark them as inactive.`)) return;
     
     try {
-      if (employee.source === 'onboarding') {
-        // Delete from onboarding table
-        await api.delete(`/recruitment/onboarding/delete/${employee.id}`);
-      } else if (employee.source === 'user_management') {
-        // Delete from user management
-        const tenant = localStorage.getItem("tenant_db");
-        const token = localStorage.getItem("access_token");
-        await fetch(`http://localhost:8000/users/${tenant}/delete/${employee.original_user_id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      }
+      const token = localStorage.getItem("access_token");
       
-      showToast('Employee deleted successfully!');
-      fetchEmployees();
+      // Use the soft delete endpoint
+      const response = await fetch(`http://localhost:8000/employee/delete/${employee.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        showToast('Employee deleted successfully!');
+        fetchEmployees();
+      } else {
+        showToast('Failed to delete employee', 'error');
+      }
     } catch (error) {
       console.error('Error deleting employee:', error);
       showToast('Failed to delete employee', 'error');
@@ -266,7 +296,7 @@ export default function EmployeeListPage() {
     fetchDepartments();
     fetchRoles();
     fetchUsers();
-  }, []);
+  }, [statusFilter]);
 
   useEffect(() => {
     if (showCreateForm) {
@@ -311,7 +341,26 @@ export default function EmployeeListPage() {
       <div className="p-4 sm:p-6">
         {/* Search and Actions */}
         <div className="bg-white rounded-2xl border border-black p-4 mb-6">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+              Total: {employees.length}
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">Status:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="resigned">Resigned</option>
+                <option value="all">All</option>
+              </select>
+            </div>
             <div className="relative flex-1 max-w-md w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -322,19 +371,21 @@ export default function EmployeeListPage() {
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
               <button
-                onClick={fetchEmployees}
+                onClick={() => fetchEmployees()}
                 className="flex-1 sm:flex-none px-4 py-2 text-sm bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors border border-black"
               >
                 Refresh
               </button>
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors border border-black"
-              >
-                <Plus size={16} />
-                <span className="hidden sm:inline">Create Employee Code</span>
-                <span className="sm:hidden">Create</span>
-              </button>
+              {canCreate && (
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors border border-black"
+                >
+                  <Plus size={16} />
+                  <span className="hidden sm:inline">Create Employee Code</span>
+                  <span className="sm:hidden">Create</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -410,20 +461,24 @@ export default function EmployeeListPage() {
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1 sm:space-x-2">
-                        <Link
-                          to={`/eis/${employee.id}`}
-                          className="group relative p-1.5 sm:p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-                          title="View Profile"
-                        >
-                          <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteEmployee(employee)}
-                          className="group relative p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                          title="Delete Employee"
-                        >
-                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </button>
+                        {canViewProfile && (
+                          <Link
+                            to={`/eis/${employee.id}`}
+                            className="group relative p-1.5 sm:p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                            title="View Profile"
+                          >
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </Link>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDeleteEmployee(employee)}
+                            className="group relative p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                            title="Delete Employee"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -442,7 +497,7 @@ export default function EmployeeListPage() {
       </div>
 
       {/* Create Employee Code Modal */}
-      {showCreateForm && (
+      {showCreateForm && canCreate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center mb-6">

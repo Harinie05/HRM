@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
@@ -30,7 +31,7 @@ router = APIRouter(prefix="/employee", tags=["Employee Management"])
 # 1. GET EMPLOYEE PROFILE
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}/profile")
-def get_employee_profile(employee_id: int, user=Depends(get_current_user)):
+def get_employee_profile(employee_id: int, user=Depends(require_permission("view_employee_profile"))):
     db = get_tenant_session(user)
     
     # Get employee from onboarding records
@@ -150,7 +151,7 @@ def convert_user_to_employee(
     user_id: int,
     payload: dict,
     request: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("create_employee_code"))
 ):
     db = get_tenant_session(user)
     
@@ -235,7 +236,7 @@ def create_employee_from_onboarding(
     audit_crud(request, db, user, "CREATE_EMPLOYEE_FROM_ONBOARDING", "onboarding_candidates", str(onboarding_id), {}, {"employee_id": onboarding.employee_id, "candidate_name": onboarding.candidate_name})
     
 # -------------------------------------------------------------------------
-# 7. CREATE EMPLOYEE CODE
+# 7. CREATE EMPLOYEE CODE  
 # -------------------------------------------------------------------------
 @router.post("/create-employee-code")
 def create_employee_code(
@@ -266,3 +267,49 @@ def create_employee_code(
         "employee_code": employee_code,
         "message": "Employee code generated successfully"
     }
+
+# -------------------------------------------------------------------------
+# 8. SOFT DELETE EMPLOYEE
+# -------------------------------------------------------------------------
+@router.delete("/delete/{employee_id}")
+def soft_delete_employee(
+    employee_id: str,
+    request: Request,
+    user=Depends(require_permission("delete_employee"))
+):
+    db = get_tenant_session(user)
+    
+    from models.models_tenant import User, OnboardingCandidate
+    
+    # Check if it's a user employee (from user management)
+    if employee_id.startswith('user_'):
+        actual_user_id = employee_id.replace('user_', '')
+        user_employee = db.query(User).filter(User.id == int(actual_user_id)).first()
+        if user_employee:
+            # Soft delete by setting status to Inactive
+            user_employee.status = "Inactive"
+            db.commit()
+            
+            # Audit log
+            audit_crud(request, db, user, "SOFT_DELETE_EMPLOYEE", "users", str(actual_user_id), 
+                      {"status": "Active"}, {"status": "Inactive"})
+            
+            return {"message": "Employee soft deleted successfully"}
+    
+    # Check if it's an onboarding employee
+    onboarding_employee = db.query(OnboardingCandidate).filter(
+        OnboardingCandidate.application_id == int(employee_id)
+    ).first()
+    
+    if onboarding_employee:
+        # Soft delete by setting status to Inactive
+        onboarding_employee.status = "Inactive"
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "SOFT_DELETE_EMPLOYEE", "onboarding_candidates", str(employee_id), 
+                  {"status": onboarding_employee.status}, {"status": "Inactive"})
+        
+        return {"message": "Employee soft deleted successfully"}
+    
+    raise HTTPException(404, "Employee not found")

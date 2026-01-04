@@ -46,6 +46,17 @@ DEFAULT_PERMISSIONS = [
 
 
     # =====================================================
+    # 👤 EMPLOYEE MANAGEMENT
+    # =====================================================
+
+    # Employee Directory
+    {"name": "view_employees", "description": "Can view employee directory"},
+    {"name": "create_employee_code", "description": "Can create employee codes"},
+    {"name": "view_employee_profile", "description": "Can view employee profiles"},
+    {"name": "delete_employee", "description": "Can delete employees"},
+
+
+    # =====================================================
     # 🏢 ORGANIZATION SETUP
     # =====================================================
 
@@ -168,6 +179,32 @@ DEFAULT_PERMISSIONS = [
     {"name": "generate_payslip", "description": "Can generate payslips"},
     {"name": "send_payslip_email", "description": "Can send payslip emails"},
     {"name": "process_payroll", "description": "Can process payroll"},
+
+
+    # =====================================================
+    # 🚪 EXIT MANAGEMENT
+    # =====================================================
+
+    # Resignation Application
+    {"name": "apply_resignation", "description": "Can apply for resignation"},
+    {"name": "view_resignations", "description": "Can view resignation applications"},
+    {"name": "approve_resignation", "description": "Can approve resignation applications"},
+
+    # Exit Process Actions
+    {"name": "manage_handover", "description": "Can manage handover process"},
+    {"name": "manage_clearance", "description": "Can manage clearance process"},
+    {"name": "manage_assets", "description": "Can manage asset return process"},
+    {"name": "manage_settlement", "description": "Can manage final settlement process"},
+
+    # Department-wise Exit Clearance
+    {"name": "hr_clearance", "description": "Can manage HR clearance (paperwork, policy compliance, handover documentation)"},
+    {"name": "it_clearance", "description": "Can manage IT clearance (laptop return, access cards, disable accounts, data backup)"},
+    {"name": "finance_clearance", "description": "Can manage Finance clearance (final settlement, expense claims, tax clearance)"},
+    {"name": "admin_clearance", "description": "Can manage Admin clearance (ID cards, keys, facility access, locker clearance)"},
+
+    # Exit Interview
+    {"name": "conduct_exit_interview", "description": "Can conduct exit interviews"},
+    {"name": "view_exit_interviews", "description": "Can view exit interview records"},
 
 ]
 

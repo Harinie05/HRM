@@ -34,10 +34,13 @@ router = APIRouter(prefix="/employee/skills", tags=["Employee Skills & Competenc
 def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
+        print(f"DEBUG: Received data: {data}")
+        print(f"DEBUG: employee_id: {data.employee_id}, skill: {data.skill}, rating: {data.rating}")
+        
         new_skill = EmployeeSkills(
-            employee_id=data.employee_id,
-            skill_name=data.skill,
-            rating=data.rating
+            employee_id=int(data.employee_id),
+            skill_name=str(data.skill),
+            rating=int(data.rating)
         )
 
         db.add(new_skill)
@@ -47,10 +50,10 @@ def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user
 
         # Convert to response format
         return SkillOut(
-            id=getattr(new_skill, 'id'),
-            employee_id=getattr(new_skill, 'employee_id'),
-            skill=getattr(new_skill, 'skill_name'),
-            rating=getattr(new_skill, 'rating')
+            id=new_skill.id,
+            employee_id=new_skill.employee_id,
+            skill=new_skill.skill_name,
+            rating=new_skill.rating
         )
         
     except Exception as e:

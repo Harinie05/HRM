@@ -2,10 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Users, Clock, CheckCircle, FileText, Plus, Search } from 'lucide-react';
 import api from '../../api';
 import useToast from '../../utils/useToast';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 import Toast from '../../components/Toast';
 
 const ResignationTracking = () => {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canApply = isAdmin() || hasPermission('apply_resignation');
+  const canView = isAdmin() || hasPermission('view_resignations');
+  const canManageHandover = isAdmin() || hasPermission('manage_handover');
+  const canManageClearance = isAdmin() || hasPermission('manage_clearance');
+  const canManageAssets = isAdmin() || hasPermission('manage_assets');
+  const canManageSettlement = isAdmin() || hasPermission('manage_settlement');
+  
+  if (!canView) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view resignations.</p>
+        </div>
+      </div>
+    );
+  }
   const [resignations, setResignations] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -240,13 +260,15 @@ const ResignationTracking = () => {
               <option value="Completed">Completed</option>
             </select>
           </div>
-          <button 
-            onClick={() => setShowApplyForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-700 border border-black transition-all duration-200"
-          >
-            <Plus className="w-4 h-4" />
-            Apply Resignation
-          </button>
+          {canApply && (
+            <button 
+              onClick={() => setShowApplyForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-700 border border-black transition-all duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              Apply Resignation
+            </button>
+          )}
         </div>
       </div>
 
@@ -396,43 +418,55 @@ const ResignationTracking = () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-2">
-                        <select 
-                          onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
-                          value={resignation.handover_status || 'Pending'}
-                        >
-                          <option value="Pending">Handover Pending</option>
-                          <option value="In Progress">Handover In Progress</option>
-                          <option value="Completed">Handover Completed</option>
-                        </select>
+                        {canManageHandover && (
+                          <select 
+                            onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
+                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            value={resignation.handover_status || 'Pending'}
+                          >
+                            <option value="Pending">Handover Pending</option>
+                            <option value="In Progress">Handover In Progress</option>
+                            <option value="Completed">Handover Completed</option>
+                          </select>
+                        )}
                         
-                        <select 
-                          onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
-                          value={resignation.clearance_status || 'Pending'}
-                        >
-                          <option value="Pending">Clearance Pending</option>
-                          <option value="In Progress">Clearance In Progress</option>
-                          <option value="Completed">Clearance Done</option>
-                        </select>
+                        {canManageClearance && (
+                          <select 
+                            onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
+                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            value={resignation.clearance_status || 'Pending'}
+                          >
+                            <option value="Pending">Clearance Pending</option>
+                            <option value="In Progress">Clearance In Progress</option>
+                            <option value="Completed">Clearance Done</option>
+                          </select>
+                        )}
                         
-                        <select 
-                          onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
-                          value={resignation.asset_return_status || 'Pending'}
-                        >
-                          <option value="Pending">Assets Pending</option>
-                          <option value="Completed">Assets Returned</option>
-                        </select>
+                        {canManageAssets && (
+                          <select 
+                            onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
+                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            value={resignation.asset_return_status || 'Pending'}
+                          >
+                            <option value="Pending">Assets Pending</option>
+                            <option value="Completed">Assets Returned</option>
+                          </select>
+                        )}
                         
-                        <select 
-                          onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
-                          value={resignation.final_settlement_status || 'Pending'}
-                        >
-                          <option value="Pending">Settlement Pending</option>
-                          <option value="Completed">Settlement Done</option>
-                        </select>
+                        {canManageSettlement && (
+                          <select 
+                            onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
+                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            value={resignation.final_settlement_status || 'Pending'}
+                          >
+                            <option value="Pending">Settlement Pending</option>
+                            <option value="Completed">Settlement Done</option>
+                          </select>
+                        )}
+                        
+                        {!canManageHandover && !canManageClearance && !canManageAssets && !canManageSettlement && (
+                          <span className="text-xs text-gray-500">No permissions</span>
+                        )}
                       </div>
                     </td>
                   </tr>

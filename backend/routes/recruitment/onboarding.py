@@ -244,10 +244,20 @@ def list_onboarding_candidates(request: Request, db: Session = Depends(get_tenan
 # 7) LIST ALL ONBOARDED EMPLOYEES FOR EIS
 # -----------------------------------------------------------
 @router.get("/list")
-def list_onboarded_employees(request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("mark_onboarded"))):
+def list_onboarded_employees(status: str = "active", request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(check_permission("mark_onboarded"))):
     """Get all onboarded employees with their details for EIS"""
     try:
-        employees = db.query(OnboardingCandidate).all()
+        # Filter by status
+        if status == "active":
+            employees = db.query(OnboardingCandidate).filter(
+                OnboardingCandidate.status != "Inactive"
+            ).all()
+        elif status == "inactive":
+            employees = db.query(OnboardingCandidate).filter(
+                OnboardingCandidate.status == "Inactive"
+            ).all()
+        else:  # all
+            employees = db.query(OnboardingCandidate).all()
         
         # Get candidate email from Candidate table
         enriched_employees = []
@@ -438,3 +448,34 @@ def send_joining_email(candidate_email: str, candidate_name: str, job_title: str
     """
     
     return send_email(candidate_email, subject, html_body)
+
+# -----------------------------------------------------------
+# 11) SOFT DELETE ONBOARDING EMPLOYEE
+# -----------------------------------------------------------
+@router.delete("/delete/{employee_id}")
+def soft_delete_onboarding_employee(
+    employee_id: int,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(get_current_user)
+):
+    """Soft delete an onboarding employee by setting status to Inactive"""
+    employee = db.query(OnboardingCandidate).filter(
+        OnboardingCandidate.application_id == employee_id
+    ).first()
+    
+    if not employee:
+        raise HTTPException(404, "Employee not found")
+    
+    # Store old values for audit
+    old_values = {"status": employee.status}
+    
+    # Soft delete by setting status to Inactive
+    employee.status = "Inactive"
+    db.commit()
+    
+    # Audit log
+    audit_crud(request, db, user, "SOFT_DELETE_ONBOARDING_EMPLOYEE", "onboarding_candidates", 
+              str(employee_id), old_values, {"status": "Inactive"})
+    
+    return {"message": "Employee soft deleted successfully"}

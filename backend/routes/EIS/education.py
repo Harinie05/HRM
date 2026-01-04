@@ -29,6 +29,11 @@ def get_tenant_session(user):
 
 router = APIRouter(prefix="/employee/education", tags=["Employee Education"])
 
+# Test endpoint to verify router is working
+@router.get("/test")
+def test_education_router():
+    return {"message": "Education router is working"}
+
 # -------------------------------------------------------------------------
 # 1. ADD EDUCATION RECORD
 # -------------------------------------------------------------------------
@@ -51,7 +56,13 @@ async def add_education(
     file: Optional[UploadFile] = File(None),
     user=Depends(get_current_user)
 ):
-    db = get_tenant_session(user)
+    print(f"DEBUG: Education add request - employee_id: {employee_id}, degree: {degree}")
+    
+    try:
+        db = get_tenant_session(user)
+    except Exception as e:
+        print(f"DEBUG: Database error: {e}")
+        raise HTTPException(500, f"Database connection failed: {str(e)}")
     
     file_path = None
     file_name = None
@@ -72,29 +83,39 @@ async def add_education(
         
         file_name = filename
 
-    education = EmployeeEducation(
-        employee_id=employee_id,
-        degree=degree,
-        specialization=specialization,
-        university=university,
-        board_university=board_university,
-        start_year=start_year,
-        end_year=end_year or year,  # Use end_year if provided, fallback to year
-        percentage_cgpa=percentage_cgpa,
-        education_type=education_type,
-        country=country,
-        state=state,
-        city=city,
-        certificate=file_path,
-        file_name=file_name
-    )
+    try:
+        education = EmployeeEducation(
+            employee_id=employee_id,
+            degree=degree,
+            specialization=specialization,
+            university=university,
+            board_university=board_university,
+            start_year=start_year,
+            end_year=end_year or year,  # Use end_year if provided, fallback to year
+            percentage_cgpa=percentage_cgpa,
+            education_type=education_type,
+            country=country,
+            state=state,
+            city=city,
+            certificate=file_path,
+            file_name=file_name
+        )
+        print(f"DEBUG: Created education object successfully")
 
-    db.add(education)
-    db.commit()
-    db.refresh(education)
-    audit_crud(request, db, user, "CREATE", "employee_education", str(education.id), {}, education.__dict__)
+        db.add(education)
+        db.commit()
+        db.refresh(education)
+        print(f"DEBUG: Education record saved with ID: {education.id}")
+        
+        audit_crud(request, db, user, "CREATE", "employee_education", str(education.id), {}, education.__dict__)
+        print(f"DEBUG: Audit log completed")
 
-    return education
+        return education
+    except Exception as e:
+        print(f"DEBUG: Error creating education record: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(500, f"Failed to create education record: {str(e)}")
 
 # -------------------------------------------------------------------------
 # 2. GET EDUCATION RECORDS
