@@ -3,8 +3,29 @@ import { Edit, Trash2 } from 'lucide-react';
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
 import api from '../../api';
+import { hasPermission } from '../../utils/permissions';
 
 export default function StaffScheduling() {
+  // Permission checks
+  const canView = hasPermission('view_staff_schedules');
+  const canAdd = hasPermission('add_staff_schedule');
+  const canEdit = hasPermission('edit_staff_schedule');
+  const canDelete = hasPermission('delete_staff_schedule');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view staff schedules.</p>
+        </div>
+      </div>
+    );
+  }
+  
   const [activeTab, setActiveTab] = useState('manage');
   const [patientLoads, setPatientLoads] = useState([]);
   const [staffAllocations, setStaffAllocations] = useState([]);
@@ -245,10 +266,16 @@ export default function StaffScheduling() {
 
       {activeTab === 'manage' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-black p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
-              {editingLoad ? 'Edit Patient Load' : 'Record Patient Load'}
-            </h3>
+          {!canAdd ? (
+            <div className="bg-white rounded-lg border border-black p-6 text-center">
+              <p className="text-gray-500">You don't have permission to manage staff schedules.</p>
+            </div>
+          ) : (
+            <>
+              <div className="bg-white rounded-lg border border-black p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  {editingLoad ? 'Edit Patient Load' : 'Record Patient Load'}
+                </h3>
             <form onSubmit={handlePatientLoadSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
@@ -491,6 +518,8 @@ export default function StaffScheduling() {
               </div>
             </form>
           </div>
+            </>
+          )}
         </div>
       )}
 
@@ -526,20 +555,24 @@ export default function StaffScheduling() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{load.total_patients}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{load.critical_patients}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                          <button
-                            onClick={() => handleEditLoad(load)}
-                            className="text-blue-600 hover:text-blue-900 p-1"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteLoad(load.id)}
-                            className="text-red-600 hover:text-red-900 p-1"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {canEdit && (
+                            <button
+                              onClick={() => handleEditLoad(load)}
+                              className="text-blue-600 hover:text-blue-900 p-1"
+                              title="Edit"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => handleDeleteLoad(load.id)}
+                              className="text-red-600 hover:text-red-900 p-1"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </td>
                       </tr>
                     );
@@ -589,20 +622,24 @@ export default function StaffScheduling() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                          <button
-                            onClick={() => handleEditAllocation(allocation)}
-                            className="text-blue-600 hover:text-blue-900 p-1"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteAllocation(allocation.id)}
-                            className="text-red-600 hover:text-red-900 p-1"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {canEdit && (
+                            <button
+                              onClick={() => handleEditAllocation(allocation)}
+                              className="text-blue-600 hover:text-blue-900 p-1"
+                              title="Edit"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => handleDeleteAllocation(allocation.id)}
+                              className="text-red-600 hover:text-red-900 p-1"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </td>
                       </tr>
                     );

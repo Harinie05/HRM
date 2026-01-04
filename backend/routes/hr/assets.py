@@ -6,7 +6,7 @@ from datetime import datetime
 
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 from models.models_tenant import AssetAssignment
 from utils.email import send_email
 
@@ -15,7 +15,7 @@ logger = logging.getLogger("HRM")
 router = APIRouter(prefix="/hr/assets", tags=["HR Assets"])
 
 @router.post("/pending")
-async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("add_asset"))):
     """Create a pending asset assignment request"""
     try:
         # Find user by employee_code
@@ -134,7 +134,7 @@ async def get_pending_assets(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/approve")
-async def approve_asset(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+async def approve_asset(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("approve_asset"))):
     """Approve or reject asset assignment"""
     try:
         from models.models_tenant import User
@@ -183,7 +183,7 @@ async def approve_asset(approval_data: dict, request: Request, db: Session = Dep
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-async def get_approved_assets(db: Session = Depends(get_tenant_db)):
+async def get_approved_assets(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_assets"))):
     """Get all approved assets"""
     try:
         from models.models_tenant import User

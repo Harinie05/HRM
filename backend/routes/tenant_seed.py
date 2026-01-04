@@ -356,6 +356,78 @@ DEFAULT_PERMISSIONS = [
     {"name": "restore_quality_indicator", "description": "Can restore deleted quality indicators"},
     {"name": "show_deleted_quality_indicators", "description": "Can access show deleted quality indicators button"},
 
+    # =====================================================
+    # 🏢 HR OPERATIONS & WORKFORCE MANAGEMENT
+    # =====================================================
+
+    # Lifecycle Actions
+    {"name": "view_lifecycle_actions", "description": "Can view employee lifecycle actions"},
+    {"name": "add_lifecycle_action", "description": "Can add employee lifecycle actions"},
+    {"name": "edit_lifecycle_action", "description": "Can edit employee lifecycle actions"},
+    {"name": "delete_lifecycle_action", "description": "Can delete employee lifecycle actions"},
+    {"name": "approve_lifecycle_action", "description": "Can approve employee lifecycle actions"},
+    {"name": "restore_lifecycle_action", "description": "Can restore deleted lifecycle actions"},
+    {"name": "show_deleted_lifecycle_actions", "description": "Can access show deleted lifecycle actions button"},
+
+    # HR Letters
+    {"name": "view_hr_letters", "description": "Can view HR letters and templates"},
+    {"name": "add_hr_letter", "description": "Can create HR letters"},
+    {"name": "edit_hr_letter", "description": "Can edit HR letters"},
+    {"name": "delete_hr_letter", "description": "Can delete HR letters"},
+    {"name": "print_hr_letter", "description": "Can print HR letters"},
+    {"name": "generate_hr_letter", "description": "Can generate HR letters from templates"},
+    {"name": "send_hr_letter", "description": "Can send HR letters to employees"},
+    {"name": "restore_hr_letter", "description": "Can restore deleted HR letters"},
+    {"name": "show_deleted_hr_letters", "description": "Can access show deleted HR letters button"},
+
+    # Grievances Desk
+    {"name": "view_grievances", "description": "Can view employee grievances"},
+    {"name": "add_grievance", "description": "Can file employee grievances"},
+    {"name": "edit_grievance", "description": "Can edit employee grievances"},
+    {"name": "delete_grievance", "description": "Can delete employee grievances"},
+    {"name": "assign_grievance", "description": "Can assign grievances to handlers"},
+    {"name": "resolve_grievance", "description": "Can resolve employee grievances"},
+    {"name": "escalate_grievance", "description": "Can escalate employee grievances"},
+    {"name": "restore_grievance", "description": "Can restore deleted grievances"},
+    {"name": "show_deleted_grievances", "description": "Can access show deleted grievances button"},
+
+    # Assets
+    {"name": "view_assets", "description": "Can view company assets"},
+    {"name": "add_asset", "description": "Can add company assets"},
+    {"name": "edit_asset", "description": "Can edit company assets"},
+    {"name": "delete_asset", "description": "Can delete company assets"},
+    {"name": "assign_asset", "description": "Can assign assets to employees"},
+    {"name": "return_asset", "description": "Can process asset returns"},
+    {"name": "track_asset", "description": "Can track asset location and status"},
+    {"name": "approve_asset", "description": "Can approve asset assignments"},
+    {"name": "reject_asset", "description": "Can reject asset assignments"},
+    {"name": "restore_asset", "description": "Can restore deleted assets"},
+    {"name": "show_deleted_assets", "description": "Can access show deleted assets button"},
+
+    # Insurance & Benefits
+    {"name": "view_insurance_benefits", "description": "Can view insurance and benefits"},
+    {"name": "add_insurance_benefit", "description": "Can add insurance and benefits"},
+    {"name": "edit_insurance_benefit", "description": "Can edit insurance and benefits"},
+    {"name": "delete_insurance_benefit", "description": "Can delete insurance and benefits"},
+    {"name": "enroll_employee_benefits", "description": "Can enroll employees in benefits"},
+    {"name": "process_claims", "description": "Can process insurance claims"},
+    {"name": "manage_beneficiaries", "description": "Can manage employee beneficiaries"},
+    {"name": "add_insurance_policy", "description": "Can add insurance policies"},
+    {"name": "delete_insurance_policy", "description": "Can delete insurance policies"},
+    {"name": "restore_insurance_benefit", "description": "Can restore deleted insurance benefits"},
+    {"name": "show_deleted_insurance_benefits", "description": "Can access show deleted insurance benefits button"},
+
+    # Staff Scheduling
+    {"name": "view_staff_schedules", "description": "Can view staff schedules"},
+    {"name": "add_staff_schedule", "description": "Can create staff schedules"},
+    {"name": "edit_staff_schedule", "description": "Can edit staff schedules"},
+    {"name": "delete_staff_schedule", "description": "Can delete staff schedules"},
+    {"name": "assign_shifts", "description": "Can assign shifts to employees"},
+    {"name": "manage_shift_swaps", "description": "Can manage employee shift swaps"},
+    {"name": "approve_schedule_changes", "description": "Can approve schedule changes"},
+    {"name": "restore_staff_schedule", "description": "Can restore deleted staff schedules"},
+    {"name": "show_deleted_staff_schedules", "description": "Can access show deleted staff schedules button"},
+
 ]
 
 # -------------------------------------------------------------

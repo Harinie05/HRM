@@ -6,7 +6,7 @@ from datetime import datetime, date, timedelta
 
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 from models.models_tenant import EmployeeInsurance
 
 logger = logging.getLogger("HRM")
@@ -18,7 +18,8 @@ async def create_insurance_policy(
     policy_data: dict, 
     request: Request, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("add_insurance_benefit"))
 ):
     """Create a new insurance policy"""
     try:
@@ -100,7 +101,7 @@ async def get_insurance_stats(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-async def get_insurance_policies(db: Session = Depends(get_tenant_db)):
+async def get_insurance_policies(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_insurance_benefits"))):
     """Get all insurance policies"""
     try:
         from models.models_tenant import User

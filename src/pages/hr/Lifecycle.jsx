@@ -2,9 +2,29 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function Lifecycle() {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canView = hasPermission('view_lifecycle_actions');
+  const canAdd = hasPermission('add_lifecycle_action');
+  const canApprove = hasPermission('approve_lifecycle_action');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view lifecycle actions.</p>
+        </div>
+      </div>
+    );
+  }
   const [formData, setFormData] = useState({
     employeeId: "",
     actionType: "",
@@ -341,85 +361,93 @@ export default function Lifecycle() {
           </div>
         </div>
         <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-              <select 
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.employee_code}>
-                    {emp.employee_code} - {emp.name}
-                  </option>
-                ))}
-              </select>
+          {!canAdd ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">You don't have permission to create lifecycle actions.</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
-              <select 
-                value={formData.actionType}
-                onChange={(e) => setFormData({...formData, actionType: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Action</option>
-                <option value="promotion">Promotion</option>
-                <option value="transfer">Transfer</option>
-                <option value="demotion">Demotion</option>
-                <option value="resignation">Resignation</option>
-                <option value="termination">Termination</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
-              <input 
-                type="date"
-                value={formData.effectiveDate}
-                onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
-              <input 
-                type="text"
-                value={formData.currentRole}
-                onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Current designation"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">New Role</label>
-              <input 
-                type="text"
-                value={formData.newRole}
-                onChange={(e) => setFormData({...formData, newRole: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="New designation"
-              />
-            </div>
-            <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
-              <textarea 
-                value={formData.reason}
-                onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                rows={3}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Reason for this action"
-              />
-            </div>
-          </div>
-          <div className="mt-4 sm:mt-6 flex justify-end">
-            <button 
-              type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
-            >
-              Submit for Approval
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                  <select 
+                    value={formData.employeeId}
+                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.employee_code}>
+                        {emp.employee_code} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
+                  <select 
+                    value={formData.actionType}
+                    onChange={(e) => setFormData({...formData, actionType: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Action</option>
+                    <option value="promotion">Promotion</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="demotion">Demotion</option>
+                    <option value="resignation">Resignation</option>
+                    <option value="termination">Termination</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
+                  <input 
+                    type="date"
+                    value={formData.effectiveDate}
+                    onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
+                  <input 
+                    type="text"
+                    value={formData.currentRole}
+                    onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Current designation"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">New Role</label>
+                  <input 
+                    type="text"
+                    value={formData.newRole}
+                    onChange={(e) => setFormData({...formData, newRole: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="New designation"
+                  />
+                </div>
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+                  <textarea 
+                    value={formData.reason}
+                    onChange={(e) => setFormData({...formData, reason: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Reason for this action"
+                  />
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-6 flex justify-end">
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                >
+                  Submit for Approval
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </div>
 
@@ -455,6 +483,7 @@ export default function Lifecycle() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date}</td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      {canApprove && (
                       <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                         <button
                           onClick={() => handleApproval(action.id, true)}
@@ -477,6 +506,7 @@ export default function Lifecycle() {
                           <span className="sm:hidden">✗</span>
                         </button>
                       </div>
+                      )}
                     </td>
                   </tr>
                 ))}

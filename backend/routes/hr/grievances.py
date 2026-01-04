@@ -9,7 +9,7 @@ from schemas.schemas_tenant import (
 )
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 import logging
 from datetime import datetime
 
@@ -22,7 +22,8 @@ def create_grievance(
     payload: dict,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("add_grievance"))
 ):
     try:
         from models.models_tenant import User
@@ -72,7 +73,7 @@ def create_grievance(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-def list_grievances(db: Session = Depends(get_tenant_db)):
+def list_grievances(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_grievances"))):
     try:
         from models.models_tenant import User
         
@@ -141,7 +142,8 @@ def delete_grievance(
     ticket_id: int, 
     request: Request, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("delete_grievance"))
 ):
     try:
         grievance = db.query(GrievanceTicket).filter(
@@ -170,7 +172,8 @@ def complete_investigation(
     ticket_id: int, 
     request: Request, 
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(get_current_user),
+    _: dict = Depends(require_permission("resolve_grievance"))
 ):
     try:
         grievance = db.query(GrievanceTicket).filter(

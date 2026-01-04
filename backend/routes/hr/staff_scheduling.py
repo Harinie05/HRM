@@ -6,6 +6,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from database import get_tenant_db
 from models.models_tenant import PatientLoad, StaffAllocation, StaffScheduleRecommendation, User
+from routes.hospital import require_permission
 
 router = APIRouter()
 
@@ -38,7 +39,8 @@ async def get_patient_loads(
     department_id: Optional[int] = None,
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("view_staff_schedules"))
 ):
     query = db.query(PatientLoad)
     
@@ -55,7 +57,8 @@ async def get_patient_loads(
 @router.post("/patient-loads")
 async def create_patient_load(
     payload: PatientLoadCreate,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("add_staff_schedule"))
 ):
     # Calculate patient acuity score (weighted)
     acuity_score = (payload.critical_patients * 3.0) + (payload.icu_patients * 2.5) + (payload.emergency_patients * 2.0) + (payload.opd_patients * 1.0)

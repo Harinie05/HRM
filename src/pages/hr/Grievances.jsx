@@ -2,9 +2,31 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function Grievances() {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canView = hasPermission('view_grievances');
+  const canAdd = hasPermission('add_grievance');
+  const canDelete = hasPermission('delete_grievance');
+  const canResolve = hasPermission('resolve_grievance');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view grievances.</p>
+        </div>
+      </div>
+    );
+  }
+  
   const [formData, setFormData] = useState({
     employeeId: "",
     grievanceType: "",
@@ -174,92 +196,100 @@ export default function Grievances() {
           <h3 className="text-lg font-semibold text-gray-900">Submit Grievance</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-              <select 
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.employee_code}>
-                    {emp.employee_code} - {emp.name}
-                  </option>
-                ))}
-              </select>
+          {!canAdd ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">You don't have permission to create grievances.</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Grievance Type</label>
-              <select 
-                value={formData.grievanceType}
-                onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Type</option>
-                <option value="harassment">Harassment</option>
-                <option value="discrimination">Discrimination</option>
-                <option value="policy_violation">Policy Violation</option>
-                <option value="workplace_safety">Workplace Safety</option>
-                <option value="compensation">Compensation Issues</option>
-                <option value="work_environment">Work Environment</option>
-                <option value="management_issues">Management Issues</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-              <select 
-                value={formData.priority}
-                onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Priority</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="critical">Critical</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occurrence</label>
-              <input 
-                type="date"
-                value={formData.dateOccurred}
-                onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-            </div>
-            <div className="sm:col-span-2 lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-              <input 
-                type="text"
-                value={formData.subject}
-                onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                placeholder="Brief subject of the grievance"
-              />
-            </div>
-            <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea 
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                rows={4}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                placeholder="Detailed description of the grievance..."
-              />
-            </div>
-          </div>
-          <div className="mt-4 sm:mt-6 flex justify-end">
-            <button 
-              type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
-            >
-              Submit Grievance
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                  <select 
+                    value={formData.employeeId}
+                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.employee_code}>
+                        {emp.employee_code} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Grievance Type</label>
+                  <select 
+                    value={formData.grievanceType}
+                    onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Type</option>
+                    <option value="harassment">Harassment</option>
+                    <option value="discrimination">Discrimination</option>
+                    <option value="policy_violation">Policy Violation</option>
+                    <option value="workplace_safety">Workplace Safety</option>
+                    <option value="compensation">Compensation Issues</option>
+                    <option value="work_environment">Work Environment</option>
+                    <option value="management_issues">Management Issues</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                  <select 
+                    value={formData.priority}
+                    onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occurrence</label>
+                  <input 
+                    type="date"
+                    value={formData.dateOccurred}
+                    onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+                <div className="sm:col-span-2 lg:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                  <input 
+                    type="text"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    placeholder="Brief subject of the grievance"
+                  />
+                </div>
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea 
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    placeholder="Detailed description of the grievance..."
+                  />
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-6 flex justify-end">
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                >
+                  Submit Grievance
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </div>
 
@@ -326,16 +356,18 @@ export default function Grievances() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
                         </button>
-                        <button
-                          onClick={() => handleDelete(grievance.id)}
-                          className="p-1 text-red-600 hover:text-red-900 border border-red-300 rounded"
-                          title="Delete"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                        {grievance.status !== 'Resolved' && (
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDelete(grievance.id)}
+                            className="p-1 text-red-600 hover:text-red-900 border border-red-300 rounded"
+                            title="Delete"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
+                        {canResolve && grievance.status !== 'Resolved' && (
                           <button
                             onClick={() => handleCompleteInvestigation(grievance.id)}
                             className="p-1 text-green-600 hover:text-green-900 border border-green-300 rounded"

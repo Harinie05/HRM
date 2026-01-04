@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from models.models_tenant import HRCommunication
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user
+from routes.hospital import get_current_user, require_permission
 import logging
 from datetime import datetime
 
@@ -15,7 +15,8 @@ router = APIRouter(prefix="/hr/communication", tags=["HR Communication"])
 def create_communication(
     payload: dict,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("add_hr_letter"))
 ):
     try:
         # Map frontend fields to backend fields
@@ -103,7 +104,8 @@ def update_communication(
     communication_id: int,
     payload: dict,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("edit_hr_letter"))
 ):
     try:
         communication = db.query(HRCommunication).filter(
@@ -159,7 +161,8 @@ def send_draft_communication(
 def delete_communication(
     communication_id: int,
     request: Request,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("delete_hr_letter"))
 ):
     try:
         communication = db.query(HRCommunication).filter(
@@ -182,7 +185,7 @@ def delete_communication(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/", response_model=list)
-def list_communications(db: Session = Depends(get_tenant_db)):
+def list_communications(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_hr_letters"))):
     try:
         communications = db.query(HRCommunication).order_by(
             HRCommunication.created_at.desc()

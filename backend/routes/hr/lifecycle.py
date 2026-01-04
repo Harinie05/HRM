@@ -9,6 +9,7 @@ from schemas.schemas_tenant import (
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from utils.email import send_email
+from routes.hospital import require_permission
 import logging
 from datetime import datetime
 
@@ -17,7 +18,7 @@ logger = logging.getLogger("HRM")
 router = APIRouter(prefix="/hr/lifecycle", tags=["HR Lifecycle"])
 
 @router.post("/pending")
-def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_tenant_db)):
+def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("add_lifecycle_action"))):
     """Create a pending lifecycle action request"""
     try:
         employee_code = payload.get('employeeId')
@@ -63,7 +64,7 @@ def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_ten
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pending")
-def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db)):
+def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_lifecycle_actions"))):
     """Get all pending lifecycle actions"""
     try:
         from models.models_tenant import User
@@ -101,7 +102,7 @@ def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/approve")
-def approve_lifecycle_action(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db)):
+def approve_lifecycle_action(approval_data: dict, request: Request, db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("approve_lifecycle_action"))):
     """Approve or reject lifecycle action with email notification"""
     try:
         action_id = approval_data.get('actionId')
@@ -303,7 +304,7 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-def list_lifecycle_actions(db: Session = Depends(get_tenant_db)):
+def list_lifecycle_actions(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_lifecycle_actions"))):
     """Get all approved lifecycle actions"""
     try:
         from models.models_tenant import User

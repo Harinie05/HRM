@@ -2,8 +2,29 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function Assets() {
+  // Permission checks
+  const canView = hasPermission('view_assets');
+  const canAdd = hasPermission('add_asset');
+  const canApprove = hasPermission('approve_asset');
+  const canReject = hasPermission('reject_asset');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view assets.</p>
+        </div>
+      </div>
+    );
+  }
+  
   const [formData, setFormData] = useState({
     employeeId: "",
     assetType: "",
@@ -197,138 +218,146 @@ export default function Assets() {
           <h3 className="text-lg font-semibold text-gray-900">Asset Assignment</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-              <select 
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.employee_code}>
-                    {emp.employee_code} - {emp.name}
-                  </option>
-                ))}
-              </select>
+          {!canAdd ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">You don't have permission to create asset assignments.</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
-              <select 
-                value={formData.assetType}
-                onChange={(e) => setFormData({...formData, assetType: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Type</option>
-                <option value="laptop">Laptop</option>
-                <option value="desktop">Desktop</option>
-                <option value="mobile">Mobile Phone</option>
-                <option value="tablet">Tablet</option>
-                <option value="monitor">Monitor</option>
-                <option value="keyboard">Keyboard</option>
-                <option value="mouse">Mouse</option>
-                <option value="headset">Headset</option>
-                <option value="printer">Printer</option>
-                <option value="furniture">Furniture</option>
-                <option value="vehicle">Vehicle</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
-              <input 
-                type="text"
-                value={formData.assetName}
-                onChange={(e) => setFormData({...formData, assetName: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Asset name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Asset ID</label>
-              <input 
-                type="text"
-                value={formData.assetId}
-                onChange={(e) => setFormData({...formData, assetId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Unique asset ID"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
-              <input 
-                type="text"
-                value={formData.brand}
-                onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Brand name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
-              <input 
-                type="text"
-                value={formData.model}
-                onChange={(e) => setFormData({...formData, model: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Model number"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
-              <input 
-                type="text"
-                value={formData.serialNumber}
-                onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Serial number"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Date</label>
-              <input 
-                type="date"
-                value={formData.assignedDate}
-                onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
-              <select 
-                value={formData.condition}
-                onChange={(e) => setFormData({...formData, condition: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Condition</option>
-                <option value="new">New</option>
-                <option value="excellent">Excellent</option>
-                <option value="good">Good</option>
-                <option value="fair">Fair</option>
-                <option value="poor">Poor</option>
-                <option value="damaged">Damaged</option>
-              </select>
-            </div>
-            <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
-              <textarea 
-                value={formData.remarks}
-                onChange={(e) => setFormData({...formData, remarks: e.target.value})}
-                rows={3}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                placeholder="Additional remarks or special instructions..."
-              />
-            </div>
-          </div>
-          <div className="mt-4 sm:mt-6 flex justify-end">
-            <button 
-              type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
-            >
-              Submit for Approval
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                  <select 
+                    value={formData.employeeId}
+                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.employee_code}>
+                        {emp.employee_code} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
+                  <select 
+                    value={formData.assetType}
+                    onChange={(e) => setFormData({...formData, assetType: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Type</option>
+                    <option value="laptop">Laptop</option>
+                    <option value="desktop">Desktop</option>
+                    <option value="mobile">Mobile Phone</option>
+                    <option value="tablet">Tablet</option>
+                    <option value="monitor">Monitor</option>
+                    <option value="keyboard">Keyboard</option>
+                    <option value="mouse">Mouse</option>
+                    <option value="headset">Headset</option>
+                    <option value="printer">Printer</option>
+                    <option value="furniture">Furniture</option>
+                    <option value="vehicle">Vehicle</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
+                  <input 
+                    type="text"
+                    value={formData.assetName}
+                    onChange={(e) => setFormData({...formData, assetName: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Asset name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Asset ID</label>
+                  <input 
+                    type="text"
+                    value={formData.assetId}
+                    onChange={(e) => setFormData({...formData, assetId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Unique asset ID"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
+                  <input 
+                    type="text"
+                    value={formData.brand}
+                    onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Brand name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                  <input 
+                    type="text"
+                    value={formData.model}
+                    onChange={(e) => setFormData({...formData, model: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Model number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+                  <input 
+                    type="text"
+                    value={formData.serialNumber}
+                    onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Serial number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Date</label>
+                  <input 
+                    type="date"
+                    value={formData.assignedDate}
+                    onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
+                  <select 
+                    value={formData.condition}
+                    onChange={(e) => setFormData({...formData, condition: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Condition</option>
+                    <option value="new">New</option>
+                    <option value="excellent">Excellent</option>
+                    <option value="good">Good</option>
+                    <option value="fair">Fair</option>
+                    <option value="poor">Poor</option>
+                    <option value="damaged">Damaged</option>
+                  </select>
+                </div>
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+                  <textarea 
+                    value={formData.remarks}
+                    onChange={(e) => setFormData({...formData, remarks: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    placeholder="Additional remarks or special instructions..."
+                  />
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-6 flex justify-end">
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                >
+                  Submit for Approval
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </div>
 
@@ -373,26 +402,33 @@ export default function Assets() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">{asset.assignedDate || asset.requestDate}</td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
-                        <button
-                          onClick={() => handleApproval(asset.id, true)}
-                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                        >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span className="hidden sm:inline">Approve</span>
-                          <span className="sm:hidden">✓</span>
-                        </button>
-                        <button
-                          onClick={() => handleApproval(asset.id, false)}
-                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                          <span className="hidden sm:inline">Reject</span>
-                          <span className="sm:hidden">✗</span>
-                        </button>
+                        {canApprove && (
+                          <button
+                            onClick={() => handleApproval(asset.id, true)}
+                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          >
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="hidden sm:inline">Approve</span>
+                            <span className="sm:hidden">✓</span>
+                          </button>
+                        )}
+                        {canReject && (
+                          <button
+                            onClick={() => handleApproval(asset.id, false)}
+                            className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          >
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span className="hidden sm:inline">Reject</span>
+                            <span className="sm:hidden">✗</span>
+                          </button>
+                        )}
+                        {!canApprove && !canReject && (
+                          <div></div>
+                        )}
                       </div>
                     </td>
                   </tr>

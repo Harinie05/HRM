@@ -2,8 +2,29 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function Communication() {
+  // Permission checks
+  const canView = hasPermission('view_hr_letters');
+  const canAdd = hasPermission('add_hr_letter');
+  const canEdit = hasPermission('edit_hr_letter');
+  const canDelete = hasPermission('delete_hr_letter');
+  const canPrint = hasPermission('print_hr_letter');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view HR letters.</p>
+        </div>
+      </div>
+    );
+  }
   const [formData, setFormData] = useState({
     employeeId: "",
     letterType: "",
@@ -395,92 +416,100 @@ export default function Communication() {
           <h3 className="text-lg font-semibold text-gray-900">Create HR Letter</h3>
         </div>
         <form className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-              <select 
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.employee_code}>
-                    {emp.employee_code} - {emp.name}
-                  </option>
-                ))}
-              </select>
+          {!canAdd ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">You don't have permission to create HR letters.</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>
-              <select 
-                value={formData.letterType}
-                onChange={(e) => setFormData({...formData, letterType: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Type</option>
-                <option value="offer">Offer Letter</option>
-                <option value="appointment">Appointment Letter</option>
-                <option value="increment">Increment Letter</option>
-                <option value="promotion">Promotion Letter</option>
-                <option value="transfer">Transfer Letter</option>
-                <option value="warning">Warning Letter</option>
-                <option value="termination">Termination Letter</option>
-                <option value="experience">Experience Certificate</option>
-                <option value="relieving">Relieving Letter</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-              <select 
-                value={formData.priority}
-                onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <option value="">Select Priority</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </div>
-            <div className="sm:col-span-2 lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-              <input 
-                type="text"
-                value={formData.subject}
-                onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                placeholder="Letter subject"
-              />
-            </div>
-            <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-              <textarea 
-                value={formData.content}
-                onChange={(e) => setFormData({...formData, content: e.target.value})}
-                rows={6}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                placeholder="Letter content..."
-              />
-            </div>
-          </div>
-          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
-            <button 
-              type="button"
-              onClick={handleSaveDraft}
-              className="w-full sm:w-auto px-6 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-            >
-              Save as Draft
-            </button>
-            <button 
-              type="button"
-              onClick={handleOK}
-              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
-            >
-              OK
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                  <select 
+                    value={formData.employeeId}
+                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.employee_code}>
+                        {emp.employee_code} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>
+                  <select 
+                    value={formData.letterType}
+                    onChange={(e) => setFormData({...formData, letterType: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Type</option>
+                    <option value="offer">Offer Letter</option>
+                    <option value="appointment">Appointment Letter</option>
+                    <option value="increment">Increment Letter</option>
+                    <option value="promotion">Promotion Letter</option>
+                    <option value="transfer">Transfer Letter</option>
+                    <option value="warning">Warning Letter</option>
+                    <option value="termination">Termination Letter</option>
+                    <option value="experience">Experience Certificate</option>
+                    <option value="relieving">Relieving Letter</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                  <select 
+                    value={formData.priority}
+                    onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+                <div className="sm:col-span-2 lg:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                  <input 
+                    type="text"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    placeholder="Letter subject"
+                  />
+                </div>
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                  <textarea 
+                    value={formData.content}
+                    onChange={(e) => setFormData({...formData, content: e.target.value})}
+                    rows={6}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    placeholder="Letter content..."
+                  />
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                <button 
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="w-full sm:w-auto px-6 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                >
+                  Save as Draft
+                </button>
+                <button 
+                  type="button"
+                  onClick={handleOK}
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                >
+                  OK
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </div>
 
@@ -537,7 +566,7 @@ export default function Communication() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
                         </button>
-                        {letter.status === 'Draft' && (
+                        {canEdit && letter.status === 'Draft' && (
                           <button
                             onClick={() => handleEditLetter(letter.id)}
                             className="p-1 text-blue-600 hover:text-blue-900"
@@ -548,24 +577,28 @@ export default function Communication() {
                             </svg>
                           </button>
                         )}
-                        <button
-                          onClick={() => handlePrintLetter(letter)}
-                          className="p-1 text-green-600 hover:text-green-900"
-                          title="Print Letter"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => handleDeleteLetter(letter.id)}
-                          className="p-1 text-red-600 hover:text-red-900"
-                          title="Delete Letter"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
+                        {canPrint && (
+                          <button
+                            onClick={() => handlePrintLetter(letter)}
+                            className="p-1 text-green-600 hover:text-green-900"
+                            title="Print Letter"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDeleteLetter(letter.id)}
+                            className="p-1 text-red-600 hover:text-red-900"
+                            title="Delete Letter"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

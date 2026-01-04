@@ -2,9 +2,30 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission } from "../../utils/permissions";
 
 export default function Insurance() {
   const { toast, showToast } = useToast();
+  
+  // Permission checks
+  const canView = hasPermission('view_insurance_benefits');
+  const canAdd = hasPermission('add_insurance_benefit');
+  const canDelete = hasPermission('delete_insurance_policy');
+  
+  if (!canView) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You don't have permission to view insurance benefits.</p>
+        </div>
+      </div>
+    );
+  }
+  
   const [formData, setFormData] = useState({
     employeeId: "",
     policyType: "",
@@ -149,96 +170,104 @@ export default function Insurance() {
           <h3 className="text-lg font-semibold text-gray-900">Add Insurance Policy(Optional)</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-              <select 
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
-              >
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.employee_code}>
-                    {emp.employee_code} - {emp.name}
-                  </option>
-                ))}
-              </select>
+          {!canAdd ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">You don't have permission to create insurance policies.</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Policy Type</label>
-              <input 
-                type="text"
-                value={formData.policyType}
-                onChange={(e) => setFormData({...formData, policyType: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="e.g., Medical, Life, Accident"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
-              <input 
-                type="text"
-                value={formData.policyNumber}
-                onChange={(e) => setFormData({...formData, policyNumber: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Policy number"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Provider</label>
-              <input 
-                type="text"
-                value={formData.provider}
-                onChange={(e) => setFormData({...formData, provider: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Insurance provider"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Coverage Amount</label>
-              <input 
-                type="number"
-                value={formData.coverageAmount}
-                onChange={(e) => setFormData({...formData, coverageAmount: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                placeholder="Coverage amount"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-              <input 
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-              <input 
-                type="date"
-                value={formData.expiryDate}
-                onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
-                className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
-              />
-            </div>
-          </div>
-          <div className="mt-4 sm:mt-6 flex justify-end">
-            <button 
-              type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
-            >
-              Add Policy
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+                  <select 
+                    value={formData.employeeId}
+                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.employee_code}>
+                        {emp.employee_code} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Policy Type</label>
+                  <input 
+                    type="text"
+                    value={formData.policyType}
+                    onChange={(e) => setFormData({...formData, policyType: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="e.g., Medical, Life, Accident"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
+                  <input 
+                    type="text"
+                    value={formData.policyNumber}
+                    onChange={(e) => setFormData({...formData, policyNumber: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Policy number"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Provider</label>
+                  <input 
+                    type="text"
+                    value={formData.provider}
+                    onChange={(e) => setFormData({...formData, provider: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Insurance provider"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Coverage Amount</label>
+                  <input 
+                    type="number"
+                    value={formData.coverageAmount}
+                    onChange={(e) => setFormData({...formData, coverageAmount: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    placeholder="Coverage amount"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                  <input 
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+                  <input 
+                    type="date"
+                    value={formData.expiryDate}
+                    onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
+                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-6 flex justify-end">
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                >
+                  Add Policy
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </div>
 
@@ -288,12 +317,14 @@ export default function Insurance() {
                       </span>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleDelete(policy.id)}
-                        className="text-gray-600 hover:text-gray-900 border border-gray-300 px-2 py-1 rounded text-xs sm:text-sm"
-                      >
-                        Delete
-                      </button>
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDelete(policy.id)}
+                          className="text-gray-600 hover:text-gray-900 border border-gray-300 px-2 py-1 rounded text-xs sm:text-sm"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
