@@ -1,6 +1,7 @@
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingLayout() {
   const location = useLocation();
@@ -18,13 +19,31 @@ export default function TrainingLayout() {
     );
   }
   
-  const tabs = [
-    { name: "Training Programs", path: "/training/programs" },
-    { name: "Training Calendar", path: "/training/calendar" }, 
-    { name: "Training Requests", path: "/training/requests" },
-    { name: "Attendance & Assessment", path: "/training/attendance" },
-    { name: "Certificates", path: "/training/certificates" }
+  const allTabs = [
+    { name: "Training Programs", path: "/training/programs", permission: "view_training_programs" },
+    { name: "Training Calendar", path: "/training/calendar", permission: "view_training_calendar" }, 
+    { name: "Training Requests", path: "/training/requests", permission: "view_training_requests" },
+    { name: "Attendance & Assessment", path: "/training/attendance", permission: "view_training_attendance" },
+    { name: "Certificates", path: "/training/certificates", permission: "view_training_certificates" }
   ];
+
+  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission));
+
+  if (tabs.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to access any training management features.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   const currentTab = tabs.find(tab => location.pathname === tab.path) || tabs[0];
 
@@ -46,7 +65,7 @@ export default function TrainingLayout() {
               </div>
               <div className="text-left sm:text-right">
                 <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="text-sm font-medium">5 Modules</span>
+                  <span className="text-sm font-medium">{tabs.length} Modules</span>
                 </div>
                 <p className="text-lg font-bold text-gray-900">Training components</p>
               </div>

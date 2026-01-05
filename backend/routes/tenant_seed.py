@@ -393,6 +393,8 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_punch_logs", "description": "Can edit punch log entries"},
     {"name": "delete_punch_logs", "description": "Can delete punch log entries"},
     {"name": "view_daily_punch_logs", "description": "Can view daily punch logs"},
+    {"name": "punch_in", "description": "Can punch in for attendance"},
+    {"name": "punch_out", "description": "Can punch out for attendance"},
 
     # GPS & Location Tracking
     {"name": "view_gps_tracking", "description": "Can view GPS location tracking"},

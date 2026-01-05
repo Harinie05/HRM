@@ -546,7 +546,7 @@ export default function AttendanceLogs() {
 
   const tabs = [
     ...(canViewPunchLogs ? [{ id: 'logs', label: 'Punch Logs' }] : []),
-    { id: 'daily-updates', label: 'Daily Updates' },
+    ...(isAdmin() || hasPermission('view_daily_updates') ? [{ id: 'daily-updates', label: 'Daily Updates' }] : []),
     ...(canViewRegularization ? [{ id: 'regularization', label: 'Regularization' }] : []),
     ...(canViewOdApplications ? [{ id: 'od', label: 'OD Applications' }] : []),
     ...(canViewReports ? [{ id: 'reports', label: 'Reports' }] : []),

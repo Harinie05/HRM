@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 // Pages
 import CompanyProfile from "./CompanyProfile";
@@ -15,17 +16,44 @@ import PolicySetup from "./PolicySetup";
 
 export default function OrganizationLayout() {
   const location = useLocation();
-  const initialTab = location.state?.tab || "Company Profile";
+  
+  // Define all tabs with their permission requirements
+  const allTabs = [
+    { name: "Company Profile", permission: "view_company_profile" },
+    { name: "Branch / Unit", permission: "view_branch" },
+    { name: "Department", permission: "view_department" },
+    { name: "Designation", permission: "view_designation" },
+    { name: "Reporting Structure", permission: "view_reporting_levels" },
+    { name: "Holiday Calendar", permission: "view_holiday" }
+  ];
+
+  // Filter tabs based on permissions
+  const visibleTabs = allTabs.filter(tabItem => {
+    if (!tabItem.permission) return true;
+    return isAdmin() || hasPermission(tabItem.permission);
+  });
+
+  const initialTab = location.state?.tab || (visibleTabs.length > 0 ? visibleTabs[0].name : "");
   const [tab, setTab] = useState(initialTab);
 
-  const tabs = [
-    "Company Profile",
-    "Branch / Unit",
-    "Department",
-    "Designation",
-    "Reporting Structure",
-    "Holiday Calendar"
-  ];
+  // If no tabs are visible, show access denied
+  if (visibleTabs.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to access any organization setup modules.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -50,7 +78,7 @@ export default function OrganizationLayout() {
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Components</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
+                <p className="text-lg font-bold text-gray-900">{visibleTabs.length}</p>
               </div>
             </div>
           </div>
@@ -61,17 +89,17 @@ export default function OrganizationLayout() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
             <span className="text-sm text-gray-600">Setup</span>
             <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              {tabs.map((tabName) => (
+              {visibleTabs.map((tabItem) => (
                 <button
-                  key={tabName}
-                  onClick={() => setTab(tabName)}
+                  key={tabItem.name}
+                  onClick={() => setTab(tabItem.name)}
                   className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                    tab === tabName 
+                    tab === tabItem.name 
                       ? "bg-white text-gray-900 shadow-sm" 
                       : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
-                  {tabName}
+                  {tabItem.name}
                 </button>
               ))}
             </div>

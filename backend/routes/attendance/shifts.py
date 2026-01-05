@@ -65,7 +65,7 @@ def delete_shift(
             raise HTTPException(404, "Shift not found")
         
         old_values = {"name": shift.name, "start_time": shift.start_time, "end_time": shift.end_time, "is_active": shift.is_active}
-        shift.is_active = False
+        setattr(shift, 'is_active', False)
         db.commit()
         audit_crud(request, db, user, "DELETE_SHIFT", "shifts", str(shift_id), old_values, {"is_active": False})
         return {"message": "Shift deleted successfully"}

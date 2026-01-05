@@ -2,10 +2,25 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PolicySetup() {
     const { toast, showToast } = useToast();
     const tenant_db = localStorage.getItem("tenant_db");
+
+    // Check permissions
+    const canViewPolicies = isAdmin() || hasPermission("view_policies");
+    
+    if (!canViewPolicies) {
+        return (
+            <div className="p-6 bg-content min-h-screen">
+                <div className="bg-white rounded-2xl border border-black p-8 text-center max-w-md mx-auto">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+                    <p className="text-gray-600">You do not have permission to view Policy Setup.</p>
+                </div>
+            </div>
+        );
+    }
 
     const tabs = ["HR Policy", "Leave Policy", "Attendance Policy", "OT Policy"];
     const [activeTab, setActiveTab] = useState("HR Policy");

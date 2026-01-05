@@ -57,9 +57,12 @@ const AttendanceDashboard = () => {
       const deptRes = await api.get(`/hospitals/departments/${tenant_db}/list`).catch(() => ({ data: { departments: [] } }));
       const deptData = deptRes.data?.departments || [];
       
-      // Fetch actual attendance data from punch logs
-      const punchLogsRes = await api.get('/api/attendance/punches').catch(() => ({ data: [] }));
-      const punchLogs = punchLogsRes.data || [];
+      // Fetch actual attendance data from punch logs only if user has permission
+      let punchLogs = [];
+      if (canViewPunchLogs) {
+        const punchLogsRes = await api.get('/api/attendance/punches').catch(() => ({ data: [] }));
+        punchLogs = punchLogsRes.data || [];
+      }
       
       const today = new Date().toISOString().split('T')[0];
       const todayLogs = punchLogs.filter(log => log.date === today);

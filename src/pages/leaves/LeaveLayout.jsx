@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 // Pages
 import LeaveTypes from "./LeaveTypes";
@@ -12,17 +13,37 @@ import LeaveReports from "./LeaveReports";
 export default function LeaveLayout() {
   const location = useLocation();
   
-  const initialTab = location.state?.tab || "Leave Types";
-  const [tab, setTab] = useState(initialTab);
-
-  const tabs = [
-    "Leave Types",
-    "Leave Policies",
-    "Leave Rules", 
-    "Application & Approvals",
-    "Leave Calendar",
-    "Leave Reports"
+  // Define all tabs with their permission requirements
+  const allTabs = [
+    { name: "Leave Types", permission: "view_leave_types" },
+    { name: "Leave Policies", permission: "view_leave_policies" },
+    { name: "Leave Rules", permission: "view_leave_rules" },
+    { name: "Application & Approvals", permission: "view_leave_applications" },
+    { name: "Leave Calendar", permission: "view_leave_calendar" },
+    { name: "Leave Reports", permission: "view_leave_reports" }
   ];
+
+  // Filter tabs based on permissions
+  const visibleTabs = allTabs.filter(tabItem => {
+    return isAdmin() || hasPermission(tabItem.permission);
+  });
+
+  // If no tabs are visible, show access denied
+  if (visibleTabs.length === 0) {
+    return (
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to access Leave Management.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+  
+  const initialTab = location.state?.tab || visibleTabs[0].name;
+  const [tab, setTab] = useState(initialTab);
 
   return (
     <Layout breadcrumb="Leave Management">
@@ -48,7 +69,7 @@ export default function LeaveLayout() {
                   <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                     <span className="text-xs font-medium">Modules</span>
                   </div>
-                  <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
+                  <p className="text-lg font-bold text-gray-900">{visibleTabs.length}</p>
                 </div>
               </div>
             </div>
@@ -58,19 +79,19 @@ export default function LeaveLayout() {
         {/* Tab Navigation */}
         <div className="mb-6 px-4">
           <div className="bg-gray-100 border border-black rounded-full p-1.5 inline-flex space-x-1 overflow-x-auto scrollbar-hide w-full sm:w-auto">
-            {tabs.map((tabName) => (
+            {visibleTabs.map((tabItem) => (
               <button
-                key={tabName}
-                onClick={() => setTab(tabName)}
+                key={tabItem.name}
+                onClick={() => setTab(tabItem.name)}
                 className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
-                  tab === tabName
+                  tab === tabItem.name
                     ? 'bg-white text-gray-900 shadow-lg'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                {tabName}
+                {tabItem.name}
               </button>
-            ))}
+            ))}}
           </div>
         </div>
 

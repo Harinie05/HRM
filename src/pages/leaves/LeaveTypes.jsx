@@ -3,46 +3,20 @@ import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
-import { hasPermission } from "../../utils/permissions";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveTypes({ activeView = "types" }) {
   const { toast, showToast } = useToast();
   
-  // Check if user has permission to view leave types or policies
-  if (!hasPermission("view_leave_types") && !hasPermission("view_leave_policies")) {
-    return (
-      <div className="">
-        {/* Header */}
-        <div className="p-8 border-b border-gray-100">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                  {activeView === "types" ? "Leave Types" : "Leave Policies"}
-                </h2>
-                <p className="text-gray-600 text-base">
-                  {activeView === "types" ? "Manage different types of leaves" : "Manage leave policies and allocations"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Access Denied */}
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-600">You do not have permission to view {activeView === "types" ? "leave types" : "leave policies"}.</p>
-          </div>
-        </div>
-      </div>
-    );
+  // Check permissions for the current view
+  const canViewTypes = isAdmin() || hasPermission("view_leave_types");
+  const canViewPolicies = isAdmin() || hasPermission("view_leave_policies");
+  
+  // If user can't view the current activeView, return null (hide completely)
+  if ((activeView === "types" && !canViewTypes) || (activeView === "policies" && !canViewPolicies)) {
+    return null;
   }
+  
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leavePolicies, setLeavePolicies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,20 +55,27 @@ export default function LeaveTypes({ activeView = "types" }) {
   const [editingPolicy, setEditingPolicy] = useState(null);
 
   useEffect(() => {
-    fetchLeaveTypes();
-    fetchLeavePolicies();
-  }, [statusFilter]);
+    if (activeView === "types" && canViewTypes) {
+      fetchLeaveTypes();
+    }
+    if (activeView === "policies" && canViewPolicies) {
+      fetchLeavePolicies();
+    }
+  }, [statusFilter, canViewTypes, canViewPolicies, activeView]);
 
   const fetchLeaveTypes = async () => {
+    if (!canViewTypes) return;
     try {
       const res = await api.get(`/api/leave/types/?status=${statusFilter}`);
       setLeaveTypes(res.data);
     } catch (error) {
       console.error("Error fetching leave types:", error);
+      setLeaveTypes([]);
     }
   };
 
   const fetchLeavePolicies = async () => {
+    if (!canViewPolicies) return;
     try {
       console.log("Fetching leave policies from /policies/leave/list");
       const res = await api.get(`/policies/leave/list?status=${statusFilter}`);
@@ -272,8 +253,8 @@ export default function LeaveTypes({ activeView = "types" }) {
             </div>
           </div>
           <div className="flex gap-3">
-            {((activeView === "types" && hasPermission("add_leave_type")) || 
-              (activeView === "policies" && hasPermission("add_leave_policy"))) && (
+            {((activeView === "types" && (isAdmin() || hasPermission("add_leave_type"))) || 
+              (activeView === "policies" && (isAdmin() || hasPermission("add_leave_policy")))) && (
               <button 
                 onClick={() => activeView === "types" ? handleOpenModal() : handleOpenPolicyModal()}
                 className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -287,8 +268,7 @@ export default function LeaveTypes({ activeView = "types" }) {
       </div>
 
       {/* Search and Filters */}
-      {(hasPermission("view_leave_types") || hasPermission("view_leave_policies")) && (
-        <div className="p-8 border-b border-gray-100">
+      <div className="p-8 border-b border-gray-100">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Status</span>
@@ -371,11 +351,10 @@ export default function LeaveTypes({ activeView = "types" }) {
             </div>
           </div>
         </div>
-      )}
 
       {/* Content based on active view */}
       {activeView === "types" ? (
-        hasPermission("view_leave_types") && (
+        (isAdmin() || hasPermission("view_leave_types")) && (
         /* Leave Types Table */
         <div className="overflow-x-auto">
           <table className="min-w-full table-fixed">
@@ -497,7 +476,7 @@ export default function LeaveTypes({ activeView = "types" }) {
         </div>
         )
       ) : (
-        hasPermission("view_leave_policies") && (
+        (isAdmin() || hasPermission("view_leave_policies")) && (
         /* Leave Policies Table */
         <div className="overflow-x-auto">
           <table className="min-w-full table-fixed">
@@ -618,24 +597,21 @@ export default function LeaveTypes({ activeView = "types" }) {
       )}
 
       {/* Stats Footer */}
-      {((activeView === "types" && hasPermission("view_leave_types")) || 
-        (activeView === "policies" && hasPermission("view_leave_policies"))) && (
-        <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            {activeView === "types" ? (
-              <>
-                <span className="font-medium">Total: {leaveTypes.length} leave types</span>
-                <span className="font-medium">Active: {leaveTypes.filter(t => t.status === "Active").length}</span>
-              </>
-            ) : (
-              <>
-                <span className="font-medium">Total: {leavePolicies.length} leave policies</span>
-                <span className="font-medium">Active: {leavePolicies.filter(p => p.status === "Active").length}</span>
-              </>
-            )}
-          </div>
+      <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
+        <div className="flex justify-between items-center text-sm text-gray-600">
+          {activeView === "types" ? (
+            <>
+              <span className="font-medium">Total: {leaveTypes.length} leave types</span>
+              <span className="font-medium">Active: {leaveTypes.filter(t => t.status === "Active").length}</span>
+            </>
+          ) : (
+            <>
+              <span className="font-medium">Total: {leavePolicies.length} leave policies</span>
+              <span className="font-medium">Active: {leavePolicies.filter(p => p.status === "Active").length}</span>
+            </>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Leave Type Modal */}
       {showModal && (

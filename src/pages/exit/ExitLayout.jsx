@@ -4,25 +4,48 @@ import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { ResponsiveContainer, ResponsiveHeader, ResponsiveTabs, ResponsiveCard } from "../../components/ResponsiveUtils";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 import ResignationTrackingEnhanced from "./ResignationTrackingEnhanced";
 import ClearanceWorkflow from "./ClearanceWorkflow";
 import SettlementDocuments from "./SettlementDocuments";
 import KnowledgeTransfer from "./KnowledgeTransfer";
 
 export default function ExitLayout() {
-  const [activeTab, setActiveTab] = useState("Resignation Tracking");
-
-  const tabs = [
-    "Resignation Tracking",
-    "Clearance & Exit Process",
-    "Knowledge Transfer",
-    "F&F Settlement & Documents"
+  const allTabs = [
+    { name: "Resignation Tracking", permission: "view_resignation_tracking" },
+    { name: "Clearance & Exit Process", permission: "view_clearance_process" },
+    { name: "Knowledge Transfer", permission: "view_knowledge_transfer" },
+    { name: "F&F Settlement & Documents", permission: "view_settlement_documents" }
   ];
+
+  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+
+  if (tabs.length === 0) {
+    return (
+      <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <div className="flex items-center justify-center min-h-[60vh] pt-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <LogOut className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+              <p className="text-gray-500">You don't have permission to access any exit management features.</p>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      </div>
+    );
+  }
 
   const renderTabContent = () => {
     switch(activeTab) {
       case "Resignation Tracking":
-        return (
+        return tabs.includes("Resignation Tracking") ? (
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -37,9 +60,9 @@ export default function ExitLayout() {
             </div>
             <ResignationTrackingEnhanced />
           </div>
-        );
+        ) : null;
       case "Clearance & Exit Process":
-        return (
+        return tabs.includes("Clearance & Exit Process") ? (
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -54,9 +77,9 @@ export default function ExitLayout() {
             </div>
             <ClearanceWorkflow />
           </div>
-        );
+        ) : null;
       case "Knowledge Transfer":
-        return (
+        return tabs.includes("Knowledge Transfer") ? (
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -71,9 +94,9 @@ export default function ExitLayout() {
             </div>
             <KnowledgeTransfer />
           </div>
-        );
+        ) : null;
       case "F&F Settlement & Documents":
-        return (
+        return tabs.includes("F&F Settlement & Documents") ? (
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -88,9 +111,9 @@ export default function ExitLayout() {
             </div>
             <SettlementDocuments />
           </div>
-        );
+        ) : null;
       default:
-        return <ResignationTrackingEnhanced />;
+        return tabs.includes(tabs[0]) ? <ResignationTrackingEnhanced /> : null;
     }
   };
 

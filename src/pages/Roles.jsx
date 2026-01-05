@@ -27,6 +27,48 @@ export default function Roles() {
   const [editPerms, setEditPerms] = useState([]);
   const { toast, showToast, hideToast } = useToast();
 
+  // Handle "Select All" for main sections and subsections
+  const handleSelectAllSection = (sectionPerms, setter, currentList) => {
+    const allSelected = sectionPerms.every(perm => currentList.includes(perm));
+    if (allSelected) {
+      setter(currentList.filter(perm => !sectionPerms.includes(perm)));
+    } else {
+      const newList = [...new Set([...currentList, ...sectionPerms])];
+      setter(newList);
+    }
+  };
+
+  // Get permissions for specific sections
+  const getUserManagementPerms = () => permissions.filter(p => 
+    p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+  ).map(p => p.name);
+
+  const getEmployeeManagementPerms = () => permissions.filter(p => 
+    p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || 
+    p.name === 'delete_employee' || p.name === 'create_employee_code' || 
+    p.name === 'view_employee_profile' || p.name === 'export_employee_data'
+  ).map(p => p.name);
+
+  const getProfileDocumentsPerms = () => permissions.filter(p => 
+    p.name === 'edit_employee_profile' || p.name === 'view_employee_documents' || 
+    p.name === 'upload_employee_documents' || p.name === 'delete_employee_documents' || 
+    p.name === 'edit_profile' || p.name === 'view_documents'
+  ).map(p => p.name);
+
+  const getEmploymentProbationPerms = () => permissions.filter(p => 
+    p.name.includes('employment_details') || p.name.includes('work_location') || 
+    p.name.includes('reporting_manager') || p.name.includes('work_shift') || 
+    p.name.includes('probation') || p.name === 'add_probation' || 
+    p.name === 'extend_probation' || p.name === 'end_probation'
+  ).map(p => p.name);
+
+  const getPersonalInfoPerms = () => permissions.filter(p => 
+    p.name.includes('employee_education') || p.name.includes('employee_experience') || 
+    p.name.includes('employee_skills') || p.name.includes('employee_certifications') || 
+    p.name.includes('employee_family') || p.name.includes('employee_medical') || 
+    p.name.includes('employee_id_documents')
+  ).map(p => p.name);
+
   // ------------------------------------
   // PERMISSION CHECK
   // ------------------------------------
@@ -104,6 +146,34 @@ export default function Roles() {
       showToast("Role created!");
     } catch (err) {
       showToast("Create failed", 'error');
+      console.error(err);
+    }
+
+    setLoading(false);
+  };
+
+  const updateRole = async () => {
+    if (!canEdit) return showToast("You do not have permission to edit roles", 'error');
+
+    if (!editName.trim()) {
+      showToast("Role name required", 'error');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await api.put(`/hospitals/roles/${tenant_db}/update/${editing.id}`, {
+        name: editName,
+        description: editDesc,
+        permissions: editPerms,
+      });
+
+      setEditing(null);
+      fetchRoles();
+      showToast("Role updated!");
+    } catch (err) {
+      showToast("Update failed", 'error');
       console.error(err);
     }
 
@@ -367,9 +437,28 @@ export default function Roles() {
                   <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
                     {/* 👥 USER MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👥</span> USER MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👥</span> USER MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={permissions.filter(p => 
+                              p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+                            ).every(p => selectedPerms.includes(p.name))}
+                            onChange={() => handleSelectAllSection(
+                              permissions.filter(p => 
+                                p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+                              ).map(p => p.name),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
@@ -392,9 +481,24 @@ export default function Roles() {
 
                     {/* 👤 EMPLOYEE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👤</span> EMPLOYEE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👤</span> EMPLOYEE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getEmployeeManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getEmployeeManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'export_employee_data'
@@ -1408,7 +1512,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs'
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2025,9 +2129,24 @@ export default function Roles() {
                   <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
                     {/* 👥 USER MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👥</span> USER MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👥</span> USER MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getUserManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getUserManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
@@ -2050,9 +2169,24 @@ export default function Roles() {
 
                     {/* 👤 EMPLOYEE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👤</span> EMPLOYEE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👤</span> EMPLOYEE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getEmployeeManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getEmployeeManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'export_employee_data'
@@ -3342,7 +3476,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs'
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3620,37 +3754,21 @@ export default function Roles() {
                   Cancel
                 </button>
                 <button
-                  onClick={async () => {
-                    try {
-                      await api.put(
-                        `/hospitals/roles/${tenant_db}/update/${editing.id}`,
-                        {
-                          name: editName,
-                          description: editDesc,
-                          permissions: editPerms,
-                        }
-                      );
-
-                      showToast("Updated successfully!");
-                      setEditing(null);
-                      fetchRoles();
-                    } catch (err) {
-                      console.error('Update role failed:', err);
-                      showToast("Update failed", 'error');
-                    }
-                  }}
+                  onClick={updateRole}
+                  disabled={loading || !editName.trim()}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm border border-black"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
-                  Update Role
+                  {loading ? "Updating..." : "Update Role"}
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
+
       <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );

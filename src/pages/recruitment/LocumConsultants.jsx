@@ -4,7 +4,7 @@ import Layout from '../../components/Layout';
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
 import api from '../../api';
-import { hasPermission } from '../../utils/permissions';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const LocumConsultants = () => {
   const [consultants, setConsultants] = useState([]);
@@ -371,43 +371,49 @@ const LocumConsultants = () => {
           <div className="p-4 sm:p-6">
             {/* Tab Navigation */}
             <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black mb-6">
-              <button
-                onClick={() => setActiveTab('list')}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                  activeTab === 'list'
-                    ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <User className="inline mr-2" size={16} />
-                Consultant List
-              </button>
-              <button
-                onClick={() => setActiveTab('availability')}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                  activeTab === 'availability'
-                    ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Calendar className="inline mr-2" size={16} />
-                Availability
-              </button>
-              <button
-                onClick={() => setActiveTab('payouts')}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                  activeTab === 'payouts'
-                    ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <DollarSign className="inline mr-2" size={16} />
-                Payouts
-              </button>
+              {(isAdmin() || hasPermission('view_consultants')) && (
+                <button
+                  onClick={() => setActiveTab('list')}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                    activeTab === 'list'
+                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <User className="inline mr-2" size={16} />
+                  Consultant List
+                </button>
+              )}
+              {(isAdmin() || hasPermission('view_availability')) && (
+                <button
+                  onClick={() => setActiveTab('availability')}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                    activeTab === 'availability'
+                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <Calendar className="inline mr-2" size={16} />
+                  Availability
+                </button>
+              )}
+              {(isAdmin() || hasPermission('view_payouts')) && (
+                <button
+                  onClick={() => setActiveTab('payouts')}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                    activeTab === 'payouts'
+                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <DollarSign className="inline mr-2" size={16} />
+                  Payouts
+                </button>
+              )}
             </div>
 
             {/* Tab Content */}
-            {activeTab === 'list' && (
+            {activeTab === 'list' && (isAdmin() || hasPermission('view_consultants')) && (
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Consultant List</h3>
@@ -579,17 +585,8 @@ const LocumConsultants = () => {
               </div>
             )}
 
-            {activeTab === 'availability' && (
+            {activeTab === 'availability' && (isAdmin() || hasPermission('view_availability')) && (
               <div>
-                {!canViewAvailability ? (
-                  <div className="p-8 text-center">
-                    <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-                      <p className="text-gray-600">You do not have permission to view Availability.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Availability Management</h3>
                   {canAddAvailability && (
@@ -648,22 +645,11 @@ const LocumConsultants = () => {
                     </tbody>
                   </table>
                 </div>
-                  </>
-                )}
               </div>
             )}
 
-            {activeTab === 'payouts' && (
+            {activeTab === 'payouts' && (isAdmin() || hasPermission('view_payouts')) && (
               <div>
-                {!canViewPayouts ? (
-                  <div className="p-8 text-center">
-                    <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-                      <p className="text-gray-600">You do not have permission to view Payouts.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium text-gray-900">Payout Management</h3>
                   {canAddPayout && (
@@ -765,8 +751,6 @@ const LocumConsultants = () => {
                     </tbody>
                   </table>
                 </div>
-                  </>
-                )}
               </div>
             )}
           </div>

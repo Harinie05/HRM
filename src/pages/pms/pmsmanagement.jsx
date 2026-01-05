@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Target, RotateCcw, MessageSquare, Award } from "lucide-react";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 import WorkAssignments from "./WorkAssignments";
 import GoalsKPI from "./GoalsKPI";
 import ReviewCycle from "./ReviewCycle";
@@ -9,16 +10,35 @@ import Appraisal from "./Appraisal";
 import QualityIndicators from "./QualityIndicators";
 
 export default function PMSManagement() {
-  const [tab, setTab] = useState("Work Assignments");
-
-  const tabs = [
-    "Work Assignments",
-    "Goals & KPI",
-    "Review Cycle",
-    "Feedback",
-    "Appraisal",
-    "Quality Indicators"
+  const allTabs = [
+    { name: "Work Assignments", permission: "view_work_assignments" },
+    { name: "Goals & KPI", permission: "view_goals_kpi" },
+    { name: "Review Cycle", permission: "view_review_cycle" },
+    { name: "Feedback", permission: "view_feedback" },
+    { name: "Appraisal", permission: "view_appraisal" },
+    { name: "Quality Indicators", permission: "view_quality_indicators" }
   ];
+
+  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
+  const [tab, setTab] = useState(tabs[0]);
+
+  if (tabs.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to access any performance management features.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -72,12 +92,12 @@ export default function PMSManagement() {
               </div>
 
               {/* Tab Content */}
-              {tab === "Work Assignments" && <WorkAssignments />}
-              {tab === "Goals & KPI" && <GoalsKPI />}
-              {tab === "Review Cycle" && <ReviewCycle />}
-              {tab === "Feedback" && <Feedback />}
-              {tab === "Appraisal" && <Appraisal />}
-              {tab === "Quality Indicators" && <QualityIndicators />}
+              {tabs.includes("Work Assignments") && tab === "Work Assignments" && <WorkAssignments />}
+              {tabs.includes("Goals & KPI") && tab === "Goals & KPI" && <GoalsKPI />}
+              {tabs.includes("Review Cycle") && tab === "Review Cycle" && <ReviewCycle />}
+              {tabs.includes("Feedback") && tab === "Feedback" && <Feedback />}
+              {tabs.includes("Appraisal") && tab === "Appraisal" && <Appraisal />}
+              {tabs.includes("Quality Indicators") && tab === "Quality Indicators" && <QualityIndicators />}
             </div>
           </div>
       </div>

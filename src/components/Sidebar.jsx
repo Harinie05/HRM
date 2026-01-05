@@ -111,22 +111,24 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
             initials
           });
         } else {
-          // Fallback to API call
-          const response = await api.get('/organization/company-profile');
-          if (response.data && response.data.company_name) {
-            const name = response.data.company_name;
-            const tagline = response.data.tagline || "Smart • Secure • NABH-Standard";
-            const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
-            
-            // Store in localStorage for future use
-            localStorage.setItem("hospital_name", name);
-            localStorage.setItem("hospital_tagline", tagline);
-            
-            setCompanyInfo({
-              name,
-              tagline,
-              initials
-            });
+          // Fallback to API call only if user has permission
+          if (isAdmin() || hasPermission("view_company_profile")) {
+            const response = await api.get('/organization/company-profile');
+            if (response.data && response.data.company_name) {
+              const name = response.data.company_name;
+              const tagline = response.data.tagline || "Smart • Secure • NABH-Standard";
+              const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+              
+              // Store in localStorage for future use
+              localStorage.setItem("hospital_name", name);
+              localStorage.setItem("hospital_tagline", tagline);
+              
+              setCompanyInfo({
+                name,
+                tagline,
+                initials
+              });
+            }
           }
         }
       } catch (error) {
@@ -639,7 +641,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Exit Management */}
-        {(isAdmin() || hasPermission("view_resignations") || hasPermission("apply_resignation") || hasPermission("view_settlements")) && (
+        {(isAdmin() || hasPermission("view_resignation_tracking") || hasPermission("view_clearance_process") || hasPermission("view_knowledge_transfer") || hasPermission("view_settlement_documents")) && (
           <Link
             to="/exit"
             className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Users } from "lucide-react";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 import Insurance from "./Insurance";
 import Lifecycle from "./Lifecycle";
 import Communication from "./Communication";
@@ -12,17 +13,35 @@ import StaffScheduling from "./StaffScheduling";
 export default function HRLayout() {
   const location = useLocation();
   
-  const initialTab = location.state?.tab || "Lifecycle Actions";
+  const allTabs = [
+    { name: "Lifecycle Actions", permission: "view_lifecycle_actions" },
+    { name: "HR Letters", permission: "view_hr_letters" },
+    { name: "Grievances Desk", permission: "view_grievances" },
+    { name: "Assets", permission: "view_assets" },
+    { name: "Insurance & Benefits", permission: "view_insurance_benefits" },
+    { name: "Staff Scheduling", permission: "view_staff_scheduling" }
+  ];
+
+  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
+  
+  const initialTab = location.state?.tab && tabs.includes(location.state.tab) ? location.state.tab : tabs[0];
   const [tab, setTab] = useState(initialTab);
 
-  const tabs = [
-    "Lifecycle Actions",
-    "HR Letters", 
-    "Grievances Desk",
-    "Assets",
-    "Insurance & Benefits",
-    "Staff Scheduling"
-  ];
+  if (tabs.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to access any HR management features.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

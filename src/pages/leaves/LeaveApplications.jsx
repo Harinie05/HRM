@@ -158,11 +158,16 @@ export default function LeaveApplications() {
   };
 
   const fetchLeaveTypes = async () => {
+    if (!hasPermission("view_leave_types")) {
+      setLeaveTypes([]);
+      return;
+    }
     try {
       const res = await api.get("/api/leave/types/");
       setLeaveTypes(res.data.filter(type => type.status === "Active"));
     } catch (error) {
       console.error("Error fetching leave types:", error);
+      setLeaveTypes([]);
     }
   };
 

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { hasPermission, isAdmin } from "../utils/permissions";
 
 export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   const navigate = useNavigate();
@@ -146,7 +147,10 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
 
   const checkTodayAttendance = async () => {
     try {
-      if (!userInfo.id) return;
+      if (!userInfo.id || !(isAdmin() || hasPermission("view_attendance"))) {
+        setAttendanceStatus('not_checked_in');
+        return;
+      }
       
       const today = new Date().toISOString().split('T')[0];
       const res = await api.get('/api/attendance/punches/');
@@ -161,6 +165,7 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       }
     } catch (err) {
       console.error('Failed to check attendance:', err);
+      setAttendanceStatus('not_checked_in');
     }
   };
 
@@ -177,6 +182,11 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   const handleSwipeIn = async () => {
     if (!userInfo.id) {
       alert('User information not loaded');
+      return;
+    }
+
+    if (!(isAdmin() || hasPermission("punch_in"))) {
+      alert('You do not have permission to punch in');
       return;
     }
 
@@ -220,6 +230,11 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   const handleSwipeOut = async () => {
     if (!userInfo.id) {
       alert('User information not loaded');
+      return;
+    }
+
+    if (!(isAdmin() || hasPermission("punch_out"))) {
+      alert('You do not have permission to punch out');
       return;
     }
 
@@ -417,34 +432,36 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
               </div>
 
               {/* Swipe In/Out Buttons */}
-              <div className="px-3 sm:px-4 py-2 border-b">
-                {attendanceStatus === 'not_checked_in' && (
-                  <button
-                    onClick={handleSwipeIn}
-                    disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition min-h-[40px]"
-                  >
-                    <Clock size={16} />
-                    {loading ? 'Swiping...' : 'Swipe In'}
-                  </button>
-                )}
-                {attendanceStatus === 'checked_in' && (
-                  <button
-                    onClick={handleSwipeOut}
-                    disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition min-h-[40px]"
-                  >
-                    <Clock size={16} />
-                    {loading ? 'Swiping...' : 'Swipe Out'}
-                  </button>
-                )}
-                {attendanceStatus === 'checked_out' && (
-                  <div className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg min-h-[40px]">
-                    <Clock size={16} />
-                    Checked Out
-                  </div>
-                )}
-              </div>
+              {(isAdmin() || hasPermission("punch_in") || hasPermission("punch_out")) && (
+                <div className="px-3 sm:px-4 py-2 border-b">
+                  {attendanceStatus === 'not_checked_in' && (isAdmin() || hasPermission("punch_in")) && (
+                    <button
+                      onClick={handleSwipeIn}
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition min-h-[40px]"
+                    >
+                      <Clock size={16} />
+                      {loading ? 'Swiping...' : 'Swipe In'}
+                    </button>
+                  )}
+                  {attendanceStatus === 'checked_in' && (isAdmin() || hasPermission("punch_out")) && (
+                    <button
+                      onClick={handleSwipeOut}
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition min-h-[40px]"
+                    >
+                      <Clock size={16} />
+                      {loading ? 'Swiping...' : 'Swipe Out'}
+                    </button>
+                  )}
+                  {attendanceStatus === 'checked_out' && (
+                    <div className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg min-h-[40px]">
+                      <Clock size={16} />
+                      Checked Out
+                    </div>
+                  )}
+                </div>
+              )}
 
               <button
                 onClick={handleLogout}
