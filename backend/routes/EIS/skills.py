@@ -47,14 +47,14 @@ def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user
         db.add(new_skill)
         db.commit()
         db.refresh(new_skill)
-        audit_crud(request, db, user, "CREATE", "employee_skills", new_skill.id, None, new_skill.__dict__)
+        audit_crud(request, db, user, "CREATE", "employee_skills", str(getattr(new_skill, 'id')), {}, new_skill.__dict__)
 
         # Convert to response format
         return SkillOut(
-            id=new_skill.id,
-            employee_id=new_skill.employee_id,
-            skill=new_skill.skill_name,
-            rating=new_skill.rating
+            id=getattr(new_skill, 'id'),
+            employee_id=getattr(new_skill, 'employee_id'),
+            skill=getattr(new_skill, 'skill_name'),
+            rating=getattr(new_skill, 'rating')
         )
         
     except Exception as e:
@@ -104,7 +104,7 @@ def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depend
 
         db.commit()
         db.refresh(sk)
-        audit_crud(request, db, user, "UPDATE", "employee_skills", skill_id, None, sk.__dict__)
+        audit_crud(request, db, user, "UPDATE", "employee_skills", str(skill_id), {}, sk.__dict__)
 
         return SkillOut(
             id=getattr(sk, 'id'),
@@ -136,7 +136,7 @@ def delete_skill(skill_id: int, request: Request, user=Depends(get_current_user)
         old_values = sk.__dict__.copy()
         db.delete(sk)
         db.commit()
-        audit_crud(request, db, user, "DELETE", "employee_skills", skill_id, old_values, None)
+        audit_crud(request, db, user, "DELETE", "employee_skills", str(skill_id), old_values, {})
 
         return {"message": "Skill deleted successfully"}
         

@@ -1,5 +1,6 @@
 # routes/EIS/medical.py
 
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -36,6 +37,7 @@ router = APIRouter(prefix="/employee/medical", tags=["Employee Medical Details"]
 # -------------------------------------------------------------------------
 @router.post("/add")
 async def add_medical(
+    request: Request,
     employee_id: str = Form(...),
     blood_group: str = Form(None),
     height: str = Form(None),
@@ -57,7 +59,6 @@ async def add_medical(
     license_alert_days: str = Form("30"),
     remarks: str = Form(None),
     file: UploadFile = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     print(f"DEBUG: Received license_alert_enabled: {license_alert_enabled} (type: {type(license_alert_enabled)})")
@@ -67,10 +68,11 @@ async def add_medical(
     db = get_tenant_session(user)
     try:
         # Extract numeric ID if it has 'user_' prefix
+        employee_id_int = employee_id
         if isinstance(employee_id, str) and employee_id.startswith('user_'):
-            employee_id = int(employee_id.replace('user_', ''))
+            employee_id_int = int(employee_id.replace('user_', ''))
         elif isinstance(employee_id, str):
-            employee_id = int(employee_id)
+            employee_id_int = int(employee_id)
         
         file_path = None
         file_name = None
@@ -80,8 +82,8 @@ async def add_medical(
             os.makedirs("uploads", exist_ok=True)
             
             # Generate unique filename
-            file_extension = os.path.splitext(file.filename)[1]
-            unique_filename = f"{uuid.uuid4()}_{file.filename}"
+            file_extension = os.path.splitext(file.filename)[1] if file.filename else ''
+            unique_filename = f"{uuid.uuid4()}_{file.filename or 'file'}"
             file_path = f"uploads/{unique_filename}"
             
             # Save file to disk
@@ -96,7 +98,7 @@ async def add_medical(
         license_alert_days_int = int(license_alert_days) if license_alert_days else 30
         
         med = EmployeeMedical(
-            employee_id=employee_id,
+            employee_id=employee_id_int,
             blood_group=blood_group,
             height=height,
             weight=weight,
@@ -124,7 +126,7 @@ async def add_medical(
         db.commit()
         db.refresh(med)
         if request:
-            audit_crud(request, db, user, "CREATE", "employee_medical", med.id, None, med.__dict__)
+            audit_crud(request, db, user, "CREATE", "employee_medical", str(med.id), {}, med.__dict__)
 
         return {"message": "Medical details added successfully", "id": med.id}
         
@@ -158,15 +160,17 @@ def get_license_alerts(user=Depends(get_current_user)):
         today = datetime.now().date()
         
         for record in medical_records:
-            if record.professional_licenses:
-                for license_data in record.professional_licenses:
+            professional_licenses = getattr(record, 'professional_licenses', None)
+            if professional_licenses:
+                for license_data in professional_licenses:
                     if license_data.get('expiry_date'):
                         try:
                             expiry_date = datetime.strptime(license_data['expiry_date'], '%Y-%m-%d').date()
                             days_until_expiry = (expiry_date - today).days
                             
                             # Check if license is expiring within alert days
-                            if days_until_expiry <= record.license_alert_days and days_until_expiry >= 0:
+                            license_alert_days = getattr(record, 'license_alert_days', 30)
+                            if days_until_expiry <= license_alert_days and days_until_expiry >= 0:
                                 alerts.append({
                                     'employee_id': record.employee_id,
                                     'license_type': license_data.get('license_type'),
@@ -192,14 +196,15 @@ def get_license_alerts(user=Depends(get_current_user)):
 @router.get("/{employee_id}", response_model=MedicalOut)
 def get_medical(employee_id: str, user=Depends(get_current_user)):
     # Extract numeric ID if it has 'user_' prefix
+    employee_id_int = employee_id
     if employee_id.startswith('user_'):
-        employee_id = int(employee_id.replace('user_', ''))
+        employee_id_int = int(employee_id.replace('user_', ''))
     else:
-        employee_id = int(employee_id)
+        employee_id_int = int(employee_id)
     
     db = get_tenant_session(user)
 
-    med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id).first()
+    med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id_int).first()
     if not med:
         raise HTTPException(404, "No medical details found")
 
@@ -210,6 +215,7 @@ def get_medical(employee_id: str, user=Depends(get_current_user)):
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}")
 async def update_medical(
+    request: Request,
     employee_id: str,
     blood_group: str = Form(None),
     height: str = Form(None),
@@ -231,18 +237,18 @@ async def update_medical(
     license_alert_days: str = Form("30"),
     remarks: str = Form(None),
     file: UploadFile = File(None),
-    request: Request = None,
     user=Depends(get_current_user)
 ):
     # Extract numeric ID if it has 'user_' prefix
+    employee_id_int = employee_id
     if employee_id.startswith('user_'):
-        employee_id = int(employee_id.replace('user_', ''))
+        employee_id_int = int(employee_id.replace('user_', ''))
     else:
-        employee_id = int(employee_id)
+        employee_id_int = int(employee_id)
     
     db = get_tenant_session(user)
     try:
-        med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id).first()
+        med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id_int).first()
         if not med:
             raise HTTPException(404, "Medical record not found")
 
@@ -251,43 +257,43 @@ async def update_medical(
         license_alert_days_int = int(license_alert_days) if license_alert_days else 30
         
         # Update fields
-        med.blood_group = blood_group
-        med.height = height
-        med.weight = weight
-        med.allergies = allergies
-        med.chronic_conditions = chronic_conditions
-        med.medications = medications
-        med.emergency_contact_name = emergency_contact_name
-        med.emergency_contact_phone = emergency_contact_phone
-        med.emergency_contact_relation = emergency_contact_relation
-        med.medical_insurance_provider = medical_insurance_provider
-        med.medical_insurance_number = medical_insurance_number
-        med.medical_council_registration_number = medical_council_registration_number
-        med.medical_council_name = medical_council_name
-        med.medical_council_expiry_date = medical_council_expiry_date
-        med.vaccination_records = json.loads(vaccination_records) if vaccination_records else None
-        med.professional_licenses = json.loads(professional_licenses) if professional_licenses else None
-        med.license_alert_enabled = license_alert_enabled_bool
-        med.license_alert_days = license_alert_days_int
-        med.remarks = remarks
+        setattr(med, 'blood_group', blood_group)
+        setattr(med, 'height', height)
+        setattr(med, 'weight', weight)
+        setattr(med, 'allergies', allergies)
+        setattr(med, 'chronic_conditions', chronic_conditions)
+        setattr(med, 'medications', medications)
+        setattr(med, 'emergency_contact_name', emergency_contact_name)
+        setattr(med, 'emergency_contact_phone', emergency_contact_phone)
+        setattr(med, 'emergency_contact_relation', emergency_contact_relation)
+        setattr(med, 'medical_insurance_provider', medical_insurance_provider)
+        setattr(med, 'medical_insurance_number', medical_insurance_number)
+        setattr(med, 'medical_council_registration_number', medical_council_registration_number)
+        setattr(med, 'medical_council_name', medical_council_name)
+        setattr(med, 'medical_council_expiry_date', medical_council_expiry_date)
+        setattr(med, 'vaccination_records', json.loads(vaccination_records) if vaccination_records else None)
+        setattr(med, 'professional_licenses', json.loads(professional_licenses) if professional_licenses else None)
+        setattr(med, 'license_alert_enabled', license_alert_enabled_bool)
+        setattr(med, 'license_alert_days', license_alert_days_int)
+        setattr(med, 'remarks', remarks)
         
         if file:
             os.makedirs("uploads", exist_ok=True)
-            file_extension = os.path.splitext(file.filename)[1]
-            unique_filename = f"{uuid.uuid4()}_{file.filename}"
+            file_extension = os.path.splitext(file.filename)[1] if file.filename else ''
+            unique_filename = f"{uuid.uuid4()}_{file.filename or 'file'}"
             file_path = f"uploads/{unique_filename}"
             
             with open(file_path, "wb") as f:
                 content = await file.read()
                 f.write(content)
             
-            med.medical_certificate = file_path
-            med.certificate_name = file.filename
+            setattr(med, 'medical_certificate', file_path)
+            setattr(med, 'certificate_name', file.filename)
 
         db.commit()
         db.refresh(med)
         if request:
-            audit_crud(request, db, user, "UPDATE", "employee_medical", employee_id, None, med.__dict__)
+            audit_crud(request, db, user, "UPDATE", "employee_medical", str(employee_id_int), {}, med.__dict__)
 
         return {"message": "Medical details updated successfully"}
         
@@ -302,9 +308,9 @@ async def update_medical(
 # -------------------------------------------------------------------------
 @router.get("/certificate/{employee_id}")
 def view_certificate(
-    employee_id: int, 
-    token: str = Query(None),
-    request: Request = None
+    employee_id: int,
+    request: Request,
+    token: str = Query(None)
 ):
     if not token:
         raise HTTPException(401, "Token required")
@@ -317,15 +323,17 @@ def view_certificate(
     db = get_tenant_session(user)
     
     med = db.query(EmployeeMedical).filter(EmployeeMedical.employee_id == employee_id).first()
-    if not med or not med.medical_certificate:
+    medical_certificate = getattr(med, 'medical_certificate', None)
+    if not med or not medical_certificate:
         raise HTTPException(404, "Medical certificate not found")
     
-    file_path = med.medical_certificate
-    if not os.path.exists(file_path):
+    file_path = getattr(med, 'medical_certificate', None)
+    if not file_path or not os.path.exists(file_path):
         raise HTTPException(404, "File not found")
     
     # Determine media type for inline viewing
-    file_ext = os.path.splitext(med.certificate_name)[1].lower() if med.certificate_name else ''
+    certificate_name = getattr(med, 'certificate_name', None)
+    file_ext = os.path.splitext(certificate_name)[1].lower() if certificate_name else ''
     
     if file_ext == '.pdf':
         media_type = 'application/pdf'
@@ -340,9 +348,9 @@ def view_certificate(
     if request:
         audit_crud(request, db, user, "VIEW_MEDICAL_CERTIFICATE", "document_access", str(employee_id), {}, {
             "document_type": "medical",
-            "file_name": getattr(medical, 'file_name', None),
+            "file_name": getattr(med, 'certificate_name', None),
             "employee_id": employee_id,
-            "license_type": getattr(medical, 'license_type', None)
+            "license_type": None
         })
     
     return FileResponse(
@@ -365,6 +373,6 @@ def delete_medical(employee_id: int, request: Request, user=Depends(get_current_
     old_values = med.__dict__.copy()
     db.delete(med)
     db.commit()
-    audit_crud(request, db, user, "DELETE", "employee_medical", employee_id, old_values, None)
+    audit_crud(request, db, user, "DELETE", "employee_medical", str(employee_id), old_values, {})
 
     return {"message": "Medical record removed successfully"}

@@ -80,32 +80,6 @@ async def create_reporting_level(request: Request):
     except Exception as e:
         print(f"Error in create_reporting_level: {e}")
         return JSONResponse({"error": str(e)}, status_code=500)
-        
-        with engine.connect() as conn:
-            conn.execute(text("""
-                INSERT INTO reporting_levels (
-                    level_name, level_order, description, is_active
-                ) VALUES (
-                    :level_name, :level_order, :description, :is_active
-                )
-            """), {
-                "level_name": payload.get("level_name"),
-                "level_order": payload.get("level_order"),
-                "description": payload.get("description", ""),
-                "is_active": payload.get("is_active", True)
-            })
-            conn.commit()
-            
-        # Audit log with proper database session
-        db = Session(bind=engine)
-        with db:
-            audit_crud(request, db, user, "CREATE_REPORTING_LEVEL", "reporting_levels", "new_level", {}, payload)
-            
-        return {"message": "Reporting level created successfully"}
-        
-    except Exception as e:
-        logger.error(f"Error creating reporting level: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 # ------------------------------
 # UPDATE REPORTING LEVEL 🔒 Protected
@@ -285,32 +259,6 @@ async def create_hierarchy_rule(request: Request):
     except Exception as e:
         print(f"Error in create_hierarchy_rule: {e}")
         return JSONResponse({"error": str(e)}, status_code=500)
-        
-        with engine.connect() as conn:
-            conn.execute(text("""
-                INSERT INTO reporting_hierarchy (
-                    parent_level_id, child_level_id, department_id, is_active
-                ) VALUES (
-                    :parent_level_id, :child_level_id, :department_id, :is_active
-                )
-            """), {
-                "parent_level_id": payload.get("parent_level_id"),
-                "child_level_id": payload.get("child_level_id"),
-                "department_id": payload.get("department_id"),
-                "is_active": payload.get("is_active", True)
-            })
-            conn.commit()
-            
-        # Audit log with proper database session
-        db = Session(bind=engine)
-        with db:
-            audit_crud(request, db, user, "CREATE_HIERARCHY_RULE", "reporting_hierarchy", "new_rule", {}, payload)
-            
-        return {"message": "Hierarchy rule created successfully"}
-        
-    except Exception as e:
-        logger.error(f"Error creating hierarchy rule: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 # ------------------------------
 # UPDATE HIERARCHY RULE 🔒 Protected

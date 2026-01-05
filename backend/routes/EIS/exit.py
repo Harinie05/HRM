@@ -80,7 +80,7 @@ async def add_exit(request: Request):
         if str(employee_id).startswith('user_'):
             emp_id = int(str(employee_id).replace('user_', ''))
         else:
-            emp_id = int(employee_id)
+            emp_id = int(str(employee_id))
         
         # Get database session - using test tenant for now
         from database import get_master_db
@@ -88,11 +88,11 @@ async def add_exit(request: Request):
         db = Session(bind=engine)
         
         # Convert dates
-        resignation_dt = datetime.strptime(resignation_date, "%Y-%m-%d").date()
-        last_working_dt = datetime.strptime(last_working_date, "%Y-%m-%d").date()
+        resignation_dt = datetime.strptime(str(resignation_date), "%Y-%m-%d").date()
+        last_working_dt = datetime.strptime(str(last_working_date), "%Y-%m-%d").date()
         exit_interview_dt = None
         if exit_interview_date:
-            exit_interview_dt = datetime.strptime(exit_interview_date, "%Y-%m-%d").date()
+            exit_interview_dt = datetime.strptime(str(exit_interview_date), "%Y-%m-%d").date()
         
         # Create exit record with correct field mapping
         exit_record = EmployeeExit(
