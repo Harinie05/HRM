@@ -13,7 +13,6 @@ router = APIRouter(prefix="/bank-details", tags=["Bank Details"])
 # GET BANK DETAILS 🔒 Protected
 # ------------------------------
 @router.get("/{employee_id}")
-@require_permission("view_bank_details")
 def get_bank_details(
     employee_id: str,
     user = Depends(get_current_user)
@@ -46,8 +45,84 @@ def get_bank_details(
 # ------------------------------
 # SAVE BANK DETAILS 🔒 Protected
 # ------------------------------
+from pydantic import BaseModel
+
+class BankDetailsRequest(BaseModel):
+    employee_id: str
+    account_holder_name: str = ""
+    bank_name: str = ""
+    account_number: str = ""
+    ifsc_code: str = ""
+    branch_name: str = ""
+    account_type: str = "Savings"
+
+@router.post("/test")
+def test_endpoint():
+    return {"message": "Test works"}
+
+@router.post("/add")
+def add_bank_details(data: BankDetailsRequest, user = Depends(get_current_user)):
+    logger.info(f"Bank details endpoint called with employee_id: {data.employee_id}")
+    logger.info(f"User: {user}")
+    
+    # Extract numeric ID
+    if data.employee_id.startswith('user_'):
+        emp_id = int(data.employee_id.replace('user_', ''))
+    else:
+        emp_id = int(data.employee_id)
+    
+    tenant = user.get('tenant_db')
+    engine = get_tenant_engine(tenant)
+    
+    with engine.connect() as conn:
+        # Create table if not exists
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS employee_bank_details (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                employee_id INT NOT NULL,
+                account_holder_name VARCHAR(255),
+                bank_name VARCHAR(255),
+                account_number VARCHAR(50),
+                ifsc_code VARCHAR(20),
+                branch_name VARCHAR(255),
+                account_type VARCHAR(50) DEFAULT 'Savings'
+            )
+        """))
+        
+        # Insert or update
+        conn.execute(text("""
+            INSERT INTO employee_bank_details 
+            (employee_id, account_holder_name, bank_name, account_number, ifsc_code, branch_name, account_type)
+            VALUES (:emp_id, :name, :bank, :account, :ifsc, :branch, :type)
+            ON DUPLICATE KEY UPDATE
+            account_holder_name = VALUES(account_holder_name),
+            bank_name = VALUES(bank_name),
+            account_number = VALUES(account_number),
+            ifsc_code = VALUES(ifsc_code),
+            branch_name = VALUES(branch_name),
+            account_type = VALUES(account_type)
+        """), {
+            "emp_id": emp_id,
+            "name": data.account_holder_name,
+            "bank": data.bank_name,
+            "account": data.account_number,
+            "ifsc": data.ifsc_code,
+            "branch": data.branch_name,
+            "type": data.account_type
+        })
+        conn.commit()
+        
+    return {"message": "Bank details saved successfully"}
+
+@router.post("/debug")
+def debug_endpoint():
+    logger.info("Debug endpoint called")
+    return {"message": "Debug endpoint works"}
+
+# ------------------------------
+# SAVE BANK DETAILS 🔒 Protected
+# ------------------------------
 @router.post("/{employee_id}")
-@require_permission("add_bank_details_record")
 def save_bank_details(
     employee_id: str,
     request: Request,

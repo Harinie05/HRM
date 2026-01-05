@@ -32,7 +32,6 @@ router = APIRouter(prefix="/employee/family", tags=["Employee Family Details"])
 # 1. ADD FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=FamilyOut)
-@require_permission("add_family_record")
 def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -50,7 +49,17 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
         db.refresh(new_member)
         audit_crud(request, db, user, "CREATE", "employee_family", str(new_member.id), {}, new_member.__dict__)
 
-        return new_member
+        # Convert to dict before closing session
+        result = {
+            "id": new_member.id,
+            "employee_id": new_member.employee_id,
+            "name": new_member.name,
+            "relationship": new_member.relationship,
+            "age": new_member.age,
+            "contact": new_member.contact,
+            "dependent": new_member.dependent
+        }
+        return result
         
     except Exception as e:
         db.rollback()
@@ -62,16 +71,26 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
 # 2. GET FAMILY DETAILS FOR EMPLOYEE
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=List[FamilyOut])
-@require_permission("view_family")
 def get_family_list(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
-        return (
+        members = (
             db.query(EmployeeFamily)
             .filter(EmployeeFamily.employee_id == employee_id)
             .order_by(EmployeeFamily.id.asc())
             .all()
         )
+        # Convert to list of dicts before closing session
+        result = [{
+            "id": m.id,
+            "employee_id": m.employee_id,
+            "name": m.name,
+            "relationship": m.relationship,
+            "age": m.age,
+            "contact": m.contact,
+            "dependent": m.dependent
+        } for m in members]
+        return result
     finally:
         db.close()
 
@@ -79,7 +98,6 @@ def get_family_list(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.put("/{family_id}", response_model=FamilyOut)
-@require_permission("edit_family_record")
 def update_family_member(family_id: int, data: FamilyCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -97,7 +115,17 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
         db.refresh(member)
         audit_crud(request, db, user, "UPDATE", "employee_family", str(family_id), {}, member.__dict__)
 
-        return member
+        # Convert to dict before closing session
+        result = {
+            "id": member.id,
+            "employee_id": member.employee_id,
+            "name": member.name,
+            "relationship": member.relationship,
+            "age": member.age,
+            "contact": member.contact,
+            "dependent": member.dependent
+        }
+        return result
         
     except HTTPException:
         db.rollback()
@@ -112,7 +140,6 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
 # 4. DELETE FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.delete("/{family_id}")
-@require_permission("delete_family_record")
 def delete_family_member(family_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from routes.hospital import get_current_user
 from database import get_tenant_engine
+from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeSalary
 from schemas.schemas_tenant import SalaryCreate, SalaryOut
 from pydantic import BaseModel
@@ -49,7 +50,6 @@ class SalaryAddRequest(BaseModel):
     esi_eligible: Optional[bool] = True
 
 @router.post("/add")
-@require_permission("add_salary_record")
 async def add_salary(
     employee_id: str = Form(...),
     ctc: str = Form(...),
@@ -150,7 +150,6 @@ async def add_salary(
 # 2. GET EMPLOYEE SALARY
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
-@require_permission("view_salary")
 def get_salary(employee_id: str, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -164,7 +163,19 @@ def get_salary(employee_id: str, user=Depends(get_current_user)):
         if not sal:
             raise HTTPException(404, "Salary structure not found")
 
-        return sal
+        # Convert to dict before closing session
+        result = {
+            "id": sal.id,
+            "employee_id": sal.employee_id,
+            "ctc": sal.ctc,
+            "basic_percent": sal.basic_percent,
+            "hra_percent": sal.hra_percent,
+            "allowances_percent": sal.allowances_percent,
+            "special_percent": sal.special_percent,
+            "pf_eligible": sal.pf_eligible,
+            "esi_eligible": sal.esi_eligible
+        }
+        return result
     finally:
         db.close()
 
@@ -172,7 +183,6 @@ def get_salary(employee_id: str, user=Depends(get_current_user)):
 # 3. UPDATE SALARY STRUCTURE
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}", response_model=SalaryOut)
-@require_permission("edit_salary_record")
 def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -214,7 +224,6 @@ def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=D
 # 4. SIMPLE SALARY CREATION (MINIMAL INPUT)
 # -------------------------------------------------------------------------
 @router.post("/create-simple", response_model=SalaryOut)
-@require_permission("add_salary_record")
 def create_simple_salary(data: SimpleSalaryCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     

@@ -52,7 +52,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
   const [openAnalyticsMenu, setOpenAnalyticsMenu] = useState(false);
   const [companyInfo, setCompanyInfo] = useState({
     name: "Your Hospital Name",
-    tagline: "Smart • Secure • NABH-Standard",
+    tagline: "",
     initials: "YH"
   });
 
@@ -116,7 +116,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
             const response = await api.get('/organization/company-profile');
             if (response.data && response.data.company_name) {
               const name = response.data.company_name;
-              const tagline = response.data.tagline || "Smart • Secure • NABH-Standard";
+              const tagline = response.data.tagline || "";
               const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
               
               // Store in localStorage for future use
@@ -182,7 +182,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
           <div className="flex items-center justify-between flex-1">
             <div className="flex-1">
               <div className="text-white font-medium text-xs leading-tight tracking-wide">{companyInfo.name}</div>
-              <div className="text-white/70 text-xs leading-tight font-light">{companyInfo.tagline}</div>
+              {companyInfo.tagline && <div className="text-white/70 text-xs leading-tight font-light">{companyInfo.tagline}</div>}
             </div>
             <button 
               onClick={handleToggle}

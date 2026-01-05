@@ -44,7 +44,9 @@ export default function EmployeeFamily() {
 
   const fetchFamily = async () => {
     try {
-      const res = await api.get(`/employee/family/${id}`);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      const res = await api.get(`/employee/family/${numericId}`);
       setFamily(res.data || []);
     } catch (err) {
       console.error("Failed to load family", err);
@@ -75,14 +77,17 @@ export default function EmployeeFamily() {
 
   const saveFamily = async () => {
     try {
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      
       if (editing) {
         await api.put(`/employee/family/${editing.id}`, {
-          employee_id: id,
+          employee_id: numericId,
           ...form,
         });
       } else {
         await api.post("/employee/family/add", {
-          employee_id: id,
+          employee_id: numericId,
           ...form,
         });
       }

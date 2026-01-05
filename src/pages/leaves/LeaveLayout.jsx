@@ -91,7 +91,7 @@ export default function LeaveLayout() {
               >
                 {tabItem.name}
               </button>
-            ))}}
+            ))}
           </div>
         </div>
 

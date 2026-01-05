@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  RotateCcw,
   RefreshCcw,
   ChevronDown,
   LogOut,
@@ -297,11 +296,6 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     second: "2-digit",
   });
 
-  // 🔄 Sync → reload ONLY current page data
-  const handleSync = () => {
-    window.dispatchEvent(new Event("page-sync"));
-  };
-
   // 🔁 Refresh → reload entire app
   const handleRefresh = () => {
     window.location.reload();
@@ -359,17 +353,6 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
           <span className="opacity-60">•</span>
           <span>{formattedTime}</span>
         </div>
-
-        {/* Sync */}
-        <button
-          onClick={handleSync}
-          className="flex items-center gap-1 sm:gap-2
-          bg-white/10 hover:bg-white/20
-          px-2 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition min-h-[44px]"
-        >
-          <RotateCcw size={14} className="sm:w-4 sm:h-4" />
-          <span className="hidden lg:inline">Sync</span>
-        </button>
 
         {/* Refresh */}
         <button

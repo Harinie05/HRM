@@ -50,7 +50,9 @@ export default function EmployeeCertifications() {
   // ---------------- FETCH CERTIFICATIONS ----------------
   const fetchCerts = async () => {
     try {
-      const res = await api.get(`/employee/certifications/${id}`);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      const res = await api.get(`/employee/certifications/${numericId}`);
       setCerts(res.data || []);
     } catch (err) {
       console.error("Failed to load certifications", err);
@@ -82,7 +84,9 @@ export default function EmployeeCertifications() {
   const saveCert = async () => {
     try {
       const data = new FormData();
-      data.append("employee_id", id);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      data.append("employee_id", numericId);
       data.append("name", form.name);
       data.append("issued_by", form.issued_by);
       data.append("expiry", form.expiry);

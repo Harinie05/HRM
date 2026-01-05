@@ -43,7 +43,9 @@ export default function EmployeeSkills() {
   // ---------------- FETCH SKILLS ----------------
   const fetchSkills = async () => {
     try {
-      const res = await api.get(`/employee/skills/${id}`);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      const res = await api.get(`/employee/skills/${numericId}`);
       setSkills(res.data || []);
     } catch (err) {
       console.error("Failed to load skills", err);
@@ -72,8 +74,10 @@ export default function EmployeeSkills() {
 
   const saveSkill = async () => {
     try {
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
       const payload = {
-        employee_id: Number(id),
+        employee_id: Number(numericId),
         skill: form.skill,
         rating: Number(form.rating),
       };

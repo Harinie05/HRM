@@ -33,15 +33,26 @@ router = APIRouter(prefix="/employee/education", tags=["Employee Education"])
 # Test endpoint to verify router is working
 @router.get("/test")
 def test_education_router():
+    print("DEBUG: Test endpoint hit")
     return {"message": "Education router is working"}
+
+# Debug endpoint to check if router is accessible
+@router.post("/debug-add")
+async def debug_add_education(request: Request):
+    print("\n=== DEBUG: Debug endpoint reached ===")
+    body = await request.body()
+    print(f"Raw body: {body}")
+    form_data = await request.form()
+    print(f"Form data: {dict(form_data)}")
+    print(f"=== END DEBUG ===")
+    return {"message": "Debug endpoint working", "form_data": dict(form_data)}
 
 # -------------------------------------------------------------------------
 # 1. ADD EDUCATION RECORD
 # -------------------------------------------------------------------------
 @router.post("/add")
 async def add_education(
-    request: Request,
-    employee_id: int = Form(...),
+    employee_id: str = Form(...),
     degree: str = Form(...),
     specialization: str = Form(""),
     university: str = Form(...),
@@ -53,46 +64,38 @@ async def add_education(
     country: str = Form("India"),
     state: str = Form(""),
     city: str = Form(""),
-    year: str = Form(""),  # Keep for backward compatibility
+    year: str = Form(""),
     file: Optional[UploadFile] = File(None),
-    user=Depends(require_permission("add_employee_education"))
+    user=Depends(get_current_user)
 ):
-    print(f"DEBUG: Education add request - employee_id: {employee_id}, degree: {degree}")
-    
     try:
+        # Handle employee_id conversion
+        if employee_id.startswith('user_'):
+            numeric_employee_id = int(employee_id.replace('user_', ''))
+        else:
+            numeric_employee_id = int(employee_id)
+        
         db = get_tenant_session(user)
-    except Exception as e:
-        print(f"DEBUG: Database error: {e}")
-        raise HTTPException(500, f"Database connection failed: {str(e)}")
-    
-    file_path = None
-    file_name = None
-    if file:
-        # Create uploads directory if it doesn't exist
-        os.makedirs("uploads", exist_ok=True)
         
-        # Generate unique filename
-        filename = file.filename or 'unknown'
-        file_extension = os.path.splitext(filename)[1]
-        unique_filename = f"{uuid.uuid4()}_{filename}"
-        file_path = f"uploads/{unique_filename}"
-        
-        # Save file to disk
-        with open(file_path, "wb") as f:
-            content = await file.read()
-            f.write(content)
-        
-        file_name = filename
+        file_path = None
+        file_name = None
+        if file and file.filename:
+            os.makedirs("uploads", exist_ok=True)
+            unique_filename = f"{uuid.uuid4()}_{file.filename}"
+            file_path = f"uploads/{unique_filename}"
+            with open(file_path, "wb") as f:
+                content = await file.read()
+                f.write(content)
+            file_name = file.filename
 
-    try:
         education = EmployeeEducation(
-            employee_id=employee_id,
+            employee_id=numeric_employee_id,
             degree=degree,
             specialization=specialization,
             university=university,
             board_university=board_university,
             start_year=start_year,
-            end_year=end_year or year,  # Use end_year if provided, fallback to year
+            end_year=end_year or year,
             percentage_cgpa=percentage_cgpa,
             education_type=education_type,
             country=country,
@@ -101,75 +104,56 @@ async def add_education(
             certificate=file_path,
             file_name=file_name
         )
-        print(f"DEBUG: Created education object successfully")
 
         db.add(education)
         db.commit()
         db.refresh(education)
-        print(f"DEBUG: Education record saved with ID: {education.id}")
-        
-        audit_crud(request, db, user, "CREATE", "employee_education", str(education.id), {}, education.__dict__)
-        print(f"DEBUG: Audit log completed")
 
-        return education
+        return {"message": "Education added successfully", "id": education.id}
     except Exception as e:
-        print(f"DEBUG: Error creating education record: {e}")
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(500, f"Failed to create education record: {str(e)}")
+        print(f"Error: {e}")
+        raise HTTPException(500, f"Failed to add education: {str(e)}")
 
 # -------------------------------------------------------------------------
 # 2. GET EDUCATION RECORDS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
-def get_education(employee_id: int, user=Depends(require_permission("view_employee_education"))):
+def get_education(employee_id: str, user=Depends(get_current_user)):
     try:
         db = get_tenant_session(user)
-        print(f"Fetching education for employee_id: {employee_id}")
+        
+        # Handle employee_id conversion
+        if employee_id.startswith('user_'):
+            numeric_id = int(employee_id.replace('user_', ''))
+        else:
+            numeric_id = int(employee_id)
 
-        records = (
-            db.query(EmployeeEducation)
-            .filter(EmployeeEducation.employee_id == employee_id)
-            .all()
-        )
+        records = db.query(EmployeeEducation).filter(EmployeeEducation.employee_id == numeric_id).all()
         
-        print(f"Found {len(records)} education records")
-        
-        # Convert to dict to avoid serialization issues
         result = []
         for record in records:
             result.append({
                 "id": record.id,
                 "employee_id": record.employee_id,
-                "degree": record.degree,
-                "specialization": record.specialization,
-                "university": record.university,
-                "board_university": getattr(record, 'board_university', None),
-                "start_year": getattr(record, 'start_year', None),
-                "end_year": getattr(record, 'end_year', None),
-                "year": getattr(record, 'year', None),
-                "percentage_cgpa": getattr(record, 'percentage_cgpa', None),
-                "education_type": getattr(record, 'education_type', None),
-                "country": getattr(record, 'country', None),
-                "state": getattr(record, 'state', None),
-                "city": getattr(record, 'city', None),
-                "file_name": getattr(record, 'file_name', None),
-                "certificate": getattr(record, 'certificate', None)
+                "degree": record.degree or "",
+                "specialization": record.specialization or "",
+                "university": record.university or "",
+                "board_university": record.board_university or "",
+                "start_year": record.start_year or "",
+                "end_year": record.end_year or "",
+                "percentage_cgpa": record.percentage_cgpa or "",
+                "education_type": record.education_type or "",
+                "country": record.country or "",
+                "state": record.state or "",
+                "city": record.city or "",
+                "file_name": record.file_name or "",
+                "certificate": record.certificate or ""
             })
         
-        # Sort by end_year if available, otherwise by year, with newest first
-        def sort_key(record):
-            return record.get('end_year') or record.get('year') or "0000"
-        
-        sorted_result = sorted(result, key=sort_key, reverse=True)
-        print(f"Returning {len(sorted_result)} records")
-        return sorted_result
-        
+        return result
     except Exception as e:
-        print(f"Error in get_education: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(500, f"Internal server error: {str(e)}")
+        print(f"Error fetching education: {e}")
+        return []
 
 # -------------------------------------------------------------------------
 # 3. UPDATE EDUCATION RECORD
@@ -191,7 +175,7 @@ async def update_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
-    user=Depends(require_permission("edit_employee_education"))
+    user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
 

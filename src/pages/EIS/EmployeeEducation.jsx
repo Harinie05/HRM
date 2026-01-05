@@ -116,6 +116,16 @@ export default function EmployeeEducation() {
   };
 
   const saveEducation = async () => {
+    // Validate required fields
+    if (!form.degree.trim()) {
+      showToast("Please select a degree", "error");
+      return;
+    }
+    if (!form.university.trim()) {
+      showToast("Please enter university/board name", "error");
+      return;
+    }
+
     try {
       console.log("Saving education with form data:", form);
       
@@ -133,6 +143,12 @@ export default function EmployeeEducation() {
       data.append("state", form.state);
       data.append("city", form.city);
       if (form.file) data.append("file", form.file);
+
+      // Debug: Log FormData contents
+      console.log("FormData contents:");
+      for (let [key, value] of data.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
 
       let response;
       if (editing) {
@@ -485,7 +501,8 @@ export default function EmployeeEducation() {
                 </button>
                 <button
                   onClick={saveEducation}
-                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
+                  disabled={!form.degree.trim() || !form.university.trim()}
+                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                 >
                   {editing ? "Update" : "Save"} Education
                 </button>

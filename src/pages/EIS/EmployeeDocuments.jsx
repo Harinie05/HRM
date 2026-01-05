@@ -21,11 +21,14 @@ export default function EmployeeDocuments() {
   const fetchDocs = async () => {
     if (!id) return;
     try {
+      // Extract numeric ID from "user_6" format
+      const numericId = id.replace('user_', '');
+      
       let allDocs = [];
       
       // Fetch education documents
       try {
-        const eduRes = await api.get(`/employee/education/${id}`);
+        const eduRes = await api.get(`/employee/education/${numericId}`);
         const eduDocs = (eduRes.data || []).filter(e => e.file_name).map(e => ({
           id: `edu-${e.id}`,
           document_type: 'Education Certificate',
@@ -40,7 +43,7 @@ export default function EmployeeDocuments() {
       
       // Fetch experience documents
       try {
-        const expRes = await api.get(`/employee/experience/${id}`);
+        const expRes = await api.get(`/employee/experience/${numericId}`);
         const expDocs = (expRes.data || []).filter(e => e.file_name).map(e => ({
           id: `exp-${e.id}`,
           document_type: 'Experience Certificate',
@@ -55,21 +58,21 @@ export default function EmployeeDocuments() {
       
       // Fetch medical documents
       try {
-        const medRes = await api.get(`/employee/medical/${id}`);
+        const medRes = await api.get(`/employee/medical/${numericId}`);
         if (medRes.data && medRes.data.certificate_name) {
           allDocs.push({
             id: `med-${medRes.data.id}`,
             document_type: 'Medical Certificate',
             file_name: medRes.data.certificate_name,
             category: 'Medical',
-            view_url: `/employee/medical/certificate/${id}`
+            view_url: `/employee/medical/certificate/${numericId}`
           });
         }
       } catch {}
       
       // Fetch certification documents
       try {
-        const certRes = await api.get(`/employee/certifications/${id}`);
+        const certRes = await api.get(`/employee/certifications/${numericId}`);
         const certDocs = (certRes.data || []).filter(c => c.file_name).map(c => ({
           id: `cert-${c.id}`,
           document_type: 'Certification',
@@ -84,7 +87,7 @@ export default function EmployeeDocuments() {
       
       // Fetch recruitment/onboarding documents
       try {
-        const recentRes = await api.get(`/recruitment/onboarding/${id}/documents`);
+        const recentRes = await api.get(`/recruitment/onboarding/${numericId}/documents`);
         const recentDocs = (recentRes.data || []).map(d => ({
           id: `recent-${d.id}`,
           document_type: d.document_type,

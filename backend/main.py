@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
 from pathlib import Path
 from pydantic import BaseModel
@@ -125,6 +126,26 @@ app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 
 logger.info("🚀 FastAPI HRM Backend started")
 
+# Custom exception handler for RequestValidationError
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Handle binary content validation errors
+    error_details = []
+    for error in exc.errors():
+        if error.get('type') == 'model_attributes_type' and 'input' in error:
+            # Replace binary content with a safe message
+            error_copy = error.copy()
+            if isinstance(error_copy.get('input'), bytes):
+                error_copy['input'] = "<binary_content>"
+            error_details.append(error_copy)
+        else:
+            error_details.append(error)
+    
+    return JSONResponse(
+        status_code=422,
+        content={"detail": error_details}
+    )
+
 # ---------------- AUDIT MIDDLEWARE ----------------
 class AuditMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -143,8 +164,12 @@ class AuditMiddleware(BaseHTTPMiddleware):
             return response
 
         except Exception as e:
-            # Simple error logging without tenant_id parameter
-            logger.error(f"Request error: {str(e)}")
+            # Handle binary content errors gracefully
+            error_msg = str(e)
+            if "utf-8" in error_msg and "decode" in error_msg:
+                logger.error("Request error: Binary content processing failed")
+            else:
+                logger.error(f"Request error: {error_msg}")
             raise
 
 app.add_middleware(AuditMiddleware)
@@ -231,7 +256,7 @@ app.include_router(medical_router)
 app.include_router(salary_router)
 app.include_router(documents_router)
 app.include_router(exit_router)
-app.include_router(bank_details_router)
+app.include_router(bank_details_router, prefix="/employee")
 app.include_router(resignation_tracking_router, prefix="/api")
 app.include_router(settlement_documents_router, prefix="/api")
 

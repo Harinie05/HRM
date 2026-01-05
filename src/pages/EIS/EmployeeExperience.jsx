@@ -60,7 +60,9 @@ export default function EmployeeExperience() {
   // ---------------- FETCH EXPERIENCE ----------------
   const fetchExperience = async () => {
     try {
-      const res = await api.get(`/employee/experience/${id}`);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      const res = await api.get(`/employee/experience/${numericId}`);
       setExperience(res.data || []);
     } catch (err) {
       console.error("Failed to load experience", err);
@@ -118,35 +120,83 @@ export default function EmployeeExperience() {
 
   const saveExperience = async () => {
     try {
+      // Validate required fields
+      if (!form.company.trim()) {
+        showToast("Company name is required", "error");
+        return;
+      }
+      if (!form.job_title.trim()) {
+        showToast("Job title is required", "error");
+        return;
+      }
+      if (!form.start_date) {
+        showToast("Start date is required", "error");
+        return;
+      }
+
       const data = new FormData();
-      data.append("employee_id", id);
-      data.append("company", form.company);
-      data.append("job_title", form.job_title);
-      data.append("department", form.department);
+      // Extract numeric ID from 'user_6' format
+      const numericId = id.replace('user_', '');
+      data.append("employee_id", numericId);
+      data.append("company", form.company.trim());
+      data.append("job_title", form.job_title.trim());
+      data.append("department", form.department.trim());
       data.append("employment_type", form.employment_type);
       data.append("start_date", form.start_date);
-      data.append("end_date", form.end_date);
-      data.append("current_job", form.current_job);
-      data.append("salary", form.salary);
-      data.append("location", form.location);
-      data.append("job_description", form.job_description);
-      data.append("achievements", form.achievements);
-      data.append("reason_for_leaving", form.reason_for_leaving);
-      data.append("reporting_manager", form.reporting_manager);
-      data.append("manager_contact", form.manager_contact);
+      data.append("end_date", form.current_job ? "" : form.end_date);
+      data.append("current_job", form.current_job.toString());
+      data.append("salary", form.salary.trim());
+      data.append("location", form.location.trim());
+      data.append("job_description", form.job_description.trim());
+      data.append("achievements", form.achievements.trim());
+      data.append("reason_for_leaving", form.reason_for_leaving.trim());
+      data.append("reporting_manager", form.reporting_manager.trim());
+      data.append("manager_contact", form.manager_contact.trim());
 
       if (form.file) data.append("file", form.file);
 
+      // Debug: Log the data being sent
+      console.log('Sending data:');
+      for (let [key, value] of data.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
       if (editing) {
         await api.put(`/employee/experience/${editing.id}`, data);
+        showToast("Experience updated successfully!", "success");
       } else {
         await api.post("/employee/experience/add", data);
+        showToast("Experience added successfully!", "success");
       }
 
       setShowForm(false);
       fetchExperience();
     } catch (err) {
       console.error("Failed to save experience", err);
+      console.error("Error response:", err.response?.data);
+      console.error("Detail array:", err.response?.data?.detail);
+      
+      let errorMsg = "Failed to save experience";
+      if (err.response?.data?.detail) {
+        if (Array.isArray(err.response.data.detail)) {
+          // Handle validation error array
+          console.log("Processing validation errors:", err.response.data.detail);
+          errorMsg = err.response.data.detail.map(error => {
+            console.log("Individual error:", error);
+            if (error.loc && error.msg) {
+              return `${error.loc.join('.')}: ${error.msg}`;
+            }
+            return error.msg || error;
+          }).join(', ');
+        } else {
+          errorMsg = err.response.data.detail;
+        }
+      } else if (err.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      }
+      
+      console.log("Final error message:", errorMsg);
+      showToast(errorMsg, "error");
     }
   };
 
