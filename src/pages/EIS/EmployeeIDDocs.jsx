@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiCreditCard, FiArrowLeft, FiUpload, FiCheck, FiX, FiFileText } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeIDDocs() {
   const { id } = useParams();
@@ -12,6 +13,12 @@ export default function EmployeeIDDocs() {
   const [type, setType] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_id_documents");
+  const canAdd = isAdmin() || hasPermission("add_id_documents_record");
+  const canEdit = isAdmin() || hasPermission("edit_id_documents_record");
+  const canDelete = isAdmin() || hasPermission("delete_id_documents_record");
 
   const fetchDocs = async () => {
     if (!id) return;
@@ -32,9 +39,23 @@ export default function EmployeeIDDocs() {
     }
   };
 
-  useEffect(() => {
-    fetchDocs();
-  }, [id]);
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiCreditCard className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee ID documents.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
 
   const upload = async () => {
     if (!type || !file || !id) return;
@@ -129,66 +150,68 @@ export default function EmployeeIDDocs() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <FiUpload className="text-black" />
-            <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
-              <select
-                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+        {canAdd && (
+          <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <FiUpload className="text-black" />
+              <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
+                <select
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <option value="">Select Document Type</option>
+                  <option value="Aadhaar">Aadhaar Card</option>
+                  <option value="PAN">PAN Card</option>
+                  <option value="Passport">Passport</option>
+                  <option value="Driving License">Driving License</option>
+                  <option value="Voter ID">Voter ID</option>
+                  <option value="Medical License">Medical License</option>
+                  <option value="Nursing License">Nursing License</option>
+                  <option value="Pharmacy License">Pharmacy License</option>
+                  <option value="Dental License">Dental License</option>
+                  <option value="Physiotherapy License">Physiotherapy License</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
+                <input 
+                  type="file" 
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  onChange={(e) => setFile(e.target.files[0])} 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
+                <input 
+                  type="date"
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
+                />
+              </div>
+              
+              <button 
+                onClick={upload} 
+                className="flex items-center gap-2 bg-white text-black border border-black px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!type || !file}
               >
-                <option value="">Select Document Type</option>
-                <option value="Aadhaar">Aadhaar Card</option>
-                <option value="PAN">PAN Card</option>
-                <option value="Passport">Passport</option>
-                <option value="Driving License">Driving License</option>
-                <option value="Voter ID">Voter ID</option>
-                <option value="Medical License">Medical License</option>
-                <option value="Nursing License">Nursing License</option>
-                <option value="Pharmacy License">Pharmacy License</option>
-                <option value="Dental License">Dental License</option>
-                <option value="Physiotherapy License">Physiotherapy License</option>
-                <option value="Other">Other</option>
-              </select>
+                <FiUpload className="w-4 h-4" />
+                Upload Document
+              </button>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select File</label>
-              <input 
-                type="file" 
-                accept=".pdf,.jpg,.jpeg,.png"
-                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                onChange={(e) => setFile(e.target.files[0])} 
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
-              <input 
-                type="date"
-                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-              />
-            </div>
-            
-            <button 
-              onClick={upload} 
-              className="flex items-center gap-2 bg-white text-black border border-black px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!type || !file}
-            >
-              <FiUpload className="w-4 h-4" />
-              Upload Document
-            </button>
+            <p className="text-xs text-gray-500 mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
           </div>
-          <p className="text-xs text-gray-500 mt-2">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
-        </div>
+        )}
 
         {/* Documents Table */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
@@ -259,7 +282,7 @@ export default function EmployeeIDDocs() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {d.status === "Uploaded" && (
+                        {d.status === "Uploaded" && canEdit && (
                           <div className="flex items-center justify-center gap-2">
                             <button 
                               onClick={() => verify(d.id, "Verified")} 

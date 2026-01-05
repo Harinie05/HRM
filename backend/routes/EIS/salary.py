@@ -10,6 +10,7 @@ from schemas.schemas_tenant import SalaryCreate, SalaryOut
 from pydantic import BaseModel
 from typing import Optional
 import json
+from utils.permission import require_permission
 
 # Simple salary input schema
 class SimpleSalaryCreate(BaseModel):
@@ -48,6 +49,7 @@ class SalaryAddRequest(BaseModel):
     esi_eligible: Optional[bool] = True
 
 @router.post("/add")
+@require_permission("add_salary_record")
 async def add_salary(
     employee_id: str = Form(...),
     ctc: str = Form(...),
@@ -148,6 +150,7 @@ async def add_salary(
 # 2. GET EMPLOYEE SALARY
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
+@require_permission("view_salary")
 def get_salary(employee_id: str, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -169,6 +172,7 @@ def get_salary(employee_id: str, user=Depends(get_current_user)):
 # 3. UPDATE SALARY STRUCTURE
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}", response_model=SalaryOut)
+@require_permission("edit_salary_record")
 def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -210,6 +214,7 @@ def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=D
 # 4. SIMPLE SALARY CREATION (MINIMAL INPUT)
 # -------------------------------------------------------------------------
 @router.post("/create-simple", response_model=SalaryOut)
+@require_permission("add_salary_record")
 def create_simple_salary(data: SimpleSalaryCreate, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     

@@ -54,6 +54,9 @@ DEFAULT_PERMISSIONS = [
     {"name": "create_employee_code", "description": "Can create employee codes"},
     {"name": "view_employee_profile", "description": "Can view employee profiles"},
     {"name": "delete_employee", "description": "Can delete employees"},
+    {"name": "add_employee", "description": "Can add new employees"},
+    {"name": "edit_employee", "description": "Can edit employee information"},
+    {"name": "export_employee_data", "description": "Can export employee data"},
 
 
     # =====================================================
@@ -430,6 +433,12 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_attendance_location", "description": "Can edit attendance capture locations"},
     {"name": "delete_attendance_location", "description": "Can delete attendance capture locations"},
 
+    # Daily Updates
+    {"name": "view_daily_updates", "description": "Can view daily work updates"},
+    {"name": "add_daily_update", "description": "Can add daily work updates"},
+    {"name": "edit_daily_update", "description": "Can edit daily work updates"},
+    {"name": "delete_daily_update", "description": "Can delete daily work updates"},
+
     # =====================================================
     # 🏢 HR OPERATIONS & WORKFORCE MANAGEMENT
     # =====================================================
@@ -483,6 +492,173 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_insurance_benefit", "description": "Can add insurance and benefits"},
     {"name": "edit_insurance_benefit", "description": "Can edit insurance and benefits"},
     {"name": "delete_insurance_benefit", "description": "Can delete insurance and benefits"},
+
+    # =====================================================
+    # 👤 EMPLOYEE PROFILE & INFORMATION MANAGEMENT
+    # =====================================================
+
+    # Profile Management
+    {"name": "view_employee_profile", "description": "Can view employee profiles"},
+    {"name": "edit_employee_profile", "description": "Can edit employee profiles"},
+    {"name": "view_employee_documents", "description": "Can view employee documents"},
+    {"name": "upload_employee_documents", "description": "Can upload employee documents"},
+    {"name": "delete_employee_documents", "description": "Can delete employee documents"},
+
+    # Employment Details
+    {"name": "view_employment_details", "description": "Can view employment details"},
+    {"name": "edit_employment_details", "description": "Can edit employment details"},
+    {"name": "manage_work_location", "description": "Can manage employee work location"},
+    {"name": "manage_reporting_manager", "description": "Can manage reporting manager assignments"},
+    {"name": "manage_work_shift", "description": "Can manage employee work shifts"},
+
+    # Probation Management
+    {"name": "view_probation_details", "description": "Can view probation period details"},
+    {"name": "manage_probation_period", "description": "Can manage probation periods"},
+    {"name": "add_probation", "description": "Can add probation periods"},
+    {"name": "extend_probation", "description": "Can extend probation periods"},
+    {"name": "end_probation", "description": "Can end probation periods"},
+    {"name": "edit_probation_remarks", "description": "Can edit probation remarks"},
+
+    # Profile Management
+    {"name": "edit_profile", "description": "Can edit employee profiles"},
+    {"name": "view_documents", "description": "Can view employee documents"},
+
+    # Education Module
+    {"name": "view_employee_education", "description": "Can view employee education details"},
+    {"name": "add_employee_education", "description": "Can add employee education records"},
+    {"name": "edit_employee_education", "description": "Can edit employee education records"},
+    {"name": "delete_employee_education", "description": "Can delete employee education records"},
+
+    # Experience Module
+    {"name": "view_employee_experience", "description": "Can view employee work history"},
+    {"name": "add_employee_experience", "description": "Can add employee work experience"},
+    {"name": "edit_employee_experience", "description": "Can edit employee work experience"},
+    {"name": "delete_employee_experience", "description": "Can delete employee work experience"},
+
+    # Skills Module
+    {"name": "view_employee_skills", "description": "Can view employee technical skills"},
+    {"name": "add_employee_skills", "description": "Can add employee skills"},
+    {"name": "edit_employee_skills", "description": "Can edit employee skills"},
+    {"name": "delete_employee_skills", "description": "Can delete employee skills"},
+
+    # Certifications Module
+    {"name": "view_employee_certifications", "description": "Can view employee professional certifications"},
+    {"name": "add_employee_certifications", "description": "Can add employee certifications"},
+    {"name": "edit_employee_certifications", "description": "Can edit employee certifications"},
+    {"name": "delete_employee_certifications", "description": "Can delete employee certifications"},
+
+    # Family Module
+    {"name": "view_employee_family", "description": "Can view employee family details"},
+    {"name": "add_employee_family", "description": "Can add employee family members"},
+    {"name": "edit_employee_family", "description": "Can edit employee family details"},
+    {"name": "delete_employee_family", "description": "Can delete employee family records"},
+
+    # Medical Module
+    {"name": "view_employee_medical", "description": "Can view employee health records"},
+    {"name": "add_employee_medical", "description": "Can add employee medical records"},
+    {"name": "edit_employee_medical", "description": "Can edit employee medical records"},
+    {"name": "delete_employee_medical", "description": "Can delete employee medical records"},
+
+    # ID Documents Module
+    {"name": "view_employee_id_documents", "description": "Can view employee identity documents"},
+    {"name": "add_employee_id_documents", "description": "Can add employee identity documents"},
+    {"name": "edit_employee_id_documents", "description": "Can edit employee identity documents"},
+    {"name": "delete_employee_id_documents", "description": "Can delete employee identity documents"},
+
+    # Salary Module
+    {"name": "view_employee_salary", "description": "Can view employee compensation details"},
+    {"name": "add_employee_salary", "description": "Can add employee salary records"},
+    {"name": "edit_employee_salary", "description": "Can edit employee salary details"},
+    {"name": "delete_employee_salary", "description": "Can delete employee salary records"},
+
+    # Bank Details Module
+    {"name": "view_employee_bank_details", "description": "Can view employee banking information"},
+    {"name": "add_employee_bank_details", "description": "Can add employee bank details"},
+    {"name": "edit_employee_bank_details", "description": "Can edit employee bank details"},
+    {"name": "delete_employee_bank_details", "description": "Can delete employee bank details"},
+
+    # Reporting Module
+    {"name": "view_employee_reporting", "description": "Can view employee reporting hierarchy"},
+    {"name": "manage_employee_reporting", "description": "Can manage employee reporting structure"},
+    {"name": "assign_reporting_manager", "description": "Can assign reporting managers"},
+    {"name": "view_team_hierarchy", "description": "Can view team hierarchy"},
+
+    # Exit Module
+    {"name": "view_employee_exit", "description": "Can view employee exit process"},
+    {"name": "initiate_employee_exit", "description": "Can initiate employee exit process"},
+    {"name": "manage_employee_exit", "description": "Can manage employee exit procedures"},
+    {"name": "approve_employee_exit", "description": "Can approve employee exit requests"},
+    {"name": "complete_employee_exit", "description": "Can complete employee exit process"},
+
+    # =====================================================
+    # 👤 EIS MODULE CARD ACTIONS
+    # =====================================================
+
+    # Education Card Actions
+    {"name": "add_education_record", "description": "Can add education records from EIS card"},
+    {"name": "edit_education_record", "description": "Can edit education records from EIS card"},
+    {"name": "delete_education_record", "description": "Can delete education records from EIS card"},
+    {"name": "view_education_details", "description": "Can view education details from EIS card"},
+
+    # Experience Card Actions
+    {"name": "add_experience_record", "description": "Can add experience records from EIS card"},
+    {"name": "edit_experience_record", "description": "Can edit experience records from EIS card"},
+    {"name": "delete_experience_record", "description": "Can delete experience records from EIS card"},
+    {"name": "view_experience_details", "description": "Can view experience details from EIS card"},
+
+    # Skills Card Actions
+    {"name": "add_skill_record", "description": "Can add skill records from EIS card"},
+    {"name": "edit_skill_record", "description": "Can edit skill records from EIS card"},
+    {"name": "delete_skill_record", "description": "Can delete skill records from EIS card"},
+    {"name": "view_skill_details", "description": "Can view skill details from EIS card"},
+
+    # Certifications Card Actions
+    {"name": "add_certification_record", "description": "Can add certification records from EIS card"},
+    {"name": "edit_certification_record", "description": "Can edit certification records from EIS card"},
+    {"name": "delete_certification_record", "description": "Can delete certification records from EIS card"},
+    {"name": "view_certification_details", "description": "Can view certification details from EIS card"},
+
+    # Family Card Actions
+    {"name": "add_family_record", "description": "Can add family records from EIS card"},
+    {"name": "edit_family_record", "description": "Can edit family records from EIS card"},
+    {"name": "delete_family_record", "description": "Can delete family records from EIS card"},
+    {"name": "view_family_details", "description": "Can view family details from EIS card"},
+
+    # Medical Card Actions
+    {"name": "add_medical_record", "description": "Can add medical records from EIS card"},
+    {"name": "edit_medical_record", "description": "Can edit medical records from EIS card"},
+    {"name": "delete_medical_record", "description": "Can delete medical records from EIS card"},
+    {"name": "view_medical_details", "description": "Can view medical details from EIS card"},
+
+    # ID Documents Card Actions
+    {"name": "add_id_document_record", "description": "Can add ID document records from EIS card"},
+    {"name": "edit_id_document_record", "description": "Can edit ID document records from EIS card"},
+    {"name": "delete_id_document_record", "description": "Can delete ID document records from EIS card"},
+    {"name": "view_id_document_details", "description": "Can view ID document details from EIS card"},
+
+    # Salary Card Actions
+    {"name": "add_salary_record", "description": "Can add salary records from EIS card"},
+    {"name": "edit_salary_record", "description": "Can edit salary records from EIS card"},
+    {"name": "delete_salary_record", "description": "Can delete salary records from EIS card"},
+    {"name": "view_salary_details", "description": "Can view salary details from EIS card"},
+
+    # Bank Details Card Actions
+    {"name": "add_bank_details_record", "description": "Can add bank details records from EIS card"},
+    {"name": "edit_bank_details_record", "description": "Can edit bank details records from EIS card"},
+    {"name": "delete_bank_details_record", "description": "Can delete bank details records from EIS card"},
+    {"name": "view_bank_details_details", "description": "Can view bank details from EIS card"},
+
+    # Reporting Card Actions
+    {"name": "add_reporting_record", "description": "Can add reporting records from EIS card"},
+    {"name": "edit_reporting_record", "description": "Can edit reporting records from EIS card"},
+    {"name": "delete_reporting_record", "description": "Can delete reporting records from EIS card"},
+    {"name": "view_reporting_details", "description": "Can view reporting details from EIS card"},
+
+    # Exit Card Actions
+    {"name": "add_exit_record", "description": "Can add exit records from EIS card"},
+    {"name": "edit_exit_record", "description": "Can edit exit records from EIS card"},
+    {"name": "delete_exit_record", "description": "Can delete exit records from EIS card"},
+    {"name": "view_exit_details", "description": "Can view exit details from EIS card"},
     {"name": "enroll_employee_benefits", "description": "Can enroll employees in benefits"},
     {"name": "process_claims", "description": "Can process insurance claims"},
     {"name": "manage_beneficiaries", "description": "Can manage employee beneficiaries"},

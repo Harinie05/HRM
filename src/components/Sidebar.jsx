@@ -20,6 +20,7 @@ import {
   Palette,
 } from "lucide-react";
 import api from "../api";
+import { hasPermission, isAdmin } from "../utils/permissions";
 
 // Add CSS for hiding scrollbar and preventing scroll reset
 const sidebarStyle = `
@@ -225,384 +226,433 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         </Link>
 
         {/* User Management */}
-        <div className={isCollapsed ? 'w-12' : ''}>
-          <button
-            onClick={() => !isCollapsed && setOpenUserMenu(!openUserMenu)}
-            className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
-              isCollapsed 
-                ? 'justify-center p-3 w-12 h-12' 
-                : 'w-full justify-between px-4 py-3'
-            }`}
-            title={isCollapsed ? "User Management" : ""}
-          >
-            <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
-              <Users size={20} />
-              {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">User Management</span>}
-            </span>
-            {!isCollapsed && (openUserMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
-          </button>
+        {(isAdmin() || hasPermission("view_users") || hasPermission("view_user_departments") || hasPermission("view_user_roles")) && (
+          <div className={isCollapsed ? 'w-12' : ''}>
+            <button
+              onClick={() => !isCollapsed && setOpenUserMenu(!openUserMenu)}
+              className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+                isCollapsed 
+                  ? 'justify-center p-3 w-12 h-12' 
+                  : 'w-full justify-between px-4 py-3'
+              }`}
+              title={isCollapsed ? "User Management" : ""}
+            >
+              <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
+                <Users size={20} />
+                {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">User Management</span>}
+              </span>
+              {!isCollapsed && (openUserMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
+            </button>
 
-          {openUserMenu && !isCollapsed && (
-            <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
-              <Link
-                to="/departments"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/departments"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Departments</span>
-              </Link>
+            {openUserMenu && !isCollapsed && (
+              <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
+                {(isAdmin() || hasPermission("view_user_departments")) && (
+                  <Link
+                    to="/departments"
+                    className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/departments"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    <span>Departments</span>
+                  </Link>
+                )}
 
-              <Link
-                to="/roles"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/roles"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Roles</span>
-              </Link>
+                {(isAdmin() || hasPermission("view_user_roles")) && (
+                  <Link
+                    to="/roles"
+                    className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/roles"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    <span>Roles</span>
+                  </Link>
+                )}
 
-              <Link
-                to="/users"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/users"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Users</span>
-              </Link>
-            </div>
-          )}
-        </div>
+                {(isAdmin() || hasPermission("view_users")) && (
+                  <Link
+                    to="/users"
+                    className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/users"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    <span>Users</span>
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Organization Setup */}
-        <Link
-          to="/organization"
-          className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
-            isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
-          } ${
-            location.pathname.startsWith("/organization")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Organization Setup" : ""}
-        >
-          <Building2 size={20} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Organization Setup</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_company_profile") || hasPermission("view_branch") || hasPermission("view_department") || hasPermission("view_designation")) && (
+          <Link
+            to="/organization"
+            className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+              isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
+            } ${
+              location.pathname.startsWith("/organization")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Organization Setup" : ""}
+          >
+            <Building2 size={20} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Organization Setup</span>}
+          </Link>
+        )}
 
         {/* Recruitment */}
-        <div>
-          <button
-            onClick={() => !isCollapsed && setOpenRecruitmentMenu(!openRecruitmentMenu)}
-            className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
-            title={isCollapsed ? "Recruitment" : ""}
-          >
-            <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
-              <UserPlus size={20} />
-              {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Recruitment</span>}
-            </span>
-            {!isCollapsed && (openRecruitmentMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
-          </button>
+        {(isAdmin() || hasPermission("view_candidates") || hasPermission("view_job_requisition") || hasPermission("view_ats_candidates") || hasPermission("view_offers_sent") || hasPermission("view_onboarding_candidates") || hasPermission("view_consultants")) && (
+          <div>
+            <button
+              onClick={() => !isCollapsed && setOpenRecruitmentMenu(!openRecruitmentMenu)}
+              className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
+              title={isCollapsed ? "Recruitment" : ""}
+            >
+              <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
+                <UserPlus size={20} />
+                {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Recruitment</span>}
+              </span>
+              {!isCollapsed && (openRecruitmentMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
+            </button>
 
-          {openRecruitmentMenu && !isCollapsed && (
-            <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
-              <Link
-                to="/recruitment-master"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/recruitment-master"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Dashboard
-              </Link>
+            {openRecruitmentMenu && !isCollapsed && (
+              <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
+                <Link
+                  to="/recruitment-master"
+                  className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                    location.pathname === "/recruitment-master"
+                      ? "font-medium text-white bg-white/10"
+                      : "text-white/80"
+                  }`}
+                >
+                  Dashboard
+                </Link>
 
-              <Link
-                to="/job-requisition"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/job-requisition"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Job Requisition
-              </Link>
+                {(isAdmin() || hasPermission("view_job_requisition")) && (
+                  <Link
+                    to="/job-requisition"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/job-requisition"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Job Requisition
+                  </Link>
+                )}
 
-              <Link
-                to="/recruitment-setup"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/recruitment-setup"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Setup & Configuration
-              </Link>
+                {(isAdmin() || hasPermission("view_candidates")) && (
+                  <Link
+                    to="/recruitment-setup"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/recruitment-setup"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Setup & Configuration
+                  </Link>
+                )}
 
-              <Link
-                to="/ats"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/ats"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Applicant Tracking
-              </Link>
+                {(isAdmin() || hasPermission("view_ats_candidates")) && (
+                  <Link
+                    to="/ats"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/ats"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Applicant Tracking
+                  </Link>
+                )}
 
-              <Link
-                to="/offers"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/offers"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Offers & Contracts
-              </Link>
+                {(isAdmin() || hasPermission("view_offers_sent")) && (
+                  <Link
+                    to="/offers"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/offers"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Offers & Contracts
+                  </Link>
+                )}
 
-              <Link
-                to="/onboarding"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/onboarding"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Onboarding
-              </Link>
+                {(isAdmin() || hasPermission("view_onboarding_candidates")) && (
+                  <Link
+                    to="/onboarding"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/onboarding"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Onboarding
+                  </Link>
+                )}
 
-              <Link
-                to="/locum-consultants"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/locum-consultants"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Locum / Visiting Consultants
-              </Link>
-            </div>
-          )}
-        </div>
+                {(isAdmin() || hasPermission("view_consultants")) && (
+                  <Link
+                    to="/locum-consultants"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/locum-consultants"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Locum / Visiting Consultants
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* EIS */}
-        <Link
-          to="/eis"
-          className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
-            isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
-          } ${
-            location.pathname === "/eis"
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "EIS" : ""}
-        >
-          <UserCheck size={20} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">EIS</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_employees") || hasPermission("view_employee_profile")) && (
+          <Link
+            to="/eis"
+            className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+              isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
+            } ${
+              location.pathname === "/eis"
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "EIS" : ""}
+          >
+            <UserCheck size={20} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">EIS</span>}
+          </Link>
+        )}
 
         {/* Attendance */}
-        <div>
-          <button
-            onClick={() => !isCollapsed && setOpenAttendanceMenu(!openAttendanceMenu)}
-            className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
-            title={isCollapsed ? "Attendance" : ""}
-          >
-            <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
-              <Clock size={20} />
-              {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Attendance</span>}
-            </span>
-            {!isCollapsed && (openAttendanceMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
-          </button>
+        {(isAdmin() || hasPermission("view_attendance") || hasPermission("VIEW_SHIFTS") || hasPermission("VIEW_ROSTER") || hasPermission("view_attendance_rules")) && (
+          <div>
+            <button
+              onClick={() => !isCollapsed && setOpenAttendanceMenu(!openAttendanceMenu)}
+              className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
+              title={isCollapsed ? "Attendance" : ""}
+            >
+              <span className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
+                <Clock size={20} />
+                {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Attendance</span>}
+              </span>
+              {!isCollapsed && (openAttendanceMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
+            </button>
 
-          {openAttendanceMenu && !isCollapsed && (
-            <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
-              <Link
-                to="/attendance/dashboard"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/attendance/dashboard"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Dashboard
-              </Link>
+            {openAttendanceMenu && !isCollapsed && (
+              <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
+                {(isAdmin() || hasPermission("view_attendance")) && (
+                  <Link
+                    to="/attendance/dashboard"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/attendance/dashboard"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                )}
 
-              <Link
-                to="/shift-roster"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/shift-roster"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Shift & Roster
-              </Link>
+                {(isAdmin() || hasPermission("VIEW_SHIFTS") || hasPermission("VIEW_ROSTER")) && (
+                  <Link
+                    to="/shift-roster"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/shift-roster"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Shift & Roster
+                  </Link>
+                )}
 
-              <Link
-                to="/attendance/logs"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/attendance/logs"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Logs & Reports
-              </Link>
+                {(isAdmin() || hasPermission("view_attendance") || hasPermission("view_punch_logs")) && (
+                  <Link
+                    to="/attendance/logs"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/attendance/logs"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Logs & Reports
+                  </Link>
+                )}
 
-              <Link
-                to="/attendance/rules"
-                className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/attendance/rules"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                Rules & Policies
-              </Link>
-
-            </div>
-          )}
-        </div>
+                {(isAdmin() || hasPermission("view_attendance_rules")) && (
+                  <Link
+                    to="/attendance/rules"
+                    className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                      location.pathname === "/attendance/rules"
+                        ? "font-medium text-white bg-white/10"
+                        : "text-white/80"
+                    }`}
+                  >
+                    Rules & Policies
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Leave Management */}
-        <Link
-          to="/leave"
-          className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
-            isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
-          } ${
-            location.pathname.startsWith("/leave")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Leave Management" : ""}
-        >
-          <Clock size={20} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Leave Management</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_leave_applications") || hasPermission("view_leave_types") || hasPermission("view_leave_policies")) && (
+          <Link
+            to="/leave"
+            className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+              isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
+            } ${
+              location.pathname.startsWith("/leave")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Leave Management" : ""}
+          >
+            <Clock size={20} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Leave Management</span>}
+          </Link>
+        )}
 
         {/* Payroll Management */}
-        <div>
-          <button
-            onClick={() => !isCollapsed && setOpenPayrollMenu(!openPayrollMenu)}
-            className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
-            title={isCollapsed ? "Payroll Management" : ""}
-          >
-            <span className={`flex items-center ${isCollapsed ? '' : 'space-x-4'}`}>
-              <DollarSign size={16} />
-              {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Payroll Management</span>}
-            </span>
-            {!isCollapsed && (openPayrollMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
-          </button>
+        {(isAdmin() || hasPermission("view_payroll_run") || hasPermission("view_salary_structure") || hasPermission("view_salary_slips")) && (
+          <div>
+            <button
+              onClick={() => !isCollapsed && setOpenPayrollMenu(!openPayrollMenu)}
+              className={`flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-3 rounded-lg hover:bg-white/10 transition-colors`}
+              title={isCollapsed ? "Payroll Management" : ""}
+            >
+              <span className={`flex items-center ${isCollapsed ? '' : 'space-x-4'}`}>
+                <DollarSign size={16} />
+                {!isCollapsed && <span className="font-medium text-sm whitespace-nowrap">Payroll Management</span>}
+              </span>
+              {!isCollapsed && (openPayrollMenu ? <ChevronDown size={18} /> : <ChevronRight size={18} />)}
+            </button>
 
-          {openPayrollMenu && !isCollapsed && (
-            <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
-              <Link
-                to="/payroll/dashboard"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/payroll/dashboard"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Dashboard</span>
-              </Link>
+            {openPayrollMenu && !isCollapsed && (
+              <div className="ml-12 mt-2 space-y-1 transition-all duration-300 ease-in-out">
+                <Link
+                  to="/payroll/dashboard"
+                  className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                    location.pathname === "/payroll/dashboard"
+                      ? "font-medium text-white bg-white/10"
+                      : "text-white/80"
+                  }`}
+                >
+                  <span>Dashboard</span>
+                </Link>
 
-              <Link
-                to="/payroll"
-                className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
-                  location.pathname === "/payroll"
-                    ? "font-medium text-white bg-white/10"
-                    : "text-white/80"
-                }`}
-              >
-                <span>Processing & Reports</span>
-              </Link>
-            </div>
-          )}
-        </div>
+                <Link
+                  to="/payroll"
+                  className={`flex items-center px-3 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${
+                    location.pathname === "/payroll"
+                      ? "font-medium text-white bg-white/10"
+                      : "text-white/80"
+                  }`}
+                >
+                  <span>Processing & Reports</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* HR Management */}
-        <Link
-          to="/hr"
-          className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
-            isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
-          } ${
-            location.pathname.startsWith("/hr")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "HR Management" : ""}
-        >
-          <Users size={20} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">HR Management</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_lifecycle_actions") || hasPermission("view_hr_letters") || hasPermission("view_grievances") || hasPermission("view_assets")) && (
+          <Link
+            to="/hr"
+            className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
+              isCollapsed ? 'justify-center p-3 w-12 h-12' : 'space-x-3 px-4 py-3'
+            } ${
+              location.pathname.startsWith("/hr")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "HR Management" : ""}
+          >
+            <Users size={20} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">HR Management</span>}
+          </Link>
+        )}
 
         {/* Performance Management (PMS) */}
-        <Link
-          to="/pms"
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
-            location.pathname.startsWith("/pms")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Performance Management (PMS)" : ""}
-        >
-          <Target size={16} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Performance Management</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_work_assignments") || hasPermission("view_goals_kpi") || hasPermission("view_appraisals")) && (
+          <Link
+            to="/pms"
+            className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
+              location.pathname.startsWith("/pms")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Performance Management (PMS)" : ""}
+          >
+            <Target size={16} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Performance Management</span>}
+          </Link>
+        )}
 
         {/* Training & Development */}
-        <Link
-          to="/training"
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
-            location.pathname.startsWith("/training")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Training & Development" : ""}
-        >
-          <GraduationCap size={16} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Training & Development</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_training_programs") || hasPermission("view_training_requests") || hasPermission("view_training_calendar")) && (
+          <Link
+            to="/training"
+            className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
+              location.pathname.startsWith("/training")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Training & Development" : ""}
+          >
+            <GraduationCap size={16} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Training & Development</span>}
+          </Link>
+        )}
 
         {/* Analytics & Reports */}
         {/* REMOVED - Analytics & Reports section */}
 
         {/* Compliance Module */}
-        <Link
-          to="/compliance"
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
-            location.pathname.startsWith("/compliance")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Compliance Module" : ""}
-        >
-          <Shield size={16} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Compliance Module</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_statutory_calculations") || hasPermission("view_labour_register") || hasPermission("view_nabh_compliance")) && (
+          <Link
+            to="/compliance"
+            className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
+              location.pathname.startsWith("/compliance")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Compliance Module" : ""}
+          >
+            <Shield size={16} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Compliance Module</span>}
+          </Link>
+        )}
 
         {/* Exit Management */}
-        <Link
-          to="/exit"
-          className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
-            location.pathname.startsWith("/exit")
-              ? "bg-white/20 font-semibold"
-              : ""
-          }`}
-          title={isCollapsed ? "Exit Management" : ""}
-        >
-          <UserMinus size={16} />
-          {!isCollapsed && <span className="text-sm whitespace-nowrap">Exit Management</span>}
-        </Link>
+        {(isAdmin() || hasPermission("view_resignations") || hasPermission("apply_resignation") || hasPermission("view_settlements")) && (
+          <Link
+            to="/exit"
+            className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
+              location.pathname.startsWith("/exit")
+                ? "bg-white/20 font-semibold"
+                : ""
+            }`}
+            title={isCollapsed ? "Exit Management" : ""}
+          >
+            <UserMinus size={16} />
+            {!isCollapsed && <span className="text-sm whitespace-nowrap">Exit Management</span>}
+          </Link>
+        )}
 
         {/* Customization & Templates */}
         <Link

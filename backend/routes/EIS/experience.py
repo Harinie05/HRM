@@ -12,6 +12,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExperience
 from schemas.schemas_tenant import ExperienceCreate, ExperienceOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -34,6 +35,7 @@ router = APIRouter(prefix="/employee/experience", tags=["Employee Experience Det
 # 1. ADD EXPERIENCE + RELIEVING LETTER (OPTIONAL FILE)
 # -------------------------------------------------------------------------
 @router.post("/add")
+@require_permission("add_experience_record")
 async def add_experience(
     request: Request,
     employee_id: int = Form(...),
@@ -117,6 +119,7 @@ async def add_experience(
 # 2. LIST EXPERIENCE RECORDS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
+@require_permission("view_experience")
 def get_experience_list(employee_id: int, user=Depends(get_current_user)):
     try:
         db = get_tenant_session(user)
@@ -175,6 +178,7 @@ def get_experience_list(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE EXPERIENCE RECORD
 # -------------------------------------------------------------------------
 @router.put("/{experience_id}")
+@require_permission("edit_experience_record")
 async def update_experience(
     experience_id: int,
     request: Request,
@@ -244,6 +248,7 @@ async def update_experience(
 # 4. VIEW EXPERIENCE DOCUMENT
 # -------------------------------------------------------------------------
 @router.get("/document/{experience_id}")
+@require_permission("view_experience_details")
 def view_document(
     experience_id: int, 
     request: Request,
@@ -319,6 +324,7 @@ def view_document(
 # 5. DELETE EXPERIENCE RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{experience_id}")
+@require_permission("delete_experience_record")
 def delete_experience(experience_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 

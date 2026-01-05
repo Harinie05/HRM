@@ -10,6 +10,7 @@ import uuid
 from routes.hospital import get_current_user
 from database import get_tenant_engine
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from models.models_tenant import EmployeeEducation
 from schemas.schemas_tenant import EducationCreate, EducationOut
 # ---------------------- TENANT SESSION ----------------------
@@ -54,7 +55,7 @@ async def add_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
-    user=Depends(get_current_user)
+    user=Depends(require_permission("add_employee_education"))
 ):
     print(f"DEBUG: Education add request - employee_id: {employee_id}, degree: {degree}")
     
@@ -121,7 +122,7 @@ async def add_education(
 # 2. GET EDUCATION RECORDS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
-def get_education(employee_id: int, user=Depends(get_current_user)):
+def get_education(employee_id: int, user=Depends(require_permission("view_employee_education"))):
     try:
         db = get_tenant_session(user)
         print(f"Fetching education for employee_id: {employee_id}")
@@ -190,7 +191,7 @@ async def update_education(
     city: str = Form(""),
     year: str = Form(""),  # Keep for backward compatibility
     file: Optional[UploadFile] = File(None),
-    user=Depends(get_current_user)
+    user=Depends(require_permission("edit_employee_education"))
 ):
     db = get_tenant_session(user)
 
@@ -304,7 +305,7 @@ def debug_education(education_id: int, user=Depends(get_current_user)):
 # 5. DELETE EDUCATION RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{education_id}")
-def delete_education(education_id: int, request: Request, user=Depends(get_current_user)):
+def delete_education(education_id: int, request: Request, user=Depends(require_permission("delete_employee_education"))):
     db = get_tenant_session(user)
 
     education = db.query(EmployeeEducation).filter(EmployeeEducation.id == education_id).first()

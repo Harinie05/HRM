@@ -31,16 +31,23 @@ def require_permission(permission_name: str):
     Permission enforcement decorator that reuses existing JWT-based permission logic.
     Maintains admin bypass and current token structure.
     """
-    def checker(user = Depends(get_current_user)):
-        # Admin has all permissions (existing bypass logic)
-        if user.get('role') == 'admin':
-            return user
-        
-        # Read permissions from JWT payload (existing structure)
-        user_permissions = user.get('permissions', [])
-        if permission_name not in user_permissions:
-            logger.warning(f"User {user.get('email')} lacks permission: {permission_name}")
-            raise HTTPException(403, f"Permission denied: {permission_name} required")
-        
-        return user
-    return checker
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # Extract user from kwargs (injected by Depends)
+            user = kwargs.get('user')
+            if not user:
+                raise HTTPException(403, "Authentication required")
+            
+            # Admin has all permissions (existing bypass logic)
+            if user.get('role') == 'admin':
+                return func(*args, **kwargs)
+            
+            # Read permissions from JWT payload (existing structure)
+            user_permissions = user.get('permissions', [])
+            if permission_name not in user_permissions:
+                logger.warning(f"User {user.get('email')} lacks permission: {permission_name}")
+                raise HTTPException(403, f"Permission denied: {permission_name} required")
+            
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator

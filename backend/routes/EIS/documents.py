@@ -9,6 +9,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeDocuments
 from schemas.schemas_tenant import DocumentCreate, DocumentOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -31,6 +32,7 @@ router = APIRouter(prefix="/employee/documents", tags=["Employee Documents"])
 # 1. UPLOAD DOCUMENT
 # -------------------------------------------------------------------------
 @router.post("/upload")
+@require_permission("add_documents_record")
 async def upload_document(
     request: Request,
     employee_id: int = Form(...),
@@ -60,6 +62,7 @@ async def upload_document(
 # 2. GET DOCUMENTS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
+@require_permission("view_documents")
 def get_documents(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -74,6 +77,7 @@ def get_documents(employee_id: int, user=Depends(get_current_user)):
 # 3. DELETE DOCUMENT
 # -------------------------------------------------------------------------
 @router.delete("/{document_id}")
+@require_permission("delete_documents_record")
 def delete_document(document_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 

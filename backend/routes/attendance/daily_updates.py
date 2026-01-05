@@ -17,7 +17,7 @@ def create_or_update_daily_update(
     update_data: DailyWorkUpdateCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("mark_attendance"))
+    user = Depends(require_permission("add_daily_update"))
 ):
     """Create or update daily work update for current user"""
     # Get employee_id from the request data
@@ -62,7 +62,7 @@ def get_my_daily_updates(
     request: Request,
     db: Session = Depends(get_tenant_db),
     limit: Optional[int] = 30,
-    user = Depends(require_permission("view_attendance"))
+    user = Depends(require_permission("view_daily_updates"))
 ):
     """Get employee's daily updates"""
     if not employee_id:
@@ -105,7 +105,7 @@ def get_daily_update(
     update_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("view_attendance"))
+    user = Depends(require_permission("view_daily_updates"))
 ):
     """Get specific daily update"""
     
@@ -121,7 +121,7 @@ def update_daily_update(
     update_data: DailyWorkUpdateUpdate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("edit_time_logs"))
+    user = Depends(require_permission("edit_daily_update"))
 ):
     """Update specific daily update"""
     

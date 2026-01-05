@@ -9,6 +9,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeFamily
 from schemas.schemas_tenant import FamilyCreate, FamilyOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -31,6 +32,7 @@ router = APIRouter(prefix="/employee/family", tags=["Employee Family Details"])
 # 1. ADD FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=FamilyOut)
+@require_permission("add_family_record")
 def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -60,6 +62,7 @@ def add_family_member(data: FamilyCreate, request: Request, user=Depends(get_cur
 # 2. GET FAMILY DETAILS FOR EMPLOYEE
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=List[FamilyOut])
+@require_permission("view_family")
 def get_family_list(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -76,6 +79,7 @@ def get_family_list(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.put("/{family_id}", response_model=FamilyOut)
+@require_permission("edit_family_record")
 def update_family_member(family_id: int, data: FamilyCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -108,6 +112,7 @@ def update_family_member(family_id: int, data: FamilyCreate, request: Request, u
 # 4. DELETE FAMILY MEMBER
 # -------------------------------------------------------------------------
 @router.delete("/{family_id}")
+@require_permission("delete_family_record")
 def delete_family_member(family_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:

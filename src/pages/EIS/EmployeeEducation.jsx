@@ -5,6 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeEducation() {
   const { id } = useParams();
@@ -14,6 +15,12 @@ export default function EmployeeEducation() {
   const [education, setEducation] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission('view_employee_education');
+  const canAdd = isAdmin() || hasPermission('add_employee_education');
+  const canEdit = isAdmin() || hasPermission('edit_employee_education');
+  const canDelete = isAdmin() || hasPermission('delete_employee_education');
 
   const [form, setForm] = useState({
     degree: "",
@@ -29,6 +36,20 @@ export default function EmployeeEducation() {
     city: "",
     file: null,
   });
+
+  // Access denied screen
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view employee education records.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   const fetchEducation = async () => {
     try {
@@ -169,13 +190,15 @@ export default function EmployeeEducation() {
             </div>
           </div>
           
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
-          >
-            <FiPlus className="w-4 h-4" />
-            Add Education
-          </button>
+          {canAdd && (
+            <button
+              onClick={openAdd}
+              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+            >
+              <FiPlus className="w-4 h-4" />
+              Add Education
+            </button>
+          )}
         </div>
       </div>
 
@@ -256,24 +279,28 @@ export default function EmployeeEducation() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => openEdit(e)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiEdit className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Edit
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => deleteEducation(e.id)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Delete
-                          </span>
-                        </button>
+                        {canEdit && (
+                          <button
+                            onClick={() => openEdit(e)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiEdit className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Edit
+                            </span>
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => deleteEducation(e.id)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Delete
+                            </span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

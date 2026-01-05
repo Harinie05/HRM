@@ -12,6 +12,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeMedical
 from schemas.schemas_tenant import MedicalCreate, MedicalOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -34,6 +35,7 @@ router = APIRouter(prefix="/employee/medical", tags=["Employee Medical Details"]
 # 1. ADD MEDICAL DETAILS (with optional certificate)
 # -------------------------------------------------------------------------
 @router.post("/add")
+@require_permission("add_medical_record")
 async def add_medical(
     employee_id: str = Form(...),
     blood_group: str = Form(None),
@@ -141,6 +143,7 @@ async def add_medical(
 # 6. GET LICENSE RENEWAL ALERTS
 # -------------------------------------------------------------------------
 @router.get("/license-alerts")
+@require_permission("view_medical")
 def get_license_alerts(user=Depends(get_current_user)):
     """Get all employees with licenses expiring soon"""
     db = get_tenant_session(user)
@@ -189,6 +192,7 @@ def get_license_alerts(user=Depends(get_current_user)):
 # 2. GET MEDICAL DETAILS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=MedicalOut)
+@require_permission("view_medical")
 def get_medical(employee_id: str, user=Depends(get_current_user)):
     # Extract numeric ID if it has 'user_' prefix
     if employee_id.startswith('user_'):
@@ -208,6 +212,7 @@ def get_medical(employee_id: str, user=Depends(get_current_user)):
 # 3. UPDATE MEDICAL DETAILS
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}")
+@require_permission("edit_medical_record")
 async def update_medical(
     employee_id: str,
     blood_group: str = Form(None),
@@ -300,6 +305,7 @@ async def update_medical(
 # 4. VIEW MEDICAL CERTIFICATE
 # -------------------------------------------------------------------------
 @router.get("/certificate/{employee_id}")
+@require_permission("view_medical_details")
 def view_certificate(
     employee_id: int, 
     token: str = Query(None),
@@ -354,6 +360,7 @@ def view_certificate(
 # 7. DELETE MEDICAL RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{employee_id}")
+@require_permission("delete_medical_record")
 def delete_medical(employee_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 

@@ -38,11 +38,6 @@ export default function CompanyProfile() {
 
   useEffect(() => {
     async function fetchData() {
-      // Only fetch data if user has permission
-      if (!canView) {
-        return;
-      }
-      
       try {
         console.log('Loading company profile data');
         const res = await api.get("/organization/company-profile");
@@ -52,7 +47,11 @@ export default function CompanyProfile() {
         console.log("Company profile not set yet", err);
       }
     }
-    fetchData();
+    
+    // Only fetch data if user has permission
+    if (canView) {
+      fetchData();
+    }
   }, [canView]);
 
   function handleChange(e) {

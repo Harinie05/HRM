@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiUsers, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiPhone, FiUser } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeFamily() {
   const { id } = useParams();
@@ -11,6 +12,28 @@ export default function EmployeeFamily() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_family");
+  const canAdd = isAdmin() || hasPermission("add_family_record");
+  const canEdit = isAdmin() || hasPermission("edit_family_record");
+  const canDelete = isAdmin() || hasPermission("delete_family_record");
+
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiUsers className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee family records.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   const [form, setForm] = useState({
     name: "",
     relationship: "",
@@ -108,13 +131,15 @@ export default function EmployeeFamily() {
             </div>
           </div>
           
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
-          >
-            <FiPlus className="w-4 h-4" />
-            Add Family Member
-          </button>
+          {canAdd && (
+            <button
+              onClick={openAdd}
+              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+            >
+              <FiPlus className="w-4 h-4" />
+              Add Family Member
+            </button>
+          )}
         </div>
       </div>
 
@@ -186,24 +211,28 @@ export default function EmployeeFamily() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => openEdit(f)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiEdit className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Edit
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => deleteFamily(f.id)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Delete
-                          </span>
-                        </button>
+                        {canEdit && (
+                          <button
+                            onClick={() => openEdit(f)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiEdit className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Edit
+                            </span>
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => deleteFamily(f.id)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Delete
+                            </span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

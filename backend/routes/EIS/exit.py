@@ -8,6 +8,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeExit, User
 from schemas.schemas_tenant import ExitCreate, ExitOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -30,6 +31,7 @@ router = APIRouter(prefix="/employee/exit", tags=["Employee Exit & Separation"])
 # 1. ADD EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=ExitOut)
+@require_permission("add_exit_record")
 def add_exit(data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -65,6 +67,7 @@ def add_exit(data: ExitCreate, request: Request, user=Depends(get_current_user))
 # 2. GET EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=ExitOut)
+@require_permission("view_exit")
 def get_exit(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -78,6 +81,7 @@ def get_exit(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE EXIT DETAILS
 # -------------------------------------------------------------------------
 @router.put("/{employee_id}", response_model=ExitOut)
+@require_permission("edit_exit_record")
 def update_exit(employee_id: int, data: ExitCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -115,6 +119,7 @@ def update_exit(employee_id: int, data: ExitCreate, request: Request, user=Depen
 # 4. CHANGE CLEARANCE STATUS ONLY
 # -------------------------------------------------------------------------
 @router.post("/clearance/{employee_id}")
+@require_permission("edit_exit_record")
 def update_clearance(employee_id: int, status: str, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 

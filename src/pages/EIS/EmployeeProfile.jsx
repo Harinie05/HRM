@@ -10,6 +10,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 import EmployeeProbation from "./EmployeeProbation";
 
 export default function EmployeeProfile() {
@@ -249,22 +250,26 @@ export default function EmployeeProfile() {
               </div>
               
               <div className="flex items-center justify-center sm:justify-end gap-3">
-                <button
-                  onClick={() => setShowEditModal(true)}
-                  className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
-                >
-                  <FiUser size={16} />
-                  <span className="hidden sm:inline">Edit Profile</span>
-                  <span className="sm:hidden">Edit</span>
-                </button>
-                <Link
-                  to={`/eis/${employee.application_id}/documents`}
-                  className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
-                >
-                  <FiEye size={16} />
-                  <span className="hidden sm:inline">View Documents</span>
-                  <span className="sm:hidden">Documents</span>
-                </Link>
+                {(isAdmin() || hasPermission("edit_profile")) && (
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
+                  >
+                    <FiUser size={16} />
+                    <span className="hidden sm:inline">Edit Profile</span>
+                    <span className="sm:hidden">Edit</span>
+                  </button>
+                )}
+                {(isAdmin() || hasPermission("view_documents")) && (
+                  <Link
+                    to={`/eis/${employee.application_id}/documents`}
+                    className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
+                  >
+                    <FiEye size={16} />
+                    <span className="hidden sm:inline">View Documents</span>
+                    <span className="sm:hidden">Documents</span>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -339,126 +344,148 @@ export default function EmployeeProfile() {
             Employee Information Modules
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            <Link
-              to={`/eis/${employee.application_id}/education`}
-              className="group p-4 sm:p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiBook className="text-black w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Education</div>
-              <div className="text-xs text-gray-600">Academic Details</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_education")) && (
+              <Link
+                to={`/eis/${employee.application_id}/education`}
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiBook className="text-black w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Education</div>
+                <div className="text-xs text-gray-600">Academic Details</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/experience`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiBriefcase className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Experience</div>
-              <div className="text-xs text-gray-600">Work History</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_experience")) && (
+              <Link
+                to={`/eis/${employee.application_id}/experience`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiBriefcase className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Experience</div>
+                <div className="text-xs text-gray-600">Work History</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/skills`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiZap className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Skills</div>
-              <div className="text-xs text-gray-600">Technical Skills</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_skills")) && (
+              <Link
+                to={`/eis/${employee.application_id}/skills`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiZap className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Skills</div>
+                <div className="text-xs text-gray-600">Technical Skills</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/certifications`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiAward className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Certifications</div>
-              <div className="text-xs text-gray-600">Professional Certs</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_certifications")) && (
+              <Link
+                to={`/eis/${employee.application_id}/certifications`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiAward className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Certifications</div>
+                <div className="text-xs text-gray-600">Professional Certs</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/family`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiUsers className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Family</div>
-              <div className="text-xs text-gray-600">Family Details</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_family")) && (
+              <Link
+                to={`/eis/${employee.application_id}/family`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiUsers className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Family</div>
+                <div className="text-xs text-gray-600">Family Details</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/medical`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiHeart className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Medical</div>
-              <div className="text-xs text-gray-600">Health Records</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_medical")) && (
+              <Link
+                to={`/eis/${employee.application_id}/medical`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiHeart className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Medical</div>
+                <div className="text-xs text-gray-600">Health Records</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/id-docs`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
-              <div className="text-xs text-gray-600">Identity Docs</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_id_documents")) && (
+              <Link
+                to={`/eis/${employee.application_id}/id-docs`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
+                <div className="text-xs text-gray-600">Identity Docs</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/salary`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiDollarSign className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Salary</div>
-              <div className="text-xs text-gray-600">Compensation</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_salary")) && (
+              <Link
+                to={`/eis/${employee.application_id}/salary`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiDollarSign className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Salary</div>
+                <div className="text-xs text-gray-600">Compensation</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/bank-details`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
-              <div className="text-xs text-gray-600">Banking Info</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_bank_details")) && (
+              <Link
+                to={`/eis/${employee.application_id}/bank-details`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
+                <div className="text-xs text-gray-600">Banking Info</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/reporting`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiTrendingUp className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Reporting</div>
-              <div className="text-xs text-gray-600">Manager & Hierarchy</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_reporting")) && (
+              <Link
+                to={`/eis/${employee.application_id}/reporting`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiTrendingUp className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Reporting</div>
+                <div className="text-xs text-gray-600">Manager & Hierarchy</div>
+              </Link>
+            )}
             
-            <Link
-              to={`/eis/${employee.application_id}/exit`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiUserX className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Exit</div>
-              <div className="text-xs text-gray-600">Exit Process</div>
-            </Link>
+            {(isAdmin() || hasPermission("view_employee_exit")) && (
+              <Link
+                to={`/eis/${employee.application_id}/exit`}
+                className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
+              >
+                <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
+                  <FiUserX className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Exit</div>
+                <div className="text-xs text-gray-600">Exit Process</div>
+              </Link>
+            )}
           </div>
         </div>
 

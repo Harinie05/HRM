@@ -5,6 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeCertifications() {
   const { id } = useParams(); // employee_id
@@ -15,12 +16,36 @@ export default function EmployeeCertifications() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_certifications");
+  const canAdd = isAdmin() || hasPermission("add_certifications_record");
+  const canEdit = isAdmin() || hasPermission("edit_certifications_record");
+  const canDelete = isAdmin() || hasPermission("delete_certifications_record");
+  const canViewDetails = isAdmin() || hasPermission("view_certifications_details");
+
   const [form, setForm] = useState({
     name: "",
     issued_by: "",
     expiry: "",
     file: null,
   });
+
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiAward className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee certifications records.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   // ---------------- FETCH CERTIFICATIONS ----------------
   const fetchCerts = async () => {
@@ -116,13 +141,15 @@ export default function EmployeeCertifications() {
             </div>
           </div>
           
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
-          >
-            <FiPlus className="w-4 h-4" />
-            Add Certification
-          </button>
+          {canAdd && (
+            <button
+              onClick={openAdd}
+              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+            >
+              <FiPlus className="w-4 h-4" />
+              Add Certification
+            </button>
+          )}
         </div>
       </div>
 
@@ -184,7 +211,7 @@ export default function EmployeeCertifications() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      {c.file_name ? (
+                      {c.file_name && canViewDetails ? (
                         <button 
                           className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
                           onClick={() => {
@@ -207,24 +234,28 @@ export default function EmployeeCertifications() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => openEdit(c)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiEdit className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Edit
-                          </span>
-                        </button>
-                        <button
-                          onClick={() => deleteCert(c.id)}
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Delete
-                          </span>
-                        </button>
+                        {canEdit && (
+                          <button
+                            onClick={() => openEdit(c)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiEdit className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Edit
+                            </span>
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => deleteCert(c.id)}
+                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                              Delete
+                            </span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

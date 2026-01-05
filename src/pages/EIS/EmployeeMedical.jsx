@@ -5,11 +5,34 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeMedical() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast, showToast } = useToast();
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_medical");
+  const canAdd = isAdmin() || hasPermission("add_medical_record");
+  const canEdit = isAdmin() || hasPermission("edit_medical_record");
+  const canViewDetails = isAdmin() || hasPermission("view_medical_details");
+
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiHeart className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee medical records.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   const [form, setForm] = useState({
     blood_group: "",
     height: "",
@@ -603,6 +626,7 @@ export default function EmployeeMedical() {
                     <button 
                       className="inline-flex items-center gap-1 text-black hover:text-gray-700 transition-colors text-sm"
                       onClick={() => {
+                        if (!canViewDetails) return;
                         const token = localStorage.getItem('access_token');
                         if (!token) {
                           showToast('Authentication token not found. Please login again.', "error");
@@ -621,13 +645,15 @@ export default function EmployeeMedical() {
           </div>
 
           <div className="flex justify-end mt-8 pt-6 border-t border-black">
-            <button
-              onClick={submit}
-              disabled={loading}
-              className="px-6 py-3 bg-white text-black border border-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
-            </button>
+            {(canAdd || canEdit) && (
+              <button
+                onClick={submit}
+                disabled={loading}
+                className="px-6 py-3 bg-white text-black border border-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              >
+                {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Clock, CheckCircle, AlertTriangle, Plus, Calendar } from 'lucide-react'
 import api from '../../api';
 import Toast from '../../components/Toast';
 import useToast from '../../utils/useToast';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const EmployeeProbation = ({ employeeId, employee }) => {
   const [probation, setProbation] = useState(null);
@@ -131,7 +132,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
     <div className="bg-white p-4 rounded-lg border border-black">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-base font-semibold text-gray-900">Probation Period</h3>
-        {!probation && (
+        {!probation && (isAdmin() || hasPermission("add_probation")) && (
           <button
             onClick={() => setShowForm(true)}
             className="bg-black text-white px-3 py-1 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2 text-sm"
@@ -190,18 +191,22 @@ const EmployeeProbation = ({ employeeId, employee }) => {
 
           {(probation.probation_status === 'In Progress' || probation.probation_status === 'Extended') && (
             <div className="flex space-x-2 pt-1">
-              <button
-                onClick={() => setShowExtendModal(true)}
-                className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
-              >
-                Extend Probation
-              </button>
-              <button
-                onClick={handleEnd}
-                className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
-              >
-                End Probation
-              </button>
+              {(isAdmin() || hasPermission("extend_probation")) && (
+                <button
+                  onClick={() => setShowExtendModal(true)}
+                  className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
+                >
+                  Extend Probation
+                </button>
+              )}
+              {(isAdmin() || hasPermission("end_probation")) && (
+                <button
+                  onClick={handleEnd}
+                  className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
+                >
+                  End Probation
+                </button>
+              )}
             </div>
           )}
         </div>

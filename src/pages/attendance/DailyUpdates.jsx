@@ -3,6 +3,7 @@ import { FiPlus, FiEdit, FiCalendar, FiClock } from 'react-icons/fi';
 import api from '../../api';
 import useToast from '../../utils/useToast';
 import Toast from '../../components/Toast';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const DailyUpdates = () => {
   const { toast, showToast, hideToast } = useToast();
@@ -19,6 +20,24 @@ const DailyUpdates = () => {
     hours_spent: '',
     status: 'Draft'
   });
+
+  // Permission checks
+  const canView = isAdmin() || hasPermission('view_daily_updates');
+  const canAdd = isAdmin() || hasPermission('add_daily_update');
+  const canEdit = isAdmin() || hasPermission('edit_daily_update');
+  const canDelete = isAdmin() || hasPermission('delete_daily_update');
+
+  // Access denied screen
+  if (!canView) {
+    return (
+      <div className="p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600">You do not have permission to view daily updates.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchMyUpdates();
@@ -97,7 +116,7 @@ const DailyUpdates = () => {
     setShowForm(true);
   };
 
-  const canEdit = (update) => {
+  const canEditUpdate = (update) => {
     const today = new Date().toISOString().split('T')[0];
     return update.date === today;
   };
@@ -133,13 +152,15 @@ const DailyUpdates = () => {
                 <p className="text-gray-600 text-sm">Track your daily work progress</p>
               </div>
             </div>
-            <button
-              onClick={handleNewUpdate}
-              className="bg-black text-white px-4 py-2 rounded-lg border border-black hover:bg-gray-800 transition-colors flex items-center gap-2"
-            >
-              <FiPlus size={16} />
-              New Update
-            </button>
+            {canAdd && (
+              <button
+                onClick={handleNewUpdate}
+                className="bg-black text-white px-4 py-2 rounded-lg border border-black hover:bg-gray-800 transition-colors flex items-center gap-2"
+              >
+                <FiPlus size={16} />
+                New Update
+              </button>
+            )}
           </div>
         </div>
 
@@ -257,12 +278,14 @@ const DailyUpdates = () => {
               <FiEdit className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No updates yet</h3>
               <p className="text-gray-600 mb-4">Start tracking your daily work progress</p>
-              <button
-                onClick={handleNewUpdate}
-                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                Create First Update
-              </button>
+              {canAdd && (
+                <button
+                  onClick={handleNewUpdate}
+                  className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  Create First Update
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -283,7 +306,7 @@ const DailyUpdates = () => {
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      {canEdit(update) && (
+                      {canEdit && canEditUpdate(update) && (
                         <button
                           onClick={() => handleEdit(update)}
                           className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

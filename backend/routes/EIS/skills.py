@@ -9,6 +9,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeSkills
 from schemas.schemas_tenant import SkillCreate, SkillOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -31,6 +32,7 @@ router = APIRouter(prefix="/employee/skills", tags=["Employee Skills & Competenc
 # 1. ADD SKILL
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=SkillOut)
+@require_permission("add_skills_record")
 def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -66,6 +68,7 @@ def add_skill(data: SkillCreate, request: Request, user=Depends(get_current_user
 # 2. LIST SKILLS FOR EMPLOYEE
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=List[SkillOut])
+@require_permission("view_skills")
 def get_skills(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -91,6 +94,7 @@ def get_skills(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE SKILL
 # -------------------------------------------------------------------------
 @router.put("/{skill_id}", response_model=SkillOut)
+@require_permission("edit_skills_record")
 def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
@@ -125,6 +129,7 @@ def update_skill(skill_id: int, data: SkillCreate, request: Request, user=Depend
 # 4. DELETE SKILL
 # -------------------------------------------------------------------------
 @router.delete("/{skill_id}")
+@require_permission("delete_skills_record")
 def delete_skill(skill_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:

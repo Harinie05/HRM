@@ -12,6 +12,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeCertifications
 from schemas.schemas_tenant import CertificationCreate, CertificationOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -34,6 +35,7 @@ router = APIRouter(prefix="/employee/certifications", tags=["Employee Certificat
 # 1. ADD CERTIFICATION + OPTIONAL FILE
 # -------------------------------------------------------------------------
 @router.post("/add", response_model=None)
+@require_permission("add_certifications_record")
 async def add_certification(
     request: Request,
     employee_id: int = Form(...),
@@ -91,6 +93,7 @@ async def add_certification(
 # 2. LIST CERTIFICATIONS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}", response_model=None)
+@require_permission("view_certifications")
 def get_certifications(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -105,6 +108,7 @@ def get_certifications(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE CERTIFICATION
 # -------------------------------------------------------------------------
 @router.put("/{cert_id}", response_model=None)
+@require_permission("edit_certifications_record")
 async def update_certification(
     request: Request,
     cert_id: int,
@@ -152,6 +156,7 @@ async def update_certification(
 # 4. VIEW CERTIFICATION CERTIFICATE
 # -------------------------------------------------------------------------
 @router.get("/certificate/{cert_id}", response_model=None)
+@require_permission("view_certifications_details")
 def view_certificate(
     request: Request,
     cert_id: int, 
@@ -205,6 +210,7 @@ def view_certificate(
 # 5. DELETE CERTIFICATION
 # -------------------------------------------------------------------------
 @router.delete("/{cert_id}", response_model=None)
+@require_permission("delete_certifications_record")
 def delete_certification(cert_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 

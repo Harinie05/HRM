@@ -13,6 +13,7 @@ from database import get_tenant_engine
 from utils.audit_logger import audit_crud
 from models.models_tenant import EmployeeIDDocs
 from schemas.schemas_tenant import IDDocCreate, IDDocOut
+from utils.permission import require_permission
 
 # ---------------------- TENANT SESSION ----------------------
 def get_tenant_session(user):
@@ -35,6 +36,7 @@ router = APIRouter(prefix="/employee/id-docs", tags=["Employee ID & Verification
 # 1. UPLOAD ID DOCUMENT (Aadhaar, PAN, Passport etc.)
 # -------------------------------------------------------------------------
 @router.post("/upload")
+@require_permission("add_id_documents_record")
 async def upload_id_doc(
     employee_id: int = Form(...),
     document_type: str = Form(...),
@@ -85,6 +87,7 @@ async def upload_id_doc(
 # 2. GET ALL ID DOCUMENTS FOR EMPLOYEE
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
+@require_permission("view_id_documents")
 def get_id_docs(employee_id: int, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -99,6 +102,7 @@ def get_id_docs(employee_id: int, user=Depends(get_current_user)):
 # 3. UPDATE DOCUMENT (Re-upload)
 # -------------------------------------------------------------------------
 @router.put("/{doc_id}")
+@require_permission("edit_id_documents_record")
 async def update_id_doc(
     doc_id: int,
     file: UploadFile = File(...),
@@ -139,6 +143,7 @@ async def update_id_doc(
 # 4. VIEW ID DOCUMENT
 # -------------------------------------------------------------------------
 @router.get("/document/{doc_id}")
+@require_permission("view_id_documents_details")
 def view_document(
     doc_id: int, 
     token: str = Query(None),
@@ -193,6 +198,7 @@ def view_document(
 # 5. VERIFY / REJECT DOCUMENT
 # -------------------------------------------------------------------------
 @router.post("/verify/{doc_id}")
+@require_permission("edit_id_documents_record")
 def verify_doc(doc_id: int, action: str, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -213,6 +219,7 @@ def verify_doc(doc_id: int, action: str, request: Request, user=Depends(get_curr
 # 6. DELETE DOCUMENT
 # -------------------------------------------------------------------------
 @router.delete("/{doc_id}")
+@require_permission("delete_id_documents_record")
 def delete_id_doc(doc_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
@@ -235,6 +242,7 @@ def test_endpoint():
     return {"message": "ID docs router is working"}
 
 @router.get("/alerts")
+@require_permission("view_id_documents")
 def get_document_alerts():
     return {"alerts": [
         {

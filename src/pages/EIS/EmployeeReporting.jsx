@@ -5,6 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeReporting() {
   const { id } = useParams();
@@ -21,6 +22,11 @@ export default function EmployeeReporting() {
   const [levels, setLevels] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_reporting");
+  const canAdd = isAdmin() || hasPermission("add_reporting_record");
+  const canEdit = isAdmin() || hasPermission("edit_reporting_record");
 
   const fetchEmployees = async () => {
     try {
@@ -63,36 +69,49 @@ export default function EmployeeReporting() {
     }
   };
 
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiUsers className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee reporting structure.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   const fetchLevels = async () => {
     try {
-      const res = await api.get('/organizational-levels');
+      const res = await api.get('/employee/levels');
       setLevels(res.data || []);
     } catch (err) {
-      console.error("Failed to fetch organizational levels", err);
-      // Fallback data
-      setLevels([
-        { id: 1, order: 1, level_name: "CEO" },
-        { id: 2, order: 2, level_name: "Manager" },
-        { id: 3, order: 3, level_name: "Team Lead" },
-        { id: 4, order: 4, level_name: "Employee" }
-      ]);
+      console.error("Failed to fetch levels", err);
     }
   };
 
   const fetchReportingDetails = async () => {
     try {
-      const res = await api.get(`/employee/reporting/${id}`);
-      setReportingData(res.data);
-      setForm({
-        reporting_manager_id: res.data.reporting_manager_id || "",
-        reporting_start_date: res.data.reporting_start_date || "",
-        employee_level_id: res.data.employee_level_id || "",
-        alternative_manager_id: res.data.alternative_manager_id || "",
-      });
-      setIsEditing(!!res.data.id);
-    } catch {
-      console.log("No existing reporting data found, starting fresh");
-      setIsEditing(false);
+      const storageKey = `employee_reporting_${id}`;
+      const savedData = localStorage.getItem(storageKey);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        setForm({
+          reporting_manager_id: data.reporting_manager_id || "",
+          reporting_start_date: data.reporting_start_date || "",
+          employee_level_id: data.employee_level_id || "",
+          alternative_manager_id: data.alternative_manager_id || "",
+        });
+        setReportingData(data);
+        setIsEditing(true);
+      }
+    } catch (err) {
+      console.error("Failed to fetch reporting details", err);
     }
   };
 
@@ -291,13 +310,15 @@ export default function EmployeeReporting() {
           </div>
 
           <div className="flex justify-end mt-8 pt-6 border-t border-black">
-            <button
-              onClick={submit}
-              disabled={loading}
-              className="px-6 py-3 bg-black text-white border border-black rounded-2xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              {loading ? 'Saving...' : (isEditing ? 'Update Reporting Structure' : 'Save Reporting Structure')}
-            </button>
+            {(canAdd || canEdit) && (
+              <button
+                onClick={submit}
+                disabled={loading}
+                className="px-6 py-3 bg-black text-white border border-black rounded-2xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              >
+                {loading ? 'Saving...' : (isEditing ? 'Update Reporting Structure' : 'Save Reporting Structure')}
+              </button>
+            )}
           </div>
         </div>
       </div>

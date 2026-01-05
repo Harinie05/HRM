@@ -5,6 +5,7 @@ import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeDocuments() {
   const { id } = useParams();
@@ -12,6 +13,10 @@ export default function EmployeeDocuments() {
   const { toast, showToast } = useToast();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Check permissions
+  const canView = isAdmin() || hasPermission("view_documents");
+  const canAdd = isAdmin() || hasPermission("add_documents_record");
 
   const fetchDocs = async () => {
     if (!id) return;
@@ -100,6 +105,22 @@ export default function EmployeeDocuments() {
     }
   };
 
+  // Show access denied if no view permission
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiFileText className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to view employee documents.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   useEffect(() => {
     fetchDocs();
   }, [id]);
@@ -143,13 +164,15 @@ export default function EmployeeDocuments() {
             </div>
           </div>
           
-          <button
-            onClick={() => {}}
-            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
-          >
-            <FiFileText className="w-4 h-4" />
-            Upload New Document
-          </button>
+          {canAdd && (
+            <button
+              onClick={() => {}}
+              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+            >
+              <FiFileText className="w-4 h-4" />
+              Upload New Document
+            </button>
+          )}
         </div>
       </div>
 

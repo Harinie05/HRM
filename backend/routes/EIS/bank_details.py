@@ -5,6 +5,7 @@ from database import get_tenant_engine, logger
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
 from typing import Optional
+from utils.permission import require_permission
 
 router = APIRouter(prefix="/bank-details", tags=["Bank Details"])
 
@@ -12,6 +13,7 @@ router = APIRouter(prefix="/bank-details", tags=["Bank Details"])
 # GET BANK DETAILS 🔒 Protected
 # ------------------------------
 @router.get("/{employee_id}")
+@require_permission("view_bank_details")
 def get_bank_details(
     employee_id: str,
     user = Depends(get_current_user)
@@ -45,6 +47,7 @@ def get_bank_details(
 # SAVE BANK DETAILS 🔒 Protected
 # ------------------------------
 @router.post("/{employee_id}")
+@require_permission("add_bank_details_record")
 def save_bank_details(
     employee_id: str,
     request: Request,
