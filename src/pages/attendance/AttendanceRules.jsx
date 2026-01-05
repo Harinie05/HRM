@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function AttendanceRules() {
   const { toast, showToast } = useToast();
@@ -14,29 +15,57 @@ export default function AttendanceRules() {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [ruleForm, setRuleForm] = useState({ rule_name: '', rule_type: 'Late', value: 10 });
   const [locationForm, setLocationForm] = useState({ location_name: '', grace_time: 10, ot_rule: '' });
+  const [statusFilter, setStatusFilter] = useState("active");
 
-  useEffect(() => {
-    loadRules();
-    loadLocations();
-  }, []);
-
-  const loadRules = async () => {
+  const loadRules = async (status = statusFilter) => {
     try {
-      const res = await api.get("/api/attendance/rules/");
+      const res = await api.get(`/api/attendance/rules/?status=${status}`);
       setRules(res.data);
     } catch (err) {
       console.error("Failed to load rules:", err);
     }
   };
 
-  const loadLocations = async () => {
+  const loadLocations = async (status = statusFilter) => {
     try {
-      const res = await api.get("/api/attendance/locations/");
+      const res = await api.get(`/api/attendance/locations/?status=${status}`);
       setLocations(res.data);
     } catch (err) {
       console.error("Failed to load locations:", err);
     }
   };
+
+  useEffect(() => {
+    loadRules();
+    loadLocations();
+  }, [statusFilter]);
+
+  // Check if user has permission to view this page
+  const hasViewPermission = isAdmin() || hasPermission("view_attendance_rules");
+
+  if (!hasViewPermission) {
+    return (
+      <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <div className="flex-1 flex items-center justify-center p-6 pt-24">
+            <div className="bg-white rounded-3xl border-2 border-red-200 shadow-sm p-12 text-center max-w-md">
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+              <p className="text-gray-600 mb-4">You don't have permission to view attendance rules and policies.</p>
+              <p className="text-sm text-gray-500">Contact your administrator to request access.</p>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      </div>
+    );
+  }
 
   const handleAddRule = async () => {
     try {
@@ -60,13 +89,15 @@ export default function AttendanceRules() {
   };
 
   const handleDeleteRule = async (id) => {
-    if (!confirm('Delete this rule?')) return;
+    const rule = rules.find(r => r.id === id);
+    const action = rule.is_active ? 'deactivate' : 'activate';
+    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this rule?`)) return;
     try {
-      await api.delete(`/api/attendance/rules/${id}/`);
+      await api.patch(`/api/attendance/rules/${id}/toggle`);
       loadRules();
-      showToast('Rule deleted!', "success");
+      showToast(`Rule ${action}d!`, "success");
     } catch (err) {
-      showToast('Failed to delete rule', "error");
+      showToast(`Failed to ${action} rule`, "error");
     }
   };
 
@@ -92,13 +123,15 @@ export default function AttendanceRules() {
   };
 
   const handleDeleteLocation = async (id) => {
-    if (!confirm('Delete this location?')) return;
+    const location = locations.find(l => l.id === id);
+    const action = location.is_active ? 'deactivate' : 'activate';
+    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} this location?`)) return;
     try {
-      await api.delete(`/api/attendance/locations/${id}/`);
+      await api.patch(`/api/attendance/locations/${id}/toggle`);
       loadLocations();
-      showToast('Location deleted!', "success");
+      showToast(`Location ${action}d!`, "success");
     } catch (err) {
-      showToast('Failed to delete location', "error");
+      showToast(`Failed to ${action} location`, "error");
     }
   };
 
@@ -135,6 +168,29 @@ export default function AttendanceRules() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Status Filter */}
+            <div className="lg:col-span-2 bg-white rounded-2xl border border-black p-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-gray-700">Status Filter:</span>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="all">All</option>
+                </select>
+                <div className="flex items-center gap-4 ml-auto">
+                  <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+                    Rules: {rules.length}
+                  </div>
+                  <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+                    Locations: {locations.length}
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* ATTENDANCE RULES */}
             <div className="bg-white rounded-3xl border border-black shadow-sm overflow-hidden">
               <div className="p-6 border-b border-black bg-gray-50">
@@ -143,15 +199,17 @@ export default function AttendanceRules() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">Attendance Rules</h3>
                     <p className="text-gray-600 text-sm">Configure late, early, and overtime policies</p>
                   </div>
-                  <button 
-                    onClick={() => setShowRuleModal(true)}
-                    className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
-                    </svg>
-                    Add Rule
-                  </button>
+                  {(isAdmin() || hasPermission("add_attendance_rule")) && (
+                    <button 
+                      onClick={() => setShowRuleModal(true)}
+                      className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+                      </svg>
+                      Add Rule
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="p-6">
@@ -204,16 +262,18 @@ export default function AttendanceRules() {
                                   r.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                 }`}
                               >
-                                {r.is_active ? "Active" : "Disabled"}
+                                {r.is_active ? "Active" : "Inactive"}
                               </button>
                             </td>
                             <td className="px-4 py-3 text-sm">
-                              <button
-                                onClick={() => handleDeleteRule(r.id)}
-                                className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
-                              >
-                                Delete
-                              </button>
+                              {(isAdmin() || hasPermission("delete_attendance_rule")) && (
+                                <button
+                                  onClick={() => handleDeleteRule(r.id)}
+                                  className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
+                                >
+                                  {r.is_active ? 'Deactivate' : 'Activate'}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         ))
@@ -232,15 +292,17 @@ export default function AttendanceRules() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">Attendance Locations</h3>
                     <p className="text-gray-600 text-sm">Manage attendance capture locations</p>
                   </div>
-                  <button 
-                    onClick={() => setShowLocationModal(true)}
-                    className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
-                    </svg>
-                    Add Location
-                  </button>
+                  {(isAdmin() || hasPermission("add_attendance_location")) && (
+                    <button 
+                      onClick={() => setShowLocationModal(true)}
+                      className="bg-black text-white px-4 py-2 rounded-2xl font-medium hover:bg-gray-800 transition-colors text-sm shadow-sm flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+                      </svg>
+                      Add Location
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="p-6">
@@ -283,16 +345,18 @@ export default function AttendanceRules() {
                                   loc.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                 }`}
                               >
-                                {loc.is_active ? "Active" : "Disabled"}
+                                {loc.is_active ? "Active" : "Inactive"}
                               </button>
                             </td>
                             <td className="px-4 py-3 text-sm">
-                              <button
-                                onClick={() => handleDeleteLocation(loc.id)}
-                                className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
-                              >
-                                Delete
-                              </button>
+                              {(isAdmin() || hasPermission("delete_attendance_location")) && (
+                                <button
+                                  onClick={() => handleDeleteLocation(loc.id)}
+                                  className="bg-black text-white hover:bg-gray-800 font-medium transition-colors px-2 py-1 rounded"
+                                >
+                                  {loc.is_active ? 'Deactivate' : 'Activate'}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         ))

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 
 from models.models_tenant import AttendanceRegularization, AttendancePunch, PayrollRun
@@ -22,7 +23,7 @@ def create_regularization(
     data: AttendanceRegularizationCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("apply_regularization"))
 ):
     req = AttendanceRegularization(**data.dict())
     db.add(req)
@@ -33,7 +34,8 @@ def create_regularization(
 
 @router.get("/", response_model=list[AttendanceRegularizationOut])
 def list_regularizations(
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_regularization"))
 ):
     return db.query(AttendanceRegularization).all()
 
@@ -42,7 +44,7 @@ def approve_regularization(
     reg_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("approve_regularization"))
 ):
     req = db.query(AttendanceRegularization).filter_by(id=reg_id).first()
     if not req:
@@ -63,7 +65,7 @@ def reject_regularization(
     reg_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("reject_regularization"))
 ):
     req = db.query(AttendanceRegularization).filter_by(id=reg_id).first()
     if not req:
@@ -109,7 +111,7 @@ def sync_payroll_endpoint(
     data: dict,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("smart_regularization"))
 ):
     """Manual trigger for attendance-to-payroll sync"""
     try:

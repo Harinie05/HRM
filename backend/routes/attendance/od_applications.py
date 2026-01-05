@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 from typing import List
 from datetime import date
@@ -30,7 +31,7 @@ class ODApplicationOut(BaseModel):
     created_at: str
 
 @router.post("/", response_model=ODApplicationOut)
-def create_od_application(data: ODApplicationCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def create_od_application(data: ODApplicationCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("apply_od"))):
     try:
         query = text("""
             INSERT INTO od_applications (employee_id, od_date, purpose, from_time, to_time, location, status, created_at)
@@ -70,7 +71,7 @@ def create_od_application(data: ODApplicationCreate, request: Request, db: Sessi
         raise HTTPException(status_code=500, detail=f"Failed to create OD application: {str(e)}")
 
 @router.get("/", response_model=List[ODApplicationOut])
-def get_od_applications(employee_id: int = None, status: str = None, db: Session = Depends(get_tenant_db)):
+def get_od_applications(employee_id: int = None, status: str = None, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_od_applications"))):
     try:
         query = "SELECT * FROM od_applications WHERE 1=1"
         params = {}
@@ -102,7 +103,7 @@ def get_od_applications(employee_id: int = None, status: str = None, db: Session
         raise HTTPException(status_code=500, detail=f"Failed to fetch OD applications: {str(e)}")
 
 @router.patch("/{od_id}/approve")
-def approve_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def approve_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("approve_od"))):
     try:
         # Get OD application details
         od_query = text("SELECT employee_id, od_date, from_time, to_time FROM od_applications WHERE id = :od_id")
@@ -163,7 +164,7 @@ def approve_od_application(od_id: int, request: Request, db: Session = Depends(g
         raise HTTPException(status_code=500, detail=f"Failed to approve OD application: {str(e)}")
 
 @router.patch("/{od_id}/reject")
-def reject_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def reject_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("reject_od"))):
     try:
         query = text("UPDATE od_applications SET status = 'rejected' WHERE id = :od_id")
         result = db.execute(query, {'od_id': od_id})

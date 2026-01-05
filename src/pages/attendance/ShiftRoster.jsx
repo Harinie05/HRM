@@ -4,6 +4,7 @@ import Layout from "../../components/Layout";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ShiftRoster() {
   const [shifts, setShifts] = useState([]);
@@ -39,6 +40,7 @@ export default function ShiftRoster() {
   const [showCreateShift, setShowCreateShift] = useState(false);
   const [newShift, setNewShift] = useState({ name: "", start_time: "", end_time: "" });
   const [selectedUsersForBulk, setSelectedUsersForBulk] = useState([]);
+  const [showInactiveShifts, setShowInactiveShifts] = useState(false);
   
   // On-Call Duty States
   const [onCallDuties, setOnCallDuties] = useState([]);
@@ -73,7 +75,7 @@ export default function ShiftRoster() {
     fetchUsers();
     fetchOnCallDuties();
     fetchEmergencyCalls();
-  }, []);
+  }, [showInactiveShifts]);
 
   useEffect(() => {
     fetchRosterData();
@@ -95,7 +97,8 @@ export default function ShiftRoster() {
       }
       
       console.log("Fetching shifts for tenant:", tenant);
-      const response = await fetch(`http://localhost:8000/shifts/${tenant}/list`, {
+      const activeParam = showInactiveShifts ? 'false' : 'true';
+      const response = await fetch(`http://localhost:8000/shifts/${tenant}/list?active_only=${activeParam}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -813,7 +816,7 @@ export default function ShiftRoster() {
                 <div className="flex items-center space-x-3 mt-2">
                   <div className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                    <span className="text-xs text-gray-500">{shifts.length} Active Shifts</span>
+                    <span className="text-xs text-gray-500">{shifts.length} {showInactiveShifts ? 'Total' : 'Active'} Shifts</span>
                   </div>
                   <div className="w-px h-3 bg-gray-300"></div>
                   <span className="text-xs text-gray-600">Real-time Updates</span>
@@ -821,13 +824,26 @@ export default function ShiftRoster() {
               </div>
             </div>
             
-            <button
-              onClick={() => setShowCreateShift(true)}
-              className="bg-black border border-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create Shift</span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <label className="flex items-center space-x-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={showInactiveShifts}
+                  onChange={(e) => setShowInactiveShifts(e.target.checked)}
+                  className="rounded border border-black"
+                />
+                <span className="text-gray-700">Show inactive shifts</span>
+              </label>
+              {(isAdmin() || hasPermission("CREATE_SHIFTS")) && (
+                <button
+                  onClick={() => setShowCreateShift(true)}
+                  className="bg-black border border-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create Shift</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -854,14 +870,16 @@ export default function ShiftRoster() {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => deleteShift(shift.id)}
-                    className="p-2 hover:bg-gray-100 rounded-lg border border-black transition-colors"
-                  >
-                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {(isAdmin() || hasPermission("DELETE_SHIFTS")) && (
+                    <button
+                      onClick={() => deleteShift(shift.id)}
+                      className="p-2 hover:bg-gray-100 rounded-lg border border-black transition-colors"
+                    >
+                      <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                  )}
                 </div>
                 
                 <div className="flex items-center justify-between mb-4">
@@ -872,8 +890,14 @@ export default function ShiftRoster() {
                   </div>
                   
                   <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                    <span className="text-xs font-medium text-gray-600">Active</span>
+                    <div className={`w-2 h-2 rounded-full ${
+                      shift.is_active === false ? 'bg-red-400' : 'bg-gray-400'
+                    }`}></div>
+                    <span className={`text-xs font-medium ${
+                      shift.is_active === false ? 'text-red-600' : 'text-gray-600'
+                    }`}>
+                      {shift.is_active === false ? 'Inactive' : 'Active'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -889,12 +913,14 @@ export default function ShiftRoster() {
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No shifts found</h3>
             <p className="text-gray-500 mb-6">Get started by creating your first shift</p>
-            <button
-              onClick={() => setShowCreateShift(true)}
-              className="bg-white border border-black text-gray-900 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              Create Shift
-            </button>
+            {(isAdmin() || hasPermission("CREATE_SHIFTS")) && (
+              <button
+                onClick={() => setShowCreateShift(true)}
+                className="bg-white border border-black text-gray-900 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Create Shift
+              </button>
+            )}
           </div>
         )}
 
@@ -925,15 +951,17 @@ export default function ShiftRoster() {
               </select>
             </div>
             
-            <div className="flex items-end">
-              <button
-                onClick={addEmployeeToRoster}
-                disabled={!selectedUser}
-                className="px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Add to Roster
-              </button>
-            </div>
+            {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
+              <div className="flex items-end">
+                <button
+                  onClick={addEmployeeToRoster}
+                  disabled={!selectedUser}
+                  className="px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Add to Roster
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -980,15 +1008,17 @@ export default function ShiftRoster() {
                 </select>
               </div>
               
-              <div className="flex items-end">
-                <button
-                  onClick={bulkAllocateShifts}
-                  disabled={!bulkShift}
-                  className="w-full px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Apply to Selected ({selectedUsersForBulk.length})
-                </button>
-              </div>
+              {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
+                <div className="flex items-end">
+                  <button
+                    onClick={bulkAllocateShifts}
+                    disabled={!bulkShift}
+                    className="w-full px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Apply to Selected ({selectedUsersForBulk.length})
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1171,8 +1201,10 @@ export default function ShiftRoster() {
                             ) : shiftValue ? (
                               <div className="text-center">
                                 <div 
-                                  onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                  className={`px-3 py-2 text-sm rounded-lg font-medium cursor-pointer hover:opacity-80 border border-black ${
+                                  onClick={() => (isAdmin() || hasPermission("MANAGE_ROSTER")) && setEditingCell(`${user.id}-${date}`)}
+                                  className={`px-3 py-2 text-sm rounded-lg font-medium border border-black ${
+                                    (isAdmin() || hasPermission("MANAGE_ROSTER")) ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
+                                  } ${
                                     shiftValue === "OFF" ? 'bg-gray-200 text-gray-700' :
                                     'bg-gray-100 text-gray-700'
                                   }`}
@@ -1184,34 +1216,44 @@ export default function ShiftRoster() {
                                     {shift.start_time} - {shift.end_time}
                                   </div>
                                 )}
-                                <button
-                                  onClick={async () => {
-                                    updateUserRoster(user.id, date, "");
-                                    await saveRosterEntry(user.id, date, null, "Unscheduled");
-                                  }}
-                                  className="text-xs text-gray-600 hover:text-gray-800 mt-1"
-                                >
-                                  Clear
-                                </button>
+                                {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
+                                  <button
+                                    onClick={async () => {
+                                      updateUserRoster(user.id, date, "");
+                                      await saveRosterEntry(user.id, date, null, "Unscheduled");
+                                    }}
+                                    className="text-xs text-gray-600 hover:text-gray-800 mt-1"
+                                  >
+                                    Clear
+                                  </button>
+                                )}
                               </div>
                             ) : (
-                              <div 
-                                onClick={() => setEditingCell(`${user.id}-${date}`)}
-                                className="text-center text-gray-500 text-sm cursor-pointer hover:text-gray-700 hover:bg-gray-100 py-2 rounded border border-dashed border-gray-300"
-                              >
-                                Assign
-                              </div>
+                              (isAdmin() || hasPermission("MANAGE_ROSTER")) ? (
+                                <div 
+                                  onClick={() => setEditingCell(`${user.id}-${date}`)}
+                                  className="text-center text-gray-500 text-sm cursor-pointer hover:text-gray-700 hover:bg-gray-100 py-2 rounded border border-dashed border-gray-300"
+                                >
+                                  Assign
+                                </div>
+                              ) : (
+                                <div className="text-center text-gray-400 text-sm py-2">
+                                  -
+                                </div>
+                              )
                             )}
                           </td>
                         );
                       })}
                       <td className="px-4 py-4 text-center">
-                        <button 
-                          onClick={() => removeUserFromRoster(user.id)}
-                          className="px-3 py-1.5 bg-white border border-black text-gray-900 text-xs rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                        >
-                          Remove
-                        </button>
+                        {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
+                          <button 
+                            onClick={() => removeUserFromRoster(user.id)}
+                            className="px-3 py-1.5 bg-white border border-black text-gray-900 text-xs rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                          >
+                            Remove
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -1230,13 +1272,15 @@ export default function ShiftRoster() {
               On-Call / Emergency Duty Management
             </h2>
             <div className="flex gap-2">
-              <button
-                onClick={() => setShowOnCallForm(true)}
-                className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add On-Call Duty</span>
-              </button>
+              {(isAdmin() || hasPermission("MANAGE_ON_CALL_DUTY")) && (
+                <button
+                  onClick={() => setShowOnCallForm(true)}
+                  className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2 text-sm"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add On-Call Duty</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -1291,17 +1335,19 @@ export default function ShiftRoster() {
         <div className="bg-white rounded-lg p-4 sm:p-6 border border-black">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Night Shift Rules</h2>
-            <button
-              onClick={() => {
-                setShowNightShiftRulesList(!showNightShiftRulesList);
-                if (!showNightShiftRulesList) {
-                  fetchAllNightShiftRules();
-                }
-              }}
-              className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-            >
-              {showNightShiftRulesList ? 'Hide Rules' : 'View All Rules'}
-            </button>
+            {(isAdmin() || hasPermission("MANAGE_NIGHT_SHIFT_RULES")) && (
+              <button
+                onClick={() => {
+                  setShowNightShiftRulesList(!showNightShiftRulesList);
+                  if (!showNightShiftRulesList) {
+                    fetchAllNightShiftRules();
+                  }
+                }}
+                className="bg-black border border-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+              >
+                {showNightShiftRulesList ? 'Hide Rules' : 'View All Rules'}
+              </button>
+            )}
           </div>
 
         {showNightShiftRulesList && (
@@ -1337,18 +1383,22 @@ export default function ShiftRoster() {
                         <td className="border border-black px-4 py-2">{rule.night_ot_rate}</td>
                         <td className="border border-black px-4 py-2">
                           <div className="flex gap-2 justify-center">
-                            <button
-                              onClick={() => editNightShiftRule(rule.id)}
-                              className="px-2 py-1 bg-white border border-black text-gray-900 text-xs rounded hover:bg-gray-50 font-medium"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => deleteNightShiftRule(rule.id)}
-                              className="px-2 py-1 bg-white border border-black text-gray-900 text-xs rounded hover:bg-gray-50 font-medium"
-                            >
-                              Delete
-                            </button>
+                            {(isAdmin() || hasPermission("MANAGE_NIGHT_SHIFT_RULES")) && (
+                              <>
+                                <button
+                                  onClick={() => editNightShiftRule(rule.id)}
+                                  className="px-2 py-1 bg-white border border-black text-gray-900 text-xs rounded hover:bg-gray-50 font-medium"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => deleteNightShiftRule(rule.id)}
+                                  className="px-2 py-1 bg-white border border-black text-gray-900 text-xs rounded hover:bg-gray-50 font-medium"
+                                >
+                                  Delete
+                                </button>
+                              </>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -1439,28 +1489,32 @@ export default function ShiftRoster() {
 
             <div className="p-4 bg-white rounded-lg border border-black">
               <div className="text-center">
-                <button
-                  onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
-                  className="px-4 py-2 bg-black border border-black text-white rounded-lg hover:bg-gray-800 font-medium text-sm transition-colors"
-                >
-                  {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
-                </button>
-                {editingNightShiftRule && (
-                  <button
-                    onClick={() => {
-                      setEditingNightShiftRule(null);
-                      setNightShiftRules({
-                        applicable_shifts: [],
-                        punch_out_rule: "Same day",
-                        minimum_hours: 6,
-                        night_ot_rate: "1.5x",
-                        grace_minutes: 15
-                      });
-                    }}
-                    className="mt-2 px-4 py-2 bg-gray-100 border border-black text-gray-900 rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
-                  >
-                    Cancel Edit
-                  </button>
+                {(isAdmin() || hasPermission("MANAGE_NIGHT_SHIFT_RULES")) && (
+                  <>
+                    <button
+                      onClick={editingNightShiftRule ? () => updateNightShiftRule(editingNightShiftRule.id) : saveNightShiftRules}
+                      className="px-4 py-2 bg-black border border-black text-white rounded-lg hover:bg-gray-800 font-medium text-sm transition-colors"
+                    >
+                      {editingNightShiftRule ? 'Update Rule' : 'Save Night Shift Rules'}
+                    </button>
+                    {editingNightShiftRule && (
+                      <button
+                        onClick={() => {
+                          setEditingNightShiftRule(null);
+                          setNightShiftRules({
+                            applicable_shifts: [],
+                            punch_out_rule: "Same day",
+                            minimum_hours: 6,
+                            night_ot_rate: "1.5x",
+                            grace_minutes: 15
+                          });
+                        }}
+                        className="mt-2 px-4 py-2 bg-gray-100 border border-black text-gray-900 rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
+                      >
+                        Cancel Edit
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>

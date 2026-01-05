@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 
 from models.models_tenant import AttendanceRule
@@ -17,7 +18,7 @@ def create_rule(
     data: AttendanceRuleCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("add_attendance_rule"))
 ):
     rule = AttendanceRule(**data.dict())
     db.add(rule)
@@ -28,16 +29,24 @@ def create_rule(
 
 @router.get("/", response_model=list[AttendanceRuleOut])
 def list_rules(
-    db: Session = Depends(get_tenant_db)
+    status: str = "active",
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_attendance_rules"))
 ):
-    return db.query(AttendanceRule).all()
+    query = db.query(AttendanceRule)
+    if status == "active":
+        query = query.filter(AttendanceRule.is_active == True)
+    elif status == "inactive":
+        query = query.filter(AttendanceRule.is_active == False)
+    # status == "all" returns all records without filter
+    return query.all()
 
 @router.patch("/{rule_id}/toggle", response_model=AttendanceRuleOut)
 def toggle_rule(
     rule_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("edit_attendance_rule"))
 ):
     rule = db.query(AttendanceRule).filter_by(id=rule_id).first()
     if not rule:
@@ -55,7 +64,7 @@ def delete_rule(
     rule_id: int,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("delete_attendance_rule"))
 ):
     rule = db.query(AttendanceRule).filter_by(id=rule_id).first()
     if not rule:

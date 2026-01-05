@@ -69,6 +69,7 @@ from routes.attendance.rules import router as attendance_rules_router
 from routes.attendance.locations import router as attendance_locations_router
 from routes.attendance.reports import router as attendance_reports_router
 from routes.attendance.od_applications import router as od_applications_router
+from routes.attendance.shifts import router as shifts_router
 
 # ======================= 🔥 LEAVE ROUTERS =======================
 from routes.leave.leave_types import router as leave_types_router, policies_router
@@ -243,6 +244,7 @@ app.include_router(attendance_rules_router, prefix="/api")
 app.include_router(attendance_locations_router, prefix="/api")
 app.include_router(attendance_reports_router, prefix="/api")
 app.include_router(od_applications_router, prefix="/api")
+app.include_router(shifts_router)
 
 # ======================= 🔥 LEAVE MODULE =======================
 app.include_router(leave_types_router, prefix="/api")

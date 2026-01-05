@@ -7,10 +7,40 @@ import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import DailyUpdates from "./DailyUpdates";
 import * as XLSX from 'xlsx';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 export default function AttendanceLogs() {
   const [logs, setLogs] = useState([]);
   const [activeTab, setActiveTab] = useState('logs');
+  
+  // Permission checks
+  const canViewPunchLogs = isAdmin() || hasPermission('view_punch_logs');
+  const canMarkAttendance = isAdmin() || hasPermission('mark_attendance');
+  const canViewRegularization = isAdmin() || hasPermission('view_regularization');
+  const canApplyRegularization = isAdmin() || hasPermission('apply_regularization');
+  const canApproveRegularization = isAdmin() || hasPermission('approve_regularization');
+  const canViewOdApplications = isAdmin() || hasPermission('view_od_applications');
+  const canApplyOd = isAdmin() || hasPermission('apply_od');
+  const canApproveOd = isAdmin() || hasPermission('approve_od');
+  const canViewReports = isAdmin() || hasPermission('view_attendance_reports');
+  
+  if (!canViewPunchLogs) {
+    return (
+      <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <div className="flex justify-center items-center h-64 pt-24">
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+              <p className="text-gray-600">You do not have permission to view attendance logs.</p>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      </div>
+    );
+  }
   const [currentStatus, setCurrentStatus] = useState(null);
   const [checkInSource, setCheckInSource] = useState(null);
   const [location, setLocation] = useState(null);
@@ -515,11 +545,11 @@ export default function AttendanceLogs() {
   };
 
   const tabs = [
-    { id: 'logs', label: 'Punch Logs' },
+    ...(canViewPunchLogs ? [{ id: 'logs', label: 'Punch Logs' }] : []),
     { id: 'daily-updates', label: 'Daily Updates' },
-    { id: 'regularization', label: 'Regularization' },
-    { id: 'od', label: 'OD Applications' },
-    { id: 'reports', label: 'Reports' },
+    ...(canViewRegularization ? [{ id: 'regularization', label: 'Regularization' }] : []),
+    ...(canViewOdApplications ? [{ id: 'od', label: 'OD Applications' }] : []),
+    ...(canViewReports ? [{ id: 'reports', label: 'Reports' }] : []),
   ];
 
   return (
@@ -676,7 +706,7 @@ export default function AttendanceLogs() {
                   </div>
                 </div>
 
-                {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && (
+                {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && canMarkAttendance && (
                   <div className="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-xl">
                     <h3 className="text-lg sm:text-xl font-bold mb-6 text-gray-900">Choose Attendance Mode</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -1043,7 +1073,7 @@ export default function AttendanceLogs() {
                             </span>
                           </div>
                           <p className="text-sm text-gray-700 mb-3">{request.reason}</p>
-                          {request.status === 'Pending' && (
+                          {canApproveRegularization && request.status === 'Pending' && (
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleApprove(request.id)}
@@ -1163,7 +1193,7 @@ export default function AttendanceLogs() {
                           </div>
                           <p className="text-sm text-gray-700 mb-2"><strong>Location:</strong> {application.location}</p>
                           <p className="text-sm text-gray-700 mb-3"><strong>Purpose:</strong> {application.purpose}</p>
-                          {(application.status === 'Pending' || application.status === 'pending') && (
+                          {canApproveOd && (application.status === 'Pending' || application.status === 'pending') && (
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleOdApprove(application.id)}

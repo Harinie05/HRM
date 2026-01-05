@@ -397,7 +397,7 @@ export default function Roles() {
                       </h4>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
-                          p.name === 'view_employees' || p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'delete_employee'
+                          p.name === 'view_employees' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                             <input
@@ -1171,6 +1171,216 @@ export default function Roles() {
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
                             p.name === 'view_quality_indicators' || p.name === 'add_quality_indicator' || p.name === 'edit_quality_indicator' || p.name === 'delete_quality_indicator' || p.name === 'measure_quality_metrics' || p.name === 'restore_quality_indicator' || p.name === 'show_deleted_quality_indicators'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 🕐 SHIFT & ROSTER MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🕐</span> SHIFT & ROSTER MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'VIEW_SHIFTS' || p.name === 'CREATE_SHIFTS' || p.name === 'DELETE_SHIFTS'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Roster Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'VIEW_ROSTER' || p.name === 'MANAGE_ROSTER' || p.name === 'MANAGE_NIGHT_SHIFT_RULES' || p.name === 'MANAGE_ON_CALL_DUTY'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 🕐 ATTENDANCE MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🕐</span> ATTENDANCE MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'view_time_logs' || p.name === 'edit_time_logs' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">GPS & Location Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_gps_tracking' || p.name === 'enable_web_gps' || p.name === 'enable_mobile_gps' || p.name === 'view_location_logs'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'smart_regularization'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Live Updates & Employee Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_live_attendance' || p.name === 'real_time_tracking' || p.name === 'view_active_records' || p.name === 'select_employee_attendance' || p.name === 'manage_employee_attendance'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance Rules & Policies</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2757,6 +2967,216 @@ export default function Roles() {
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
                             p.name === 'view_payroll_reports' || p.name === 'generate_payroll_reports' || p.name === 'export_payroll_data' || p.name === 'view_compliance_reports' || p.name === 'generate_compliance_reports'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 🕐 SHIFT & ROSTER MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🕐</span> SHIFT & ROSTER MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'VIEW_SHIFTS' || p.name === 'CREATE_SHIFTS' || p.name === 'DELETE_SHIFTS'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Roster Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'VIEW_ROSTER' || p.name === 'MANAGE_ROSTER' || p.name === 'MANAGE_NIGHT_SHIFT_RULES' || p.name === 'MANAGE_ON_CALL_DUTY'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 🕐 ATTENDANCE MANAGEMENT */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <span>🕐</span> ATTENDANCE MANAGEMENT
+                      </h4>
+                      <div className="space-y-2 ml-6">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'view_time_logs' || p.name === 'edit_time_logs' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">GPS & Location Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_gps_tracking' || p.name === 'enable_web_gps' || p.name === 'enable_mobile_gps' || p.name === 'view_location_logs'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'smart_regularization'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Live Updates & Employee Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_live_attendance' || p.name === 'real_time_tracking' || p.name === 'view_active_records' || p.name === 'select_employee_attendance' || p.name === 'manage_employee_attendance'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance Rules & Policies</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

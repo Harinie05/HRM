@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 from routes.hospital import get_current_user
 from database import get_tenant_engine
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from models.models_tenant import EmployeeRoster, NightShiftRule, Shift, Employee, User, OnCallDuty, EmergencyCallLog
 
 router = APIRouter(prefix="/roster", tags=["Roster Management"])
@@ -33,7 +34,7 @@ def get_tenant_session(user):
 @router.get("/employees")
 def get_employees(
     department: Optional[str] = None,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("VIEW_ROSTER"))
 ):
     db = get_tenant_session(user)
     try:
@@ -56,7 +57,7 @@ def get_roster_schedule(
     start_date: str,
     end_date: str,
     department: Optional[str] = None,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("VIEW_ROSTER"))
 ):
     db = get_tenant_session(user)
     try:
@@ -120,7 +121,7 @@ def get_roster_schedule(
             result.append({
                 "employee_id": emp.id,
                 "employee_name": emp.name,
-                "department": emp.department.name if emp.department else "Unknown",
+                "department": getattr(emp, 'department_name', 'Unknown') or 'Unknown',
                 "schedule": schedule
             })
         
@@ -172,7 +173,7 @@ class EmergencyCallRequest(BaseModel):
 def save_roster_entry(
     request: RosterEntryRequest,
     req: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("MANAGE_ROSTER"))
 ):
     db = get_tenant_session(user)
     try:
@@ -225,7 +226,7 @@ def save_roster_entry(
 def copy_last_week_roster(
     start_date: str,
     request: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("MANAGE_ROSTER"))
 ):
     db = get_tenant_session(user)
     try:
@@ -293,7 +294,7 @@ def get_night_shift_rules(user=Depends(get_current_user)):
 def save_night_shift_rules(
     request: NightShiftRulesRequest,
     req: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("MANAGE_NIGHT_SHIFT_RULES"))
 ):
     db = get_tenant_session(user)
     try:
@@ -488,7 +489,7 @@ def get_on_call_duties(
 def create_on_call_duty(
     request: OnCallDutyRequest,
     req: Request,
-    user=Depends(get_current_user)
+    user=Depends(require_permission("MANAGE_ON_CALL_DUTY"))
 ):
     """Create new on-call duty assignment"""
     db = get_tenant_session(user)

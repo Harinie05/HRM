@@ -357,6 +357,80 @@ DEFAULT_PERMISSIONS = [
     {"name": "show_deleted_quality_indicators", "description": "Can access show deleted quality indicators button"},
 
     # =====================================================
+    # 🕐 SHIFT & ROSTER MANAGEMENT
+    # =====================================================
+
+    # Shift Management
+    {"name": "VIEW_SHIFTS", "description": "Can view shift schedules and configurations"},
+    {"name": "CREATE_SHIFTS", "description": "Can create new shift schedules"},
+    {"name": "DELETE_SHIFTS", "description": "Can delete or deactivate shift schedules"},
+
+    # Roster Management
+    {"name": "VIEW_ROSTER", "description": "Can view employee roster and schedules"},
+    {"name": "MANAGE_ROSTER", "description": "Can create and modify employee roster assignments"},
+    {"name": "MANAGE_NIGHT_SHIFT_RULES", "description": "Can configure night shift rules and policies"},
+    {"name": "MANAGE_ON_CALL_DUTY", "description": "Can manage on-call duty assignments"},
+
+    # =====================================================
+    # 🕐 ATTENDANCE MANAGEMENT
+    # =====================================================
+
+    # Real-time Attendance Tracking
+    {"name": "view_attendance", "description": "Can view attendance records"},
+    {"name": "mark_attendance", "description": "Can mark attendance for employees"},
+    {"name": "view_time_logs", "description": "Can view time logs and punch records"},
+    {"name": "edit_time_logs", "description": "Can edit time logs and punch records"},
+    {"name": "approve_attendance", "description": "Can approve attendance records"},
+    {"name": "view_attendance_reports", "description": "Can view attendance reports"},
+    {"name": "generate_attendance_reports", "description": "Can generate attendance reports"},
+    {"name": "export_attendance_data", "description": "Can export attendance data"},
+
+    # Punch Logs
+    {"name": "view_punch_logs", "description": "Can view employee punch logs"},
+    {"name": "edit_punch_logs", "description": "Can edit punch log entries"},
+    {"name": "delete_punch_logs", "description": "Can delete punch log entries"},
+    {"name": "view_daily_punch_logs", "description": "Can view daily punch logs"},
+
+    # GPS & Location Tracking
+    {"name": "view_gps_tracking", "description": "Can view GPS location tracking"},
+    {"name": "enable_web_gps", "description": "Can enable web GPS tracking"},
+    {"name": "enable_mobile_gps", "description": "Can enable mobile GPS tracking"},
+    {"name": "view_location_logs", "description": "Can view employee location logs"},
+
+    # Regularization
+    {"name": "view_regularization", "description": "Can view attendance regularization requests"},
+    {"name": "apply_regularization", "description": "Can apply for attendance regularization"},
+    {"name": "approve_regularization", "description": "Can approve regularization requests"},
+    {"name": "reject_regularization", "description": "Can reject regularization requests"},
+    {"name": "smart_regularization", "description": "Can use smart regularization features"},
+
+    # OD Applications (On Duty)
+    {"name": "view_od_applications", "description": "Can view on-duty applications"},
+    {"name": "apply_od", "description": "Can apply for on-duty status"},
+    {"name": "approve_od", "description": "Can approve on-duty applications"},
+    {"name": "reject_od", "description": "Can reject on-duty applications"},
+    {"name": "edit_od_applications", "description": "Can edit on-duty applications"},
+
+    # Live Updates & Real-time Features
+    {"name": "view_live_attendance", "description": "Can view live attendance updates"},
+    {"name": "real_time_tracking", "description": "Can access real-time attendance tracking"},
+    {"name": "view_active_records", "description": "Can view active attendance records"},
+
+    # Employee Selection & Management
+    {"name": "select_employee_attendance", "description": "Can select employees for attendance tracking"},
+    {"name": "manage_employee_attendance", "description": "Can manage employee attendance settings"},
+
+    # Attendance Rules & Policies
+    {"name": "view_attendance_rules", "description": "Can view attendance rules and policies"},
+    {"name": "add_attendance_rule", "description": "Can add attendance rules"},
+    {"name": "edit_attendance_rule", "description": "Can edit attendance rules"},
+    {"name": "delete_attendance_rule", "description": "Can delete attendance rules"},
+    {"name": "view_attendance_locations", "description": "Can view attendance capture locations"},
+    {"name": "add_attendance_location", "description": "Can add attendance capture locations"},
+    {"name": "edit_attendance_location", "description": "Can edit attendance capture locations"},
+    {"name": "delete_attendance_location", "description": "Can delete attendance capture locations"},
+
+    # =====================================================
     # 🏢 HR OPERATIONS & WORKFORCE MANAGEMENT
     # =====================================================
 

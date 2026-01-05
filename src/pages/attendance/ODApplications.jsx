@@ -3,12 +3,32 @@ import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle } from "lucide-reac
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 export default function ODApplications() {
   const [applications, setApplications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();
+  
+  // Permission checks
+  const canViewOdApplications = isAdmin() || hasPermission('view_od_applications');
+  const canApplyOd = isAdmin() || hasPermission('apply_od');
+  const canApproveOd = isAdmin() || hasPermission('approve_od');
+  const canRejectOd = isAdmin() || hasPermission('reject_od');
+  
+  if (!canViewOdApplications) {
+    return (
+      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view OD applications.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [formData, setFormData] = useState({
     employee_id: "",
     od_date: "",
@@ -119,13 +139,15 @@ export default function ODApplications() {
             <h2 className="text-xl font-semibold text-primary">OD Applications</h2>
             <p className=" mt-1" style={{color: 'var(--text-secondary, #374151)'}}>Manage On Duty applications for employees</p>
           </div>
-          <button 
-            onClick={() => setShowModal(true)}
-            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <Plus size={16} />
-            Apply OD
-          </button>
+          {canApplyOd && (
+            <button 
+              onClick={() => setShowModal(true)}
+              className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <Plus size={16} />
+              Apply OD
+            </button>
+          )}
         </div>
       </div>
 
@@ -194,22 +216,26 @@ export default function ODApplications() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {app.status === 'pending' && (
+                      {app.status === 'pending' && (canApproveOd || canRejectOd) && (
                         <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleApprove(app.id)}
-                            className="bg-black hover:bg-gray-800 text-white px-2 py-1 rounded text-xs"
-                            title="Approve"
-                          >
-                            Approve
-                          </button>
-                          <button 
-                            onClick={() => handleReject(app.id)}
-                            className="bg-white hover:bg-gray-100 text-black border border-black px-2 py-1 rounded text-xs"
-                            title="Reject"
-                          >
-                            Reject
-                          </button>
+                          {canApproveOd && (
+                            <button 
+                              onClick={() => handleApprove(app.id)}
+                              className="bg-black hover:bg-gray-800 text-white px-2 py-1 rounded text-xs"
+                              title="Approve"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {canRejectOd && (
+                            <button 
+                              onClick={() => handleReject(app.id)}
+                              className="bg-white hover:bg-gray-100 text-black border border-black px-2 py-1 rounded text-xs"
+                              title="Reject"
+                            >
+                              Reject
+                            </button>
+                          )}
                         </div>
                       )}
                     </td>

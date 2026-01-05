@@ -4,6 +4,7 @@ from database import get_tenant_db
 from datetime import datetime, time
 from typing import Optional
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 
 from models.models_tenant import AttendancePunch, AttendanceRule, Shift, EmployeeRoster
@@ -79,7 +80,7 @@ def create_punch(
     data: AttendancePunchCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("mark_attendance"))
 ):
     try:
         punch_data = data.dict()
@@ -128,7 +129,8 @@ def get_all_punches(
     offset: int = 0,
     employee_id: Optional[int] = None,
     date: Optional[str] = None,
-    db: Session = Depends(get_tenant_db)
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_punch_logs"))
 ):
     query = db.query(AttendancePunch)
     
@@ -145,7 +147,7 @@ def update_punch(
     data: AttendancePunchCreate,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("edit_punch_logs"))
 ):
     punch = db.query(AttendancePunch).filter(AttendancePunch.id == punch_id).first()
     if not punch:

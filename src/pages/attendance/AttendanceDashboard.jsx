@@ -4,9 +4,30 @@ import api from '../../api';
 import Layout from '../../components/Layout';
 import useToast from '../../utils/useToast';
 import Toast from '../../components/Toast';
+import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const AttendanceDashboard = () => {
   const { toast, showToast, hideToast } = useToast();
+  
+  // Permission checks
+  const canViewAttendance = isAdmin() || hasPermission('view_attendance');
+  const canViewReports = isAdmin() || hasPermission('view_attendance_reports');
+  const canViewPunchLogs = isAdmin() || hasPermission('view_punch_logs');
+  const canViewShifts = isAdmin() || hasPermission('VIEW_SHIFTS');
+  const canViewRules = isAdmin() || hasPermission('smart_regularization');
+  
+  if (!canViewAttendance) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view attendance dashboard.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   const [attendanceData, setAttendanceData] = useState({
     totalEmployees: 0,
     presentToday: 0,
@@ -314,38 +335,44 @@ const AttendanceDashboard = () => {
         <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
           <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <button 
-              onClick={() => window.location.href = '/attendance/logs'}
-              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-            >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                <FiClock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-              </div>
-              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Punch Logs</h3>
-              <p className="text-xs sm:text-sm text-gray-600">View attendance records</p>
-            </button>
+            {canViewPunchLogs && (
+              <button 
+                onClick={() => window.location.href = '/attendance/logs'}
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                  <FiClock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Punch Logs</h3>
+                <p className="text-xs sm:text-sm text-gray-600">View attendance records</p>
+              </button>
+            )}
             
-            <button 
-              onClick={() => window.location.href = '/shift-roster'}
-              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-            >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-              </div>
-              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Shift Roster</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Manage employee shifts</p>
-            </button>
+            {canViewShifts && (
+              <button 
+                onClick={() => window.location.href = '/shift-roster'}
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                  <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Shift Roster</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Manage employee shifts</p>
+              </button>
+            )}
             
-            <button 
-              onClick={() => window.location.href = '/attendance/rules'}
-              className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-            >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                <FiSettings className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-              </div>
-              <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Attendance Rules</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Configure policies</p>
-            </button>
+            {canViewRules && (
+              <button 
+                onClick={() => window.location.href = '/attendance/rules'}
+                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
+                  <FiSettings className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                </div>
+                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Attendance Rules</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Configure policies</p>
+              </button>
+            )}
           </div>
         </div>
       </div>

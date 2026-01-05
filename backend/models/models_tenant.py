@@ -98,6 +98,7 @@ class Shift(MasterBase):
     name = Column(String(150), nullable=False)
     start_time = Column(String(20), nullable=False)
     end_time = Column(String(20), nullable=False)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
 
 class Holiday(MasterBase):

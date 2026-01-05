@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 
 from models.models_tenant import AttendancePunch
@@ -16,7 +17,7 @@ router = APIRouter(
 def daily_report(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("view_attendance_reports"))
 ):
     punches = db.query(AttendancePunch).all()
     
@@ -35,7 +36,7 @@ def daily_report(
 def monthly_summary(
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("generate_attendance_reports"))
 ):
     results = (
         db.query(
