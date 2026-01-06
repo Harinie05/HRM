@@ -202,72 +202,130 @@ export default function CandidateScreening() {
 
         {/* APPLICATIONS TABLE */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-100 text-gray-600 text-sm border-b border-black">
-                <tr>
-                  <th className="p-2 sm:p-3 text-left">
-                    {canSelectCandidates && (
-                      <input
-                        type="checkbox"
-                        checked={selectedCandidates.length === applications.length && applications.length > 0}
-                        onChange={selectAll}
-                      />
-                    )}
-                  </th>
-                  <th className="p-2 sm:p-3 text-left">Candidate</th>
-                  <th className="p-2 sm:p-3 text-left hidden sm:table-cell">Experience</th>
-                  <th className="p-2 sm:p-3 text-left hidden md:table-cell">Skills</th>
-                  <th className="p-2 sm:p-3 text-left hidden lg:table-cell">Source</th>
-                  <th className="p-2 sm:p-3 text-center">Score</th>
-                  <th className="p-2 sm:p-3 text-center hidden sm:table-cell">Applied</th>
-                  <th className="p-2 sm:p-3 text-center">Resume</th>
-                </tr>
-              </thead>
+          {applications.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              No applications found for this job
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-100 text-gray-600 text-sm border-b border-black">
+                    <tr>
+                      <th className="p-3 text-left">
+                        {canSelectCandidates && (
+                          <input
+                            type="checkbox"
+                            checked={selectedCandidates.length === applications.length && applications.length > 0}
+                            onChange={selectAll}
+                          />
+                        )}
+                      </th>
+                      <th className="p-3 text-left">Candidate</th>
+                      <th className="p-3 text-left">Experience</th>
+                      <th className="p-3 text-left">Skills</th>
+                      <th className="p-3 text-left">Source</th>
+                      <th className="p-3 text-center">Score</th>
+                      <th className="p-3 text-center">Applied</th>
+                      <th className="p-3 text-center">Resume</th>
+                    </tr>
+                  </thead>
 
-              <tbody>
-                {applications.map((app) => (
-                  <tr key={app.id} className="border-t hover:bg-gray-50 border-black">
-                    <td className="p-2 sm:p-3">
-                      {canSelectCandidates && (
-                        <input
-                          type="checkbox"
-                          checked={selectedCandidates.includes(app.id)}
-                          onChange={() => toggleSelection(app.id)}
-                        />
-                      )}
-                    </td>
-                    
-                    <td className="p-2 sm:p-3">
-                      <div>
-                        <div className="font-medium text-sm sm:text-base truncate max-w-[120px] sm:max-w-none">{app.name}</div>
-                        <div className="text-xs sm:text-sm text-gray-600 truncate max-w-[120px] sm:max-w-none">{app.email}</div>
-                        <div className="text-xs sm:text-sm text-gray-600 sm:hidden">{app.phone}</div>
-                        <div className="text-xs text-gray-600 sm:hidden">{app.experience || "—"}</div>
-                      </div>
-                    </td>
-                    
-                    <td className="p-2 sm:p-3 hidden sm:table-cell">{app.experience || "—"}</td>
-                    
-                    <td className="p-2 sm:p-3 hidden md:table-cell">
-                      <div className="text-sm max-w-xs truncate" title={app.skills}>
-                        {app.skills || "—"}
-                      </div>
-                    </td>
-                    
-                    <td className="p-2 sm:p-3 hidden lg:table-cell">
-                      {app.referral_code ? (
-                        <div className="text-xs">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            👤 Referred by {app.referral_code}
+                  <tbody>
+                    {applications.map((app) => (
+                      <tr key={app.id} className="border-t hover:bg-gray-50 border-black">
+                        <td className="p-3">
+                          {canSelectCandidates && (
+                            <input
+                              type="checkbox"
+                              checked={selectedCandidates.includes(app.id)}
+                              onChange={() => toggleSelection(app.id)}
+                            />
+                          )}
+                        </td>
+                        
+                        <td className="p-3">
+                          <div>
+                            <div className="font-medium text-base">{app.name}</div>
+                            <div className="text-sm text-gray-600">{app.email}</div>
+                          </div>
+                        </td>
+                        
+                        <td className="p-3">{app.experience || "—"}</td>
+                        
+                        <td className="p-3">
+                          <div className="text-sm max-w-xs truncate" title={app.skills}>
+                            {app.skills || "—"}
+                          </div>
+                        </td>
+                        
+                        <td className="p-3">
+                          {app.referral_code ? (
+                            <div className="text-xs">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                👤 Referred by {app.referral_code}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-500">Direct</span>
+                          )}
+                        </td>
+                        
+                        <td className="p-3 text-center">
+                          <span className={`px-2 py-1 text-xs rounded ${
+                            app.match_score >= 80 ? 'bg-green-100 text-green-700' :
+                            app.match_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {app.match_score}%
                           </span>
+                        </td>
+                        
+                        <td className="p-3 text-center text-sm text-gray-600">
+                          {new Date(app.applied_at).toLocaleDateString()}
+                        </td>
+                        
+                        <td className="p-3 text-center">
+                          {canViewResumes && app.resume_url ? (
+                            <a
+                              href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              View
+                            </a>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {applications.map((app) => (
+                  <div key={app.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3 flex-1">
+                        {canSelectCandidates && (
+                          <input
+                            type="checkbox"
+                            checked={selectedCandidates.includes(app.id)}
+                            onChange={() => toggleSelection(app.id)}
+                            className="mt-1"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{app.name}</div>
+                          <div className="text-sm text-gray-600">{app.email}</div>
+                          <div className="text-sm text-gray-600">{app.phone}</div>
                         </div>
-                      ) : (
-                        <span className="text-xs text-gray-500">Direct</span>
-                      )}
-                    </td>
-                    
-                    <td className="p-2 sm:p-3 text-center">
+                      </div>
                       <span className={`px-2 py-1 text-xs rounded ${
                         app.match_score >= 80 ? 'bg-green-100 text-green-700' :
                         app.match_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
@@ -275,36 +333,65 @@ export default function CandidateScreening() {
                       }`}>
                         {app.match_score}%
                       </span>
-                    </td>
+                    </div>
                     
-                    <td className="p-2 sm:p-3 text-center text-xs sm:text-sm text-gray-600 hidden sm:table-cell">
-                      {new Date(app.applied_at).toLocaleDateString()}
-                    </td>
-                    
-                    <td className="p-2 sm:p-3 text-center">
-                      {canViewResumes && app.resume_url ? (
-                        <a
-                          href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 text-xs sm:text-sm"
-                        >
-                          View
-                        </a>
-                      ) : (
-                        "—"
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Experience:</span>
+                        <span className="text-sm text-gray-600">{app.experience || "—"}</span>
+                      </div>
+                      
+                      {app.skills && (
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">Skills:</span>
+                          <span className="text-sm text-gray-600 text-right max-w-[200px] truncate" title={app.skills}>
+                            {app.skills}
+                          </span>
+                        </div>
                       )}
-                    </td>
-                  </tr>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Source:</span>
+                        <span className="text-sm text-gray-600">
+                          {app.referral_code ? (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              👤 Referred
+                            </span>
+                          ) : (
+                            "Direct"
+                          )}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Applied:</span>
+                        <span className="text-sm text-gray-600">
+                          {new Date(app.applied_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Resume:</span>
+                        <span className="text-sm">
+                          {canViewResumes && app.resume_url ? (
+                            <a
+                              href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              View
+                            </a>
+                          ) : (
+                            "—"
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
-
-          {applications.length === 0 && (
-            <div className="p-8 text-center text-gray-500">
-              No applications found for this job
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

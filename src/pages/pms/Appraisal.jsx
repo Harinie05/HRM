@@ -25,6 +25,7 @@ export default function Appraisal() {
   const [viewAppraisal, setViewAppraisal] = useState(null);
   const [editingAppraisal, setEditingAppraisal] = useState(null);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
   const { toast, showToast, hideToast } = useToast();
   const [formData, setFormData] = useState({
     employee: "",
@@ -58,6 +59,17 @@ export default function Appraisal() {
     try {
       const response = await api.get(`/api/pms/appraisals${showDeleted ? '?include_deleted=true' : ''}`);
       setAppraisals(response.data?.data || []);
+      
+      // Fetch deleted count
+      if (!showDeleted) {
+        try {
+          const deletedResponse = await api.get('/api/pms/appraisals/deleted-count');
+          setDeletedCount(deletedResponse.data?.count || 0);
+        } catch (error) {
+          console.error('Error fetching deleted count:', error);
+          setDeletedCount(0);
+        }
+      }
     } catch (error) {
       console.error('Error fetching appraisals:', error);
     }
@@ -272,16 +284,22 @@ export default function Appraisal() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-              className="rounded border-gray-300"
-              style={{ display: (hasPermission('show_deleted_appraisals') || isAdmin()) ? 'inline' : 'none' }}
-            />
-            {(hasPermission('show_deleted_appraisals') || isAdmin()) && 'Show Deleted'}
-          </label>
+          {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_appraisals') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(true)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Show Deleted ({deletedCount})
+            </button>
+          )}
+          {showDeleted && (hasPermission('show_deleted_appraisals') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(false)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Hide Deleted
+            </button>
+          )}
           <button
             onClick={() => setShowForm(true)}
             className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
@@ -559,7 +577,9 @@ export default function Appraisal() {
         <div className="px-4 sm:px-6 py-4 border-b border-black">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Performance Appraisals</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -646,6 +666,89 @@ export default function Appraisal() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {appraisals.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">
+              <p>No appraisals found</p>
+            </div>
+          ) : (
+            appraisals.map((appraisal) => (
+              <div key={appraisal.id} className={`p-4 border-b border-gray-200 hover:bg-gray-50 ${appraisal.is_active === false ? 'bg-red-50 opacity-75' : ''}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {appraisal.employee_name}
+                      {appraisal.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                    </div>
+                    <div className="text-sm text-gray-500">ID: {appraisal.employee_id}</div>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(appraisal.status)}`}>
+                    {appraisal.status}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Review Period:</span>
+                    <span className="text-sm text-gray-600">{appraisal.cycle}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">Rating:</span>
+                    <div className="flex items-center">
+                      {renderStars(appraisal.final_rating || 0)}
+                      <span className={`ml-2 text-sm font-medium ${getRatingColor(appraisal.final_rating || 0)}`}>
+                        {appraisal.final_rating || 0}/5
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                  {appraisal.is_active === false ? (
+                    (hasPermission('restore_appraisal') || isAdmin()) && (
+                    <button
+                      onClick={() => handleRestore(appraisal.id)}
+                      className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                    >
+                      <Award className="w-4 h-4" />
+                      Restore
+                    </button>
+                    )
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleView(appraisal)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                        style={{ display: (hasPermission('view_appraisals') || isAdmin()) ? 'flex' : 'none' }}
+                      >
+                        <Eye className="w-4 h-4" />
+                        View
+                      </button>
+                      {(hasPermission('edit_appraisal') || isAdmin()) && (
+                        <button
+                          onClick={() => handleEdit(appraisal)}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {(hasPermission('delete_appraisal') || isAdmin()) && (
+                        <button
+                          onClick={() => handleDelete(appraisal.id)}
+                          className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />

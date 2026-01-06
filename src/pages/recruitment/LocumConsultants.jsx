@@ -475,7 +475,8 @@ const LocumConsultants = () => {
                     </div>
                   </div>
                 </div>
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -582,6 +583,90 @@ const LocumConsultants = () => {
                   </tbody>
                 </table>
                 </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden">
+                  {filteredConsultants.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">
+                      <User size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg font-medium mb-2">No consultants found</p>
+                      <p className="text-sm">Click "Add Consultant" to create your first consultant record</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {filteredConsultants.map((consultant) => (
+                        <div key={consultant.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h3 className="text-lg font-medium text-gray-900 mb-1">{consultant.name}</h3>
+                              <p className="text-sm text-gray-600">{consultant.specialization}</p>
+                              <p className="text-xs text-gray-400">Reg: {consultant.registration_number}</p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                consultant.consultant_type === 'Locum' 
+                                  ? 'bg-blue-100 text-blue-800' 
+                                  : 'bg-green-100 text-green-800'
+                              }`}>
+                                {consultant.consultant_type}
+                              </span>
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                consultant.status === 'Active' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {consultant.status}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2 mb-4">
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900">Department:</span>
+                              <span className="text-sm text-gray-600">{getDepartmentName(consultant.department_id)}</span>
+                            </div>
+                            
+                            {consultant.contact_details?.phone && (
+                              <div className="flex justify-between">
+                                <span className="text-sm font-medium text-gray-900">Phone:</span>
+                                <span className="text-sm text-gray-600">{consultant.contact_details.phone}</span>
+                              </div>
+                            )}
+                            
+                            {consultant.contact_details?.email && (
+                              <div className="flex justify-between">
+                                <span className="text-sm font-medium text-gray-900">Email:</span>
+                                <span className="text-sm text-gray-600 truncate max-w-[200px]">{consultant.contact_details.email}</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+                            {canEditConsultant && (
+                              <button
+                                onClick={() => handleEdit(consultant)}
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
+                              >
+                                <Edit size={14} />
+                                Edit
+                              </button>
+                            )}
+                            {canDeleteConsultant && (
+                              <button
+                                onClick={() => handleDelete(consultant.id)}
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
+                                title="Deactivate Consultant"
+                              >
+                                <Trash2 size={14} />
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -599,7 +684,8 @@ const LocumConsultants = () => {
                     </button>
                   )}
                 </div>
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
@@ -645,6 +731,44 @@ const LocumConsultants = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden">
+                  {availability.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">
+                      <Calendar size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg font-medium mb-2">No availability records</p>
+                      <p className="text-sm">Click "Add Availability" to create availability schedules</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {availability.map((avail) => (
+                        <div key={avail.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h3 className="text-lg font-medium text-gray-900 mb-1">{getConsultantName(avail.consultant_id)}</h3>
+                              <p className="text-sm text-gray-600">{new Date(avail.date).toLocaleDateString()}</p>
+                            </div>
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              avail.availability_type === 'OPD' ? 'bg-blue-100 text-blue-800' :
+                              avail.availability_type === 'Surgery' ? 'bg-green-100 text-green-800' :
+                              'bg-purple-100 text-purple-800'
+                            }`}>
+                              {avail.availability_type}
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900">Time:</span>
+                              <span className="text-sm text-gray-600">{avail.from_time} - {avail.to_time}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -662,7 +786,8 @@ const LocumConsultants = () => {
                     </button>
                   )}
                 </div>
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
@@ -750,6 +875,91 @@ const LocumConsultants = () => {
                       )}
                     </tbody>
                   </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden">
+                  {payouts.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">
+                      <DollarSign size={48} className="mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg font-medium mb-2">No payout records</p>
+                      <p className="text-sm">Click "Add Payout" to create payout records</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {payouts.map((payout) => (
+                        <div key={payout.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h3 className="text-lg font-medium text-gray-900 mb-1">{getConsultantName(payout.consultant_id)}</h3>
+                              <p className="text-sm text-gray-600">
+                                {new Date(payout.period_start).toLocaleDateString()} - {new Date(payout.period_end).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              payout.payout_status === 'Paid' ? 'bg-green-100 text-green-800' :
+                              payout.payout_status === 'Processed' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {payout.payout_status}
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-2 mb-4">
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900">Cases:</span>
+                              <span className="text-sm text-gray-600">{payout.total_cases}</span>
+                            </div>
+                            
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900">Revenue:</span>
+                              <span className="text-sm text-gray-600">₹{payout.total_revenue.toLocaleString()}</span>
+                            </div>
+                            
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900">Consultant Share:</span>
+                              <span className="text-sm text-gray-600">₹{payout.consultant_share.toLocaleString()}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+                            {payout.payout_status === 'Pending' && canProcessPayroll && (
+                              <button
+                                onClick={() => handleProcessPayroll(payout.id)}
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                              >
+                                Process Payroll
+                              </button>
+                            )}
+                            {payout.payout_status === 'Processed' && (
+                              <>
+                                {canGeneratePayslip && (
+                                  <button
+                                    onClick={() => handleGeneratePayslip(payout.id)}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors"
+                                    title="Generate Payslip"
+                                  >
+                                    <FileText size={14} />
+                                    Generate
+                                  </button>
+                                )}
+                                {canSendPayslipEmail && (
+                                  <button
+                                    onClick={() => handleEmailPayslip(payout.id)}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors"
+                                    title="Email Payslip"
+                                  >
+                                    <Send size={14} />
+                                    Email
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

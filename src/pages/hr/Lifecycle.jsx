@@ -457,7 +457,9 @@ export default function Lifecycle() {
           <div className="px-6 py-4 border-b border-black">
             <h3 className="text-lg font-semibold text-gray-900">Pending Action Approvals</h3>
           </div>
-          <div className="overflow-x-auto">
+          
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 border border-black">
               <thead className="bg-gray-50 border-b border-black">
                 <tr>
@@ -482,28 +484,26 @@ export default function Lifecycle() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.from}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.to}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{action.date}</td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       {canApprove && (
-                      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
+                      <div className="flex space-x-2">
                         <button
                           onClick={() => handleApproval(action.id, true)}
-                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-black text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          className="inline-flex items-center px-3 py-1 border border-black text-sm leading-4 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          <span className="hidden sm:inline">Approve</span>
-                          <span className="sm:hidden">✓</span>
+                          Approve
                         </button>
                         <button
                           onClick={() => handleApproval(action.id, false)}
-                          className="inline-flex items-center justify-center px-2 sm:px-3 py-1 border border-black text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          className="inline-flex items-center px-3 py-1 border border-black text-sm leading-4 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
-                          <span className="hidden sm:inline">Reject</span>
-                          <span className="sm:hidden">✗</span>
+                          Reject
                         </button>
                       </div>
                       )}
@@ -513,6 +513,65 @@ export default function Lifecycle() {
               </tbody>
             </table>
           </div>
+          
+          {/* Mobile Card View */}
+          <div className="md:hidden p-4 space-y-4">
+            {pendingActions.map((action) => (
+              <div key={action.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 className="font-medium text-gray-900">{action.name}</h4>
+                    <p className="text-sm text-gray-500">{action.employee}</p>
+                  </div>
+                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-300">
+                    Pending
+                  </span>
+                </div>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Action:</span>
+                    <span className="text-sm font-medium text-gray-900">{action.action}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">From:</span>
+                    <span className="text-sm font-medium text-gray-900">{action.from}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">To:</span>
+                    <span className="text-sm font-medium text-gray-900">{action.to}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Date:</span>
+                    <span className="text-sm font-medium text-gray-900">{action.date}</span>
+                  </div>
+                </div>
+                
+                {canApprove && (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleApproval(action.id, true)}
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-black text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleApproval(action.id, false)}
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-black text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -521,7 +580,9 @@ export default function Lifecycle() {
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Approved Actions</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -566,6 +627,51 @@ export default function Lifecycle() {
               )}
             </tbody>
           </table>
+        </div>
+        
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4">
+          {actions.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No actions found</div>
+          ) : (
+            <div className="space-y-4">
+              {actions.map((action) => (
+                <div key={action.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="font-medium text-gray-900">{action.name || action.employee_name}</h4>
+                      <p className="text-sm text-gray-500">{action.employee || action.employeeId}</p>
+                    </div>
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                      action.status === 'Approved' ? 'bg-green-100 text-green-800 border-green-300' : 
+                      action.status === 'Rejected' ? 'bg-red-100 text-red-800 border-red-300' : 'bg-gray-100 text-gray-700 border-gray-300'
+                    }`}>
+                      {action.status}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Action:</span>
+                      <span className="text-sm font-medium text-gray-900">{action.action || action.actionType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">From:</span>
+                      <span className="text-sm font-medium text-gray-900">{action.from || action.currentRole}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">To:</span>
+                      <span className="text-sm font-medium text-gray-900">{action.to || action.newRole}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Date:</span>
+                      <span className="text-sm font-medium text-gray-900">{action.date || action.effectiveDate}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

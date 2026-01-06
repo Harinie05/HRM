@@ -261,7 +261,8 @@ export default function EmployeeExperience() {
         </div>
         {/* Experience Table */}
         <div className="bg-white rounded-3xl border border-black overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -371,6 +372,96 @@ export default function EmployeeExperience() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {experience.length === 0 ? (
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiBriefcase className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Experience Records</h3>
+                <p className="text-gray-500">Add work experience to get started.</p>
+              </div>
+            ) : (
+              experience.map((e) => (
+                <div key={e.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                        <FiBriefcase className="w-4 h-4 text-black" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">{e.company}</div>
+                        {e.location && (
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <FiMapPin className="w-3 h-3" />
+                            {e.location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {e.file_name && canViewDetails && (
+                      <button 
+                        className="p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        onClick={() => {
+                          const token = localStorage.getItem('access_token');
+                          if (!token) {
+                            showToast('Authentication token not found. Please login again.', "error");
+                            return;
+                          }
+                          const url = `http://localhost:8000/employee/experience/document/${e.id}`;
+                          window.open(`${url}?token=${token}`, '_blank');
+                        }}
+                      >
+                        <FiEye className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Role:</span>
+                      <span className="text-sm text-gray-600">{e.job_title || e.role || '-'}</span>
+                    </div>
+                    {e.department && (
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Department:</span>
+                        <span className="text-sm text-gray-600">{e.department}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Duration:</span>
+                      <span className="text-sm text-gray-600">
+                        {e.start_date || e.from_year || '-'} to {e.end_date || e.to_year || (e.current_job ? 'Present' : '-')}
+                      </span>
+                    </div>
+                  </div>
+                  {(canEdit || canDelete) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEdit && (
+                        <button
+                          onClick={() => openEdit(e)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => deleteExperience(e.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

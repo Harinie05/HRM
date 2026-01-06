@@ -256,20 +256,20 @@ export default function ClearanceWorkflow() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Exit List */}
         <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
-          <div className="p-6 border-b border-black bg-gray-50">
-            <h3 className="text-xl font-bold text-gray-900">Approved Resignations</h3>
-            <p className="text-gray-600 text-sm mt-1">Select an employee to manage clearance process</p>
+          <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900">Approved Resignations</h3>
+            <p className="text-gray-600 text-xs sm:text-sm mt-1">Select an employee to manage clearance process</p>
           </div>
           
-          <div className="p-6">
-            <div className="space-y-4">
+          <div className="p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
               {exits.length === 0 ? (
-                <div className="text-center py-12">
+                <div className="text-center py-8 sm:py-12">
                   <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                    <User className="w-12 h-12 mx-auto text-gray-500" />
+                    <User className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-500" />
                   </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No approved resignations found</h4>
-                  <p className="text-gray-600 text-sm">Resignations will appear here once clearance processes have started.</p>
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No approved resignations found</h4>
+                  <p className="text-gray-600 text-xs sm:text-sm">Resignations will appear here once clearance processes have started.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -280,28 +280,28 @@ export default function ClearanceWorkflow() {
                     <div
                       key={exit.id}
                       onClick={() => setSelectedExit(exit)}
-                      className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         isSelected 
                           ? 'border-gray-900 bg-gray-50 shadow-md' 
                           : 'border-gray-300 hover:border-gray-400 bg-white'
                       }`}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="font-semibold text-gray-900">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
-                          <div className="text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
-                          <div className="text-sm text-gray-600">Last Working: {exit.last_working_day || 'N/A'}</div>
-                          <div className="text-sm text-gray-600">Reason: {exit.reason || 'N/A'}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
+                          <div className="text-xs sm:text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
+                          <div className="text-xs sm:text-sm text-gray-600">Last Working: {exit.last_working_day || 'N/A'}</div>
+                          <div className="text-xs sm:text-sm text-gray-600">Reason: {exit.reason || 'N/A'}</div>
                         </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                        <div className="flex flex-col items-end gap-2 ml-3">
+                          <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${
                             exit.exit_interview_completed 
                               ? 'bg-gray-100 text-gray-800 border-gray-300' 
                               : 'bg-gray-100 text-gray-800 border-gray-300'
                           }`}>
                             {exit.exit_interview_completed ? 'Interview Done' : 'Pending Interview'}
                           </span>
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                          <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${
                             clearanceCompleted
                               ? 'bg-gray-100 text-gray-800 border-gray-300'
                               : 'bg-gray-100 text-gray-800 border-gray-300'
@@ -322,30 +322,30 @@ export default function ClearanceWorkflow() {
         <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
           {selectedExit ? (
             <>
-              <div className="p-6 border-b border-black bg-gray-50">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Clearance Status</h3>
-                    <p className="text-gray-600 text-sm mt-1">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
+              <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">Clearance Status</h3>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1 truncate">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
                   </div>
                   {!selectedExit.exit_interview_completed && areAllClearancesCompleted() && canConductInterview && (
                     <button
                       onClick={() => setShowInterviewForm(true)}
-                      className="bg-gray-800 px-4 py-2 text-white text-sm rounded-xl border border-black hover:bg-gray-900 font-semibold transition-all duration-200"
+                      className="bg-gray-800 px-3 sm:px-4 py-2 text-white text-xs sm:text-sm rounded-xl border border-black hover:bg-gray-900 font-semibold transition-all duration-200 whitespace-nowrap"
                     >
                       Conduct Exit Interview
                     </button>
                   )}
                   {!areAllClearancesCompleted() && (
-                    <div className="text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg border border-black">
+                    <div className="text-xs sm:text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg border border-black">
                       Complete all clearances to conduct interview
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="p-6">
-                <div className="grid grid-cols-1 gap-4">
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   {clearances.length > 0 ? (
                     clearances.filter(clearance => {
                       // Only show clearances for departments the user has permission for
@@ -365,19 +365,19 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={clearance.id} className="border border-black rounded-xl p-4 hover:shadow-md transition-all duration-200">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 flex-1">
-                              <div className="p-3 rounded-xl bg-gray-100 border border-black">
-                                <IconComponent className="h-5 w-5 text-gray-500" />
+                        <div key={clearance.id} className="border border-black rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-200">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                              <div className="p-2 sm:p-3 rounded-xl bg-gray-100 border border-black flex-shrink-0">
+                                <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                               </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-gray-900">{clearance.department}</div>
-                                <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-gray-900 text-sm sm:text-base">{clearance.department}</div>
+                                <div className="text-xs sm:text-sm text-gray-600 mt-1">{clearance.description}</div>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                              <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${
                                 clearance.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
                                 'bg-green-100 text-green-800 border-green-200'
                               }`}>
@@ -386,14 +386,14 @@ export default function ClearanceWorkflow() {
                               {clearance.status === 'Pending' && canManage && (
                                 <button
                                   onClick={() => handleApproveClearance(clearance.id)}
-                                  className="text-gray-800 hover:text-gray-900 text-sm px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200"
+                                  className="text-gray-800 hover:text-gray-900 text-xs sm:text-sm px-3 sm:px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200 whitespace-nowrap"
                                 >
                                   Mark Completed
                                 </button>
                               )}
                               {clearance.status === 'Completed' && (
                                 <div className="text-green-600">
-                                  <CheckCircle className="h-5 w-5" />
+                                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </div>
                               )}
                             </div>
@@ -421,19 +421,19 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={index} className="border border-black rounded-xl p-4 hover:shadow-md transition-all duration-200">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 flex-1">
-                              <div className="p-3 rounded-xl bg-gray-100 border border-black">
-                                <IconComponent className="h-5 w-5 text-gray-500" />
+                        <div key={index} className="border border-black rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-200">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                              <div className="p-2 sm:p-3 rounded-xl bg-gray-100 border border-black flex-shrink-0">
+                                <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                               </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-gray-900">{clearance.department}</div>
-                                <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-gray-900 text-sm sm:text-base">{clearance.department}</div>
+                                <div className="text-xs sm:text-sm text-gray-600 mt-1">{clearance.description}</div>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                              <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${
                                 currentStatus === 'Pending' ? 'bg-gray-100 text-gray-800 border-gray-300' :
                                 'bg-gray-100 text-gray-800 border-gray-300'
                               }`}>
@@ -442,14 +442,14 @@ export default function ClearanceWorkflow() {
                               {currentStatus === 'Pending' && canManage && (
                                 <button
                                   onClick={() => updateDepartmentClearance(selectedExit.id, clearance.department, 'Completed')}
-                                  className="text-gray-800 hover:text-gray-900 text-sm px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200"
+                                  className="text-gray-800 hover:text-gray-900 text-xs sm:text-sm px-3 sm:px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200 whitespace-nowrap"
                                 >
                                   Mark Completed
                                 </button>
                               )}
                               {currentStatus === 'Completed' && (
                                 <div className="text-gray-600">
-                                  <CheckCircle className="h-5 w-5" />
+                                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </div>
                               )}
                             </div>
@@ -461,37 +461,37 @@ export default function ClearanceWorkflow() {
                 </div>
 
                 {/* Exit Interview Status */}
-                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-black">
-                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-gray-500" />
+                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-xl border border-black">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                    <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                     Exit Interview Status
                   </h4>
                   {selectedExit.exit_interview_completed ? (
                     <div className="flex items-center gap-2 text-gray-800">
-                      <CheckCircle className="h-5 w-5" />
-                      <span className="font-medium">Completed on {selectedExit.exit_interview_date}</span>
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="font-medium text-xs sm:text-sm">Completed on {selectedExit.exit_interview_date}</span>
                     </div>
                   ) : areAllClearancesCompleted() ? (
                     <div className="flex items-center gap-2 text-green-600">
-                      <CheckCircle className="h-5 w-5" />
-                      <span className="font-medium">Ready for Exit Interview</span>
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="font-medium text-xs sm:text-sm">Ready for Exit Interview</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="h-5 w-5" />
-                      <span className="font-medium">Pending - Complete all clearances first</span>
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <span className="font-medium text-xs sm:text-sm">Pending - Complete all clearances first</span>
                     </div>
                   )}
                 </div>
               </div>
             </>
           ) : (
-            <div className="p-12 text-center">
+            <div className="p-8 sm:p-12 text-center">
               <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                <CheckCircle className="w-12 h-12 mx-auto text-gray-500" />
+                <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-500" />
               </div>
-              <h4 className="text-lg font-medium text-gray-900 mb-2">Select an Employee</h4>
-              <p className="text-gray-600">Choose an employee from the left to view and manage their clearance details</p>
+              <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Select an Employee</h4>
+              <p className="text-gray-600 text-xs sm:text-sm">Choose an employee from the left to view and manage their clearance details</p>
             </div>
           )}
         </div>

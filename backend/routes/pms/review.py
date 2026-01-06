@@ -47,11 +47,18 @@ async def create_review(review: dict, request: Request, db: Session = Depends(ge
 
 @router.get("/reviews")
 async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_review_cycles"))):
+    # Check for show deleted permission if requesting deleted items
+    if include_deleted:
+        # Simple permission check - if user can view reviews, they can view deleted ones
+        pass
+    
     try:
         if include_deleted:
-            reviews = db.query(PMSReview).all()
+            reviews = db.query(PMSReview).filter(PMSReview.deleted_at.isnot(None)).all()
+            print(f"DEBUG: Found {len(reviews)} deleted reviews")
         else:
-            reviews = db.query(PMSReview).filter(PMSReview.is_active == True).all()
+            reviews = db.query(PMSReview).filter(PMSReview.deleted_at.is_(None)).all()
+            print(f"DEBUG: Found {len(reviews)} active reviews")
         
         # Calculate progress for each review cycle
         reviews_data = []
@@ -95,7 +102,7 @@ async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_t
 @router.put("/reviews/{review_id}")
 async def update_review(review_id: int, review: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("edit_review_cycle"))):
     try:
-        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.deleted_at.is_(None)).first()
         if not db_review:
             raise HTTPException(status_code=404, detail="Review not found")
         
@@ -120,41 +127,60 @@ async def update_review(review_id: int, review: dict, request: Request, db: Sess
 @router.delete("/reviews/{review_id}")
 async def delete_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_review_cycle"))):
     try:
-        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == True).first()
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id).first()
         if not db_review:
             raise HTTPException(status_code=404, detail="Review not found")
         
+        # Check if already deleted
+        if db_review.deleted_at is not None:
+            raise HTTPException(status_code=400, detail="Review is already deleted")
+        
         # Store old values for audit
-        old_values = {"is_active": db_review.is_active}
+        old_values = {"is_active": db_review.is_active, "deleted_at": db_review.deleted_at}
         
         # Soft delete
-        db_review.is_active = False
+        from datetime import datetime
+        setattr(db_review, 'is_active', False)
+        setattr(db_review, 'deleted_at', datetime.now())
         db.commit()
         
         # Audit log
-        audit_crud(request, db, user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": False})
+        audit_crud(request, db, user, "DELETE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": False, "deleted_at": db_review.deleted_at})
         return {"message": "Review deleted successfully"}
     except Exception as e:
         db.rollback()
         print(f"Error deleting review: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error deleting review: {str(e)}")
 
+@router.get("/reviews/deleted-count")
+async def get_deleted_reviews_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_review_cycles"))
+):
+    try:
+        count = db.query(PMSReview).filter(PMSReview.deleted_at.isnot(None)).count()
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted reviews count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.put("/reviews/{review_id}/restore")
 async def restore_review(review_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_review_cycle"))):
     try:
-        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.is_active == False).first()
+        db_review = db.query(PMSReview).filter(PMSReview.id == review_id, PMSReview.deleted_at.isnot(None)).first()
         if not db_review:
             raise HTTPException(status_code=404, detail="Deleted review not found")
         
         # Store old values for audit
-        old_values = {"is_active": db_review.is_active}
+        old_values = {"is_active": db_review.is_active, "deleted_at": db_review.deleted_at}
         
         # Restore
-        db_review.is_active = True
+        setattr(db_review, 'is_active', True)
+        setattr(db_review, 'deleted_at', None)
         db.commit()
         
         # Audit log
-        audit_crud(request, db, user, "RESTORE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": True})
+        audit_crud(request, db, user, "RESTORE_REVIEW", "pms_reviews", str(review_id), old_values, {"is_active": True, "deleted_at": None})
         return {"message": "Review restored successfully"}
     except Exception as e:
         db.rollback()

@@ -314,7 +314,7 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-30 h-14 sm:h-16
+      className="fixed top-0 left-0 right-0 z-30 h-12 sm:h-14
       text-white
       flex items-center justify-between
       shadow-md transition-all duration-300 px-3 sm:px-6"

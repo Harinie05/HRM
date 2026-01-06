@@ -356,242 +356,437 @@ export default function LeaveTypes({ activeView = "types" }) {
       {activeView === "types" ? (
         (isAdmin() || hasPermission("view_leave_types")) && (
         /* Leave Types Table */
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-48">Leave Type</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Code</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Category</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Limit Source</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Carry Forward</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Status</th>
-                {(hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type")) && (
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Actions</th>
-                )}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {filteredTypes.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full table-fixed">
+              <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                 <tr>
-                  <td colSpan={hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type") ? "7" : "6"} className="px-6 py-12 text-center text-gray-500">
-                    <div className="flex flex-col items-center space-y-3">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Plus className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-lg font-medium text-gray-900">
-                        {searchTerm ? "No leave types found matching your search." : "No leave types configured yet."}
-                      </p>
-                      <p className="text-sm text-gray-500">Create your first leave type to get started</p>
-                    </div>
-                  </td>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-48">Leave Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Code</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Category</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Limit Source</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Carry Forward</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Status</th>
+                  {(hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type")) && (
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Actions</th>
+                  )}
                 </tr>
-              ) : (
-                filteredTypes.map((type, index) => (
-                  <tr key={type.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="text-sm font-semibold text-gray-900 truncate">{type.name}</div>
-                        <div className="text-sm text-gray-500 truncate">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {filteredTypes.length === 0 ? (
+                  <tr>
+                    <td colSpan={hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type") ? "7" : "6"} className="px-6 py-12 text-center text-gray-500">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                          <Plus className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-lg font-medium text-gray-900">
+                          {searchTerm ? "No leave types found matching your search." : "No leave types configured yet."}
+                        </p>
+                        <p className="text-sm text-gray-500">Create your first leave type to get started</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 truncate">
+                  </tr>
+                ) : (
+                  filteredTypes.map((type, index) => (
+                    <tr key={type.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                      <td className="px-6 py-4">
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900 truncate">{type.name}</div>
+                          <div className="text-sm text-gray-500 truncate">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 truncate">
+                          {type.code}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 truncate">
+                        {type.category || "General"}
+                      </td>
+                      <td className="px-6 py-4">
+                        {(() => {
+                          const isFixedPolicyType = ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(type.code?.toUpperCase());
+                          const isDynamicPolicyType = leavePolicies.some(policy => 
+                            policy.status === 'Active' && 
+                            policy.leave_allocations && 
+                            policy.leave_allocations[type.code?.toUpperCase()]
+                          );
+                          
+                          return (isFixedPolicyType || isDynamicPolicyType) ? (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                              Policy Controlled
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-900">{type.annual_limit} days</span>
+                          );
+                        })()} 
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          type.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        }`}>
+                          {type.carry_forward ? "Yes" : "No"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {type.status}
+                        </span>
+                      </td>
+                      {(hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type")) && (
+                        <td className="px-6 py-4 text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            {hasPermission("view_leave_types") && (
+                              <button 
+                                onClick={() => {
+                                  console.log('Viewing leave type:', type);
+                                  showToast(`Viewing ${type.name} details`, 'info');
+                                }}
+                                className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            )}
+                            {hasPermission("edit_leave_type") && (
+                              <button 
+                                onClick={() => handleOpenModal(type)}
+                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
+                            {hasPermission("delete_leave_type") && (
+                              <button 
+                                onClick={() => handleDelete(type.id)}
+                                className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {filteredTypes.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Plus className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-lg font-medium text-gray-900">
+                    {searchTerm ? "No leave types found matching your search." : "No leave types configured yet."}
+                  </p>
+                  <p className="text-sm text-gray-500">Create your first leave type to get started</p>
+                </div>
+              </div>
+            ) : (
+              filteredTypes.map((type, index) => (
+                <div key={type.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{type.name}</div>
+                      <div className="text-sm text-gray-500">{type.is_paid ? "Paid Leave" : "Unpaid Leave"}</div>
+                    </div>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                    }`}>
+                      {type.status}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Code:</span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                         {type.code}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 truncate">
-                      {type.category || "General"}
-                    </td>
-                    <td className="px-6 py-4">
-                      {(() => {
-                        const isFixedPolicyType = ['AL', 'ANNUAL', 'SL', 'SICK', 'CL', 'CASUAL'].includes(type.code?.toUpperCase());
-                        const isDynamicPolicyType = leavePolicies.some(policy => 
-                          policy.status === 'Active' && 
-                          policy.leave_allocations && 
-                          policy.leave_allocations[type.code?.toUpperCase()]
-                        );
-                        
-                        return (isFixedPolicyType || isDynamicPolicyType) ? (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                            Policy Controlled
-                          </span>
-                        ) : (
-                          <span className="text-sm text-gray-900">{type.annual_limit} days</span>
-                        );
-                      })()} 
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Category:</span>
+                      <span className="text-sm text-gray-600">{type.category || "General"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Carry Forward:</span>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
                         type.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {type.carry_forward ? "Yes" : "No"}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        type.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}>
-                        {type.status}
-                      </span>
-                    </td>
-                    {(hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type")) && (
-                      <td className="px-6 py-4 text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          {hasPermission("view_leave_types") && (
-                            <button 
-                              onClick={() => {
-                                console.log('Viewing leave type:', type);
-                                showToast(`Viewing ${type.name} details`, 'info');
-                              }}
-                              className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                            >
-                              <Eye size={16} />
-                            </button>
-                          )}
-                          {hasPermission("edit_leave_type") && (
-                            <button 
-                              onClick={() => handleOpenModal(type)}
-                              className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                            >
-                              <Edit size={16} />
-                            </button>
-                          )}
-                          {hasPermission("delete_leave_type") && (
-                            <button 
-                              onClick={() => handleDelete(type.id)}
-                              className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    </div>
+                  </div>
+                  {(hasPermission("view_leave_types") || hasPermission("edit_leave_type") || hasPermission("delete_leave_type")) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {hasPermission("view_leave_types") && (
+                        <button 
+                          onClick={() => {
+                            console.log('Viewing leave type:', type);
+                            showToast(`Viewing ${type.name} details`, 'info');
+                          }}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <Eye size={14} />
+                          View
+                        </button>
+                      )}
+                      {hasPermission("edit_leave_type") && (
+                        <button 
+                          onClick={() => handleOpenModal(type)}
+                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
+                        >
+                          <Edit size={14} />
+                          Edit
+                        </button>
+                      )}
+                      {hasPermission("delete_leave_type") && (
+                        <button 
+                          onClick={() => handleDelete(type.id)}
+                          className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
         )
       ) : (
         (isAdmin() || hasPermission("view_leave_policies")) && (
         /* Leave Policies Table */
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-48">Policy Name</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-64">Leave Allocations</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Carry Forward</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Encashment</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Status</th>
-                {(hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy")) && (
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Actions</th>
-                )}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {leavePolicies.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full table-fixed">
+              <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                 <tr>
-                  <td colSpan={hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
-                    <div className="flex flex-col items-center space-y-3">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Plus className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-lg font-medium text-gray-900">No leave policies found</p>
-                      <p className="text-sm text-gray-500">Create your first leave policy to get started</p>
-                    </div>
-                  </td>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-48">Policy Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-64">Leave Allocations</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-32">Carry Forward</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Encashment</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-20">Status</th>
+                  {(hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy")) && (
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">Actions</th>
+                  )}
                 </tr>
-              ) : (
-                filteredPolicies.map((policy, index) => (
-                  <tr key={policy.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-gray-900 truncate">{policy.name}</div>
-                      <div className="text-sm text-gray-500 truncate">{policy.rule}</div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {leavePolicies.length === 0 ? (
+                  <tr>
+                    <td colSpan={hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                          <Plus className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-lg font-medium text-gray-900">No leave policies found</p>
+                        <p className="text-sm text-gray-500">Create your first leave policy to get started</p>
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
+                  </tr>
+                ) : (
+                  filteredPolicies.map((policy, index) => (
+                    <tr key={policy.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-semibold text-gray-900 truncate">{policy.name}</div>
+                        <div className="text-sm text-gray-500 truncate">{policy.rule}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-2">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            AL: {policy.annual}d
+                          </span>
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                            SL: {policy.sick}d
+                          </span>
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                            CL: {policy.casual}d
+                          </span>
+                          {policy.leave_allocations && Object.entries(policy.leave_allocations).map(([code, days]) => {
+                            const leaveType = leaveTypes.find(lt => lt.code?.toUpperCase() === code);
+                            return (
+                              <span key={code} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                {code}: {days}d
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          policy.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        }`}>
+                          {policy.carry_forward ? `Yes (${policy.max_carry})` : "No"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          policy.encashment ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        }`}>
+                          {policy.encashment ? "Yes" : "No"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {policy.status}
+                        </span>
+                      </td>
+                      {(hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy")) && (
+                        <td className="px-6 py-4 text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            {hasPermission("view_leave_policies") && (
+                              <button 
+                                onClick={() => {
+                                  console.log('Viewing leave policy:', policy);
+                                  showToast(`Viewing ${policy.name} details`, 'info');
+                                }}
+                                className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            )}
+                            {hasPermission("edit_leave_policy") && (
+                              <button 
+                                onClick={() => handleOpenPolicyModal(policy)}
+                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
+                            {hasPermission("delete_leave_policy") && (
+                              <button 
+                                onClick={() => handleDeletePolicy(policy.id)}
+                                className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {leavePolicies.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Plus className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-lg font-medium text-gray-900">No leave policies found</p>
+                  <p className="text-sm text-gray-500">Create your first leave policy to get started</p>
+                </div>
+              </div>
+            ) : (
+              filteredPolicies.map((policy, index) => (
+                <div key={policy.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{policy.name}</div>
+                      <div className="text-sm text-gray-500">{policy.rule}</div>
+                    </div>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                    }`}>
+                      {policy.status}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm font-medium text-gray-900 block mb-2">Leave Allocations:</span>
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                           AL: {policy.annual}d
                         </span>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                           SL: {policy.sick}d
                         </span>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
                           CL: {policy.casual}d
                         </span>
-                        {policy.leave_allocations && Object.entries(policy.leave_allocations).map(([code, days]) => {
-                          const leaveType = leaveTypes.find(lt => lt.code?.toUpperCase() === code);
-                          return (
-                            <span key={code} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
-                              {code}: {days}d
-                            </span>
-                          );
-                        })}
+                        {policy.leave_allocations && Object.entries(policy.leave_allocations).map(([code, days]) => (
+                          <span key={code} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                            {code}: {days}d
+                          </span>
+                        ))}
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Carry Forward:</span>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
                         policy.carry_forward ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {policy.carry_forward ? `Yes (${policy.max_carry})` : "No"}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Encashment:</span>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
                         policy.encashment ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                       }`}>
                         {policy.encashment ? "Yes" : "No"}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        policy.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                      }`}>
-                        {policy.status}
-                      </span>
-                    </td>
-                    {(hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy")) && (
-                      <td className="px-6 py-4 text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          {hasPermission("view_leave_policies") && (
-                            <button 
-                              onClick={() => {
-                                console.log('Viewing leave policy:', policy);
-                                showToast(`Viewing ${policy.name} details`, 'info');
-                              }}
-                              className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                            >
-                              <Eye size={16} />
-                            </button>
-                          )}
-                          {hasPermission("edit_leave_policy") && (
-                            <button 
-                              onClick={() => handleOpenPolicyModal(policy)}
-                              className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                            >
-                              <Edit size={16} />
-                            </button>
-                          )}
-                          {hasPermission("delete_leave_policy") && (
-                            <button 
-                              onClick={() => handleDeletePolicy(policy.id)}
-                              className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    </div>
+                  </div>
+                  {(hasPermission("view_leave_policies") || hasPermission("edit_leave_policy") || hasPermission("delete_leave_policy")) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {hasPermission("view_leave_policies") && (
+                        <button 
+                          onClick={() => {
+                            console.log('Viewing leave policy:', policy);
+                            showToast(`Viewing ${policy.name} details`, 'info');
+                          }}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <Eye size={14} />
+                          View
+                        </button>
+                      )}
+                      {hasPermission("edit_leave_policy") && (
+                        <button 
+                          onClick={() => handleOpenPolicyModal(policy)}
+                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
+                        >
+                          <Edit size={14} />
+                          Edit
+                        </button>
+                      )}
+                      {hasPermission("delete_leave_policy") && (
+                        <button 
+                          onClick={() => handleDeletePolicy(policy.id)}
+                          className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
         )
       )}

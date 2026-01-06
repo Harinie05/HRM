@@ -201,29 +201,29 @@ export default function KnowledgeTransfer() {
   if (loading) return <div className="p-8">Loading...</div>;
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Knowledge Transfer</h2>
-          <p className="text-gray-600">Manage knowledge transfer for exiting employees</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Knowledge Transfer</h2>
+          <p className="text-gray-600 text-sm sm:text-base">Manage knowledge transfer for exiting employees</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-lg border p-4">
-          <h3 className="font-semibold mb-4">Pending Exits</h3>
+        <div className="bg-white rounded-lg border border-black p-3 sm:p-4">
+          <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Pending Exits</h3>
           <div className="space-y-2">
             {exits.map(exit => (
               <div
                 key={exit.id}
                 onClick={() => handleExitSelect(exit)}
-                className={`p-3 rounded cursor-pointer border ${
+                className={`p-2 sm:p-3 rounded cursor-pointer border transition-all duration-200 ${
                   selectedExit?.id === exit.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
                 }`}
               >
-                <div className="font-medium">{exit.employee_name}</div>
-                <div className="text-sm text-gray-600">Code: {exit.employee_code}</div>
+                <div className="font-medium text-sm sm:text-base truncate">{exit.employee_name}</div>
+                <div className="text-xs sm:text-sm text-gray-600">Code: {exit.employee_code}</div>
               </div>
             ))}
           </div>
@@ -232,17 +232,17 @@ export default function KnowledgeTransfer() {
         {/* KT Details */}
         <div className="lg:col-span-2">
           {selectedExit && (
-            <div className="bg-white rounded-lg border p-6">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">{selectedExit.employee_name}</h3>
-                  <p className="text-gray-600">Code: {selectedExit.employee_code}</p>
-                  <p className="text-gray-600">Last Working Day: {selectedExit.last_working_day}</p>
+            <div className="bg-white rounded-lg border border-black p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+                <div className="min-w-0">
+                  <h3 className="text-base sm:text-lg font-semibold truncate">{selectedExit.employee_name}</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm">Code: {selectedExit.employee_code}</p>
+                  <p className="text-gray-600 text-xs sm:text-sm">Last Working Day: {selectedExit.last_working_day}</p>
                 </div>
                 {!ktData && !showCreateForm && canCreate && (
                   <button
                     onClick={() => setShowCreateForm(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm whitespace-nowrap"
                   >
                     Create KT Plan
                   </button>
@@ -250,15 +250,15 @@ export default function KnowledgeTransfer() {
               </div>
 
               {showCreateForm && (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">KT Start Date</label>
                       <input
                         type="date"
                         value={formData.start_date}
                         onChange={(e) => setFormData({...formData, start_date: e.target.value})}
-                        className="w-full border rounded-lg px-3 py-2"
+                        className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                         required
                       />
                     </div>
@@ -268,20 +268,20 @@ export default function KnowledgeTransfer() {
                         type="date"
                         value={formData.end_date}
                         onChange={(e) => setFormData({...formData, end_date: e.target.value})}
-                        className="w-full border rounded-lg px-3 py-2"
+                        className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                         required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <h4 className="font-medium">Knowledge Transfer Items</h4>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
+                      <h4 className="font-medium text-sm sm:text-base">Knowledge Transfer Items</h4>
                       {canAdd && (
                         <button
                           type="button"
                           onClick={addKTItem}
-                          className="flex items-center gap-2 px-3 py-1 text-blue-600 hover:bg-blue-50 rounded"
+                          className="flex items-center gap-2 px-3 py-1 text-blue-600 hover:bg-blue-50 rounded text-sm whitespace-nowrap"
                         >
                           <Plus className="w-4 h-4" /> Add Item
                         </button>
@@ -289,27 +289,27 @@ export default function KnowledgeTransfer() {
                     </div>
 
                     {formData.kt_items.map((item, index) => (
-                      <div key={index} className="border rounded-lg p-4 mb-4">
-                        <div className="flex justify-between items-start mb-3">
-                          <h5 className="font-medium">KT Item {index + 1}</h5>
+                      <div key={index} className="border border-black rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-3">
+                          <h5 className="font-medium text-sm sm:text-base">KT Item {index + 1}</h5>
                           {formData.kt_items.length > 1 && (
                             <button
                               type="button"
                               onClick={() => removeKTItem(index)}
-                              className="text-red-600 hover:bg-red-50 p-1 rounded"
+                              className="text-red-600 hover:bg-red-50 p-1 rounded self-start"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3">
                           <div>
                             <label className="block text-sm font-medium mb-1">Knowledge Area</label>
                             <select
                               value={item.knowledge_area}
                               onChange={(e) => updateKTItem(index, 'knowledge_area', e.target.value)}
-                              className="w-full border rounded px-3 py-2"
+                              className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                               required
                             >
                               <option value="">Select Area</option>
@@ -323,7 +323,7 @@ export default function KnowledgeTransfer() {
                             <select
                               value={item.to_employee_id}
                               onChange={(e) => updateKTItem(index, 'to_employee_id', e.target.value)}
-                              className="w-full border rounded px-3 py-2"
+                              className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                               required
                             >
                               <option value="">Select Employee</option>
@@ -339,7 +339,7 @@ export default function KnowledgeTransfer() {
                           <textarea
                             value={item.description}
                             onChange={(e) => updateKTItem(index, 'description', e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                             rows="2"
                             placeholder="Describe what needs to be transferred..."
                           />
@@ -353,22 +353,22 @@ export default function KnowledgeTransfer() {
                     <textarea
                       value={formData.remarks}
                       onChange={(e) => setFormData({...formData, remarks: e.target.value})}
-                      className="w-full border rounded-lg px-3 py-2"
+                      className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       rows="3"
                     />
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="submit"
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
                     >
                       Create KT Plan
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowCreateForm(false)}
-                      className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      className="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
                     >
                       Cancel
                     </button>
@@ -377,9 +377,9 @@ export default function KnowledgeTransfer() {
               )}
 
               {ktData && (
-                <div className="space-y-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-black">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div><strong>KT Period:</strong> {ktData.start_date} to {ktData.end_date}</div>
                       <div><strong>Overall Status:</strong> {ktData.overall_status}</div>
                       <div><strong>Manager Approved:</strong> {ktData.manager_approved ? "✅" : "❌"}</div>
@@ -388,37 +388,37 @@ export default function KnowledgeTransfer() {
                   </div>
 
                   <div>
-                    <h4 className="font-medium mb-4">KT Items</h4>
+                    <h4 className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">KT Items</h4>
                     {ktData.kt_items && ktData.kt_items.length > 0 ? (
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         {ktData.kt_items.map(item => (
-                          <div key={item.id} className="border rounded-lg p-4">
-                            <div className="flex justify-between items-start mb-2">
+                          <div key={item.id} className="border border-black rounded-lg p-3 sm:p-4">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-2">
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(item.status)}
-                                <span className="font-medium">{item.knowledge_area}</span>
+                                <span className="font-medium text-sm sm:text-base">{item.knowledge_area}</span>
                               </div>
                               {item.status !== "Completed" && canComplete && (
                                 <button
                                   onClick={() => acknowledgeItem(item.id)}
-                                  className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                                  className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-green-600 text-white rounded hover:bg-green-700 whitespace-nowrap"
                                 >
                                   Mark Complete
                                 </button>
                               )}
                             </div>
-                            <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 mb-2">{item.description}</p>
                             <div className="text-xs text-gray-500">
                               To: {employees.find(e => e.id === item.to_employee_id)?.name}
                               {item.acknowledged_at && (
-                                <span className="ml-4">Completed: {new Date(item.acknowledged_at).toLocaleDateString()}</span>
+                                <span className="ml-2 sm:ml-4">Completed: {new Date(item.acknowledged_at).toLocaleDateString()}</span>
                               )}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-gray-500 text-center py-4">
+                      <div className="text-gray-500 text-center py-4 text-sm">
                         No KT items found. 
                         <button 
                           onClick={() => setShowCreateForm(true)}
@@ -431,12 +431,12 @@ export default function KnowledgeTransfer() {
                   </div>
 
                   {ktData && (
-                    <div className="flex gap-3 mt-4">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4">
                       {console.log('Button render check:', { manager_approved: ktData.manager_approved, canManagerApprove })}
                       {!ktData.manager_approved && canManagerApprove && (
                         <button
                           onClick={() => approveKT("manager")}
-                          className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+                          className="px-3 sm:px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
                         >
                           Manager Approve
                         </button>
@@ -444,13 +444,13 @@ export default function KnowledgeTransfer() {
                       {ktData.manager_approved && !ktData.hr_approved && canHRApprove && (
                         <button
                           onClick={() => approveKT("hr")}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                          className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
                         >
                           HR Approve
                         </button>
                       )}
                       {ktData.manager_approved && ktData.hr_approved && (
-                        <div className="px-4 py-2 bg-green-100 text-green-800 rounded-lg">
+                        <div className="px-3 sm:px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
                           ✅ Fully Approved
                         </div>
                       )}

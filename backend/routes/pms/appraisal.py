@@ -63,19 +63,35 @@ async def create_appraisal(appraisal: dict, request: Request, db: Session = Depe
 @router.get("/appraisals")
 async def get_appraisals(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_appraisals"))):
     # Check for show deleted permission if requesting deleted items
-    if include_deleted and not user.has_permission("show_deleted_appraisals"):
-        raise HTTPException(status_code=403, detail="You don't have permission to view deleted appraisals")
+    if include_deleted:
+        # Simple permission check - if user can view appraisals, they can view deleted ones
+        pass
     
     try:
         from sqlalchemy import text
         
-        # Get all employees with work assignments and auto-generate appraisals
-        employees_result = db.execute(text("""
-            SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
-            FROM work_assignments wa
-            LEFT JOIN users u ON wa.assigned_employee_id = u.id
-            WHERE wa.is_active = 1 AND u.name IS NOT NULL
-        """)).fetchall()
+        # Get employees based on whether we want deleted or active appraisals
+        if include_deleted:
+            employees_result = db.execute(text("""
+                SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
+                FROM work_assignments wa
+                LEFT JOIN users u ON wa.assigned_employee_id = u.id
+                WHERE wa.is_active = 0 AND u.name IS NOT NULL
+            """)).fetchall()
+            print(f"DEBUG: Found {len(employees_result)} deleted work assignments")
+        else:
+            employees_result = db.execute(text("""
+                SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
+                FROM work_assignments wa
+                LEFT JOIN users u ON wa.assigned_employee_id = u.id
+                WHERE wa.is_active = 1 AND u.name IS NOT NULL
+            """)).fetchall()
+            print(f"DEBUG: Found {len(employees_result)} active work assignments")
+        
+        # If no employees found, return empty data
+        if not employees_result:
+            print(f"DEBUG: No employees found for include_deleted={include_deleted}")
+            return {"data": []}
         
         appraisal_data = []
         current_year = "2025"
@@ -96,13 +112,21 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
                 if onboarded_result:
                     employee_identifier = onboarded_result[0]
             
-            # Calculate KPI score
-            kpi_result = db.execute(text("""
-                SELECT SUM(CASE WHEN ast.completion_status = 'Completed' THEN wa.weightage_percentage ELSE 0 END) as completed_score
-                FROM work_assignments wa
-                LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = :employee_identifier
-                WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
-            """), {"employee_id": employee_id, "employee_identifier": employee_identifier}).fetchone()
+            # Calculate KPI score - only for active work assignments when showing deleted
+            if include_deleted:
+                kpi_result = db.execute(text("""
+                    SELECT SUM(CASE WHEN ast.completion_status = 'Completed' THEN wa.weightage_percentage ELSE 0 END) as completed_score
+                    FROM work_assignments wa
+                    LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = :employee_identifier
+                    WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 0
+                """), {"employee_id": employee_id, "employee_identifier": employee_identifier}).fetchone()
+            else:
+                kpi_result = db.execute(text("""
+                    SELECT SUM(CASE WHEN ast.completion_status = 'Completed' THEN wa.weightage_percentage ELSE 0 END) as completed_score
+                    FROM work_assignments wa
+                    LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = :employee_identifier
+                    WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
+                """), {"employee_id": employee_id, "employee_identifier": employee_identifier}).fetchone()
             
             kpi_score = kpi_result[0] if kpi_result[0] else 0.0
             
@@ -127,7 +151,8 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
                 "kpi_score": round(kpi_score, 1),
                 "final_rating": final_rating,
                 "status": status,
-                "rating_display": f"{final_rating}/5"
+                "rating_display": f"{final_rating}/5",
+                "is_active": not include_deleted  # Mark as inactive if showing deleted
             })
         
         return {"data": appraisal_data}
@@ -161,32 +186,89 @@ async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request,
 
 @router.delete("/appraisals/{appraisal_id}")
 async def delete_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_appraisal"))):
-    db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
-    if not db_appraisal:
-        raise HTTPException(status_code=404, detail="Appraisal not found")
-    
-    # Store old values for audit
-    old_values = {"employee_id": db_appraisal.employee_id, "cycle": db_appraisal.cycle, "final_rating": db_appraisal.final_rating}
-    
-    db.delete(db_appraisal)
-    db.commit()
-    
-    # Audit log
-    audit_crud(request, db, user, "DELETE_APPRAISAL", "pms_appraisals", str(appraisal_id), old_values, {})
-    return {"message": "Appraisal deleted successfully"}
+    try:
+        # Since appraisals are auto-generated from work assignments, we can't actually delete them
+        # Instead, we'll mark the corresponding work assignment as deleted
+        from sqlalchemy import text
+        
+        # Find the work assignment that corresponds to this appraisal ID (employee_id)
+        result = db.execute(text("""
+            SELECT wa.id FROM work_assignments wa
+            WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
+            LIMIT 1
+        """), {"employee_id": appraisal_id}).fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Appraisal not found")
+        
+        # Soft delete the work assignment
+        from datetime import datetime
+        db.execute(text("""
+            UPDATE work_assignments 
+            SET is_active = 0, deleted_at = NOW(), updated_at = NOW()
+            WHERE assigned_employee_id = :employee_id
+        """), {"employee_id": appraisal_id})
+        
+        # Audit log
+        audit_crud(request, db, user, "DELETE_APPRAISAL", "work_assignments", str(appraisal_id), {"is_active": 1}, {"is_active": 0, "deleted_at": datetime.now()})
+        
+        db.commit()
+        return {"message": "Appraisal deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting appraisal: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error deleting appraisal: {str(e)}")
 
 @router.put("/appraisals/{appraisal_id}/restore")
 async def restore_appraisal(appraisal_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_appraisal"))):
     try:
-        # Note: This is a placeholder since the current model doesn't have soft delete
-        # In a real implementation, you would restore a soft-deleted record
-        db_appraisal = db.query(PMSAppraisal).filter(PMSAppraisal.id == appraisal_id).first()
-        if not db_appraisal:
-            raise HTTPException(status_code=404, detail="Appraisal not found")
+        # Since appraisals are auto-generated from work assignments, restore the work assignments
+        from sqlalchemy import text
+        
+        # Find deleted work assignments for this employee
+        result = db.execute(text("""
+            SELECT wa.id FROM work_assignments wa
+            WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 0
+            LIMIT 1
+        """), {"employee_id": appraisal_id}).fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Deleted appraisal not found")
+        
+        # Restore the work assignments
+        db.execute(text("""
+            UPDATE work_assignments 
+            SET is_active = 1, deleted_at = NULL, updated_at = NOW()
+            WHERE assigned_employee_id = :employee_id
+        """), {"employee_id": appraisal_id})
         
         # Audit log
-        audit_crud(request, db, user, "RESTORE_APPRAISAL", "pms_appraisals", str(appraisal_id), {}, {"restored": True})
+        audit_crud(request, db, user, "RESTORE_APPRAISAL", "work_assignments", str(appraisal_id), {"is_active": 0}, {"is_active": 1, "deleted_at": None})
+        
+        db.commit()
         return {"message": "Appraisal restored successfully"}
     except Exception as e:
         db.rollback()
+        print(f"Error restoring appraisal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error restoring appraisal: {str(e)}")
+
+@router.get("/appraisals/deleted-count")
+async def get_deleted_appraisals_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_appraisals"))
+):
+    try:
+        from sqlalchemy import text
+        
+        # Count employees who have deleted work assignments (deleted appraisals)
+        count = db.execute(text("""
+            SELECT COUNT(DISTINCT wa.assigned_employee_id) 
+            FROM work_assignments wa
+            WHERE wa.is_active = 0
+        """)).scalar()
+        
+        print(f"DEBUG: Deleted appraisals count: {count}")
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted appraisals count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -155,7 +155,8 @@ export default function EmployeeSkills() {
         </div>
         {/* Skills Table */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -233,6 +234,72 @@ export default function EmployeeSkills() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {skills.length === 0 ? (
+              <div className="p-6 text-center">
+                <FiZap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Skills Added</h3>
+                <p className="text-gray-500">Add technical skills and competencies to showcase expertise.</p>
+              </div>
+            ) : (
+              skills.map((sk) => (
+                <div key={sk.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                        <FiZap className="w-4 h-4 text-black" />
+                      </div>
+                      <div className="font-medium text-gray-900">{sk.skill_name}</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-900">Proficiency:</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <FiStar
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < sk.rating ? 'text-gray-600 fill-current' : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-600">
+                          {sk.rating}/5
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {(canEdit || canDelete) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEdit && (
+                        <button
+                          onClick={() => openEdit(sk)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => deleteSkill(sk.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

@@ -485,48 +485,96 @@ export default function LeaveCompliance() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Leave Compliance Records</h3>
             <div className="overflow-x-auto">
-              <table className="w-full border border-black">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Working Days</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Leaves Taken</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Attendance %</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">OT Hours</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-black">
-                  {complianceRecords.map((record, index) => (
-                    <tr key={index} className="hover:bg-gray-50 border-b border-black">
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <div>
-                          <div className="font-medium">{record.employee_name}</div>
-                          <div className="text-gray-500 text-xs">{record.employee_id}</div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{record.actual_working_days}/{record.total_working_days}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{record.leaves_taken}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        {((record.actual_working_days / record.total_working_days) * 100).toFixed(1)}%
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{record.overtime_hours}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
-                          record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
-                          record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-900'
-                        }`}>
-                          {record.compliance_status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-sm">{record.month}/{record.year}</td>
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full border border-black">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Working Days</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Leaves Taken</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Attendance %</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">OT Hours</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {complianceRecords.map((record, index) => (
+                      <tr key={index} className="hover:bg-gray-50 border-b border-black">
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <div>
+                            <div className="font-medium">{record.employee_name}</div>
+                            <div className="text-gray-500 text-xs">{record.employee_id}</div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{record.actual_working_days}/{record.total_working_days}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{record.leaves_taken}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          {((record.actual_working_days / record.total_working_days) * 100).toFixed(1)}%
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{record.overtime_hours}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                            record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                            record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-900'
+                          }`}>
+                            {record.compliance_status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-sm">{record.month}/{record.year}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {complianceRecords.map((record, index) => (
+                  <div key={index} className="p-4 border-b border-gray-200 last:border-b-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{record.employee_name}</h4>
+                        <p className="text-sm text-gray-600">{record.employee_id}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        record.compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                        record.compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                        record.compliance_status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-900'
+                      }`}>
+                        {record.compliance_status}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Working Days:</span>
+                        <span className="text-gray-900">{record.actual_working_days}/{record.total_working_days}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Leaves Taken:</span>
+                        <span className="text-gray-900">{record.leaves_taken}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Attendance:</span>
+                        <span className="text-gray-900">{((record.actual_working_days / record.total_working_days) * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">OT Hours:</span>
+                        <span className="text-gray-900">{record.overtime_hours}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Period:</span>
+                        <span className="text-gray-900">{record.month}/{record.year}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

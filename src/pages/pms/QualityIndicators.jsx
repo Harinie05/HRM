@@ -28,6 +28,8 @@ const QualityIndicators = () => {
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
+  const [deletedRecordsCount, setDeletedRecordsCount] = useState(0);
   const { toast, showToast, hideToast } = useToast();
 
   const [indicatorForm, setIndicatorForm] = useState({
@@ -68,6 +70,22 @@ const QualityIndicators = () => {
       setIndicators(indicatorsRes.data || []);
       setRecords(recordsRes.data || []);
       setDepartments(deptRes.data || []);
+      
+      // Fetch deleted counts
+      if (!showDeleted) {
+        try {
+          const [deletedIndicatorsRes, deletedRecordsRes] = await Promise.all([
+            api.get('/api/hr/quality-indicators/quality-indicators/deleted-count'),
+            api.get('/api/hr/quality-indicators/kpi-records/deleted-count')
+          ]);
+          setDeletedCount(deletedIndicatorsRes.data?.count || 0);
+          setDeletedRecordsCount(deletedRecordsRes.data?.count || 0);
+        } catch (error) {
+          console.error('Error fetching deleted counts:', error);
+          setDeletedCount(0);
+          setDeletedRecordsCount(0);
+        }
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -297,16 +315,22 @@ const QualityIndicators = () => {
           <div className="mb-6 flex justify-between items-center">
             <div className="flex items-center gap-4">
               <h2 className="text-lg font-semibold">Quality Indicators</h2>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={showDeleted}
-                  onChange={(e) => setShowDeleted(e.target.checked)}
-                  className="rounded border-gray-300"
-                  style={{ display: (hasPermission('show_deleted_quality_indicators') || isAdmin()) ? 'inline' : 'none' }}
-                />
-                {(hasPermission('show_deleted_quality_indicators') || isAdmin()) && 'Show Deleted'}
-              </label>
+              {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
+                <button
+                  onClick={() => setShowDeleted(true)}
+                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                >
+                  Show Deleted ({deletedCount})
+                </button>
+              )}
+              {showDeleted && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
+                <button
+                  onClick={() => setShowDeleted(false)}
+                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                >
+                  Hide Deleted
+                </button>
+              )}
             </div>
             <button
               onClick={() => setShowIndicatorForm(true)}
@@ -426,80 +450,156 @@ const QualityIndicators = () => {
 
           {/* Quality Indicators Table */}
           <div className="bg-white rounded-lg border border-black overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KPI Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {indicators.map((indicator) => (
-                  <tr key={indicator.id} className={indicator.is_active === false ? 'bg-red-50 opacity-75' : ''}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {indicator.kpi_name}
-                      {indicator.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KPI Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {indicators.map((indicator) => (
+                    <tr key={indicator.id} className={indicator.is_active === false ? 'bg-red-50 opacity-75' : ''}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {indicator.kpi_name}
+                        {indicator.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                          {indicator.kpi_category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {indicator.target_value}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {indicator.unit_of_measure}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {indicator.frequency}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {indicator.department_name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          {indicator.is_active === false ? (
+                            (hasPermission('restore_quality_indicator') || isAdmin()) && (
+                            <button
+                              onClick={() => restoreIndicator(indicator.id)}
+                              className="text-green-600 hover:text-green-900"
+                              title="Restore Indicator"
+                            >
+                              <TrendingUp className="w-4 h-4" />
+                            </button>
+                            )
+                          ) : (
+                            <>
+                              {(hasPermission('edit_quality_indicator') || isAdmin()) && (
+                              <button
+                                onClick={() => editIndicator(indicator)}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              )}
+                              {(hasPermission('delete_quality_indicator') || isAdmin()) && (
+                              <button
+                                onClick={() => deleteIndicator(indicator.id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {indicators.map((indicator) => (
+                <div key={indicator.id} className={`p-4 border-b border-gray-200 last:border-b-0 ${indicator.is_active === false ? 'bg-red-50 opacity-75' : ''}`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">
+                        {indicator.kpi_name}
+                        {indicator.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </h4>
+                      <span className="inline-block mt-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                         {indicator.kpi_category}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {indicator.target_value}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {indicator.unit_of_measure}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {indicator.frequency}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {indicator.department_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        {indicator.is_active === false ? (
-                          (hasPermission('restore_quality_indicator') || isAdmin()) && (
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 mb-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Target:</span>
+                      <span className="text-gray-900">{indicator.target_value}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Unit:</span>
+                      <span className="text-gray-900">{indicator.unit_of_measure}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Frequency:</span>
+                      <span className="text-gray-900">{indicator.frequency}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Department:</span>
+                      <span className="text-gray-900">{indicator.department_name}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {indicator.is_active === false ? (
+                      (hasPermission('restore_quality_indicator') || isAdmin()) && (
+                        <button
+                          onClick={() => restoreIndicator(indicator.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                        >
+                          <TrendingUp className="w-3 h-3" />
+                          Restore
+                        </button>
+                      )
+                    ) : (
+                      <>
+                        {(hasPermission('edit_quality_indicator') || isAdmin()) && (
                           <button
-                            onClick={() => restoreIndicator(indicator.id)}
-                            className="text-green-600 hover:text-green-900"
-                            title="Restore Indicator"
+                            onClick={() => editIndicator(indicator)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
                           >
-                            <TrendingUp className="w-4 h-4" />
+                            <Edit className="w-3 h-3" />
+                            Edit
                           </button>
-                          )
-                        ) : (
-                          <>
-                            {(hasPermission('edit_quality_indicator') || isAdmin()) && (
-                            <button
-                              onClick={() => editIndicator(indicator)}
-                              className="text-blue-600 hover:text-blue-900"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            )}
-                            {(hasPermission('delete_quality_indicator') || isAdmin()) && (
-                            <button
-                              onClick={() => deleteIndicator(indicator.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                            )}
-                          </>
                         )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        {(hasPermission('delete_quality_indicator') || isAdmin()) && (
+                          <button
+                            onClick={() => deleteIndicator(indicator.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            Delete
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -508,7 +608,25 @@ const QualityIndicators = () => {
       {activeTab === 'records' && (
         <div>
           <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-lg font-semibold">KPI Records</h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-semibold">KPI Records</h2>
+              {!showDeleted && deletedRecordsCount > 0 && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
+                <button
+                  onClick={() => setShowDeleted(true)}
+                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                >
+                  Show Deleted ({deletedRecordsCount})
+                </button>
+              )}
+              {showDeleted && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
+                <button
+                  onClick={() => setShowDeleted(false)}
+                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                >
+                  Hide Deleted
+                </button>
+              )}
+            </div>
             <button
               onClick={() => setShowRecordForm(true)}
               className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
@@ -604,87 +722,169 @@ const QualityIndicators = () => {
 
           {/* KPI Records Table */}
           <div className="bg-white rounded-lg border border-black overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KPI Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variance</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {records.map((record) => (
-                  <tr key={record.id} className={record.is_active === false ? 'bg-red-50 opacity-75' : ''}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {record.kpi_name}
-                      {record.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {record.kpi_category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {record.recorded_date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {record.actual_value} {record.unit_of_measure}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {record.target_value} {record.unit_of_measure}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {record.variance_percentage}%
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
-                        {getStatusIcon(record.status)}
-                        <span className="ml-1">{record.status}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        {record.is_active === false ? (
-                          (hasPermission('measure_quality_metrics') || isAdmin()) && (
-                          <button
-                            onClick={() => restoreRecord(record.id)}
-                            className="text-green-600 hover:text-green-900"
-                            title="Restore Record"
-                          >
-                            <TrendingUp className="w-4 h-4" />
-                          </button>
-                          )
-                        ) : (
-                          <>
-                            {(hasPermission('measure_quality_metrics') || isAdmin()) && (
-                            <button
-                              onClick={() => editRecord(record)}
-                              className="text-blue-600 hover:text-blue-900"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            )}
-                            {(hasPermission('measure_quality_metrics') || isAdmin()) && (
-                            <button
-                              onClick={() => deleteRecord(record.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </td>
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KPI Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variance</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {records.map((record) => (
+                    <tr key={record.id} className={record.is_active === false ? 'bg-red-50 opacity-75' : ''}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {record.kpi_name}
+                        {record.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                          {record.kpi_category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {record.recorded_date}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {record.actual_value} {record.unit_of_measure}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {record.target_value} {record.unit_of_measure}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {record.variance_percentage}%
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
+                          {getStatusIcon(record.status)}
+                          <span className="ml-1">{record.status}</span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          {record.is_active === false ? (
+                            (hasPermission('measure_quality_metrics') || isAdmin()) && (
+                            <button
+                              onClick={() => restoreRecord(record.id)}
+                              className="text-green-600 hover:text-green-900"
+                              title="Restore Record"
+                            >
+                              <TrendingUp className="w-4 h-4" />
+                            </button>
+                            )
+                          ) : (
+                            <>
+                              {(hasPermission('measure_quality_metrics') || isAdmin()) && (
+                              <button
+                                onClick={() => editRecord(record)}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              )}
+                              {(hasPermission('measure_quality_metrics') || isAdmin()) && (
+                              <button
+                                onClick={() => deleteRecord(record.id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {records.map((record) => (
+                <div key={record.id} className={`p-4 border-b border-gray-200 last:border-b-0 ${record.is_active === false ? 'bg-red-50 opacity-75' : ''}`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">
+                        {record.kpi_name}
+                        {record.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                          {record.kpi_category}
+                        </span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
+                          {getStatusIcon(record.status)}
+                          <span className="ml-1">{record.status}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 mb-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Date:</span>
+                      <span className="text-gray-900">{record.recorded_date}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Actual:</span>
+                      <span className="text-gray-900">{record.actual_value} {record.unit_of_measure}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Target:</span>
+                      <span className="text-gray-900">{record.target_value} {record.unit_of_measure}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Variance:</span>
+                      <span className="text-gray-900">{record.variance_percentage}%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {record.is_active === false ? (
+                      (hasPermission('measure_quality_metrics') || isAdmin()) && (
+                        <button
+                          onClick={() => restoreRecord(record.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                        >
+                          <TrendingUp className="w-3 h-3" />
+                          Restore
+                        </button>
+                      )
+                    ) : (
+                      <>
+                        {(hasPermission('measure_quality_metrics') || isAdmin()) && (
+                          <button
+                            onClick={() => editRecord(record)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                          >
+                            <Edit className="w-3 h-3" />
+                            Edit
+                          </button>
+                        )}
+                        {(hasPermission('measure_quality_metrics') || isAdmin()) && (
+                          <button
+                            onClick={() => deleteRecord(record.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            Delete
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

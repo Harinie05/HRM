@@ -368,109 +368,205 @@ export default function LeaveApplications() {
 
       {/* Table */}
       {hasPermission("view_leave_applications") && (
-        <div className="overflow-x-auto">
-          <div className="min-w-[800px]">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-                <tr>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Leave Details</th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Duration</th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reason</th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
-                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <div className="min-w-[800px]">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Leave Details</th>
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Duration</th>
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reason</th>
+                    <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                    {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {filteredApplications.length === 0 ? (
+                    <tr>
+                      <td colSpan={hasPermission("view_leave_balance") || hasPermission("approve_leave") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
+                        <div className="flex flex-col items-center space-y-3">
+                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                            <Calendar className="w-8 h-8 text-gray-400" />
+                          </div>
+                          <p className="text-lg font-medium text-gray-900">
+                            {searchTerm || statusFilter !== "All" ? "No applications found matching your criteria." : "No leave applications yet."}
+                          </p>
+                          <p className="text-sm text-gray-500">Submit your first leave application to get started</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredApplications.map((app, index) => (
+                      <tr key={app.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <div className="text-xs sm:text-sm font-semibold text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
+                          <div className="text-xs sm:text-sm text-gray-600">{getEmployeeInfo(app.employee_id).name}</div>
+                          <div className="text-xs text-gray-500">Applied: {new Date(app.applied_at).toLocaleDateString()}</div>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <div className="text-xs sm:text-sm text-gray-900">{getLeaveTypeName(app.leave_type_id)}</div>
+                          <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                            <Calendar size={12} className="mr-1 sm:w-[14px] sm:h-[14px]" />
+                            {app.from_date} to {app.to_date}
+                          </div>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                            {app.total_days} days
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4">
+                          <div className="text-xs sm:text-sm text-gray-900 max-w-xs truncate">
+                            {app.reason || "No reason provided"}
+                          </div>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(app.status)}`}>
+                            {app.status}
+                          </span>
+                          {app.approver_comment && (
+                            <div className="text-xs text-gray-500 mt-1">{app.approver_comment}</div>
+                          )}
+                        </td>
+                        {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                            <div className="flex items-center gap-2">
+                              {hasPermission("view_leave_balance") && (
+                                <button 
+                                  onClick={() => fetchLeaveBalances(app.employee_id)}
+                                  className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                  title="View Leave Balances"
+                                >
+                                  <Eye size={14} />
+                                </button>
+                              )}
+                              {app.status === "Pending" && hasPermission("approve_leave") && (
+                                <>
+                                  <button 
+                                    onClick={() => openReviewModal(app)}
+                                    className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                                    title="Review & Approve"
+                                  >
+                                    <Check size={14} />
+                                  </button>
+                                  <button 
+                                    onClick={() => reject(app.id, "Rejected")}
+                                    className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                    title="Reject"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))
                   )}
-                </tr>
-              </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
             {filteredApplications.length === 0 ? (
-              <tr>
-                <td colSpan={hasPermission("view_leave_balance") || hasPermission("approve_leave") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Calendar className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <p className="text-lg font-medium text-gray-900">
-                      {searchTerm || statusFilter !== "All" ? "No applications found matching your criteria." : "No leave applications yet."}
-                    </p>
-                    <p className="text-sm text-gray-500">Submit your first leave application to get started</p>
+              <div className="p-6 text-center text-gray-500">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Calendar className="w-8 h-8 text-gray-400" />
                   </div>
-                </td>
-              </tr>
+                  <p className="text-lg font-medium text-gray-900">
+                    {searchTerm || statusFilter !== "All" ? "No applications found matching your criteria." : "No leave applications yet."}
+                  </p>
+                  <p className="text-sm text-gray-500">Submit your first leave application to get started</p>
+                </div>
+              </div>
             ) : (
               filteredApplications.map((app, index) => (
-                <tr key={app.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                    <div className="text-xs sm:text-sm font-semibold text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
-                    <div className="text-xs sm:text-sm text-gray-600">{getEmployeeInfo(app.employee_id).name}</div>
-                    <div className="text-xs text-gray-500">Applied: {new Date(app.applied_at).toLocaleDateString()}</div>
-                  </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                    <div className="text-xs sm:text-sm text-gray-900">{getLeaveTypeName(app.leave_type_id)}</div>
-                    <div className="flex items-center text-xs sm:text-sm text-gray-500">
-                      <Calendar size={12} className="mr-1 sm:w-[14px] sm:h-[14px]" />
-                      {app.from_date} to {app.to_date}
+                <div key={app.id} className="p-4 border-b border-gray-100 hover:bg-blue-50 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
+                      <div className="text-sm text-gray-600">{getEmployeeInfo(app.employee_id).name}</div>
                     </div>
-                  </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                      {app.total_days} days
-                    </span>
-                  </td>
-                  <td className="px-3 sm:px-6 py-4">
-                    <div className="text-xs sm:text-sm text-gray-900 max-w-xs truncate">
-                      {app.reason || "No reason provided"}
-                    </div>
-                  </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(app.status)}`}>
                       {app.status}
                     </span>
-                    {app.approver_comment && (
-                      <div className="text-xs text-gray-500 mt-1">{app.approver_comment}</div>
-                    )}
-                  </td>
-                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        {hasPermission("view_leave_balance") && (
-                          <button 
-                            onClick={() => fetchLeaveBalances(app.employee_id)}
-                            className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                            title="View Leave Balances"
-                          >
-                            <Eye size={14} />
-                          </button>
-                        )}
-                        {app.status === "Pending" && hasPermission("approve_leave") && (
-                          <>
-                            <button 
-                              onClick={() => openReviewModal(app)}
-                              className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50 transition-colors"
-                              title="Review & Approve"
-                            >
-                              <Check size={14} />
-                            </button>
-                            <button 
-                              onClick={() => reject(app.id, "Rejected")}
-                              className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                              title="Reject"
-                            >
-                              <X size={14} />
-                            </button>
-                          </>
-                        )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Leave Type:</span>
+                      <span className="text-sm text-gray-600">{getLeaveTypeName(app.leave_type_id)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Duration:</span>
+                      <div className="text-right">
+                        <div className="text-sm text-gray-600">{app.from_date} to {app.to_date}</div>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                          {app.total_days} days
+                        </span>
                       </div>
-                    </td>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Applied:</span>
+                      <span className="text-sm text-gray-600">{new Date(app.applied_at).toLocaleDateString()}</span>
+                    </div>
+                    {app.reason && (
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Reason:</span>
+                        <span className="text-sm text-gray-600 text-right max-w-xs truncate">{app.reason}</span>
+                      </div>
+                    )}
+                    {app.approver_comment && (
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Comment:</span>
+                        <span className="text-sm text-gray-600 text-right max-w-xs truncate">{app.approver_comment}</span>
+                      </div>
+                    )}
+                  </div>
+                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {hasPermission("view_leave_balance") && (
+                        <button 
+                          onClick={() => fetchLeaveBalances(app.employee_id)}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <Eye size={14} />
+                          Balance
+                        </button>
+                      )}
+                      {app.status === "Pending" && hasPermission("approve_leave") && (
+                        <>
+                          <button 
+                            onClick={() => openReviewModal(app)}
+                            className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                          >
+                            <Check size={14} />
+                            Review
+                          </button>
+                          <button 
+                            onClick={() => reject(app.id, "Rejected")}
+                            className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                          >
+                            <X size={14} />
+                            Reject
+                          </button>
+                        </>
+                      )}
+                    </div>
                   )}
-                </tr>
+                </div>
               ))
             )}
-            </tbody>
-          </table>
+          </div>
         </div>
-      </div>
       )}
 
       {/* Stats Footer */}

@@ -559,44 +559,45 @@ export default function AttendanceLogs() {
       <div className="flex-1 flex flex-col">
         <Header />
         
-        <div className="p-6 pt-24 space-y-6">
-          {/* Header with gradient background matching Organization setup */}
-          <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+        <div className="p-4 sm:p-6 pt-24 space-y-4 sm:space-y-6">
+          {/* Header */}
+          <div className="bg-white rounded-lg border-2 border-black mb-6 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg border border-black flex items-center justify-center">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Management</h1>
-                  <p className="text-gray-600 text-base mb-1">Advanced tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
-                  <p className="text-gray-500 text-sm">Real-time Attendance Tracking</p>
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Attendance Management</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Advanced tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
+                  <div className="flex items-center space-x-3 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                      <span className="text-xs text-gray-500">{logs.length} Active Records</span>
+                    </div>
+                    <div className="w-px h-3 bg-gray-300"></div>
+                    <span className="text-xs text-gray-600">Real-time Attendance Tracking</span>
+                  </div>
                 </div>
-              </div>
-              <div className="text-right">
-                <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="text-sm font-medium">{logs.length} Active Records</span>
-                </div>
-                <p className="text-base font-bold text-gray-900">Live Updates</p>
               </div>
             </div>
           </div>
 
-          {/* Tab Navigation matching Organization setup style */}
-          <div className="bg-white rounded-2xl border border-black p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
+          {/* Tab Navigation */}
+          <div className="bg-white rounded-lg border border-black p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-6">
               <span className="text-sm text-gray-600">Attendance</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              <div className="flex items-center bg-gray-100 rounded-lg border border-black p-1 overflow-x-auto scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
                       activeTab === tab.id
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
+                        ? "bg-black text-white" 
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
                     }`}
                   >
                     {tab.label}
@@ -608,14 +609,14 @@ export default function AttendanceLogs() {
             {activeTab === 'logs' && (
               <div className="p-4 sm:p-6">
                 {/* Employee Selection */}
-                <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-black">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-black">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     Select Employee
                   </h3>
-                  <div className="grid grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                       <select
@@ -627,7 +628,7 @@ export default function AttendanceLogs() {
                           setShowAddLocation(false);
                           setNewLocationName('');
                         }}
-                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                       >
                         <option value="">Choose Employee</option>
                         {employees.map((employee) => (
@@ -639,7 +640,7 @@ export default function AttendanceLogs() {
                     </div>
                   
                     {attendanceMode === 'WEB' && (
-                      <div className="mt-6">
+                      <div className="mt-4 sm:mt-6">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Office Location</label>
                         {!showAddLocation ? (
                           <select
@@ -651,7 +652,7 @@ export default function AttendanceLogs() {
                                 setSelectedLocation(e.target.value);
                               }
                             }}
-                            className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                           >
                             {officeLocations.map((location) => (
                               <option key={location.id} value={location.id}>
@@ -661,44 +662,46 @@ export default function AttendanceLogs() {
                             <option value="add_new">+ Add New Location</option>
                           </select>
                         ) : (
-                          <div className="flex gap-4">
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                             <input
                               type="text"
                               value={newLocationName}
                               onChange={(e) => setNewLocationName(e.target.value)}
                               placeholder="Enter location name"
-                              className="flex-1 px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                              className="flex-1 px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                             />
-                            <button
-                              onClick={async () => {
-                                if (newLocationName.trim()) {
-                                  try {
-                                    const res = await api.post('/api/attendance/locations/', {
-                                      location_name: newLocationName.trim()
-                                    });
-                                    const newLocation = res.data;
-                                    setOfficeLocations([...officeLocations, newLocation]);
-                                    setSelectedLocation(newLocation.id);
-                                    setNewLocationName('');
-                                    setShowAddLocation(false);
-                                  } catch (err) {
-                                    showToast('Failed to add location. Please try again.', 'error');
+                            <div className="flex gap-2 sm:gap-4">
+                              <button
+                                onClick={async () => {
+                                  if (newLocationName.trim()) {
+                                    try {
+                                      const res = await api.post('/api/attendance/locations/', {
+                                        location_name: newLocationName.trim()
+                                      });
+                                      const newLocation = res.data;
+                                      setOfficeLocations([...officeLocations, newLocation]);
+                                      setSelectedLocation(newLocation.id);
+                                      setNewLocationName('');
+                                      setShowAddLocation(false);
+                                    } catch (err) {
+                                      showToast('Failed to add location. Please try again.', 'error');
+                                    }
                                   }
-                                }
-                              }}
-                              className="px-4 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 font-medium text-sm transition-colors"
-                            >
-                              Add
-                            </button>
-                            <button
-                              onClick={() => {
-                                setShowAddLocation(false);
-                                setNewLocationName('');
-                              }}
-                              className="px-4 py-2 bg-gray-100 text-gray-700 border border-black rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
-                            >
-                              Cancel
-                            </button>
+                                }}
+                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 font-medium text-sm transition-colors"
+                              >
+                                Add
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setShowAddLocation(false);
+                                  setNewLocationName('');
+                                }}
+                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 border border-black rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -707,22 +710,22 @@ export default function AttendanceLogs() {
                 </div>
 
                 {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && canMarkAttendance && (
-                  <div className="mb-8 p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-xl">
-                    <h3 className="text-lg sm:text-xl font-bold mb-6 text-gray-900">Choose Attendance Mode</h3>
+                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-black shadow-xl">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6 text-gray-900">Choose Attendance Mode</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <button
                         onClick={() => setAttendanceMode('WEB')}
-                        className="group p-6 sm:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
+                        className="group p-4 sm:p-6 lg:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
                       >
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
-                            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
                             </svg>
                           </div>
-                          <h4 className="text-base sm:text-lg font-bold text-gray-800">Web Check-In</h4>
+                          <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800">Web Check-In</h4>
                         </div>
-                        <p className="text-gray-600 mb-3 text-sm sm:text-base">Check in from office computer</p>
+                        <p className="text-gray-600 mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">Check in from office computer</p>
                         <div className="space-y-1">
                           <p className="text-xs sm:text-sm text-gray-500">• Select office location</p>
                           <p className="text-xs sm:text-sm text-gray-500">• No GPS required</p>
@@ -768,17 +771,17 @@ export default function AttendanceLogs() {
                             }
                           );
                         }}
-                        className="group p-6 sm:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
+                        className="group p-4 sm:p-6 lg:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
                       >
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
-                            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                             </svg>
                           </div>
-                          <h4 className="text-base sm:text-lg font-bold text-gray-800">Mobile GPS Check-In</h4>
+                          <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800">Mobile GPS Check-In</h4>
                         </div>
-                        <p className="text-gray-600 mb-3 text-sm sm:text-base">Check in from mobile device</p>
+                        <p className="text-gray-600 mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">Check in from mobile device</p>
                         <div className="space-y-1">
                           <p className="text-xs sm:text-sm text-gray-500">• GPS location tracking</p>
                           <p className="text-xs sm:text-sm text-gray-500">• Location permission required</p>
@@ -789,8 +792,8 @@ export default function AttendanceLogs() {
                 )}
 
                 {selectedEmployee && attendanceMode && (
-                  <div className="mb-6 p-4 bg-white rounded-lg border border-black">
-                    <div className="flex items-center justify-between">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-black">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${
                           currentStatus === 'checked_in' ? 'bg-green-500' :
@@ -798,7 +801,7 @@ export default function AttendanceLogs() {
                           'bg-gray-400'
                         }`}></div>
                         <div>
-                          <div className="text-sm font-semibold text-gray-900">
+                          <div className="text-xs sm:text-sm font-semibold text-gray-900">
                             {currentStatus === 'checked_in' ? 'Currently Checked In' :
                              currentStatus === 'checked_out' ? 'Checked Out for Today' :
                              'Ready to Check In'}
@@ -808,9 +811,9 @@ export default function AttendanceLogs() {
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <div className="text-xs text-gray-500">Employee</div>
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-medium text-gray-900 text-xs sm:text-sm">
                           {employees.find(e => e.id == selectedEmployee)?.name}
                           {(() => {
                             const employee = employees.find(e => e.id == selectedEmployee);
@@ -829,34 +832,34 @@ export default function AttendanceLogs() {
                 {selectedEmployee && (
                   <div>
                     {currentStatus === 'not_checked_in' && attendanceMode && (
-                      <div className="text-center mb-8">
-                        <div className="inline-block p-6 sm:p-8 bg-white rounded-3xl border border-black shadow-2xl">
-                          <p className="text-gray-600 mb-6 text-base sm:text-lg">
+                      <div className="text-center mb-6 sm:mb-8">
+                        <div className="inline-block p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-black shadow-2xl">
+                          <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg">
                             Ready to check in using <span className="font-bold text-gray-900">{attendanceMode}</span> mode
                             {attendanceMode === 'MOBILE' && gpsPermissionGranted && (
-                              <span className="ml-3 text-gray-600 font-semibold">✓ GPS Permission Granted</span>
+                              <span className="block sm:inline sm:ml-3 text-gray-600 font-semibold mt-1 sm:mt-0">✓ GPS Permission Granted</span>
                             )}
                           </p>
                           <button 
                             onClick={() => handlePunchIn(attendanceMode)}
                             disabled={loading}
-                            className="py-3 sm:py-4 px-6 sm:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-3 mx-auto shadow-xl hover:shadow-2xl bg-white text-black border border-black hover:bg-gray-100"
+                            className="py-2 sm:py-3 lg:py-4 px-4 sm:px-6 lg:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 mx-auto shadow-xl hover:shadow-2xl bg-white text-black border border-black hover:bg-gray-100"
                           >
-                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
                               {attendanceMode === 'WEB' ? (
                                 <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
                               ) : (
                                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                               )}
                             </svg>
-                            <span className="text-sm sm:text-base">{attendanceMode} Check-In</span>
+                            <span className="text-xs sm:text-sm lg:text-base">{attendanceMode} Check-In</span>
                           </button>
                           <button 
                             onClick={() => {
                               setAttendanceMode("");
                               setGpsPermissionGranted(false);
                             }}
-                            className="mt-4 text-gray-600 hover:text-gray-800 font-semibold transition-colors text-sm sm:text-base"
+                            className="mt-3 sm:mt-4 text-gray-600 hover:text-gray-800 font-semibold transition-colors text-xs sm:text-sm lg:text-base"
                           >
                             Change Mode
                           </button>
@@ -865,10 +868,10 @@ export default function AttendanceLogs() {
                     )}
                     
                     {currentStatus === 'checked_in' && (
-                      <div className="mb-6 p-4 bg-white rounded-lg border border-black">
-                        <div className="flex items-center justify-between">
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-black">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-1">Check Out</h3>
+                            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">Check Out</h3>
                             <p className="text-xs text-gray-600">
                               You checked in via <span className="font-medium text-gray-900">{checkInSource}</span>. Please use the same method to check out.
                             </p>
@@ -876,12 +879,12 @@ export default function AttendanceLogs() {
                           <button 
                             onClick={() => handlePunchOut(checkInSource)}
                             disabled={loading}
-                            className="py-2 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl bg-white text-black border border-black hover:bg-gray-100"
+                            className="py-2 px-3 sm:px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl bg-white text-black border border-black hover:bg-gray-100"
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
                             </svg>
-                            <span className="text-sm">{checkInSource} Check-Out</span>
+                            <span className="text-xs sm:text-sm">{checkInSource} Check-Out</span>
                           </button>
                         </div>
                       </div>
@@ -890,13 +893,13 @@ export default function AttendanceLogs() {
                 )}
                 
                 {loading && (
-                  <div className="text-center py-8">
-                    <div className="inline-flex items-center gap-3 text-gray-600 bg-white px-6 py-3 rounded-2xl shadow-lg border border-black">
-                      <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <div className="text-center py-6 sm:py-8">
+                    <div className="inline-flex items-center gap-2 sm:gap-3 text-gray-600 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg border border-black">
+                      <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      <span className="font-semibold">Processing...</span>
+                      <span className="font-semibold text-sm sm:text-base">Processing...</span>
                     </div>
                   </div>
                 )}
@@ -904,7 +907,7 @@ export default function AttendanceLogs() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          <div className="bg-white rounded-lg border border-black overflow-hidden">
             {activeTab === 'logs' && (
               <div className="overflow-x-auto">
                 <div className="px-4 py-3 bg-gray-50 border-b border-black">
@@ -994,17 +997,17 @@ export default function AttendanceLogs() {
             )}
 
             {activeTab === 'regularization' && (
-              <div className="p-4 sm:p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-                  <div className="bg-gray-50 rounded-lg border border-black p-6 sm:p-8">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-6">Submit Regularization Request</h3>
-                    <div className="space-y-6">
+              <div className="p-4 sm:p-6 lg:p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                  <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Submit Regularization Request</h3>
+                    <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         <select
                           value={regularizationForm.employee_id}
                           onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                         >
                           <option value="">Select Employee</option>
                           {employees.map((employee) => (
@@ -1020,7 +1023,7 @@ export default function AttendanceLogs() {
                           type="date"
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                         />
                       </div>
                       <div>
@@ -1028,7 +1031,7 @@ export default function AttendanceLogs() {
                         <select
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                         >
                           <option value="Missed IN">Missed IN</option>
                           <option value="Missed OUT">Missed OUT</option>
@@ -1041,30 +1044,30 @@ export default function AttendanceLogs() {
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
                           rows="4"
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
                           placeholder="Explain the reason for regularization..."
                         ></textarea>
                       </div>
                       <button
                         onClick={handleRegularizationSubmit}
-                        className="w-full py-2 bg-black text-white border border-black rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                        className="w-full py-2 sm:py-3 bg-black text-white border border-black rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
                       >
                         Submit Request
                       </button>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-black p-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Pending Requests</h3>
-                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                  <div className="bg-white rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Pending Requests</h3>
+                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
                       {regularizationRequests.map((request) => (
-                        <div key={request.id} className="p-4 border border-black rounded-lg">
-                          <div className="flex justify-between items-start mb-2">
+                        <div key={request.id} className="p-3 sm:p-4 border border-black rounded-lg">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
-                              <p className="font-semibold text-gray-900">{request.employee}</p>
-                              <p className="text-sm text-gray-600">{request.date} - {request.type}</p>
+                              <p className="font-semibold text-gray-900 text-sm sm:text-base">{request.employee}</p>
+                              <p className="text-xs sm:text-sm text-gray-600">{request.date} - {request.type}</p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border border-black ${
+                            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold border border-black self-start ${
                               request.status === 'Pending' ? 'bg-gray-100 text-gray-800' :
                               request.status === 'Approved' ? 'bg-gray-100 text-gray-800' :
                               'bg-gray-100 text-gray-800'
@@ -1072,18 +1075,18 @@ export default function AttendanceLogs() {
                               {request.status}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700 mb-3">{request.reason}</p>
+                          <p className="text-xs sm:text-sm text-gray-700 mb-3">{request.reason}</p>
                           {canApproveRegularization && request.status === 'Pending' && (
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => handleApprove(request.id)}
-                                className="px-4 py-2 bg-black text-white border border-black rounded-lg text-sm font-medium hover:bg-gray-800"
+                                className="px-3 sm:px-4 py-2 bg-black text-white border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleReject(request.id)}
-                                className="px-4 py-2 bg-white text-black border border-black rounded-lg text-sm font-medium hover:bg-gray-100"
+                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100"
                               >
                                 Reject
                               </button>
@@ -1098,17 +1101,17 @@ export default function AttendanceLogs() {
             )}
 
             {activeTab === 'od' && (
-              <div className="p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="bg-gray-50 rounded-lg border border-black p-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Submit OD Application</h3>
-                    <div className="space-y-6">
+              <div className="p-4 sm:p-6 lg:p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                  <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Submit OD Application</h3>
+                    <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
                         <select
                           value={odForm.employee_id}
                           onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                         >
                           <option value="">Select Employee</option>
                           {employees.map((employee) => (
@@ -1124,17 +1127,17 @@ export default function AttendanceLogs() {
                           type="date"
                           value={odForm.od_date}
                           onChange={(e) => setOdForm({...odForm, od_date: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
                           <input
                             type="time"
                             value={odForm.from_time}
                             onChange={(e) => setOdForm({...odForm, from_time: e.target.value})}
-                            className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                           />
                         </div>
                         <div>
@@ -1143,7 +1146,7 @@ export default function AttendanceLogs() {
                             type="time"
                             value={odForm.to_time}
                             onChange={(e) => setOdForm({...odForm, to_time: e.target.value})}
-                            className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                           />
                         </div>
                       </div>
@@ -1153,7 +1156,7 @@ export default function AttendanceLogs() {
                           type="text"
                           value={odForm.location}
                           onChange={(e) => setOdForm({...odForm, location: e.target.value})}
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                           placeholder="Enter OD location"
                         />
                       </div>
@@ -1163,47 +1166,47 @@ export default function AttendanceLogs() {
                           value={odForm.purpose}
                           onChange={(e) => setOdForm({...odForm, purpose: e.target.value})}
                           rows="4"
-                          className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                           placeholder="Explain the purpose of OD..."
                         ></textarea>
                       </div>
                       <button
                         onClick={handleOdSubmit}
-                        className="w-full py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                        className="w-full py-2 sm:py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
                       >
                         Submit Application
                       </button>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-black p-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">OD Applications</h3>
-                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                  <div className="bg-white rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">OD Applications</h3>
+                    <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
                       {odApplications.map((application) => (
-                        <div key={application.id} className="p-4 border border-black rounded-lg">
-                          <div className="flex justify-between items-start mb-2">
+                        <div key={application.id} className="p-3 sm:p-4 border border-black rounded-lg">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
-                              <p className="font-semibold text-gray-900">{application.employee}</p>
-                              <p className="text-sm text-gray-600">{application.od_date}</p>
-                              <p className="text-sm text-gray-600">{application.from_time} - {application.to_time}</p>
+                              <p className="font-semibold text-gray-900 text-sm sm:text-base">{application.employee}</p>
+                              <p className="text-xs sm:text-sm text-gray-600">{application.od_date}</p>
+                              <p className="text-xs sm:text-sm text-gray-600">{application.from_time} - {application.to_time}</p>
                             </div>
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800">
+                            <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800 self-start">
                               {application.status}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700 mb-2"><strong>Location:</strong> {application.location}</p>
-                          <p className="text-sm text-gray-700 mb-3"><strong>Purpose:</strong> {application.purpose}</p>
+                          <p className="text-xs sm:text-sm text-gray-700 mb-2"><strong>Location:</strong> {application.location}</p>
+                          <p className="text-xs sm:text-sm text-gray-700 mb-3"><strong>Purpose:</strong> {application.purpose}</p>
                           {canApproveOd && (application.status === 'Pending' || application.status === 'pending') && (
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => handleOdApprove(application.id)}
-                                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800"
+                                className="px-3 sm:px-4 py-2 bg-black text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleOdReject(application.id)}
-                                className="px-4 py-2 bg-white text-black border border-black rounded-lg text-sm font-medium hover:bg-gray-100"
+                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100"
                               >
                                 Reject
                               </button>
@@ -1218,16 +1221,16 @@ export default function AttendanceLogs() {
             )}
 
             {activeTab === 'reports' && (
-              <div className="p-8">
-                <div className="bg-gray-50 rounded-lg border border-black p-8 mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-6">Generate Reports</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="p-4 sm:p-6 lg:p-8">
+                <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Generate Reports</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
                       <select
                         value={reportFilters.reportType}
                         onChange={(e) => setReportFilters({...reportFilters, reportType: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                       >
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
@@ -1240,7 +1243,7 @@ export default function AttendanceLogs() {
                         type="date"
                         value={reportFilters.fromDate}
                         onChange={(e) => setReportFilters({...reportFilters, fromDate: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                       />
                     </div>
                     <div>
@@ -1249,7 +1252,7 @@ export default function AttendanceLogs() {
                         type="date"
                         value={reportFilters.toDate}
                         onChange={(e) => setReportFilters({...reportFilters, toDate: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                       />
                     </div>
                     <div>
@@ -1257,7 +1260,7 @@ export default function AttendanceLogs() {
                       <select
                         value={reportFilters.employeeId}
                         onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
-                        className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black"
+                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
                       >
                         <option value="">All Employees</option>
                         {employees.map((employee) => (
@@ -1268,7 +1271,7 @@ export default function AttendanceLogs() {
                       </select>
                     </div>
                   </div>
-                  <div className="flex gap-4 mt-6">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 sm:mt-6">
                     <button
                       onClick={() => {
                         const filteredLogs = logs.filter(log => {
@@ -1288,13 +1291,13 @@ export default function AttendanceLogs() {
                         });
                         setReportData(filteredLogs);
                       }}
-                      className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
                     >
                       Generate Report
                     </button>
                     <button
                       onClick={exportToExcel}
-                      className="px-6 py-2 bg-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base"
                     >
                       Export to Excel
                     </button>
@@ -1303,26 +1306,26 @@ export default function AttendanceLogs() {
 
                 {reportData.length > 0 && (
                   <div className="bg-white rounded-lg border border-black overflow-hidden">
-                    <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-                      <h4 className="font-semibold text-gray-900">Report Results ({reportData.length} records)</h4>
+                    <div className="px-3 sm:px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Report Results ({reportData.length} records)</h4>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Employee</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Date</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">In Time</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Out Time</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Location</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Status</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700">Source</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Employee</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Date</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">In Time</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Out Time</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Location</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Status</th>
+                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Source</th>
                           </tr>
                         </thead>
                         <tbody>
                           {reportData.map((log, index) => (
                             <tr key={log.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                              <td className="px-6 py-4 text-sm text-gray-900">
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
                                 {(() => {
                                   const employee = employees.find(emp => {
                                     if (emp.source === 'user_management') {
@@ -1333,12 +1336,12 @@ export default function AttendanceLogs() {
                                   return employee ? `${employee.employee_code} - ${employee.name}` : log.employee_id;
                                 })()}
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-700">{log.date}</td>
-                              <td className="px-6 py-4 text-sm text-gray-700">{log.in_time || "-"}</td>
-                              <td className="px-6 py-4 text-sm text-gray-700">{log.out_time || "-"}</td>
-                              <td className="px-6 py-4 text-sm text-gray-700">{log.location || "-"}</td>
-                              <td className="px-6 py-4 text-sm">
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.date}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.in_time || "-"}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.out_time || "-"}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.location || "-"}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
+                                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold ${
                                   log.status === 'Present' ? 'bg-green-100 text-green-800' :
                                   log.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
                                   'bg-red-100 text-red-800'
@@ -1346,7 +1349,7 @@ export default function AttendanceLogs() {
                                   {log.status}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-700">{log.source}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.source}</td>
                             </tr>
                           ))}
                         </tbody>

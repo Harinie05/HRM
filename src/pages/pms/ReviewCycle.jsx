@@ -24,6 +24,7 @@ export default function ReviewCycle() {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -49,8 +50,19 @@ export default function ReviewCycle() {
 
   const fetchCycles = async () => {
     try {
-      const response = await api.get('/api/pms/work-assignments/review-cycles');
+      const response = await api.get(`/api/pms/reviews${showDeleted ? '?include_deleted=true' : ''}`);
       setCycles(response.data?.data || []);
+      
+      // Fetch deleted count
+      if (!showDeleted) {
+        try {
+          const deletedResponse = await api.get('/api/pms/reviews/deleted-count');
+          setDeletedCount(deletedResponse.data?.count || 0);
+        } catch (error) {
+          console.error('Error fetching deleted count:', error);
+          setDeletedCount(0);
+        }
+      }
     } catch (error) {
       console.error('Error fetching review cycles:', error);
     }
@@ -146,18 +158,18 @@ export default function ReviewCycle() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const cycleData = {
-        cycle_name: formData.name,
-        start_date: formData.startDate,
-        end_date: formData.endDate,
+      const reviewData = {
+        employee_id: 1, // Default employee ID
+        cycle: formData.name,
+        review_type: formData.type,
         status: formData.status
       };
       
       if (editingCycle) {
-        await api.put(`/api/pms/work-assignments/review-cycles/${editingCycle}`, cycleData);
+        await api.put(`/api/pms/reviews/${editingCycle}`, reviewData);
         showToast('Review cycle updated successfully!', 'success');
       } else {
-        await api.post('/api/pms/work-assignments/review-cycles', cycleData);
+        await api.post('/api/pms/reviews', reviewData);
         showToast('Review cycle created successfully!', 'success');
       }
       fetchCycles();
@@ -266,16 +278,21 @@ export default function ReviewCycle() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {(hasPermission('show_deleted_review_cycles') || isAdmin()) && (
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={showDeleted}
-                onChange={(e) => setShowDeleted(e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              Show Deleted
-            </label>
+          {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_review_cycles') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(true)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Show Deleted ({deletedCount})
+            </button>
+          )}
+          {showDeleted && (hasPermission('show_deleted_review_cycles') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(false)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Hide Deleted
+            </button>
           )}
           {(hasPermission('create_review_cycle') || isAdmin()) && (
             <button
@@ -424,7 +441,9 @@ export default function ReviewCycle() {
         <div className="px-4 sm:px-6 py-4 border-b border-black">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Review Cycles</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -530,6 +549,102 @@ export default function ReviewCycle() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {cycles.map((cycle) => (
+            <div key={cycle.id} className={`p-4 border-b border-gray-200 last:border-b-0 ${cycle.is_active === false ? 'bg-red-50 opacity-75' : ''}`}>
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">
+                    {cycle.cycle_name}
+                    {cycle.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                  </h4>
+                  <p className="text-sm text-gray-600">{cycle.status}</p>
+                </div>
+                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(cycle.status)}`}>
+                  {cycle.status}
+                </span>
+              </div>
+              
+              <div className="space-y-2 mb-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Duration:</span>
+                  <span className="text-gray-900">{cycle.start_date} to {cycle.end_date}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Participants:</span>
+                  <span className="text-gray-900">1 employee</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Progress:</span>
+                  <div className="flex items-center">
+                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 border border-black">
+                      <div
+                        className="h-2 bg-gray-500 rounded-full"
+                        style={{ width: `${cycle.progress_percentage || 0}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-gray-600">{cycle.progress || "0%"}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                {cycle.is_active === false ? (
+                  (hasPermission('restore_review_cycle') || isAdmin()) && (
+                    <button
+                      onClick={() => handleRestore(cycle.id)}
+                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      Restore
+                    </button>
+                  )
+                ) : (
+                  <>
+                    {cycle.status === "Draft" && (hasPermission('start_review_cycle') || isAdmin()) && (
+                      <button
+                        onClick={() => handleStatusChange(cycle.id, "Active")}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Play className="w-3 h-3" />
+                        Start
+                      </button>
+                    )}
+                    {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
+                      <button
+                        onClick={() => handleStatusChange(cycle.id, "Completed")}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Pause className="w-3 h-3" />
+                        Complete
+                      </button>
+                    )}
+                    {(hasPermission('edit_review_cycle') || isAdmin()) && (
+                      <button 
+                        onClick={() => handleEdit(cycle)}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Edit className="w-3 h-3" />
+                        Edit
+                      </button>
+                    )}
+                    {(hasPermission('delete_review_cycle') || isAdmin()) && (
+                      <button
+                        onClick={() => handleDelete(cycle.id)}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       <Toast {...toast} />

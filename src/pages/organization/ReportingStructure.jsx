@@ -345,7 +345,8 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          <div className="overflow-x-auto border border-black rounded-xl">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto border border-black rounded-xl">
             <table className="min-w-full">
               <thead className="bg-gray-50/50 border-b border-black">
                 <tr>
@@ -430,6 +431,72 @@ export default function ReportingStructure() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {levels.length === 0 ? (
+              <div className="p-6 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">No reporting levels found</p>
+                    <p className="text-sm text-gray-500 mt-1">Create your first level to get started</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              levels.map((level) => (
+                <div key={level.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-medium text-sm">{level.level_order}</span>
+                      </div>
+                      <div className="font-medium text-gray-900">{level.level_name}</div>
+                    </div>
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                      level.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {level.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Description:</span>
+                      <span className="text-sm text-gray-600">{level.description || '-'}</span>
+                    </div>
+                  </div>
+                  {(canEditLevels || canDeleteLevels) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEditLevels && (
+                        <button
+                          onClick={() => {
+                            setEditingLevel(level);
+                            setShowCreateLevel(false);
+                          }}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      {canDeleteLevels && (
+                        <button
+                          onClick={() => deleteLevel(level.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -531,7 +598,8 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          <div className="overflow-x-auto border border-black rounded-xl">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto border border-black rounded-xl">
             <table className="min-w-full">
               <thead className="bg-gray-50/50 border-b border-black">
                 <tr>
@@ -612,6 +680,71 @@ export default function ReportingStructure() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {hierarchy.length === 0 ? (
+              <div className="p-6 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">No hierarchy rules found</p>
+                    <p className="text-sm text-gray-500 mt-1">Create rules to establish reporting relationships</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              hierarchy.map((rule) => (
+                <div key={rule.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="font-medium text-gray-900">{rule.child_level_name}</div>
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                      rule.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {rule.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Supervisor:</span>
+                      <span className="text-sm text-gray-600">{rule.parent_level_name || 'Top Level'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Department:</span>
+                      <span className="text-sm text-gray-600">{rule.department_name || 'All Departments'}</span>
+                    </div>
+                  </div>
+                  {(canEditHierarchy || canDeleteHierarchy) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEditHierarchy && (
+                        <button
+                          onClick={() => {
+                            setEditingHierarchy(rule);
+                            setShowCreateHierarchy(false);
+                          }}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      {canDeleteHierarchy && (
+                        <button
+                          onClick={() => deleteHierarchy(rule.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

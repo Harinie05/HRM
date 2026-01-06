@@ -1229,6 +1229,7 @@ class WorkAssignment(MasterBase):
     assigned_employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(String(50), default="Active")  # Active/Inactive
     is_active = Column(Boolean, default=True)
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -1253,6 +1254,7 @@ class PMSReviewCycle(MasterBase):
     end_date = Column(Date, nullable=False)
     status = Column(String(50), default="Open")  # Open/Closed
     is_active = Column(Boolean, default=True)
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -1303,6 +1305,7 @@ class PMSReview(MasterBase):
 
     status = Column(String(50), default="Pending")
     is_active = Column(Boolean, default=True)  # For soft delete
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
 
 # -------------------------
@@ -1325,6 +1328,7 @@ class PMSFeedback(MasterBase):
     goals = Column(Text)
 
     is_active = Column(Boolean, default=True)  # For soft delete
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
 
 # -------------------------
@@ -1354,6 +1358,7 @@ class PMSAppraisal(MasterBase):
     effective_from = Column(Date, nullable=True)
     status = Column(String(50), default="Proposed")
     is_active = Column(Boolean, default=True)  # For soft delete
+    deleted_at = Column(DateTime, nullable=True)
 
     created_at = Column(DateTime, default=func.now())
 
@@ -1823,6 +1828,7 @@ class QualityIndicator(MasterBase):
     frequency = Column(String(50), default="Monthly")  # Daily / Weekly / Monthly / Quarterly
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     is_active = Column(Boolean, default=True)
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
@@ -1840,6 +1846,7 @@ class KPIRecord(MasterBase):
     remarks = Column(Text, nullable=True)
     recorded_by = Column(String(150), nullable=False)
     is_active = Column(Boolean, default=True)  # For soft delete
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 

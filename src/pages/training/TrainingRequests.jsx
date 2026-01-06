@@ -284,103 +284,188 @@ export default function TrainingRequests() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Requested</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Requested Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-black">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Requested</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Priority</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Requested Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {filteredRequests.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="px-6 py-12 text-center">
+                          <FileText className="mx-auto h-12 w-12 text-muted" />
+                          <h3 className="mt-2 text-sm font-medium text-primary">No training requests</h3>
+                          <p className="mt-1 text-sm text-muted">
+                            {searchTerm || statusFilter ? "No requests match your search criteria." : "No training requests have been submitted yet."}
+                          </p>
+                          {!searchTerm && !statusFilter && (hasPermission('add_training_request') || isAdmin()) && (
+                            <div className="mt-6">
+                              <button 
+                                onClick={handleOpenModal}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
+                              >
+                                <Plus size={16} />
+                                Create First Request
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredRequests.map((request) => (
+                        <tr key={request.id} className="hover:bg-gray-50 border-b border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm font-medium text-gray-900">{getEmployeeName(request.employee_id)}</div>
+                          </td>
+                          <td className="px-6 py-4 border-r border-black">
+                            <div className="text-sm text-gray-900">{request.requested_training}</div>
+                            {request.justification && (
+                              <div className="text-sm text-gray-500 truncate max-w-xs">{request.justification}</div>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              request.priority === "Urgent" ? "bg-red-100 text-red-800" :
+                              request.priority === "High" ? "bg-orange-100 text-orange-800" :
+                              request.priority === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                              "bg-green-100 text-green-800"
+                            }`}>
+                              {request.priority}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              request.status === "HR Approved" || request.status === "Approved" ? "bg-green-100 text-green-800" :
+                              request.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
+                              request.status === "Rejected" ? "bg-red-100 text-red-800" :
+                              "bg-yellow-100 text-yellow-800"
+                            }`}>
+                              {request.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm text-gray-900">
+                              {new Date(request.created_at).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center gap-2">
+                              <button 
+                                onClick={() => handleOpenViewModal(request)}
+                                className="text-blue-600 hover:text-blue-900 p-1 rounded"
+                                title="View Details"
+                              >
+                                <Eye size={16} />
+                              </button>
+                              {(request.status === "Pending" || request.status === "Manager Approved") && (hasPermission('approve_training_request') || hasPermission('reject_training_request') || isAdmin()) && (
+                                <>
+                                  <button 
+                                    onClick={() => handleOpenApprovalModal(request)}
+                                    className="text-green-600 hover:text-green-900 p-1 rounded"
+                                    title="Approve/Reject"
+                                  >
+                                    <CheckCircle size={16} />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
                 {filteredRequests.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
-                      <FileText className="mx-auto h-12 w-12 text-muted" />
-                      <h3 className="mt-2 text-sm font-medium text-primary">No training requests</h3>
-                      <p className="mt-1 text-sm text-muted">
-                        {searchTerm || statusFilter ? "No requests match your search criteria." : "No training requests have been submitted yet."}
-                      </p>
-                      {!searchTerm && !statusFilter && (hasPermission('add_training_request') || isAdmin()) && (
-                        <div className="mt-6">
-                          <button 
-                            onClick={handleOpenModal}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
-                          >
-                            <Plus size={16} />
-                            Create First Request
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
+                  <div className="px-6 py-12 text-center">
+                    <FileText className="mx-auto h-12 w-12 text-muted" />
+                    <h3 className="mt-2 text-sm font-medium text-primary">No training requests</h3>
+                    <p className="mt-1 text-sm text-muted">
+                      {searchTerm || statusFilter ? "No requests match your search criteria." : "No training requests have been submitted yet."}
+                    </p>
+                    {!searchTerm && !statusFilter && (hasPermission('add_training_request') || isAdmin()) && (
+                      <div className="mt-6">
+                        <button 
+                          onClick={handleOpenModal}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
+                        >
+                          <Plus size={16} />
+                          Create First Request
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   filteredRequests.map((request) => (
-                    <tr key={request.id} className="hover:bg-gray-50 border-b border-black">
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm font-medium text-gray-900">{getEmployeeName(request.employee_id)}</div>
-                      </td>
-                      <td className="px-6 py-4 border-r border-black">
-                        <div className="text-sm text-gray-900">{request.requested_training}</div>
-                        {request.justification && (
-                          <div className="text-sm text-gray-500 truncate max-w-xs">{request.justification}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          request.priority === "Urgent" ? "bg-red-100 text-red-800" :
-                          request.priority === "High" ? "bg-orange-100 text-orange-800" :
-                          request.priority === "Medium" ? "bg-yellow-100 text-yellow-800" :
-                          "bg-green-100 text-green-800"
-                        }`}>
-                          {request.priority}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          request.status === "HR Approved" || request.status === "Approved" ? "bg-green-100 text-green-800" :
-                          request.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
-                          request.status === "Rejected" ? "bg-red-100 text-red-800" :
-                          "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {request.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900">
-                          {new Date(request.created_at).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleOpenViewModal(request)}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                            title="View Details"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          {(request.status === "Pending" || request.status === "Manager Approved") && (hasPermission('approve_training_request') || hasPermission('reject_training_request') || isAdmin()) && (
-                            <>
-                              <button 
-                                onClick={() => handleOpenApprovalModal(request)}
-                                className="text-green-600 hover:text-green-900 p-1 rounded"
-                                title="Approve/Reject"
-                              >
-                                <CheckCircle size={16} />
-                              </button>
-                            </>
+                    <div key={request.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{getEmployeeName(request.employee_id)}</h4>
+                          <p className="text-sm text-gray-600 mt-1">{request.requested_training}</p>
+                          {request.justification && (
+                            <p className="text-sm text-gray-500 mt-1">{request.justification}</p>
                           )}
                         </div>
-                      </td>
-                    </tr>
+                        <div className="flex flex-col gap-1">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            request.priority === "Urgent" ? "bg-red-100 text-red-800" :
+                            request.priority === "High" ? "bg-orange-100 text-orange-800" :
+                            request.priority === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                            "bg-green-100 text-green-800"
+                          }`}>
+                            {request.priority}
+                          </span>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            request.status === "HR Approved" || request.status === "Approved" ? "bg-green-100 text-green-800" :
+                            request.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
+                            request.status === "Rejected" ? "bg-red-100 text-red-800" :
+                            "bg-yellow-100 text-yellow-800"
+                          }`}>
+                            {request.status}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          {new Date(request.created_at).toLocaleDateString()}
+                        </span>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => handleOpenViewModal(request)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                          >
+                            <Eye className="w-3 h-3" />
+                            View
+                          </button>
+                          {(request.status === "Pending" || request.status === "Manager Approved") && (hasPermission('approve_training_request') || hasPermission('reject_training_request') || isAdmin()) && (
+                            <button 
+                              onClick={() => handleOpenApprovalModal(request)}
+                              className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                            >
+                              <CheckCircle className="w-3 h-3" />
+                              Review
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   ))
                 )}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
 

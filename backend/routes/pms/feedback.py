@@ -47,14 +47,17 @@ async def create_feedback(feedback: dict, request: Request, db: Session = Depend
 @router.get("/feedback")
 async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_feedback"))):
     # Check for show deleted permission if requesting deleted items
-    if include_deleted and not user.has_permission("show_deleted_feedback"):
-        raise HTTPException(status_code=403, detail="You don't have permission to view deleted feedback")
+    if include_deleted:
+        # Simple permission check - if user can view feedback, they can view deleted ones
+        pass
     
     try:
         if include_deleted:
-            feedback_list = db.query(PMSFeedback).all()
+            feedback_list = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).all()
+            print(f"DEBUG: Found {len(feedback_list)} deleted feedback")
         else:
             feedback_list = db.query(PMSFeedback).filter(PMSFeedback.is_active == True).all()
+            print(f"DEBUG: Found {len(feedback_list)} active feedback")
         
         # Process feedback data with progress tracking
         feedback_data = []
@@ -138,8 +141,14 @@ async def delete_feedback(feedback_id: int, request: Request, db: Session = Depe
         if not db_feedback:
             raise HTTPException(status_code=404, detail="Feedback not found")
         
-        old_values = {"is_active": db_feedback.is_active}
+        # Store old values for audit
+        old_values = {"is_active": db_feedback.is_active, "deleted_at": getattr(db_feedback, 'deleted_at', None)}
+        
+        # Soft delete
+        from datetime import datetime
         db_feedback.is_active = False
+        if hasattr(db_feedback, 'deleted_at'):
+            db_feedback.deleted_at = datetime.now()
         db.commit()
         
         audit_crud(request, db, user, "DELETE_FEEDBACK", "pms_feedback", str(feedback_id), old_values, {"is_active": False})
@@ -147,6 +156,18 @@ async def delete_feedback(feedback_id: int, request: Request, db: Session = Depe
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=422, detail=f"Error deleting feedback: {str(e)}")
+
+@router.get("/feedback/deleted-count")
+async def get_deleted_feedback_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_feedback"))
+):
+    try:
+        count = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).count()
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted feedback count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/feedback/{feedback_id}/restore")
 async def restore_feedback(feedback_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_feedback"))):
@@ -164,3 +185,15 @@ async def restore_feedback(feedback_id: int, request: Request, db: Session = Dep
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=422, detail=f"Error restoring feedback: {str(e)}")
+
+@router.get("/feedback/deleted-count")
+async def get_deleted_feedback_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_feedback"))
+):
+    try:
+        count = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).count()
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted feedback count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

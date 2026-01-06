@@ -273,81 +273,159 @@ const DailyUpdates = () => {
         <div className="bg-white rounded-2xl border border-black p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-6">My Daily Updates</h2>
           
-          {updates.length === 0 ? (
-            <div className="text-center py-12">
-              <FiEdit className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No updates yet</h3>
-              <p className="text-gray-600 mb-4">Start tracking your daily work progress</p>
-              {canAdd && (
-                <button
-                  onClick={handleNewUpdate}
-                  className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  Create First Update
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {updates.map((update) => (
-                <div key={update.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <FiCalendar size={16} />
-                        {new Date(update.date).toLocaleDateString()}
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            {updates.length === 0 ? (
+              <div className="text-center py-12">
+                <FiEdit className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No updates yet</h3>
+                <p className="text-gray-600 mb-4">Start tracking your daily work progress</p>
+                {canAdd && (
+                  <button
+                    onClick={handleNewUpdate}
+                    className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    Create First Update
+                  </button>
+                )}
+              </div>
+            ) : (
+              <table className="w-full border-collapse">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Work Done</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Hours</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {updates.map((update) => (
+                    <tr key={update.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div className="flex items-center gap-2">
+                          <FiCalendar size={16} className="text-gray-400" />
+                          {new Date(update.date).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 max-w-xs">
+                        <div className="truncate" title={update.work_done}>
+                          {update.work_done}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {update.hours_spent ? (
+                          <div className="flex items-center gap-1">
+                            <FiClock size={14} />
+                            {update.hours_spent}h
+                          </div>
+                        ) : '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          update.status === 'Submitted' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {update.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        {canEdit && canEditUpdate(update) && (
+                          <button
+                            onClick={() => handleEdit(update)}
+                            className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          >
+                            <FiEdit size={16} />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {updates.length === 0 ? (
+              <div className="text-center py-12">
+                <FiEdit className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No updates yet</h3>
+                <p className="text-gray-600 mb-4">Start tracking your daily work progress</p>
+                {canAdd && (
+                  <button
+                    onClick={handleNewUpdate}
+                    className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    Create First Update
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {updates.map((update) => (
+                  <div key={update.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <FiCalendar size={16} />
+                          {new Date(update.date).toLocaleDateString()}
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          update.status === 'Submitted' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {update.status}
+                        </span>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        update.status === 'Submitted' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {update.status}
-                      </span>
+                      <div className="flex gap-2">
+                        {canEdit && canEditUpdate(update) && (
+                          <button
+                            onClick={() => handleEdit(update)}
+                            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          >
+                            <FiEdit size={16} />
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      {canEdit && canEditUpdate(update) && (
-                        <button
-                          onClick={() => handleEdit(update)}
-                          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        >
-                          <FiEdit size={16} />
-                        </button>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-1">Work Done</h4>
+                        <p className="text-gray-700 text-sm">{update.work_done}</p>
+                      </div>
+                      
+                      {update.blockers && (
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Blockers</h4>
+                          <p className="text-gray-700 text-sm">{update.blockers}</p>
+                        </div>
+                      )}
+                      
+                      {update.plan_for_tomorrow && (
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Plan for Tomorrow</h4>
+                          <p className="text-gray-700 text-sm">{update.plan_for_tomorrow}</p>
+                        </div>
+                      )}
+                      
+                      {update.hours_spent && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <FiClock size={16} />
+                          {update.hours_spent} hours
+                        </div>
                       )}
                     </div>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-1">Work Done</h4>
-                      <p className="text-gray-700 text-sm">{update.work_done}</p>
-                    </div>
-                    
-                    {update.blockers && (
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-1">Blockers</h4>
-                        <p className="text-gray-700 text-sm">{update.blockers}</p>
-                      </div>
-                    )}
-                    
-                    {update.plan_for_tomorrow && (
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-1">Plan for Tomorrow</h4>
-                        <p className="text-gray-700 text-sm">{update.plan_for_tomorrow}</p>
-                      </div>
-                    )}
-                    
-                    {update.hours_spent && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <FiClock size={16} />
-                        {update.hours_spent} hours
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />

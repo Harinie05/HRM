@@ -308,9 +308,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_work_assignment", "description": "Can create new work assignments"},
     {"name": "edit_work_assignment", "description": "Can edit work assignments"},
     {"name": "delete_work_assignment", "description": "Can delete work assignments"},
-    {"name": "view_deleted_work_assignments", "description": "Can view deleted work assignments"},
     {"name": "restore_work_assignment", "description": "Can restore deleted work assignments"},
-    {"name": "show_deleted_work_assignments", "description": "Can access show deleted work assignments button"},
     {"name": "view_my_assignments", "description": "Can view own assignments"},
     {"name": "assign_to_employees", "description": "Can assign work to employees"},
 

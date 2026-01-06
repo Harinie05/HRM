@@ -190,8 +190,8 @@ const ProbationTracking = () => {
           <div className="p-4 sm:p-6">
 
 
-            {/* Table */}
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -276,6 +276,85 @@ const ProbationTracking = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {filteredProbations.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  <Clock size={48} className="mx-auto mb-4 text-gray-300" />
+                  <p className="text-lg font-medium mb-2">No probation records found</p>
+                  <p className="text-sm">Click "Add Probation" to create probation records</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {filteredProbations.map((probation) => {
+                    const daysRemaining = getDaysRemaining(probation);
+                    const endDate = probation.probation_status === 'Extended' && probation.extension_end_date 
+                      ? probation.extension_end_date 
+                      : probation.probation_end_date;
+                    
+                    return (
+                      <div key={probation.id} className="bg-white rounded-xl border border-black p-4 hover:shadow-sm transition-shadow">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-medium text-gray-900 mb-1">{getEmployeeName(probation)}</h3>
+                            <p className="text-sm text-gray-600">Joined: {new Date(probation.date_of_joining).toLocaleDateString()}</p>
+                          </div>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(probation.probation_status)}`}>
+                            {probation.probation_status}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-900">Probation End:</span>
+                            <span className="text-sm text-gray-600">{new Date(endDate).toLocaleDateString()}</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-900">Days Remaining:</span>
+                            <span className="text-sm">
+                              {probation.probation_status === 'Confirmed' ? (
+                                <span className="text-gray-500">Completed</span>
+                              ) : (
+                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                  daysRemaining < 0 ? 'bg-red-100 text-red-800' :
+                                  daysRemaining <= 7 ? 'bg-orange-100 text-orange-800' :
+                                  daysRemaining <= 30 ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-green-100 text-green-800'
+                                }`}>
+                                  {daysRemaining < 0 ? `${Math.abs(daysRemaining)} days overdue` : `${daysRemaining} days`}
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {(probation.probation_status === 'In Progress' || probation.probation_status === 'Extended') && (
+                          <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+                            <button
+                              onClick={() => {
+                                setSelectedProbation(probation);
+                                setShowExtendModal(true);
+                              }}
+                              className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                            >
+                              Extend
+                            </button>
+                            <button
+                              onClick={() => handleAction(probation.id, 'end')}
+                              className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors"
+                            >
+                              End
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>

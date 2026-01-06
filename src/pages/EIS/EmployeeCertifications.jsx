@@ -170,7 +170,8 @@ export default function EmployeeCertifications() {
 
         {/* Certifications Table */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -266,6 +267,84 @@ export default function EmployeeCertifications() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {certs.length === 0 ? (
+              <div className="p-6 text-center">
+                <FiAward className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Certifications</h3>
+                <p className="text-gray-500">Add professional certifications and credentials.</p>
+              </div>
+            ) : (
+              certs.map((c) => (
+                <div key={c.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                        <FiAward className="w-4 h-4 text-black" />
+                      </div>
+                      <div className="font-medium text-gray-900">{c.certification}</div>
+                    </div>
+                    {c.file_name && canViewDetails && (
+                      <button 
+                        className="p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        onClick={() => {
+                          const token = localStorage.getItem('access_token');
+                          if (!token) {
+                            showToast('Authentication token not found. Please login again.', "error");
+                            return;
+                          }
+                          window.open(`http://localhost:8000/employee/certifications/certificate/${c.id}?token=${token}`, '_blank');
+                        }}
+                      >
+                        <FiEye className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Issued By:</span>
+                      <span className="text-sm text-gray-600">{c.issued_by || '-'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Expiry Date:</span>
+                      <span className="text-sm text-gray-600">
+                        {c.expiry_date ? (
+                          <div className="flex items-center gap-1">
+                            <FiCalendar className="w-3 h-3" />
+                            {c.expiry_date}
+                          </div>
+                        ) : '-'}
+                      </span>
+                    </div>
+                  </div>
+                  {(canEdit || canDelete) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEdit && (
+                        <button
+                          onClick={() => openEdit(c)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => deleteCert(c.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

@@ -291,76 +291,142 @@ export default function PayrollAdjustments() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto border border-black rounded-xl">
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b border-black">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Description</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b border-black">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Description</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+              {filteredAdjustments.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                    {searchTerm ? "No adjustments found matching your search." : "No payroll adjustments added yet."}
+                  </td>
+                </tr>
+              ) : (
+                filteredAdjustments.map((adjustment) => (
+                  <tr key={adjustment.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
+                      <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{adjustment.month}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                        {adjustment.adjustment_type}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {adjustment.adjustment_type === "Deduction" ? "-" : "+"}₹{adjustment.amount?.toLocaleString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900 max-w-xs truncate">{adjustment.description}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-1 flex-wrap">
+                        <button className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400">
+                          <Eye size={16} />
+                        </button>
+                        {canEdit && (
+                          <button 
+                            onClick={() => handleOpenModal(adjustment)}
+                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                          >
+                            <Edit size={16} />
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button 
+                            onClick={() => handleDelete(adjustment.id)}
+                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
             {filteredAdjustments.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                  {searchTerm ? "No adjustments found matching your search." : "No payroll adjustments added yet."}
-                </td>
-              </tr>
+              <div className="p-6 text-center text-gray-500">
+                {searchTerm ? "No adjustments found matching your search." : "No payroll adjustments added yet."}
+              </div>
             ) : (
               filteredAdjustments.map((adjustment) => (
-                <tr key={adjustment.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
-                    <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{adjustment.month}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <div key={adjustment.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
+                      <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                    </div>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
                       {adjustment.adjustment_type}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {adjustment.adjustment_type === "Deduction" ? "-" : "+"}₹{adjustment.amount?.toLocaleString()}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Month:</span>
+                      <span className="text-sm text-gray-600">{adjustment.month}</span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs truncate">{adjustment.description}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center gap-1 flex-wrap">
-                      <button className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400">
-                        <Eye size={16} />
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Amount:</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {adjustment.adjustment_type === "Deduction" ? "-" : "+"}₹{adjustment.amount?.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Description:</span>
+                      <span className="text-sm text-gray-600 max-w-xs truncate">{adjustment.description}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+                      <Eye size={14} />
+                      View
+                    </button>
+                    {canEdit && (
+                      <button 
+                        onClick={() => handleOpenModal(adjustment)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <Edit size={14} />
+                        Edit
                       </button>
-                      {canEdit && (
-                        <button 
-                          onClick={() => handleOpenModal(adjustment)}
-                          className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                        >
-                          <Edit size={16} />
-                        </button>
-                      )}
-                      {canDelete && (
-                        <button 
-                          onClick={() => handleDelete(adjustment.id)}
-                          className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+                    )}
+                    {canDelete && (
+                      <button 
+                        onClick={() => handleDelete(adjustment.id)}
+                        className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
               ))
             )}
-            </tbody>
-          </table>
+          </div>
         </div>
 
         {/* Stats Footer */}

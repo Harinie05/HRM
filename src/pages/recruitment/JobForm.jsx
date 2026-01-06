@@ -88,10 +88,10 @@ export default function JobForm({ mode, job, onClose }) {
 
   // ========================= RENDER UI =========================
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-black border border-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl mx-4">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-white">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
+      <div className="bg-black border border-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <div className="p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-white">
             {mode === "create" && "Create New Job"}
             {mode === "edit" && "Edit Job"}
             {mode === "view" && "Job Details"}

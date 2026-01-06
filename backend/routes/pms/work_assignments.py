@@ -7,7 +7,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from utils.audit_logger import audit_crud
-from routes.hospital import get_current_user, require_permission
+from routes.hospital import get_current_user
+from utils.permission import require_permission
 
 router = APIRouter()
 
@@ -33,9 +34,12 @@ async def create_sample_data(db: Session = Depends(get_tenant_db)):
 
 # Get review cycles with automated progress
 @router.get("/work-assignments/review-cycles")
-async def get_review_cycles(db: Session = Depends(get_tenant_db)):
+async def get_review_cycles(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
     try:
-        cycles = db.query(PMSReviewCycle).filter(PMSReviewCycle.is_active.is_(True)).all()
+        if include_deleted:
+            cycles = db.query(PMSReviewCycle).all()
+        else:
+            cycles = db.query(PMSReviewCycle).filter(PMSReviewCycle.deleted_at.is_(None)).all()
         cycles_data = []
         for cycle in cycles:
             # Calculate progress automatically
@@ -89,11 +93,60 @@ async def get_review_cycles(db: Session = Depends(get_tenant_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Delete review cycle (soft delete)
+@router.delete("/work-assignments/review-cycles/{cycle_id}")
+async def delete_review_cycle(cycle_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_review_cycle"))):
+    try:
+        cycle = db.query(PMSReviewCycle).filter(PMSReviewCycle.id == cycle_id, PMSReviewCycle.deleted_at.is_(None)).first()
+        if not cycle:
+            raise HTTPException(status_code=404, detail="Review cycle not found")
+        
+        # Store old values for audit
+        old_values = {"is_active": cycle.is_active, "deleted_at": cycle.deleted_at}
+        
+        # Soft delete
+        from datetime import datetime
+        cycle.is_active = False
+        cycle.deleted_at = datetime.now()
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "DELETE_REVIEW_CYCLE", "pms_review_cycles", str(cycle_id), old_values, {"is_active": False, "deleted_at": cycle.deleted_at})
+        return {"message": "Review cycle deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting review cycle: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error deleting review cycle: {str(e)}")
+
+# Restore review cycle
+@router.put("/work-assignments/review-cycles/{cycle_id}/restore")
+async def restore_review_cycle(cycle_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_review_cycle"))):
+    try:
+        cycle = db.query(PMSReviewCycle).filter(PMSReviewCycle.id == cycle_id, PMSReviewCycle.deleted_at.isnot(None)).first()
+        if not cycle:
+            raise HTTPException(status_code=404, detail="Deleted review cycle not found")
+        
+        # Store old values for audit
+        old_values = {"is_active": cycle.is_active, "deleted_at": cycle.deleted_at}
+        
+        # Restore
+        cycle.is_active = True
+        cycle.deleted_at = None
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_REVIEW_CYCLE", "pms_review_cycles", str(cycle_id), old_values, {"is_active": True, "deleted_at": None})
+        return {"message": "Review cycle restored successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error restoring review cycle: {str(e)}")
+        raise HTTPException(status_code=422, detail=f"Error restoring review cycle: {str(e)}")
+
 # Update review cycle
 @router.put("/work-assignments/review-cycles/{cycle_id}")
 async def update_review_cycle(cycle_id: int, cycle: dict, db: Session = Depends(get_tenant_db)):
     try:
-        existing_cycle = db.query(PMSReviewCycle).filter(PMSReviewCycle.id == cycle_id).first()
+        existing_cycle = db.query(PMSReviewCycle).filter(PMSReviewCycle.id == cycle_id, PMSReviewCycle.deleted_at.is_(None)).first()
         if not existing_cycle:
             raise HTTPException(status_code=404, detail="Review cycle not found")
         
@@ -127,16 +180,24 @@ async def create_review_cycle_for_assignments(cycle: dict, db: Session = Depends
 
 # Get work assignments
 @router.get("/work-assignments/assignments")
-async def get_assignments(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_work_assignments"))):
+async def get_assignments(
+    include_deleted: bool = False,
+    db: Session = Depends(get_tenant_db), 
+    user = Depends(require_permission("view_work_assignments"))
+):
     try:
-        result = db.execute(text("""
+        where_clause = "WHERE wa.is_active = 1" if not include_deleted else "WHERE 1=1"
+        
+        result = db.execute(text(f"""
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency, 
-                   wa.review_cycle_id, wa.assigned_employee_id, wa.status,
+                   wa.review_cycle_id, wa.assigned_employee_id, wa.status, wa.is_active,
+                   wa.deleted_at,
                    u.name as employee_name, rc.cycle_name
             FROM work_assignments wa
             LEFT JOIN users u ON wa.assigned_employee_id = u.id
             LEFT JOIN pms_review_cycles rc ON wa.review_cycle_id = rc.id
-            WHERE wa.is_active = 1
+            {where_clause}
+            ORDER BY wa.created_at DESC
         """)).fetchall()
         
         assignments = []
@@ -150,15 +211,101 @@ async def get_assignments(db: Session = Depends(get_tenant_db), user = Depends(r
                 "review_cycle_id": row[5],
                 "assigned_employee_id": row[6],
                 "status": row[7],
-                "employee_name": row[8],
-                "cycle_name": row[9]
+                "is_active": row[8],
+                "deleted_at": row[9],
+                "employee_name": row[10],
+                "cycle_name": row[11]
             })
         return {"data": assignments}
     except Exception as e:
         print(f"Error fetching assignments: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Create work assignment
+# Delete work assignment (soft delete)
+@router.delete("/work-assignments/assignments/{assignment_id}")
+async def delete_assignment(
+    request: Request,
+    assignment_id: int,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("delete_work_assignment"))
+):
+    try:
+        # Check if assignment exists
+        result = db.execute(text("""
+            SELECT id, title FROM work_assignments WHERE id = :assignment_id AND is_active = 1
+        """), {"assignment_id": assignment_id}).fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Assignment not found")
+        
+        # Soft delete the assignment
+        db.execute(text("""
+            UPDATE work_assignments 
+            SET is_active = 0, deleted_at = NOW(), updated_at = NOW()
+            WHERE id = :assignment_id
+        """), {"assignment_id": assignment_id})
+        
+        # Log the audit trail
+        audit_crud(request, db, user, "DELETE_WORK_ASSIGNMENT", "work_assignments", str(assignment_id), 
+                  {"title": result[1], "is_active": 1}, {"is_active": 0, "deleted_at": "NOW()"})
+        
+        db.commit()
+        return {"message": "Assignment deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting assignment: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Restore work assignment
+@router.put("/work-assignments/assignments/{assignment_id}/restore")
+async def restore_assignment(
+    request: Request,
+    assignment_id: int,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("restore_work_assignment"))
+):
+    try:
+        # Check if assignment exists and is deleted
+        result = db.execute(text("""
+            SELECT id, title FROM work_assignments WHERE id = :assignment_id AND is_active = 0
+        """), {"assignment_id": assignment_id}).fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Deleted assignment not found")
+        
+        # Restore the assignment
+        db.execute(text("""
+            UPDATE work_assignments 
+            SET is_active = 1, deleted_at = NULL, updated_at = NOW()
+            WHERE id = :assignment_id
+        """), {"assignment_id": assignment_id})
+        
+        # Log the audit trail
+        audit_crud(request, db, user, "RESTORE_WORK_ASSIGNMENT", "work_assignments", str(assignment_id),
+                  {"title": result[1], "is_active": 0}, {"is_active": 1, "deleted_at": None})
+        
+        db.commit()
+        return {"message": "Assignment restored successfully"}
+    except Exception as e:
+        db.rollback()
+        print(f"Error restoring assignment: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Get deleted count
+@router.get("/work-assignments/deleted-count")
+async def get_deleted_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_work_assignments"))
+):
+    try:
+        count = db.execute(text("""
+            SELECT COUNT(*) FROM work_assignments WHERE is_active = 0
+        """)).scalar()
+        
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 @router.post("/work-assignments/assignments")
 async def create_assignment(
     request: Request,
@@ -179,10 +326,19 @@ async def create_assignment(
                 assigned_employee_id INT NOT NULL,
                 status VARCHAR(50) DEFAULT 'Active',
                 is_active BOOLEAN DEFAULT 1,
+                deleted_at DATETIME NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         """))
+        
+        # Add deleted_at column if it doesn't exist
+        try:
+            db.execute(text("""
+                ALTER TABLE work_assignments ADD COLUMN deleted_at DATETIME NULL
+            """))
+        except:
+            pass  # Column already exists
         
         # Fix any existing NULL records
         db.execute(text("""

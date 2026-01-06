@@ -74,13 +74,17 @@ export default function HRLayout() {
             {/* Content */}
             <div className="p-4 sm:p-6">
               {/* Tab Navigation */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black">
+              <div className="flex flex-col gap-2 mb-6">
+                <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black" style={{
+                  overflowX: 'auto',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}>
                   {tabs.map((tabName) => (
                     <button
                       key={tabName}
                       onClick={() => setTab(tabName)}
-                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                         tab === tabName
                           ? "bg-white text-gray-900 shadow-sm border border-gray-300"
                           : "text-gray-600 hover:text-gray-900"

@@ -124,7 +124,8 @@ export default function GoalsKPI() {
           <p className="text-sm text-gray-600">Real-time performance scores based on work assignment completion</p>
         </div>
         
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -187,6 +188,60 @@ export default function GoalsKPI() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {kpiData.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">
+              <p>No work assignments found. Create work assignments to see KPI data.</p>
+            </div>
+          ) : (
+            kpiData.map((employee) => (
+              <div key={employee.employee_id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{employee.employee_name}</div>
+                    <div className="text-sm text-gray-500">ID: {employee.employee_id}</div>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(employee.status)}`}>
+                    {employee.status || "Pending"}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Target Value:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">100</span>
+                      <Lock className="w-3 h-3 text-gray-400" title="Locked at 100%" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Current Value:</span>
+                    <span className="text-sm text-gray-600">{Math.round(employee.calculated_score || 0)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">Progress:</span>
+                    <div className="flex items-center">
+                      <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 border border-black">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(employee.calculated_score || 0)}`}
+                          style={{ width: `${Math.min(100, employee.calculated_score || 0)}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-600">
+                        {Math.round(employee.calculated_score || 0)}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Assignments:</span>
+                    <span className="text-sm text-gray-600">{employee.assignment_count || employee.assignments.length}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

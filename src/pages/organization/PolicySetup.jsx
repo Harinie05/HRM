@@ -273,11 +273,11 @@ const [statusAtt, setStatusAtt] = useState("Active");
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                 {/* ---------------- LEFT: FORM ---------------- */}
-                <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
-                    <h2 className="text-xl font-semibold">{editingId?"Edit":"Create"} {activeTab}</h2>
+                <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm space-y-4 sm:space-y-6">
+                    <h2 className="text-lg sm:text-xl font-semibold">{editingId?"Edit":"Create"} {activeTab}</h2>
 
                     {activeTab==="HR Policy" && <HRForm {...{hrName,setHrName,description,setDescription,noticeDays,setNoticeDays,probation,setProbation,
                     workWeek,setWorkWeek,holidayPattern,setHolidayPattern,policyFile,setPolicyFile,statusHR,setStatusHR}}/>}
@@ -292,14 +292,14 @@ const [statusAtt, setStatusAtt] = useState("Active");
                     {activeTab==="OT Policy" && <OTForm {...{otName,setOtName,basis,setBasis,rate,setRate,minOT,setMinOT,
                     maxOT,setMaxOT,eligibleGrades,setEligibleGrades,autoOT,setAutoOT,statusOT,setStatusOT,availableGrades}}/>}
 
-                    <div className="flex justify-end gap-3">
-                        <button onClick={resetForm} className="border px-5 py-2 rounded-lg" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Reset</button>
-                        <button onClick={savePolicy} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Save</button>
+                    <div className="flex flex-col sm:flex-row justify-end gap-3">
+                        <button onClick={resetForm} className="border px-5 py-2 rounded-lg order-2 sm:order-1" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Reset</button>
+                        <button onClick={savePolicy} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 order-1 sm:order-2">Save</button>
                     </div>
                 </div>
 
                 {/* ---------------- RIGHT: LIST TABLE ---------------- */}
-                <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+                <div className="p-4 sm:p-6 rounded-xl shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
                     <PolicyTable policies={policies} onEdit={loadForEdit} onDelete={deletePolicy} activeTab={activeTab}/>
                 </div>
 
@@ -463,40 +463,86 @@ function OTForm(props){
 // ---------------- Policy Table ----------------
 function PolicyTable({policies, onEdit, onDelete, activeTab}){
     return (
-        <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full text-sm border">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary">
-                <tr>
-                    <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Policy Name</th>
-                    <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Status</th>
-                    {activeTab==="HR Policy" && <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Document</th>}
-                    <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Actions</th>
-                </tr>
-            </thead>
+        <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+                <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="min-w-full text-sm border">
+                    <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-gray-100 text-secondary">
+                        <tr>
+                            <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Policy Name</th>
+                            <th className="border p-3 text-left" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Status</th>
+                            {activeTab==="HR Policy" && <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Document</th>}
+                            <th className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>Actions</th>
+                        </tr>
+                    </thead>
 
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                {policies.length===0 ? (
-                    <tr><td colSpan={activeTab==="HR Policy"?"4":"3"} className="text-center p-3 text-muted">No records found</td></tr>
-                ) : policies.map(p=>(
-                    <tr key={p.id}>
-                        <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.name}</td>
-                        <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.status}</td>
-                        {activeTab==="HR Policy" && (
-                            <td className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                                {p.document_download_url ? (
-                                    <a href={`http://localhost:8000${p.document_download_url}`} target="_blank" rel="noreferrer" 
-                                       className="text-blue-600 text-xs hover:underline">Download PDF</a>
-                                ) : (
-                                    <span className=" text-xs" style={{color: 'var(--text-muted, #6b7280)'}}>No document</span>
+                    <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                        {policies.length===0 ? (
+                            <tr><td colSpan={activeTab==="HR Policy"?"4":"3"} className="text-center p-3 text-muted">No records found</td></tr>
+                        ) : policies.map(p=>(
+                            <tr key={p.id}>
+                                <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.name}</td>
+                                <td className="border p-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>{p.status}</td>
+                                {activeTab==="HR Policy" && (
+                                    <td className="border p-3 text-center" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                                        {p.document_download_url ? (
+                                            <a href={`http://localhost:8000${p.document_download_url}`} target="_blank" rel="noreferrer" 
+                                               className="text-blue-600 text-xs hover:underline">Download PDF</a>
+                                        ) : (
+                                            <span className=" text-xs" style={{color: 'var(--text-muted, #6b7280)'}}>No document</span>
+                                        )}
+                                    </td>
                                 )}
-                            </td>
-                        )}
-                        <td className="border p-3 text-center space-x-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
-                            <button onClick={()=>onEdit(p)} className="text-blue-600 text-xs hover:underline">Edit</button>
-                            <button onClick={()=>onDelete(p.id)} className="text-red-600 text-xs hover:underline">Delete</button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+                                <td className="border p-3 text-center space-x-3" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                                    <button onClick={()=>onEdit(p)} className="text-blue-600 text-xs hover:underline">Edit</button>
+                                    <button onClick={()=>onDelete(p.id)} className="text-red-600 text-xs hover:underline">Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+                {policies.length === 0 ? (
+                    <div className="text-center p-6 text-muted">No records found</div>
+                ) : (
+                    policies.map(p => (
+                        <div key={p.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="font-medium text-gray-900">{p.name}</div>
+                                <span className={`px-2 py-1 text-xs rounded-full ${
+                                    p.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                    {p.status}
+                                </span>
+                            </div>
+                            {activeTab === "HR Policy" && (
+                                <div className="mb-3">
+                                    <span className="text-sm font-medium text-gray-900">Document:</span>
+                                    <div className="mt-1">
+                                        {p.document_download_url ? (
+                                            <a href={`http://localhost:8000${p.document_download_url}`} target="_blank" rel="noreferrer" 
+                                               className="text-blue-600 text-sm hover:underline">Download PDF</a>
+                                        ) : (
+                                            <span className="text-sm" style={{color: 'var(--text-muted, #6b7280)'}}>No document</span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                                <button onClick={()=>onEdit(p)} className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors">
+                                    Edit
+                                </button>
+                                <button onClick={()=>onDelete(p.id)} className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </>
     );
 }

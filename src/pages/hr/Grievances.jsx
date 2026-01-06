@@ -298,7 +298,9 @@ export default function Grievances() {
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Grievances Management</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -385,6 +387,87 @@ export default function Grievances() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {grievances.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">
+              <p>No grievances found</p>
+            </div>
+          ) : (
+            grievances.map((grievance) => (
+              <div key={grievance.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{grievance.employee_name || 'Unknown'}</div>
+                    <div className="text-sm text-gray-500">{grievance.employee_code || 'N/A'}</div>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                    grievance.status === 'Resolved' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
+                    grievance.status === 'Under Investigation' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                  }`}>
+                    {grievance.status || 'Under Investigation'}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Category:</span>
+                    <span className="text-sm text-gray-600">{grievance.category || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Priority:</span>
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                      grievance.priority === 'high' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
+                      grievance.priority === 'medium' ? 'bg-gray-50 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-600 border-gray-300'
+                    }`}>
+                      {grievance.priority || 'Medium'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Date:</span>
+                    <span className="text-sm text-gray-600">
+                      {grievance.created_at ? new Date(grievance.created_at).toLocaleDateString() : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => handleView(grievance.id)}
+                    className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    View
+                  </button>
+                  {canDelete && (
+                    <button
+                      onClick={() => handleDelete(grievance.id)}
+                      className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  )}
+                  {canResolve && grievance.status !== 'Resolved' && (
+                    <button
+                      onClick={() => handleCompleteInvestigation(grievance.id)}
+                      className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Resolve
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 

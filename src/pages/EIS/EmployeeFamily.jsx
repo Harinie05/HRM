@@ -161,7 +161,8 @@ export default function EmployeeFamily() {
 
         {/* Family Table */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -244,6 +245,78 @@ export default function EmployeeFamily() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {family.length === 0 ? (
+              <div className="p-6 text-center">
+                <FiUsers className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Family Members</h3>
+                <p className="text-gray-500">Add family members and dependents information.</p>
+              </div>
+            ) : (
+              family.map((f) => (
+                <div key={f.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                        <FiUser className="w-4 h-4 text-black" />
+                      </div>
+                      <div className="font-medium text-gray-900">{f.name}</div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-lg border border-black ${
+                      f.dependent ? 'bg-gray-100 text-black' : 'bg-gray-100 text-black'
+                    }`}>
+                      {f.dependent ? 'Dependent' : 'Non-Dependent'}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Relationship:</span>
+                      <span className="text-sm text-gray-600">{f.relationship}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Age:</span>
+                      <span className="text-sm text-gray-600">{f.age || '-'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Contact:</span>
+                      <span className="text-sm text-gray-600">
+                        {f.contact ? (
+                          <div className="flex items-center gap-1">
+                            <FiPhone className="w-3 h-3" />
+                            {f.contact}
+                          </div>
+                        ) : '-'}
+                      </span>
+                    </div>
+                  </div>
+                  {(canEdit || canDelete) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEdit && (
+                        <button
+                          onClick={() => openEdit(f)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => deleteFamily(f.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

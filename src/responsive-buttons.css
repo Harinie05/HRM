@@ -1,0 +1,273 @@
+/* ========== RESPONSIVE BUTTON SYSTEM ========== */
+/* CSS Custom Properties for Customization Support */
+:root {
+  --btn-primary-bg: #3b82f6;
+  --btn-primary-hover: #2563eb;
+  --btn-primary-text: white;
+  --btn-secondary-bg: #6b7280;
+  --btn-secondary-hover: #4b5563;
+  --btn-success-bg: #10b981;
+  --btn-success-hover: #059669;
+  --btn-danger-bg: #ef4444;
+  --btn-danger-hover: #dc2626;
+  --btn-warning-bg: #f59e0b;
+  --btn-warning-hover: #d97706;
+}
+
+/* ========== BASE RESPONSIVE BUTTON ========== */
+button, .btn, [role="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* ========== CUSTOMIZABLE BUTTON VARIANTS ========== */
+.bg-blue-600, .bg-indigo-600, [class*="bg-blue"], [class*="bg-indigo"] {
+  background-color: var(--btn-primary-bg, #3b82f6) !important;
+  color: var(--btn-primary-text, white) !important;
+  border-color: var(--btn-primary-bg, #3b82f6) !important;
+}
+
+.bg-blue-600:hover, .bg-indigo-600:hover, [class*="bg-blue"]:hover, [class*="bg-indigo"]:hover {
+  background-color: var(--btn-primary-hover, #2563eb) !important;
+  border-color: var(--btn-primary-hover, #2563eb) !important;
+}
+
+.bg-gray-600, [class*="bg-gray"] {
+  background-color: var(--btn-secondary-bg, #6b7280) !important;
+  color: white !important;
+  border-color: var(--btn-secondary-bg, #6b7280) !important;
+}
+
+.bg-gray-600:hover, [class*="bg-gray"]:hover {
+  background-color: var(--btn-secondary-hover, #4b5563) !important;
+  border-color: var(--btn-secondary-hover, #4b5563) !important;
+}
+
+.bg-green-600, [class*="bg-green"] {
+  background-color: var(--btn-success-bg, #10b981) !important;
+  color: white !important;
+  border-color: var(--btn-success-bg, #10b981) !important;
+}
+
+.bg-green-600:hover, [class*="bg-green"]:hover {
+  background-color: var(--btn-success-hover, #059669) !important;
+  border-color: var(--btn-success-hover, #059669) !important;
+}
+
+.bg-red-600, [class*="bg-red"] {
+  background-color: var(--btn-danger-bg, #ef4444) !important;
+  color: white !important;
+  border-color: var(--btn-danger-bg, #ef4444) !important;
+}
+
+.bg-red-600:hover, [class*="bg-red"]:hover {
+  background-color: var(--btn-danger-hover, #dc2626) !important;
+  border-color: var(--btn-danger-hover, #dc2626) !important;
+}
+
+.bg-yellow-600, .bg-orange-600, [class*="bg-yellow"], [class*="bg-orange"] {
+  background-color: var(--btn-warning-bg, #f59e0b) !important;
+  color: white !important;
+  border-color: var(--btn-warning-bg, #f59e0b) !important;
+}
+
+.bg-yellow-600:hover, .bg-orange-600:hover, [class*="bg-yellow"]:hover, [class*="bg-orange"]:hover {
+  background-color: var(--btn-warning-hover, #d97706) !important;
+  border-color: var(--btn-warning-hover, #d97706) !important;
+}
+
+/* Black buttons (common in the app) */
+.bg-black {
+  background-color: var(--btn-secondary-bg, #000000) !important;
+  color: white !important;
+  border-color: var(--btn-secondary-bg, #000000) !important;
+}
+
+.bg-black:hover {
+  background-color: var(--btn-secondary-hover, #374151) !important;
+  border-color: var(--btn-secondary-hover, #374151) !important;
+}
+
+/* ========== MOBILE RESPONSIVE BREAKPOINTS ========== */
+@media (max-width: 640px) {
+  /* All buttons become full width and larger on mobile */
+  button, .btn, [role="button"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  /* Icon-only buttons remain compact */
+  .p-2, .p-1\.5, .p-1 {
+    width: auto !important;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  /* Button groups stack vertically */
+  .flex.gap-2, .flex.gap-3, .flex.gap-4 {
+    flex-direction: column;
+  }
+
+  /* Header buttons */
+  .flex.items-center.gap-2 button,
+  .flex.items-center.gap-3 button,
+  .flex.items-center.gap-4 button {
+    width: 100%;
+  }
+
+  /* Modal buttons */
+  .flex.gap-3.mt-6 {
+    flex-direction: column;
+  }
+
+  /* Hide button text on very small screens, show only icons */
+  .mobile-icon-only {
+    padding: 0.75rem !important;
+    width: 48px !important;
+  }
+
+  .mobile-icon-only span:not(.sr-only) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens - even larger touch targets */
+  button, .btn, [role="button"] {
+    min-height: 52px;
+    padding: 1rem;
+  }
+}
+
+/* ========== TABLET RESPONSIVE ========== */
+@media (min-width: 641px) and (max-width: 1024px) {
+  button, .btn, [role="button"] {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* ========== DESKTOP RESPONSIVE ========== */
+@media (min-width: 1025px) {
+  button, .btn, [role="button"] {
+    min-height: 40px;
+    padding: 0.75rem 1rem;
+    width: auto;
+  }
+}
+
+/* ========== SPECIFIC COMPONENT OVERRIDES ========== */
+/* Table action buttons - keep compact */
+.table-actions button,
+.table-actions .btn {
+  width: auto !important;
+  min-width: 40px;
+  padding: 0.5rem !important;
+}
+
+@media (max-width: 640px) {
+  .table-actions button,
+  .table-actions .btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Form buttons in modals */
+.modal-content .flex.gap-3 button,
+.modal-content .flex.gap-3 .btn {
+  flex: 1;
+}
+
+/* Search and filter buttons */
+.search-container button,
+.filter-container button {
+  width: auto !important;
+}
+
+@media (max-width: 640px) {
+  .search-container,
+  .filter-container {
+    width: 100%;
+  }
+  
+  .search-container button,
+  .filter-container button {
+    width: 100% !important;
+    margin-top: 0.5rem;
+  }
+}
+
+/* ========== ACCESSIBILITY & TOUCH IMPROVEMENTS ========== */
+@media (max-width: 768px) {
+  /* Ensure all interactive elements meet touch target requirements */
+  button, .btn, [role="button"], a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve tap highlighting */
+  button, .btn, [role="button"] {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* ========== FOCUS STATES ========== */
+button:focus, .btn:focus, [role="button"]:focus {
+  outline: 2px solid var(--btn-primary-bg, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* ========== DISABLED STATES ========== */
+button:disabled, .btn:disabled, [role="button"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #9ca3af !important;
+  border-color: #9ca3af !important;
+}
+
+/* ========== LOADING STATES ========== */
+.loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+  button, .btn, [role="button"] {
+    display: none !important;
+  }
+}

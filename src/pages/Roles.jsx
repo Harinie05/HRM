@@ -1211,7 +1211,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'show_deleted_work_assignments' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
+                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2812,7 +2812,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'show_deleted_work_assignments' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
+                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

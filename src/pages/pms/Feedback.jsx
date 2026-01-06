@@ -26,6 +26,7 @@ export default function Feedback() {
   const [viewFeedback, setViewFeedback] = useState(null);
   const [editingFeedback, setEditingFeedback] = useState(null);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
   const [formData, setFormData] = useState({
     type: "Manager to Employee",
     customType: "",
@@ -71,6 +72,17 @@ export default function Feedback() {
     try {
       const response = await api.get(`/api/pms/feedback${showDeleted ? '?include_deleted=true' : ''}`);
       setFeedbacks(response.data?.data || []);
+      
+      // Fetch deleted count
+      if (!showDeleted) {
+        try {
+          const deletedResponse = await api.get('/api/pms/feedback/deleted-count');
+          setDeletedCount(deletedResponse.data?.count || 0);
+        } catch (error) {
+          console.error('Error fetching deleted count:', error);
+          setDeletedCount(0);
+        }
+      }
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
     }
@@ -271,16 +283,22 @@ export default function Feedback() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-              className="rounded border-gray-300"
-              style={{ display: (hasPermission('show_deleted_feedback') || isAdmin()) ? 'inline' : 'none' }}
-            />
-            {(hasPermission('show_deleted_feedback') || isAdmin()) && 'Show Deleted'}
-          </label>
+          {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_feedback') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(true)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Show Deleted ({deletedCount})
+            </button>
+          )}
+          {showDeleted && (hasPermission('show_deleted_feedback') || isAdmin()) && (
+            <button
+              onClick={() => setShowDeleted(false)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Hide Deleted
+            </button>
+          )}
           <button
             onClick={() => setShowForm(true)}
             className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
@@ -541,7 +559,9 @@ export default function Feedback() {
         <div className="px-4 sm:px-6 py-4 border-b border-black">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Feedback History</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -620,6 +640,82 @@ export default function Feedback() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {feedbacks.map((feedback) => (
+            <div key={feedback.id} className={`p-4 border-b border-gray-200 last:border-b-0 ${feedback.is_active === false ? 'bg-red-50 opacity-75' : ''}`}>
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">
+                    {feedback.relationship}
+                    {feedback.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
+                  </h4>
+                  <p className="text-sm text-gray-600">{feedback.created_at ? new Date(feedback.created_at).toLocaleDateString() : 'N/A'}</p>
+                </div>
+                <div className="flex items-center">
+                  {renderStars(feedback.rating || 0)}
+                  <span className="ml-2 text-sm text-gray-600">({feedback.rating || 0}/5)</span>
+                </div>
+              </div>
+              
+              <div className="space-y-2 mb-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">From:</span>
+                  <span className="text-gray-900">{feedback.from_employee_name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">To:</span>
+                  <span className="text-gray-900">{feedback.to_employee_name}</span>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                {feedback.is_active === false ? (
+                  (hasPermission('restore_feedback') || isAdmin()) && (
+                    <button
+                      onClick={() => handleRestore(feedback.id)}
+                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                    >
+                      <MessageSquare className="w-3 h-3" />
+                      Restore
+                    </button>
+                  )
+                ) : (
+                  <>
+                    {(hasPermission('view_feedback') || isAdmin()) && (
+                      <button 
+                        onClick={() => handleView(feedback)}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Eye className="w-3 h-3" />
+                        View
+                      </button>
+                    )}
+                    {(hasPermission('edit_feedback') || isAdmin()) && (
+                      <button 
+                        onClick={() => handleEdit(feedback)}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Edit className="w-3 h-3" />
+                        Edit
+                      </button>
+                    )}
+                    {(hasPermission('delete_feedback') || isAdmin()) && (
+                      <button
+                        onClick={() => handleDelete(feedback.id)}
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       <Toast {...toast} />

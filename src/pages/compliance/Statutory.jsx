@@ -640,80 +640,162 @@ export default function Statutory() {
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full border border-black">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Basic Salary</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PF</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">ESI</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PT</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Total</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
-                    {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-black">
-                  {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
-                    <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <div>
-                          <div className="font-medium">{calc.employee_name}</div>
-                          <div className="text-gray-500 text-xs">{calc.employee_id}</div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.basic_salary}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pf_amount}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.esi_amount}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pt_amount}</td>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-black">₹{calc.total_deductions}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{calc.month}/{calc.year}</td>
-                      {showDeleted && (
-                        <td className="px-4 py-2 text-sm border-r border-black">
-                          {calc.deleted_at ? new Date(calc.deleted_at).toLocaleDateString() : 'N/A'}
-                        </td>
-                      )}
-                      <td className="px-4 py-2 text-sm">
-                        <div className="flex gap-2">
-                          {showDeleted ? (
-                            canRestore && (
-                              <button
-                                onClick={() => handleRestore(calc.id)}
-                                className="text-green-600 hover:text-green-800 p-1 rounded"
-                                title="Restore"
-                              >
-                                <RotateCcw size={16} />
-                              </button>
-                            )
-                          ) : (
-                            <>
-                              {canEdit && (
-                                <button
-                                  onClick={() => handleEdit(calc)}
-                                  className="text-blue-600 hover:text-blue-800 p-1 rounded"
-                                  title="Edit"
-                                >
-                                  <Edit size={16} />
-                                </button>
-                              )}
-                              {canDelete && (
-                                <button
-                                  onClick={() => handleDelete(calc.id)}
-                                  className="text-red-600 hover:text-red-800 p-1 rounded"
-                                  title="Delete"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </td>
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full border border-black">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Basic Salary</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PF</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">ESI</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PT</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Total</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
+                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
+                      <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <div>
+                            <div className="font-medium">{calc.employee_name}</div>
+                            <div className="text-gray-500 text-xs">{calc.employee_id}</div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.basic_salary}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pf_amount}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.esi_amount}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pt_amount}</td>
+                        <td className="px-4 py-2 text-sm font-semibold border-r border-black">₹{calc.total_deductions}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{calc.month}/{calc.year}</td>
+                        {showDeleted && (
+                          <td className="px-4 py-2 text-sm border-r border-black">
+                            {calc.deleted_at ? new Date(calc.deleted_at).toLocaleDateString() : 'N/A'}
+                          </td>
+                        )}
+                        <td className="px-4 py-2 text-sm">
+                          <div className="flex gap-2">
+                            {showDeleted ? (
+                              canRestore && (
+                                <button
+                                  onClick={() => handleRestore(calc.id)}
+                                  className="text-green-600 hover:text-green-800 p-1 rounded"
+                                  title="Restore"
+                                >
+                                  <RotateCcw size={16} />
+                                </button>
+                              )
+                            ) : (
+                              <>
+                                {canEdit && (
+                                  <button
+                                    onClick={() => handleEdit(calc)}
+                                    className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                                    title="Edit"
+                                  >
+                                    <Edit size={16} />
+                                  </button>
+                                )}
+                                {canDelete && (
+                                  <button
+                                    onClick={() => handleDelete(calc.id)}
+                                    className="text-red-600 hover:text-red-800 p-1 rounded"
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
+                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{calc.employee_name}</h4>
+                        <p className="text-sm text-gray-600">{calc.employee_id}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900">₹{calc.total_deductions}</span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Basic Salary:</span>
+                        <span className="text-gray-900">₹{calc.basic_salary}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">PF:</span>
+                        <span className="text-gray-900">₹{calc.pf_amount}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">ESI:</span>
+                        <span className="text-gray-900">₹{calc.esi_amount}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">PT:</span>
+                        <span className="text-gray-900">₹{calc.pt_amount}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Period:</span>
+                        <span className="text-gray-900">{calc.month}/{calc.year}</span>
+                      </div>
+                      {showDeleted && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Deleted At:</span>
+                          <span className="text-gray-900">{calc.deleted_at ? new Date(calc.deleted_at).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {showDeleted ? (
+                        canRestore && (
+                          <button
+                            onClick={() => handleRestore(calc.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            Restore
+                          </button>
+                        )
+                      ) : (
+                        <>
+                          {canEdit && (
+                            <button
+                              onClick={() => handleEdit(calc)}
+                              className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            >
+                              <Edit className="w-3 h-3" />
+                              Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => handleDelete(calc.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              Delete
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

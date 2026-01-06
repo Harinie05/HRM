@@ -24,6 +24,7 @@ export default function Users() {
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [editPassword, setEditPassword] = useState("");
   const [editRole, setEditRole] = useState("");
   const [editDepartment, setEditDepartment] = useState("");
   const { toast, showToast, hideToast } = useToast();
@@ -304,6 +305,7 @@ export default function Users() {
                               setEditing(u);
                               setEditName(u.name);
                               setEditEmail(u.email);
+                              setEditPassword(""); // Reset password field
                               const userRole = roles.find(r => r.name === u.role);
                               const userDept = departments.find(d => d.name === u.department);
                               setEditRole(userRole ? userRole.id : "");
@@ -547,6 +549,17 @@ export default function Users() {
                 </div>
 
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <input
+                    type="password"
+                    placeholder="Leave blank to keep current password"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
                   <select
                     value={editRole}
@@ -589,14 +602,21 @@ export default function Users() {
                 <button
                   onClick={async () => {
                     try {
+                      const updateData = {
+                        name: editName,
+                        email: editEmail,
+                        role_id: Number(editRole),
+                        department_id: Number(editDepartment),
+                      };
+                      
+                      // Only include password if it's provided
+                      if (editPassword.trim()) {
+                        updateData.password = editPassword;
+                      }
+
                       await api.put(
                         `/hospitals/users/${tenant_db}/update/${editing.id}`,
-                        {
-                          name: editName,
-                          email: editEmail,
-                          role_id: Number(editRole),
-                          department_id: Number(editDepartment),
-                        }
+                        updateData
                       );
 
                       showToast("Updated successfully!");

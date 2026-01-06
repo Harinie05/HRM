@@ -396,197 +396,394 @@ export default function Recruitment() {
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-black">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Openings</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b border-black">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Openings</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
 
-                <tbody className="bg-white divide-y divide-black">
-                  {filteredJobs.map((job) => (
-                    <tr key={job.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{job.title}</div>
-                          <div className="text-sm text-gray-500">{job.experience_years} years experience</div>
-                          {job.location && (
-                            <div className="text-xs text-gray-500">{job.location}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {job.department}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-sm font-medium text-gray-900">{job.openings}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-sm text-gray-600">{job.job_type || 'Full-time'}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex flex-col items-center">
-                          {job.publish_status?.trim() === "Published" ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              <FiPlay className="mr-1" size={10} />
-                              Published
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                              <FiPause className="mr-1" size={10} />
-                              Draft
-                            </span>
-                          )}
-                          {job.status === "Inactive" && (
-                            <span className="text-xs text-red-600 font-medium mt-1">closed</span>
-                          )}
-                        </div>
-                      </td>
+                  <tbody className="bg-white divide-y divide-black">
+                    {filteredJobs.map((job) => (
+                      <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{job.title}</div>
+                            <div className="text-sm text-gray-500">{job.experience_years} years experience</div>
+                            {job.location && (
+                              <div className="text-xs text-gray-500">{job.location}</div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {job.department}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="text-sm font-medium text-gray-900">{job.openings}</span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="text-sm text-gray-600">{job.job_type || 'Full-time'}</span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <div className="flex flex-col items-center">
+                            {job.publish_status?.trim() === "Published" ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <FiPlay className="mr-1" size={10} />
+                                Published
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <FiPause className="mr-1" size={10} />
+                                Draft
+                              </span>
+                            )}
+                            {job.status === "Inactive" && (
+                              <span className="text-xs text-red-600 font-medium mt-1">closed</span>
+                            )}
+                          </div>
+                        </td>
 
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center space-x-2">
-                          <button
-                            onClick={() => openView(job)}
-                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="View Job"
-                          >
-                            <FiEye size={16} />
-                          </button>
-
-                          {hasPermission('edit_job_requisition') && (
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-center space-x-2">
                             <button
-                              onClick={() => openEdit(job)}
-                              className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                              title="Edit Job"
+                              onClick={() => openView(job)}
+                              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="View Job"
                             >
-                              <FiEdit size={16} />
+                              <FiEye size={16} />
                             </button>
-                          )}
 
-                          {canViewCandidates && (
-                            <button
-                              onClick={() => window.location.href = `/screening?job=${job.id}`}
-                              className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                              title="Screen Candidates"
-                            >
-                              <FiUsers size={16} />
-                            </button>
-                          )}
-
-                          {canGenerateLinks && (
-                            <div className="relative link-dropdown">
+                            {hasPermission('edit_job_requisition') && (
                               <button
-                                onClick={() =>
-                                  setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
-                                }
-                                className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                                title="Job Links"
+                                onClick={() => openEdit(job)}
+                                className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                title="Edit Job"
                               >
-                                <FiLink size={16} />
+                                <FiEdit size={16} />
                               </button>
+                            )}
 
-                              {openLinkMenu === job.id && (
-                                <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
-                                  <button
-                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
-                                    onClick={() => {
-                                      const publicLink = `${window.location.origin}/apply/${job.id}`;
-                                      setGeneratedLinks(prev => ({
-                                        ...prev,
-                                        [job.id]: { ...prev[job.id], public: publicLink }
-                                      }));
-                                      showToast("Public job link generated");
-                                    }}
-                                  >
-                                    🌍 Generate Public Link
-                                  </button>
+                            {canViewCandidates && (
+                              <button
+                                onClick={() => window.location.href = `/screening?job=${job.id}`}
+                                className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                                title="Screen Candidates"
+                              >
+                                <FiUsers size={16} />
+                              </button>
+                            )}
 
-                                  {employeeCode && (
+                            {canGenerateLinks && (
+                              <div className="relative link-dropdown">
+                                <button
+                                  onClick={() =>
+                                    setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
+                                  }
+                                  className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                  title="Job Links"
+                                >
+                                  <FiLink size={16} />
+                                </button>
+
+                                {openLinkMenu === job.id && (
+                                  <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
                                     <button
-                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
                                       onClick={() => {
-                                        const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                        const publicLink = `${window.location.origin}/apply/${job.id}`;
                                         setGeneratedLinks(prev => ({
                                           ...prev,
-                                          [job.id]: { ...prev[job.id], referral: referralLink }
+                                          [job.id]: { ...prev[job.id], public: publicLink }
                                         }));
-                                        showToast("Referral link generated");
+                                        showToast("Public job link generated");
                                       }}
                                     >
-                                      👤 Generate My Referral Link
+                                      🌍 Generate Public Link
                                     </button>
-                                  )}
+
+                                    {employeeCode && (
+                                      <button
+                                        className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                        onClick={() => {
+                                          const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                          setGeneratedLinks(prev => ({
+                                            ...prev,
+                                            [job.id]: { ...prev[job.id], referral: referralLink }
+                                          }));
+                                          showToast("Referral link generated");
+                                        }}
+                                      >
+                                        👤 Generate My Referral Link
+                                      </button>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {canPublishJobs && (
+                              <button
+                                onClick={() => togglePublish(job)}
+                                className={`p-2 rounded-lg transition-colors ${
+                                  job.publish_status?.trim() === "Published"
+                                    ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                    : "text-gray-500 hover:text-green-600 hover:bg-green-50"
+                                }`}
+                                title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
+                              >
+                                {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
+                              </button>
+                            )}
+                          </div>
+                          {generatedLinks[job.id] && (
+                            <div className="mt-2 space-y-2">
+                              {generatedLinks[job.id]?.public && (
+                                <div>
+                                  <label className="text-xs text-gray-600 font-medium">Public Link:</label>
+                                  <input
+                                    type="text"
+                                    value={generatedLinks[job.id].public}
+                                    readOnly
+                                    className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                    onClick={(e) => {
+                                      e.target.select();
+                                      navigator.clipboard.writeText(e.target.value);
+                                      showToast("Public link copied to clipboard!");
+                                    }}
+                                    placeholder="Public link will appear here"
+                                  />
+                                </div>
+                              )}
+                              {generatedLinks[job.id]?.referral && (
+                                <div>
+                                  <label className="text-xs text-gray-600 font-medium">Referral Link:</label>
+                                  <input
+                                    type="text"
+                                    value={generatedLinks[job.id].referral}
+                                    readOnly
+                                    className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                    onClick={(e) => {
+                                      e.target.select();
+                                      navigator.clipboard.writeText(e.target.value);
+                                      showToast("Referral link copied to clipboard!");
+                                    }}
+                                    placeholder="Referral link will appear here"
+                                  />
                                 </div>
                               )}
                             </div>
                           )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                          {canPublishJobs && (
-                            <button
-                              onClick={() => togglePublish(job)}
-                              className={`p-2 rounded-lg transition-colors ${
-                                job.publish_status?.trim() === "Published"
-                                  ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
-                                  : "text-gray-500 hover:text-green-600 hover:bg-green-50"
-                              }`}
-                              title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
-                            >
-                              {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
-                            </button>
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                <div className="p-4 space-y-4">
+                  {filteredJobs.map((job) => (
+                    <div key={job.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 text-sm">{job.title}</h3>
+                          <p className="text-xs text-gray-500 mt-1">{job.experience_years} years experience</p>
+                          {job.location && (
+                            <p className="text-xs text-gray-500">{job.location}</p>
                           )}
                         </div>
-                        {generatedLinks[job.id] && (
-                          <div className="mt-2 space-y-2">
-                            {generatedLinks[job.id]?.public && (
-                              <div>
-                                <label className="text-xs text-gray-600 font-medium">Public Link:</label>
-                                <input
-                                  type="text"
-                                  value={generatedLinks[job.id].public}
-                                  readOnly
-                                  className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
-                                  onClick={(e) => {
-                                    e.target.select();
-                                    navigator.clipboard.writeText(e.target.value);
-                                    showToast("Public link copied to clipboard!");
+                        <div className="flex flex-col items-end space-y-1">
+                          {job.publish_status?.trim() === "Published" ? (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <FiPlay className="mr-1" size={8} />
+                              Published
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              <FiPause className="mr-1" size={8} />
+                              Draft
+                            </span>
+                          )}
+                          {job.status === "Inactive" && (
+                            <span className="text-xs text-red-600 font-medium">closed</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 mb-3 text-xs">
+                        <div>
+                          <span className="text-gray-500">Department:</span>
+                          <div className="mt-1">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {job.department}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Openings:</span>
+                          <p className="font-medium text-gray-900 mt-1">{job.openings}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Type:</span>
+                          <p className="font-medium text-gray-900 mt-1">{job.job_type || 'Full-time'}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+                        <button
+                          onClick={() => openView(job)}
+                          className="flex items-center px-3 py-1.5 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                          <FiEye size={12} className="mr-1" />
+                          View
+                        </button>
+
+                        {hasPermission('edit_job_requisition') && (
+                          <button
+                            onClick={() => openEdit(job)}
+                            className="flex items-center px-3 py-1.5 text-xs bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors"
+                          >
+                            <FiEdit size={12} className="mr-1" />
+                            Edit
+                          </button>
+                        )}
+
+                        {canViewCandidates && (
+                          <button
+                            onClick={() => window.location.href = `/screening?job=${job.id}`}
+                            className="flex items-center px-3 py-1.5 text-xs bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors"
+                          >
+                            <FiUsers size={12} className="mr-1" />
+                            Candidates
+                          </button>
+                        )}
+
+                        {canGenerateLinks && (
+                          <div className="relative link-dropdown">
+                            <button
+                              onClick={() =>
+                                setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
+                              }
+                              className="flex items-center px-3 py-1.5 text-xs bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors"
+                            >
+                              <FiLink size={12} className="mr-1" />
+                              Links
+                            </button>
+
+                            {openLinkMenu === job.id && (
+                              <div className="absolute left-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                <button
+                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
+                                  onClick={() => {
+                                    const publicLink = `${window.location.origin}/apply/${job.id}`;
+                                    setGeneratedLinks(prev => ({
+                                      ...prev,
+                                      [job.id]: { ...prev[job.id], public: publicLink }
+                                    }));
+                                    showToast("Public job link generated");
                                   }}
-                                  placeholder="Public link will appear here"
-                                />
-                              </div>
-                            )}
-                            {generatedLinks[job.id]?.referral && (
-                              <div>
-                                <label className="text-xs text-gray-600 font-medium">Referral Link:</label>
-                                <input
-                                  type="text"
-                                  value={generatedLinks[job.id].referral}
-                                  readOnly
-                                  className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
-                                  onClick={(e) => {
-                                    e.target.select();
-                                    navigator.clipboard.writeText(e.target.value);
-                                    showToast("Referral link copied to clipboard!");
-                                  }}
-                                  placeholder="Referral link will appear here"
-                                />
+                                >
+                                  🌍 Generate Public Link
+                                </button>
+
+                                {employeeCode && (
+                                  <button
+                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                    onClick={() => {
+                                      const referralLink = `${window.location.origin}/apply/${job.id}?ref=${employeeCode}`;
+                                      setGeneratedLinks(prev => ({
+                                        ...prev,
+                                        [job.id]: { ...prev[job.id], referral: referralLink }
+                                      }));
+                                      showToast("Referral link generated");
+                                    }}
+                                  >
+                                    👤 Generate My Referral Link
+                                  </button>
+                                )}
                               </div>
                             )}
                           </div>
                         )}
-                      </td>
-                    </tr>
+
+                        {canPublishJobs && (
+                          <button
+                            onClick={() => togglePublish(job)}
+                            className={`flex items-center px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                              job.publish_status?.trim() === "Published"
+                                ? "bg-red-50 text-red-600 hover:bg-red-100"
+                                : "bg-green-50 text-green-600 hover:bg-green-100"
+                            }`}
+                          >
+                            {job.publish_status?.trim() === "Published" ? (
+                              <>
+                                <FiPause size={12} className="mr-1" />
+                                Unpublish
+                              </>
+                            ) : (
+                              <>
+                                <FiPlay size={12} className="mr-1" />
+                                Publish
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                      
+                      {generatedLinks[job.id] && (
+                        <div className="mt-3 space-y-2 pt-3 border-t border-gray-100">
+                          {generatedLinks[job.id]?.public && (
+                            <div>
+                              <label className="text-xs text-gray-600 font-medium">Public Link:</label>
+                              <input
+                                type="text"
+                                value={generatedLinks[job.id].public}
+                                readOnly
+                                className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
+                                onClick={(e) => {
+                                  e.target.select();
+                                  navigator.clipboard.writeText(e.target.value);
+                                  showToast("Public link copied to clipboard!");
+                                }}
+                                placeholder="Public link will appear here"
+                              />
+                            </div>
+                          )}
+                          {generatedLinks[job.id]?.referral && (
+                            <div>
+                              <label className="text-xs text-gray-600 font-medium">Referral Link:</label>
+                              <input
+                                type="text"
+                                value={generatedLinks[job.id].referral}
+                                readOnly
+                                className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer mt-1"
+                                onClick={(e) => {
+                                  e.target.select();
+                                  navigator.clipboard.writeText(e.target.value);
+                                  showToast("Referral link copied to clipboard!");
+                                }}
+                                placeholder="Referral link will appear here"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
         {/* MODAL */}

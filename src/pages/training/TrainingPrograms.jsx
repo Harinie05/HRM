@@ -231,162 +231,268 @@ export default function TrainingPrograms() {
           </div>
         ) : (
           <>
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Program</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Trainer</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Dates</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-black">
-                {filteredPrograms.length === 0 ? (
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <table className="w-full">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
-                      <BookOpen className="mx-auto h-12 w-12 text-muted" />
-                      <h3 className="mt-2 text-sm font-medium text-primary">No training programs</h3>
-                      <p className="mt-1 text-sm text-muted">
-                        {searchTerm || statusFilter ? "No programs match your search criteria." : "No training programs have been created yet."}
-                      </p>
-                      {!searchTerm && !statusFilter && canAdd && (
-                        <div className="mt-6">
-                          <button 
-                            onClick={() => handleOpenModal()}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
-                          >
-                            <Plus size={16} />
-                            Create First Program
-                          </button>
-                        </div>
-                      )}
-                    </td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Program</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Trainer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Dates</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                   </tr>
-                ) : (
-                  filteredPrograms.map((program) => (
-                    <tr key={program.id} className="hover:bg-gray-50 border-b border-black">
-                      <td className="px-6 py-4 border-r border-black">
-                        <div className="text-sm font-medium text-gray-900">{program.title}</div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs">{program.description}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {program.type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900">{program.trainer || 'TBD'}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900">
-                          {program.startDate && program.endDate ? 
-                            `${program.startDate} to ${program.endDate}` : 
-                            'Not scheduled'
-                          }
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          program.status === "Published" ? "bg-green-100 text-green-800" :
-                          program.status === "Draft" ? "bg-yellow-100 text-yellow-800" :
-                          "bg-gray-100 text-gray-900"
-                        }`}>
-                          {program.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          {canEdit && (
+                </thead>
+                <tbody className="bg-white divide-y divide-black">
+                  {filteredPrograms.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-12 text-center">
+                        <BookOpen className="mx-auto h-12 w-12 text-muted" />
+                        <h3 className="mt-2 text-sm font-medium text-primary">No training programs</h3>
+                        <p className="mt-1 text-sm text-muted">
+                          {searchTerm || statusFilter ? "No programs match your search criteria." : "No training programs have been created yet."}
+                        </p>
+                        {!searchTerm && !statusFilter && canAdd && (
+                          <div className="mt-6">
                             <button 
-                              onClick={() => handleOpenModal(program)}
-                              className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                              title="Edit"
+                              onClick={() => handleOpenModal()}
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
                             >
-                              <Edit size={16} />
+                              <Plus size={16} />
+                              Create First Program
                             </button>
-                          )}
-                          {program.status === "Published" && canViewEnrolled && (
-                            <button 
-                              onClick={() => handleViewApplications(program.id)}
-                              className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                              title="View Applications"
-                            >
-                              <Eye size={16} />
-                            </button>
-                          )}
-                          
-                          {program.status === "Published" && canGenerateLink && (
-                            <div className="relative link-dropdown">
-                              <button
-                                onClick={() => setOpenLinkMenu(openLinkMenu === program.id ? null : program.id)}
-                                className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-all duration-200"
-                                title="Generate Link"
-                              >
-                                <Link size={16} />
-                              </button>
-
-                              {openLinkMenu === program.id && (
-                                <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
-                                  <button
-                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
-                                    onClick={() => {
-                                      const applicationLink = `${window.location.origin}/training/program/${program.id}`;
-                                      setGeneratedLinks(prev => ({
-                                        ...prev,
-                                        [program.id]: applicationLink
-                                      }));
-                                      showToast("Application link generated!", "success");
-                                    }}
-                                  >
-                                    🔗 Generate Application Link
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                          {program.status === "Draft" && canEdit && (
-                            <button 
-                              onClick={() => handlePublish(program.id)}
-                              className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-all duration-200"
-                              title="Publish"
-                            >
-                              <Calendar size={16} />
-                            </button>
-                          )}
-                          {canDelete && (
-                            <button 
-                              onClick={() => handleDelete(program.id)}
-                              className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
-                              title="Delete"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          )}
-                        </div>
-                        {generatedLinks[program.id] && (
-                          <div className="mt-2">
-                            <label className="text-xs text-gray-600 font-medium">Application Link:</label>
-                            <input
-                              type="text"
-                              value={generatedLinks[program.id]}
-                              readOnly
-                              className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
-                              onClick={(e) => {
-                                e.target.select();
-                                navigator.clipboard.writeText(e.target.value);
-                                showToast("Link copied to clipboard!", "success");
-                              }}
-                            />
                           </div>
                         )}
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    filteredPrograms.map((program) => (
+                      <tr key={program.id} className="hover:bg-gray-50 border-b border-black">
+                        <td className="px-6 py-4 border-r border-black">
+                          <div className="text-sm font-medium text-gray-900">{program.title}</div>
+                          <div className="text-sm text-gray-500 truncate max-w-xs">{program.description}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {program.type}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <div className="text-sm text-gray-900">{program.trainer || 'TBD'}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <div className="text-sm text-gray-900">
+                            {program.startDate && program.endDate ? 
+                              `${program.startDate} to ${program.endDate}` : 
+                              'Not scheduled'
+                            }
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            program.status === "Published" ? "bg-green-100 text-green-800" :
+                            program.status === "Draft" ? "bg-yellow-100 text-yellow-800" :
+                            "bg-gray-100 text-gray-900"
+                          }`}>
+                            {program.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            {canEdit && (
+                              <button 
+                                onClick={() => handleOpenModal(program)}
+                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                title="Edit"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
+                            {program.status === "Published" && canViewEnrolled && (
+                              <button 
+                                onClick={() => handleViewApplications(program.id)}
+                                className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                title="View Applications"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            )}
+                            
+                            {program.status === "Published" && canGenerateLink && (
+                              <div className="relative link-dropdown">
+                                <button
+                                  onClick={() => setOpenLinkMenu(openLinkMenu === program.id ? null : program.id)}
+                                  className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                                  title="Generate Link"
+                                >
+                                  <Link size={16} />
+                                </button>
+
+                                {openLinkMenu === program.id && (
+                                  <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
+                                    <button
+                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                                      onClick={() => {
+                                        const applicationLink = `${window.location.origin}/training/program/${program.id}`;
+                                        setGeneratedLinks(prev => ({
+                                          ...prev,
+                                          [program.id]: applicationLink
+                                        }));
+                                        showToast("Application link generated!", "success");
+                                      }}
+                                    >
+                                      🔗 Generate Application Link
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {program.status === "Draft" && canEdit && (
+                              <button 
+                                onClick={() => handlePublish(program.id)}
+                                className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-all duration-200"
+                                title="Publish"
+                              >
+                                <Calendar size={16} />
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button 
+                                onClick={() => handleDelete(program.id)}
+                                className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
+                                title="Delete"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                          {generatedLinks[program.id] && (
+                            <div className="mt-2">
+                              <label className="text-xs text-gray-600 font-medium">Application Link:</label>
+                              <input
+                                type="text"
+                                value={generatedLinks[program.id]}
+                                readOnly
+                                className="w-full text-xs border p-2 rounded bg-gray-50 focus:outline-none cursor-pointer"
+                                onClick={(e) => {
+                                  e.target.select();
+                                  navigator.clipboard.writeText(e.target.value);
+                                  showToast("Link copied to clipboard!", "success");
+                                }}
+                              />
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {filteredPrograms.length === 0 ? (
+                <div className="px-6 py-12 text-center">
+                  <BookOpen className="mx-auto h-12 w-12 text-muted" />
+                  <h3 className="mt-2 text-sm font-medium text-primary">No training programs</h3>
+                  <p className="mt-1 text-sm text-muted">
+                    {searchTerm || statusFilter ? "No programs match your search criteria." : "No training programs have been created yet."}
+                  </p>
+                  {!searchTerm && !statusFilter && canAdd && (
+                    <div className="mt-6">
+                      <button 
+                        onClick={() => handleOpenModal()}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
+                      >
+                        <Plus size={16} />
+                        Create First Program
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                filteredPrograms.map((program) => (
+                  <div key={program.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{program.title}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{program.description}</p>
+                      </div>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        program.status === "Published" ? "bg-green-100 text-green-800" :
+                        program.status === "Draft" ? "bg-yellow-100 text-yellow-800" :
+                        "bg-gray-100 text-gray-900"
+                      }`}>
+                        {program.status}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Type:</span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {program.type}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Trainer:</span>
+                        <span className="text-gray-900">{program.trainer || 'TBD'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Dates:</span>
+                        <span className="text-gray-900">
+                          {program.startDate && program.endDate ? 
+                            `${program.startDate} to ${program.endDate}` : 
+                            'Not scheduled'
+                          }
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {canEdit && (
+                        <button 
+                          onClick={() => handleOpenModal(program)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Edit className="w-3 h-3" />
+                          Edit
+                        </button>
+                      )}
+                      {program.status === "Published" && canViewEnrolled && (
+                        <button 
+                          onClick={() => handleViewApplications(program.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Eye className="w-3 h-3" />
+                          View
+                        </button>
+                      )}
+                      {program.status === "Draft" && canEdit && (
+                        <button 
+                          onClick={() => handlePublish(program.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                        >
+                          <Calendar className="w-3 h-3" />
+                          Publish
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button 
+                          onClick={() => handleDelete(program.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
             
             {/* Stats Footer */}
             <div className="px-6 py-4 bg-gray-50 border-t border-black">

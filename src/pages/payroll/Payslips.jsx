@@ -420,101 +420,187 @@ export default function Payslips() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto border border-black rounded-xl">
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b border-black">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Gross Salary</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Net Salary</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-8 text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                    </td>
-                  </tr>
-                ) : filteredPayslips.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
-                      <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                      <h3 className="mt-2 text-sm font-medium text-gray-900">No payslips found</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {searchTerm || selectedMonth ? "No payslips match your search criteria." : "Generate payslips for employees to view them here."}
-                      </p>
-                      {!searchTerm && !selectedMonth && canGenerate && (
-                        <div className="mt-6">
-                          <button 
-                            onClick={handleGeneratePayslips}
-                            className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
-                          >
-                            <FileText size={16} />
-                            Generate First Payslip
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ) : (
-                  filteredPayslips.map((payslip) => (
-                    <tr key={payslip.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{payslip.employee_name}</div>
-                        <div className="text-sm text-gray-500">ID: {payslip.employee_id}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{payslip.month} {payslip.year}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">₹{payslip.gross_salary?.toLocaleString() || 0}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
-                          {payslip.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => handleViewPayslip(payslip)}
-                            className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                            title="View Payslip"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          {canDownload && (
-                            <button 
-                              onClick={() => handleDownloadPayslip(payslip)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="Download Payslip"
-                            >
-                              <Download size={16} />
-                            </button>
-                          )}
-                          {canEmail && (
-                            <button 
-                              onClick={() => handleSendIndividual(payslip)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="Send via Email"
-                            >
-                              <Send size={16} />
-                            </button>
-                          )}
-                        </div>
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b border-black">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Gross Salary</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Net Salary</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                  {loading ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-8 text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                       </td>
                     </tr>
-                  ))
+                  ) : filteredPayslips.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-12 text-center">
+                        <FileText className="mx-auto h-12 w-12 text-gray-400" />
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">No payslips found</h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {searchTerm || selectedMonth ? "No payslips match your search criteria." : "Generate payslips for employees to view them here."}
+                        </p>
+                        {!searchTerm && !selectedMonth && canGenerate && (
+                          <div className="mt-6">
+                            <button 
+                              onClick={handleGeneratePayslips}
+                              className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                            >
+                              <FileText size={16} />
+                              Generate First Payslip
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredPayslips.map((payslip) => (
+                      <tr key={payslip.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{payslip.employee_name}</div>
+                          <div className="text-sm text-gray-500">ID: {payslip.employee_id}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{payslip.month} {payslip.year}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">₹{payslip.gross_salary?.toLocaleString() || 0}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                            {payslip.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            <button 
+                              onClick={() => handleViewPayslip(payslip)}
+                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                              title="View Payslip"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            {canDownload && (
+                              <button 
+                                onClick={() => handleDownloadPayslip(payslip)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Download Payslip"
+                              >
+                                <Download size={16} />
+                              </button>
+                            )}
+                            {canEmail && (
+                              <button 
+                                onClick={() => handleSendIndividual(payslip)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Send via Email"
+                              >
+                                <Send size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {loading ? (
+              <div className="p-6 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              </div>
+            ) : filteredPayslips.length === 0 ? (
+              <div className="p-6 text-center">
+                <FileText className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-sm font-medium text-gray-900">No payslips found</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  {searchTerm || selectedMonth ? "No payslips match your search criteria." : "Generate payslips for employees to view them here."}
+                </p>
+                {!searchTerm && !selectedMonth && canGenerate && (
+                  <div className="mt-6">
+                    <button 
+                      onClick={handleGeneratePayslips}
+                      className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                    >
+                      <FileText size={16} />
+                      Generate First Payslip
+                    </button>
+                  </div>
                 )}
-            </tbody>
-          </table>
+              </div>
+            ) : (
+              filteredPayslips.map((payslip) => (
+                <div key={payslip.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{payslip.employee_name}</div>
+                      <div className="text-sm text-gray-500">ID: {payslip.employee_id}</div>
+                    </div>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                      {payslip.status}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Month:</span>
+                      <span className="text-sm text-gray-600">{payslip.month} {payslip.year}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Gross Salary:</span>
+                      <span className="text-sm text-gray-600">₹{payslip.gross_salary?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Net Salary:</span>
+                      <span className="text-sm font-medium text-gray-900">₹{payslip.net_salary?.toLocaleString() || 0}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <button 
+                      onClick={() => handleViewPayslip(payslip)}
+                      className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                    >
+                      <Eye size={14} />
+                      View
+                    </button>
+                    {canDownload && (
+                      <button 
+                        onClick={() => handleDownloadPayslip(payslip)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <Download size={14} />
+                        Download
+                      </button>
+                    )}
+                    {canEmail && (
+                      <button 
+                        onClick={() => handleSendIndividual(payslip)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <Send size={14} />
+                        Email
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {/* Footer */}

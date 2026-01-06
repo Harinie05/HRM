@@ -400,16 +400,35 @@
   }
 }
 
-/* ========== BUTTON RESPONSIVENESS ========== */
-/* Button sizing */
+/* ========== ENHANCED BUTTON RESPONSIVENESS ========== */
+/* Import responsive button system */
+@import url('./responsive-buttons.css');
+
+/* Additional button overrides for existing classes */
 @media (max-width: 640px) {
   .px-4.py-2 {
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.875rem !important;
+    padding: 0.875rem 1rem !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    min-height: 48px !important;
   }
   
   .w-full.sm\\:w-auto {
     width: 100% !important;
+  }
+  
+  /* Make all buttons full width on mobile */
+  .flex.items-center.gap-2 > button,
+  .flex.items-center.gap-3 > button,
+  .flex.items-center.gap-4 > button {
+    width: 100% !important;
+  }
+  
+  /* Stack button containers */
+  .flex.gap-2,
+  .flex.gap-3,
+  .flex.gap-4 {
+    flex-direction: column !important;
   }
 }
 

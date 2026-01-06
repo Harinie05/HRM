@@ -368,7 +368,8 @@ const ResignationTracking = () => {
           <p className="text-sm text-gray-600 mt-1">Track and manage employee resignations</p>
         </div>
         
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full border-collapse">
             <thead className="bg-gray-100">
               <tr>
@@ -474,21 +475,148 @@ const ResignationTracking = () => {
               })}
             </tbody>
           </table>
-          
-          {filteredResignations.length === 0 && (
-            <div className="text-center py-12">
-              <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                <FileText className="w-12 h-12 mx-auto" />
-              </div>
-              <h3 className="text-lg font-medium text-primary mb-2">
-                {statusFilter !== 'All' || searchTerm ? 'No resignations match your filters' : 'No resignations found'}
-              </h3>
-              <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>
-                {statusFilter !== 'All' || searchTerm ? 'Try adjusting your search criteria' : 'Start by applying a resignation'}
-              </p>
-            </div>
-          )}
         </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {filteredResignations.map((resignation) => {
+            const overallStatus = calculateOverallStatus(resignation);
+            return (
+              <div key={resignation.id} className="p-4 border-b border-black last:border-b-0">
+                <div className="space-y-3">
+                  {/* Employee Info */}
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{resignation.employee_name}</h3>
+                      <p className="text-sm text-gray-600">{resignation.employee_code}</p>
+                    </div>
+                    <span className={`px-2 py-1 rounded-lg text-xs font-medium border border-black ${getStatusColor(overallStatus)}`}>
+                      {overallStatus}
+                    </span>
+                  </div>
+
+                  {/* Details */}
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-gray-600">Last Working:</span>
+                      <p className="font-medium text-gray-900">
+                        {resignation.last_working_day ? new Date(resignation.last_working_day).toLocaleDateString() : '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Notice Period:</span>
+                      <p className="font-medium text-gray-900">
+                        {resignation.notice_period} days
+                        {resignation.notice_served && <span className="text-green-500 ml-1">✓</span>}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Status Details */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Handover:</span>
+                      <span className="font-medium">{resignation.handover_status || 'Pending'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Clearance:</span>
+                      <span className="font-medium">{resignation.clearance_status || 'Pending'}</span>
+                    </div>
+                  </div>
+
+                  {/* Reason */}
+                  {resignation.reason && (
+                    <div>
+                      <span className="text-gray-600 text-sm">Reason:</span>
+                      <p className="text-sm text-gray-900 mt-1">{resignation.reason}</p>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="space-y-2">
+                    {canManageHandover && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Handover Status</label>
+                        <select 
+                          onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
+                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          value={resignation.handover_status || 'Pending'}
+                        >
+                          <option value="Pending">Handover Pending</option>
+                          <option value="In Progress">Handover In Progress</option>
+                          <option value="Completed">Handover Completed</option>
+                        </select>
+                      </div>
+                    )}
+                    
+                    {canManageClearance && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Clearance Status</label>
+                        <select 
+                          onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
+                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          value={resignation.clearance_status || 'Pending'}
+                        >
+                          <option value="Pending">Clearance Pending</option>
+                          <option value="In Progress">Clearance In Progress</option>
+                          <option value="Completed">Clearance Done</option>
+                        </select>
+                      </div>
+                    )}
+                    
+                    {canManageAssets && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Asset Return</label>
+                        <select 
+                          onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
+                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          value={resignation.asset_return_status || 'Pending'}
+                        >
+                          <option value="Pending">Assets Pending</option>
+                          <option value="Completed">Assets Returned</option>
+                        </select>
+                      </div>
+                    )}
+                    
+                    {canManageSettlement && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Final Settlement</label>
+                        <select 
+                          onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
+                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          value={resignation.final_settlement_status || 'Pending'}
+                        >
+                          <option value="Pending">Settlement Pending</option>
+                          <option value="Completed">Settlement Done</option>
+                        </select>
+                      </div>
+                    )}
+                    
+                    {!canManageHandover && !canManageClearance && !canManageAssets && !canManageSettlement && (
+                      <div className="text-center py-2">
+                        <span className="text-sm text-gray-500">View only access</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+          
+        {filteredResignations.length === 0 && (
+          <div className="text-center py-12">
+            <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
+              <FileText className="w-12 h-12 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium text-primary mb-2">
+              {statusFilter !== 'All' || searchTerm ? 'No resignations match your filters' : 'No resignations found'}
+            </h3>
+            <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>
+              {statusFilter !== 'All' || searchTerm ? 'Try adjusting your search criteria' : 'Start by applying a resignation'}
+            </p>
+          </div>
+        )}
       </div>
       <Toast {...toast} />
     </div>

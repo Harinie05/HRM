@@ -196,106 +196,200 @@ export default function LeaveRules() {
 
       {/* Table */}
       {hasPermission("view_leave_rules") && (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Accrual Settings</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Carry Forward</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Encashment</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Auto Deduction</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Accrual Settings</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Carry Forward</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Encashment</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Auto Deduction</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                  {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {filteredRules.length === 0 ? (
+                  <tr>
+                    <td colSpan={hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                          <Settings className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-lg font-medium text-gray-900">
+                          {searchTerm ? "No rules found matching your search." : "No leave rules configured yet."}
+                        </p>
+                        <p className="text-sm text-gray-500">Create your first leave rule to get started</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRules.map((rule, index) => (
+                    <tr key={rule.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">{rule.accrual_frequency}</div>
+                          <div className="text-sm text-gray-500">{rule.accrual_method}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {rule.carry_forward_limit ? `${rule.carry_forward_limit} days` : "No limit"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          rule.encashment_allowed ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        }`}>
+                          {rule.encashment_allowed ? "Allowed" : "Not Allowed"}
+                        </span>
+                        {rule.encashment_allowed && rule.encashment_rate && (
+                          <div className="text-xs text-gray-500 mt-1">Rate: {rule.encashment_rate}%</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          rule.auto_deduct_lop ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {rule.auto_deduct_lop ? "Enabled" : "Disabled"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          rule.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {rule.status || "Active"}
+                        </span>
+                      </td>
+                      {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            {hasPermission("view_leave_rules") && (
+                              <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                                <Settings size={16} />
+                              </button>
+                            )}
+                            {hasPermission("edit_leave_rule") && (
+                              <button 
+                                onClick={() => handleOpenModal(rule)}
+                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                              >
+                                <Edit size={16} />
+                              </button>
+                            )}
+                            {hasPermission("delete_leave_rule") && (
+                              <button 
+                                onClick={() => handleDelete(rule.id)}
+                                className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
                 )}
-              </tr>
-            </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
             {filteredRules.length === 0 ? (
-              <tr>
-                <td colSpan={hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Settings className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <p className="text-lg font-medium text-gray-900">
-                      {searchTerm ? "No rules found matching your search." : "No leave rules configured yet."}
-                    </p>
-                    <p className="text-sm text-gray-500">Create your first leave rule to get started</p>
+              <div className="p-6 text-center text-gray-500">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Settings className="w-8 h-8 text-gray-400" />
                   </div>
-                </td>
-              </tr>
+                  <p className="text-lg font-medium text-gray-900">
+                    {searchTerm ? "No rules found matching your search." : "No leave rules configured yet."}
+                  </p>
+                  <p className="text-sm text-gray-500">Create your first leave rule to get started</p>
+                </div>
+              </div>
             ) : (
               filteredRules.map((rule, index) => (
-                <tr key={rule.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <div key={rule.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{rule.accrual_frequency}</div>
                       <div className="text-sm text-gray-500">{rule.accrual_method}</div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {rule.carry_forward_limit ? `${rule.carry_forward_limit} days` : "No limit"}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                      rule.encashment_allowed ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                    }`}>
-                      {rule.encashment_allowed ? "Allowed" : "Not Allowed"}
-                    </span>
-                    {rule.encashment_allowed && rule.encashment_rate && (
-                      <div className="text-xs text-gray-500 mt-1">Rate: {rule.encashment_rate}%</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                      rule.auto_deduct_lop ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
-                    }`}>
-                      {rule.auto_deduct_lop ? "Enabled" : "Disabled"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
                       rule.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                     }`}>
                       {rule.status || "Active"}
                     </span>
-                  </td>
-                  {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        {hasPermission("view_leave_rules") && (
-                          <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                            <Settings size={16} />
-                          </button>
-                        )}
-                        {hasPermission("edit_leave_rule") && (
-                          <button 
-                            onClick={() => handleOpenModal(rule)}
-                            className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                          >
-                            <Edit size={16} />
-                          </button>
-                        )}
-                        {hasPermission("delete_leave_rule") && (
-                          <button 
-                            onClick={() => handleDelete(rule.id)}
-                            className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Carry Forward:</span>
+                      <span className="text-sm text-gray-600">
+                        {rule.carry_forward_limit ? `${rule.carry_forward_limit} days` : "No limit"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Encashment:</span>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                        rule.encashment_allowed ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                      }`}>
+                        {rule.encashment_allowed ? "Allowed" : "Not Allowed"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Auto Deduction:</span>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                        rule.auto_deduct_lop ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                      }`}>
+                        {rule.auto_deduct_lop ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                    {rule.encashment_allowed && rule.encashment_rate && (
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Encashment Rate:</span>
+                        <span className="text-sm text-gray-600">{rule.encashment_rate}%</span>
                       </div>
-                    </td>
+                    )}
+                  </div>
+                  {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {hasPermission("view_leave_rules") && (
+                        <button className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm">
+                          <Settings size={14} />
+                          View
+                        </button>
+                      )}
+                      {hasPermission("edit_leave_rule") && (
+                        <button 
+                          onClick={() => handleOpenModal(rule)}
+                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
+                        >
+                          <Edit size={14} />
+                          Edit
+                        </button>
+                      )}
+                      {hasPermission("delete_leave_rule") && (
+                        <button 
+                          onClick={() => handleDelete(rule.id)}
+                          className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   )}
-                </tr>
+                </div>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
       )}
 
       {/* Stats Footer */}

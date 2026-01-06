@@ -77,14 +77,15 @@ export default function TrainingLayout() {
             <div className="p-4 sm:p-6">
               {/* Tab Navigation */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black">
+                <span className="text-sm text-gray-600">Modules</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                   {tabs.map((tab) => (
                     <button
                       key={tab.name}
                       onClick={() => navigate(tab.path)}
-                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                         currentTab.name === tab.name
-                          ? "bg-white text-gray-900 shadow-sm border border-gray-300"
+                          ? "bg-white text-gray-900 shadow-sm"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
                     >
@@ -92,6 +93,12 @@ export default function TrainingLayout() {
                     </button>
                   ))}
                 </div>
+              </div>
+              {/* Scroll indicator */}
+              <div className="flex justify-center mb-6">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </div>
 
               {/* Tab Content */}

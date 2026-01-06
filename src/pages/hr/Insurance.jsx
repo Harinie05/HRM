@@ -276,7 +276,9 @@ export default function Insurance() {
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Insurance Policies</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -331,6 +333,66 @@ export default function Insurance() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {policies.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">
+              <p>No policies found</p>
+            </div>
+          ) : (
+            policies.map((policy) => (
+              <div key={policy.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{policy.name}</div>
+                    <div className="text-sm text-gray-500">{policy.employee}</div>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                    policy.status === 'Active' ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-gray-50 text-gray-600 border-gray-200'
+                  }`}>
+                    {policy.status}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Policy Type:</span>
+                    <span className="text-sm text-gray-600">{policy.policyType}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Policy Number:</span>
+                    <span className="text-sm text-gray-600">{policy.policyNumber}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Provider:</span>
+                    <span className="text-sm text-gray-600">{policy.provider}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Coverage:</span>
+                    <span className="text-sm text-gray-600">₹{policy.coverageAmount?.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Expiry Date:</span>
+                    <span className="text-sm text-gray-600">{policy.expiryDate}</span>
+                  </div>
+                </div>
+                {canDelete && (
+                  <div className="flex items-center justify-end mt-3 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => handleDelete(policy.id)}
+                      className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
       <Toast {...toast} />

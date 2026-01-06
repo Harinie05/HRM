@@ -341,106 +341,193 @@ export default function SalaryStructure() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto border border-black rounded-xl">
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
           {loading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-gray-100 border-b border-black">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Structure Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Annual CTC</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Basic %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">HRA %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employees</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 border-b border-black">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Structure Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Annual CTC</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Basic %</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">HRA %</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employees</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredStructures.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                          {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStructures.map((structure) => {
+                        const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id) : [];
+                        const employeeCount = linkedEmployeeIds.length;
+                        
+                        return (
+                          <tr key={structure.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">{structure.name}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">₹{structure.ctc?.toLocaleString()}/year</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{structure.basic_percent}%</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{structure.hra_percent}%</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{employeeCount} employees</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                structure.is_active ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"
+                              }`}>
+                                {structure.is_active ? "Active" : "Inactive"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex items-center gap-1 flex-wrap">
+                                {canViewDetails && (
+                                  <button 
+                                    onClick={() => handleViewStructure(structure)}
+                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    title="View Details"
+                                  >
+                                    <Eye size={16} />
+                                  </button>
+                                )}
+                                {canLinkEmployees && (
+                                  <button 
+                                    onClick={() => handleOpenLinkModal(structure)}
+                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    title="Link Employees"
+                                  >
+                                    <Link size={16} />
+                                  </button>
+                                )}
+                                {canEdit && (
+                                  <button 
+                                    onClick={() => handleOpenModal(structure)}
+                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    title="Edit Structure"
+                                  >
+                                    <Edit size={16} />
+                                  </button>
+                                )}
+                                {canDelete && (
+                                  <button 
+                                    onClick={() => handleDelete(structure.id)}
+                                    className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                    title="Delete Structure"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
                 {filteredStructures.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
-                      {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
-                    </td>
-                  </tr>
+                  <div className="p-6 text-center text-gray-500">
+                    {searchTerm ? "No salary structures found matching your search." : "No salary structures configured yet."}
+                  </div>
                 ) : (
                   filteredStructures.map((structure) => {
                     const linkedEmployeeIds = structure.employee_ids ? structure.employee_ids.split(',').filter(id => id) : [];
                     const employeeCount = linkedEmployeeIds.length;
                     
                     return (
-                      <tr key={structure.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{structure.name}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">₹{structure.ctc?.toLocaleString()}/year</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{structure.basic_percent}%</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{structure.hra_percent}%</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{employeeCount} employees</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                      <div key={structure.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{structure.name}</div>
+                            <div className="text-sm text-gray-600">₹{structure.ctc?.toLocaleString()}/year</div>
+                          </div>
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
                             structure.is_active ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"
                           }`}>
                             {structure.is_active ? "Active" : "Inactive"}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center gap-1 flex-wrap">
-                            {canViewDetails && (
-                              <button 
-                                onClick={() => handleViewStructure(structure)}
-                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                                title="View Details"
-                              >
-                                <Eye size={16} />
-                              </button>
-                            )}
-                            {canLinkEmployees && (
-                              <button 
-                                onClick={() => handleOpenLinkModal(structure)}
-                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                                title="Link Employees"
-                              >
-                                <Link size={16} />
-                              </button>
-                            )}
-                            {canEdit && (
-                              <button 
-                                onClick={() => handleOpenModal(structure)}
-                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                                title="Edit Structure"
-                              >
-                                <Edit size={16} />
-                              </button>
-                            )}
-                            {canDelete && (
-                              <button 
-                                onClick={() => handleDelete(structure.id)}
-                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                                title="Delete Structure"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            )}
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-900">Basic:</span>
+                            <span className="text-sm text-gray-600">{structure.basic_percent}%</span>
                           </div>
-                        </td>
-                      </tr>
+                          <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-900">HRA:</span>
+                            <span className="text-sm text-gray-600">{structure.hra_percent}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-900">Employees:</span>
+                            <span className="text-sm text-gray-600">{employeeCount} employees</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                          {canViewDetails && (
+                            <button 
+                              onClick={() => handleViewStructure(structure)}
+                              className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                            >
+                              <Eye size={14} />
+                              View
+                            </button>
+                          )}
+                          {canLinkEmployees && (
+                            <button 
+                              onClick={() => handleOpenLinkModal(structure)}
+                              className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                            >
+                              <Link size={14} />
+                              Link
+                            </button>
+                          )}
+                          {canEdit && (
+                            <button 
+                              onClick={() => handleOpenModal(structure)}
+                              className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                            >
+                              <Edit size={14} />
+                              Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button 
+                              onClick={() => handleDelete(structure.id)}
+                              className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                            >
+                              <Trash2 size={14} />
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     );
                   })
                 )}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
       </div>

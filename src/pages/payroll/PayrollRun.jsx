@@ -496,90 +496,167 @@ export default function PayrollRun() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto border border-black rounded-xl">
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b border-black">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Present Days</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">LOP Days</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Gross Salary</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Net Salary</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-                {filteredRuns.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="px-6 py-12 text-center">
-                      <Play className="mx-auto h-12 w-12 text-gray-400" />
-                      <h3 className="mt-2 text-sm font-medium text-gray-900">No payroll runs yet</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Start by running payroll for your employees.
-                      </p>
-                      <div className="mt-6">
-                        <button 
-                          onClick={() => setShowRunModal(true)}
-                          disabled={!canCreate}
-                          className={`px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black ${
-                            canCreate 
-                              ? 'bg-gray-900 hover:bg-gray-800 text-white' 
-                              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          }`}
-                        >
-                          <Play size={16} />
-                          Run First Payroll
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredRuns.map((run, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
-                        <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{run.month} {run.year}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{run.present_days}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{run.lop_days}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">₹{run.gross_salary?.toLocaleString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
-                          {run.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          {canViewDetails && (
-                            <button 
-                              onClick={() => handleViewPayroll(run)}
-                              className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
-                              title="View Details"
-                            >
-                              <Eye size={16} />
-                            </button>
-                          )}
+        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b border-black">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Month</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Present Days</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">LOP Days</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Gross Salary</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Net Salary</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredRuns.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="px-6 py-12 text-center">
+                        <Play className="mx-auto h-12 w-12 text-gray-400" />
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">No payroll runs yet</h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                          Start by running payroll for your employees.
+                        </p>
+                        <div className="mt-6">
+                          <button 
+                            onClick={() => setShowRunModal(true)}
+                            disabled={!canCreate}
+                            className={`px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black ${
+                              canCreate 
+                                ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                          >
+                            <Play size={16} />
+                            Run First Payroll
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  ))
-                )}
-            </tbody>
-          </table>
+                  ) : (
+                    filteredRuns.map((run, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
+                          <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{run.month} {run.year}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{run.present_days}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{run.lop_days}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">₹{run.gross_salary?.toLocaleString()}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                            {run.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            {canViewDetails && (
+                              <button 
+                                onClick={() => handleViewPayroll(run)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="View Details"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {filteredRuns.length === 0 ? (
+              <div className="p-6 text-center">
+                <Play className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-sm font-medium text-gray-900">No payroll runs yet</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Start by running payroll for your employees.
+                </p>
+                <div className="mt-6">
+                  <button 
+                    onClick={() => setShowRunModal(true)}
+                    disabled={!canCreate}
+                    className={`px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black ${
+                      canCreate 
+                        ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    <Play size={16} />
+                    Run First Payroll
+                  </button>
+                </div>
+              </div>
+            ) : (
+              filteredRuns.map((run, index) => (
+                <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
+                      <div className="text-sm text-gray-500">Code: {run.employee_code}</div>
+                    </div>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                      {run.status}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Month:</span>
+                      <span className="text-sm text-gray-600">{run.month} {run.year}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Present Days:</span>
+                      <span className="text-sm text-gray-600">{run.present_days}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">LOP Days:</span>
+                      <span className="text-sm text-gray-600">{run.lop_days}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Gross Salary:</span>
+                      <span className="text-sm text-gray-600">₹{run.gross_salary?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Net Salary:</span>
+                      <span className="text-sm font-medium text-gray-900">₹{run.net_salary?.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  {canViewDetails && (
+                    <div className="flex items-center justify-end mt-3 pt-3 border-t border-gray-100">
+                      <button 
+                        onClick={() => handleViewPayroll(run)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <Eye size={14} />
+                        View Details
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

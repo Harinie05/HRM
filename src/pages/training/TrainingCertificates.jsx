@@ -179,43 +179,87 @@ export default function TrainingCertificates() {
               </p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Candidate</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Program</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Certificate ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Issued Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Expiry Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-black">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Program</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Certificate ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Issued Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Expiry Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {filteredCertificates.map((certificate) => {
+                      const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
+                      const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                      
+                      return (
+                        <tr key={certificate.id} className="hover:bg-gray-50 border-b border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
+                          </td>
+                          <td className="px-6 py-4 border-r border-black">
+                            <div className="text-sm text-gray-900">{certificate.program_title}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <div className="text-sm text-gray-900">
+                              {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              isExpired ? 'bg-red-100 text-red-800' :
+                              isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                              {isExpired ? 'Expired' : isExpiringSoon ? 'Expiring Soon' : 'Active'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center gap-2">
+                              {(hasPermission('download_training_certificate') || isAdmin()) && (
+                                <button 
+                                  onClick={() => handleDownload(certificate)}
+                                  className="text-green-600 hover:text-green-900 p-1 rounded"
+                                  title="Download Certificate"
+                                >
+                                  <Download size={16} />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
                 {filteredCertificates.map((certificate) => {
                   const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
                   const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                   
                   return (
-                    <tr key={certificate.id} className="hover:bg-gray-50 border-b border-black">
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
-                      </td>
-                      <td className="px-6 py-4 border-r border-black">
-                        <div className="text-sm text-gray-900">{certificate.program_title}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
-                        <div className="text-sm text-gray-900">
-                          {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
+                    <div key={certificate.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{certificate.employee_name}</h4>
+                          <p className="text-sm text-gray-600 mt-1">{certificate.program_title}</p>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap border-r border-black">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           isExpired ? 'bg-red-100 text-red-800' :
                           isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
@@ -223,25 +267,41 @@ export default function TrainingCertificates() {
                         }`}>
                           {isExpired ? 'Expired' : isExpiringSoon ? 'Expiring Soon' : 'Active'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                          {(hasPermission('download_training_certificate') || isAdmin()) && (
-                            <button 
-                              onClick={() => handleDownload(certificate)}
-                              className="text-green-600 hover:text-green-900 p-1 rounded"
-                              title="Download Certificate"
-                            >
-                              <Download size={16} />
-                            </button>
-                          )}
+                      </div>
+                      
+                      <div className="space-y-2 mb-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Certificate ID:</span>
+                          <span className="text-gray-900 font-mono">{certificate.certificate_number}</span>
                         </div>
-                      </td>
-                    </tr>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Issued Date:</span>
+                          <span className="text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Expiry Date:</span>
+                          <span className="text-gray-900">
+                            {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {(hasPermission('download_training_certificate') || isAdmin()) && (
+                        <div className="flex justify-end">
+                          <button 
+                            onClick={() => handleDownload(certificate)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                          >
+                            <Download className="w-3 h-3" />
+                            Download
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
 

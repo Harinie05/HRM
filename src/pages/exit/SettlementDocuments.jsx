@@ -460,20 +460,20 @@ export default function SettlementDocuments() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Exit List */}
         <div className="bg-white rounded-xl border border-black overflow-hidden">
-          <div className="p-4 border-b border-black bg-gray-50">
-            <h3 className="text-lg font-bold text-gray-900">Ready for Settlement</h3>
-            <p className="text-sm text-gray-600 mt-1">Employees with completed exit interviews</p>
+          <div className="p-3 sm:p-4 border-b border-black bg-gray-50">
+            <h3 className="text-base sm:text-lg font-bold text-gray-900">Ready for Settlement</h3>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Employees with completed exit interviews</p>
           </div>
           
-          <div className="p-4">
-            <div className="space-y-3">
+          <div className="p-3 sm:p-4">
+            <div className="space-y-2 sm:space-y-3">
               {exits.length === 0 ? (
-                <div className="text-center py-8">
+                <div className="text-center py-6 sm:py-8">
                   <div className="text-gray-500 mb-3">
-                    <CheckCircle className="w-10 h-10 mx-auto" />
+                    <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 mx-auto" />
                   </div>
-                  <h4 className="text-base font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
-                  <p className="text-sm text-gray-600">Complete exit interviews first.</p>
+                  <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Complete exit interviews first.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -483,16 +483,16 @@ export default function SettlementDocuments() {
                     <div
                       key={exit.id}
                       onClick={() => setSelectedExit(exit)}
-                      className={`p-3 border border-black rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      className={`p-2 sm:p-3 border border-black rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         isSelected 
                           ? 'bg-gray-100 shadow-md' 
                           : 'bg-white hover:bg-gray-50'
                       }`}
                     >
-                      <div className="font-semibold text-gray-900">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
-                      <div className="text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
-                      <div className="text-sm text-gray-600">Last Working: {exit.last_working_day || 'N/A'}</div>
-                      <div className="text-sm text-gray-600">Notice: {exit.notice_period || '30'} days</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
+                      <div className="text-xs sm:text-sm text-gray-600">Last Working: {exit.last_working_day || 'N/A'}</div>
+                      <div className="text-xs sm:text-sm text-gray-600">Notice: {exit.notice_period || '30'} days</div>
                     </div>
                   );
                 })
@@ -502,15 +502,15 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Settlement Details */}
-        <div className="bg-white rounded-xl border border-black p-4">
+        <div className="bg-white rounded-xl border border-black p-3 sm:p-4">
           {selectedExit ? (
             <>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">F&F Settlement</h3>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900">F&F Settlement</h3>
                 {!settlement && canCalculate && (
                   <button
                     onClick={handleCalculateSettlement}
-                    className="bg-gray-900 px-3 py-1 text-white text-sm rounded-lg hover:bg-gray-700 border border-black"
+                    className="bg-gray-900 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded-lg hover:bg-gray-700 border border-black whitespace-nowrap"
                   >
                     Calculate Settlement
                   </button>
@@ -518,15 +518,15 @@ export default function SettlementDocuments() {
               </div>
 
               {settlement ? (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-gray-50 p-3 rounded-lg border border-black">
-                    <h4 className="font-medium mb-3 text-gray-900">Settlement Breakdown</h4>
+                  <div className="bg-gray-50 p-2 sm:p-3 rounded-lg border border-black">
+                    <h4 className="font-medium mb-2 sm:mb-3 text-gray-900 text-sm sm:text-base">Settlement Breakdown</h4>
                     
                     {/* Earnings Section */}
-                    <div className="mb-4">
-                      <h5 className="text-sm font-medium text-green-700 mb-2">EARNINGS</h5>
-                      <div className="space-y-1 text-sm">
+                    <div className="mb-3 sm:mb-4">
+                      <h5 className="text-xs sm:text-sm font-medium text-green-700 mb-2">EARNINGS</h5>
+                      <div className="space-y-1 text-xs sm:text-sm">
                         <div className="flex justify-between">
                           <span>Pending Salary:</span>
                           <span className="font-medium">₹{settlement.breakdown.pending_salary.toLocaleString()}</span>
@@ -548,9 +548,9 @@ export default function SettlementDocuments() {
                     </div>
                     
                     {/* Deductions Section */}
-                    <div className="mb-4">
-                      <h5 className="text-sm font-medium text-red-700 mb-2">DEDUCTIONS</h5>
-                      <div className="space-y-1 text-sm">
+                    <div className="mb-3 sm:mb-4">
+                      <h5 className="text-xs sm:text-sm font-medium text-red-700 mb-2">DEDUCTIONS</h5>
+                      <div className="space-y-1 text-xs sm:text-sm">
                         <div className="flex justify-between">
                           <span>TDS (10%):</span>
                           <span className="font-medium">₹{settlement.breakdown.tds.toLocaleString()}</span>
@@ -584,8 +584,8 @@ export default function SettlementDocuments() {
                     </div>
                     
                     {/* Net Payable */}
-                    <div className="bg-white p-3 rounded-lg border border-black">
-                      <div className="flex justify-between text-lg font-bold text-gray-900">
+                    <div className="bg-white p-2 sm:p-3 rounded-lg border border-black">
+                      <div className="flex justify-between text-sm sm:text-lg font-bold text-gray-900">
                         <span>NET PAYABLE:</span>
                         <span>₹{settlement.net_payable.toLocaleString()}</span>
                       </div>
@@ -593,10 +593,10 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Payment Status */}
-                  <div className="p-3 border border-black rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-900">Payment Status:</span>
-                      <span className={`px-2 py-1 text-xs rounded-lg border border-black ${
+                  <div className="p-2 sm:p-3 border border-black rounded-lg">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+                      <span className="font-medium text-gray-900 text-sm sm:text-base">Payment Status:</span>
+                      <span className={`px-2 py-1 text-xs rounded-lg border border-black self-start sm:self-auto ${
                         settlement.payment_status === 'Approved' ? 'bg-gray-200 text-gray-900' :
                         settlement.payment_status === 'Pending' ? 'bg-gray-100 text-gray-800' :
                         'bg-gray-100 text-gray-800'
@@ -608,7 +608,7 @@ export default function SettlementDocuments() {
                     {settlement.payment_status === 'Pending' && canApprove && (
                       <button
                         onClick={handleApproveSettlement}
-                        className="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 border border-black"
+                        className="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 border border-black text-sm"
                       >
                         Approve Settlement
                       </button>
@@ -616,7 +616,7 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-sm text-gray-600 space-y-1">
+                  <div className="text-xs sm:text-sm text-gray-600 space-y-1">
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -629,36 +629,36 @@ export default function SettlementDocuments() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-gray-600 py-8">
+                <div className="text-center text-gray-600 py-6 sm:py-8 text-sm">
                   Click "Calculate Settlement" to generate F&F statement
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center text-gray-600 py-8">
+            <div className="text-center text-gray-600 py-6 sm:py-8 text-sm">
               Select an employee to view settlement details
             </div>
           )}
         </div>
 
         {/* Experience Letter */}
-        <div className="bg-white rounded-xl border border-black p-4">
+        <div className="bg-white rounded-xl border border-black p-3 sm:p-4">
           {selectedExit ? (
             <>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">Experience Letter</h3>
-                <div className="space-x-2">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
+                <h3 className="text-base sm:text-lg font-medium">Experience Letter</h3>
+                <div className="flex flex-col sm:flex-row gap-2">
                   {!experienceLetter && canGenerateLetter ? (
                     <button
                       onClick={handleGenerateExperienceLetter}
-                      className="bg-green-600 px-3 py-1 text-white text-sm rounded hover:bg-green-700"
+                      className="bg-green-600 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded hover:bg-green-700 whitespace-nowrap"
                     >
                       Generate Letter
                     </button>
                   ) : experienceLetter && canEdit ? (
                     <button
                       onClick={() => setIsEditingLetter(!isEditingLetter)}
-                      className="bg-blue-600 px-3 py-1 text-white text-sm rounded hover:bg-blue-700"
+                      className="bg-blue-600 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded hover:bg-blue-700 whitespace-nowrap"
                     >
                       {isEditingLetter ? 'Preview' : 'Edit'}
                     </button>
@@ -667,20 +667,20 @@ export default function SettlementDocuments() {
               </div>
 
               {experienceLetter ? (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Editable Form or Letter Preview */}
                   {isEditingLetter ? (
-                    <div className="bg-content p-4 rounded-lg space-y-3">
-                      <h4 className="font-medium mb-3">Edit Experience Letter Details</h4>
+                    <div className="bg-content p-3 sm:p-4 rounded-lg space-y-2 sm:space-y-3 border border-black">
+                      <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Edit Experience Letter Details</h4>
                       
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Name</label>
                           <input
                             type="text"
                             value={experienceLetter.employee_name}
                             onChange={(e) => updateLetterField('employee_name', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -689,7 +689,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.employee_code}
                             onChange={(e) => updateLetterField('employee_code', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -698,7 +698,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.company_name}
                             onChange={(e) => updateLetterField('company_name', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -707,7 +707,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.designation}
                             onChange={(e) => updateLetterField('designation', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -716,7 +716,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.department}
                             onChange={(e) => updateLetterField('department', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -725,7 +725,7 @@ export default function SettlementDocuments() {
                             type="date"
                             value={experienceLetter.joining_date}
                             onChange={(e) => updateLetterField('joining_date', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -734,7 +734,7 @@ export default function SettlementDocuments() {
                             type="date"
                             value={experienceLetter.last_working_day}
                             onChange={(e) => updateLetterField('last_working_day', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -743,7 +743,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.place || 'Bangalore'}
                             onChange={(e) => updateLetterField('place', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -752,7 +752,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.issued_by}
                             onChange={(e) => updateLetterField('issued_by', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -761,25 +761,25 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.authorized_signatory || 'HR Manager'}
                             onChange={(e) => updateLetterField('authorized_signatory', e.target.value)}
-                            className="w-full border rounded px-2 py-1 text-sm"
+                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                       </div>
                       
                       {/* Save Button */}
-                      <div className="mt-4">
+                      <div className="mt-3 sm:mt-4">
                         <button
                           onClick={handleSaveExperienceLetter}
-                          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm"
                         >
                           Save Changes
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-content p-4 rounded-lg text-sm">
-                      <div className="text-center font-bold mb-4 text-lg">EXPERIENCE CERTIFICATE</div>
-                      <div className="space-y-3 leading-relaxed">
+                    <div className="bg-content p-3 sm:p-4 rounded-lg text-xs sm:text-sm border border-black">
+                      <div className="text-center font-bold mb-3 sm:mb-4 text-sm sm:text-lg">EXPERIENCE CERTIFICATE</div>
+                      <div className="space-y-2 sm:space-y-3 leading-relaxed">
                         <p>This is to certify that <strong>{experienceLetter.employee_name}</strong> (Employee Code: <strong>{experienceLetter.employee_code}</strong>) was employed with <strong>{experienceLetter.company_name}</strong> as <strong>{experienceLetter.designation}</strong> in the <strong>{experienceLetter.department}</strong>.</p>
                         
                         <p>The period of employment was from <strong>{new Date(experienceLetter.joining_date).toLocaleDateString('en-GB')}</strong> to <strong>{new Date(experienceLetter.last_working_day).toLocaleDateString('en-GB')}</strong>.</p>
@@ -788,17 +788,17 @@ export default function SettlementDocuments() {
                         
                         <p>We wish {experienceLetter.employee_name} all the best for future endeavors.</p>
                         
-                        <div className="mt-6 pt-4 border-t">
-                          <div className="flex justify-between">
+                        <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t">
+                          <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-0">
                             <div>
                               <p className="font-semibold">For {experienceLetter.company_name}</p>
-                              <div className="mt-8">
-                                <div className="border-t border-gray-400 w-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}></div>
+                              <div className="mt-6 sm:mt-8">
+                                <div className="border-t border-gray-400 w-24 sm:w-32" style={{borderColor: 'var(--border-color, #e2e8f0)'}}></div>
                                 <p className="text-xs mt-1">{experienceLetter.authorized_signatory}</p>
                                 <p className="text-xs">{experienceLetter.issued_by}</p>
                               </div>
                             </div>
-                            <div className="text-right">
+                            <div className="text-left sm:text-right">
                               <p><strong>Date:</strong> {new Date(experienceLetter.issued_date).toLocaleDateString('en-GB')}</p>
                               <p><strong>Place:</strong> {experienceLetter.place}</p>
                             </div>
@@ -809,10 +809,10 @@ export default function SettlementDocuments() {
                   )}
 
                   {/* Letter Status */}
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Status:</span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
+                  <div className="p-3 sm:p-4 border border-black rounded-lg">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+                      <span className="font-medium text-sm sm:text-base">Status:</span>
+                      <span className={`px-2 py-1 text-xs rounded-full self-start sm:self-auto ${
                         experienceLetter.status === 'Generated' ? 'bg-green-100 text-green-800' :
                         'bg-gray-100 text-primary'
                       }`}>
@@ -826,7 +826,7 @@ export default function SettlementDocuments() {
                     {canDownloadPDF && (
                       <button 
                         onClick={handleDownloadPDF}
-                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm"
                       >
                         Download PDF
                       </button>
@@ -834,7 +834,7 @@ export default function SettlementDocuments() {
                     {canEmail && (
                       <button 
                         onClick={handleEmailEmployee}
-                        className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                        className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 text-sm"
                       >
                         Email to Employee
                       </button>
@@ -842,13 +842,13 @@ export default function SettlementDocuments() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center text-muted py-8">
+                <div className="text-center text-muted py-6 sm:py-8 text-sm">
                   Click "Generate Letter" to create experience certificate
                 </div>
               )}
             </>
           ) : (
-            <div className="text-center text-muted py-8">
+            <div className="text-center text-muted py-6 sm:py-8 text-sm">
               Select an employee to generate experience letter
             </div>
           )}

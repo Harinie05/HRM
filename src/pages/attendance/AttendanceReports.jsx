@@ -79,7 +79,8 @@ export default function AttendanceReports() {
               </h3>
             </div>
             
-            <div className="p-6">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               {report.length === 0 ? (
                 <div className="text-center py-16">
                   <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -91,11 +92,61 @@ export default function AttendanceReports() {
                   <p className="text-gray-500 mb-6">Click on Daily Report or Monthly Report to generate attendance data</p>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-black p-6">
-                  <pre className="text-sm text-gray-800 whitespace-pre-wrap overflow-auto max-h-96">
-                    {JSON.stringify(report, null, 2)}
-                  </pre>
+                <table className="w-full border-collapse">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Hours</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {report.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.employee || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.status || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.hours || 'N/A'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {report.length === 0 ? (
+                <div className="p-6 text-center">
+                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
+                  <p className="text-gray-500">No report data available</p>
                 </div>
+              ) : (
+                report.map((item, index) => (
+                  <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Employee:</span>
+                        <span className="text-sm text-gray-600">{item.employee || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Date:</span>
+                        <span className="text-sm text-gray-600">{item.date || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Status:</span>
+                        <span className="text-sm text-gray-600">{item.status || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Hours:</span>
+                        <span className="text-sm text-gray-600">{item.hours || 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>

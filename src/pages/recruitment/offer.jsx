@@ -479,39 +479,40 @@ export default function Offer() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b border-black">
                     <tr>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                      <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
 
                   <tbody className="bg-white divide-y divide-black">
                     {offers.map((o) => (
                       <tr key={o.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-3 sm:px-6 py-4">
+                        <td className="px-6 py-4">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
-                              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                                 <FiUser className="text-blue-600" size={14} />
                               </div>
                             </div>
-                            <div className="ml-3 sm:ml-4">
-                              <div className="text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-none">{o.candidate_name}</div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{o.candidate_name}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 sm:px-6 py-4">
-                          <div className="text-sm text-gray-900 truncate max-w-[100px] sm:max-w-none">{o.job_title}</div>
-                          <div className="text-sm text-gray-500 truncate max-w-[100px] sm:max-w-none">{o.department}</div>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{o.job_title}</div>
+                          <div className="text-sm text-gray-500">{o.department}</div>
                         </td>
 
                         {/* Status */}
-                        <td className="px-3 sm:px-6 py-4 text-center">
+                        <td className="px-6 py-4 text-center">
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                               o.offer_status === "Accepted"
@@ -533,32 +534,31 @@ export default function Offer() {
                             {o.offer_status === "Documents Verified" && <FiFileText className="mr-1" size={8} />}
                             {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={8} />}
                             {o.offer_status === "Sent" && <FiMail className="mr-1" size={8} />}
-                            <span className="hidden sm:inline">{o.offer_status}</span>
-                            <span className="sm:hidden">{o.offer_status.split(' ')[0]}</span>
+                            {o.offer_status}
                           </span>
                         </td>
 
                         {/* Actions */}
-                        <td className="px-3 sm:px-6 py-4">
-                          <div className="flex items-center justify-center space-x-1 sm:space-x-2 flex-wrap gap-1">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-center space-x-2 flex-wrap gap-1">
 
                             {/* Accept/Reject */}
                             {o.offer_status === "Sent" && (
                               <>
                                 <button
-                                  className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
                                   onClick={() => handleOfferResponse(o.id, "accept")}
                                 >
                                   <FiCheck className="mr-1" size={10} />
-                                  <span className="hidden sm:inline">Accept</span>
+                                  Accept
                                 </button>
 
                                 <button
-                                  className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+                                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
                                   onClick={() => handleOfferResponse(o.id, "reject")}
                                 >
                                   <FiX className="mr-1" size={10} />
-                                  <span className="hidden sm:inline">Reject</span>
+                                  Reject
                                 </button>
                               </>
                             )}
@@ -653,6 +653,155 @@ export default function Offer() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {offers.map((o) => (
+                  <div key={o.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3 flex-1">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                          <FiUser className="text-blue-600" size={14} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{o.candidate_name}</div>
+                          <div className="text-sm text-gray-600">{o.job_title}</div>
+                          <div className="text-sm text-gray-500">{o.department}</div>
+                        </div>
+                      </div>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          o.offer_status === "Accepted"
+                            ? "bg-green-100 text-green-800"
+                            : o.offer_status === "Rejected"
+                            ? "bg-red-100 text-red-800"
+                            : o.offer_status === "Documents Submitted"
+                            ? "bg-blue-100 text-blue-800"
+                            : o.offer_status === "Documents Verified"
+                            ? "bg-indigo-100 text-indigo-800"
+                            : o.offer_status === "BGV Cleared"
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {o.offer_status === "Accepted" && <FiCheck className="mr-1" size={8} />}
+                        {o.offer_status === "Rejected" && <FiX className="mr-1" size={8} />}
+                        {o.offer_status === "Documents Submitted" && <FiFileText className="mr-1" size={8} />}
+                        {o.offer_status === "Documents Verified" && <FiFileText className="mr-1" size={8} />}
+                        {o.offer_status === "BGV Cleared" && <FiShield className="mr-1" size={8} />}
+                        {o.offer_status === "Sent" && <FiMail className="mr-1" size={8} />}
+                        {o.offer_status}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {/* Accept/Reject */}
+                      {o.offer_status === "Sent" && (
+                        <>
+                          <button
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                            onClick={() => handleOfferResponse(o.id, "accept")}
+                          >
+                            <FiCheck className="mr-1" size={10} />
+                            Accept
+                          </button>
+
+                          <button
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+                            onClick={() => handleOfferResponse(o.id, "reject")}
+                          >
+                            <FiX className="mr-1" size={10} />
+                            Reject
+                          </button>
+                        </>
+                      )}
+
+                      {/* Step 1: Generate Document Upload Link */}
+                      {(o.offer_status === "Accepted" || o.offer_status === "Draft") && canGenerateOfferLink && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                          onClick={() => generateDocumentLink(o.id)}
+                        >
+                          <FiLink className="mr-1" size={12} />
+                          Generate Link
+                        </button>
+                      )}
+
+                      {/* Document Verification Button for Draft Status */}
+                      {o.offer_status === "Draft" && canVerifyDocuments && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          onClick={() => {
+                            setSelectedOfferForVerification(o);
+                            setShowDocVerificationModal(true);
+                          }}
+                        >
+                          <FiFileText className="mr-1" size={12} />
+                          Verify Documents
+                        </button>
+                      )}
+
+                      {/* Step 2: View Documents */}
+                      {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && canViewDocuments && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          onClick={() => viewDocuments(o.id)}
+                        >
+                          <FiEye className="mr-1" size={12} />
+                          View Docs
+                        </button>
+                      )}
+
+                      {/* Step 3: Manage BGV */}
+                      {o.offer_status === "Documents Verified" && canManageBGV && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                          onClick={() => {
+                            if (!o.bgv_id) {
+                              startBGV(o.candidate_id);
+                            } else {
+                              openBGVModal(o);
+                            }
+                          }}
+                        >
+                          <FiShield className="mr-1" size={12} />
+                          Manage BGV
+                        </button>
+                      )}
+
+                      {/* Step 4: Start Onboarding */}
+                      {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && canStartOnboarding && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                          onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
+                        >
+                          <FiUser className="mr-1" size={12} />
+                          Start Onboarding
+                        </button>
+                      )}
+
+                      {/* Onboarding Started Status - Show Onboarded Button */}
+                      {o.offer_status === "Onboarding Started" && canMarkOnboarded && (
+                        <button
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          onClick={() => handleOnboarded(o.id)}
+                        >
+                          <FiCheck className="mr-1" size={12} />
+                          Onboarded
+                        </button>
+                      )}
+
+                      {/* Onboarding Completed Status */}
+                      {o.offer_status === "Onboarding completed" && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <FiCheck className="mr-1" size={10} />
+                          Onboarded
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -673,7 +822,9 @@ export default function Offer() {
               <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No selected candidates found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full">
                 <thead className="bg-gray-50 border-b border-black">
                   <tr>
@@ -742,6 +893,59 @@ export default function Offer() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {candidates.map((c) => (
+                <div key={c.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <FiUser className="text-green-600" size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{c.name}</div>
+                        <div className="text-sm text-gray-500">{c.email}</div>
+                        <div className="text-sm text-gray-600">{c.job_title}</div>
+                        <div className="text-sm text-gray-500">{c.department}</div>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <FiCheck className="mr-1" size={10} />
+                      {c.stage}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-end mt-3">
+                    {offers.some(offer => offer.candidate_id === c.id) ? (
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <FiMail className="mr-1" size={10} />
+                        Offer Sent
+                      </span>
+                    ) : (
+                      <button
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                        onClick={() => {
+                          setSelected(c);
+                          setOfferForm({
+                            ...offerForm,
+                            candidate_id: c.id,
+                            job_title: c.job_title,
+                            department: c.department,
+                            email: c.email,
+                          });
+                          setShowOfferModal(true);
+                        }}
+                      >
+                        <FiFileText className="mr-2" size={16} />
+                        Generate Offer
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            </>
           )}
         </div>
         )}

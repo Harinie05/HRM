@@ -367,7 +367,9 @@ export default function Assets() {
           <div className="px-6 py-4 border-b border-black">
             <h3 className="text-lg font-semibold text-gray-900">Pending Asset Approvals</h3>
           </div>
-          <div className="overflow-x-auto">
+          
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 border border-black">
               <thead className="bg-gray-50 border-b border-black">
                 <tr>
@@ -436,6 +438,73 @@ export default function Assets() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {pendingAssets.map((asset) => (
+              <div key={asset.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{asset.name}</div>
+                    <div className="text-sm text-gray-600">{asset.employee}</div>
+                  </div>
+                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    Pending
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Asset:</span>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-600">{asset.assetName}</div>
+                      <div className="text-xs text-gray-500">{asset.assetType}</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Brand/Model:</span>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-600">{asset.brand}</div>
+                      <div className="text-xs text-gray-500">{asset.model}</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Serial:</span>
+                    <span className="text-sm text-gray-600">{asset.serialNumber}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Date:</span>
+                    <span className="text-sm text-gray-600">{asset.assignedDate || asset.requestDate}</span>
+                  </div>
+                </div>
+                {(canApprove || canReject) && (
+                  <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    {canApprove && (
+                      <button
+                        onClick={() => handleApproval(asset.id, true)}
+                        className="flex items-center gap-1 px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Approve
+                      </button>
+                    )}
+                    {canReject && (
+                      <button
+                        onClick={() => handleApproval(asset.id, false)}
+                        className="flex items-center gap-1 px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Reject
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -444,7 +513,9 @@ export default function Assets() {
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">All Assets</h3>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 border border-black">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
@@ -489,6 +560,52 @@ export default function Assets() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {assets.length === 0 ? (
+            <div className="p-6 text-center text-gray-500">
+              <p>No assets found</p>
+            </div>
+          ) : (
+            assets.map((asset) => (
+              <div key={asset.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{asset.name}</div>
+                    <div className="text-sm text-gray-600">{asset.employee}</div>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
+                    asset.status === 'Rejected' ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-gray-100 text-gray-800 border-gray-300'
+                  }`}>
+                    {asset.status}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Asset:</span>
+                    <span className="text-sm text-gray-600">{asset.asset || asset.assetName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Brand/Model:</span>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-600">{asset.brand}</div>
+                      <div className="text-xs text-gray-500">{asset.model}</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Serial:</span>
+                    <span className="text-sm text-gray-600">{asset.serial || asset.serialNumber}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-900">Assigned:</span>
+                    <span className="text-sm text-gray-600">{asset.assignedDate}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />

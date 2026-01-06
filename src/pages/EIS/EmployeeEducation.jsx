@@ -230,7 +230,8 @@ export default function EmployeeEducation() {
         </div>
         {/* Education Cards */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50/50">
                 <tr>
@@ -323,6 +324,87 @@ export default function EmployeeEducation() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {education.length === 0 ? (
+              <div className="p-6 text-center">
+                <FiBook className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No Education Records</h3>
+                <p className="text-gray-500">Add educational qualifications to get started.</p>
+              </div>
+            ) : (
+              education.map((e) => (
+                <div key={e.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
+                        <FiBook className="w-4 h-4 text-black" />
+                      </div>
+                      <div className="font-medium text-gray-900">{e.degree}</div>
+                    </div>
+                    {e.file_name && (
+                      <button 
+                        className="p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        onClick={() => {
+                          const token = localStorage.getItem('access_token');
+                          if (!token) {
+                            showToast('Authentication token not found. Please login again.', "error");
+                            return;
+                          }
+                          window.open(`http://localhost:8000/employee/education/certificate/${e.id}?token=${token}`, '_blank');
+                        }}
+                      >
+                        <FiEye className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Specialization:</span>
+                      <span className="text-sm text-gray-600">{e.specialization || '-'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">University:</span>
+                      <span className="text-sm text-gray-600 text-right max-w-xs truncate">{e.university}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Duration:</span>
+                      <span className="text-sm text-gray-600">
+                        {e.start_year && e.end_year ? `${e.start_year} - ${e.end_year}` : (e.year || '-')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Grade/CGPA:</span>
+                      <span className="text-sm text-gray-600">{e.percentage_cgpa || '-'}</span>
+                    </div>
+                  </div>
+                  {(canEdit || canDelete) && (
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                      {canEdit && (
+                        <button
+                          onClick={() => openEdit(e)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => deleteEducation(e.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

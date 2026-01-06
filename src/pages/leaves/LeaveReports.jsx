@@ -361,80 +361,146 @@ export default function LeaveReports() {
           <div className="p-6 border-b border-black bg-gray-50">
             <h3 className="text-xl font-bold text-gray-900">Department-wise Leave Summary</h3>
           </div>
-          <div className="p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Applications</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approved</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Rejected</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approval Rate</th>
-                  </tr>
-                </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {departmentData.length === 0 ? (
+          
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                    <div className="flex flex-col items-center space-y-3">
-                      <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                        <BarChart3 className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-lg font-medium text-gray-900">No data available</p>
-                      <p className="text-sm text-gray-500">Submit leave applications to see analytics</p>
-                    </div>
-                  </td>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Employee</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Applications</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approved</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Rejected</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Approval Rate</th>
                 </tr>
-              ) : (
-                departmentData.map((dept, index) => {
-                  const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
-                  return (
-                    <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                      <td className="px-6 py-4 whitespace-nowrap">
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {departmentData.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
+                          <BarChart3 className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-lg font-medium text-gray-900">No data available</p>
+                        <p className="text-sm text-gray-500">Submit leave applications to see analytics</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  departmentData.map((dept, index) => {
+                    const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
+                    return (
+                      <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(dept.employee_id).code}</div>
+                          <div className="text-sm text-gray-600">{getEmployeeInfo(dept.employee_id).name}</div>
+                          <div className="text-xs text-gray-500">{getEmployeeInfo(dept.employee_id).department}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {dept.total}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                            {dept.approved}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                            {dept.pending}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                            {dept.rejected}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="flex items-center">
+                            <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                              <div 
+                                className="bg-green-600 h-2 rounded-full" 
+                                style={{ width: `${approvalRate}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-sm font-semibold">{approvalRate}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden">
+            {departmentData.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
+                    <BarChart3 className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-lg font-medium text-gray-900">No data available</p>
+                  <p className="text-sm text-gray-500">Submit leave applications to see analytics</p>
+                </div>
+              </div>
+            ) : (
+              departmentData.map((dept, index) => {
+                const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
+                return (
+                  <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
                         <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(dept.employee_id).code}</div>
                         <div className="text-sm text-gray-600">{getEmployeeInfo(dept.employee_id).name}</div>
                         <div className="text-xs text-gray-500">{getEmployeeInfo(dept.employee_id).department}</div>
-                      </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {dept.total}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        {dept.approved}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                        {dept.pending}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                        {dept.rejected}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="flex items-center">
-                        <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-semibold text-gray-900">{dept.total} Total</div>
+                        <div className="text-xs text-gray-500">{approvalRate}% Approved</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Approved:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                          {dept.approved}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Pending:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                          {dept.pending}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Rejected:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                          {dept.rejected}
+                        </span>
+                      </div>
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-gray-900">Approval Rate:</span>
+                          <span className="text-sm font-semibold">{approvalRate}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
                             className="bg-green-600 h-2 rounded-full" 
                             style={{ width: `${approvalRate}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-semibold">{approvalRate}%</span>
                       </div>
-                    </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-            </table>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
-      </div>
       )}
 
     </div>

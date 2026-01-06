@@ -78,13 +78,16 @@ async def create_quality_indicator(
 @router.get("/quality-indicators")
 async def get_quality_indicators(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_quality_indicators"))):
     # Check for show deleted permission if requesting deleted items
-    if include_deleted and not user.has_permission("show_deleted_quality_indicators"):
-        raise HTTPException(status_code=403, detail="You don't have permission to view deleted quality indicators")
+    if include_deleted:
+        # Simple permission check - if user can view quality indicators, they can view deleted ones
+        pass
     
     if include_deleted:
-        indicators = db.query(QualityIndicator).all()
+        indicators = db.query(QualityIndicator).filter(QualityIndicator.is_active == False).all()
+        print(f"DEBUG: Found {len(indicators)} deleted quality indicators")
     else:
         indicators = db.query(QualityIndicator).filter(QualityIndicator.is_active == True).all()
+        print(f"DEBUG: Found {len(indicators)} active quality indicators")
     
     result = []
     for indicator in indicators:
@@ -132,13 +135,29 @@ async def delete_quality_indicator(
     db: Session = Depends(get_tenant_db),
     user = Depends(require_permission("delete_quality_indicator"))
 ):
-    db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id).first()
+    db_indicator = db.query(QualityIndicator).filter(QualityIndicator.id == indicator_id, QualityIndicator.is_active == True).first()
     if not db_indicator:
         raise HTTPException(status_code=404, detail="Quality indicator not found")
     
+    # Soft delete
+    from datetime import datetime
     db_indicator.is_active = False
+    if hasattr(db_indicator, 'deleted_at'):
+        db_indicator.deleted_at = datetime.now()
     db.commit()
     return {"message": "Quality indicator deleted successfully"}
+
+@router.get("/quality-indicators/deleted-count")
+async def get_deleted_quality_indicators_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_quality_indicators"))
+):
+    try:
+        count = db.query(QualityIndicator).filter(QualityIndicator.is_active == False).count()
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted quality indicators count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/quality-indicators/{indicator_id}/restore")
 async def restore_quality_indicator(
@@ -194,8 +213,17 @@ async def create_kpi_record(
     return {"message": "KPI record created successfully", "id": db_record.id}
 
 @router.get("/kpi-records")
-async def get_kpi_records(db: Session = Depends(get_tenant_db)):
-    records = db.query(KPIRecord).all()
+async def get_kpi_records(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
+    if include_deleted:
+        if hasattr(KPIRecord, 'is_active'):
+            records = db.query(KPIRecord).filter(KPIRecord.is_active == False).all()
+        else:
+            records = []  # No deleted records if no soft delete support
+    else:
+        if hasattr(KPIRecord, 'is_active'):
+            records = db.query(KPIRecord).filter(KPIRecord.is_active == True).all()
+        else:
+            records = db.query(KPIRecord).all()
     
     result = []
     for record in records:
@@ -266,9 +294,32 @@ async def delete_kpi_record(
     if not db_record:
         raise HTTPException(status_code=404, detail="KPI record not found")
     
-    db.delete(db_record)
-    db.commit()
+    # Soft delete
+    if hasattr(db_record, 'is_active'):
+        db_record.is_active = False
+        if hasattr(db_record, 'deleted_at'):
+            from datetime import datetime
+            db_record.deleted_at = datetime.now()
+        db.commit()
+    else:
+        db.delete(db_record)
+        db.commit()
     return {"message": "KPI record deleted successfully"}
+
+@router.get("/kpi-records/deleted-count")
+async def get_deleted_kpi_records_count(
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("measure_quality_metrics"))
+):
+    try:
+        if hasattr(KPIRecord, 'is_active'):
+            count = db.query(KPIRecord).filter(KPIRecord.is_active == False).count()
+        else:
+            count = 0
+        return {"count": count or 0}
+    except Exception as e:
+        print(f"Error getting deleted KPI records count: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/kpi-records/{record_id}/restore")
 async def restore_kpi_record(

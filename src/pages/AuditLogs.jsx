@@ -181,38 +181,102 @@ export default function AuditLogs() {
               <p>No audit logs found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Timestamp
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Employee
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Table
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Details
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      IP Address
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {auditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatDate(log.created_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Timestamp
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Employee
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Table
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Details
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        IP Address
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {auditLogs.map((log) => (
+                      <tr key={log.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {formatDate(log.created_at)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {(() => {
+                              if (log.employee_name && log.employee_code) {
+                                return `${log.employee_name} (${log.employee_code})`;
+                              } else if (log.employee_name && log.employee_id_onboarding) {
+                                return `${log.employee_name} (${log.employee_id_onboarding})`;
+                              } else if (log.employee_name) {
+                                return log.employee_name;
+                              }
+                              return "System";
+                            })()
+                            }
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {log.table_name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {(() => {
+                            if (log.action.includes('CREATE')) {
+                              return log.new_values?.name ? `Created: ${log.new_values.name}` : 'Created new record';
+                            } else if (log.action.includes('UPDATE')) {
+                              const oldName = log.old_values?.name;
+                              const newName = log.new_values?.name;
+                              if (oldName && newName && oldName !== newName) {
+                                return `${oldName} → ${newName}`;
+                              }
+                              return 'Updated record';
+                            } else if (log.action.includes('DELETE')) {
+                              return log.old_values?.name ? `Deleted: ${log.old_values.name}` : 'Deleted record';
+                            }
+                            return 'Action performed';
+                          })()
+                          }
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {log.ip_address || "N/A"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
+                        {log.action}
+                      </span>
+                      <span className="text-xs text-gray-500">{formatDate(log.created_at)}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Employee:</span>
+                        <span className="text-sm text-gray-600">
                           {(() => {
                             if (log.employee_name && log.employee_code) {
                               return `${log.employee_name} (${log.employee_code})`;
@@ -224,42 +288,42 @@ export default function AuditLogs() {
                             return "System";
                           })()
                           }
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
-                          {log.action}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {log.table_name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {(() => {
-                          if (log.action.includes('CREATE')) {
-                            return log.new_values?.name ? `Created: ${log.new_values.name}` : 'Created new record';
-                          } else if (log.action.includes('UPDATE')) {
-                            const oldName = log.old_values?.name;
-                            const newName = log.new_values?.name;
-                            if (oldName && newName && oldName !== newName) {
-                              return `${oldName} → ${newName}`;
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Table:</span>
+                        <span className="text-sm text-gray-600">{log.table_name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">Details:</span>
+                        <span className="text-sm text-gray-600 text-right max-w-xs truncate">
+                          {(() => {
+                            if (log.action.includes('CREATE')) {
+                              return log.new_values?.name ? `Created: ${log.new_values.name}` : 'Created new record';
+                            } else if (log.action.includes('UPDATE')) {
+                              const oldName = log.old_values?.name;
+                              const newName = log.new_values?.name;
+                              if (oldName && newName && oldName !== newName) {
+                                return `${oldName} → ${newName}`;
+                              }
+                              return 'Updated record';
+                            } else if (log.action.includes('DELETE')) {
+                              return log.old_values?.name ? `Deleted: ${log.old_values.name}` : 'Deleted record';
                             }
-                            return 'Updated record';
-                          } else if (log.action.includes('DELETE')) {
-                            return log.old_values?.name ? `Deleted: ${log.old_values.name}` : 'Deleted record';
+                            return 'Action performed';
+                          })()
                           }
-                          return 'Action performed';
-                        })()
-                        }
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {log.ip_address || "N/A"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium text-gray-900">IP:</span>
+                        <span className="text-sm text-gray-600">{log.ip_address || "N/A"}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
           
           {/* Pagination */}

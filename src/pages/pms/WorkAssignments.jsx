@@ -23,6 +23,8 @@ export default function WorkAssignments() {
   const [showModal, setShowModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     category: "Operational",
@@ -37,7 +39,7 @@ export default function WorkAssignments() {
   useEffect(() => {
     createSampleData();
     fetchData();
-  }, []);
+  }, [showDeleted]);
 
   const createSampleData = async () => {
     try {
@@ -76,10 +78,11 @@ export default function WorkAssignments() {
       
       // Fetch data with individual error handling
       const results = await Promise.allSettled([
-        api.get("/api/pms/work-assignments/assignments"),
+        api.get(`/api/pms/work-assignments/assignments?include_deleted=${showDeleted}`),
         api.get("/api/pms/work-assignments/my-assignments"),
         api.get("/api/pms/work-assignments/review-cycles"),
-        api.get("/hospitals/users/test/list") // Changed from /api/pms/goals/employees
+        api.get("/hospitals/users/test/list"), // Changed from /api/pms/goals/employees
+        api.get("/api/pms/work-assignments/deleted-count")
       ]);
 
       // Handle assignments
@@ -131,6 +134,14 @@ export default function WorkAssignments() {
         setEmployees([]);
       }
       
+      // Handle deleted count
+      if (results[4].status === 'fulfilled') {
+        setDeletedCount(results[4].value.data.count || 0);
+      } else {
+        console.error("Error fetching deleted count:", results[4].reason);
+        setDeletedCount(0);
+      }
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -168,20 +179,48 @@ export default function WorkAssignments() {
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Completed": return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case "Partially Completed": return <Clock className="w-4 h-4 text-yellow-500" />;
-      default: return <XCircle className="w-4 h-4 text-red-500" />;
+  const handleDelete = async (assignmentId) => {
+    if (!window.confirm('Are you sure you want to delete this assignment?')) return;
+    
+    try {
+      await api.delete(`/api/pms/work-assignments/assignments/${assignmentId}`);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
+  const handleRestore = async (assignmentId) => {
+    try {
+      await api.put(`/api/pms/work-assignments/assignments/${assignmentId}/restore`);
+      fetchData();
+    } catch (error) {
+      console.error("Error restoring assignment:", error);
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Work Assignments</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h2 className="text-lg sm:text-xl font-bold">Work Assignments</h2>
+        <div className="flex flex-col sm:flex-row gap-2">
+          {!showDeleted && deletedCount > 0 && (
+            <button
+              onClick={() => setShowDeleted(true)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Show Deleted ({deletedCount})
+            </button>
+          )}
+          {showDeleted && (
+            <button
+              onClick={() => setShowDeleted(false)}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+            >
+              Hide Deleted
+            </button>
+          )}
           <button
             onClick={async () => {
               try {
@@ -192,14 +231,14 @@ export default function WorkAssignments() {
                 console.error("Debug error:", error);
               }
             }}
-            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
           >
             Debug
           </button>
           {(hasPermission('add_work_assignment') || isAdmin()) && (
             <button
               onClick={() => setShowModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 text-sm whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               New Assignment
@@ -231,7 +270,9 @@ export default function WorkAssignments() {
       {/* My Assignments */}
       <div className="bg-white rounded-lg border p-6">
         <h3 className="text-lg font-semibold mb-4">My Assignments</h3>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
@@ -280,12 +321,67 @@ export default function WorkAssignments() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-4">
+          {myAssignments.length === 0 ? (
+            <p className="text-gray-500 text-center py-4">No assignments found</p>
+          ) : (
+            myAssignments.map((assignment) => (
+              <div key={assignment.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <h4 className="font-medium text-gray-900">{assignment.title}</h4>
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(assignment.completion_status)}
+                  </div>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Category:</span>
+                    <span className="font-medium">{assignment.category}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Weightage:</span>
+                    <span className="font-medium">{assignment.weightage_percentage}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Status:</span>
+                    <span className="font-medium">{assignment.completion_status}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Score Impact:</span>
+                    <span className="font-medium text-green-600">
+                      +{((assignment.weightage_percentage * assignment.completion_percentage) / 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => {
+                      setSelectedAssignment(assignment);
+                      setStatusData({
+                        completion_status: assignment.completion_status,
+                        remarks: assignment.remarks
+                      });
+                      setShowStatusModal(true);
+                    }}
+                    className="w-full text-blue-600 hover:text-blue-800 text-sm px-3 py-2 border border-blue-600 rounded hover:bg-blue-50 transition-colors"
+                  >
+                    Update Status
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* All Assignments */}
       <div className="bg-white rounded-lg border p-6">
         <h3 className="text-lg font-semibold mb-4">All Assignments</h3>
-        <div className="overflow-x-auto">
+        
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
@@ -295,6 +391,8 @@ export default function WorkAssignments() {
                 <th className="text-left p-2">Weightage</th>
                 <th className="text-left p-2">Frequency</th>
                 <th className="text-left p-2">Cycle</th>
+                {showDeleted && <th className="text-left p-2">Status</th>}
+                <th className="text-left p-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -306,17 +404,81 @@ export default function WorkAssignments() {
                   <td className="p-2">{assignment.weightage_percentage}%</td>
                   <td className="p-2">{assignment.frequency}</td>
                   <td className="p-2">{assignment.cycle_name}</td>
+                  {showDeleted && (
+                    <td className="p-2">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        assignment.deleted_at ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                        {assignment.deleted_at ? 'Deleted' : 'Active'}
+                      </span>
+                    </td>
+                  )}
+                  <td className="p-2">
+                    <div className="flex gap-2">
+                      {assignment.deleted_at ? (
+                        <button
+                          onClick={() => handleRestore(assignment.id)}
+                          className="text-green-600 hover:text-green-800 text-sm px-2 py-1 border border-green-600 rounded hover:bg-green-50"
+                        >
+                          Restore
+                        </button>
+                      ) : (
+                        (hasPermission('delete_work_assignment') || isAdmin()) && (
+                          <button
+                            onClick={() => handleDelete(assignment.id)}
+                            className="text-red-600 hover:text-red-800 text-sm px-2 py-1 border border-red-600 rounded hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-4">
+          {assignments.length === 0 ? (
+            <p className="text-gray-500 text-center py-4">No assignments found</p>
+          ) : (
+            assignments.map((assignment) => (
+              <div key={assignment.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="mb-3">
+                  <h4 className="font-medium text-gray-900">{assignment.title}</h4>
+                  <p className="text-sm text-gray-600">{assignment.employee_name}</p>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Category:</span>
+                    <span className="font-medium">{assignment.category}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Weightage:</span>
+                    <span className="font-medium">{assignment.weightage_percentage}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Frequency:</span>
+                    <span className="font-medium">{assignment.frequency}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Cycle:</span>
+                    <span className="font-medium">{assignment.cycle_name}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Create Assignment Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Create Assignment</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
@@ -324,13 +486,13 @@ export default function WorkAssignments() {
                 placeholder="Assignment Title"
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Operational">Operational</option>
                 <option value="Admin">Admin</option>
@@ -342,13 +504,13 @@ export default function WorkAssignments() {
                 placeholder="Weightage %"
                 value={formData.weightage_percentage}
                 onChange={(e) => setFormData({...formData, weightage_percentage: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <select
                 value={formData.frequency}
                 onChange={(e) => setFormData({...formData, frequency: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
@@ -358,7 +520,7 @@ export default function WorkAssignments() {
               <select
                 value={formData.review_cycle_id}
                 onChange={(e) => setFormData({...formData, review_cycle_id: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select Review Cycle</option>
@@ -369,7 +531,7 @@ export default function WorkAssignments() {
               <select
                 value={formData.assigned_employee_id}
                 onChange={(e) => setFormData({...formData, assigned_employee_id: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select Employee</option>
@@ -377,14 +539,14 @@ export default function WorkAssignments() {
                   <option key={emp.id} value={emp.id}>{emp.name}</option>
                 ))}
               </select>
-              <div className="flex gap-2">
-                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
                   Create
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                  className="flex-1 bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-sm"
                 >
                   Cancel
                 </button>
@@ -396,14 +558,14 @@ export default function WorkAssignments() {
 
       {/* Status Update Modal */}
       {showStatusModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Update Status</h3>
             <form onSubmit={handleStatusUpdate} className="space-y-4">
               <select
                 value={statusData.completion_status}
                 onChange={(e) => setStatusData({...statusData, completion_status: e.target.value})}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Not Completed">Not Completed</option>
                 <option value="Partially Completed">Partially Completed</option>
@@ -413,16 +575,16 @@ export default function WorkAssignments() {
                 placeholder="Remarks (optional)"
                 value={statusData.remarks}
                 onChange={(e) => setStatusData({...statusData, remarks: e.target.value})}
-                className="w-full p-2 border rounded h-20"
+                className="w-full p-3 border border-black rounded-lg h-20 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
-              <div className="flex gap-2">
-                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
                   Update
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowStatusModal(false)}
-                  className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                  className="flex-1 bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 text-sm"
                 >
                   Cancel
                 </button>

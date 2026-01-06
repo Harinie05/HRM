@@ -550,81 +550,159 @@ export default function LabourRegister() {
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full border border-black">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee ID</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee Name</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Register Type</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Month/Year</th>
-                    {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-black">
-                  {(showDeleted ? deletedRegisters : registers).map((register, index) => (
-                    <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
-                      <td className="px-4 py-2 text-sm border-r border-black">{register.employee_id}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{register.employee_name}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{register.register_type}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
-                          register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
-                          register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          register.compliance_status === 'Deleted' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-900'
-                        }`}>
-                          {register.compliance_status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{register.month}/{register.year}</td>
-                      {showDeleted && (
-                        <td className="px-4 py-2 text-sm border-r border-black">
-                          {register.deleted_at ? new Date(register.deleted_at).toLocaleDateString() : 'N/A'}
-                        </td>
-                      )}
-                      <td className="px-4 py-2 text-sm">
-                        <div className="flex gap-2">
-                          {showDeleted ? (
-                            canRestore && (
-                              <button
-                                onClick={() => handleRestore(register.id)}
-                                className="text-green-600 hover:text-green-800 p-1 rounded"
-                                title="Restore"
-                              >
-                                <RotateCcw size={16} />
-                              </button>
-                            )
-                          ) : (
-                            <>
-                              {canEdit && (
-                                <button
-                                  onClick={() => handleEdit(register)}
-                                  className="text-blue-600 hover:text-blue-800 p-1 rounded"
-                                  title="Edit"
-                                >
-                                  <Edit size={16} />
-                                </button>
-                              )}
-                              {canDelete && (
-                                <button
-                                  onClick={() => handleDelete(register.id)}
-                                  className="text-red-600 hover:text-red-800 p-1 rounded"
-                                  title="Delete"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </td>
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full border border-black">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee ID</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee Name</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Register Type</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Month/Year</th>
+                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {(showDeleted ? deletedRegisters : registers).map((register, index) => (
+                      <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
+                        <td className="px-4 py-2 text-sm border-r border-black">{register.employee_id}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{register.employee_name}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{register.register_type}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
+                            register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
+                            register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                            register.compliance_status === 'Deleted' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-900'
+                          }`}>
+                            {register.compliance_status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{register.month}/{register.year}</td>
+                        {showDeleted && (
+                          <td className="px-4 py-2 text-sm border-r border-black">
+                            {register.deleted_at ? new Date(register.deleted_at).toLocaleDateString() : 'N/A'}
+                          </td>
+                        )}
+                        <td className="px-4 py-2 text-sm">
+                          <div className="flex gap-2">
+                            {showDeleted ? (
+                              canRestore && (
+                                <button
+                                  onClick={() => handleRestore(register.id)}
+                                  className="text-green-600 hover:text-green-800 p-1 rounded"
+                                  title="Restore"
+                                >
+                                  <RotateCcw size={16} />
+                                </button>
+                              )
+                            ) : (
+                              <>
+                                {canEdit && (
+                                  <button
+                                    onClick={() => handleEdit(register)}
+                                    className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                                    title="Edit"
+                                  >
+                                    <Edit size={16} />
+                                  </button>
+                                )}
+                                {canDelete && (
+                                  <button
+                                    onClick={() => handleDelete(register.id)}
+                                    className="text-red-600 hover:text-red-800 p-1 rounded"
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {(showDeleted ? deletedRegisters : registers).map((register, index) => (
+                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{register.employee_name}</h4>
+                        <p className="text-sm text-gray-600">{register.employee_id}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
+                        register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
+                        register.compliance_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                        register.compliance_status === 'Deleted' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-900'
+                      }`}>
+                        {register.compliance_status}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Register Type:</span>
+                        <span className="text-gray-900">{register.register_type}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Period:</span>
+                        <span className="text-gray-900">{register.month}/{register.year}</span>
+                      </div>
+                      {showDeleted && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Deleted At:</span>
+                          <span className="text-gray-900">{register.deleted_at ? new Date(register.deleted_at).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {showDeleted ? (
+                        canRestore && (
+                          <button
+                            onClick={() => handleRestore(register.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            Restore
+                          </button>
+                        )
+                      ) : (
+                        <>
+                          {canEdit && (
+                            <button
+                              onClick={() => handleEdit(register)}
+                              className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            >
+                              <Edit className="w-3 h-3" />
+                              Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => handleDelete(register.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              Delete
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

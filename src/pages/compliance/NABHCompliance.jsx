@@ -720,28 +720,87 @@ export default function NABHCompliance() {
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4">NABH Compliance Records</h3>
             <div className="overflow-x-auto">
-              <table className="w-full border border-black">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Department</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Compliance %</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Last Audit</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Next Audit</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-black">
-                  {complianceRecords.map((record, index) => (
-                    <tr key={index} className="hover:bg-gray-50 border-b border-black">
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <div>
-                          <div className="font-medium">{record.employee_name}</div>
-                          <div className="text-gray-500 text-xs">{record.employee_id}</div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{record.department}</td>
-                      <td className="px-4 py-2 text-sm border-r border-black">
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <table className="w-full border border-black">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Department</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Compliance %</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Last Audit</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Next Audit</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-black">
+                    {complianceRecords.map((record, index) => (
+                      <tr key={index} className="hover:bg-gray-50 border-b border-black">
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <div>
+                            <div className="font-medium">{record.employee_name}</div>
+                            <div className="text-gray-500 text-xs">{record.employee_id}</div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{record.department}</td>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium">{record.compliance_percentage}%</span>
+                            <div className="w-16 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full ${
+                                  record.compliance_percentage >= 85 ? 'bg-green-500' :
+                                  record.compliance_percentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}
+                                style={{ width: `${record.compliance_percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                            record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                            record.overall_compliance_status === 'Partially Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-900'
+                          }`}>
+                            {record.overall_compliance_status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-sm border-r border-black">{record.last_audit_date || 'N/A'}</td>
+                        <td className="px-4 py-2 text-sm">{record.next_audit_due || 'N/A'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {complianceRecords.map((record, index) => (
+                  <div key={index} className="p-4 border-b border-gray-200 last:border-b-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{record.employee_name}</h4>
+                        <p className="text-sm text-gray-600">{record.employee_id}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
+                        record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
+                        record.overall_compliance_status === 'Partially Compliant' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-900'
+                      }`}>
+                        {record.overall_compliance_status}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Department:</span>
+                        <span className="text-gray-900">{record.department}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">Compliance:</span>
                         <div className="flex items-center space-x-2">
                           <span className="font-medium">{record.compliance_percentage}%</span>
                           <div className="w-16 bg-gray-200 rounded-full h-2">
@@ -754,23 +813,19 @@ export default function NABHCompliance() {
                             ></div>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
-                          record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
-                          record.overall_compliance_status === 'Partially Compliant' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-900'
-                        }`}>
-                          {record.overall_compliance_status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-sm border-r border-black">{record.last_audit_date || 'N/A'}</td>
-                      <td className="px-4 py-2 text-sm">{record.next_audit_due || 'N/A'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Last Audit:</span>
+                        <span className="text-gray-900">{record.last_audit_date || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Next Audit:</span>
+                        <span className="text-gray-900">{record.next_audit_due || 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

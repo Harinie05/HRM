@@ -5,7 +5,7 @@ from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from utils.permission import require_permission
 from routes.hospital import get_current_user
-from typing import List
+from typing import List, Optional, Optional
 from datetime import date
 from pydantic import BaseModel
 
@@ -52,6 +52,9 @@ def create_od_application(data: ODApplicationCreate, request: Request, db: Sessi
         get_query = text("SELECT * FROM od_applications WHERE id = LAST_INSERT_ID()")
         od_app = db.execute(get_query).fetchone()
         
+        if not od_app:
+            raise HTTPException(status_code=500, detail="Failed to retrieve created OD application")
+        
         # Audit log
         audit_crud(request, db, user, "CREATE_OD_APPLICATION", "od_applications", str(od_app.id), {}, data.dict())
         
@@ -71,7 +74,7 @@ def create_od_application(data: ODApplicationCreate, request: Request, db: Sessi
         raise HTTPException(status_code=500, detail=f"Failed to create OD application: {str(e)}")
 
 @router.get("/", response_model=List[ODApplicationOut])
-def get_od_applications(employee_id: int = None, status: str = None, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_od_applications"))):
+def get_od_applications(employee_id: Optional[int] = None, status: Optional[str] = None, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_od_applications"))):
     try:
         query = "SELECT * FROM od_applications WHERE 1=1"
         params = {}
@@ -127,7 +130,7 @@ def approve_od_application(od_id: int, request: Request, db: Session = Depends(g
         }).fetchone()
         
         # Create or update attendance record
-        if existing_attendance:
+        if existing_attendance and existing_attendance.id:
             # Update existing record to mark as present
             update_attendance = text("""
                 UPDATE attendance_punches 
@@ -137,7 +140,7 @@ def approve_od_application(od_id: int, request: Request, db: Session = Depends(g
             db.execute(update_attendance, {
                 'from_time': od_app.from_time,
                 'to_time': od_app.to_time,
-                'attendance_id': existing_attendance.id
+                'attendance_id': existing_attendance.id if existing_attendance.id is not None else 0
             })
         else:
             # Create new attendance record
@@ -166,12 +169,17 @@ def approve_od_application(od_id: int, request: Request, db: Session = Depends(g
 @router.patch("/{od_id}/reject")
 def reject_od_application(od_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("reject_od"))):
     try:
-        query = text("UPDATE od_applications SET status = 'rejected' WHERE id = :od_id")
-        result = db.execute(query, {'od_id': od_id})
-        db.commit()
+        # Check if OD application exists first
+        check_query = text("SELECT id FROM od_applications WHERE id = :od_id")
+        existing = db.execute(check_query, {'od_id': od_id}).fetchone()
         
-        if result.rowcount == 0:
+        if not existing:
             raise HTTPException(status_code=404, detail="OD application not found")
+        
+        # Update the status
+        query = text("UPDATE od_applications SET status = 'rejected' WHERE id = :od_id")
+        db.execute(query, {'od_id': od_id})
+        db.commit()
         
         # Audit log
         audit_crud(request, db, user, "REJECT_OD_APPLICATION", "od_applications", str(od_id), {"status": "pending"}, {"status": "rejected"})

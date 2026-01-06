@@ -392,7 +392,8 @@ export default function EmployeeListPage() {
 
         {/* Employee Cards */}
         <div className="bg-white rounded-2xl border border-black overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-50 border-b border-black">
                 <tr>
@@ -402,16 +403,16 @@ export default function EmployeeListPage() {
                   <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Designation
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Department
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Joining Date
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">
+                  <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -433,19 +434,19 @@ export default function EmployeeListPage() {
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <div className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-none">{employee.name}</div>
-                      <div className="text-xs text-gray-500 truncate max-w-[120px] sm:max-w-none">{employee.email}</div>
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">{employee.name}</div>
+                      <div className="text-xs text-gray-500">{employee.email}</div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600 hidden sm:table-cell">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600">
                       {employee.designation}
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Building className="w-4 h-4 text-gray-400 mr-2" />
                         <span className="text-sm text-gray-600">{employee.department}</span>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 text-gray-400 mr-2" />
                         <span className="text-sm text-gray-600">
@@ -453,7 +454,7 @@ export default function EmployeeListPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         <UserCheck className="w-3 h-3 mr-1" />
                         {employee.status}
@@ -485,14 +486,82 @@ export default function EmployeeListPage() {
                 ))}
               </tbody>
             </table>
-            {employees.length === 0 && (
-              <div className="text-center py-12">
-                <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No employees found</h3>
-                <p className="text-gray-500">Get started by creating your first employee profile.</p>
-              </div>
-            )}
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden p-4">
+            <div className="space-y-4">
+              {employees.map((employee) => (
+                <div key={employee.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                        <Users className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{employee.name}</h3>
+                        <p className="text-sm text-gray-500">{employee.employee_code}</p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <UserCheck className="w-3 h-3 mr-1" />
+                      {employee.status}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Email:</span>
+                      <span className="text-sm text-gray-900">{employee.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Designation:</span>
+                      <span className="text-sm text-gray-900">{employee.designation}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Department:</span>
+                      <span className="text-sm text-gray-900">{employee.department}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-500">Joining Date:</span>
+                      <span className="text-sm text-gray-900">
+                        {employee.joining_date ? new Date(employee.joining_date).toLocaleDateString() : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+                    {canViewProfile && (
+                      <Link
+                        to={`/eis/${employee.id}`}
+                        className="flex items-center gap-1 px-3 py-2 text-sm text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View
+                      </Link>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={() => handleDeleteEmployee(employee)}
+                        className="flex items-center gap-1 px-3 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {employees.length === 0 && (
+            <div className="text-center py-12">
+              <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No employees found</h3>
+              <p className="text-gray-500">Get started by creating your first employee profile.</p>
+            </div>
+          )}
         </div>
       </div>
 
