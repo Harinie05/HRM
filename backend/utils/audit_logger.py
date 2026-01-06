@@ -11,17 +11,26 @@ import os
 from sqlalchemy import text
 
 def get_employee_details(db: Session, user: dict):
-    """Get employee details from JWT token"""
+    """Get employee details from JWT token and database"""
     try:
-        # Get actual user information from JWT token
+        user_id = user.get('user_id')
+        
+        if user_id:
+            # Get user from database
+            from models.models_tenant import User
+            user_record = db.query(User).filter(User.id == user_id).first()
+            
+            if user_record:
+                return {
+                    "employee_name": user_record.name,
+                    "employee_code": user_record.employee_code,
+                    "employee_id_onboarding": None
+                }
+        
+        # Fallback to JWT token data
         name = user.get('user_name') or user.get('name') or user.get('email', 'Unknown User')
-        user_id = user.get('user_id') or user.get('sub') or 'Unknown ID'
-        
-        # Format display name with actual user info
-        display_name = f"{name} (ID: {user_id})"
-        
         return {
-            "employee_name": display_name,
+            "employee_name": f"{name} (ID: {user_id or 'Unknown ID'})",
             "employee_code": None,
             "employee_id_onboarding": None
         }

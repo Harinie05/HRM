@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
-import { Database, Eye, Filter, Calendar, User, Activity, Search, Download } from "lucide-react";
+import { Database, Eye, Filter, Calendar, User, Activity, Search, Download, X } from "lucide-react";
 import api from "../api";
 
 export default function AuditLogs() {
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedLog, setSelectedLog] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [filters, setFilters] = useState({
     page: 1,
     limit: 50,
@@ -66,6 +68,16 @@ export default function AuditLogs() {
     }));
   };
 
+  const openModal = (log) => {
+    setSelectedLog(log);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setSelectedLog(null);
+    setShowModal(false);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleString();
@@ -79,36 +91,67 @@ export default function AuditLogs() {
     return "text-purple-700 bg-purple-50";
   };
 
+  const formatFieldName = (key) => {
+    return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  const formatValue = (value) => {
+    if (value === null || value === undefined) return 'Not set';
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (typeof value === 'string' && value.includes('T') && value.includes('Z')) {
+      return new Date(value).toLocaleString();
+    }
+    return String(value);
+  };
+
+  const renderDataDetails = (data, title) => {
+    if (!data || typeof data !== 'object') return null;
+    
+    return (
+      <div className="mb-3">
+        <strong className="text-gray-700">{title}:</strong>
+        <div className="mt-1 space-y-1">
+          {Object.entries(data).map(([key, value]) => (
+            <div key={key} className="flex justify-between py-1 border-b border-gray-100">
+              <span className="font-medium text-gray-600">{formatFieldName(key)}:</span>
+              <span className="text-gray-800 max-w-xs text-right break-words">{formatValue(value)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Layout>
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl border border-black shadow-lg p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-black shadow-lg p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-gray-100 rounded-xl">
                 <Database className="h-6 w-6 text-gray-700" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
-                <p className="text-gray-600">Track all system activities and changes</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Audit Logs</h1>
+                <p className="text-sm sm:text-base text-gray-600">Track all system activities and changes</p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <p className="text-sm text-gray-600">Total Records</p>
-              <p className="text-2xl font-bold text-gray-900">{pagination.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{pagination.total}</p>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl border border-black shadow-lg p-6">
+        <div className="bg-white rounded-xl border border-black shadow-lg p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="h-5 w-5 text-gray-600" />
             <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Action</label>
               <input
@@ -116,7 +159,7 @@ export default function AuditLogs() {
                 placeholder="e.g., CREATE_USER"
                 value={filters.action}
                 onChange={(e) => handleFilterChange("action", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             
@@ -127,7 +170,7 @@ export default function AuditLogs() {
                 placeholder="e.g., users"
                 value={filters.table_name}
                 onChange={(e) => handleFilterChange("table_name", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             
@@ -138,7 +181,7 @@ export default function AuditLogs() {
                 placeholder="Employee name"
                 value={filters.employee_name}
                 onChange={(e) => handleFilterChange("employee_name", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             
@@ -148,7 +191,7 @@ export default function AuditLogs() {
                 type="date"
                 value={filters.start_date}
                 onChange={(e) => handleFilterChange("start_date", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             
@@ -158,7 +201,7 @@ export default function AuditLogs() {
                 type="date"
                 value={filters.end_date}
                 onChange={(e) => handleFilterChange("end_date", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           </div>
@@ -166,7 +209,7 @@ export default function AuditLogs() {
 
         {/* Audit Logs Table */}
         <div className="bg-white rounded-xl border border-black shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">Audit Trail</h3>
           </div>
           
@@ -183,26 +226,26 @@ export default function AuditLogs() {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Timestamp
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Employee
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Action
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Table
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Details
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         IP Address
                       </th>
                     </tr>
@@ -210,51 +253,50 @@ export default function AuditLogs() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {auditLogs.map((log) => (
                       <tr key={log.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatDate(log.created_at)}
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="max-w-32 truncate">{formatDate(log.created_at)}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {(() => {
-                              if (log.employee_name && log.employee_code) {
-                                return `${log.employee_name} (${log.employee_code})`;
-                              } else if (log.employee_name && log.employee_id_onboarding) {
-                                return `${log.employee_name} (${log.employee_id_onboarding})`;
-                              } else if (log.employee_name) {
-                                return log.employee_name;
-                              }
-                              return "System";
-                            })()
-                            }
+                        <td className="px-4 py-4">
+                          <div className="text-sm text-gray-900 max-w-40 break-words">
+                            {log.employee_name || "System"}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
                             {log.action}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {log.table_name}
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div className="max-w-24 truncate">{log.table_name}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {(() => {
-                            if (log.action.includes('CREATE')) {
-                              return log.new_values?.name ? `Created: ${log.new_values.name}` : 'Created new record';
-                            } else if (log.action.includes('UPDATE')) {
-                              const oldName = log.old_values?.name;
-                              const newName = log.new_values?.name;
-                              if (oldName && newName && oldName !== newName) {
-                                return `${oldName} → ${newName}`;
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          <div className="space-y-1">
+                            <div className="font-medium">
+                              {(() => {
+                                if (log.action.includes('CREATE')) {
+                                  return 'Created new record';
+                                } else if (log.action.includes('UPDATE')) {
+                                  return 'Updated record';
+                                } else if (log.action.includes('DELETE')) {
+                                  return 'Deleted record';
+                                } else if (log.action.includes('VIEW')) {
+                                  return 'Action performed';
+                                }
+                                return 'Action performed';
+                              })()
                               }
-                              return 'Updated record';
-                            } else if (log.action.includes('DELETE')) {
-                              return log.old_values?.name ? `Deleted: ${log.old_values.name}` : 'Deleted record';
-                            }
-                            return 'Action performed';
-                          })()
-                          }
+                            </div>
+                            {(log.old_values || log.new_values) && (
+                              <button
+                                onClick={() => openModal(log)}
+                                className="text-xs text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                              >
+                                View Details
+                              </button>
+                            )}
+                          </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {log.ip_address || "N/A"}
                         </td>
                       </tr>
@@ -264,56 +306,51 @@ export default function AuditLogs() {
               </div>
 
               {/* Mobile Card View */}
-              <div className="md:hidden">
+              <div className="lg:hidden">
                 {auditLogs.map((log) => (
                   <div key={log.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-3">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
                         {log.action}
                       </span>
                       <span className="text-xs text-gray-500">{formatDate(log.created_at)}</span>
                     </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start">
                         <span className="text-sm font-medium text-gray-900">Employee:</span>
-                        <span className="text-sm text-gray-600">
-                          {(() => {
-                            if (log.employee_name && log.employee_code) {
-                              return `${log.employee_name} (${log.employee_code})`;
-                            } else if (log.employee_name && log.employee_id_onboarding) {
-                              return `${log.employee_name} (${log.employee_id_onboarding})`;
-                            } else if (log.employee_name) {
-                              return log.employee_name;
-                            }
-                            return "System";
-                          })()
-                          }
+                        <span className="text-sm text-gray-600 text-right max-w-48 break-words">
+                          {log.employee_name || "System"}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-900">Table:</span>
                         <span className="text-sm text-gray-600">{log.table_name}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-start">
                         <span className="text-sm font-medium text-gray-900">Details:</span>
-                        <span className="text-sm text-gray-600 text-right max-w-xs truncate">
-                          {(() => {
-                            if (log.action.includes('CREATE')) {
-                              return log.new_values?.name ? `Created: ${log.new_values.name}` : 'Created new record';
-                            } else if (log.action.includes('UPDATE')) {
-                              const oldName = log.old_values?.name;
-                              const newName = log.new_values?.name;
-                              if (oldName && newName && oldName !== newName) {
-                                return `${oldName} → ${newName}`;
+                        <div className="text-right max-w-48">
+                          <div className="text-sm text-gray-600 truncate">
+                            {(() => {
+                              if (log.action.includes('CREATE')) {
+                                return 'Created new record';
+                              } else if (log.action.includes('UPDATE')) {
+                                return 'Updated record';
+                              } else if (log.action.includes('DELETE')) {
+                                return 'Deleted record';
                               }
-                              return 'Updated record';
-                            } else if (log.action.includes('DELETE')) {
-                              return log.old_values?.name ? `Deleted: ${log.old_values.name}` : 'Deleted record';
+                              return 'Action performed';
+                            })()
                             }
-                            return 'Action performed';
-                          })()
-                          }
-                        </span>
+                          </div>
+                          {(log.old_values || log.new_values) && (
+                            <button
+                              onClick={() => openModal(log)}
+                              className="text-xs text-blue-600 hover:text-blue-800 underline cursor-pointer mt-1"
+                            >
+                              View Details
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-900">IP:</span>
@@ -328,12 +365,12 @@ export default function AuditLogs() {
           
           {/* Pagination */}
           {pagination.pages > 1 && (
-            <div className="px-6 py-3 border-t border-gray-200 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700">
+            <div className="px-4 sm:px-6 py-3 border-t border-gray-200 bg-gray-50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="text-sm text-gray-700 text-center sm:text-left">
                   Showing page {pagination.page} of {pagination.pages} ({pagination.total} total records)
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 justify-center sm:justify-end">
                   <button
                     onClick={() => handlePageChange(pagination.page - 1)}
                     disabled={pagination.page <= 1}
@@ -354,6 +391,68 @@ export default function AuditLogs() {
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && selectedLog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Audit Log Details</h3>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Action:</span>
+                    <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(selectedLog.action)}`}>
+                      {selectedLog.action}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Table:</span>
+                    <span className="ml-2 text-sm text-gray-900">{selectedLog.table_name}</span>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <span className="text-sm font-medium text-gray-500">Employee:</span>
+                    <span className="ml-2 text-sm text-gray-900">
+                      {selectedLog.employee_name || "System"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Timestamp:</span>
+                    <span className="ml-2 text-sm text-gray-900">{formatDate(selectedLog.created_at)}</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">IP Address:</span>
+                    <span className="ml-2 text-sm text-gray-900">{selectedLog.ip_address || "N/A"}</span>
+                  </div>
+                </div>
+                
+                <div className="border-t border-gray-200 pt-4">
+                  {selectedLog.action.includes('CREATE') && selectedLog.new_values && 
+                    renderDataDetails(selectedLog.new_values, 'Created Data')
+                  }
+                  {selectedLog.action.includes('UPDATE') && (
+                    <div className="space-y-4">
+                      {selectedLog.old_values && renderDataDetails(selectedLog.old_values, 'Previous Values')}
+                      {selectedLog.new_values && renderDataDetails(selectedLog.new_values, 'Updated Values')}
+                    </div>
+                  )}
+                  {selectedLog.action.includes('DELETE') && selectedLog.old_values && 
+                    renderDataDetails(selectedLog.old_values, 'Deleted Data')
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

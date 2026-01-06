@@ -215,8 +215,32 @@ export default function TrainingRequests() {
   };
 
   const getEmployeeName = (employeeId) => {
-    const employee = employees.find(emp => emp.id === employeeId);
-    return employee ? employee.name : `Employee #${employeeId}`;
+    console.log('Looking for employee with ID:', employeeId, 'in employees:', employees);
+    const employee = employees.find(emp => {
+      // Handle both string and number IDs, and user_ prefixed IDs
+      const empId = emp.id;
+      const searchId = employeeId;
+      
+      // Direct match
+      if (empId === searchId) return true;
+      
+      // Handle user_ prefix
+      if (typeof empId === 'string' && empId.startsWith('user_')) {
+        const numericId = parseInt(empId.replace('user_', ''));
+        if (numericId === parseInt(searchId)) return true;
+      }
+      
+      // Handle reverse case
+      if (typeof searchId === 'string' && searchId.startsWith('user_')) {
+        const numericSearchId = parseInt(searchId.replace('user_', ''));
+        if (parseInt(empId) === numericSearchId) return true;
+      }
+      
+      return false;
+    });
+    
+    console.log('Found employee:', employee);
+    return employee ? `${employee.name} (${employee.employee_code || employee.id})` : `Employee #${employeeId}`;
   };
 
   const getProgramName = (programId) => {
@@ -233,7 +257,7 @@ export default function TrainingRequests() {
   });
 
   const priorities = ["Low", "Medium", "High", "Urgent"];
-  const statuses = ["Pending", "Manager Approved", "HR Approved", "Rejected"];
+  const statuses = ["Pending", "HR Approved", "Rejected"];
 
   return (
     <div className="space-y-6">

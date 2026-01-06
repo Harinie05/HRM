@@ -10,6 +10,95 @@ from datetime import datetime, date
 
 router = APIRouter(prefix="/audit", tags=["Audit Logs"])
 
+def resolve_employee_ids_in_data(db: Session, data: dict):
+    """Resolve employee IDs to employee codes/names in audit data"""
+    print(f"DEBUG: resolve_employee_ids_in_data called with data: {data}")
+    
+    if not data or not isinstance(data, dict):
+        print("DEBUG: No data or not dict, returning original")
+        return data
+    
+    enhanced_data = data.copy()
+    
+    for key, value in data.items():
+        print(f"DEBUG: Processing key={key}, value={value}")
+        
+        # Check for employee ID fields (case insensitive)
+        if key.lower() in ['employee_id', 'assigned_employee_id', 'user_id'] and value:
+            print(f"DEBUG: Found employee ID field: {key} = {value}")
+            
+            try:
+                # Handle "user_6" format or direct integer
+                if isinstance(value, str) and value.startswith('user_'):
+                    user_id = int(value.replace('user_', ''))
+                elif isinstance(value, (int, str)) and str(value).isdigit():
+                    user_id = int(value)
+                else:
+                    print(f"DEBUG: Value {value} is not user_ format or integer")
+                    continue
+                
+                print(f"DEBUG: Extracted user_id: {user_id}")
+                
+                # Get user from User table (uses employee_code column)
+                from models.models_tenant import User
+                user_record = db.query(User).filter(User.id == user_id).first()
+                print(f"DEBUG: User record: {user_record.name if user_record else 'None'}")
+                
+                if user_record:
+                    if user_record.employee_code:
+                        result = f"{user_record.name} (Employee ID: {user_record.employee_code})"
+                        enhanced_data[key] = result
+                        print(f"DEBUG: Using user employee_code: {result}")
+                    else:
+                        # If no employee_code, check OnboardingCandidates table
+                        print(f"DEBUG: No employee_code, checking OnboardingCandidates")
+                        try:
+                            from models.models_tenant import OnboardingCandidate
+                            
+                            # Try by name match
+                            onboarding_record = db.query(OnboardingCandidate).filter(
+                                OnboardingCandidate.candidate_name == user_record.name
+                            ).first()
+                            print(f"DEBUG: Onboarding by name: {onboarding_record.candidate_name if onboarding_record else 'None'}")
+                            
+                            if onboarding_record and onboarding_record.employee_id:
+                                result = f"{onboarding_record.candidate_name} (Employee ID: {onboarding_record.employee_id})"
+                                enhanced_data[key] = result
+                                print(f"DEBUG: Using onboarding employee_id: {result}")
+                            else:
+                                # Fallback to just name with user ID
+                                result = f"{user_record.name} (User ID: {user_id})"
+                                enhanced_data[key] = result
+                                print(f"DEBUG: Using fallback with user ID: {result}")
+                                
+                        except Exception as e:
+                            print(f"DEBUG: OnboardingCandidates error: {e}")
+                            # Final fallback
+                            result = f"{user_record.name} (User ID: {user_id})"
+                            enhanced_data[key] = result
+                else:
+                    print(f"DEBUG: No user record found, trying OnboardingCandidates by ID")
+                    # Try OnboardingCandidates table directly by ID
+                    try:
+                        from models.models_tenant import OnboardingCandidate
+                        onboarding_record = db.query(OnboardingCandidate).filter(OnboardingCandidate.id == user_id).first()
+                        
+                        if onboarding_record and onboarding_record.employee_id:
+                            result = f"{onboarding_record.candidate_name} (Employee ID: {onboarding_record.employee_id})"
+                            enhanced_data[key] = result
+                            print(f"DEBUG: Using onboarding by ID: {result}")
+                        
+                    except Exception as e:
+                        print(f"DEBUG: OnboardingCandidates by ID error: {e}")
+                        pass
+                    
+            except Exception as e:
+                print(f"DEBUG: Error resolving employee ID {value}: {str(e)}")
+                pass
+    
+    print(f"DEBUG: Final enhanced_data: {enhanced_data}")
+    return enhanced_data
+
 @router.get("/logs")
 async def get_audit_logs(
     request: Request,
@@ -52,23 +141,56 @@ async def get_audit_logs(
         for log in logs:
             # Get employee details from User table if user_id exists
             employee_display = log.employee_name or "Unknown User"
+            employee_code = None
+            
             if log.user_id is not None:
-                from models.models_tenant import User
-                user_record = db.query(User).filter(User.id == log.user_id).first()
-                if user_record:
-                    employee_display = f"{user_record.name} (Employee ID: {user_record.employee_code})"
+                try:
+                    from models.models_tenant import User
+                    
+                    # First try to get from User table
+                    user_record = db.query(User).filter(User.id == log.user_id).first()
+                    if user_record:
+                        if user_record.employee_code:
+                            employee_display = f"{user_record.name} (Employee ID: {user_record.employee_code})"
+                            employee_code = user_record.employee_code
+                        else:
+                            employee_display = f"{user_record.name} (ID: {log.user_id})"
+                            employee_code = None
+                    else:
+                        # If not found in User table, try OnboardingCandidate
+                        from models.models_tenant import OnboardingCandidate
+                        onboarding_record = db.query(OnboardingCandidate).filter(OnboardingCandidate.id == log.user_id).first()
+                        if onboarding_record:
+                            if onboarding_record.employee_id:
+                                employee_display = f"{onboarding_record.candidate_name} (Employee ID: {onboarding_record.employee_id})"
+                                employee_code = onboarding_record.employee_id
+                            else:
+                                employee_display = f"{onboarding_record.candidate_name} (ID: {log.user_id})"
+                                employee_code = str(log.user_id)
+                except Exception:
+                    # If any error occurs, use the original employee_name
+                    pass
+            
+            # Enhance audit data with resolved employee names
+            enhanced_old_values = log.old_values
+            enhanced_new_values = log.new_values
+            
+            if log.old_values:
+                enhanced_old_values = resolve_employee_ids_in_data(db, log.old_values)
+            if log.new_values:
+                enhanced_new_values = resolve_employee_ids_in_data(db, log.new_values)
             
             audit_logs.append({
                 "id": log.id,
                 "user_id": log.user_id,
                 "employee_name": employee_display,
-                "employee_code": log.employee_code,
+                "employee_code": employee_code,
                 "employee_id_onboarding": log.employee_id_onboarding,
                 "action": log.action,
                 "table_name": log.table_name,
                 "record_id": log.record_id,
-                "old_values": log.old_values,
-                "new_values": log.new_values,
+                "old_values": enhanced_old_values,
+                "new_values": enhanced_new_values,
                 "ip_address": log.ip_address,
                 "user_agent": log.user_agent,
                 "created_at": log.created_at.isoformat() if log.created_at is not None else None
