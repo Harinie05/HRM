@@ -417,15 +417,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_od_applications", "description": "Can edit on-duty applications"},
     {"name": "view_self", "description": "Can view only own records and data"},
 
-    # Live Updates & Real-time Features
-    {"name": "view_live_attendance", "description": "Can view live attendance updates"},
-    {"name": "real_time_tracking", "description": "Can access real-time attendance tracking"},
-    {"name": "view_active_records", "description": "Can view active attendance records"},
-
-    # Employee Selection & Management
-    {"name": "select_employee_attendance", "description": "Can select employees for attendance tracking"},
-    {"name": "manage_employee_attendance", "description": "Can manage employee attendance settings"},
-
     # Attendance Rules & Policies
     {"name": "view_attendance_rules", "description": "Can view attendance rules and policies"},
     {"name": "add_attendance_rule", "description": "Can add attendance rules"},

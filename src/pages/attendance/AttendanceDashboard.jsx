@@ -14,7 +14,7 @@ const AttendanceDashboard = () => {
   const canViewReports = isAdmin() || hasPermission('view_attendance_reports');
   const canViewPunchLogs = isAdmin() || hasPermission('view_punch_logs');
   const canViewShifts = isAdmin() || hasPermission('VIEW_SHIFTS');
-  const canViewRules = isAdmin() || hasPermission('smart_regularization');
+  const canViewRules = isAdmin() || hasPermission('view_attendance_rules');
   
   if (!canViewAttendance) {
     return (
