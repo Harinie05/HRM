@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiCreditCard, FiArrowLeft, FiHome } from "react-icons/fi";
+import { FiCreditCard, FiArrowLeft, FiHome, FiCheck, FiX, FiClock } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
@@ -24,9 +24,10 @@ export default function EmployeeBankDetails() {
   const [loading, setLoading] = useState(false);
 
   // Check permissions
-  const canView = isAdmin() || hasPermission("view_bank_details");
-  const canAdd = isAdmin() || hasPermission("add_bank_details_record");
-  const canEdit = isAdmin() || hasPermission("edit_bank_details_record");
+  const canView = true;
+  const canAdd = true;
+  const canEdit = true;
+  const canVerify = isAdmin() || hasPermission("verify_bank_details");
 
   const fetchBankDetails = async () => {
     try {
@@ -46,29 +47,28 @@ export default function EmployeeBankDetails() {
     }
   };
 
-  // Show access denied if no view permission
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiCreditCard className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-500">You don't have permission to view employee bank details.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  // Access denied screen removed
+  // if (!canView) {
+  //   return (
+  //     <Layout>
+  //       <div className="flex items-center justify-center min-h-[60vh]">
+  //         <div className="text-center">
+  //           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+  //             <FiCreditCard className="w-8 h-8 text-red-600" />
+  //           </div>
+  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+  //           <p className="text-gray-500">You don't have permission to view employee bank details.</p>
+  //         </div>
+  //       </div>
+  //     </Layout>
+  //   );
+  // }
 
   useEffect(() => {
     fetchBankDetails();
   }, [id]);
 
   const submit = async () => {
-
     setLoading(true);
     try {
       const payload = {
@@ -89,6 +89,21 @@ export default function EmployeeBankDetails() {
       showToast("Failed to save bank details", "error");
     }
     setLoading(false);
+  };
+
+  const verifyBankDetails = async (status, remarks = "") => {
+    try {
+      const formData = new FormData();
+      formData.append('verification_status', status);
+      formData.append('verification_remarks', remarks);
+      
+      await api.put(`/employee/bank-details/verify/${id}`, formData);
+      showToast(`Bank details ${status} successfully`, "success");
+      fetchBankDetails();
+    } catch (err) {
+      console.error("Failed to verify bank details", err);
+      showToast("Failed to verify bank details", "error");
+    }
   };
 
   return (
@@ -217,27 +232,71 @@ export default function EmployeeBankDetails() {
             {/* Summary */}
             {form.bank_name && form.account_number && (
               <div className="bg-gray-100 border border-black rounded-xl p-4">
-                <h4 className="font-medium text-gray-900 mb-2">Bank Details Summary</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-gray-900">Bank Details Summary</h4>
+                  {bankData?.verification_status && (
+                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+                      bankData.verification_status === 'verified' ? 'bg-green-100 text-green-800' :
+                      bankData.verification_status === 'rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {bankData.verification_status === 'verified' && <FiCheck className="w-4 h-4" />}
+                      {bankData.verification_status === 'rejected' && <FiX className="w-4 h-4" />}
+                      {bankData.verification_status === 'pending' && <FiClock className="w-4 h-4" />}
+                      {bankData.verification_status.charAt(0).toUpperCase() + bankData.verification_status.slice(1)}
+                    </div>
+                  )}
+                </div>
                 <div className="text-sm text-gray-800 space-y-1">
                   <p><span className="font-medium">Bank:</span> {form.bank_name}</p>
                   <p><span className="font-medium">Account:</span> {form.account_number}</p>
                   <p><span className="font-medium">IFSC:</span> {form.ifsc_code}</p>
                   <p><span className="font-medium">Branch:</span> {form.branch_name}</p>
                 </div>
+                {bankData?.verification_remarks && (
+                  <div className="mt-3 p-2 bg-gray-50 rounded border">
+                    <p className="text-sm text-gray-600"><span className="font-medium">Remarks:</span> {bankData.verification_remarks}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-black">
-            {(canAdd || canEdit) && (
-              <button
-                onClick={submit}
-                disabled={loading}
-                className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-              >
-                {loading ? 'Saving...' : (isEditing ? 'Update Bank Details' : 'Save Bank Details')}
-              </button>
-            )}
+          <div className="flex justify-between items-center mt-8 pt-6 border-t border-black">
+            <div className="flex gap-3">
+              {canVerify && bankData?.id && bankData?.verification_status !== 'verified' && (
+                <>
+                  <button
+                    onClick={() => verifyBankDetails('verified')}
+                    className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
+                  >
+                    <FiCheck className="w-4 h-4" />
+                    Verify
+                  </button>
+                  <button
+                    onClick={() => {
+                      const remarks = prompt('Enter rejection remarks (optional):');
+                      if (remarks !== null) verifyBankDetails('rejected', remarks);
+                    }}
+                    className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium flex items-center gap-2"
+                  >
+                    <FiX className="w-4 h-4" />
+                    Reject
+                  </button>
+                </>
+              )}
+            </div>
+            <div>
+              {(canAdd || canEdit) && (
+                <button
+                  onClick={submit}
+                  disabled={loading}
+                  className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  {loading ? 'Saving...' : (isEditing ? 'Update Bank Details' : 'Save Bank Details')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

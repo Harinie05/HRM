@@ -15,10 +15,10 @@ export default function EmployeeIDDocs() {
   const [loading, setLoading] = useState(true);
 
   // Check permissions
-  const canView = isAdmin() || hasPermission("view_id_documents");
-  const canAdd = isAdmin() || hasPermission("add_id_documents_record");
-  const canEdit = isAdmin() || hasPermission("edit_id_documents_record");
-  const canDelete = isAdmin() || hasPermission("delete_id_documents_record");
+  const canView = isAdmin() || hasPermission("view_documents");
+  const canAdd = isAdmin() || hasPermission("upload_employee_documents");
+  const canEdit = isAdmin() || hasPermission("verify_employee_documents");
+  const canDelete = isAdmin() || hasPermission("delete_employee_documents");
 
   const fetchDocs = async () => {
     if (!id) return;

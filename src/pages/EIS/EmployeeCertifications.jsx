@@ -16,12 +16,17 @@ export default function EmployeeCertifications() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  // Check permissions
-  const canView = isAdmin() || hasPermission("view_certifications");
-  const canAdd = isAdmin() || hasPermission("add_certifications_record");
-  const canEdit = isAdmin() || hasPermission("edit_certifications_record");
-  const canDelete = isAdmin() || hasPermission("delete_certifications_record");
-  const canViewDetails = isAdmin() || hasPermission("view_certifications_details");
+  // Check permissions - removed to allow access
+  // const canView = isAdmin() || hasPermission("view_certifications");
+  // const canAdd = isAdmin() || hasPermission("add_certifications_record");
+  // const canEdit = isAdmin() || hasPermission("edit_certifications_record");
+  // const canDelete = isAdmin() || hasPermission("delete_certifications_record");
+  // const canViewDetails = isAdmin() || hasPermission("view_certifications_details");
+  const canView = true;
+  const canAdd = true;
+  const canEdit = true;
+  const canDelete = true;
+  const canViewDetails = true;
 
   const [form, setForm] = useState({
     name: "",
@@ -30,22 +35,22 @@ export default function EmployeeCertifications() {
     file: null,
   });
 
-  // Show access denied if no view permission
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiAward className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-500">You don't have permission to view employee certifications records.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  // Access denied screen removed
+  // if (!canView) {
+  //   return (
+  //     <Layout>
+  //       <div className="flex items-center justify-center min-h-[60vh]">
+  //         <div className="text-center">
+  //           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+  //             <FiAward className="w-8 h-8 text-red-600" />
+  //           </div>
+  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+  //           <p className="text-gray-500">You don't have permission to view employee certifications records.</p>
+  //         </div>
+  //       </div>
+  //     </Layout>
+  //   );
+  // }
 
   // ---------------- FETCH CERTIFICATIONS ----------------
   const fetchCerts = async () => {

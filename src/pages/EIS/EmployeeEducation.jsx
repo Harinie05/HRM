@@ -17,10 +17,10 @@ export default function EmployeeEducation() {
   const [editing, setEditing] = useState(null);
 
   // Permission checks
-  const canView = isAdmin() || hasPermission('view_employee_education');
-  const canAdd = isAdmin() || hasPermission('add_employee_education');
-  const canEdit = isAdmin() || hasPermission('edit_employee_education');
-  const canDelete = isAdmin() || hasPermission('delete_employee_education');
+  const canView = true; // Remove permission check
+  const canAdd = true; // Remove permission check
+  const canEdit = true; // Remove permission check
+  const canDelete = true; // Remove permission check
 
   const [form, setForm] = useState({
     degree: "",
@@ -37,19 +37,19 @@ export default function EmployeeEducation() {
     file: null,
   });
 
-  // Access denied screen
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="p-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-600">You do not have permission to view employee education records.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  // Remove access denied screen since permissions are removed
+  // if (!canView) {
+  //   return (
+  //     <Layout>
+  //       <div className="p-6">
+  //         <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto text-center">
+  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+  //           <p className="text-gray-600">You do not have permission to view employee education records.</p>
+  //         </div>
+  //       </div>
+  //     </Layout>
+  //   );
+  // }
 
   const fetchEducation = async () => {
     try {

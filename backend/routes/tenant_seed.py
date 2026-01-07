@@ -390,8 +390,6 @@ DEFAULT_PERMISSIONS = [
     # Real-time Attendance Tracking
     {"name": "view_attendance", "description": "Can view attendance records"},
     {"name": "mark_attendance", "description": "Can mark attendance for employees"},
-    {"name": "view_time_logs", "description": "Can view time logs and punch records"},
-    {"name": "edit_time_logs", "description": "Can edit time logs and punch records"},
     {"name": "approve_attendance", "description": "Can approve attendance records"},
     {"name": "view_attendance_reports", "description": "Can view attendance reports"},
     {"name": "generate_attendance_reports", "description": "Can generate attendance reports"},
@@ -400,25 +398,15 @@ DEFAULT_PERMISSIONS = [
 
     # Punch Logs
     {"name": "view_punch_logs", "description": "Can view employee punch logs"},
-    {"name": "edit_punch_logs", "description": "Can edit punch log entries"},
-    {"name": "delete_punch_logs", "description": "Can delete punch log entries"},
-    {"name": "view_daily_punch_logs", "description": "Can view daily punch logs"},
     {"name": "punch_in", "description": "Can punch in for attendance"},
     {"name": "punch_out", "description": "Can punch out for attendance"},
-    {"name": "view_self", "description": "Can view only own records and data"},
-
-    # GPS & Location Tracking
-    {"name": "view_gps_tracking", "description": "Can view GPS location tracking"},
-    {"name": "enable_web_gps", "description": "Can enable web GPS tracking"},
-    {"name": "enable_mobile_gps", "description": "Can enable mobile GPS tracking"},
-    {"name": "view_location_logs", "description": "Can view employee location logs"},
+      {"name": "view_self", "description": "Can view only own records and data"},
 
     # Regularization
     {"name": "view_regularization", "description": "Can view attendance regularization requests"},
     {"name": "apply_regularization", "description": "Can apply for attendance regularization"},
     {"name": "approve_regularization", "description": "Can approve regularization requests"},
     {"name": "reject_regularization", "description": "Can reject regularization requests"},
-    {"name": "smart_regularization", "description": "Can use smart regularization features"},
     {"name": "view_self", "description": "Can view only own records and data"},
 
     # OD Applications (On Duty)
@@ -520,6 +508,8 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_employee_profile", "description": "Can edit employee profiles"},
     {"name": "view_employee_documents", "description": "Can view employee documents"},
     {"name": "upload_employee_documents", "description": "Can upload employee documents"},
+    {"name": "verify_employee_documents", "description": "Can verify employee documents"},
+    {"name": "verify_bank_details", "description": "Can verify employee bank details"},
     {"name": "delete_employee_documents", "description": "Can delete employee documents"},
     {"name": "view_self", "description": "Can view only own records and data"},
 

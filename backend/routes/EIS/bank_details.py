@@ -5,7 +5,7 @@ from database import get_tenant_engine, logger
 from utils.audit_logger import audit_crud
 from routes.hospital import get_current_user
 from typing import Optional
-from utils.permission import require_permission
+from utils.permission import require_permission, check_permission
 
 router = APIRouter(prefix="/bank-details", tags=["Bank Details"])
 
@@ -85,7 +85,13 @@ def add_bank_details(data: BankDetailsRequest, user = Depends(get_current_user))
                 account_number VARCHAR(50),
                 ifsc_code VARCHAR(20),
                 branch_name VARCHAR(255),
-                account_type VARCHAR(50) DEFAULT 'Savings'
+                account_type VARCHAR(50) DEFAULT 'Savings',
+                verification_status ENUM('pending', 'verified', 'rejected') DEFAULT 'pending',
+                verified_by INT NULL,
+                verified_at TIMESTAMP NULL,
+                verification_remarks TEXT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         """))
         
@@ -170,6 +176,10 @@ def save_bank_details(
                         bank_address = :bank_address,
                         bank_document = :bank_document,
                         document_name = :document_name,
+                        verification_status = 'pending',
+                        verified_by = NULL,
+                        verified_at = NULL,
+                        verification_remarks = NULL,
                         updated_at = NOW()
                     WHERE employee_id = :employee_id
                 """), {
@@ -222,4 +232,56 @@ def save_bank_details(
         
     except Exception as e:
         logger.error(f"Error saving bank details: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ------------------------------
+# VERIFY BANK DETAILS 🔒 Protected
+# ------------------------------
+@router.put("/verify/{employee_id}")
+def verify_bank_details(
+    employee_id: str,
+    verification_status: str = Form(...),  # 'verified' or 'rejected'
+    verification_remarks: str = Form(""),
+    user = Depends(get_current_user)
+):
+    try:
+        # Check permission
+        if not check_permission(user, "verify_bank_details"):
+            raise HTTPException(status_code=403, detail="You don't have permission to verify bank details")
+        
+        # Extract numeric ID
+        if isinstance(employee_id, str) and employee_id.startswith('user_'):
+            emp_id = int(employee_id.replace('user_', ''))
+        else:
+            emp_id = int(employee_id)
+        
+        logger.info(f"Verifying bank details for employee {emp_id}")
+        tenant = user.get('tenant_db')
+        engine = get_tenant_engine(tenant)
+        
+        with engine.connect() as conn:
+            # Update verification status
+            result = conn.execute(text("""
+                UPDATE employee_bank_details SET
+                    verification_status = :status,
+                    verified_by = :verified_by,
+                    verified_at = NOW(),
+                    verification_remarks = :remarks
+                WHERE employee_id = :employee_id
+            """), {
+                "employee_id": emp_id,
+                "status": verification_status,
+                "verified_by": user.get('id'),
+                "remarks": verification_remarks
+            })
+            
+            if result.rowcount == 0:
+                raise HTTPException(status_code=404, detail="Bank details not found")
+            
+            conn.commit()
+            
+        return {"message": f"Bank details {verification_status} successfully"}
+        
+    except Exception as e:
+        logger.error(f"Error verifying bank details: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

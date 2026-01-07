@@ -194,6 +194,11 @@ def view_document(
 # -------------------------------------------------------------------------
 @router.post("/verify/{doc_id}")
 def verify_doc(doc_id: int, action: str, request: Request, user=Depends(get_current_user)):
+    # Check permission
+    from utils.permission import check_permission
+    if not check_permission(user, "verify_employee_documents"):
+        raise HTTPException(403, "Insufficient permissions")
+        
     db = get_tenant_session(user)
 
     doc = db.query(EmployeeIDDocs).filter(EmployeeIDDocs.id == doc_id).first()

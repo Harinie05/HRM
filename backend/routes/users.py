@@ -115,9 +115,17 @@ def list_users(
     tenant_db: str,
     status: str = "active",
     db: Session = Depends(database.get_master_db),
-    user = Depends(require_permission("view_employees"))
+    user = Depends(get_current_user)
 ):
     logger.info(f"Listing users for tenant {tenant_db} by user {user.get('email')}")
+    
+    # Admin users have full access
+    if not (user.get('role') == 'admin' or user.get('is_admin') or user.get('login_type') == 'admin'):
+        # Check if user has permission to view users, employees or view self
+        user_permissions = user.get('permissions', [])
+        logger.info(f"User permissions: {user_permissions}")
+        if not ('view_users' in user_permissions or 'view_employees' in user_permissions or 'view_self' in user_permissions):
+            raise HTTPException(403, "You do not have permission to view users")
 
     hospital = get_hospital_by_db(db, tenant_db)
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -126,13 +134,17 @@ def list_users(
     with tdb:
         query = tdb.query(User)
         
-        # Check permissions - view_employees takes precedence over view_self
+        # Check permissions - view_users or view_employees takes precedence over view_self
         user_permissions = user.get('permissions', [])
-        if 'view_employees' not in user_permissions and 'view_self' in user_permissions:
-            # Only filter to self if user doesn't have view_employees permission
-            current_user_id = user.get('user_id')
-            if current_user_id:
-                query = query.filter(User.id == current_user_id)
+        current_user_email = user.get('email')
+        logger.info(f"Checking permissions for filtering: {user_permissions}")
+        logger.info(f"Current user email: {current_user_email}")
+        
+        if not ('view_users' in user_permissions or 'view_employees' in user_permissions) and 'view_self' in user_permissions:
+            # Only filter to self if user doesn't have view_users or view_employees permission
+            logger.info("Filtering to self only")
+            # Filter by email since that's what we have in the JWT token
+            query = query.filter(User.email == current_user_email)
         
         if status == "active":
             users = query.filter(User.status == "Active").all()
@@ -153,7 +165,7 @@ def list_users(
                 onboarding = tdb.query(OnboardingCandidate).filter(
                     OnboardingCandidate.candidate_name == u.name
                 ).first()
-                if onboarding:
+                if onboarding and onboarding.employee_id:
                     employee_code = onboarding.employee_id
             
             output.append({
@@ -187,9 +199,17 @@ def list_users_hospitals(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
-    # Check if user has permission to view employees or view self
+    logger.info(f"Admin check - role: {user.get('role')}, is_admin: {user.get('is_admin')}, login_type: {user.get('login_type')}")
+    
+    # Admin users have full access
+    if user.get('role') == 'admin' or user.get('is_admin') or user.get('login_type') == 'admin':
+        logger.info("User is admin, bypassing permission check")
+        return list_users(tenant_db, status, db, user)
+    
+    # Check if user has permission to view users, employees or view self
     user_permissions = user.get('permissions', [])
-    if not ('view_employees' in user_permissions or 'view_self' in user_permissions):
+    logger.info(f"User permissions: {user_permissions}")
+    if not ('view_users' in user_permissions or 'view_employees' in user_permissions or 'view_self' in user_permissions):
         raise HTTPException(403, "You do not have permission to view users")
     
     return list_users(tenant_db, status, db, user)
@@ -224,7 +244,7 @@ def get_current_user_info(
                 onboarding = tdb.query(OnboardingCandidate).filter(
                     OnboardingCandidate.candidate_name == current_user_db.name
                 ).first()
-                if onboarding:
+                if onboarding and onboarding.employee_id:
                     employee_code = onboarding.employee_id
             
             role_name = current_user_db.role.name if current_user_db.role else "No Role"

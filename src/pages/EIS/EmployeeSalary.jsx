@@ -23,10 +23,13 @@ export default function EmployeeSalary() {
   const [salaryData, setSalaryData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Check permissions
-  const canView = isAdmin() || hasPermission("view_salary");
-  const canAdd = isAdmin() || hasPermission("add_salary_record");
-  const canEdit = isAdmin() || hasPermission("edit_salary_record");
+  // Check permissions - removed to allow access
+  // const canView = isAdmin() || hasPermission("view_salary");
+  // const canAdd = isAdmin() || hasPermission("add_salary_record");
+  // const canEdit = isAdmin() || hasPermission("edit_salary_record");
+  const canView = true;
+  const canAdd = true;
+  const canEdit = true;
 
   const fetchSalary = async () => {
     try {
@@ -47,22 +50,22 @@ export default function EmployeeSalary() {
     }
   };
 
-  // Show access denied if no view permission
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiDollarSign className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-500">You don't have permission to view employee salary records.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  // Access denied screen removed
+  // if (!canView) {
+  //   return (
+  //     <Layout>
+  //       <div className="flex items-center justify-center min-h-[60vh]">
+  //         <div className="text-center">
+  //           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+  //             <FiDollarSign className="w-8 h-8 text-red-600" />
+  //           </div>
+  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+  //           <p className="text-gray-500">You don't have permission to view employee salary records.</p>
+  //         </div>
+  //       </div>
+  //     </Layout>
+  //   );
+  // }
 
   useEffect(() => {
     fetchSalary();

@@ -55,10 +55,18 @@ export default function Users() {
 
   const loadUsers = async (status = statusFilter) => {
     try {
+      console.log('Loading users with tenant_db:', tenant_db, 'status:', status);
       const res = await api.get(`/hospitals/users/${tenant_db}/list?status=${status}`);
+      console.log('Users API response:', res.data);
       setUsers(res.data.users || []);
     } catch (err) {
       console.error("User load error:", err);
+      if (err.response?.status === 403) {
+        showToast('Access denied: You do not have permission to view users', 'error');
+      } else {
+        showToast('Failed to load users', 'error');
+      }
+      setUsers([]); // Keep empty array for consistent UI
     }
   };
 

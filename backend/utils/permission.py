@@ -44,3 +44,16 @@ def require_permission(permission_name: str):
         
         return user
     return checker
+
+def check_permission(user, permission_name: str) -> bool:
+    """
+    Check if user has a specific permission without raising an exception.
+    Returns True if user has permission, False otherwise.
+    """
+    # Admin has all permissions
+    if user.get('role') == 'admin':
+        return True
+    
+    # Check permissions from JWT payload
+    user_permissions = user.get('permissions', [])
+    return permission_name in user_permissions

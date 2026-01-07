@@ -57,38 +57,63 @@ export default function EmployeeListPage() {
         api.get('/recruitment/offer/list').catch(() => ({ data: [] }))
       ]);
       
-      // Only show employees from offers with "Onboarding completed" status
-      const completedOffers = offersRes.data.filter(offer => 
-        offer.offer_status === "Onboarding completed"
-      );
-      
-      const onboardedEmployees = onboardingRes.data.filter(emp => {
-        // Check if this employee has a completed offer
-        return completedOffers.some(offer => offer.candidate_id === emp.application_id);
-      });
-      
-      const validOnboardedEmployees = onboardedEmployees.filter(emp => {
-        if (!emp.employee_id || emp.employee_id.trim() === '') return false;
-        return true; // Show all employees with valid employee IDs
-      });
-      
       const userEmployees = usersRes.users || [];
       
-      const onboardedData = validOnboardedEmployees.map(emp => ({
-        id: emp.application_id,
-        name: emp.candidate_name,
-        email: emp.candidate_email || 'N/A',
-        designation: emp.job_title,
-        department: emp.department,
-        employee_code: emp.employee_id,
-        joining_date: emp.joining_date,
-        work_location: emp.work_location,
-        reporting_manager: emp.reporting_manager,
-        status: 'Active',
-        source: 'onboarding'
-      }));
+      // If user has view_employees permission or is admin, show all users with employee codes
+      if (isAdmin() || hasPermission("view_employees")) {
+        // Get users with employee codes from users table
+        const userEmployeeData = userEmployees
+          .filter(user => user.employee_code)
+          .map(user => ({
+            id: `user_${user.id}`,
+            original_user_id: user.id,
+            name: user.name,
+            email: user.email,
+            designation: user.designation || 'N/A',
+            department: user.department_name || 'No Department',
+            employee_code: user.employee_code,
+            joining_date: user.joining_date,
+            work_location: 'N/A',
+            reporting_manager: 'N/A',
+            status: user.status || 'Active',
+            source: 'user_management'
+          }));
+        
+        // Get onboarded employees with employee_id
+        const onboardedEmployees = onboardingRes.data.filter(emp => 
+          emp.employee_id && emp.employee_id.trim() !== ''
+        );
+        
+        const onboardedData = onboardedEmployees.map(emp => ({
+          id: emp.application_id,
+          name: emp.candidate_name,
+          email: 'N/A', // onboarding doesn't have email
+          designation: emp.job_title,
+          department: emp.department,
+          employee_code: emp.employee_id,
+          joining_date: emp.joining_date,
+          work_location: emp.work_location,
+          reporting_manager: emp.reporting_manager,
+          status: 'Active',
+          source: 'onboarding'
+        }));
+        
+        // Combine both sources, avoiding duplicates by employee_code
+        const allEmployees = [...userEmployeeData];
+        onboardedData.forEach(onboardedEmp => {
+          const existingIndex = allEmployees.findIndex(emp => emp.employee_code === onboardedEmp.employee_code);
+          if (existingIndex === -1) {
+            allEmployees.push(onboardedEmp);
+          }
+        });
+        
+        setEmployees(allEmployees);
+        return;
+      }
       
-      const userEmployeeData = userEmployees
+      // If user has only view_self permission, the backend already filtered to show only their record
+      // Just show users with employee codes from the filtered result
+      const selfEmployeeData = userEmployees
         .filter(user => user.employee_code)
         .map(user => ({
           id: `user_${user.id}`,
@@ -96,7 +121,7 @@ export default function EmployeeListPage() {
           name: user.name,
           email: user.email,
           designation: user.designation || 'N/A',
-          department: user.department_name,
+          department: user.department_name || 'No Department',
           employee_code: user.employee_code,
           joining_date: user.joining_date,
           work_location: 'N/A',
@@ -105,17 +130,7 @@ export default function EmployeeListPage() {
           source: 'user_management'
         }));
       
-      const allEmployees = [...onboardedData];
-      userEmployeeData.forEach(userEmp => {
-        const existingIndex = allEmployees.findIndex(emp => emp.employee_code === userEmp.employee_code);
-        if (existingIndex === -1) {
-          allEmployees.push(userEmp);
-        } else {
-          allEmployees[existingIndex] = userEmp;
-        }
-      });
-
-      setEmployees(allEmployees);
+      setEmployees(selfEmployeeData);
     } catch (err) {
       console.error('Failed to fetch employees:', err);
     } finally {
