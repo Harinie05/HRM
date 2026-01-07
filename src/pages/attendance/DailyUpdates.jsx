@@ -11,6 +11,8 @@ const DailyUpdates = () => {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [loading, setLoading] = useState(true);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [currentUserInfo, setCurrentUserInfo] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingUpdate, setEditingUpdate] = useState(null);
   const [formData, setFormData] = useState({
@@ -42,16 +44,30 @@ const DailyUpdates = () => {
   }
 
   useEffect(() => {
+    fetchCurrentUserInfo();
     fetchEmployees();
     fetchMyUpdates();
   }, []);
 
+  const fetchCurrentUserInfo = async () => {
+    try {
+      const response = await api.get('/api/daily-updates/current-user');
+      setCurrentUserInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching current user info:', error);
+    }
+  };
+
   const fetchEmployees = async () => {
     try {
+      setEmployeesLoading(true);
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      if (!tenant || !token) return;
+      if (!tenant || !token) {
+        setEmployeesLoading(false);
+        return;
+      }
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
@@ -99,6 +115,9 @@ const DailyUpdates = () => {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast('Failed to load employees', 'error');
+    } finally {
+      setEmployeesLoading(false);
     }
   };
 
@@ -247,8 +266,9 @@ const DailyUpdates = () => {
                   }
                 }}
                 className="w-full px-3 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                disabled={employeesLoading}
               >
-                <option value="">Select Employee</option>
+                <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
                 {employees.map(emp => (
                   <option key={emp.id} value={emp.id}>
                     {emp.employee_code || `EMP${emp.id}`} - {emp.name}
@@ -257,7 +277,12 @@ const DailyUpdates = () => {
               </select>
             ) : (
               <div className="w-full px-3 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm">
-                {(() => {
+                {employeesLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                    Loading...
+                  </div>
+                ) : (() => {
                   const currentUserId = localStorage.getItem('user_id');
                   const currentUserEmployee = employees.find(emp => {
                     if (emp.source === 'user_management') {
@@ -265,9 +290,14 @@ const DailyUpdates = () => {
                     }
                     return emp.id == currentUserId;
                   });
-                  return currentUserEmployee ? 
-                    `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
-                    'Loading...';
+                  
+                  if (currentUserEmployee) {
+                    return `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}`;
+                  } else if (currentUserInfo) {
+                    return `${currentUserInfo.employee_code} - ${currentUserInfo.name}`;
+                  } else {
+                    return `EMP${currentUserId} - Current User`;
+                  }
                 })()}
               </div>
             )}

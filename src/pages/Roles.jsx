@@ -70,6 +70,10 @@ export default function Roles() {
 
   const getReportingStructurePerms = () => permissions.filter(p => 
     p.name.includes('reporting') || p.name.includes('hierarchy')
+  ).filter(p => 
+    p.name !== 'view_employee_reporting' && 
+    p.name !== 'manage_employee_reporting' && 
+    p.name !== 'view_team_hierarchy'
   ).map(p => p.name);
 
   const getHolidayCalendarPerms = () => permissions.filter(p => 
@@ -129,9 +133,9 @@ export default function Roles() {
   ).map(p => p.name);
 
   const getShiftRosterPerms = () => permissions.filter(p => 
-    p.name === 'VIEW_SHIFTS' || p.name === 'CREATE_SHIFTS' || p.name === 'DELETE_SHIFTS' ||
-    p.name === 'VIEW_ROSTER' || p.name === 'MANAGE_ROSTER' || p.name === 'MANAGE_NIGHT_SHIFT_RULES' ||
-    p.name === 'MANAGE_ON_CALL_DUTY'
+    p.name === 'view_shifts' || p.name === 'create_shifts' || p.name === 'delete_shifts' ||
+    p.name === 'view_roster' || p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' ||
+    p.name === 'manage_on_call_duty'
   ).map(p => p.name);
 
   const getAttendanceManagementPerms = () => permissions.filter(p => 
@@ -757,7 +761,10 @@ export default function Roles() {
                       </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
-                          p.name.includes('reporting') || p.name.includes('hierarchy')
+                          (p.name.includes('reporting') || p.name.includes('hierarchy')) &&
+                          p.name !== 'view_employee_reporting' && 
+                          p.name !== 'manage_employee_reporting' && 
+                          p.name !== 'view_team_hierarchy'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                             <input
@@ -1674,7 +1681,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'VIEW_SHIFTS' || p.name === 'CREATE_SHIFTS' || p.name === 'DELETE_SHIFTS'
+                            p.name === 'view_shifts' || p.name === 'create_shifts' || p.name === 'delete_shifts'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1696,7 +1703,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Roster Management</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'VIEW_ROSTER' || p.name === 'MANAGE_ROSTER' || p.name === 'MANAGE_NIGHT_SHIFT_RULES' || p.name === 'MANAGE_ON_CALL_DUTY'
+                            p.name === 'view_roster' || p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' || p.name === 'manage_on_call_duty'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2293,7 +2300,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Applications & Approvals</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_team_leaves' || p.name === 'view_all_leaves' || p.name === 'view_self'
+                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2661,7 +2668,10 @@ export default function Roles() {
                       </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
-                          p.name.includes('reporting') || p.name.includes('hierarchy')
+                          (p.name.includes('reporting') || p.name.includes('hierarchy')) &&
+                          p.name !== 'view_employee_reporting' && 
+                          p.name !== 'manage_employee_reporting' && 
+                          p.name !== 'view_team_hierarchy'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                             <input
@@ -4387,7 +4397,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Applications & Approvals</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_team_leaves' || p.name === 'view_all_leaves' || p.name === 'view_self'
+                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

@@ -371,15 +371,15 @@ DEFAULT_PERMISSIONS = [
     # =====================================================
 
     # Shift Management
-    {"name": "VIEW_SHIFTS", "description": "Can view shift schedules and configurations"},
-    {"name": "CREATE_SHIFTS", "description": "Can create new shift schedules"},
-    {"name": "DELETE_SHIFTS", "description": "Can delete or deactivate shift schedules"},
+    {"name": "view_shifts", "description": "Can view shift schedules and configurations"},
+    {"name": "create_shifts", "description": "Can create new shift schedules"},
+    {"name": "delete_shifts", "description": "Can delete or deactivate shift schedules"},
 
     # Roster Management
-    {"name": "VIEW_ROSTER", "description": "Can view employee roster and schedules"},
-    {"name": "MANAGE_ROSTER", "description": "Can create and modify employee roster assignments"},
-    {"name": "MANAGE_NIGHT_SHIFT_RULES", "description": "Can configure night shift rules and policies"},
-    {"name": "MANAGE_ON_CALL_DUTY", "description": "Can manage on-call duty assignments"},
+    {"name": "view_roster", "description": "Can view employee roster and schedules"},
+    {"name": "manage_roster", "description": "Can create and modify employee roster assignments"},
+    {"name": "manage_night_shift_rules", "description": "Can configure night shift rules and policies"},
+    {"name": "manage_on_call_duty", "description": "Can manage on-call duty assignments"},
     {"name": "view_weekly_roster", "description": "Can view weekly roster calendar"},
     {"name": "manage_weekly_roster", "description": "Can manage weekly roster assignments"},
 
@@ -642,8 +642,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "cancel_leave_application", "description": "Can cancel leave applications"},
     {"name": "approve_leave", "description": "Can approve leave applications"},
     {"name": "reject_leave", "description": "Can reject leave applications"},
-    {"name": "view_team_leaves", "description": "Can view team leave applications"},
-    {"name": "view_all_leaves", "description": "Can view all employee leave applications"},
+   
     {"name": "view_self", "description": "Can view only own records and data"},
 
     # Leave Calendar
@@ -730,6 +729,12 @@ def seed_tenant(tenant_db: str):
                 print("✓ Cleanup completed")
             except Exception as cleanup_error:
                 print(f"⚠️ Cleanup warning: {str(cleanup_error)}")
+
+        print(f"🌱 Tenant seeding completed for: {tenant_db}\n")
+    except Exception as e:
+        print(f"❌ Error seeding tenant {tenant_db}: {str(e)}")
+        raise e
+
 
         print(f"🌱 Tenant seeding completed for: {tenant_db}\n")
     except Exception as e:

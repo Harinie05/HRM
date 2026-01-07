@@ -60,6 +60,32 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         return;
       }
 
+      // Try the new dedicated endpoint first
+      try {
+        const response = await api.get(`/hospitals/users/${tenant}/me`);
+        console.log('🎯 Current user info from /me endpoint:', response.data);
+        console.log('🔍 Employee code from /me:', response.data.employee_code);
+        
+        setUserInfo({
+          id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          role: response.data.role_name || response.data.role || 'Employee',
+          employee_code: response.data.employee_code
+        });
+        console.log('✅ User info set from /me endpoint:', {
+          id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          role: response.data.role_name || response.data.role || 'Employee',
+          employee_code: response.data.employee_code
+        });
+        return;
+      } catch (meError) {
+        console.log('❌ /me endpoint failed, falling back to list endpoint:', meError);
+      }
+
+      // Fallback to the original list endpoint
       const response = await api.get(`/hospitals/users/${tenant}/list`);
       console.log('🔍 Full API response:', response.data);
       const users = response.data.users || [];

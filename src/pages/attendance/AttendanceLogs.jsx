@@ -47,6 +47,8 @@ export default function AttendanceLogs() {
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [currentUserInfo, setCurrentUserInfo] = useState(null);
 
   // Get current user info from localStorage
   const getCurrentUserId = () => {
@@ -129,6 +131,7 @@ export default function AttendanceLogs() {
   }, [employees]);
 
   useEffect(() => {
+    fetchCurrentUserInfo();
     fetchEmployees();
     fetchLogs();
     fetchOfficeLocations();
@@ -136,6 +139,15 @@ export default function AttendanceLogs() {
     fetchOdApplications();
     checkTodayStatus();
   }, []);
+
+  const fetchCurrentUserInfo = async () => {
+    try {
+      const response = await api.get('/api/attendance/punches/current-user');
+      setCurrentUserInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching current user info:', error);
+    }
+  };
 
   // Auto-select current user when employees are loaded
   useEffect(() => {
@@ -157,10 +169,14 @@ export default function AttendanceLogs() {
 
   const fetchEmployees = async () => {
     try {
+      setEmployeesLoading(true);
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      if (!tenant || !token) return;
+      if (!tenant || !token) {
+        setEmployeesLoading(false);
+        return;
+      }
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
@@ -208,6 +224,9 @@ export default function AttendanceLogs() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast('Failed to load employees', 'error');
+    } finally {
+      setEmployeesLoading(false);
     }
   };
 
@@ -702,7 +721,12 @@ export default function AttendanceLogs() {
                         </select>
                       ) : (
                         <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700">
-                          {(() => {
+                          {employeesLoading ? (
+                            <div className="flex items-center gap-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                              Loading...
+                            </div>
+                          ) : (() => {
                             const currentUserId = localStorage.getItem('user_id');
                             const currentUserEmployee = employees.find(emp => {
                               if (emp.source === 'user_management') {
@@ -710,9 +734,14 @@ export default function AttendanceLogs() {
                               }
                               return emp.id == currentUserId;
                             });
-                            return currentUserEmployee ? 
-                              `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
-                              'Loading...';
+                            
+                            if (currentUserEmployee) {
+                              return `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}`;
+                            } else if (currentUserInfo) {
+                              return `${currentUserInfo.employee_code} - ${currentUserInfo.name}`;
+                            } else {
+                              return `EMP${currentUserId} - Current User`;
+                            }
                           })()}
                         </div>
                       )}
@@ -1098,7 +1127,12 @@ export default function AttendanceLogs() {
                           </select>
                         ) : (
                           <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
-                            {(() => {
+                            {employeesLoading ? (
+                              <div className="flex items-center gap-2">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                                Loading...
+                              </div>
+                            ) : (() => {
                               const currentUserId = localStorage.getItem('user_id');
                               const currentUserEmployee = employees.find(emp => {
                                 if (emp.source === 'user_management') {
@@ -1106,9 +1140,14 @@ export default function AttendanceLogs() {
                                 }
                                 return emp.id == currentUserId;
                               });
-                              return currentUserEmployee ? 
-                                `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
-                                'Loading...';
+                              
+                              if (currentUserEmployee) {
+                                return `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}`;
+                              } else if (currentUserInfo) {
+                                return `${currentUserInfo.employee_code} - ${currentUserInfo.name}`;
+                              } else {
+                                return `EMP${currentUserId} - Current User`;
+                              }
                             })()}
                           </div>
                         )}
@@ -1219,19 +1258,29 @@ export default function AttendanceLogs() {
                           </select>
                         ) : (
                           <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
-                            {(() => {
+                            {employeesLoading ? (
+                              <div className="flex items-center gap-2">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                                Loading...
+                              </div>
+                            ) : (() => {
                               const currentUserId = localStorage.getItem('user_id');
                               const currentUserEmployee = employees.find(emp => {
                                 if (emp.source === 'user_management') {
                                   return emp.original_user_id == currentUserId;
+                                }
+                                return emp.id == currentUserId;
+                              });
+                              
+                              if (currentUserEmployee) {
+                                return `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}`;
+                              } else if (currentUserInfo) {
+                                return `${currentUserInfo.employee_code} - ${currentUserInfo.name}`;
+                              } else {
+                                return `EMP${currentUserId} - Current User`;
                               }
-                              return emp.id == currentUserId;
-                            });
-                            return currentUserEmployee ? 
-                              `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
-                              'Loading...';
-                          })()}
-                        </div>
+                            })()}
+                          </div>
                       )}
                     </div>
                       <div>

@@ -38,11 +38,23 @@ export default function ODApplications() {
     location: ""
   });
   const [employees, setEmployees] = useState([]);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [currentUserInfo, setCurrentUserInfo] = useState(null);
 
   useEffect(() => {
+    fetchCurrentUserInfo();
     fetchApplications();
     fetchEmployees();
   }, []);
+
+  const fetchCurrentUserInfo = async () => {
+    try {
+      const response = await api.get('/api/attendance/od-applications/current-user');
+      setCurrentUserInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching current user info:', error);
+    }
+  };
 
   // Auto-populate current user for non-admin users
   useEffect(() => {
@@ -68,6 +80,7 @@ export default function ODApplications() {
 
   const fetchEmployees = async () => {
     try {
+      setEmployeesLoading(true);
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
@@ -81,6 +94,9 @@ export default function ODApplications() {
       }
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast('Failed to load employees', 'error');
+    } finally {
+      setEmployeesLoading(false);
     }
   };
 
@@ -342,18 +358,31 @@ export default function ODApplications() {
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
                     className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
                     required
+                    disabled={employeesLoading}
                   >
-                    <option value="">Select Employee</option>
+                    <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
                     {employees.map(emp => (
                       <option key={emp.id} value={emp.id}>{emp.name}</option>
                     ))}
                   </select>
                 ) : (
                   <div className="w-full border border-black rounded-lg px-3 py-2 bg-gray-50 text-gray-700 text-sm">
-                    {(() => {
+                    {employeesLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                        Loading...
+                      </div>
+                    ) : (() => {
                       const currentUserId = localStorage.getItem('user_id');
                       const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
-                      return currentUserEmployee ? currentUserEmployee.name : 'Loading...';
+                      
+                      if (currentUserEmployee) {
+                        return currentUserEmployee.name;
+                      } else if (currentUserInfo) {
+                        return `${currentUserInfo.employee_code} - ${currentUserInfo.name}`;
+                      } else {
+                        return 'Current User';
+                      }
                     })()}
                   </div>
                 )}

@@ -150,13 +150,13 @@ def list_leave_applications(
     
     query = db.query(LeaveApplication)
     
-    # If user has view_self permission (regardless of other permissions), restrict to own records
+    # If user has view_self permission, restrict to own records
     if 'view_self' in user_permissions:
         current_user_id = user.get('user_id')
         if current_user_id:
             query = query.filter(LeaveApplication.employee_id == current_user_id)
-    # Only if user has view_all_leaves permission, they can see all records
-    elif 'view_all_leaves' in user_permissions:
+    # If user has view_leave_applications permission, they can see all records
+    elif 'view_leave_applications' in user_permissions:
         pass  # No filtering - show all records
     
     return query.all()
@@ -352,7 +352,7 @@ def get_leave_balances(
         pending_days = sum(app.total_days for app in pending_apps)
         available_balance = balance.balance - pending_days
         
-        is_overused = bool(balance.used > balance.total_allocated)
+        is_overused = balance.used > balance.total_allocated
         overused_days = max(0, balance.used - balance.total_allocated)
         
         result.append({
@@ -368,7 +368,7 @@ def get_leave_balances(
             "display_used": balance.used if pending_days == 0 else 0,
             "is_overused": is_overused,
             "overused_days": overused_days,
-            "status": "Overused" if is_overused else "Normal"
+            "status": "Overused" if (balance.used > balance.total_allocated) else "Normal"
         })
     
     return result

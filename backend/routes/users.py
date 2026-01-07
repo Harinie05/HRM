@@ -126,9 +126,10 @@ def list_users(
     with tdb:
         query = tdb.query(User)
         
-        # Check if user has view_self permission (can only view own records)
+        # Check permissions - view_employees takes precedence over view_self
         user_permissions = user.get('permissions', [])
-        if 'view_self' in user_permissions:
+        if 'view_employees' not in user_permissions and 'view_self' in user_permissions:
+            # Only filter to self if user doesn't have view_employees permission
             current_user_id = user.get('user_id')
             if current_user_id:
                 query = query.filter(User.id == current_user_id)
@@ -148,7 +149,7 @@ def list_users(
             # Get employee code from user table or onboarding table
             employee_code = getattr(u, 'employee_code', None)
             if not employee_code:
-                # Check onboarding_candidates table for employee_id
+                # Check onboarding_candidates table for employee_id by name only
                 onboarding = tdb.query(OnboardingCandidate).filter(
                     OnboardingCandidate.candidate_name == u.name
                 ).first()
@@ -186,7 +187,104 @@ def list_users_hospitals(
     db: Session = Depends(database.get_master_db),
     user = Depends(get_current_user)    # 🔐 Token required
 ):
+    # Check if user has permission to view employees or view self
+    user_permissions = user.get('permissions', [])
+    if not ('view_employees' in user_permissions or 'view_self' in user_permissions):
+        raise HTTPException(403, "You do not have permission to view users")
+    
     return list_users(tenant_db, status, db, user)
+
+# ============================================================
+# GET CURRENT USER INFO 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/me")
+def get_current_user_info(
+    tenant_db: str,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)    # 🔐 Token required
+):
+    try:
+        logger.info(f"Getting current user info for tenant {tenant_db} by {user.get('email')}")
+        
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        tdb = Session(bind=engine)
+
+        with tdb:
+            current_user_email = user.get('email')
+            current_user_db = tdb.query(User).filter(User.email == current_user_email).first()
+            
+            if not current_user_db:
+                raise HTTPException(404, "User not found")
+            
+            # Get employee code from user table or onboarding table
+            employee_code = getattr(current_user_db, 'employee_code', None)
+            if not employee_code:
+                # Check onboarding_candidates table for employee_id by name only
+                onboarding = tdb.query(OnboardingCandidate).filter(
+                    OnboardingCandidate.candidate_name == current_user_db.name
+                ).first()
+                if onboarding:
+                    employee_code = onboarding.employee_id
+            
+            role_name = current_user_db.role.name if current_user_db.role else "No Role"
+            dept_name = current_user_db.department.name if current_user_db.department else "No Department"
+            
+            return {
+                "id": current_user_db.id,
+                "name": current_user_db.name,
+                "email": current_user_db.email,
+                "role_id": current_user_db.role_id,
+                "role": role_name,
+                "role_name": role_name,
+                "department_id": current_user_db.department_id,
+                "department": dept_name,
+                "department_name": dept_name,
+                "employee_code": employee_code,
+                "employee_type": getattr(current_user_db, 'employee_type', None),
+                "designation": getattr(current_user_db, 'designation', None),
+                "joining_date": str(getattr(current_user_db, 'joining_date', None)) if getattr(current_user_db, 'joining_date', None) else None,
+                "status": getattr(current_user_db, 'status', 'Active'),
+                "is_employee": bool(employee_code)
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting current user info: {str(e)}")
+        raise HTTPException(500, f"Error getting user info: {str(e)}")
+
+# ============================================================
+# VERIFY EMPLOYEE CODE 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/verify-employee-code/{user_id}")
+def verify_employee_code(
+    tenant_db: str,
+    user_id: int,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Verify and return the current employee code for a user"""
+    try:
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        tdb = Session(bind=engine)
+
+        with tdb:
+            target_user = tdb.query(User).filter(User.id == user_id).first()
+            if not target_user:
+                raise HTTPException(404, "User not found")
+            
+            return {
+                "user_id": target_user.id,
+                "name": target_user.name,
+                "email": target_user.email,
+                "employee_code": target_user.employee_code,
+                "has_employee_code": bool(target_user.employee_code)
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Error verifying employee code: {str(e)}")
 
 # ============================================================
 # UPDATE USER 🔒 Protected
@@ -514,3 +612,4 @@ def get_managers_by_level(
             })
 
         return {"managers": managers}
+

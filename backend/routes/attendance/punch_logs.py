@@ -7,13 +7,34 @@ from utils.audit_logger import audit_crud
 from utils.permission import require_permission
 from routes.hospital import get_current_user
 
-from models.models_tenant import AttendancePunch, AttendanceRule, Shift, EmployeeRoster
+from models.models_tenant import AttendancePunch, AttendanceRule, Shift, EmployeeRoster, User
 from schemas.schemas_tenant import AttendancePunchCreate, AttendancePunchOut
 
 router = APIRouter(
     prefix="/attendance/punches",
     tags=["Attendance - Punch Logs"]
 )
+
+@router.get("/current-user")
+def get_current_user_info(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_punch_logs"))
+):
+    """Get current user's employee information"""
+    current_user_id = user.get('user_id')
+    if not current_user_id:
+        raise HTTPException(status_code=400, detail="User ID not found")
+    
+    user_info = db.query(User).filter(User.id == current_user_id).first()
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "id": user_info.id,
+        "name": user_info.name,
+        "employee_code": user_info.employee_code or f"EMP{user_info.id}"
+    }
 
 def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time, out_time: Optional[time], db: Session) -> str:
     """Calculate attendance status based on shift timings and rules"""

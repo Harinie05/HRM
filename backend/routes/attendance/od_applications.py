@@ -5,11 +5,33 @@ from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from utils.permission import require_permission
 from routes.hospital import get_current_user
+from models.models_tenant import User
 from typing import List, Optional, Optional
 from datetime import date
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/attendance/od-applications", tags=["OD Applications"])
+
+@router.get("/current-user")
+def get_current_user_info(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_od_applications"))
+):
+    """Get current user's employee information"""
+    current_user_id = user.get('user_id')
+    if not current_user_id:
+        raise HTTPException(status_code=400, detail="User ID not found")
+    
+    user_info = db.query(User).filter(User.id == current_user_id).first()
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "id": user_info.id,
+        "name": user_info.name,
+        "employee_code": user_info.employee_code or f"EMP{user_info.id}"
+    }
 
 class ODApplicationCreate(BaseModel):
     employee_id: int
