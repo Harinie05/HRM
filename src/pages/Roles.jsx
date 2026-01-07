@@ -62,6 +62,96 @@ export default function Roles() {
     p.name === 'extend_probation' || p.name === 'end_probation'
   ).map(p => p.name);
 
+  const getOrganizationSetupPerms = () => permissions.filter(p => 
+    p.name.includes('company') || p.name.includes('branch') || 
+    (p.name.includes('department') && !p.name.includes('user')) ||
+    p.name.includes('designation')
+  ).map(p => p.name);
+
+  const getReportingStructurePerms = () => permissions.filter(p => 
+    p.name.includes('reporting') || p.name.includes('hierarchy')
+  ).map(p => p.name);
+
+  const getHolidayCalendarPerms = () => permissions.filter(p => 
+    p.name.includes('holiday')
+  ).map(p => p.name);
+
+  const getJobRequisitionPerms = () => permissions.filter(p => 
+    p.name.includes('job_requisition')
+  ).map(p => p.name);
+
+  const getRecruitmentSetupPerms = () => permissions.filter(p => 
+    p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || 
+    p.name === 'generate_job_link' || p.name === 'view_candidate' || p.name === 'select_candidates' || 
+    p.name === 'schedule_interviews' || p.name === 'view_resumes' || p.name === 'view_ats_pipeline' ||
+    p.name === 'move_candidates' || p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
+  ).map(p => p.name);
+
+  const getOffersContractsPerms = () => permissions.filter(p => 
+    p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || 
+    p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || 
+    p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
+  ).map(p => p.name);
+
+  const getOnboardingPerms = () => permissions.filter(p => 
+    p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || 
+    p.name === 'view_document_collected' || p.name === 'add_document_collected' || 
+    p.name === 'start_onboarding' || p.name === 'mark_onboarded'
+  ).map(p => p.name);
+
+  const getConsultantsPerms = () => permissions.filter(p => 
+    p.name === 'view_consultants' || p.name === 'add_consultant' || p.name === 'edit_consultant' || 
+    p.name === 'delete_consultant' || p.name === 'view_availability' || p.name === 'add_availability' ||
+    p.name === 'view_payouts' || p.name === 'generate_payslip' || p.name === 'send_payslip_email' || 
+    p.name === 'process_payroll'
+  ).map(p => p.name);
+
+  const getExitManagementPerms = () => permissions.filter(p => 
+    p.name === 'apply_resignation' || p.name === 'view_resignations' || p.name === 'approve_resignation' ||
+    p.name === 'manage_handover' || p.name === 'manage_clearance' || p.name === 'manage_assets' || 
+    p.name === 'manage_settlement' || p.name === 'hr_clearance' || p.name === 'it_clearance' || 
+    p.name === 'finance_clearance' || p.name === 'admin_clearance' || p.name === 'conduct_exit_interview' ||
+    p.name === 'view_exit_interviews' || p.name.includes('kt_') || p.name.includes('settlement')
+  ).map(p => p.name);
+
+  const getStatutoryCompliancePerms = () => permissions.filter(p => 
+    p.name.includes('statutory') || p.name.includes('labour_register') || p.name.includes('leave_compliance') ||
+    p.name.includes('nabh_compliance')
+  ).map(p => p.name);
+
+  const getTrainingDevelopmentPerms = () => permissions.filter(p => 
+    p.name.includes('training')
+  ).map(p => p.name);
+
+  const getPerformanceManagementPerms = () => permissions.filter(p => 
+    p.name.includes('work_assignment') || p.name.includes('goals_kpi') || p.name.includes('review_cycle') ||
+    p.name.includes('feedback') || p.name.includes('appraisal') || p.name.includes('quality_indicator')
+  ).map(p => p.name);
+
+  const getShiftRosterPerms = () => permissions.filter(p => 
+    p.name === 'VIEW_SHIFTS' || p.name === 'CREATE_SHIFTS' || p.name === 'DELETE_SHIFTS' ||
+    p.name === 'VIEW_ROSTER' || p.name === 'MANAGE_ROSTER' || p.name === 'MANAGE_NIGHT_SHIFT_RULES' ||
+    p.name === 'MANAGE_ON_CALL_DUTY'
+  ).map(p => p.name);
+
+  const getAttendanceManagementPerms = () => permissions.filter(p => 
+    p.name.includes('attendance') || p.name.includes('punch') || p.name.includes('gps') ||
+    p.name.includes('regularization') || p.name.includes('od_') || p.name.includes('daily_update')
+  ).map(p => p.name);
+
+  const getHROperationsPerms = () => permissions.filter(p => 
+    p.name.includes('lifecycle') || p.name.includes('hr_letter') || p.name.includes('grievance') ||
+    p.name.includes('asset') || p.name.includes('insurance') || p.name.includes('staff_schedule')
+  ).map(p => p.name);
+
+  const getPayrollManagementPerms = () => permissions.filter(p => 
+    p.name.includes('salary') || p.name.includes('payroll') || p.name.includes('statutory_rule')
+  ).map(p => p.name);
+
+  const getLeaveManagementPerms = () => permissions.filter(p => 
+    p.name.includes('leave')
+  ).map(p => p.name);
+
 
 
   // ------------------------------------
@@ -538,9 +628,24 @@ export default function Roles() {
 
                     {/* 👤 EMPLOYEE INFORMATION SYSTEM (EIS) */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getProfileDocumentsPerms().concat(getEmploymentProbationPerms()).every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getProfileDocumentsPerms().concat(getEmploymentProbationPerms()),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Profile & Documents</h5>
                         <div className="space-y-2 ml-3">
@@ -590,9 +695,24 @@ export default function Roles() {
 
                     {/* 🏢 ORGANIZATION SETUP */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🏢</span> ORGANIZATION SETUP
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🏢</span> ORGANIZATION SETUP
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOrganizationSetupPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOrganizationSetupPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('company') || p.name.includes('branch') || 
@@ -617,9 +737,24 @@ export default function Roles() {
 
                     {/* 📊 REPORTING STRUCTURE */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📊</span> REPORTING STRUCTURE
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> REPORTING STRUCTURE
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getReportingStructurePerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getReportingStructurePerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('reporting') || p.name.includes('hierarchy')
@@ -642,9 +777,24 @@ export default function Roles() {
 
                     {/* 📅 HOLIDAY CALENDAR */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📅</span> HOLIDAY CALENDAR
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📅</span> HOLIDAY CALENDAR
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getHolidayCalendarPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getHolidayCalendarPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('holiday')
@@ -667,9 +817,24 @@ export default function Roles() {
 
                     {/* 💼 JOB REQUISITION */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💼</span> JOB REQUISITION
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💼</span> JOB REQUISITION
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getJobRequisitionPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getJobRequisitionPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('job_requisition')
@@ -692,9 +857,24 @@ export default function Roles() {
 
                     {/* 🎯 RECRUITMENT SETUP */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎯</span> RECRUITMENT SETUP
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎯</span> RECRUITMENT SETUP
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getRecruitmentSetupPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getRecruitmentSetupPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
@@ -761,9 +941,24 @@ export default function Roles() {
 
                     {/* 📄 OFFERS & CONTRACTS */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📄</span> OFFERS & CONTRACTS
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📄</span> OFFERS & CONTRACTS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOffersContractsPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOffersContractsPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
@@ -786,9 +981,24 @@ export default function Roles() {
 
                     {/* 🎓 ONBOARDING */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎓</span> ONBOARDING
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎓</span> ONBOARDING
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOnboardingPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOnboardingPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected' || p.name === 'start_onboarding' || p.name === 'mark_onboarded'
@@ -811,9 +1021,24 @@ export default function Roles() {
 
                     {/* 🩺 CONSULTANTS */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🩺</span> CONSULTANTS
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🩺</span> CONSULTANTS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getConsultantsPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getConsultantsPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Consultant Management</h5>
                         <div className="space-y-2 ml-3">
@@ -883,9 +1108,24 @@ export default function Roles() {
 
                     {/* 🚪 EXIT MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🚪</span> EXIT MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🚪</span> EXIT MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getExitManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getExitManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'apply_resignation' || p.name === 'view_resignations' || p.name === 'approve_resignation' ||
@@ -997,9 +1237,24 @@ export default function Roles() {
 
                     {/* 💰 STATUTORY RULES & COMPLIANCE */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💰</span> STATUTORY RULES & COMPLIANCE
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💰</span> STATUTORY RULES & COMPLIANCE
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getStatutoryCompliancePerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getStatutoryCompliancePerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Statutory Calculations</h5>
                         <div className="space-y-2 ml-3">
@@ -1091,9 +1346,24 @@ export default function Roles() {
 
                     {/* 🎓 TRAINING & DEVELOPMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎓</span> TRAINING & DEVELOPMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎓</span> TRAINING & DEVELOPMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getTrainingDevelopmentPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getTrainingDevelopmentPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Training Programs</h5>
                         <div className="space-y-2 ml-3">
@@ -1229,9 +1499,24 @@ export default function Roles() {
 
                     {/* 📊 PERFORMANCE MANAGEMENT SYSTEM */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getPerformanceManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getPerformanceManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
@@ -1367,9 +1652,24 @@ export default function Roles() {
 
                     {/* 🕐 SHIFT & ROSTER MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🕐</span> SHIFT & ROSTER MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🕐</span> SHIFT & ROSTER MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getShiftRosterPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getShiftRosterPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
                         <div className="space-y-2 ml-3">
@@ -1417,9 +1717,24 @@ export default function Roles() {
 
                     {/* 🕐 ATTENDANCE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🕐</span> ATTENDANCE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🕐</span> ATTENDANCE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getAttendanceManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getAttendanceManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
                         <div className="space-y-2 ml-3">
@@ -1737,9 +2052,24 @@ export default function Roles() {
 
                     {/* 💰 PAYROLL MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💰</span> PAYROLL MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💰</span> PAYROLL MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getPayrollManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getPayrollManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Salary Structure</h5>
                         <div className="space-y-2 ml-3">
@@ -1875,9 +2205,24 @@ export default function Roles() {
 
                     {/* 📅 LEAVE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📅</span> LEAVE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📅</span> LEAVE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getLeaveManagementPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getLeaveManagementPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="ml-6 mt-3">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Types</h5>
                         <div className="space-y-2 ml-3">
@@ -2187,9 +2532,24 @@ export default function Roles() {
 
                     {/* 👤 EMPLOYEE INFORMATION SYSTEM (EIS) */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getProfileDocumentsPerms().concat(getEmploymentProbationPerms()).every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getProfileDocumentsPerms().concat(getEmploymentProbationPerms()),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Profile & Documents</h5>
                         <div className="space-y-2 ml-3">
@@ -2234,13 +2594,29 @@ export default function Roles() {
                         </div>
                       </div>
                       
+
                     </div>
 
                     {/* 🏢 ORGANIZATION SETUP */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🏢</span> ORGANIZATION SETUP
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🏢</span> ORGANIZATION SETUP
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOrganizationSetupPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOrganizationSetupPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('company') || p.name.includes('branch') || 
@@ -2265,9 +2641,24 @@ export default function Roles() {
 
                     {/* 📊 REPORTING STRUCTURE */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📊</span> REPORTING STRUCTURE
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> REPORTING STRUCTURE
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getReportingStructurePerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getReportingStructurePerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('reporting') || p.name.includes('hierarchy')
@@ -2290,9 +2681,24 @@ export default function Roles() {
 
                     {/* 📅 HOLIDAY CALENDAR */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📅</span> HOLIDAY CALENDAR
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📅</span> HOLIDAY CALENDAR
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getHolidayCalendarPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getHolidayCalendarPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('holiday')
@@ -2315,9 +2721,24 @@ export default function Roles() {
 
                     {/* 💼 JOB REQUISITION */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💼</span> JOB REQUISITION
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💼</span> JOB REQUISITION
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getJobRequisitionPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getJobRequisitionPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('job_requisition')
@@ -2340,9 +2761,24 @@ export default function Roles() {
 
                     {/* 🎯 RECRUITMENT SETUP */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎯</span> RECRUITMENT SETUP
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎯</span> RECRUITMENT SETUP
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getRecruitmentSetupPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getRecruitmentSetupPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name.includes('candidates') || p.name.includes('screen_candidates') || p.name === 'publish_job' || p.name === 'generate_job_link'
@@ -2409,9 +2845,24 @@ export default function Roles() {
 
                     {/* 📄 OFFERS & CONTRACTS */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📄</span> OFFERS & CONTRACTS
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📄</span> OFFERS & CONTRACTS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOffersContractsPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOffersContractsPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'generate_offer_link' || p.name === 'verify_documents' || p.name === 'view_documents' || p.name === 'manage_bgv' || p.name === 'start_onboarding' || p.name === 'mark_onboarded' || p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
@@ -2434,9 +2885,24 @@ export default function Roles() {
 
                     {/* 🎓 ONBOARDING */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎓</span> ONBOARDING
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎓</span> ONBOARDING
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getOnboardingPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getOnboardingPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || p.name === 'view_document_collected' || p.name === 'add_document_collected' || p.name === 'start_onboarding' || p.name === 'mark_onboarded'
@@ -2459,9 +2925,24 @@ export default function Roles() {
 
                     {/* 🩺 CONSULTANTS */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🩺</span> CONSULTANTS
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🩺</span> CONSULTANTS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getConsultantsPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getConsultantsPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Consultant Management</h5>
                         <div className="space-y-2 ml-3">
@@ -2531,9 +3012,24 @@ export default function Roles() {
 
                     {/* 🚪 EXIT MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🚪</span> EXIT MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🚪</span> EXIT MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getExitManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getExitManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'apply_resignation' || p.name === 'view_resignations' || p.name === 'approve_resignation' ||
@@ -2645,9 +3141,24 @@ export default function Roles() {
 
                     {/* 💰 STATUTORY RULES & COMPLIANCE */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💰</span> STATUTORY RULES & COMPLIANCE
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💰</span> STATUTORY RULES & COMPLIANCE
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getStatutoryCompliancePerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getStatutoryCompliancePerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Statutory Calculations</h5>
                         <div className="space-y-2 ml-3">
@@ -2737,11 +3248,223 @@ export default function Roles() {
                       </div>
                     </div>
 
+                    {/* 🕐 ATTENDANCE MANAGEMENT */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🕐</span> ATTENDANCE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getAttendanceManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getAttendanceManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
+                      <div className="space-y-2 ml-6">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'view_time_logs' || p.name === 'edit_time_logs' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out' || p.name === 'view_self'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">GPS & Location Tracking</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_gps_tracking' || p.name === 'enable_web_gps' || p.name === 'enable_mobile_gps' || p.name === 'view_location_logs'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'smart_regularization' || p.name === 'view_self'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications' || p.name === 'view_self'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Live Updates & Employee Management</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_live_attendance' || p.name === 'real_time_tracking' || p.name === 'view_active_records' || p.name === 'select_employee_attendance' || p.name === 'manage_employee_attendance'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance Rules & Policies</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_attendance_rules' || p.name === 'add_attendance_rule' || p.name === 'edit_attendance_rule' || p.name === 'delete_attendance_rule' || p.name === 'view_attendance_locations' || p.name === 'add_attendance_location' || p.name === 'edit_attendance_location' || p.name === 'delete_attendance_location'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Daily Updates</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update' || p.name === 'view_self'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={editPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
                     {/* 🎓 TRAINING & DEVELOPMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🎓</span> TRAINING & DEVELOPMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🎓</span> TRAINING & DEVELOPMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getTrainingDevelopmentPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getTrainingDevelopmentPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Training Programs</h5>
                         <div className="space-y-2 ml-3">
@@ -2877,9 +3600,24 @@ export default function Roles() {
 
                     {/* 📊 PERFORMANCE MANAGEMENT SYSTEM */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> PERFORMANCE MANAGEMENT SYSTEM
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getPerformanceManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getPerformanceManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
@@ -3015,9 +3753,24 @@ export default function Roles() {
 
                     {/* 🏢 HR OPERATIONS & WORKFORCE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🏢</span> HR OPERATIONS & WORKFORCE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🏢</span> HR OPERATIONS & WORKFORCE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getHROperationsPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getHROperationsPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Lifecycle Actions</h5>
                         <div className="space-y-2 ml-3">
@@ -3153,9 +3906,24 @@ export default function Roles() {
 
                     {/* 💰 PAYROLL MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>💰</span> PAYROLL MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>💰</span> PAYROLL MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getPayrollManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getPayrollManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Salary Structure</h5>
                         <div className="space-y-2 ml-3">
@@ -3291,9 +4059,24 @@ export default function Roles() {
 
                     {/* 🕐 SHIFT & ROSTER MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🕐</span> SHIFT & ROSTER MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🕐</span> SHIFT & ROSTER MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getShiftRosterPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getShiftRosterPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
                         <div className="space-y-2 ml-3">
@@ -3341,9 +4124,24 @@ export default function Roles() {
 
                     {/* 🕐 ATTENDANCE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>🕐</span> ATTENDANCE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🕐</span> ATTENDANCE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getAttendanceManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getAttendanceManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
                         <div className="space-y-2 ml-3">
@@ -3501,9 +4299,24 @@ export default function Roles() {
 
                     {/* 📅 LEAVE MANAGEMENT */}
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                        <span>📅</span> LEAVE MANAGEMENT
-                      </h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📅</span> LEAVE MANAGEMENT
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getLeaveManagementPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getLeaveManagementPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
                       <div className="space-y-2 ml-6">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Types</h5>
                         <div className="space-y-2 ml-3">

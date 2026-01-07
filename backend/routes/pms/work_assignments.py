@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_tenant_db
-from models.models_tenant import User, PMSReviewCycle, WorkAssignment, AssignmentStatus
+from models.models_tenant import User, PMSReview, WorkAssignment, AssignmentStatus
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
@@ -16,17 +16,17 @@ router = APIRouter()
 @router.post("/work-assignments/create-sample-data")
 async def create_sample_data(db: Session = Depends(get_tenant_db)):
     try:
-        existing_cycle = db.query(PMSReviewCycle).first()
-        if not existing_cycle:
-            sample_cycle = PMSReviewCycle(
-                cycle_name="Sample Review Cycle",
-                start_date=date(2024, 1, 1),
-                end_date=date(2024, 12, 31),
-                status="Open"
+        existing_review = db.query(PMSReview).first()
+        if not existing_review:
+            sample_review = PMSReview(
+                employee_id=1,
+                cycle="Sample Review Cycle",
+                review_type="Annual",
+                status="Draft"
             )
-            db.add(sample_cycle)
+            db.add(sample_review)
             db.commit()
-            return {"message": "Sample review cycle created"}
+            return {"message": "Sample review created"}
         return {"message": "Sample data already exists"}
     except Exception as e:
         db.rollback()
@@ -37,11 +37,11 @@ async def create_sample_data(db: Session = Depends(get_tenant_db)):
 async def get_review_cycles(include_deleted: bool = False, db: Session = Depends(get_tenant_db)):
     try:
         if include_deleted:
-            cycles = db.query(PMSReviewCycle).all()
+            reviews = db.query(PMSReview).all()
         else:
-            cycles = db.query(PMSReviewCycle).filter(PMSReviewCycle.deleted_at.is_(None)).all()
+            reviews = db.query(PMSReview).filter(PMSReview.deleted_at.is_(None)).all()
         cycles_data = []
-        for cycle in cycles:
+        for review in reviews:
             # Calculate progress automatically
             progress_result = db.execute(text("""
                 SELECT 
@@ -50,44 +50,22 @@ async def get_review_cycles(include_deleted: bool = False, db: Session = Depends
                 FROM work_assignments wa
                 LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id
                 WHERE wa.review_cycle_id = :cycle_id AND wa.is_active = 1
-            """), {"cycle_id": cycle.id}).fetchone()
+            """), {"cycle_id": review.id}).fetchone()
             
             total = progress_result[0] if progress_result else 0
             completed = progress_result[1] if progress_result else 0
             progress = round((completed / total * 100) if total > 0 else 0, 1)
             
-            # Auto-update status based on dates and progress
-            from datetime import date
-            today = date.today()
-            current_status = getattr(cycle, 'status', None)
-            auto_status = current_status
-            
-            # Extract actual date values to avoid SQLAlchemy column issues
-            start_date = getattr(cycle, 'start_date', None)
-            end_date = getattr(cycle, 'end_date', None)
-            
-            if end_date is not None and today > end_date:
-                auto_status = "Completed" if progress == 100 else "Closed"
-            elif start_date is not None and today >= start_date and (end_date is None or today <= end_date):
-                auto_status = "Active"
-            elif start_date is not None and today < start_date:
-                auto_status = "Pending"
-            
-            # Update status in database if changed
-            if auto_status != current_status and auto_status is not None:
-                setattr(cycle, 'status', auto_status)
-                db.commit()
-            
             cycles_data.append({
-                "id": cycle.id,
-                "cycle_name": cycle.cycle_name,
-                "start_date": cycle.start_date.strftime('%Y-%m-%d') if cycle.start_date is not None else None,
-                "end_date": cycle.end_date.strftime('%Y-%m-%d') if cycle.end_date is not None else None,
-                "status": auto_status,
+                "id": review.id,
+                "cycle_name": review.cycle,
+                "start_date": None,
+                "end_date": None,
+                "status": review.status,
                 "progress": progress,
                 "total_assignments": total,
                 "completed_assignments": completed,
-                "participants": db.execute(text("SELECT COUNT(DISTINCT assigned_employee_id) FROM work_assignments WHERE review_cycle_id = :cycle_id"), {"cycle_id": cycle.id}).scalar() or 0
+                "participants": db.execute(text("SELECT COUNT(DISTINCT assigned_employee_id) FROM work_assignments WHERE review_cycle_id = :cycle_id"), {"cycle_id": review.id}).scalar() or 0
             })
         return {"data": cycles_data}
     except Exception as e:
@@ -200,10 +178,10 @@ async def get_assignments(
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency, 
                    wa.review_cycle_id, wa.assigned_employee_id, wa.status, wa.is_active,
                    wa.deleted_at,
-                   u.name as employee_name, rc.cycle_name
+                   u.name as employee_name, rc.cycle
             FROM work_assignments wa
             LEFT JOIN users u ON wa.assigned_employee_id = u.id
-            LEFT JOIN pms_review_cycles rc ON wa.review_cycle_id = rc.id
+            LEFT JOIN pms_reviews rc ON wa.review_cycle_id = rc.id
             {where_clause}
             ORDER BY wa.created_at DESC
         """)).fetchall()

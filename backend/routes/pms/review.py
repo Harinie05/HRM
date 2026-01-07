@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from database import get_tenant_db
 from models.models_tenant import PMSReview, User
 from pydantic import BaseModel
@@ -77,11 +78,20 @@ async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_t
             elif review.self_score is not None or review.manager_score is not None:
                 completion_percentage = 50
             
+            # Calculate participants count from work assignments
+            participants_count = 0
+            try:
+                participants_result = db.execute(text("SELECT COUNT(DISTINCT assigned_employee_id) FROM work_assignments WHERE review_cycle_id = :cycle_id"), {"cycle_id": review.id}).scalar()
+                participants_count = participants_result or 0
+            except:
+                participants_count = 0
+            
             reviews_data.append({
                 "id": review.id,
                 "employee_id": review.employee_id,
                 "employee_name": employee_name,
                 "cycle": review.cycle,
+                "cycle_name": review.cycle,  # For compatibility
                 "review_type": review.review_type,
                 "self_score": review.self_score,
                 "manager_score": review.manager_score,
@@ -90,6 +100,7 @@ async def get_reviews(include_deleted: bool = False, db: Session = Depends(get_t
                 "status": review.status,
                 "progress": f"{completion_percentage}%",
                 "progress_percentage": completion_percentage,
+                "participants": participants_count,
                 "is_active": review.is_active,
                 "created_at": review.created_at.strftime('%Y-%m-%d %H:%M:%S') if review.created_at is not None else None
             })

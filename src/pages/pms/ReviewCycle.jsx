@@ -372,38 +372,6 @@ export default function ReviewCycle() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Departments</label>
-                <select
-                  multiple
-                  value={formData.departments}
-                  onChange={(e) => setFormData({...formData, departments: Array.from(e.target.selectedOptions, option => option.value)})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                  size={4}
-                >
-                  {departments.map(dept => (
-                    <option key={dept.id} value={dept.name}>{dept.name}</option>
-                  ))}
-                </select>
-                <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Employees</label>
-                <select
-                  multiple
-                  value={formData.employees}
-                  onChange={(e) => setFormData({...formData, employees: Array.from(e.target.selectedOptions, option => option.value)})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
-                  size={4}
-                >
-                  {employees.map(emp => (
-                    <option key={emp.id} value={emp.name}>{emp.employee_code} - {emp.name}</option>
-                  ))}
-                </select>
-                <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select
                   value={formData.status}
@@ -462,18 +430,18 @@ export default function ReviewCycle() {
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {cycle.cycle_name}
+                        {cycle.cycle}
                         {cycle.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
                       </div>
-                      <div className="text-sm text-gray-500">{cycle.status}</div>
+                      <div className="text-sm text-gray-500">{cycle.review_type}</div>
                     </div>
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{cycle.status}</td>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{cycle.review_type}</td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {cycle.start_date} to {cycle.end_date}
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    1 employee
+                    {cycle.participants || 0} {(cycle.participants || 0) === 1 ? 'employee' : 'employees'}
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -507,15 +475,6 @@ export default function ReviewCycle() {
                         )
                       ) : (
                         <>
-                          {cycle.status === "Draft" && (hasPermission('start_review_cycle') || isAdmin()) && (
-                            <button
-                              onClick={() => handleStatusChange(cycle.id, "Active")}
-                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
-                              title="Start Cycle"
-                            >
-                              <Play className="w-3 h-3 sm:w-4 sm:h-4" />
-                            </button>
-                          )}
                           {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
                             <button
                               onClick={() => handleStatusChange(cycle.id, "Completed")}
@@ -558,10 +517,10 @@ export default function ReviewCycle() {
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900">
-                    {cycle.cycle_name}
+                    {cycle.cycle}
                     {cycle.is_active === false && <span className="ml-2 text-xs text-red-600 font-semibold">(DELETED)</span>}
                   </h4>
-                  <p className="text-sm text-gray-600">{cycle.status}</p>
+                  <p className="text-sm text-gray-600">{cycle.review_type}</p>
                 </div>
                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(cycle.status)}`}>
                   {cycle.status}
@@ -575,7 +534,7 @@ export default function ReviewCycle() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Participants:</span>
-                  <span className="text-gray-900">1 employee</span>
+                  <span className="text-gray-900">{cycle.participants || 0} {(cycle.participants || 0) === 1 ? 'employee' : 'employees'}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-600">Progress:</span>
@@ -604,15 +563,6 @@ export default function ReviewCycle() {
                   )
                 ) : (
                   <>
-                    {cycle.status === "Draft" && (hasPermission('start_review_cycle') || isAdmin()) && (
-                      <button
-                        onClick={() => handleStatusChange(cycle.id, "Active")}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
-                      >
-                        <Play className="w-3 h-3" />
-                        Start
-                      </button>
-                    )}
                     {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
                       <button
                         onClick={() => handleStatusChange(cycle.id, "Completed")}

@@ -1228,7 +1228,7 @@ class WorkAssignment(MasterBase):
     category = Column(String(50), nullable=False)  # Operational/Admin/Compliance/Support
     weightage_percentage = Column(Float, nullable=False)
     frequency = Column(String(50), nullable=False)  # Daily/Weekly/Monthly/One-time
-    review_cycle_id = Column(Integer, ForeignKey("pms_review_cycles.id"), nullable=False)
+    review_cycle_id = Column(Integer, ForeignKey("pms_reviews.id"), nullable=False)
     assigned_employee_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(String(50), default="Active")  # Active/Inactive
     is_active = Column(Boolean, default=True)
@@ -1247,19 +1247,6 @@ class AssignmentStatus(MasterBase):
     remarks = Column(Text, nullable=True)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     is_active = Column(Boolean, default=True)
-
-class PMSReviewCycle(MasterBase):
-    __tablename__ = "pms_review_cycles"
-
-    id = Column(Integer, primary_key=True, index=True)
-    cycle_name = Column(String(100), nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
-    status = Column(String(50), default="Open")  # Open/Closed
-    is_active = Column(Boolean, default=True)
-    deleted_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
 # -------------------------
 # 1. GOALS & KPI / KRA
