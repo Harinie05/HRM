@@ -20,6 +20,9 @@ export default function EmployeeReporting() {
   const [reportingData, setReportingData] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [levels, setLevels] = useState([]);
+  const [hierarchy, setHierarchy] = useState([]);
+  const [hierarchyRules, setHierarchyRules] = useState([]);
+  const [availableManagers, setAvailableManagers] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -88,10 +91,37 @@ export default function EmployeeReporting() {
 
   const fetchLevels = async () => {
     try {
-      const res = await api.get('/employee/levels');
-      setLevels(res.data || []);
+      const tenant_db = localStorage.getItem("tenant_db");
+      const res = await api.get(`/hospitals/users/${tenant_db}/reporting-levels`);
+      setLevels(res.data?.reporting_levels || []);
     } catch (err) {
       console.error("Failed to fetch levels", err);
+    }
+  };
+
+  const fetchHierarchy = async () => {
+    try {
+      const tenant_db = localStorage.getItem("tenant_db");
+      const res = await api.get(`/hospitals/users/${tenant_db}/hierarchy-rules`);
+      setHierarchyRules(res.data?.hierarchy_rules || []);
+    } catch (err) {
+      console.error("Failed to fetch hierarchy rules", err);
+    }
+  };
+
+  const fetchManagersByLevel = async (levelId) => {
+    if (!levelId) {
+      setAvailableManagers([]);
+      return;
+    }
+    
+    try {
+      const tenant_db = localStorage.getItem("tenant_db");
+      const res = await api.get(`/hospitals/users/${tenant_db}/managers-by-level?level_id=${levelId}`);
+      setAvailableManagers(res.data?.managers || []);
+    } catch (err) {
+      console.error("Failed to fetch managers by level", err);
+      setAvailableManagers([]);
     }
   };
 
@@ -118,19 +148,20 @@ export default function EmployeeReporting() {
   useEffect(() => {
     fetchEmployees();
     fetchLevels();
+    fetchHierarchy();
     fetchReportingDetails();
   }, [id]);
 
   const handleLevelChange = (levelId) => {
-    setForm({ ...form, employee_level_id: levelId, reporting_manager_id: "" });
+    setForm({ ...form, employee_level_id: levelId, reporting_manager_id: "", alternative_manager_id: "" });
+    fetchManagersByLevel(levelId);
   };
 
-  const selectedLevelInfo = levels.find(level => level.id.toString() === form.employee_level_id);
-  const reportsToLevel = selectedLevelInfo ? levels.find(level => level.order === selectedLevelInfo.order - 1) : null;
-  const availableManagers = employees.filter(emp => 
-    emp.id !== parseInt(id) && 
-    (reportsToLevel ? emp.level_id === reportsToLevel.id : true)
-  );
+  const selectedLevelInfo = levels.find(level => level.id && level.id.toString() === form.employee_level_id);
+  
+  // Find parent level from hierarchy rules
+  const hierarchyRule = hierarchyRules.find(rule => rule.child_level_id && rule.child_level_id.toString() === form.employee_level_id);
+  const parentLevelName = hierarchyRule?.parent_level_name;
 
   const submit = () => {
     console.log('Submit called');
@@ -218,7 +249,7 @@ export default function EmployeeReporting() {
                     <option value="">Choose Employee Level</option>
                     {levels.map((level) => (
                       <option key={level.id} value={level.id}>
-                        Level {level.order}: {level.level_name}
+                        {level.level_name} (Order: {level.level_order})
                       </option>
                     ))}
                   </select>
@@ -244,10 +275,10 @@ export default function EmployeeReporting() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Select Reporting Manager</h3>
               </div>
-              {form.employee_level_id && reportsToLevel && (
+              {form.employee_level_id && hierarchyRule && parentLevelName && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                   <p className="text-sm text-blue-800">
-                    <strong>Based on hierarchy:</strong> {selectedLevelInfo?.level_name} reports to {reportsToLevel?.level_name}
+                    <strong>Based on hierarchy:</strong> {selectedLevelInfo?.level_name} reports to {parentLevelName}
                   </p>
                 </div>
               )}
@@ -259,30 +290,50 @@ export default function EmployeeReporting() {
                     value={form.reporting_manager_id}
                     onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
                   >
-                    <option value="">Select Manager</option>
-                    {employees.filter(emp => emp.id !== parseInt(id)).map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {emp.name} {emp.employee_code ? `(${emp.employee_code})` : ''}
+                    <option value="">
+                      {hierarchyRule && parentLevelName 
+                        ? `Select ${parentLevelName}` 
+                        : 'Select Manager'}
+                    </option>
+                    {availableManagers.map((manager) => (
+                      <option key={manager.id} value={manager.id}>
+                        {manager.name} {manager.employee_code ? `(${manager.employee_code})` : ''} - {manager.role_name}
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">Choose any employee as manager</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {hierarchyRule && parentLevelName 
+                      ? `Showing ${parentLevelName} level employees based on hierarchy` 
+                      : 'Choose any employee as manager'}
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Alternative Manager (Optional)</label>
+                  <label className="block text-sm font-medium text-secondary mb-2">
+                    {hierarchyRule && parentLevelName 
+                      ? `Alternative ${parentLevelName} (Optional)` 
+                      : 'Alternative Manager (Optional)'}
+                  </label>
                   <select
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.alternative_manager_id}
                     onChange={(e) => setForm({ ...form, alternative_manager_id: e.target.value })}
                   >
-                    <option value="">Select Alternative Manager</option>
-                    {employees.filter(emp => emp.id !== parseInt(id) && emp.id.toString() !== form.reporting_manager_id).map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {emp.name} {emp.employee_code ? `(${emp.employee_code})` : ''}
+                    <option value="">
+                      {hierarchyRule && parentLevelName 
+                        ? `Select Alternative ${parentLevelName}` 
+                        : 'Select Alternative Manager'}
+                    </option>
+                    {availableManagers.filter(manager => manager.id && (!form.reporting_manager_id || manager.id.toString() !== form.reporting_manager_id)).map((manager) => (
+                      <option key={manager.id} value={manager.id}>
+                        {manager.name} {manager.employee_code ? `(${manager.employee_code})` : ''} - {manager.role_name}
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">Backup manager when primary is assigned</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {hierarchyRule && parentLevelName 
+                      ? `Backup ${parentLevelName.toLowerCase()} when primary is unavailable` 
+                      : 'Backup manager when primary is assigned'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -298,9 +349,9 @@ export default function EmployeeReporting() {
                   <div>
                     <p className="font-medium text-primary">Reports To</p>
                     <p className="text-sm text-secondary">
-                      {employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.name || 'Not selected'}
-                      {employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.employee_code && 
-                        ` (${employees.find(emp => emp.id.toString() === form.reporting_manager_id)?.employee_code})`
+                      {availableManagers.find(manager => manager.id && manager.id.toString() === form.reporting_manager_id)?.name || 'Not selected'}
+                      {availableManagers.find(manager => manager.id && manager.id.toString() === form.reporting_manager_id)?.employee_code && 
+                        ` (${availableManagers.find(manager => manager.id && manager.id.toString() === form.reporting_manager_id)?.employee_code})`
                       }
                     </p>
                   </div>

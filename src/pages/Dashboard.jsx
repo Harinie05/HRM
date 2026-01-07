@@ -25,6 +25,7 @@ export default function Dashboard() {
     top_actions: []
   });
   const [showAuditLogs, setShowAuditLogs] = useState(false);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
 
   // ========================= FETCH LICENSE ALERTS =========================
   const fetchLicenseAlerts = async () => {
@@ -395,78 +396,42 @@ export default function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* License & Document Alerts */}
-          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
+          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => setShowDocumentModal(true)}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-gray-900">Document Alerts</h3>
-              <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+              <div className="flex items-center gap-2">
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                {(licenseAlerts.length + documentAlerts.length) > 0 && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                    {licenseAlerts.length + documentAlerts.length}
+                  </span>
+                )}
+              </div>
             </div>
             
-            <div className="space-y-3">
-              {/* Medical License Alerts */}
-              {licenseAlerts.length > 0 && (
-                <>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Medical Licenses</h4>
-                  {licenseAlerts.slice(0, 2).map((alert, index) => (
-                    <div key={`license-${index}`} className={`p-3 rounded-lg border ${
-                      alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{alert.license_type}</p>
-                          <p className="text-xs text-gray-600">Employee ID: {alert.employee_id}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className={`text-xs font-bold ${
-                            alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
-                          }`}>
-                            {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-              
-              {/* ID Document Alerts */}
-              {documentAlerts.length > 0 && (
-                <>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">ID Documents</h4>
-                  {documentAlerts.map((alert, index) => (
-                    <div key={`doc-${index}`} className={`p-3 rounded-lg border ${
-                      alert.alert_level === 'critical' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{alert.document_type}</p>
-                          <p className="text-xs text-gray-600">
-                            {alert.employee_name}
-                            {alert.employee_code && ` - ${alert.employee_code}`}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className={`text-xs font-bold ${
-                            alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
-                          }`}>
-                            {alert.days_until_expiry <= 0 ? 'Expired' : `${alert.days_until_expiry} days`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-              
-              {licenseAlerts.length === 0 && documentAlerts.length === 0 && (
-                <div className="text-center py-4 text-gray-500">
-                  <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p className="text-sm">No document alerts</p>
+            <div className="text-center py-6">
+              {(licenseAlerts.length + documentAlerts.length) > 0 ? (
+                <div>
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertTriangle className="h-8 w-8 text-red-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-2">
+                    {licenseAlerts.length + documentAlerts.length} Document Alerts
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Documents requiring immediate attention
+                  </p>
+                  <p className="text-sm text-blue-600 font-medium hover:text-blue-800">
+                    Click to view all alerts
+                  </p>
                 </div>
-              )}
-              
-              {(licenseAlerts.length + documentAlerts.length) > 4 && (
-                <div className="text-center pt-2">
-                  <p className="text-xs text-gray-600">+{(licenseAlerts.length + documentAlerts.length) - 4} more alerts</p>
+              ) : (
+                <div>
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-2">All Documents Current</h4>
+                  <p className="text-sm text-gray-600">No alerts at this time</p>
                 </div>
               )}
             </div>
@@ -800,6 +765,174 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Document Alerts Modal */}
+      {showDocumentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl border border-black max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <Bell className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Document Alerts</h2>
+                  <p className="text-sm text-gray-600">
+                    {licenseAlerts.length + documentAlerts.length} alerts requiring attention
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowDocumentModal(false)}
+                className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                <svg className="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {/* Medical License Alerts */}
+              {licenseAlerts.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                    <h3 className="text-lg font-bold text-gray-900">Medical Licenses</h3>
+                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                      {licenseAlerts.length} alerts
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {licenseAlerts.map((alert, index) => (
+                      <div key={`license-${index}`} className={`p-4 rounded-lg border-2 ${
+                        alert.alert_level === 'critical' 
+                          ? 'bg-red-50 border-red-300 shadow-red-100' 
+                          : 'bg-yellow-50 border-yellow-300 shadow-yellow-100'
+                      } shadow-lg`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h4 className="text-base font-bold text-gray-900">{alert.license_type}</h4>
+                              <span className={`text-xs px-2 py-1 rounded-full font-bold ${
+                                alert.alert_level === 'critical' 
+                                  ? 'bg-red-200 text-red-800' 
+                                  : 'bg-yellow-200 text-yellow-800'
+                              }`}>
+                                {alert.alert_level === 'critical' ? 'CRITICAL' : 'WARNING'}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-700 mb-1">
+                              <span className="font-medium">Employee ID:</span> {alert.employee_id}
+                            </p>
+                            {alert.expiry_date && (
+                              <p className="text-sm text-gray-700">
+                                <span className="font-medium">Expires:</span> {new Date(alert.expiry_date).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className={`text-lg font-bold ${
+                              alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                            }`}>
+                              {alert.days_until_expiry <= 0 ? 'EXPIRED' : `${alert.days_until_expiry} days`}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {alert.days_until_expiry <= 0 ? 'Action Required' : 'Until Expiry'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ID Document Alerts */}
+              {documentAlerts.length > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                    <h3 className="text-lg font-bold text-gray-900">ID Documents</h3>
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                      {documentAlerts.length} alerts
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {documentAlerts.map((alert, index) => (
+                      <div key={`doc-${index}`} className={`p-4 rounded-lg border-2 ${
+                        alert.alert_level === 'critical' 
+                          ? 'bg-red-50 border-red-300 shadow-red-100' 
+                          : 'bg-yellow-50 border-yellow-300 shadow-yellow-100'
+                      } shadow-lg`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h4 className="text-base font-bold text-gray-900">{alert.document_type}</h4>
+                              <span className={`text-xs px-2 py-1 rounded-full font-bold ${
+                                alert.alert_level === 'critical' 
+                                  ? 'bg-red-200 text-red-800' 
+                                  : 'bg-yellow-200 text-yellow-800'
+                              }`}>
+                                {alert.alert_level === 'critical' ? 'CRITICAL' : 'WARNING'}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-700 mb-1">
+                              <span className="font-medium">Employee:</span> {alert.employee_name}
+                              {alert.employee_code && ` - ${alert.employee_code}`}
+                            </p>
+                            {alert.expiry_date && (
+                              <p className="text-sm text-gray-700">
+                                <span className="font-medium">Expires:</span> {new Date(alert.expiry_date).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className={`text-lg font-bold ${
+                              alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                            }`}>
+                              {alert.days_until_expiry <= 0 ? 'EXPIRED' : `${alert.days_until_expiry} days`}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {alert.days_until_expiry <= 0 ? 'Action Required' : 'Until Expiry'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Alerts State */}
+              {licenseAlerts.length === 0 && documentAlerts.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">All Documents Up to Date</h3>
+                  <p className="text-gray-600">No document alerts at this time. All licenses and documents are current.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
+              <div className="text-sm text-gray-600">
+                Last updated: {new Date().toLocaleString()}
+              </div>
+              <button
+                onClick={() => setShowDocumentModal(false)}
+                className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium border border-black shadow-md"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

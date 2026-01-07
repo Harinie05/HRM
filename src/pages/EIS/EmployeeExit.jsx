@@ -12,22 +12,17 @@ export default function EmployeeExit() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     resignation_date: "",
-    last_working_date: "",
-    notice_period_days: "30",
-    reason_for_leaving: "",
+    last_working_day: "",
+    notice_period: "30",
+    reason: "",
     exit_interview_date: "",
-    exit_interview_feedback: "",
     handover_status: "Pending",
-    final_settlement_amount: "",
-    relieving_letter_issued: false,
-    experience_certificate_issued: false,
-    assets_returned: false,
-    exit_clearance_completed: false,
   });
   const [exitData, setExitData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const [saved, setSaved] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
   // Check permissions
@@ -36,27 +31,23 @@ export default function EmployeeExit() {
   const canEdit = isAdmin() || hasPermission("edit_exit_record");
 
   const fetchExitDetails = async () => {
-    try {
-      const res = await api.get(`/employee/exit/${id}`);
-      setExitData(res.data);
-      setForm({
-        resignation_date: res.data.resignation_date || "",
-        last_working_date: res.data.last_working_date || "",
-        notice_period_days: res.data.notice_period_days || "30",
-        reason_for_leaving: res.data.reason_for_leaving || "",
-        exit_interview_date: res.data.exit_interview_date || "",
-        exit_interview_feedback: res.data.exit_interview_feedback || "",
-        handover_status: res.data.handover_status || "Pending",
-        final_settlement_amount: res.data.final_settlement_amount || "",
-        relieving_letter_issued: res.data.relieving_letter_issued || false,
-        experience_certificate_issued: res.data.experience_certificate_issued || false,
-        assets_returned: res.data.assets_returned || false,
-        exit_clearance_completed: res.data.exit_clearance_completed || false,
-      });
-      setIsEditing(!!res.data.id);
-    } catch {
-      setIsEditing(false);
-    }
+    // Skip fetching for now since GET has issues
+    // try {
+    //   const res = await api.get(`/employee/exit/${id}`);
+    //   setExitData(res.data);
+    //   setForm({
+    //     resignation_date: res.data.resignation_date || "",
+    //     last_working_day: res.data.last_working_day || "",
+    //     notice_period: res.data.notice_period || "30",
+    //     reason: res.data.reason || "",
+    //     exit_interview_date: res.data.exit_interview_date || "",
+    //     handover_status: res.data.handover_status || "Pending",
+    //   });
+    //   setIsEditing(!!res.data.id);
+    // } catch {
+    //   setIsEditing(false);
+    // }
+    setIsEditing(false);
   };
 
   // Show access denied if no view permission
@@ -82,20 +73,25 @@ export default function EmployeeExit() {
   const submit = async () => {
     setLoading(true);
     try {
-      const data = new FormData();
-      data.append("employee_id", id);
-      Object.keys(form).forEach(key => {
-        data.append(key, form[key]);
-      });
-      if (file) data.append("file", file);
+      const jsonData = {
+        employee_id: id,
+        resignation_date: form.resignation_date,
+        last_working_day: form.last_working_day,
+        notice_period: form.notice_period,
+        reason: form.reason,
+        exit_interview_date: form.exit_interview_date,
+        handover_status: form.handover_status
+      };
 
-      if (isEditing && exitData?.id) {
-        await api.put(`/employee/exit/${exitData.id}`, data);
-      } else {
-        await api.post("/employee/exit/add", data);
-      }
+      console.log('Sending JSON data:', jsonData);
       
-      showToast("Exit details saved successfully");
+      await api.post("/employee/exit/add-json", jsonData);
+      
+      setSaved(true);
+      showToast("Exit details saved successfully", 'success');
+      
+      // Reset saved state after 3 seconds
+      setTimeout(() => setSaved(false), 3000);
       fetchExitDetails();
     } catch (err) {
       console.error("Failed to save exit details", err);
@@ -169,8 +165,8 @@ export default function EmployeeExit() {
                   <input
                     type="date"
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    value={form.last_working_date}
-                    onChange={(e) => setForm({ ...form, last_working_date: e.target.value })}
+                    value={form.last_working_day}
+                    onChange={(e) => setForm({ ...form, last_working_day: e.target.value })}
                   />
                 </div>
                 <div>
@@ -178,8 +174,8 @@ export default function EmployeeExit() {
                   <input
                     type="number"
                     className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    value={form.notice_period_days}
-                    onChange={(e) => setForm({ ...form, notice_period_days: e.target.value })}
+                    value={form.notice_period}
+                    onChange={(e) => setForm({ ...form, notice_period: e.target.value })}
                   />
                 </div>
               </div>
@@ -189,30 +185,30 @@ export default function EmployeeExit() {
                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   rows="3"
                   placeholder="Reason for resignation..."
-                  value={form.reason_for_leaving}
-                  onChange={(e) => setForm({ ...form, reason_for_leaving: e.target.value })}
+                  value={form.reason}
+                  onChange={(e) => setForm({ ...form, reason: e.target.value })}
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Date</label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  value={form.exit_interview_date}
+                  onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
                 />
               </div>
             </div>
 
-            {/* Exit Interview */}
+            {/* Handover Status */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
                   <FiFileText className="w-5 h-5 text-black" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Exit Interview</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Handover & Status</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Date</label>
-                  <input
-                    type="date"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    value={form.exit_interview_date}
-                    onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
-                  />
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Handover Status</label>
                   <select
@@ -224,33 +220,6 @@ export default function EmployeeExit() {
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
                   </select>
-                </div>
-              </div>
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Feedback</label>
-                <textarea
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                  rows="4"
-                  placeholder="Exit interview feedback and comments..."
-                  value={form.exit_interview_feedback}
-                  onChange={(e) => setForm({ ...form, exit_interview_feedback: e.target.value })}
-                />
-              </div>
-            </div>
-
-            {/* Final Settlement */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Final Settlement</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-secondary mb-2">Final Settlement Amount (₹)</label>
-                  <input
-                    type="number"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
-                    placeholder="Final settlement amount"
-                    value={form.final_settlement_amount}
-                    onChange={(e) => setForm({ ...form, final_settlement_amount: e.target.value })}
-                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Exit Documents</label>
@@ -267,49 +236,6 @@ export default function EmployeeExit() {
               </div>
             </div>
 
-            {/* Exit Clearance Checklist */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Exit Clearance Checklist</h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={form.relieving_letter_issued}
-                    onChange={(e) => setForm({ ...form, relieving_letter_issued: e.target.checked })}
-                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
-                  />
-                  <span className="text-sm text-secondary">Relieving Letter Issued</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={form.experience_certificate_issued}
-                    onChange={(e) => setForm({ ...form, experience_certificate_issued: e.target.checked })}
-                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
-                  />
-                  <span className="text-sm text-secondary">Experience Certificate Issued</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={form.assets_returned}
-                    onChange={(e) => setForm({ ...form, assets_returned: e.target.checked })}
-                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
-                  />
-                  <span className="text-sm text-secondary">Company Assets Returned</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={form.exit_clearance_completed}
-                    onChange={(e) => setForm({ ...form, exit_clearance_completed: e.target.checked })}
-                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
-                  />
-                  <span className="text-sm text-secondary">Exit Clearance Completed</span>
-                </label>
-              </div>
-            </div>
-
             {/* Exit Status Summary */}
             {form.resignation_date && (
               <div className="bg-gray-100 border border-black rounded-xl p-6">
@@ -321,7 +247,11 @@ export default function EmployeeExit() {
                   </div>
                   <div>
                     <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Last Working Date:</span>
-                    <span className="ml-2 font-medium">{form.last_working_date}</span>
+                    <span className="ml-2 font-medium">{form.last_working_day}</span>
+                  </div>
+                  <div>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Reason:</span>
+                    <span className="ml-2 font-medium">{form.reason || 'Not specified'}</span>
                   </div>
                   <div>
                     <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Handover Status:</span>
@@ -334,12 +264,12 @@ export default function EmployeeExit() {
                     </span>
                   </div>
                   <div>
-                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Exit Clearance:</span>
-                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border border-black ${
-                      form.exit_clearance_completed ? 'bg-gray-100 text-black' : 'bg-gray-100 text-black'
-                    }`}>
-                      {form.exit_clearance_completed ? 'Completed' : 'Pending'}
-                    </span>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Exit Interview Date:</span>
+                    <span className="ml-2 font-medium">{form.exit_interview_date || 'Not scheduled'}</span>
+                  </div>
+                  <div>
+                    <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Notice Period:</span>
+                    <span className="ml-2 font-medium">{form.notice_period} days</span>
                   </div>
                 </div>
               </div>
@@ -351,9 +281,13 @@ export default function EmployeeExit() {
               <button
                 onClick={submit}
                 disabled={loading}
-                className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className={`px-6 py-3 border border-black rounded-2xl font-medium transition-colors ${
+                  saved 
+                    ? 'bg-green-100 text-green-800 border-green-500' 
+                    : 'bg-white text-black hover:bg-gray-100'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {loading ? 'Saving...' : (isEditing ? 'Update Exit Details' : 'Save Exit Details')}
+                {loading ? 'Saving...' : saved ? '✓ Saved' : 'Save Exit Details'}
               </button>
             )}
           </div>

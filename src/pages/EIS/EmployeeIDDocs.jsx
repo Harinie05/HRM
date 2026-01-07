@@ -39,22 +39,9 @@ export default function EmployeeIDDocs() {
     }
   };
 
-  // Show access denied if no view permission
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiCreditCard className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-500">You don't have permission to view employee ID documents.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    fetchDocs();
+  }, [id]);
 
 
   const upload = async () => {

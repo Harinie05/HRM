@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, text
 from models.models_master import Hospital
-from models.models_tenant import User, Role, Department, OnboardingCandidate
+from models.models_tenant import User, Role, Department, OnboardingCandidate, ReportingLevel
 import schemas.schemas_tenant as schemas_tenant
 import database
 from database import logger
@@ -35,6 +36,7 @@ def create_user(
 ):
     try:
         logger.info(f"Creating user {payload.email} for tenant {tenant_db} by {user.get('email')}")
+        print(f"DEBUG: Received payload - role_id: {payload.role_id}, department_id: {payload.department_id}")
         
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
@@ -44,13 +46,39 @@ def create_user(
             if tdb.query(User).filter(User.email == payload.email).first():
                 raise HTTPException(400, "Email already exists")
 
+            # Get available roles and departments for better error messages
+            available_roles = tdb.query(Role).all()
+            available_depts = tdb.query(Department).all()
+            
+            print(f"DEBUG: Available roles: {[(r.id, r.name) for r in available_roles]}")
+            print(f"DEBUG: Available departments: {[(d.id, d.name) for d in available_depts]}")
+            
+            # Check if any roles exist
+            if not available_roles:
+                raise HTTPException(400, "No roles found in database. Please create roles first using the roles management section.")
+            
+            # Check if any departments exist
+            if not available_depts:
+                raise HTTPException(400, "No departments found in database. Please create departments first using the departments management section.")
+            
+            # Check if role_id and department_id are valid integers > 0
+            if not isinstance(payload.role_id, int) or payload.role_id <= 0:
+                role_list = ", ".join([f"{r.id}: {r.name}" for r in available_roles])
+                raise HTTPException(400, f"Invalid role_id: {payload.role_id}. Available roles: {role_list}")
+                
+            if not isinstance(payload.department_id, int) or payload.department_id <= 0:
+                dept_list = ", ".join([f"{d.id}: {d.name}" for d in available_depts])
+                raise HTTPException(400, f"Invalid department_id: {payload.department_id}. Available departments: {dept_list}")
+
             role = tdb.query(Role).filter(Role.id == payload.role_id).first()
             if not role:
-                raise HTTPException(400, f"Role with id {payload.role_id} not found")
+                role_list = ", ".join([f"{r.id}: {r.name}" for r in available_roles])
+                raise HTTPException(400, f"Role with id {payload.role_id} not found. Available roles: {role_list}")
 
             dept = tdb.query(Department).filter(Department.id == payload.department_id).first()
             if not dept:
-                raise HTTPException(400, f"Department with id {payload.department_id} not found")
+                dept_list = ", ".join([f"{d.id}: {d.name}" for d in available_depts])
+                raise HTTPException(400, f"Department with id {payload.department_id} not found. Available departments: {dept_list}")
 
             hashed_pwd = pwd_context.hash(payload.password)
 
@@ -266,3 +294,223 @@ def delete_user_hospitals(
     user = Depends(get_current_user)
 ):
     return delete_user(tenant_db, user_id, request, db, user)
+
+# ============================================================
+# GET MANAGERS BY ROLE 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/managers")
+def get_managers_by_role(
+    tenant_db: str,
+    role_level: str = "Manager",
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Fetch users who can act as managers based on their role level"""
+    logger.info(f"Fetching managers for tenant {tenant_db} with role level {role_level}")
+
+    hospital = get_hospital_by_db(db, tenant_db)
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+
+    with tdb:
+        # Query users with manager-level roles
+        # This assumes roles have names like "Manager", "Senior Manager", "Team Lead", etc.
+        manager_roles = tdb.query(Role).filter(
+            Role.name.ilike(f"%{role_level}%")
+        ).all()
+        
+        if not manager_roles:
+            # Fallback: get all active users if no specific manager roles found
+            users = tdb.query(User).filter(User.status == "Active").all()
+        else:
+            role_ids = [role.id for role in manager_roles]
+            users = tdb.query(User).filter(
+                User.role_id.in_(role_ids),
+                User.status == "Active"
+            ).all()
+
+        managers = []
+        for u in users:
+            role_name = u.role.name if u.role else "No Role"
+            dept_name = u.department.name if u.department else "No Department"
+            
+            managers.append({
+                "id": u.id,
+                "name": u.name,
+                "email": u.email,
+                "role_name": role_name,
+                "department_name": dept_name,
+                "employee_code": getattr(u, 'employee_code', None)
+            })
+
+        return {"managers": managers}
+
+# ============================================================
+# GET REPORTING LEVELS 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/reporting-levels")
+def get_reporting_levels(
+    tenant_db: str,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Fetch available reporting levels for organizational assignment"""
+    logger.info(f"Fetching reporting levels for tenant {tenant_db}")
+
+    hospital = get_hospital_by_db(db, tenant_db)
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+
+    with tdb:
+        try:
+            # Try to get from reporting_levels table if it exists
+            levels = tdb.query(ReportingLevel).filter(
+                ReportingLevel.is_active == True
+            ).order_by(ReportingLevel.level_order).all()
+            
+            reporting_levels = [{
+                "id": level.id,
+                "level_name": level.level_name,
+                "level_order": level.level_order,
+                "description": level.description
+            } for level in levels]
+            
+        except Exception:
+            # Fallback: return common organizational levels
+            reporting_levels = [
+                {"id": 1, "level_name": "CEO", "level_order": 1, "description": "Chief Executive Officer"},
+                {"id": 2, "level_name": "Manager", "level_order": 2, "description": "Department Manager"},
+                {"id": 3, "level_name": "Team Lead", "level_order": 3, "description": "Team Leader"},
+                {"id": 4, "level_name": "Employee", "level_order": 4, "description": "Employee Level"}
+            ]
+
+        return {"reporting_levels": reporting_levels}
+
+# ============================================================
+# GET HIERARCHY RULES 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/hierarchy-rules")
+def get_hierarchy_rules(
+    tenant_db: str,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Fetch hierarchy rules for reporting structure"""
+    logger.info(f"Fetching hierarchy rules for tenant {tenant_db}")
+
+    hospital = get_hospital_by_db(db, tenant_db)
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+
+    with tdb:
+        try:
+            # Try to get from hierarchy table if it exists
+            rules = tdb.query(HierarchyRule).filter(
+                HierarchyRule.is_active == True
+            ).all()
+            
+            hierarchy_rules = [{
+                "id": rule.id,
+                "parent_level_id": rule.parent_level_id,
+                "child_level_id": rule.child_level_id,
+                "parent_level_name": rule.parent_level.level_name if rule.parent_level else None,
+                "child_level_name": rule.child_level.level_name if rule.child_level else None,
+                "department_id": rule.department_id
+            } for rule in rules]
+            
+        except Exception:
+            # Fallback: return default hierarchy based on level order
+            hierarchy_rules = [
+                {"id": 1, "parent_level_id": 1, "child_level_id": 2, "parent_level_name": "CEO", "child_level_name": "Manager"},
+                {"id": 2, "parent_level_id": 2, "child_level_id": 3, "parent_level_name": "Manager", "child_level_name": "Team Lead"},
+                {"id": 3, "parent_level_id": 3, "child_level_id": 4, "parent_level_name": "Team Lead", "child_level_name": "Employee"}
+            ]
+
+        return {"hierarchy_rules": hierarchy_rules}
+
+# ============================================================
+# GET MANAGERS BY LEVEL 🔒 Protected
+# ============================================================
+@router.get("/users/{tenant_db}/managers-by-level")
+def get_managers_by_level(
+    tenant_db: str,
+    level_id: int,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Fetch managers based on hierarchy rules for a specific level"""
+    logger.info(f"Fetching managers for level {level_id} in tenant {tenant_db}")
+
+    hospital = get_hospital_by_db(db, tenant_db)
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+
+    with tdb:
+        managers = []
+        
+        try:
+            # Query reporting_hierarchy table to get parent_level_id
+            hierarchy_query = tdb.execute(
+                text("SELECT parent_level_id FROM reporting_hierarchy WHERE child_level_id = :level_id AND is_active = 1"),
+                {"level_id": level_id}
+            ).fetchone()
+            
+            if hierarchy_query:
+                parent_level_id = hierarchy_query[0]
+                logger.info(f"Found parent_level_id from DB: {parent_level_id} for level_id: {level_id}")
+                
+                # Get the parent level name from reporting_levels table
+                level_query = tdb.execute(
+                    text("SELECT level_name FROM reporting_levels WHERE id = :parent_id AND is_active = 1"),
+                    {"parent_id": parent_level_id}
+                ).fetchone()
+                
+                if level_query:
+                    parent_level_name = level_query[0]
+                    logger.info(f"Found parent level name: {parent_level_name}")
+                else:
+                    parent_level_name = None
+            else:
+                parent_level_name = None
+                logger.info(f"No hierarchy rule found for level_id: {level_id}")
+            if parent_level_name:
+                logger.info(f"Looking for roles containing: {parent_level_name}")
+                
+                # Find roles that contain the parent level name
+                parent_roles = tdb.query(Role).filter(
+                    Role.name.ilike(f"%{parent_level_name}%")
+                ).all()
+                
+                logger.info(f"Found {len(parent_roles)} matching roles: {[r.name for r in parent_roles]}")
+                
+                if parent_roles:
+                    role_ids = [role.id for role in parent_roles]
+                    users = tdb.query(User).filter(
+                        User.role_id.in_(role_ids),
+                        User.status == "Active"
+                    ).all()
+                    logger.info(f"Found {len(users)} users with matching roles")
+                else:
+                    users = []
+                    logger.info("No matching roles found, returning empty list")
+            else:
+                users = []  # Top level has no managers
+                
+        except Exception as e:
+            logger.error(f"Error in hierarchy lookup: {e}")
+            users = []
+
+        for u in users:
+            role_name = u.role.name if u.role else "No Role"
+            dept_name = u.department.name if u.department else "No Department"
+            
+            managers.append({
+                "id": u.id,
+                "name": u.name,
+                "email": u.email,
+                "role_name": role_name,
+                "department_name": dept_name,
+                "employee_code": getattr(u, 'employee_code', None)
+            })
+
+        return {"managers": managers}

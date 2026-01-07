@@ -648,6 +648,23 @@ class EmployeeExit(MasterBase):
     notes = Column(Text)
     updated_at = Column(DateTime, default=func.now())
 
+# ========================= EIS EXIT CARD =========================
+class EISEmployeeExit(MasterBase):
+    __tablename__ = "eis_employee_exit"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False)
+
+    resignation_date = Column(Date)
+    last_working_day = Column(Date)
+    notice_period = Column(String(10), default="30")
+    reason = Column(Text)
+    exit_interview_date = Column(Date)
+    handover_status = Column(String(50), default="Pending")
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
 # ========================= EXIT CLEARANCE =========================
 class ExitClearance(MasterBase):
     __tablename__ = "exit_clearances"
