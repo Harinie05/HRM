@@ -141,17 +141,23 @@ def apply_leave(
 @router.get("/", response_model=list[LeaveApplicationOut])
 def list_leave_applications(
     db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("view_leave_applications"))
+    user = Depends(get_current_user)
 ):
+    # Check permissions
+    user_permissions = user.get('permissions', [])
+    if 'view_leave_applications' not in user_permissions and 'view_self' not in user_permissions:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     query = db.query(LeaveApplication)
     
-    # Check if user has view_self permission (can only view own records)
-    user_permissions = user.get('permissions', [])
-    if 'view_self' in user_permissions and 'view_leave_applications' not in user_permissions:
-        # User can only view their own records
+    # If user has view_self permission (regardless of other permissions), restrict to own records
+    if 'view_self' in user_permissions:
         current_user_id = user.get('user_id')
         if current_user_id:
             query = query.filter(LeaveApplication.employee_id == current_user_id)
+    # Only if user has view_all_leaves permission, they can see all records
+    elif 'view_all_leaves' in user_permissions:
+        pass  # No filtering - show all records
     
     return query.all()
 
@@ -315,11 +321,15 @@ def initialize_leave_balances(
 def get_leave_balances(
     employee_id: int,
     db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("view_leave_balance"))
+    user = Depends(get_current_user)
 ):
     """Get all leave balances for an employee with pending applications"""
-    # Check if user has view_self permission and restrict to own records
+    # Check permissions
     user_permissions = user.get('permissions', [])
+    if 'view_leave_balance' not in user_permissions and 'view_self' not in user_permissions:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    # If user has view_self permission, restrict to own records
     if 'view_self' in user_permissions:
         current_user_id = user.get('user_id')
         if current_user_id and employee_id != current_user_id:

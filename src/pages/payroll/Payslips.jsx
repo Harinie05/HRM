@@ -20,9 +20,9 @@ export default function Payslips() {
   const { toast, showToast, hideToast } = useToast();
 
   // Permission checks
-  const canView = isAdmin() || hasPermission("view_salary_slips");
+  const canView = isAdmin() || hasPermission("view_salary_slips") || hasPermission("view_self");
   const canGenerate = isAdmin() || hasPermission("generate_salary_slips");
-  const canDownload = isAdmin() || hasPermission("download_salary_slips");
+  const canDownload = isAdmin() || hasPermission("download_salary_slips") || hasPermission("view_self");
   const canEmail = isAdmin() || hasPermission("email_salary_slips");
 
   if (!canView) {

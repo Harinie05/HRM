@@ -405,7 +405,7 @@ export default function LeaveApplications() {
                     <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Duration</th>
                     <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Reason</th>
                     <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                    {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                    {(hasPermission("view_leave_balance") || hasPermission("view_self") || hasPermission("approve_leave")) && (
                       <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                     )}
                   </tr>
@@ -413,7 +413,7 @@ export default function LeaveApplications() {
                 <tbody className="bg-white divide-y divide-gray-100">
                   {filteredApplications.length === 0 ? (
                     <tr>
-                      <td colSpan={hasPermission("view_leave_balance") || hasPermission("approve_leave") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={hasPermission("view_leave_balance") || hasPermission("view_self") || hasPermission("approve_leave") ? "6" : "5"} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center space-y-3">
                           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                             <Calendar className="w-8 h-8 text-gray-400" />
@@ -458,10 +458,10 @@ export default function LeaveApplications() {
                             <div className="text-xs text-gray-500 mt-1">{app.approver_comment}</div>
                           )}
                         </td>
-                        {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                        {(hasPermission("view_leave_balance") || hasPermission("view_self") || hasPermission("approve_leave")) && (
                           <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
                             <div className="flex items-center gap-2">
-                              {hasPermission("view_leave_balance") && (
+                              {(hasPermission("view_leave_balance") || hasPermission("view_self")) && (
                                 <button 
                                   onClick={() => fetchLeaveBalances(app.employee_id)}
                                   className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
@@ -556,9 +556,9 @@ export default function LeaveApplications() {
                       </div>
                     )}
                   </div>
-                  {(hasPermission("view_leave_balance") || hasPermission("approve_leave")) && (
+                  {(hasPermission("view_leave_balance") || hasPermission("view_self") || hasPermission("approve_leave")) && (
                     <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-                      {hasPermission("view_leave_balance") && (
+                      {(hasPermission("view_leave_balance") || hasPermission("view_self")) && (
                         <button 
                           onClick={() => fetchLeaveBalances(app.employee_id)}
                           className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
@@ -595,7 +595,7 @@ export default function LeaveApplications() {
       )}
 
       {/* Stats Footer */}
-      {hasPermission("view_leave_applications") && (
+      {(hasPermission("view_leave_applications") || hasPermission("view_self")) && (
         <div className="px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs sm:text-sm text-gray-600">
             <span className="font-medium text-center sm:text-left">Total: {applications.length} applications</span>

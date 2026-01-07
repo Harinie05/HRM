@@ -20,11 +20,16 @@ export default function PayrollLayout() {
     { name: "Statutory Rules", permission: "view_statutory_rules" },
     { name: "Payroll Run", permission: "view_payroll_run" },
     { name: "Adjustments", permission: "view_payroll_adjustments" },
-    { name: "Salary Slip & Payment", permission: "view_payslips" },
+    { name: "Salary Slip & Payment", permission: ["view_payslips", "view_salary_slips", "view_self"] },
     { name: "Reports & Compliance", permission: "view_payroll_reports" }
   ];
 
-  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
+  const tabs = allTabs.filter(tab => {
+    if (isAdmin()) return true;
+    
+    const permissions = Array.isArray(tab.permission) ? tab.permission : [tab.permission];
+    return permissions.some(perm => hasPermission(perm));
+  }).map(tab => tab.name);
   
   const initialTab = location.state?.tab && tabs.includes(location.state.tab) ? location.state.tab : tabs[0];
   const [tab, setTab] = useState(initialTab);

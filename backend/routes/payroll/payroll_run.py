@@ -246,8 +246,13 @@ async def create_payroll_run_internal(data: dict, request: Request, db: Session)
 @router.get("/runs")
 def get_payroll_runs(
     db: Session = Depends(get_tenant_db),
-    _: dict = Depends(require_permission("view_payroll_run"))
+    user = Depends(get_current_user)
 ):
+    # Check permissions
+    user_permissions = user.get('permissions', [])
+    if 'view_payroll_run' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         create_table_query = text("""
             CREATE TABLE IF NOT EXISTS payroll_runs (
@@ -275,10 +280,18 @@ def get_payroll_runs(
         db.execute(create_table_query)
         db.commit()
         
-        query = text("""
-            SELECT * FROM payroll_runs 
-            ORDER BY created_at DESC
-        """)
+        # Base query
+        base_query = "SELECT * FROM payroll_runs"
+        
+        # If user has view_self or view_salary_slips permission (regardless of other permissions), restrict to own records
+        if ('view_self' in user_permissions or 'view_salary_slips' in user_permissions) and 'view_payroll_run' not in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                base_query += f" WHERE employee_id = '{current_user_id}'"
+        
+        base_query += " ORDER BY created_at DESC"
+        
+        query = text(base_query)
         result = db.execute(query)
         runs = []
         for row in result:
@@ -310,12 +323,23 @@ def get_payroll_runs(
 def download_payslip(
     payroll_id: int,
     db: Session = Depends(get_tenant_db),
-    _: dict = Depends(require_permission("download_salary_slips"))
+    user = Depends(get_current_user)
 ):
+    # Check permissions
+    user_permissions = user.get('permissions', [])
+    if 'download_salary_slips' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         result = db.execute(text("SELECT * FROM payroll_runs WHERE id = :id"), {"id": payroll_id}).fetchone()
         if not result:
             raise HTTPException(404, "Payslip not found")
+        
+        # If user has view_salary_slips or view_self permission, check if they can access this payslip
+        if ('view_salary_slips' in user_permissions or 'view_self' in user_permissions) and 'download_salary_slips' not in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and str(result.employee_id) != str(current_user_id):
+                raise HTTPException(status_code=403, detail="You can only download your own payslips")
         
         # Convert all values to float
         basic_salary = float(result.basic_salary) if result.basic_salary else 0
