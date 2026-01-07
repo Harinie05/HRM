@@ -289,7 +289,7 @@ def debug_education(education_id: int, user=Depends(get_current_user)):
 # 5. DELETE EDUCATION RECORD
 # -------------------------------------------------------------------------
 @router.delete("/{education_id}")
-def delete_education(education_id: int, request: Request, user=Depends(require_permission("delete_employee_education"))):
+def delete_education(education_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     education = db.query(EmployeeEducation).filter(EmployeeEducation.id == education_id).first()

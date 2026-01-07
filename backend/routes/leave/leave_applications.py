@@ -31,6 +31,13 @@ def apply_leave(
         print(f"DEBUG: Received data: {data.dict()}")
         print(f"DEBUG: Employee ID: {employee_id}")
         
+        # Check if user has view_self permission and restrict to own employee_id
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and employee_id != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only apply for leave for yourself")
+        
         # Get employee details - check both User table and allow onboarding employees
         employee = db.query(User).filter(User.id == employee_id).first()  # type: ignore
         if not employee:
@@ -136,7 +143,17 @@ def list_leave_applications(
     db: Session = Depends(get_tenant_db),
     user = Depends(require_permission("view_leave_applications"))
 ):
-    return db.query(LeaveApplication).all()
+    query = db.query(LeaveApplication)
+    
+    # Check if user has view_self permission (can only view own records)
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions and 'view_leave_applications' not in user_permissions:
+        # User can only view their own records
+        current_user_id = user.get('user_id')
+        if current_user_id:
+            query = query.filter(LeaveApplication.employee_id == current_user_id)
+    
+    return query.all()
 
 @router.put("/{leave_id}", response_model=LeaveApplicationOut)
 def update_leave_application(
@@ -301,6 +318,13 @@ def get_leave_balances(
     user = Depends(require_permission("view_leave_balance"))
 ):
     """Get all leave balances for an employee with pending applications"""
+    # Check if user has view_self permission and restrict to own records
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        current_user_id = user.get('user_id')
+        if current_user_id and employee_id != current_user_id:
+            raise HTTPException(status_code=403, detail="You can only view your own leave balances")
+    
     # Get all balances for the employee (works for both User table and onboarding employees)
     balances = db.query(LeaveBalance, LeaveType).join(
         LeaveType, LeaveBalance.leave_type_id == LeaveType.id

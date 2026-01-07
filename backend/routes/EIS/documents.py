@@ -37,7 +37,7 @@ async def upload_document(
     employee_id: str = Form(...),
     document_name: str = Form(...),
     file: UploadFile = File(...),
-    user=Depends(require_permission("add_documents_record"))
+    user=Depends(get_current_user)
 ):
     db = get_tenant_session(user)
     try:
@@ -80,7 +80,7 @@ async def upload_document(
 # 2. GET DOCUMENTS
 # -------------------------------------------------------------------------
 @router.get("/{employee_id}")
-def get_documents(employee_id: str, user=Depends(require_permission("view_documents"))):
+def get_documents(employee_id: str, user=Depends(get_current_user)):
     db = get_tenant_session(user)
     try:
         # Handle employee_id conversion
@@ -113,7 +113,7 @@ def get_documents(employee_id: str, user=Depends(require_permission("view_docume
 # 3. DELETE DOCUMENT
 # -------------------------------------------------------------------------
 @router.delete("/{document_id}")
-def delete_document(document_id: int, request: Request, user=Depends(require_permission("delete_documents_record"))):
+def delete_document(document_id: int, request: Request, user=Depends(get_current_user)):
     db = get_tenant_session(user)
 
     document = db.query(EmployeeDocuments).filter(EmployeeDocuments.id == document_id).first()

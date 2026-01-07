@@ -24,6 +24,13 @@ def create_request(data: dict, request: Request, db: Session = Depends(get_tenan
         else:
             raise HTTPException(status_code=400, detail="Employee ID is required")
         
+        # Check if user has view_self permission and restrict to own records
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and employee_id != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only create training requests for yourself")
+        
         # Handle training_program_id
         training_program_id = data.get('training_program_id')
         if training_program_id == '' or training_program_id is None:
@@ -93,4 +100,14 @@ def approve_request(request_id: int, data: dict, request: Request, db: Session =
         db.rollback()
 @router.get("/", response_model=list[TrainingRequestOut])
 def list_requests(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_requests"))):
-    return db.query(TrainingRequest).all()
+    query = db.query(TrainingRequest)
+    
+    # Check if user has view_self permission (can only view own records)
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions and 'view_training_requests' not in user_permissions:
+        # User can only view their own records
+        current_user_id = user.get('user_id')
+        if current_user_id:
+            query = query.filter(TrainingRequest.employee_id == current_user_id)
+    
+    return query.all()

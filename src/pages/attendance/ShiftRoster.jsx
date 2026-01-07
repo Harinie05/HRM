@@ -40,6 +40,8 @@ export default function ShiftRoster() {
   const [showCreateShift, setShowCreateShift] = useState(false);
   const [newShift, setNewShift] = useState({ name: "", start_time: "", end_time: "" });
   const [selectedUsersForBulk, setSelectedUsersForBulk] = useState([]);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [deletedCount, setDeletedCount] = useState(0);
   const [showInactiveShifts, setShowInactiveShifts] = useState(false);
   
   // On-Call Duty States
@@ -67,10 +69,14 @@ export default function ShiftRoster() {
   });
 
   useEffect(() => {
+    const fetchData = async () => {
+      await fetchDepartments(); // Fetch departments first
+      await fetchEmployees(); // Then fetch employees so department lookup works
+    };
+    
     fetchShifts();
-    fetchEmployees();
+    fetchData();
     fetchNightShiftRules();
-    fetchDepartments();
     fetchRoles();
     fetchUsers();
     fetchOnCallDuties();
@@ -78,8 +84,13 @@ export default function ShiftRoster() {
   }, [showInactiveShifts]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      await fetchDepartments();
+      await fetchEmployees();
+    };
+    fetchData();
     fetchRosterData();
-  }, [currentDate, viewMode, selectedDepartment]);
+  }, [currentDate, viewMode, selectedDepartment, showDeleted]);
 
   useEffect(() => {
     // Load all users by default to show in calendar
@@ -157,7 +168,7 @@ export default function ShiftRoster() {
         email: emp.candidate_email || 'N/A',
         designation: emp.job_title,
         department_name: emp.department,
-        employee_code: emp.employee_id,
+        employee_code: emp.employee_id, // Use employee_id from onboarding_candidates
         joining_date: emp.joining_date,
         work_location: emp.work_location,
         reporting_manager: emp.reporting_manager,
@@ -168,20 +179,29 @@ export default function ShiftRoster() {
       // Process user management employees (users with employee codes)
       const userEmployeeData = userEmployees
         .filter(user => user.employee_code)
-        .map(user => ({
-          id: `user_${user.id}`,
-          original_user_id: user.id,
-          name: user.name,
-          email: user.email,
-          designation: user.designation || 'N/A',
-          department_name: user.department_name,
-          employee_code: user.employee_code,
-          joining_date: user.joining_date,
-          work_location: 'N/A',
-          reporting_manager: 'N/A',
-          status: user.status || 'Active',
-          source: 'user_management'
-        }));
+        .map(user => {
+          // Find department name from departments array if department_id exists
+          let departmentName = user.department_name;
+          if (!departmentName && user.department_id) {
+            const dept = departments.find(d => d.id === user.department_id);
+            departmentName = dept ? dept.name : 'Unknown';
+          }
+          
+          return {
+            id: `user_${user.id}`,
+            original_user_id: user.id,
+            name: user.name,
+            email: user.email,
+            designation: user.designation || 'N/A',
+            department_name: departmentName || 'No Department',
+            employee_code: user.employee_code, // Use employee_code from users table
+            joining_date: user.joining_date,
+            work_location: 'N/A',
+            reporting_manager: 'N/A',
+            status: user.status || 'Active',
+            source: 'user_management'
+          };
+        });
       
       // Combine and remove duplicates (prefer user management data for same employee codes)
       const allEmployees = [...onboardedData];
@@ -216,7 +236,7 @@ export default function ShiftRoster() {
       const startDate = dates[0];
       const endDate = dates[dates.length - 1];
       
-      const url = `http://localhost:8000/api/roster/schedule?start_date=${startDate}&end_date=${endDate}${selectedDepartment ? `&department=${selectedDepartment}` : ''}`;
+      const url = `http://localhost:8000/api/roster/schedule?start_date=${startDate}&end_date=${endDate}${selectedDepartment ? `&department=${selectedDepartment}` : ''}${showDeleted ? '&show_deleted=true' : ''}`;
       
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -226,36 +246,84 @@ export default function ShiftRoster() {
         const data = await response.json();
         console.log("Roster data received:", data);
         setRosterData(data.roster || []);
+        setDeletedCount(data.deleted_count || 0);
         
-        // Auto-populate allocated users from roster data
-        if (data.roster && data.roster.length > 0) {
-          const uniqueUsers = data.roster.reduce((acc, entry) => {
-            if (!acc.find(u => u.id === entry.employee_id)) {
-              acc.push({
-                id: entry.employee_id,
-                name: entry.employee_name || `User ${entry.employee_id}`,
-                department_name: entry.department || "Unknown",
-                role_name: "Unknown",
-                roster: {}
-              });
-            }
-            return acc;
-          }, []);
+        // Create a stable mapping of employee IDs to preserve identity
+        const employeeMapping = new Map();
+        
+        // First, populate mapping from existing allocated users (highest priority)
+        allocatedUsers.forEach(user => {
+          const key = user.id.toString();
+          employeeMapping.set(key, {
+            id: user.id,
+            name: user.name,
+            employee_code: user.employee_code,
+            department_name: user.department_name,
+            designation: user.designation
+          });
+        });
+        
+        // Then add from employees list if not already mapped
+        employees.forEach(emp => {
+          const key = emp.id.toString();
+          const userKey = emp.original_user_id ? emp.original_user_id.toString() : null;
           
-          // Populate roster data from schedule
+          if (!employeeMapping.has(key)) {
+            employeeMapping.set(key, {
+              id: emp.id,
+              name: emp.name,
+              employee_code: emp.employee_code,
+              department_name: emp.department_name,
+              designation: emp.designation
+            });
+          }
+          
+          if (userKey && !employeeMapping.has(userKey)) {
+            employeeMapping.set(userKey, {
+              id: emp.id,
+              name: emp.name,
+              employee_code: emp.employee_code,
+              department_name: emp.department_name,
+              designation: emp.designation
+            });
+          }
+        });
+        
+        // Process roster data using stable mapping
+        const rosterUsers = [];
+        
+        if (data.roster && data.roster.length > 0) {
           data.roster.forEach(empData => {
-            const user = uniqueUsers.find(u => u.id === empData.employee_id);
-            if (user && empData.schedule) {
+            const empId = empData.employee_id.toString();
+            const mappedEmployee = employeeMapping.get(empId);
+            
+            // Use mapped employee data if available, otherwise use API data
+            const user = {
+              id: empData.employee_id,
+              name: mappedEmployee?.name || empData.employee_name || `User ${empData.employee_id}`,
+              department_name: mappedEmployee?.department_name || empData.department || "Unknown",
+              employee_code: mappedEmployee?.employee_code || empData.employee_code || empData.employee_id,
+              designation: mappedEmployee?.designation || "Unknown",
+              roster: {},
+              is_deleted: empData.is_deleted || false
+            };
+            
+            // Set roster data for this user from API response
+            if (empData.schedule) {
               empData.schedule.forEach(dayData => {
                 if (dayData.shift_id) {
                   user.roster[dayData.date] = dayData.shift_id;
+                } else if (dayData.status === "OFF") {
+                  user.roster[dayData.date] = "OFF";
                 }
               });
             }
+            
+            rosterUsers.push(user);
           });
-          
-          setAllocatedUsers(uniqueUsers);
         }
+        
+        setAllocatedUsers(rosterUsers);
       } else {
         console.error("Failed to fetch roster data:", await response.text());
       }
@@ -394,11 +462,30 @@ export default function ShiftRoster() {
     }
   };
 
-  const saveRosterEntry = async (employeeId, date, shiftId, status = "Scheduled") => {
+  const saveRosterEntry = async (employeeId, date, shiftId, status = "Scheduled", employeeName = null, employeeCode = null) => {
     try {
       const token = localStorage.getItem("access_token");
-      console.log("Attempting to save roster entry:", { employeeId, date, shiftId, status });
-      console.log("Using token:", token ? "Token exists" : "No token");
+      console.log("Attempting to save roster entry:", { employeeId, date, shiftId, status, employeeName, employeeCode });
+      
+      // Convert employee ID to integer if it's a string with "user_" prefix
+      let actualEmployeeId = employeeId;
+      if (typeof employeeId === 'string' && employeeId.startsWith('user_')) {
+        actualEmployeeId = parseInt(employeeId.replace('user_', ''));
+      } else {
+        actualEmployeeId = parseInt(employeeId);
+      }
+      
+      // Find employee details if not provided
+      if (!employeeName || !employeeCode) {
+        const user = allocatedUsers.find(u => u.id === employeeId);
+        if (user) {
+          employeeName = employeeName || user.name;
+          employeeCode = employeeCode || user.employee_code;
+        }
+      }
+      
+      console.log("Converted employee ID:", actualEmployeeId);
+      console.log("Using employee details:", { employeeName, employeeCode });
       
       const response = await fetch("http://localhost:8000/api/roster/save", {
         method: "POST",
@@ -407,10 +494,12 @@ export default function ShiftRoster() {
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          employee_id: employeeId,
+          employee_id: actualEmployeeId,
           date: date,
           shift_id: shiftId,
-          status: status
+          status: status,
+          employee_name: employeeName,
+          employee_code: employeeCode
         })
       });
       
@@ -473,13 +562,57 @@ export default function ShiftRoster() {
     return employees; // Show all employees, don't filter out allocated ones
   };
 
-  const addEmployeeToRoster = () => {
-    if (!selectedUser) return;
+  const addEmployeeToRoster = async () => {
+    console.log('Add to roster clicked, selectedUser:', selectedUser);
+    console.log('Available employees:', employees.length);
+    
+    if (!selectedUser) {
+      console.log('No user selected');
+      return;
+    }
     
     const employee = employees.find(e => e.id == selectedUser);
+    console.log('Found employee:', employee);
+    
     if (employee && !allocatedUsers.find(allocated => allocated.id === employee.id)) {
-      setAllocatedUsers([...allocatedUsers, { ...employee, roster: {} }]);
+      // Preserve the original employee code and ensure it doesn't change
+      const newUser = { 
+        ...employee, 
+        roster: {},
+        // Ensure employee_code is preserved from the original employee data
+        employee_code: employee.employee_code || employee.id,
+        // Keep original ID structure
+        original_employee_id: employee.id
+      };
+      console.log('Adding user to roster:', newUser);
+      setAllocatedUsers([...allocatedUsers, newUser]);
       setSelectedUser("");
+      
+      // Save a placeholder roster entry to persist the employee in the database
+      try {
+        let actualEmployeeId = employee.id;
+        if (typeof employee.id === 'string' && employee.id.startsWith('user_')) {
+          actualEmployeeId = parseInt(employee.id.replace('user_', ''));
+        } else {
+          actualEmployeeId = parseInt(employee.id);
+        }
+        
+        // Save a placeholder entry for today to ensure employee is in database
+        const today = new Date().toISOString().split('T')[0];
+        await saveRosterEntry(actualEmployeeId, today, null, "Unscheduled", employee.name, employee.employee_code);
+        
+        showToast(`${employee.name} added to roster successfully!`);
+      } catch (error) {
+        console.error('Error saving employee to roster:', error);
+        showToast(`${employee.name} added to roster but may not persist after refresh`, 'warning');
+      }
+    } else {
+      console.log('Employee already in roster or not found');
+      if (!employee) {
+        showToast('Employee not found', 'error');
+      } else {
+        showToast('Employee already in roster', 'error');
+      }
     }
   };
 
@@ -491,35 +624,95 @@ export default function ShiftRoster() {
     
     const start = new Date(bulkDateRange.start);
     const end = new Date(bulkDateRange.end);
-    const updatedUsers = [...allocatedUsers];
     
-    // Save each entry to database
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const dateStr = new Date(d).toISOString().split('T')[0];
+    try {
+      // Create a copy of allocated users to preserve original data
+      const updatedUsers = allocatedUsers.map(user => ({
+        ...user,
+        roster: { ...user.roster }, // Deep copy roster
+        employee_code: user.employee_code || user.id // Preserve employee code
+      }));
       
-      for (const user of updatedUsers) {
-        if (selectedUsersForBulk.includes(user.id)) {
-          if (!user.roster) user.roster = {};
-          user.roster[dateStr] = bulkShift;
-          
-          // Save to database
-          const shiftId = bulkShift === "OFF" ? null : parseInt(bulkShift);
-          const status = bulkShift === "OFF" ? "OFF" : "Scheduled";
-          await saveRosterEntry(user.id, dateStr, shiftId, status);
+      // Save each entry to database and update local state
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        const dateStr = new Date(d).toISOString().split('T')[0];
+        
+        for (const user of updatedUsers) {
+          if (selectedUsersForBulk.includes(user.id)) {
+            if (!user.roster) user.roster = {};
+            user.roster[dateStr] = bulkShift;
+            
+            // Convert user ID to proper format for backend
+            let actualUserId = user.id;
+            if (typeof user.id === 'string' && user.id.startsWith('user_')) {
+              actualUserId = parseInt(user.id.replace('user_', ''));
+            } else {
+              actualUserId = parseInt(user.id);
+            }
+            
+            // Save to database
+            const shiftId = bulkShift === "OFF" ? null : parseInt(bulkShift);
+            const status = bulkShift === "OFF" ? "OFF" : "Scheduled";
+            await saveRosterEntry(actualUserId, dateStr, shiftId, status, user.name, user.employee_code);
+          }
         }
       }
+      
+      // Update state with preserved employee codes and roster data
+      setAllocatedUsers(updatedUsers);
+      
+      setBulkShift("");
+      setSelectedUsersForBulk([]);
+      
+      showToast(`Bulk shift allocation completed successfully!`);
+      
+      // Refresh roster data to ensure consistency
+      setTimeout(() => {
+        fetchRosterData();
+      }, 500);
+      
+    } catch (error) {
+      console.error('Error in bulk allocation:', error);
+      showToast('Error during bulk allocation', 'error');
     }
-    
-    setAllocatedUsers(updatedUsers);
-    setBulkShift("");
-    setSelectedUsersForBulk([]);
-    
-    // Refresh roster data to show updated entries
-    fetchRosterData();
   };
 
-  const removeUserFromRoster = (userId) => {
-    setAllocatedUsers(allocatedUsers.filter(user => user.id !== userId));
+  const removeUserFromRoster = async (userId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      
+      // Convert user ID to proper format for backend
+      let actualUserId = userId;
+      if (typeof userId === 'string' && userId.startsWith('user_')) {
+        actualUserId = parseInt(userId.replace('user_', ''));
+      } else {
+        actualUserId = parseInt(userId);
+      }
+      
+      // Soft delete all roster entries for this employee
+      const response = await fetch(`http://localhost:8000/api/roster/remove-employee/${actualUserId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        // Remove from frontend state
+        setAllocatedUsers(allocatedUsers.filter(user => user.id !== userId));
+        showToast("Employee removed from roster successfully!");
+        
+        // Refresh roster data
+        await fetchRosterData();
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to remove employee:", errorText);
+        showToast("Error removing employee from roster", 'error');
+      }
+    } catch (error) {
+      console.error("Error removing user from roster:", error);
+      showToast("Error removing employee from roster", 'error');
+    }
   };
 
   const updateUserRoster = (userId, date, shiftId) => {
@@ -530,7 +723,9 @@ export default function ShiftRoster() {
           roster: {
             ...user.roster,
             [date]: shiftId
-          }
+          },
+          // Preserve employee code during updates
+          employee_code: user.employee_code || user.original_employee_id || user.id
         };
       }
       return user;
@@ -834,6 +1029,15 @@ export default function ShiftRoster() {
                 />
                 <span className="text-gray-700">Show inactive shifts</span>
               </label>
+              <label className="flex items-center space-x-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={showDeleted}
+                  onChange={(e) => setShowDeleted(e.target.checked)}
+                  className="rounded border border-black"
+                />
+                <span className="text-gray-700">Show Deleted ({deletedCount})</span>
+              </label>
               {(isAdmin() || hasPermission("CREATE_SHIFTS")) && (
                 <button
                   onClick={() => setShowCreateShift(true)}
@@ -966,60 +1170,64 @@ export default function ShiftRoster() {
         </div>
 
         {/* Bulk Shift Allocation */}
-        {allocatedUsers.length > 0 && (
+        {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
           <div className="mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-black">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
               <Settings className="w-5 h-5 text-gray-600" />
               Bulk Shift Allocation
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                <input
-                  type="date"
-                  value={bulkDateRange.start}
-                  onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
-                  className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                />
+            {allocatedUsers.length === 0 ? (
+              <div className="text-center py-6 text-gray-500">
+                <p className="text-sm">Add employees to the roster first to use bulk shift allocation</p>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                <input
-                  type="date"
-                  value={bulkDateRange.end}
-                  onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
-                  className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Shift</label>
-                <select
-                  value={bulkShift}
-                  onChange={(e) => setBulkShift(e.target.value)}
-                  className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                >
-                  <option value="">Select Shift</option>
-                  {shifts.map((shift) => (
-                    <option key={shift.id} value={shift.id}>{shift.name}</option>
-                  ))}
-                  <option value="OFF">OFF</option>
-                </select>
-              </div>
-              
-              {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                  <input
+                    type="date"
+                    value={bulkDateRange.start}
+                    onChange={(e) => setBulkDateRange({...bulkDateRange, start: e.target.value})}
+                    className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                  <input
+                    type="date"
+                    value={bulkDateRange.end}
+                    onChange={(e) => setBulkDateRange({...bulkDateRange, end: e.target.value})}
+                    className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Shift</label>
+                  <select
+                    value={bulkShift}
+                    onChange={(e) => setBulkShift(e.target.value)}
+                    className="w-full px-4 py-2 bg-white border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <option value="">Select Shift</option>
+                    {shifts.map((shift) => (
+                      <option key={shift.id} value={shift.id}>{shift.name}</option>
+                    ))}
+                    <option value="OFF">OFF</option>
+                  </select>
+                </div>
+                
                 <div className="flex items-end">
                   <button
                     onClick={bulkAllocateShifts}
-                    disabled={!bulkShift}
+                    disabled={!bulkShift || selectedUsersForBulk.length === 0}
                     className="w-full px-4 py-2 bg-black border border-black text-white hover:bg-gray-800 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Apply to Selected ({selectedUsersForBulk.length})
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1135,13 +1343,23 @@ export default function ShiftRoster() {
                       <div className="flex flex-col items-center gap-3">
                         <Calendar size={48} className="text-gray-300" />
                         <p className="text-lg font-medium">No employees in roster</p>
-                        <p className="text-sm">Add employees above to start scheduling shifts</p>
+                        <div className="text-sm space-y-1">
+                          <p>Add employees above to start scheduling shifts</p>
+                          {hasPermission("view_self") && !isAdmin() && !hasPermission("MANAGE_ROSTER") && (
+                            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                              <p className="text-blue-800 font-medium">You have view_self permission</p>
+                              <p className="text-blue-600 text-xs">You can only see your own roster entries. If you don't see any data, ask your admin to add you to the roster.</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   allocatedUsers.map((user, index) => (
-                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
+                    <tr key={user.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors ${
+                      user.is_deleted ? 'bg-red-50 border-l-4 border-red-400' : ''
+                    }`}>
                       <td className="px-2 py-4 text-center border-r border-black">
                         <input
                           type="checkbox"
@@ -1162,8 +1380,12 @@ export default function ShiftRoster() {
                             {user.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-semibold text-gray-900">{user.name}</div>
-                            <div className="text-sm text-gray-600">{user.department_name} • {user.role_name}</div>
+                            <div className={`font-semibold ${user.is_deleted ? 'text-red-700' : 'text-gray-900'}`}>
+                              {user.name} {user.is_deleted && '(Deleted)'}
+                            </div>
+                            <div className={`text-sm ${user.is_deleted ? 'text-red-600' : 'text-gray-600'}`}>
+                              {user.employee_code || user.original_employee_id || user.id}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -1183,9 +1405,18 @@ export default function ShiftRoster() {
                                 onChange={async (e) => {
                                   const shiftId = e.target.value ? parseInt(e.target.value) : null;
                                   const status = e.target.value === "OFF" ? "OFF" : "Scheduled";
-                                  console.log('Saving roster:', { userId: user.id, date, shiftId, status });
+                                  
+                                  // Convert user ID to proper format for backend
+                                  let actualUserId = user.id;
+                                  if (typeof user.id === 'string' && user.id.startsWith('user_')) {
+                                    actualUserId = parseInt(user.id.replace('user_', ''));
+                                  } else {
+                                    actualUserId = parseInt(user.id);
+                                  }
+                                  
+                                  console.log('Saving roster:', { userId: actualUserId, date, shiftId, status });
                                   updateUserRoster(user.id, date, e.target.value);
-                                  await saveRosterEntry(user.id, date, shiftId, status);
+                                  await saveRosterEntry(actualUserId, date, shiftId, status, user.name, user.employee_code);
                                   setEditingCell(null);
                                 }}
                                 onBlur={() => setEditingCell(null)}
@@ -1219,8 +1450,16 @@ export default function ShiftRoster() {
                                 {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
                                   <button
                                     onClick={async () => {
+                                      // Convert user ID to proper format for backend
+                                      let actualUserId = user.id;
+                                      if (typeof user.id === 'string' && user.id.startsWith('user_')) {
+                                        actualUserId = parseInt(user.id.replace('user_', ''));
+                                      } else {
+                                        actualUserId = parseInt(user.id);
+                                      }
+                                      
                                       updateUserRoster(user.id, date, "");
-                                      await saveRosterEntry(user.id, date, null, "Unscheduled");
+                                      await saveRosterEntry(actualUserId, date, null, "Unscheduled", user.name, user.employee_code);
                                     }}
                                     className="text-xs text-gray-600 hover:text-gray-800 mt-1"
                                   >
@@ -1249,9 +1488,13 @@ export default function ShiftRoster() {
                         {(isAdmin() || hasPermission("MANAGE_ROSTER")) && (
                           <button 
                             onClick={() => removeUserFromRoster(user.id)}
-                            className="px-3 py-1.5 bg-white border border-black text-gray-900 text-xs rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                            className={`px-3 py-1.5 border text-xs rounded-lg font-medium transition-colors ${
+                              user.is_deleted 
+                                ? 'bg-green-50 border-green-500 text-green-700 hover:bg-green-100' 
+                                : 'bg-white border-black text-gray-900 hover:bg-gray-50'
+                            }`}
                           >
-                            Remove
+                            {user.is_deleted ? 'Restore' : 'Remove'}
                           </button>
                         )}
                       </td>

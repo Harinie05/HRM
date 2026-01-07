@@ -57,6 +57,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_employee", "description": "Can add new employees"},
     {"name": "edit_employee", "description": "Can edit employee information"},
     {"name": "export_employee_data", "description": "Can export employee data"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
 
     # =====================================================
@@ -172,7 +173,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_consultant", "description": "Can add consultant"},
     {"name": "edit_consultant", "description": "Can edit consultant"},
     {"name": "delete_consultant", "description": "Can delete/deactivate consultant"},
-
+   
     # Availability Management
     {"name": "view_availability", "description": "Can view consultant availability"},
     {"name": "add_availability", "description": "Can add consultant availability"},
@@ -182,6 +183,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "generate_payslip", "description": "Can generate payslips"},
     {"name": "send_payslip_email", "description": "Can send payslip emails"},
     {"name": "process_payroll", "description": "Can process payroll"},
+   
 
 
     # =====================================================
@@ -192,6 +194,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "apply_resignation", "description": "Can apply for resignation"},
     {"name": "view_resignations", "description": "Can view resignation applications"},
     {"name": "approve_resignation", "description": "Can approve resignation applications"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Exit Process Actions
     {"name": "manage_handover", "description": "Can manage handover process"},
@@ -285,6 +288,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_training_request", "description": "Can add training requests"},
     {"name": "approve_training_request", "description": "Can approve training requests"},
     {"name": "reject_training_request", "description": "Can reject training requests"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Attendance & Assessment
     {"name": "view_training_attendance", "description": "Can view training attendance"},
@@ -298,6 +302,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "generate_training_certificate", "description": "Can generate training certificates"},
     {"name": "download_training_certificate", "description": "Can download training certificates"},
     {"name": "email_training_certificate", "description": "Can email training certificates"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # =====================================================
     # 📊 PERFORMANCE MANAGEMENT SYSTEM
@@ -311,9 +316,11 @@ DEFAULT_PERMISSIONS = [
     {"name": "restore_work_assignment", "description": "Can restore deleted work assignments"},
     {"name": "view_my_assignments", "description": "Can view own assignments"},
     {"name": "assign_to_employees", "description": "Can assign work to employees"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Goals & KPI (Read-Only Auto-Calculated)
     {"name": "view_goals_kpi", "description": "Can view goals and KPIs"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Review Cycle
     {"name": "view_review_cycles", "description": "Can view performance review cycles"},
@@ -336,6 +343,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_feedback", "description": "Can delete performance feedback"},
     {"name": "restore_feedback", "description": "Can restore deleted performance feedback"},
     {"name": "show_deleted_feedback", "description": "Can access show deleted feedback button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Appraisal
     {"name": "view_appraisals", "description": "Can view performance appraisals"},
@@ -347,6 +355,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_appraisal", "description": "Can delete performance appraisals"},
     {"name": "restore_appraisal", "description": "Can restore deleted performance appraisals"},
     {"name": "show_deleted_appraisals", "description": "Can access show deleted appraisals button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Quality Indicators
     {"name": "view_quality_indicators", "description": "Can view quality performance indicators"},
@@ -371,6 +380,8 @@ DEFAULT_PERMISSIONS = [
     {"name": "MANAGE_ROSTER", "description": "Can create and modify employee roster assignments"},
     {"name": "MANAGE_NIGHT_SHIFT_RULES", "description": "Can configure night shift rules and policies"},
     {"name": "MANAGE_ON_CALL_DUTY", "description": "Can manage on-call duty assignments"},
+    {"name": "view_weekly_roster", "description": "Can view weekly roster calendar"},
+    {"name": "manage_weekly_roster", "description": "Can manage weekly roster assignments"},
 
     # =====================================================
     # 🕐 ATTENDANCE MANAGEMENT
@@ -385,6 +396,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_attendance_reports", "description": "Can view attendance reports"},
     {"name": "generate_attendance_reports", "description": "Can generate attendance reports"},
     {"name": "export_attendance_data", "description": "Can export attendance data"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Punch Logs
     {"name": "view_punch_logs", "description": "Can view employee punch logs"},
@@ -393,6 +405,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_daily_punch_logs", "description": "Can view daily punch logs"},
     {"name": "punch_in", "description": "Can punch in for attendance"},
     {"name": "punch_out", "description": "Can punch out for attendance"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # GPS & Location Tracking
     {"name": "view_gps_tracking", "description": "Can view GPS location tracking"},
@@ -406,6 +419,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "approve_regularization", "description": "Can approve regularization requests"},
     {"name": "reject_regularization", "description": "Can reject regularization requests"},
     {"name": "smart_regularization", "description": "Can use smart regularization features"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # OD Applications (On Duty)
     {"name": "view_od_applications", "description": "Can view on-duty applications"},
@@ -413,6 +427,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "approve_od", "description": "Can approve on-duty applications"},
     {"name": "reject_od", "description": "Can reject on-duty applications"},
     {"name": "edit_od_applications", "description": "Can edit on-duty applications"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Live Updates & Real-time Features
     {"name": "view_live_attendance", "description": "Can view live attendance updates"},
@@ -438,6 +453,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_daily_update", "description": "Can add daily work updates"},
     {"name": "edit_daily_update", "description": "Can edit daily work updates"},
     {"name": "delete_daily_update", "description": "Can delete daily work updates"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # =====================================================
     # 🏢 HR OPERATIONS & WORKFORCE MANAGEMENT
@@ -473,6 +489,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "escalate_grievance", "description": "Can escalate employee grievances"},
     {"name": "restore_grievance", "description": "Can restore deleted grievances"},
     {"name": "show_deleted_grievances", "description": "Can access show deleted grievances button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Assets
     {"name": "view_assets", "description": "Can view company assets"},
@@ -486,6 +503,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "reject_asset", "description": "Can reject asset assignments"},
     {"name": "restore_asset", "description": "Can restore deleted assets"},
     {"name": "show_deleted_assets", "description": "Can access show deleted assets button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Insurance & Benefits
     {"name": "view_insurance_benefits", "description": "Can view insurance and benefits"},
@@ -503,6 +521,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_employee_documents", "description": "Can view employee documents"},
     {"name": "upload_employee_documents", "description": "Can upload employee documents"},
     {"name": "delete_employee_documents", "description": "Can delete employee documents"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Employment Details
     {"name": "view_employment_details", "description": "Can view employment details"},
@@ -584,6 +603,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "email_salary_slips", "description": "Can email salary slips"},
     {"name": "process_payments", "description": "Can process salary payments"},
     {"name": "view_payment_status", "description": "Can view payment status"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Reports & Compliance
     {"name": "view_payroll_reports", "description": "Can view payroll reports"},
@@ -624,6 +644,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "reject_leave", "description": "Can reject leave applications"},
     {"name": "view_team_leaves", "description": "Can view team leave applications"},
     {"name": "view_all_leaves", "description": "Can view all employee leave applications"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Leave Calendar
     {"name": "view_leave_calendar", "description": "Can view leave calendar"},

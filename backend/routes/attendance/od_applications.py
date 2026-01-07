@@ -33,6 +33,13 @@ class ODApplicationOut(BaseModel):
 @router.post("/", response_model=ODApplicationOut)
 def create_od_application(data: ODApplicationCreate, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("apply_od"))):
     try:
+        # Check if user has view_self permission and restrict to own employee_id
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and data.employee_id != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only create OD applications for yourself")
+        
         query = text("""
             INSERT INTO od_applications (employee_id, od_date, purpose, from_time, to_time, location, status, created_at)
             VALUES (:employee_id, :od_date, :purpose, :from_time, :to_time, :location, 'pending', NOW())
@@ -79,7 +86,15 @@ def get_od_applications(employee_id: Optional[int] = None, status: Optional[str]
         query = "SELECT * FROM od_applications WHERE 1=1"
         params = {}
         
-        if employee_id:
+        # Check if user has view_self permission (can only view own records)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            # User can only view their own records
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query += " AND employee_id = :current_user_id"
+                params['current_user_id'] = current_user_id
+        elif employee_id:
             query += " AND employee_id = :employee_id"
             params['employee_id'] = employee_id
             

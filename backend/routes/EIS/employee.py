@@ -34,6 +34,13 @@ router = APIRouter(prefix="/employee", tags=["Employee Management"])
 def get_employee_profile(employee_id: int, user=Depends(require_permission("view_employee_profile"))):
     db = get_tenant_session(user)
     
+    # Check if user has view_self permission (can only view own profile)
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        current_user_id = user.get('user_id')
+        if current_user_id and employee_id != current_user_id:
+            raise HTTPException(status_code=403, detail="You can only view your own profile")
+    
     # Get employee from onboarding records
     from models.models_tenant import OnboardingCandidate, Candidate
     
@@ -313,3 +320,94 @@ def soft_delete_employee(
         return {"message": "Employee soft deleted successfully"}
     
     raise HTTPException(404, "Employee not found")
+
+# -------------------------------------------------------------------------
+# 9. GET AVAILABLE EIS MODULES (NO PERMISSIONS REQUIRED)
+# -------------------------------------------------------------------------
+@router.get("/modules")
+def get_eis_modules(user=Depends(get_current_user)):
+    """Get all available EIS modules - no permissions required"""
+    modules = [
+        {
+            "id": "education",
+            "name": "Education",
+            "description": "Academic Details",
+            "icon": "education",
+            "available": True
+        },
+        {
+            "id": "experience",
+            "name": "Experience",
+            "description": "Work History",
+            "icon": "experience",
+            "available": True
+        },
+        {
+            "id": "skills",
+            "name": "Skills",
+            "description": "Technical Skills",
+            "icon": "skills",
+            "available": True
+        },
+        {
+            "id": "certifications",
+            "name": "Certifications",
+            "description": "Professional Certs",
+            "icon": "certifications",
+            "available": True
+        },
+        {
+            "id": "family",
+            "name": "Family",
+            "description": "Family Details",
+            "icon": "family",
+            "available": True
+        },
+        {
+            "id": "medical",
+            "name": "Medical",
+            "description": "Health Records",
+            "icon": "medical",
+            "available": True
+        },
+        {
+            "id": "documents",
+            "name": "ID Documents",
+            "description": "Identity Docs",
+            "icon": "documents",
+            "available": True
+        },
+        {
+            "id": "salary",
+            "name": "Salary",
+            "description": "Compensation",
+            "icon": "salary",
+            "available": True
+        },
+        {
+            "id": "bank_details",
+            "name": "Bank Details",
+            "description": "Banking Info",
+            "icon": "bank",
+            "available": True
+        },
+        {
+            "id": "reporting",
+            "name": "Reporting",
+            "description": "Manager & Hierarchy",
+            "icon": "reporting",
+            "available": True
+        },
+        {
+            "id": "exit",
+            "name": "Exit",
+            "description": "Exit Process",
+            "icon": "exit",
+            "available": True
+        }
+    ]
+    
+    return {
+        "modules": modules,
+        "message": "All EIS modules are available without permission restrictions"
+    }

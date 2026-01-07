@@ -3,7 +3,7 @@ import { Plus, Search, Check, X, Eye, Filter, Calendar } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
-import { hasPermission } from "../../utils/permissions";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveApplications() {
   const { toast, showToast } = useToast();
@@ -60,6 +60,19 @@ export default function LeaveApplications() {
     to_date: "",
     reason: ""
   });
+
+  // Auto-populate current user when employees are loaded (only for non-admin users)
+  useEffect(() => {
+    if (employees.length > 0 && !isAdmin()) {
+      const currentUserId = localStorage.getItem('user_id');
+      if (currentUserId && !formData.employee_id) {
+        const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
+        if (currentUserEmployee) {
+          setFormData(prev => ({ ...prev, employee_id: currentUserId }));
+        }
+      }
+    }
+  }, [employees]);
 
   useEffect(() => {
     fetchApplications();
@@ -276,8 +289,9 @@ export default function LeaveApplications() {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    const currentUserId = localStorage.getItem('user_id');
     setFormData({
-      employee_id: "",
+      employee_id: currentUserId || "",
       leave_type_id: "",
       policy_id: "",
       from_date: "",
@@ -321,7 +335,18 @@ export default function LeaveApplications() {
           <div className="flex justify-center sm:justify-end gap-3">
             {hasPermission("apply_leave") && (
               <button 
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                  const currentUserId = localStorage.getItem('user_id');
+                  setFormData({
+                    employee_id: currentUserId || "",
+                    leave_type_id: "",
+                    policy_id: "",
+                    from_date: "",
+                    to_date: "",
+                    reason: ""
+                  });
+                  setShowModal(true);
+                }}
                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                 className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
@@ -591,19 +616,31 @@ export default function LeaveApplications() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
-                <select
-                  value={formData.employee_id}
-                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select Employee ({employees.length} available)</option>
-                  {employees.map(emp => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.employee_code || `EMP${emp.id}`} - {emp.name}
-                    </option>
-                  ))}
-                </select>
+                {isAdmin() ? (
+                  <select
+                    value={formData.employee_id}
+                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map(emp => (
+                      <option key={emp.id} value={emp.id}>
+                        {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="w-full border border-black rounded-lg px-3 py-2 bg-gray-50 text-gray-700">
+                    {(() => {
+                      const currentUserId = localStorage.getItem('user_id');
+                      const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
+                      return currentUserEmployee ? 
+                        `${currentUserEmployee.employee_code || `EMP${currentUserEmployee.id}`} - ${currentUserEmployee.name}` : 
+                        'Loading...';
+                    })()}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Leave Policy</label>

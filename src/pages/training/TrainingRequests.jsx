@@ -23,6 +23,23 @@ export default function TrainingRequests() {
     justification: "",
     priority: "Medium"
   });
+
+  // Auto-populate current user when employees are loaded (only for non-admin users)
+  useEffect(() => {
+    if (employees.length > 0 && !isAdmin()) {
+      const currentUserId = localStorage.getItem('user_id');
+      if (currentUserId && !formData.employee_id) {
+        const currentUserEmployee = employees.find(emp => {
+          if (emp.id == currentUserId) return true;
+          if (emp.original_user_id == currentUserId) return true;
+          return false;
+        });
+        if (currentUserEmployee) {
+          setFormData(prev => ({ ...prev, employee_id: currentUserEmployee.id }));
+        }
+      }
+    }
+  }, [employees]);
   const [approvalData, setApprovalData] = useState({
     action: "",
     comment: ""
@@ -515,19 +532,33 @@ export default function TrainingRequests() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-                  <select
-                    value={formData.employee_id}
-                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
-                    required
-                  >
-                    <option value="">Select Employee</option>
-                    {employees.map(employee => (
-                      <option key={employee.id} value={employee.id}>
-                        {employee.name} ({employee.employee_code || employee.id})
-                      </option>
-                    ))}
-                  </select>
+                  {isAdmin() ? (
+                    <select
+                      value={formData.employee_id}
+                      onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      required
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.map(employee => (
+                        <option key={employee.id} value={employee.id}>
+                          {employee.name} ({employee.employee_code || employee.id})
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="w-full px-3 py-2 border border-black rounded-lg bg-gray-50 text-gray-700">
+                      {(() => {
+                        const currentUserId = localStorage.getItem('user_id');
+                        const currentUserEmployee = employees.find(emp => {
+                          if (emp.id == currentUserId) return true;
+                          if (emp.original_user_id == currentUserId) return true;
+                          return false;
+                        });
+                        return currentUserEmployee ? `${currentUserEmployee.employee_code || currentUserEmployee.id} - ${currentUserEmployee.name}` : 'Loading...';
+                      })()} 
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Training Program (Optional)</label>

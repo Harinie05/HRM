@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
+from utils.permission import require_permission
 from routes.hospital import get_current_user
 from datetime import datetime
 from sqlalchemy import func
@@ -23,10 +24,17 @@ def generate_payslip(
     month: str,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("view_salary_slips"))
 ):
     """Generate complete payslip with full workflow"""
     try:
+        # Check if user has view_self permission and restrict to own records
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and employee_id != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only generate payslips for yourself")
+        
         # Step 1: Get Employee from Employee Directory
         employee = db.query(Employee).filter(Employee.id == employee_id).first()
         if not employee:
@@ -271,7 +279,7 @@ def generate_bank_file(
     month: str,
     request: Request,
     db: Session = Depends(get_tenant_db),
-    user = Depends(get_current_user)
+    user = Depends(require_permission("process_payments"))
 ):
     """Generate bank file for salary transfer"""
     try:

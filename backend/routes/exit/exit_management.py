@@ -89,7 +89,7 @@ def get_clearance_status(exit_id: int, user=Depends(require_permission("view_res
     return clearances
 
 @router.post("/clearance/{exit_id}/create")
-def create_clearance_items(exit_id: int, user=Depends(require_permission("manage_clearance")), db: Session = Depends(get_tenant_db)):
+def create_clearance_items(exit_id: int, user=Depends(get_current_user), db: Session = Depends(get_tenant_db)):
     """Create default clearance items for an exit"""
     
     # Check if exit exists

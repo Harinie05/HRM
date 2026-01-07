@@ -25,6 +25,13 @@ def create_or_update_daily_update(
     if not employee_id:
         raise HTTPException(status_code=400, detail="Employee ID is required")
     
+    # Check if user has view_self permission and restrict to own records
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        current_user_id = user.get('user_id')
+        if current_user_id and employee_id != current_user_id:
+            raise HTTPException(status_code=403, detail="You can only create daily updates for yourself")
+    
     # Check if update already exists for this date
     existing_update = db.query(DailyWorkUpdate).filter(
         and_(
@@ -67,6 +74,13 @@ def get_my_daily_updates(
     """Get employee's daily updates"""
     if not employee_id:
         raise HTTPException(status_code=400, detail="Employee ID is required")
+    
+    # Check if user has view_self permission and restrict to own records
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        current_user_id = user.get('user_id')
+        if current_user_id and employee_id != current_user_id:
+            raise HTTPException(status_code=403, detail="You can only view your own daily updates")
     
     updates = db.query(DailyWorkUpdate).filter(
         DailyWorkUpdate.employee_id == employee_id

@@ -714,9 +714,12 @@ class EmployeeRoster(MasterBase):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, nullable=False)
-    shift_id = Column(Integer, nullable=False)  # References organization shifts
+    shift_id = Column(Integer, nullable=True)  # Allow null for OFF days
     date = Column(Date, nullable=False)
     status = Column(String(50), default="Scheduled")  # Scheduled/Holiday/Leave/OFF
+    employee_name = Column(String(150), nullable=True)  # Store employee name
+    employee_code = Column(String(50), nullable=True)   # Store employee code
+    deleted_at = Column(DateTime, nullable=True)  # For soft delete
     created_at = Column(DateTime, default=func.now())
 
 # ------------------------------

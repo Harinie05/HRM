@@ -15,19 +15,30 @@ logger = logging.getLogger("HRM")
 router = APIRouter(prefix="/hr/assets", tags=["HR Assets"])
 
 @router.post("/pending")
-async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("add_asset"))):
+async def create_pending_asset(asset_data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_asset"))):
     """Create a pending asset assignment request"""
     try:
         # Find user by employee_code
         from models.models_tenant import User
         employee_code = asset_data.get('employeeId')
-        user = db.query(User).filter(User.employee_code == employee_code).first()
         
-        if not user:
-            logger.warning(f"User not found for employee code: {employee_code}, using fallback")
-            employee_id = 1  # Fallback to first user
+        # Check if user has view_self permission and restrict to own records
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                # For view_self users, always use their own ID
+                employee_id = current_user_id
+            else:
+                employee_id = 1  # Fallback
         else:
-            employee_id = user.id
+            # For other users, find by employee_code
+            user_obj = db.query(User).filter(User.employee_code == employee_code).first()
+            if not user_obj:
+                logger.warning(f"User not found for employee code: {employee_code}, using fallback")
+                employee_id = 1  # Fallback to first user
+            else:
+                employee_id = user_obj.id
         
         # Safely convert cost to float
         cost_value = asset_data.get('cost')
@@ -183,14 +194,24 @@ async def approve_asset(approval_data: dict, request: Request, db: Session = Dep
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-async def get_approved_assets(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_assets"))):
+async def get_approved_assets(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_assets"))):
     """Get all approved assets"""
     try:
         from models.models_tenant import User
         
-        assets = db.query(AssetAssignment).filter(
+        query = db.query(AssetAssignment).filter(
             AssetAssignment.status.in_(['Approved', 'Active', 'Assigned', 'Rejected'])
-        ).all()
+        )
+        
+        # Check if user has view_self permission (can only view own records)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions and 'view_assets' not in user_permissions:
+            # User can only view their own records
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(AssetAssignment.employee_id == current_user_id)
+        
+        assets = query.all()
         
         result = []
         for asset in assets:

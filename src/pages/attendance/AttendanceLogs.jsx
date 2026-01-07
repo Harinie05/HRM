@@ -47,6 +47,25 @@ export default function AttendanceLogs() {
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
+
+  // Get current user info from localStorage
+  const getCurrentUserId = () => {
+    return localStorage.getItem('user_id');
+  };
+
+  const getCurrentUserInfo = () => {
+    const userId = getCurrentUserId();
+    if (!userId) return null;
+    
+    const employee = employees.find(emp => {
+      if (emp.source === 'user_management') {
+        return emp.original_user_id == userId;
+      }
+      return emp.id == userId;
+    });
+    
+    return employee;
+  };
   const [attendanceMode, setAttendanceMode] = useState("");
   const [gpsPermissionGranted, setGpsPermissionGranted] = useState(false);
   const [officeLocations, setOfficeLocations] = useState([]);
@@ -78,6 +97,37 @@ export default function AttendanceLogs() {
     location: ""
   });
 
+  // Auto-populate current user in forms when employees are loaded
+  useEffect(() => {
+    if (employees.length > 0) {
+      const currentUserId = localStorage.getItem('user_id');
+      if (currentUserId) {
+        const currentUserEmployee = employees.find(emp => {
+          if (emp.source === 'user_management') {
+            return emp.original_user_id == currentUserId;
+          }
+          return emp.id == currentUserId;
+        });
+        
+        if (currentUserEmployee) {
+          if (!regularizationForm.employee_id) {
+            setRegularizationForm(prev => ({
+              ...prev,
+              employee_id: currentUserEmployee.id
+            }));
+          }
+          
+          if (!odForm.employee_id) {
+            setOdForm(prev => ({
+              ...prev,
+              employee_id: currentUserEmployee.id
+            }));
+          }
+        }
+      }
+    }
+  }, [employees]);
+
   useEffect(() => {
     fetchEmployees();
     fetchLogs();
@@ -86,6 +136,24 @@ export default function AttendanceLogs() {
     fetchOdApplications();
     checkTodayStatus();
   }, []);
+
+  // Auto-select current user when employees are loaded
+  useEffect(() => {
+    if (employees.length > 0 && !selectedEmployee) {
+      const currentUserId = localStorage.getItem('user_id');
+      if (currentUserId) {
+        const currentUserEmployee = employees.find(emp => {
+          if (emp.source === 'user_management') {
+            return emp.original_user_id == currentUserId;
+          }
+          return emp.id == currentUserId;
+        });
+        if (currentUserEmployee) {
+          setSelectedEmployee(currentUserEmployee.id);
+        }
+      }
+    }
+  }, [employees]);
 
   const fetchEmployees = async () => {
     try {
@@ -619,24 +687,35 @@ export default function AttendanceLogs() {
                   <div className="grid grid-cols-1 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                      <select
-                        value={selectedEmployee}
-                        onChange={(e) => {
-                          setSelectedEmployee(e.target.value);
-                          setAttendanceMode("");
-                          setSelectedLocation(officeLocations.length > 0 ? officeLocations[0].id : "");
-                          setShowAddLocation(false);
-                          setNewLocationName('');
-                        }}
-                        className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
-                      >
-                        <option value="">Choose Employee</option>
-                        {employees.map((employee) => (
-                          <option key={employee.id} value={employee.id}>
-                            {employee.employee_code} - {employee.name}
-                          </option>
-                        ))}
-                      </select>
+                      {isAdmin() ? (
+                        <select
+                          value={selectedEmployee}
+                          onChange={(e) => setSelectedEmployee(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                        >
+                          <option value="">Select Employee</option>
+                          {employees.map(emp => (
+                            <option key={emp.id} value={emp.id}>
+                              {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700">
+                          {(() => {
+                            const currentUserId = localStorage.getItem('user_id');
+                            const currentUserEmployee = employees.find(emp => {
+                              if (emp.source === 'user_management') {
+                                return emp.original_user_id == currentUserId;
+                              }
+                              return emp.id == currentUserId;
+                            });
+                            return currentUserEmployee ? 
+                              `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
+                              'Loading...';
+                          })()}
+                        </div>
+                      )}
                     </div>
                   
                     {attendanceMode === 'WEB' && (
@@ -1004,18 +1083,35 @@ export default function AttendanceLogs() {
                     <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                        <select
-                          value={regularizationForm.employee_id}
-                          onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
-                        >
-                          <option value="">Select Employee</option>
-                          {employees.map((employee) => (
-                            <option key={employee.id} value={employee.id}>
-                              {employee.employee_code} - {employee.name}
-                            </option>
-                          ))}
-                        </select>
+                        {isAdmin() ? (
+                          <select
+                            value={regularizationForm.employee_id}
+                            onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          >
+                            <option value="">Select Employee</option>
+                            {employees.map(emp => (
+                              <option key={emp.id} value={emp.id}>
+                                {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
+                            {(() => {
+                              const currentUserId = localStorage.getItem('user_id');
+                              const currentUserEmployee = employees.find(emp => {
+                                if (emp.source === 'user_management') {
+                                  return emp.original_user_id == currentUserId;
+                                }
+                                return emp.id == currentUserId;
+                              });
+                              return currentUserEmployee ? 
+                                `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
+                                'Loading...';
+                            })()}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
@@ -1108,19 +1204,36 @@ export default function AttendanceLogs() {
                     <div className="space-y-4 sm:space-y-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-                        <select
-                          value={odForm.employee_id}
-                          onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
-                        >
-                          <option value="">Select Employee</option>
-                          {employees.map((employee) => (
-                            <option key={employee.id} value={employee.id}>
-                              {employee.employee_code} - {employee.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        {isAdmin() ? (
+                          <select
+                            value={odForm.employee_id}
+                            onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                          >
+                            <option value="">Select Employee</option>
+                            {employees.map(emp => (
+                              <option key={emp.id} value={emp.id}>
+                                {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
+                            {(() => {
+                              const currentUserId = localStorage.getItem('user_id');
+                              const currentUserEmployee = employees.find(emp => {
+                                if (emp.source === 'user_management') {
+                                  return emp.original_user_id == currentUserId;
+                              }
+                              return emp.id == currentUserId;
+                            });
+                            return currentUserEmployee ? 
+                              `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 
+                              'Loading...';
+                          })()}
+                        </div>
+                      )}
+                    </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">OD Date</label>
                         <input

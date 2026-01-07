@@ -188,6 +188,14 @@ async def get_assignments(
     try:
         where_clause = "WHERE wa.is_active = 1" if not include_deleted else "WHERE 1=1"
         
+        # Check if user has view_self permission (can only view own records)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions and 'view_work_assignments' not in user_permissions:
+            # User can only view their own records
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                where_clause += f" AND wa.assigned_employee_id = {current_user_id}"
+        
         result = db.execute(text(f"""
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency, 
                    wa.review_cycle_id, wa.assigned_employee_id, wa.status, wa.is_active,

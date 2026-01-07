@@ -6,6 +6,7 @@ import schemas.schemas_tenant as schemas_tenant
 import database
 from database import logger
 from passlib.context import CryptContext
+from utils.permission import require_permission
 from utils.audit_logger import audit_crud
 
 # 🔐 added for token authentication
@@ -86,7 +87,7 @@ def list_users(
     tenant_db: str,
     status: str = "active",
     db: Session = Depends(database.get_master_db),
-    user = Depends(get_current_user)    # 🔐 Token required
+    user = Depends(require_permission("view_employees"))
 ):
     logger.info(f"Listing users for tenant {tenant_db} by user {user.get('email')}")
 
@@ -95,12 +96,21 @@ def list_users(
     tdb = Session(bind=engine)
 
     with tdb:
+        query = tdb.query(User)
+        
+        # Check if user has view_self permission (can only view own records)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(User.id == current_user_id)
+        
         if status == "active":
-            users = tdb.query(User).filter(User.status == "Active").all()
+            users = query.filter(User.status == "Active").all()
         elif status == "inactive":
-            users = tdb.query(User).filter(User.status == "Inactive").all()
+            users = query.filter(User.status == "Inactive").all()
         else:  # all
-            users = tdb.query(User).all()
+            users = query.all()
 
         output = []
         for u in users:

@@ -44,6 +44,19 @@ export default function ODApplications() {
     fetchEmployees();
   }, []);
 
+  // Auto-populate current user for non-admin users
+  useEffect(() => {
+    if (employees.length > 0 && !isAdmin()) {
+      const currentUserId = localStorage.getItem('user_id');
+      if (currentUserId && !formData.employee_id) {
+        const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
+        if (currentUserEmployee) {
+          setFormData(prev => ({ ...prev, employee_id: currentUserId }));
+        }
+      }
+    }
+  }, [employees]);
+
   const fetchApplications = async () => {
     try {
       const res = await api.get("/api/attendance/od/");
@@ -323,17 +336,27 @@ export default function ODApplications() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Employee</label>
-                <select
-                  value={formData.employee_id}
-                  onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
-                  required
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map(emp => (
-                    <option key={emp.id} value={emp.id}>{emp.name}</option>
-                  ))}
-                </select>
+                {isAdmin() ? (
+                  <select
+                    value={formData.employee_id}
+                    onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
+                    className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                    required
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map(emp => (
+                      <option key={emp.id} value={emp.id}>{emp.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="w-full border border-black rounded-lg px-3 py-2 bg-gray-50 text-gray-700 text-sm">
+                    {(() => {
+                      const currentUserId = localStorage.getItem('user_id');
+                      const currentUserEmployee = employees.find(emp => emp.id == currentUserId);
+                      return currentUserEmployee ? currentUserEmployee.name : 'Loading...';
+                    })()}
+                  </div>
+                )}
               </div>
               
               <div>

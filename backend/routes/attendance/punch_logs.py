@@ -134,8 +134,16 @@ def get_all_punches(
 ):
     query = db.query(AttendancePunch)
     
-    if employee_id is not None:
+    # Check if user has view_self permission (can only view own records)
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        # User can only view their own records
+        current_user_id = user.get('user_id')
+        if current_user_id:
+            query = query.filter(AttendancePunch.employee_id == current_user_id)
+    elif employee_id is not None:
         query = query.filter(AttendancePunch.employee_id == employee_id)
+    
     if date is not None:
         query = query.filter(AttendancePunch.date == date)
     

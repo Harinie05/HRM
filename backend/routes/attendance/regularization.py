@@ -25,6 +25,13 @@ def create_regularization(
     db: Session = Depends(get_tenant_db),
     user = Depends(require_permission("apply_regularization"))
 ):
+    # Check if user has view_self permission and restrict to own records
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        current_user_id = user.get('user_id')
+        if current_user_id and data.employee_id != current_user_id:
+            raise HTTPException(status_code=403, detail="You can only create regularization requests for yourself")
+    
     req = AttendanceRegularization(**data.dict())
     db.add(req)
     db.commit()
@@ -37,7 +44,17 @@ def list_regularizations(
     db: Session = Depends(get_tenant_db),
     user = Depends(require_permission("view_regularization"))
 ):
-    return db.query(AttendanceRegularization).all()
+    query = db.query(AttendanceRegularization)
+    
+    # Check if user has view_self permission (can only view own records)
+    user_permissions = user.get('permissions', [])
+    if 'view_self' in user_permissions:
+        # User can only view their own records
+        current_user_id = user.get('user_id')
+        if current_user_id:
+            query = query.filter(AttendanceRegularization.employee_id == current_user_id)
+    
+    return query.all()
 
 @router.patch("/{reg_id}/approve", response_model=AttendanceRegularizationOut)
 def approve_regularization(

@@ -32,6 +32,16 @@ def create_grievance(
         employee_identifier = payload.get('employeeId') or payload.get('employee_id')
         logger.info(f"🔍 Looking for employee: {employee_identifier} (type: {type(employee_identifier)})")
         
+        # Check if user has view_self permission and restrict to own records
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and employee_identifier and int(employee_identifier) != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only create grievances for yourself")
+            # If no employee_identifier provided and user has view_self, use current user
+            if not employee_identifier:
+                employee_identifier = current_user_id
+        
         # Get first user as fallback if no employee specified
         if not employee_identifier:
             user = db.query(User).first()
@@ -73,13 +83,21 @@ def create_grievance(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-def list_grievances(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_grievances"))):
+def list_grievances(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_grievances"))):
     try:
         from models.models_tenant import User
         
-        grievances = db.query(GrievanceTicket).order_by(
-            GrievanceTicket.created_at.desc()
-        ).all()
+        query = db.query(GrievanceTicket)
+        
+        # Check if user has view_self permission (can only view own records)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions and 'view_grievances' not in user_permissions:
+            # User can only view their own records
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(GrievanceTicket.employee_id == current_user_id)
+        
+        grievances = query.order_by(GrievanceTicket.created_at.desc()).all()
         
         result = []
         for grievance in grievances:

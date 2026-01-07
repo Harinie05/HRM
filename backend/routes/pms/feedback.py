@@ -52,11 +52,24 @@ async def get_feedback(include_deleted: bool = False, db: Session = Depends(get_
         pass
     
     try:
+        query = db.query(PMSFeedback)
+        
+        # Check if user has view_self permission (can only view own feedback)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions and 'view_feedback' not in user_permissions:
+            # User can only view feedback they gave or received
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(
+                    (PMSFeedback.from_employee_id == current_user_id) | 
+                    (PMSFeedback.to_employee_id == current_user_id)
+                )
+        
         if include_deleted:
-            feedback_list = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).all()
+            feedback_list = query.filter(PMSFeedback.is_active == False).all()
             print(f"DEBUG: Found {len(feedback_list)} deleted feedback")
         else:
-            feedback_list = db.query(PMSFeedback).filter(PMSFeedback.is_active == True).all()
+            feedback_list = query.filter(PMSFeedback.is_active == True).all()
             print(f"DEBUG: Found {len(feedback_list)} active feedback")
         
         # Process feedback data with progress tracking
@@ -163,7 +176,20 @@ async def get_deleted_feedback_count(
     user = Depends(require_permission("view_feedback"))
 ):
     try:
-        count = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).count()
+        query = db.query(PMSFeedback).filter(PMSFeedback.is_active == False)
+        
+        # Check if user has view_self permission (can only view own feedback)
+        user_permissions = user.get('permissions', [])
+        if 'view_self' in user_permissions and 'view_feedback' not in user_permissions:
+            # User can only view feedback they gave or received
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(
+                    (PMSFeedback.from_employee_id == current_user_id) | 
+                    (PMSFeedback.to_employee_id == current_user_id)
+                )
+        
+        count = query.count()
         return {"count": count or 0}
     except Exception as e:
         print(f"Error getting deleted feedback count: {str(e)}")
@@ -185,15 +211,3 @@ async def restore_feedback(feedback_id: int, request: Request, db: Session = Dep
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=422, detail=f"Error restoring feedback: {str(e)}")
-
-@router.get("/feedback/deleted-count")
-async def get_deleted_feedback_count(
-    db: Session = Depends(get_tenant_db),
-    user = Depends(require_permission("view_feedback"))
-):
-    try:
-        count = db.query(PMSFeedback).filter(PMSFeedback.is_active == False).count()
-        return {"count": count or 0}
-    except Exception as e:
-        print(f"Error getting deleted feedback count: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
