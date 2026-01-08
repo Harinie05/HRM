@@ -101,11 +101,63 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
     }
   }, []);
 
-  // Fetch company info from organization setup and localStorage
+  // Fetch company info from organization branding API first, then localStorage
   useEffect(() => {
     const fetchCompanyInfo = async () => {
       try {
-        // First try to get from localStorage
+        // Try to get from backend API first
+        const response = await api.get('/api/organization/branding');
+        if (response.data && response.data.organization_name) {
+          const name = response.data.organization_name;
+          const tagline = response.data.tagline || "";
+          const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+          
+          setCompanyInfo({
+            name,
+            tagline,
+            initials
+          });
+          
+          // Store in localStorage for future use
+          localStorage.setItem("hospital_name", name);
+          localStorage.setItem("hospital_tagline", tagline);
+        } else {
+          // Fallback to localStorage
+          const storedName = localStorage.getItem("hospital_name");
+          const storedTagline = localStorage.getItem("hospital_tagline");
+          
+          if (storedName) {
+            const initials = storedName.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+            setCompanyInfo({
+              name: storedName,
+              tagline: storedTagline || "Smart • Secure • NABH-Standard",
+              initials
+            });
+          } else {
+            // Final fallback to company profile API if user has permission
+            if (isAdmin() || hasPermission("view_company_profile")) {
+              const profileResponse = await api.get('/organization/company-profile');
+              if (profileResponse.data && profileResponse.data.company_name) {
+                const name = profileResponse.data.company_name;
+                const tagline = profileResponse.data.tagline || "";
+                const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
+                
+                // Store in localStorage for future use
+                localStorage.setItem("hospital_name", name);
+                localStorage.setItem("hospital_tagline", tagline);
+                
+                setCompanyInfo({
+                  name,
+                  tagline,
+                  initials
+                });
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.log('Failed to load from backend, using localStorage or defaults');
+        // Fallback to localStorage on error
         const storedName = localStorage.getItem("hospital_name");
         const storedTagline = localStorage.getItem("hospital_tagline");
         
@@ -116,29 +168,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
             tagline: storedTagline || "Smart • Secure • NABH-Standard",
             initials
           });
-        } else {
-          // Fallback to API call only if user has permission
-          if (isAdmin() || hasPermission("view_company_profile")) {
-            const response = await api.get('/organization/company-profile');
-            if (response.data && response.data.company_name) {
-              const name = response.data.company_name;
-              const tagline = response.data.tagline || "";
-              const initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 2);
-              
-              // Store in localStorage for future use
-              localStorage.setItem("hospital_name", name);
-              localStorage.setItem("hospital_tagline", tagline);
-              
-              setCompanyInfo({
-                name,
-                tagline,
-                initials
-              });
-            }
-          }
         }
-      } catch (error) {
-        console.log('Using default company info');
       }
     };
 
@@ -172,8 +202,11 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
 
   return (
     <div 
-      className={`sidebar-scroll h-screen text-white sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-3 sm:p-4'}`}
-      style={{ background: 'var(--sidebar-bg, linear-gradient(to bottom, #6366F1, #4F46E5))' }}
+      className={`sidebar-scroll h-screen sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-3 sm:p-4'}`}
+      style={{ 
+        background: 'var(--sidebar-bg, linear-gradient(to bottom, #6366F1, #4F46E5))',
+        color: 'var(--sidebar-text-color, #ffffff)'
+      }}
     >
 
       {/* Header with Logo, Title and Toggle */}
@@ -187,8 +220,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         {!isCollapsed && (
           <div className="flex items-center justify-between flex-1">
             <div className="flex-1">
-              <div className="text-white font-medium text-xs leading-tight tracking-wide">{companyInfo.name}</div>
-              {companyInfo.tagline && <div className="text-white/70 text-xs leading-tight font-light">{companyInfo.tagline}</div>}
+              <div className="font-medium text-xs leading-tight tracking-wide" style={{ color: 'var(--sidebar-text-color, #ffffff)' }}>{companyInfo.name}</div>
             </div>
             <button 
               onClick={handleToggle}
@@ -196,7 +228,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
               title="Collapse sidebar"
               type="button"
             >
-              <ChevronLeft size={16} className="text-white" />
+              <ChevronLeft size={16} style={{ color: 'var(--sidebar-text-color, #ffffff)' }} />
             </button>
           </div>
         )}
@@ -210,11 +242,11 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
           title="Expand sidebar"
           type="button"
         >
-          <ChevronRight size={16} className="text-white" />
+          <ChevronRight size={16} style={{ color: 'var(--sidebar-text-color, #ffffff)' }} />
         </button>
       )}
 
-      <nav className={`space-y-2 text-white ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <nav className={`space-y-2 ${isCollapsed ? 'flex flex-col items-center' : ''}`} style={{ color: 'var(--sidebar-text-color, #ffffff)' }}>
 
         {/* Dashboard */}
         <Link

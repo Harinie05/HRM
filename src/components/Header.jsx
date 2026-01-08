@@ -24,9 +24,62 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     employee_code: null
   });
 
-  // 🔹 Dynamic hospital info
-  const hospitalName = localStorage.getItem("hospital_name") || "Your Hospital Name";
-  const hospitalTagline = localStorage.getItem("hospital_tagline") || "Smart • Secure • NABH-Standard";
+  // 🔹 Dynamic hospital info - load from backend first
+  const [hospitalInfo, setHospitalInfo] = useState({
+    name: "Your Hospital Name",
+    tagline: "Smart • Secure • NABH-Standard"
+  });
+
+  // Load organization info from backend
+  useEffect(() => {
+    const loadOrganizationInfo = async () => {
+      try {
+        const response = await api.get('/api/organization/branding');
+        if (response.data && response.data.organization_name) {
+          setHospitalInfo({
+            name: response.data.organization_name,
+            tagline: response.data.tagline || "Smart • Secure • NABH-Standard"
+          });
+          // Update localStorage
+          localStorage.setItem("hospital_name", response.data.organization_name);
+          localStorage.setItem("hospital_tagline", response.data.tagline || "");
+        } else {
+          // Fallback to localStorage
+          const storedName = localStorage.getItem("hospital_name");
+          const storedTagline = localStorage.getItem("hospital_tagline");
+          if (storedName) {
+            setHospitalInfo({
+              name: storedName,
+              tagline: storedTagline || "Smart • Secure • NABH-Standard"
+            });
+          }
+        }
+      } catch (error) {
+        // Fallback to localStorage on error
+        const storedName = localStorage.getItem("hospital_name");
+        const storedTagline = localStorage.getItem("hospital_tagline");
+        if (storedName) {
+          setHospitalInfo({
+            name: storedName,
+            tagline: storedTagline || "Smart • Secure • NABH-Standard"
+          });
+        }
+      }
+    };
+
+    loadOrganizationInfo();
+    
+    // Listen for organization updates
+    const handleOrgUpdate = () => {
+      loadOrganizationInfo();
+    };
+    
+    window.addEventListener('organization-updated', handleOrgUpdate);
+    
+    return () => {
+      window.removeEventListener('organization-updated', handleOrgUpdate);
+    };
+  }, []);
 
   const userInitial = userInfo.name.charAt(0).toUpperCase();
 
@@ -341,22 +394,22 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-30 h-12 sm:h-14
-      text-white
       flex items-center justify-between
       shadow-md transition-all duration-300 px-3 sm:px-6"
       style={{ 
         backgroundColor: 'var(--header-bg, #3B5BDB)',
+        color: 'var(--header-text-color, #ffffff)',
         paddingLeft: window.innerWidth >= 1024 ? (isSidebarCollapsed ? "88px" : "280px") : "16px",
         paddingRight: window.innerWidth >= 768 ? "24px" : "16px"
       }}
     >
       {/* 🔵 Left: Hospital name */}
       <div className="leading-tight min-w-0 flex-1">
-        <h1 className="text-sm sm:text-lg font-semibold tracking-wide truncate">
-          {hospitalName}
+        <h1 className="text-sm sm:text-lg font-semibold tracking-wide truncate" style={{ color: 'var(--header-text-color, #ffffff)' }}>
+          {hospitalInfo.name}
         </h1>
-        <p className="text-xs sm:text-sm text-blue-200 font-medium hidden sm:block">
-          {hospitalTagline}
+        <p className="text-xs sm:text-sm font-medium hidden sm:block" style={{ color: 'var(--header-text-color, #ffffff)', opacity: 0.8 }}>
+          {hospitalInfo.tagline}
         </p>
       </div>
 
@@ -411,7 +464,7 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
               <p className="text-sm font-semibold leading-none truncate">
                 {userInfo.name}
               </p>
-              <p className="text-xs text-blue-200 truncate">
+              <p className="text-xs truncate" style={{ color: 'var(--header-text-color, #ffffff)', opacity: 0.8 }}>
                 {userInfo.employee_code ? `${userInfo.employee_code} • ${userInfo.role}` : userInfo.role}
               </p>
             </div>

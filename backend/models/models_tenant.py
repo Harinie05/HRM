@@ -73,6 +73,24 @@ class CompanyProfile(MasterBase):
     contact_number = Column(String(20), nullable=True)
     contact_email = Column(String(255), nullable=True)
     address = Column(Text, nullable=True)
+    
+    # Branding & Customization Fields
+    tagline = Column(String(500), nullable=True)
+    logo = Column(Text, nullable=True)  # Base64 encoded logo
+    logo_filename = Column(String(255), nullable=True)
+    
+    # UI Color Palette
+    primary_color = Column(String(7), nullable=True)  # Hex color code
+    secondary_color = Column(String(7), nullable=True)
+    accent_color = Column(String(7), nullable=True)
+    
+    # PDF Header/Footer Configuration
+    pdf_header_text = Column(Text, nullable=True)
+    pdf_footer_text = Column(Text, nullable=True)
+    show_logo_in_pdf = Column(Boolean, default=True)
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 
 class Branch(MasterBase):
     __tablename__ = "branches"
@@ -773,6 +791,32 @@ class ReportingHierarchy(MasterBase):
     department_id = Column(Integer, nullable=True)  # Optional: department-specific hierarchy
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=func.now())
+
+# ========================= ORGANIZATION BRANDING =========================
+class OrganizationBranding(MasterBase):
+    __tablename__ = "organization_branding"
+
+    id = Column(Integer, primary_key=True, index=True)
+    organization_name = Column(String(255), nullable=False)
+    tagline = Column(String(500), nullable=True)
+    address = Column(Text, nullable=True)
+    phone = Column(String(20), nullable=True)
+    email = Column(String(255), nullable=True)
+    website = Column(String(255), nullable=True)
+    gstin = Column(String(15), nullable=True)
+    logo = Column(Text, nullable=True)  # Base64 encoded logo
+    logo_filename = Column(String(255), nullable=True)
+    
+    # Essential color fields only
+    primary_color = Column(String(7), nullable=True, default="#2862e9")
+    secondary_color = Column(String(7), nullable=True, default="#474e71")
+    sidebar_bg = Column(String(7), nullable=True, default="#628bf3")
+    header_footer_bg = Column(String(7), nullable=True, default="#474e71")
+    sidebar_text_color = Column(String(7), nullable=True, default="#ffffff")
+    header_text_color = Column(String(7), nullable=True, default="#ffffff")
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 
 # ========================= EMPLOYEE REPORTING =========================
 class EmployeeReporting(MasterBase):

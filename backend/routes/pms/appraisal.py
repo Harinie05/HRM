@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from database import get_tenant_db
+from database import get_tenant_db, logger
 from models.models_tenant import PMSAppraisal, User
 from pydantic import BaseModel
 from typing import Optional
@@ -57,7 +57,7 @@ async def create_appraisal(appraisal: dict, request: Request, db: Session = Depe
         return {"message": "Appraisal created successfully", "id": db_appraisal.id}
     except Exception as e:
         db.rollback()
-        print(f"Error creating appraisal: {str(e)}")
+        logger.error(f"Error creating appraisal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error creating appraisal: {str(e)}")
 
 @router.get("/appraisals")
@@ -78,7 +78,7 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
                 LEFT JOIN users u ON wa.assigned_employee_id = u.id
                 WHERE wa.is_active = 0 AND u.name IS NOT NULL
             """)).fetchall()
-            print(f"DEBUG: Found {len(employees_result)} deleted work assignments")
+            logger.debug(f"Found {len(employees_result)} deleted work assignments")
         else:
             employees_result = db.execute(text("""
                 SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name, u.employee_code
@@ -86,11 +86,11 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
                 LEFT JOIN users u ON wa.assigned_employee_id = u.id
                 WHERE wa.is_active = 1 AND u.name IS NOT NULL
             """)).fetchall()
-            print(f"DEBUG: Found {len(employees_result)} active work assignments")
+            logger.debug(f"Found {len(employees_result)} active work assignments")
         
         # If no employees found, return empty data
         if not employees_result:
-            print(f"DEBUG: No employees found for include_deleted={include_deleted}")
+            logger.debug(f"No employees found for include_deleted={include_deleted}")
             return {"data": []}
         
         appraisal_data = []
@@ -128,7 +128,7 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
                     WHERE wa.assigned_employee_id = :employee_id AND wa.is_active = 1
                 """), {"employee_id": employee_id, "employee_identifier": employee_identifier}).fetchone()
             
-            kpi_score = kpi_result[0] if kpi_result[0] else 0.0
+            kpi_score = kpi_result[0] if kpi_result and kpi_result[0] else 0.0
             
             # Auto-calculate rating
             if kpi_score >= 90:
@@ -157,7 +157,7 @@ async def get_appraisals(include_deleted: bool = False, db: Session = Depends(ge
         
         return {"data": appraisal_data}
     except Exception as e:
-        print(f"Error fetching appraisals: {str(e)}")
+        logger.error(f"Error fetching appraisals: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching appraisals: {str(e)}")
 
 @router.put("/appraisals/{appraisal_id}")
@@ -181,7 +181,7 @@ async def update_appraisal(appraisal_id: int, appraisal: dict, request: Request,
         return {"message": "Appraisal updated successfully"}
     except Exception as e:
         db.rollback()
-        print(f"Error updating appraisal: {str(e)}")
+        logger.error(f"Error updating appraisal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error updating appraisal: {str(e)}")
 
 @router.delete("/appraisals/{appraisal_id}")
@@ -216,7 +216,7 @@ async def delete_appraisal(appraisal_id: int, request: Request, db: Session = De
         return {"message": "Appraisal deleted successfully"}
     except Exception as e:
         db.rollback()
-        print(f"Error deleting appraisal: {str(e)}")
+        logger.error(f"Error deleting appraisal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error deleting appraisal: {str(e)}")
 
 @router.put("/appraisals/{appraisal_id}/restore")
@@ -249,7 +249,7 @@ async def restore_appraisal(appraisal_id: int, request: Request, db: Session = D
         return {"message": "Appraisal restored successfully"}
     except Exception as e:
         db.rollback()
-        print(f"Error restoring appraisal: {str(e)}")
+        logger.error(f"Error restoring appraisal: {str(e)}")
         raise HTTPException(status_code=422, detail=f"Error restoring appraisal: {str(e)}")
 
 @router.get("/appraisals/deleted-count")
@@ -267,8 +267,8 @@ async def get_deleted_appraisals_count(
             WHERE wa.is_active = 0
         """)).scalar()
         
-        print(f"DEBUG: Deleted appraisals count: {count}")
+        logger.debug(f"Deleted appraisals count: {count}")
         return {"count": count or 0}
     except Exception as e:
-        print(f"Error getting deleted appraisals count: {str(e)}")
+        logger.error(f"Error getting deleted appraisals count: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -105,22 +105,109 @@ import ProbationTracking from "./pages/recruitment/ProbationTracking";
 function App() {
   // Load saved theme colors on app startup
   useEffect(() => {
-    const savedColors = localStorage.getItem('theme-colors');
-    if (savedColors) {
-      const colors = JSON.parse(savedColors);
-      
-      // Apply saved colors to CSS variables
-      Object.entries(colors).forEach(([key, value]) => {
-        if (key === 'primaryDark') {
-          document.documentElement.style.setProperty('--header-bg', value);
-        } else if (key === 'sidebarBg') {
-          document.documentElement.style.setProperty('--sidebar-bg', value);
-        } else if (key === 'cardBg') {
-          document.documentElement.style.setProperty('--card-bg', value);
-        } else {
-          document.documentElement.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
+    const loadColorsFromBackend = async () => {
+      try {
+        const response = await fetch('/api/organization/branding', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.primary_color) {
+            const colors = {
+              primaryColor: data.primary_color,
+              secondaryColor: data.secondary_color,
+              sidebarBg: data.sidebar_bg,
+              headerFooterBg: data.header_footer_bg,
+              sidebarTextColor: data.sidebar_text_color,
+              headerTextColor: data.header_text_color
+            };
+            
+            // Apply colors to CSS variables
+            Object.entries(colors).forEach(([key, value]) => {
+              if (key === 'primaryColor') {
+                document.documentElement.style.setProperty('--primary-color', value);
+                document.documentElement.style.setProperty('--primary-bg', value);
+                // Calculate hover color (darker version)
+                const num = parseInt(value.replace('#', ''), 16);
+                const amt = Math.round(2.55 * -20);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                const hoverColor = '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                  (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                  (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+                document.documentElement.style.setProperty('--primary-hover', hoverColor);
+              } else if (key === 'secondaryColor') {
+                document.documentElement.style.setProperty('--secondary-color', value);
+                document.documentElement.style.setProperty('--text-secondary', value);
+                document.documentElement.style.setProperty('--muted-text', value);
+              } else if (key === 'sidebarBg') {
+                document.documentElement.style.setProperty('--sidebar-bg', value);
+              } else if (key === 'headerFooterBg') {
+                document.documentElement.style.setProperty('--header-bg', value);
+                document.documentElement.style.setProperty('--footer-bg', value);
+              } else if (key === 'sidebarTextColor') {
+                document.documentElement.style.setProperty('--sidebar-text-color', value);
+              } else if (key === 'headerTextColor') {
+                document.documentElement.style.setProperty('--header-text-color', value);
+                document.documentElement.style.setProperty('--text-color', value);
+                document.documentElement.style.setProperty('--text-primary', value);
+              }
+            });
+            
+            // Save to localStorage as backup
+            localStorage.setItem('theme-colors', JSON.stringify(colors));
+          }
         }
-      });
+      } catch (error) {
+        console.log('Failed to load colors from backend, trying localStorage');
+        
+        // Fallback to localStorage
+        const savedColors = localStorage.getItem('theme-colors');
+        if (savedColors) {
+          const colors = JSON.parse(savedColors);
+          
+          // Apply saved colors to CSS variables
+          Object.entries(colors).forEach(([key, value]) => {
+            if (key === 'primaryColor') {
+              document.documentElement.style.setProperty('--primary-color', value);
+              document.documentElement.style.setProperty('--primary-bg', value);
+              const num = parseInt(value.replace('#', ''), 16);
+              const amt = Math.round(2.55 * -20);
+              const R = (num >> 16) + amt;
+              const G = (num >> 8 & 0x00FF) + amt;
+              const B = (num & 0x0000FF) + amt;
+              const hoverColor = '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+              document.documentElement.style.setProperty('--primary-hover', hoverColor);
+            } else if (key === 'secondaryColor') {
+              document.documentElement.style.setProperty('--secondary-color', value);
+              document.documentElement.style.setProperty('--text-secondary', value);
+              document.documentElement.style.setProperty('--muted-text', value);
+            } else if (key === 'sidebarBg') {
+              document.documentElement.style.setProperty('--sidebar-bg', value);
+            } else if (key === 'headerFooterBg') {
+              document.documentElement.style.setProperty('--header-bg', value);
+              document.documentElement.style.setProperty('--footer-bg', value);
+            } else if (key === 'sidebarTextColor') {
+              document.documentElement.style.setProperty('--sidebar-text-color', value);
+            } else if (key === 'headerTextColor') {
+              document.documentElement.style.setProperty('--header-text-color', value);
+              document.documentElement.style.setProperty('--text-color', value);
+              document.documentElement.style.setProperty('--text-primary', value);
+            }
+          });
+        }
+      }
+    };
+    
+    // Only load colors if user is authenticated
+    if (localStorage.getItem('token')) {
+      loadColorsFromBackend();
     }
   }, []);
 

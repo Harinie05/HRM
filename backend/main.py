@@ -31,6 +31,7 @@ from routes.organization.company_profile import router as company_profile_router
 from routes.organization.branch import router as branch_router
 from routes.organization.holiday import router as holiday_router
 from routes.organization.reporting import router as reporting_router
+from routes.organization.organization_branding import router as organization_branding_router
 
 # ---------------- RECRUITMENT ----------------
 from routes.recruitment.recruitment import router as recruitment_router
@@ -229,6 +230,7 @@ app.include_router(company_profile_router)
 app.include_router(branch_router)
 app.include_router(holiday_router)
 app.include_router(reporting_router)
+app.include_router(organization_branding_router, prefix="/api")
 
 # ---------------- RECRUITMENT ----------------
 app.include_router(recruitment_router)

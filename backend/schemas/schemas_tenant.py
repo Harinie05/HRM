@@ -116,6 +116,41 @@ class CompanyProfileResponse(CompanyProfileBase):
     class Config:
         from_attributes = True
 
+# ========================= ORGANIZATION BRANDING =========================
+class OrganizationBrandingBase(BaseModel):
+    organization_name: str
+    tagline: Optional[str] = None
+    address: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    gstin: Optional[str] = None
+    logo_filename: Optional[str] = None
+
+class OrganizationBrandingCreate(OrganizationBrandingBase):
+    logo: Optional[str] = None  # Base64 encoded logo
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+    sidebar_bg: Optional[str] = None
+    header_footer_bg: Optional[str] = None
+    sidebar_text_color: Optional[str] = None
+    header_text_color: Optional[str] = None
+
+class OrganizationBrandingResponse(OrganizationBrandingBase):
+    id: int
+    logo: Optional[str] = None
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+    sidebar_bg: Optional[str] = None
+    header_footer_bg: Optional[str] = None
+    sidebar_text_color: Optional[str] = None
+    header_text_color: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
 class BranchBase(BaseModel):
     branch_name: str
     branch_code: str
