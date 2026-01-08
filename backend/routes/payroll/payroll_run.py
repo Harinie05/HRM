@@ -628,8 +628,9 @@ def get_payroll_runs(
         # Base query
         base_query = "SELECT * FROM payroll_runs"
         
-        # If user has view_self or view_salary_slips permission (regardless of other permissions), restrict to own records
-        if user.get('role') != 'admin' and ('view_self' in user_permissions or 'view_salary_slips' in user_permissions) and 'view_payroll_run' not in user_permissions:
+        # If user has view_self permission, always restrict to own records (takes precedence)
+        user_permissions = user.get('permissions', [])
+        if user.get('role') != 'admin' and 'view_self' in user_permissions:
             current_user_id = user.get('user_id')
             if current_user_id:
                 base_query += f" WHERE employee_id = '{current_user_id}'"

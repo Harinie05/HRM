@@ -178,17 +178,6 @@ async def get_deleted_feedback_count(
     try:
         query = db.query(PMSFeedback).filter(PMSFeedback.is_active == False)
         
-        # Check if user has view_self permission (can only view own feedback)
-        user_permissions = user.get('permissions', [])
-        if 'view_self' in user_permissions and 'view_feedback' not in user_permissions:
-            # User can only view feedback they gave or received
-            current_user_id = user.get('user_id')
-            if current_user_id:
-                query = query.filter(
-                    (PMSFeedback.from_employee_id == current_user_id) | 
-                    (PMSFeedback.to_employee_id == current_user_id)
-                )
-        
         count = query.count()
         return {"count": count or 0}
     except Exception as e:

@@ -314,7 +314,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_work_assignment", "description": "Can edit work assignments"},
     {"name": "delete_work_assignment", "description": "Can delete work assignments"},
     {"name": "restore_work_assignment", "description": "Can restore deleted work assignments"},
-    {"name": "view_my_assignments", "description": "Can view own assignments"},
     {"name": "assign_to_employees", "description": "Can assign work to employees"},
     {"name": "view_self", "description": "Can view only own records and data"},
 
@@ -343,7 +342,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_feedback", "description": "Can delete performance feedback"},
     {"name": "restore_feedback", "description": "Can restore deleted performance feedback"},
     {"name": "show_deleted_feedback", "description": "Can access show deleted feedback button"},
-    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Appraisal
     {"name": "view_appraisals", "description": "Can view performance appraisals"},
@@ -355,7 +353,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_appraisal", "description": "Can delete performance appraisals"},
     {"name": "restore_appraisal", "description": "Can restore deleted performance appraisals"},
     {"name": "show_deleted_appraisals", "description": "Can access show deleted appraisals button"},
-    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Quality Indicators
     {"name": "view_quality_indicators", "description": "Can view quality performance indicators"},
@@ -446,6 +443,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "approve_lifecycle_action", "description": "Can approve employee lifecycle actions"},
     {"name": "restore_lifecycle_action", "description": "Can restore deleted lifecycle actions"},
     {"name": "show_deleted_lifecycle_actions", "description": "Can access show deleted lifecycle actions button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # HR Letters
     {"name": "view_hr_letters", "description": "Can view HR letters and templates"},
@@ -457,6 +455,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "send_hr_letter", "description": "Can send HR letters to employees"},
     {"name": "restore_hr_letter", "description": "Can restore deleted HR letters"},
     {"name": "show_deleted_hr_letters", "description": "Can access show deleted HR letters button"},
+    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Grievances Desk
     {"name": "view_grievances", "description": "Can view employee grievances"},

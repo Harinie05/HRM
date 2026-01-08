@@ -3,6 +3,19 @@ import { Plus, Edit, Trash2, CheckCircle, Clock, XCircle } from "lucide-react";
 import api from "../../api";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
+// Helper function to get status icon
+const getStatusIcon = (status) => {
+  switch (status) {
+    case "Completed":
+      return <CheckCircle className="w-4 h-4 text-green-600" />;
+    case "Partially Completed":
+      return <Clock className="w-4 h-4 text-yellow-600" />;
+    case "Not Completed":
+    default:
+      return <XCircle className="w-4 h-4 text-red-600" />;
+  }
+};
+
 export default function WorkAssignments() {
   // Check permissions
   if (!hasPermission('view_work_assignments') && !isAdmin()) {

@@ -54,11 +54,24 @@ def generate_certificate(data: dict, request: Request, db: Session = Depends(get
         raise HTTPException(status_code=422, detail=f"Error generating certificate: {str(e)}")
 
 @router.get("/")
-def list_certificates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_certificates"))):
+def list_certificates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    # Check permissions - allow both view_training_certificates and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_training_certificates', 'view_self']) and not user.get('is_admin', False):
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         from models.models_tenant import TrainingApplication
         
-        certificates = db.query(TrainingCertificate).all()
+        query = db.query(TrainingCertificate)
+        
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(TrainingCertificate.employee_id == current_user_id)
+        
+        certificates = query.all()
         
         result = []
         for certificate in certificates:

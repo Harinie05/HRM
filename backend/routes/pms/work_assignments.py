@@ -166,10 +166,9 @@ async def get_assignments(
     try:
         where_clause = "WHERE wa.is_active = 1" if not include_deleted else "WHERE 1=1"
         
-        # Check if user has view_self permission (can only view own records)
+        # Check permissions: if user has view_self, show only own records regardless of other permissions
         user_permissions = user.get('permissions', [])
-        if 'view_self' in user_permissions and 'view_work_assignments' not in user_permissions:
-            # User can only view their own records
+        if 'view_self' in user_permissions:
             current_user_id = user.get('user_id')
             if current_user_id:
                 where_clause += f" AND wa.assigned_employee_id = {current_user_id}"
@@ -355,61 +354,35 @@ async def create_assignment(
 @router.get("/work-assignments/my-assignments")
 async def get_my_assignments(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_my_assignments"))):
     try:
-        user_employee_code = user.get('employee_code') if isinstance(user, dict) else getattr(user, 'employee_code', None)
-        user_name = user.get('name') if isinstance(user, dict) else getattr(user, 'name', None)
-        user_email = user.get('email') if isinstance(user, dict) else getattr(user, 'email', None)
+        current_user_id = user.get('user_id')
+        print(f"Debug: Current user ID: {current_user_id}")
         
-        # If name is null, try to get it from database
-        if not user_name and user_email:
-            try:
-                user_result = db.execute(text("""
-                    SELECT name FROM users WHERE email = :email LIMIT 1
-                """), {"email": user_email}).fetchone()
-                if user_result:
-                    user_name = user_result[0]
-            except Exception as e:
-                print(f"Error getting user name from database: {e}")
-        
-        employee_identifier = None
-        
-        if user_employee_code:
-            employee_identifier = user_employee_code
-        else:
-            try:
-                onboarded_result = db.execute(text("""
-                    SELECT employee_id FROM onboarding_candidates 
-                    WHERE candidate_name = :name AND employee_id IS NOT NULL
-                    LIMIT 1
-                """), {"name": user_name}).fetchone()
-                
-                if onboarded_result:
-                    employee_identifier = onboarded_result[0]
-            except Exception as e:
-                print(f"Error checking onboarding_candidates table: {e}")
-        
-        if not employee_identifier:
+        if not current_user_id:
             return {"data": []}
         
-        print(f"Looking for assignments for employee_identifier: {employee_identifier}, user_name: {user_name}")
+        # First check if there are any assignments for this user
+        check_result = db.execute(text("""
+            SELECT COUNT(*) FROM work_assignments WHERE assigned_employee_id = :user_id AND is_active = 1
+        """), {"user_id": current_user_id}).scalar()
+        print(f"Debug: Found {check_result} assignments for user {current_user_id}")
         
         result = db.execute(text("""
             SELECT wa.id, wa.title, wa.category, wa.weightage_percentage, wa.frequency,
-                   COALESCE(ast.completion_status, 'Not Completed') as completion_status,
+                   COALESCE(ast.completion_status, 'Not Started') as completion_status,
                    COALESCE(ast.completion_percentage, 0.0) as completion_percentage,
                    COALESCE(ast.remarks, '') as remarks,
-                   rc.cycle_name
+                   COALESCE(rc.cycle, 'No Cycle') as cycle_name
             FROM work_assignments wa
-            LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = :employee_identifier
-            LEFT JOIN pms_review_cycles rc ON wa.review_cycle_id = rc.id
-            LEFT JOIN users u ON wa.assigned_employee_id = u.id
-            WHERE (u.employee_code = :employee_identifier OR u.name = :user_name OR wa.assigned_employee_id = :user_id) AND wa.is_active = 1
-        """), {"employee_identifier": employee_identifier, "user_name": user_name, "user_id": user.get('user_id', 6)}).fetchall()
+            LEFT JOIN assignment_status ast ON wa.id = ast.assignment_id AND ast.employee_id = wa.assigned_employee_id
+            LEFT JOIN pms_reviews rc ON wa.review_cycle_id = rc.id
+            WHERE wa.assigned_employee_id = :user_id AND wa.is_active = 1
+        """), {"user_id": current_user_id}).fetchall()
         
-        print(f"Found {len(result)} assignments for {user_name}")
+        print(f"Debug: Query returned {len(result)} rows")
         
         assignments = []
         for row in result:
-            assignments.append({
+            assignment = {
                 "id": row[0],
                 "title": row[1],
                 "category": row[2],
@@ -420,7 +393,9 @@ async def get_my_assignments(db: Session = Depends(get_tenant_db), user = Depend
                 "remarks": row[7],
                 "cycle_name": row[8],
                 "can_update": True
-            })
+            }
+            assignments.append(assignment)
+            print(f"Debug: Added assignment: {assignment}")
         
         return {"data": assignments}
         

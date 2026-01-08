@@ -9,7 +9,7 @@ from schemas.schemas_tenant import (
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
 from utils.email import send_email
-from routes.hospital import require_permission
+from routes.hospital import require_permission, get_current_user
 import logging
 from datetime import datetime
 
@@ -64,14 +64,27 @@ def create_pending_lifecycle_action(payload: dict, db: Session = Depends(get_ten
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pending")
-def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_lifecycle_actions"))):
+def get_pending_lifecycle_actions(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get all pending lifecycle actions"""
+    # Check permissions - allow both view_lifecycle_actions and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_lifecycle_actions', 'view_self']) and user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         from models.models_tenant import User
         
-        actions = db.query(EmployeeLifecycleAction).filter(
+        query = db.query(EmployeeLifecycleAction).filter(
             EmployeeLifecycleAction.status == 'Pending'
-        ).all()
+        )
+        
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(EmployeeLifecycleAction.employee_id == current_user_id)
+        
+        actions = query.all()
         
         result = []
         for action in actions:
@@ -304,14 +317,27 @@ def approve_lifecycle_action(approval_data: dict, request: Request, db: Session 
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-def list_lifecycle_actions(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_lifecycle_actions"))):
+def list_lifecycle_actions(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get all approved lifecycle actions"""
+    # Check permissions - allow both view_lifecycle_actions and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_lifecycle_actions', 'view_self']) and user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         from models.models_tenant import User
         
-        actions = db.query(EmployeeLifecycleAction).filter(
+        query = db.query(EmployeeLifecycleAction).filter(
             EmployeeLifecycleAction.status.in_(['Approved', 'Rejected'])
-        ).all()
+        )
+        
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(EmployeeLifecycleAction.employee_id == current_user_id)
+        
+        actions = query.all()
         
         result = []
         for action in actions:

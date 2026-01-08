@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
-import { hasPermission } from "../../utils/permissions";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Communication() {
   // Permission checks
-  const canView = hasPermission('view_hr_letters');
+  const canView = hasPermission('view_hr_letters') || hasPermission('view_self');
   const canAdd = hasPermission('add_hr_letter');
   const canEdit = hasPermission('edit_hr_letter');
   const canDelete = hasPermission('delete_hr_letter');
@@ -50,6 +50,23 @@ export default function Communication() {
     };
     loadData();
   }, []);
+  
+  // Auto-populate employee ID for non-admin users
+  useEffect(() => {
+    if (!isAdmin() && employees.length > 0 && !formData.employeeId) {
+      const currentUserId = localStorage.getItem('user_id');
+      const currentUserEmployee = employees.find(emp => {
+        if (emp.source === 'user_management') {
+          return emp.original_user_id == currentUserId;
+        }
+        return emp.id == currentUserId;
+      });
+      
+      if (currentUserEmployee) {
+        setFormData(prev => ({ ...prev, employeeId: currentUserEmployee.employee_code }));
+      }
+    }
+  }, [employees]);
 
   useEffect(() => {
     if (employees.length > 0) {
@@ -117,6 +134,7 @@ export default function Communication() {
         .filter(user => user.employee_code)
         .map(user => ({
           id: `user_${user.id}`,
+          original_user_id: user.id,
           name: user.name,
           employee_code: user.employee_code,
           source: 'user_management'
@@ -425,18 +443,33 @@ export default function Communication() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-                  <select 
-                    value={formData.employeeId}
-                    onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  >
-                    <option value="">Select Employee</option>
-                    {employees.map((emp) => (
-                      <option key={emp.id} value={emp.employee_code}>
-                        {emp.employee_code} - {emp.name}
-                      </option>
-                    ))}
-                  </select>
+                  {isAdmin() ? (
+                    <select 
+                      value={formData.employeeId}
+                      onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
+                      className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.map((emp) => (
+                        <option key={emp.id} value={emp.employee_code}>
+                          {emp.employee_code} - {emp.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="w-full px-3 py-2 border border-black rounded-md bg-gray-50 text-gray-700">
+                      {(() => {
+                        const currentUserId = localStorage.getItem('user_id');
+                        const currentUserEmployee = employees.find(emp => {
+                          if (emp.source === 'user_management') {
+                            return emp.original_user_id == currentUserId;
+                          }
+                          return emp.id == currentUserId;
+                        });
+                        return currentUserEmployee ? `${currentUserEmployee.employee_code} - ${currentUserEmployee.name}` : 'Loading...';
+                      })()} 
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Letter Type</label>

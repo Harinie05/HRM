@@ -10,10 +10,10 @@ import KnowledgeTransfer from "./KnowledgeTransfer";
 
 export default function ExitLayout() {
   const allTabs = [
-    { name: "Resignation Tracking", permission: "view_resignation_tracking" },
-    { name: "Clearance & Exit Process", permission: "view_clearance_process" },
-    { name: "Knowledge Transfer", permission: "view_knowledge_transfer" },
-    { name: "F&F Settlement & Documents", permission: "view_settlement_documents" }
+    { name: "Resignation Tracking", permission: "view_resignations" },
+    { name: "Clearance & Exit Process", permission: "manage_clearance" },
+    { name: "Knowledge Transfer", permission: "view_kt_plans" },
+    { name: "F&F Settlement & Documents", permission: "view_settlements" }
   ];
 
   const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);

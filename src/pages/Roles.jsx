@@ -225,15 +225,6 @@ export default function Roles() {
     } else {
       let newList = [...list, perm];
       
-      // Auto-unchecking conflicting permissions
-      if (perm === 'view_self') {
-        // Remove view_users and view_employees when view_self is selected
-        newList = newList.filter(p => p !== 'view_users' && p !== 'view_employees');
-      } else if (perm === 'view_users' || perm === 'view_employees') {
-        // Remove view_self when view_users or view_employees is selected
-        newList = newList.filter(p => p !== 'view_self');
-      }
-      
       // Auto-selecting dependent permissions
       if (perm === 'view_employees' && !newList.includes('mark_onboarded')) {
         newList.push('mark_onboarded');
@@ -1576,7 +1567,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees' || p.name === 'view_self'
+                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'assign_to_employees' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1590,7 +1581,7 @@ export default function Roles() {
                                 <p className="text-xs text-gray-500">{p.name}</p>
                               </div>
                             </label>
-                          ))}
+                          ))}}
                         </div>
                       </div>
                       
@@ -1642,7 +1633,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Feedback</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'request_feedback' || p.name === 'view_360_feedback' || p.name === 'manage_feedback_forms' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback' || p.name === 'view_self'
+                            p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'request_feedback' || p.name === 'view_360_feedback' || p.name === 'manage_feedback_forms' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1664,7 +1655,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Appraisal</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_appraisals' || p.name === 'conduct_appraisal' || p.name === 'submit_self_appraisal' || p.name === 'approve_appraisal' || p.name === 'view_appraisal_reports' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals' || p.name === 'view_self'
+                            p.name === 'view_appraisals' || p.name === 'conduct_appraisal' || p.name === 'submit_self_appraisal' || p.name === 'approve_appraisal' || p.name === 'view_appraisal_reports' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1934,7 +1925,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Lifecycle Actions</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
+                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1956,7 +1947,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">HR Letters</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
+                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3791,7 +3782,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Feedback</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'request_feedback' || p.name === 'view_360_feedback' || p.name === 'manage_feedback_forms' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback' || p.name === 'view_self'
+                            p.name === 'view_feedback' || p.name === 'give_feedback' || p.name === 'request_feedback' || p.name === 'view_360_feedback' || p.name === 'manage_feedback_forms' || p.name === 'edit_feedback' || p.name === 'delete_feedback' || p.name === 'restore_feedback' || p.name === 'show_deleted_feedback'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3813,7 +3804,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Appraisal</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_appraisals' || p.name === 'conduct_appraisal' || p.name === 'submit_self_appraisal' || p.name === 'approve_appraisal' || p.name === 'view_appraisal_reports' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals' || p.name === 'view_self'
+                            p.name === 'view_appraisals' || p.name === 'conduct_appraisal' || p.name === 'submit_self_appraisal' || p.name === 'approve_appraisal' || p.name === 'view_appraisal_reports' || p.name === 'edit_appraisal' || p.name === 'delete_appraisal' || p.name === 'restore_appraisal' || p.name === 'show_deleted_appraisals'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3878,7 +3869,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Lifecycle Actions</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
+                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3900,7 +3891,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">HR Letters</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
+                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

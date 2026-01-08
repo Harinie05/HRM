@@ -13,9 +13,9 @@ export default function PMSManagement() {
   const allTabs = [
     { name: "Work Assignments", permission: "view_work_assignments" },
     { name: "Goals & KPI", permission: "view_goals_kpi" },
-    { name: "Review Cycle", permission: "view_review_cycle" },
+    { name: "Review Cycle", permission: "view_review_cycles" },
     { name: "Feedback", permission: "view_feedback" },
-    { name: "Appraisal", permission: "view_appraisal" },
+    { name: "Appraisal", permission: "view_appraisals" },
     { name: "Quality Indicators", permission: "view_quality_indicators" }
   ];
 

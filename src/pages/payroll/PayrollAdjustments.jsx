@@ -248,6 +248,23 @@ export default function PayrollAdjustments() {
     return employee ? employee.name : `Employee #${employeeId}`;
   };
 
+  const getEmployeeCode = (employeeId) => {
+    // Try to find by direct ID match first
+    let employee = employees.find(emp => emp.id === employeeId);
+    
+    // If not found, try to find by original_user_id
+    if (!employee) {
+      employee = employees.find(emp => emp.original_user_id === employeeId);
+    }
+    
+    // If still not found, try string/number conversion
+    if (!employee) {
+      employee = employees.find(emp => emp.id == employeeId || emp.original_user_id == employeeId);
+    }
+    
+    return employee ? employee.employee_code || employeeId : employeeId;
+  };
+
   const adjustmentTypes = ["Bonus", "Arrears", "Medical", "Overtime", "Deduction", "Other"];
 
   return (
@@ -317,7 +334,7 @@ export default function PayrollAdjustments() {
                   <tr key={adjustment.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
-                      <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                      <div className="text-sm text-gray-500">Code: {getEmployeeCode(adjustment.employee_id)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{adjustment.month}</div>
@@ -377,7 +394,7 @@ export default function PayrollAdjustments() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-medium text-gray-900">{getEmployeeName(adjustment.employee_id)}</div>
-                      <div className="text-sm text-gray-500">ID: {adjustment.employee_id}</div>
+                      <div className="text-sm text-gray-500">Code: {getEmployeeCode(adjustment.employee_id)}</div>
                     </div>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
                       {adjustment.adjustment_type}

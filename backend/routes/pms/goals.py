@@ -190,15 +190,28 @@ async def get_employee_pms_data(employee_id: int, db: Session = Depends(get_tena
         print(f"Error fetching employee PMS data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching employee PMS data: {str(e)}")
 @router.get("/kpi-dashboard")
-async def get_kpi_dashboard(db: Session = Depends(get_tenant_db)):
+async def get_kpi_dashboard(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_goals_kpi"))):
     try:
-        # Get all employees with work assignments
-        result = db.execute(text("""
-            SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name
-            FROM work_assignments wa
-            LEFT JOIN users u ON wa.assigned_employee_id = u.id
-            WHERE wa.is_active = 1
-        """)).fetchall()
+        # Check permissions: if user has view_self, show only own records regardless of other permissions
+        user_permissions = user.get('permissions', [])
+        current_user_id = user.get('user_id')
+        
+        if 'view_self' in user_permissions and current_user_id:
+            # Get only current user's KPI data
+            result = db.execute(text("""
+                SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name
+                FROM work_assignments wa
+                LEFT JOIN users u ON wa.assigned_employee_id = u.id
+                WHERE wa.is_active = 1 AND wa.assigned_employee_id = :user_id
+            """), {"user_id": current_user_id}).fetchall()
+        else:
+            # Get all employees with work assignments
+            result = db.execute(text("""
+                SELECT DISTINCT wa.assigned_employee_id, u.name as employee_name
+                FROM work_assignments wa
+                LEFT JOIN users u ON wa.assigned_employee_id = u.id
+                WHERE wa.is_active = 1
+            """)).fetchall()
         
         kpi_data = []
         for row in result:
@@ -338,13 +351,24 @@ async def create_goal(goal: dict, request: Request, db: Session = Depends(get_te
 async def get_goals(include_deleted: bool = False, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_goals_kpi"))):
     try:
         print("Starting to fetch goals...")
+        
+        # Check permissions: if user has view_self, show only own records regardless of other permissions
+        user_permissions = user.get('permissions', [])
+        current_user_id = user.get('user_id')
+        
         if include_deleted:
-            # Show all goals including deleted ones
-            goals = db.query(PMSGoal).all()
+            # Show goals including deleted ones
+            if 'view_self' in user_permissions and current_user_id:
+                goals = db.query(PMSGoal).filter(PMSGoal.employee_id == current_user_id).all()
+            else:
+                goals = db.query(PMSGoal).all()
             print(f"Found {len(goals)} total goals (including deleted)")
         else:
             # Filter out deleted goals using is_active
-            goals = db.query(PMSGoal).filter(PMSGoal.is_active == True).all()
+            if 'view_self' in user_permissions and current_user_id:
+                goals = db.query(PMSGoal).filter(PMSGoal.is_active == True, PMSGoal.employee_id == current_user_id).all()
+            else:
+                goals = db.query(PMSGoal).filter(PMSGoal.is_active == True).all()
             print(f"Found {len(goals)} active goals")
         
         goals_data = []

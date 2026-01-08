@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
@@ -6,6 +7,12 @@ from utils.permission import require_permission
 from routes.hospital import get_current_user
 from datetime import datetime
 from sqlalchemy import func
+import io
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 
 from models.models_tenant import (
     PayrollRun, User, SalaryStructure, StatutoryRule, 
@@ -322,3 +329,290 @@ def generate_bank_file(
         
     except Exception as e:
         raise HTTPException(500, f"Bank file generation failed: {str(e)}")
+
+@router.get("/payslip/{payslip_id}/download")
+def download_payslip_pdf(
+    payslip_id: int,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("download_salary_slips"))
+):
+    """Download payslip as PDF"""
+    try:
+        # Check if reportlab is available
+        try:
+            from reportlab.lib.pagesizes import A4
+        except ImportError:
+            raise HTTPException(500, "PDF generation library not installed. Please install reportlab.")
+        
+        # Get payroll run data
+        payroll_run = db.query(PayrollRun).filter(PayrollRun.id == payslip_id).first()
+        if not payroll_run:
+            raise HTTPException(404, "Payslip not found")
+        
+        # Get employee details
+        employee = db.query(Employee).filter(Employee.id == payroll_run.employee_id).first()
+        if not employee:
+            employee = db.query(User).filter(User.id == payroll_run.employee_id).first()
+        
+        if not employee:
+            raise HTTPException(404, "Employee not found")
+        
+        # Get adjustments
+        adjustments = db.query(PayrollAdjustment).filter(
+            PayrollAdjustment.employee_id == payroll_run.employee_id,
+            PayrollAdjustment.month == payroll_run.month
+        ).all()
+        
+        # Generate PDF
+        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments)
+        
+        # Return as streaming response
+        # Extract year for filename
+        if hasattr(payroll_run, 'year') and payroll_run.year:
+            year_for_filename = payroll_run.year
+        else:
+            year_for_filename = datetime.now().year
+            
+        filename = f"payslip_{getattr(employee, 'name', 'employee').replace(' ', '_')}_{payroll_run.month}_{year_for_filename}.pdf"
+        
+        return StreamingResponse(
+            io.BytesIO(pdf_buffer.getvalue()),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"PDF generation error: {str(e)}")
+        raise HTTPException(500, f"PDF generation failed: {str(e)}")
+
+def generate_payslip_pdf(employee, payroll_run, adjustments):
+    """Generate PDF payslip using reportlab"""
+    try:
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        styles = getSampleStyleSheet()
+        story = []
+        
+        # Title
+        title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], alignment=1, spaceAfter=30)
+        story.append(Paragraph("SALARY SLIP", title_style))
+        
+        # Employee Info
+        # Extract year from month if it contains year, otherwise use current year
+        month_display = payroll_run.month
+        if hasattr(payroll_run, 'year') and payroll_run.year:
+            year_display = payroll_run.year
+        else:
+            year_display = datetime.now().year
+        
+        # Handle department - could be object or string
+        department = getattr(employee, 'department', 'N/A')
+        if hasattr(department, 'name'):
+            department_name = department.name
+        elif hasattr(department, 'department_name'):
+            department_name = department.department_name
+        else:
+            department_name = str(department) if department != 'N/A' else 'N/A'
+        
+        emp_data = [
+            ['Employee Name:', getattr(employee, 'name', 'N/A')],
+            ['Employee Code:', getattr(employee, 'employee_code', 'N/A')],
+            ['Month:', f"{month_display} {year_display}"],
+            ['Department:', department_name]
+        ]
+        
+        emp_table = Table(emp_data, colWidths=[2*inch, 3*inch])
+        emp_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ]))
+        
+        story.append(emp_table)
+        story.append(Spacer(1, 20))
+        
+        # Earnings and Deductions
+        earnings_data = [
+            ['EARNINGS', 'AMOUNT'],
+            ['Basic Salary', f"₹{getattr(payroll_run, 'basic_salary', 0):,.2f}"],
+            ['HRA', f"₹{getattr(payroll_run, 'hra_salary', 0):,.2f}"],
+            ['Allowances', f"₹{getattr(payroll_run, 'allowances', 0):,.2f}"]
+        ]
+        
+        # Add adjustments (additions)
+        for adj in adjustments:
+            if adj.adjustment_type != 'Deduction':
+                earnings_data.append([f"{adj.adjustment_type}", f"₹{(adj.amount or 0):,.2f}"])
+        
+        earnings_data.append(['GROSS SALARY', f"₹{getattr(payroll_run, 'gross_salary', 0):,.2f}"])
+        
+        deductions_data = [
+            ['DEDUCTIONS', 'AMOUNT'],
+            ['LOP Deduction', f"₹{getattr(payroll_run, 'lop_deduction', 0):,.2f}"],
+            ['PF (12%)', f"₹{(getattr(payroll_run, 'basic_salary', 0) * 0.12):,.2f}"],
+            ['ESI (1.75%)', f"₹{(getattr(payroll_run, 'gross_salary', 0) * 0.0175):,.2f}"]
+        ]
+        
+        # Add deduction adjustments
+        for adj in adjustments:
+            if adj.adjustment_type == 'Deduction':
+                deductions_data.append([f"{adj.adjustment_type}", f"₹{(adj.amount or 0):,.2f}"])
+        
+        total_deductions = (getattr(payroll_run, 'lop_deduction', 0) + 
+                           getattr(payroll_run, 'basic_salary', 0) * 0.12 + 
+                           getattr(payroll_run, 'gross_salary', 0) * 0.0175 +
+                           sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction'))
+        
+        deductions_data.append(['TOTAL DEDUCTIONS', f"₹{total_deductions:,.2f}"])
+        
+        # Create tables side by side
+        combined_data = []
+        max_rows = max(len(earnings_data), len(deductions_data))
+        
+        for i in range(max_rows):
+            row = []
+            if i < len(earnings_data):
+                row.extend(earnings_data[i])
+            else:
+                row.extend(['', ''])
+            
+            row.append('')  # Spacer column
+            
+            if i < len(deductions_data):
+                row.extend(deductions_data[i])
+            else:
+                row.extend(['', ''])
+            
+            combined_data.append(row)
+        
+        combined_table = Table(combined_data, colWidths=[1.5*inch, 1*inch, 0.5*inch, 1.5*inch, 1*inch])
+        combined_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (1, 0), colors.lightblue),
+            ('BACKGROUND', (3, 0), (4, 0), colors.lightcoral),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('ALIGN', (4, 0), (4, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('GRID', (0, 0), (1, -1), 1, colors.black),
+            ('GRID', (3, 0), (4, -1), 1, colors.black)
+        ]))
+        
+        story.append(combined_table)
+        story.append(Spacer(1, 20))
+        
+        # Net Salary
+        net_salary = (getattr(payroll_run, 'net_salary', 0) + 
+                     sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type != 'Deduction') - 
+                     sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction'))
+        
+        net_data = [['NET SALARY', f"₹{net_salary:,.2f}"]]
+        net_table = Table(net_data, colWidths=[3*inch, 2*inch])
+        net_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.lightgreen),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+            ('GRID', (0, 0), (-1, -1), 2, colors.black)
+        ]))
+        
+        story.append(net_table)
+        
+        doc.build(story)
+        buffer.seek(0)
+        return buffer
+        
+    except Exception as e:
+        print(f"PDF generation error: {str(e)}")
+        raise Exception(f"Failed to generate PDF: {str(e)}")
+
+@router.post("/send-email")
+async def send_payslip_email(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("email_salary_slips"))
+):
+    """Send payslip via email"""
+    try:
+        from utils.email import send_email
+        
+        # Get form data
+        body = await request.json()
+        payslip_id = body.get('payslip_id')
+        email = body.get('email')
+        
+        if not payslip_id or not email:
+            raise HTTPException(400, "Payslip ID and email are required")
+        
+        # Get payroll run data
+        payroll_run = db.query(PayrollRun).filter(PayrollRun.id == payslip_id).first()
+        if not payroll_run:
+            raise HTTPException(404, "Payslip not found")
+        
+        # Get employee details
+        employee = db.query(Employee).filter(Employee.id == payroll_run.employee_id).first()
+        if not employee:
+            employee = db.query(User).filter(User.id == payroll_run.employee_id).first()
+        
+        if not employee:
+            raise HTTPException(404, "Employee not found")
+        
+        # Get adjustments
+        adjustments = db.query(PayrollAdjustment).filter(
+            PayrollAdjustment.employee_id == payroll_run.employee_id,
+            PayrollAdjustment.month == payroll_run.month
+        ).all()
+        
+        # Generate PDF
+        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments)
+        
+        # Prepare email content
+        employee_name = getattr(employee, 'name', 'Employee')
+        subject = f"Payslip for {employee_name} - {payroll_run.month}"
+        
+        html_content = f"""
+        <html>
+        <body>
+            <h2>Payslip - {payroll_run.month}</h2>
+            <p>Dear {employee_name},</p>
+            <p>Please find attached your payslip for <strong>{payroll_run.month}</strong>.</p>
+            <p>If you have any questions, please contact the HR department.</p>
+            <br>
+            <p>Best regards,<br>
+            HR Department<br>
+            NUTRYAH</p>
+        </body>
+        </html>
+        """
+        
+        # Prepare attachment
+        filename = f"payslip_{employee_name.replace(' ', '_')}_{payroll_run.month}.pdf"
+        attachments = [{
+            'filename': filename,
+            'content': pdf_buffer.getvalue()
+        }]
+        
+        # Send email using existing utility
+        success = send_email(email, subject, html_content, attachments)
+        
+        if success:
+            return {"message": f"Payslip sent successfully to {email}"}
+        else:
+            raise HTTPException(500, "Failed to send email")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Email sending error: {str(e)}")
+        raise HTTPException(500, f"Failed to send email: {str(e)}")

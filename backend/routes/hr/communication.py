@@ -185,22 +185,53 @@ def delete_communication(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/", response_model=list)
-def list_communications(db: Session = Depends(get_tenant_db), _: dict = Depends(require_permission("view_hr_letters"))):
+def list_communications(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+    # Check permissions - allow both view_hr_letters and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_hr_letters', 'view_self']) and user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
-        communications = db.query(HRCommunication).order_by(
+        query = db.query(HRCommunication).order_by(
             HRCommunication.created_at.desc()
-        ).all()
+        )
+        
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                # Filter communications sent to current user
+                query = query.filter(
+                    (HRCommunication.sent_to_ids.contains([current_user_id])) |
+                    (HRCommunication.sent_to_type == 'All')
+                )
+        
+        communications = query.all()
         
         result = []
         for comm in communications:
+            # Get employee details for sent_to_ids
+            from models.models_tenant import User
+            employee_names = []
+            if comm.sent_to_ids:
+                for emp_id in comm.sent_to_ids:
+                    emp_user = db.query(User).filter(User.id == emp_id).first()
+                    if emp_user:
+                        employee_names.append(f"{emp_user.name} ({emp_user.employee_code})")
+                    else:
+                        employee_names.append(f"Employee {emp_id}")
+            
             result.append({
                 "id": comm.id,
-                "letter_type": comm.letter_type,
+                "employee": employee_names[0].split(' (')[1].replace(')', '') if employee_names else "All",
+                "employeeType": comm.letter_type,
                 "subject": comm.subject,
+                "date": comm.created_at.strftime('%Y-%m-%d') if comm.created_at else None,
+                "status": comm.status,
+                "letter_type": comm.letter_type,
                 "content": comm.content,
                 "sent_to_type": comm.sent_to_type,
                 "sent_to_ids": comm.sent_to_ids,
-                "status": comm.status,
                 "created_at": comm.created_at.isoformat() if comm.created_at is not None else None
             })
         

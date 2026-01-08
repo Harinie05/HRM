@@ -91,14 +91,27 @@ async def create_pending_asset(asset_data: dict, request: Request, db: Session =
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/pending")
-async def get_pending_assets(db: Session = Depends(get_tenant_db)):
+async def get_pending_assets(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get all pending asset assignments"""
+    # Check permissions - allow both view_assets and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_assets', 'view_self']) and user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         from models.models_tenant import User
         
-        assets = db.query(AssetAssignment).filter(
+        query = db.query(AssetAssignment).filter(
             AssetAssignment.status == 'Pending'
-        ).all()
+        )
+        
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id:
+                query = query.filter(AssetAssignment.employee_id == current_user_id)
+        
+        assets = query.all()
         
         result = []
         for asset in assets:
@@ -194,8 +207,13 @@ async def approve_asset(approval_data: dict, request: Request, db: Session = Dep
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/")
-async def get_approved_assets(db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_assets"))):
+async def get_approved_assets(db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
     """Get all approved assets"""
+    # Check permissions - allow both view_assets and view_self
+    user_permissions = user.get('permissions', [])
+    if not any(perm in user_permissions for perm in ['view_assets', 'view_self']) and not user.get('is_admin', False):
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
         from models.models_tenant import User
         
@@ -203,10 +221,8 @@ async def get_approved_assets(db: Session = Depends(get_tenant_db), user = Depen
             AssetAssignment.status.in_(['Approved', 'Active', 'Assigned', 'Rejected'])
         )
         
-        # Check if user has view_self permission (can only view own records)
-        user_permissions = user.get('permissions', [])
-        if 'view_self' in user_permissions and 'view_assets' not in user_permissions:
-            # User can only view their own records
+        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
+        if 'view_self' in user_permissions:
             current_user_id = user.get('user_id')
             if current_user_id:
                 query = query.filter(AssetAssignment.employee_id == current_user_id)

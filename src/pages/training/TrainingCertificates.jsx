@@ -21,7 +21,7 @@ export default function TrainingCertificates() {
   });
 
   // Check permissions
-  if (!hasPermission('view_training_certificates') && !isAdmin()) {
+  if (!hasPermission('view_training_certificates') && !hasPermission('view_self') && !isAdmin()) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">

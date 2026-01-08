@@ -47,7 +47,7 @@ export default function TrainingRequests() {
   const { toast, showToast, hideToast } = useToast();
 
   // Check permissions
-  if (!hasPermission('view_training_requests') && !isAdmin()) {
+  if (!hasPermission('view_training_requests') && !hasPermission('view_self') && !isAdmin()) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">

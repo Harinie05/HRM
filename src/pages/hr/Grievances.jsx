@@ -8,7 +8,7 @@ export default function Grievances() {
   const { toast, showToast } = useToast();
   
   // Permission checks
-  const canView = hasPermission('view_grievances');
+  const canView = hasPermission('view_grievances') || hasPermission('view_self');
   const canAdd = hasPermission('add_grievance');
   const canDelete = hasPermission('delete_grievance');
   const canResolve = hasPermission('resolve_grievance');
