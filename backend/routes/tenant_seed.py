@@ -727,7 +727,4 @@ def seed_tenant(tenant_db: str):
         raise e
 
 
-        print(f"🌱 Tenant seeding completed for: {tenant_db}\n")
-    except Exception as e:
-        print(f"❌ Error seeding tenant {tenant_db}: {str(e)}")
-        raise e
+      

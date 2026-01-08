@@ -169,6 +169,10 @@ export default function Roles() {
     p.name === 'verify_employee_documents' || p.name === 'reject_employee_documents'
   ).map(p => p.name);
 
+  const getDashboardPerms = () => permissions.filter(p => 
+    p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
+  ).map(p => p.name);
+
 
 
   // ------------------------------------
@@ -2059,6 +2063,46 @@ export default function Roles() {
                       </div>
                     </div>
 
+                    {/* 📊 DASHBOARD PERMISSIONS */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> DASHBOARD PERMISSIONS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getDashboardPerms().every(perm => selectedPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getDashboardPerms(),
+                              setSelectedPerms,
+                              selectedPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* 💰 PAYROLL MANAGEMENT */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -3155,6 +3199,46 @@ export default function Roles() {
                             </label>
                           ))}
                         </div>
+                      </div>
+                    </div>
+
+                    {/* 📊 DASHBOARD PERMISSIONS */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> DASHBOARD PERMISSIONS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getDashboardPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getDashboardPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
                       </div>
                     </div>
 
