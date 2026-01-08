@@ -1581,7 +1581,7 @@ export default function Roles() {
                                 <p className="text-xs text-gray-500">{p.name}</p>
                               </div>
                             </label>
-                          ))}}
+                          ))}
                         </div>
                       </div>
                       
