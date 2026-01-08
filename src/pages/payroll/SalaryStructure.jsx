@@ -326,18 +326,15 @@ export default function SalaryStructure() {
               />
             </div>
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            disabled={!canAdd}
-            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center ${
-              canAdd 
-                ? 'bg-gray-900 hover:bg-gray-800 text-white' 
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            <Plus size={18} />
-            Add Structure
-          </button>
+          {canAdd && (
+            <button 
+              onClick={() => handleOpenModal()}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+            >
+              <Plus size={18} />
+              Add Structure
+            </button>
+          )}
         </div>
 
         {/* Table */}

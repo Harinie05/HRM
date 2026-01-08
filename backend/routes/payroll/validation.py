@@ -48,13 +48,36 @@ def validate_payroll_readiness(
     employees_query = text("""
         SELECT DISTINCT u.id, u.employee_code, u.name, u.status
         FROM users u
-        JOIN salary_structures ss ON (
-            CONCAT(',', ss.employee_ids, ',') LIKE CONCAT('%,', u.id, ',%') OR 
-            CONCAT(',', ss.employee_ids, ',') LIKE CONCAT('%,user_', u.id, ',%') OR
-            (u.employee_code IS NOT NULL AND CONCAT(',', ss.employee_ids, ',') LIKE CONCAT('%,', u.employee_code, ',%'))
+        WHERE u.status = 'Active'
+        AND EXISTS (
+            SELECT 1 FROM salary_structures ss 
+            WHERE ss.is_active = 1 
+            AND (
+                FIND_IN_SET(u.id, ss.employee_ids) > 0 OR
+                FIND_IN_SET(CONCAT('user_', u.id), ss.employee_ids) > 0 OR
+                (u.employee_code IS NOT NULL AND FIND_IN_SET(u.employee_code, ss.employee_ids) > 0)
+            )
         )
     """)
     employees = db.execute(employees_query).fetchall()
+    
+    if not employees:
+        print("DEBUG: No employees found linked to salary structures")
+        return PayrollValidationResponse(
+            can_run_payroll=False,
+            total_issues=1,
+            critical_issues=1,
+            warning_issues=0,
+            issues=[ValidationIssue(
+                employee_id="N/A",
+                employee_name="System",
+                issue_type="No Employees",
+                issue_description="No employees are linked to any salary structure",
+                date=f"{year}-{month:02d}-01",
+                severity="critical",
+                action_required="Link employees to salary structures before running payroll"
+            )]
+        )
     
     print(f"DEBUG: Found {len(employees)} employees linked to salary structures for validation")
     for emp in employees:
@@ -104,7 +127,7 @@ def validate_payroll_readiness(
     critical_count = sum(1 for issue in issues if issue.severity == "critical")
     warning_count = sum(1 for issue in issues if issue.severity == "warning")
     
-    # Payroll can run with warnings (absent days) but not with critical issues
+    # Payroll can run if there are no critical issues (warnings are allowed)
     can_run = critical_count == 0
     
     return PayrollValidationResponse(

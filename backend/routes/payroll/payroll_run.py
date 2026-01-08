@@ -43,9 +43,39 @@ async def create_payroll_run(
         data = await request.json()
         print(f"Raw payroll data: {data}")
         
-        # Extract month and year for validation
+        # Check if this is a single employee or bulk processing request
+        if 'employee_id' in data:
+            # Single employee processing
+            return await create_payroll_run_internal(data, request, db)
+        else:
+            # Bulk processing request
+            return await process_bulk_payroll(data, request, db)
+        
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating payroll run: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/runs/bulk")
+async def process_bulk_payroll(
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("create_payroll_run"))
+):
+    try:
+        data = await request.json()
+        return await process_bulk_payroll_internal(data, request, db)
+    except Exception as e:
+        db.rollback()
+        print(f"Error in bulk payroll processing: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def process_bulk_payroll_internal(data: dict, request: Request, db: Session):
+    """Process payroll for multiple employees"""
+    try:
         month_name = data.get('month', '')
         year = int(data.get('year', 0))
+        
         # Convert month name to number for validation
         month_map = {
             'January': 1, 'February': 2, 'March': 3, 'April': 4,
@@ -65,14 +95,12 @@ async def create_payroll_run(
             if len(critical_issues) > 3:
                 issue_summary += f" and {len(critical_issues) - 3} more critical issues"
             
-            # Add warning summary if there are warnings
             if warning_issues:
                 if issue_summary:
                     issue_summary += f"; {len(warning_issues)} absent days (warnings)"
                 else:
                     issue_summary = f"{len(warning_issues)} absent days (warnings)"
             
-            # Create proper error message based on issue types
             if validation_result.critical_issues > 0:
                 error_message = f"Cannot run payroll due to {validation_result.critical_issues} critical issues that must be resolved."
             else:
@@ -98,13 +126,329 @@ async def create_payroll_run(
                 }
             )
         
-        # If validation passes, proceed with payroll creation
-        return await create_payroll_run_internal(data, request, db)
+        # Get employees with salary structures
+        employees_query = text("""
+            SELECT DISTINCT u.id, u.employee_code, u.name, u.status, ss.id as structure_id, ss.ctc, ss.basic_percent, ss.hra_percent
+            FROM users u
+            INNER JOIN salary_structures ss ON (
+                FIND_IN_SET(u.id, ss.employee_ids) > 0 OR
+                FIND_IN_SET(CONCAT('user_', u.id), ss.employee_ids) > 0 OR
+                (u.employee_code IS NOT NULL AND FIND_IN_SET(u.employee_code, ss.employee_ids) > 0)
+            )
+            WHERE u.status = 'Active' AND ss.is_active = 1
+        """)
+        employees = db.execute(employees_query).fetchall()
+        
+        if not employees:
+            return {"message": "No employees with salary structures found", "processed_count": 0}
+        
+        processed_count = 0
+        failed_count = 0
+        
+                # Add total working days to payroll table
+        create_table_query = text("""
+            CREATE TABLE IF NOT EXISTS payroll_runs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                employee_id VARCHAR(50),
+                employee_name VARCHAR(255),
+                employee_code VARCHAR(50),
+                month VARCHAR(20),
+                year INT,
+                present_days INT DEFAULT 0,
+                leave_days INT DEFAULT 0,
+                holiday_days INT DEFAULT 0,
+                total_working_days INT DEFAULT 0,
+                lop_days INT DEFAULT 0,
+                ot_hours FLOAT DEFAULT 0,
+                basic_salary DECIMAL(15,2) DEFAULT 0,
+                hra_salary DECIMAL(15,2) DEFAULT 0,
+                allowances DECIMAL(15,2) DEFAULT 0,
+                gross_salary DECIMAL(15,2) DEFAULT 0,
+                lop_deduction DECIMAL(15,2) DEFAULT 0,
+                net_salary DECIMAL(15,2) DEFAULT 0,
+                status VARCHAR(50) DEFAULT 'Completed',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_employee_month (employee_id, month, year)
+            )
+        """)
+        db.execute(create_table_query)
+        
+        # Add missing columns if they don't exist
+        try:
+            db.execute(text("ALTER TABLE payroll_runs ADD COLUMN holiday_days INT DEFAULT 0"))
+        except:
+            pass
+        try:
+            db.execute(text("ALTER TABLE payroll_runs ADD COLUMN total_working_days INT DEFAULT 0"))
+        except:
+            pass
+        db.commit()
+        
+        # Process each employee
+        for emp in employees:
+            try:
+                print(f"Processing employee: {emp.name} (ID: {emp.id})")
+                
+                # Calculate actual attendance from punches
+                attendance_query = text("""
+                    SELECT DATE(date) as punch_date, 
+                           COUNT(CASE WHEN in_time IS NOT NULL AND out_time IS NOT NULL THEN 1 END) as complete_punches,
+                           COUNT(*) as total_punches
+                    FROM attendance_punches 
+                    WHERE employee_id = :emp_id 
+                    AND MONTH(date) = :month 
+                    AND YEAR(date) = :year
+                    GROUP BY DATE(date)
+                """)
+                
+                punch_data = db.execute(attendance_query, {
+                    'emp_id': emp.id,
+                    'month': month_map[month_name],
+                    'year': year
+                }).fetchall()
+                
+                # Calculate approved leaves and company holidays separately
+                leave_query = text("""
+                    SELECT COUNT(DISTINCT DATE(d.date)) as leave_days
+                    FROM (
+                        SELECT DATE_ADD(la.from_date, INTERVAL seq.seq DAY) as date
+                        FROM leave_applications la
+                        CROSS JOIN (
+                            SELECT 0 as seq UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION 
+                            SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION 
+                            SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION 
+                            SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION 
+                            SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION 
+                            SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION 
+                            SELECT 30
+                        ) seq
+                        WHERE la.employee_id = :emp_id
+                        AND la.status = 'Approved'
+                        AND DATE_ADD(la.from_date, INTERVAL seq.seq DAY) <= la.to_date
+                        AND MONTH(DATE_ADD(la.from_date, INTERVAL seq.seq DAY)) = :month
+                        AND YEAR(DATE_ADD(la.from_date, INTERVAL seq.seq DAY)) = :year
+                        AND WEEKDAY(DATE_ADD(la.from_date, INTERVAL seq.seq DAY)) NOT IN (6)
+                    ) d
+                """)
+                
+                leave_result = db.execute(leave_query, {
+                    'emp_id': emp.id,
+                    'month': month_map[month_name],
+                    'year': year
+                }).fetchone()
+                
+                # Get company holidays separately
+                holiday_query = text("""
+                    SELECT COUNT(*) as holiday_days
+                    FROM holidays 
+                    WHERE MONTH(date) = :month 
+                    AND YEAR(date) = :year
+                    AND WEEKDAY(date) NOT IN (5, 6)
+                """)
+                
+                holiday_result = db.execute(holiday_query, {
+                    'month': month_map[month_name],
+                    'year': year
+                }).fetchone()
+                
+                # Calculate working days in month (Monday to Saturday)
+                working_days_query = text("""
+                    SELECT COUNT(*) as working_days
+                    FROM (
+                        SELECT DATE_ADD(:start_date, INTERVAL seq.seq DAY) as date
+                        FROM (
+                            SELECT 0 as seq UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION 
+                            SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION 
+                            SELECT 10 UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION 
+                            SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION 
+                            SELECT 20 UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION 
+                            SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION 
+                            SELECT 30
+                        ) seq
+                    ) d
+                    WHERE d.date <= :end_date
+                    AND WEEKDAY(d.date) NOT IN (6)
+                    AND d.date NOT IN (
+                        SELECT date FROM holidays WHERE date BETWEEN :start_date AND :end_date
+                    )
+                """)
+                
+                working_days_result = db.execute(working_days_query, {
+                    'start_date': f"{year}-{month_map[month_name]:02d}-01",
+                    'end_date': f"{year}-{month_map[month_name]:02d}-31"
+                }).fetchone()
+                
+                # Calculate attendance metrics - include approved leaves as present days
+                present_days_from_punches = len([p for p in punch_data if p.complete_punches > 0])
+                
+                # Get approved regularizations for incomplete punches
+                regularization_query = text("""
+                    SELECT DATE(punch_date) as reg_date
+                    FROM attendance_regularizations 
+                    WHERE employee_id = :emp_id 
+                    AND MONTH(punch_date) = :month 
+                    AND YEAR(punch_date) = :year
+                    AND status = 'Approved'
+                """)
+                
+                regularization_data = db.execute(regularization_query, {
+                    'emp_id': emp.id,
+                    'month': month_map[month_name],
+                    'year': year
+                }).fetchall()
+                
+                # Count additional present days from approved regularizations
+                punch_dates = {str(p.punch_date) for p in punch_data if p.complete_punches > 0}
+                regularized_dates = {str(reg.reg_date) for reg in regularization_data}
+                additional_regularized_days = len(regularized_dates - punch_dates)
+                
+                # Total present days = punches + regularizations + approved leaves
+                present_days = present_days_from_punches + additional_regularized_days + leave_days
+                holiday_days = holiday_result.holiday_days if holiday_result else 0
+                total_working_days = working_days_result.working_days if working_days_result else 22
+                lop_days = max(0, total_working_days - present_days - holiday_days)
+                
+                print(f"  Attendance calculation for {emp.name}:")
+                print(f"    - Punch records found: {len(punch_data)}")
+                print(f"    - Present days from complete punches: {present_days_from_punches}")
+                print(f"    - Additional regularized days: {additional_regularized_days}")
+                print(f"    - Total present days: {present_days}")
+                print(f"    - Leave days: {leave_days}")
+                print(f"    - Holiday days: {holiday_days}")
+                print(f"    - Total working days: {total_working_days}")
+                print(f"    - LOP days: {lop_days}")
+                
+                # Calculate salary components
+                monthly_ctc = (emp.ctc or 0) / 12
+                basic_salary = (monthly_ctc * (emp.basic_percent or 40)) / 100
+                hra_salary = (monthly_ctc * (emp.hra_percent or 20)) / 100
+                allowances = monthly_ctc - basic_salary - hra_salary
+                
+                gross_salary = monthly_ctc
+                lop_deduction = (gross_salary / 30) * lop_days
+                net_salary = gross_salary - lop_deduction
+                
+                # Check for existing record
+                check_query = text("""
+                    SELECT id FROM payroll_runs 
+                    WHERE employee_id = :employee_id AND month = :month AND year = :year
+                """)
+                existing = db.execute(check_query, {
+                    "employee_id": str(emp.id),
+                    "month": month_name,
+                    "year": year
+                }).fetchone()
+                
+                if existing:
+                    # Update existing record
+                    update_query = text("""
+                        UPDATE payroll_runs SET
+                            employee_name = :employee_name,
+                            employee_code = :employee_code,
+                            present_days = :present_days,
+                            leave_days = :leave_days,
+                            holiday_days = :holiday_days,
+                            total_working_days = :total_working_days,
+                            lop_days = :lop_days,
+                            basic_salary = :basic_salary,
+                            hra_salary = :hra_salary,
+                            allowances = :allowances,
+                            gross_salary = :gross_salary,
+                            lop_deduction = :lop_deduction,
+                            net_salary = :net_salary,
+                            status = 'Completed'
+                        WHERE employee_id = :employee_id AND month = :month AND year = :year
+                    """)
+                    
+                    db.execute(update_query, {
+                        "employee_id": str(emp.id),
+                        "employee_name": emp.name,
+                        "employee_code": emp.employee_code,
+                        "month": month_name,
+                        "year": year,
+                        "present_days": present_days,
+                        "leave_days": leave_days,
+                        "holiday_days": holiday_days,
+                        "total_working_days": total_working_days,
+                        "lop_days": lop_days,
+                        "basic_salary": float(basic_salary),
+                        "hra_salary": float(hra_salary),
+                        "allowances": float(allowances),
+                        "gross_salary": float(gross_salary),
+                        "lop_deduction": float(lop_deduction),
+                        "net_salary": float(net_salary)
+                    })
+                else:
+                    # Insert new record
+                    insert_query = text("""
+                        INSERT INTO payroll_runs (
+                            employee_id, employee_name, employee_code, month, year,
+                            present_days, leave_days, holiday_days, total_working_days, lop_days, basic_salary, hra_salary,
+                            allowances, gross_salary, lop_deduction, net_salary, status
+                        ) VALUES (
+                            :employee_id, :employee_name, :employee_code, :month, :year,
+                            :present_days, :leave_days, :holiday_days, :total_working_days, :lop_days, :basic_salary, :hra_salary,
+                            :allowances, :gross_salary, :lop_deduction, :net_salary, 'Completed'
+                        )
+                    """)
+                    
+                    db.execute(insert_query, {
+                        "employee_id": str(emp.id),
+                        "employee_name": emp.name,
+                        "employee_code": emp.employee_code,
+                        "month": month_name,
+                        "year": year,
+                        "present_days": present_days,
+                        "leave_days": leave_days,
+                        "holiday_days": holiday_days,
+                        "total_working_days": total_working_days,
+                        "lop_days": lop_days,
+                        "basic_salary": float(basic_salary),
+                        "hra_salary": float(hra_salary),
+                        "allowances": float(allowances),
+                        "gross_salary": float(gross_salary),
+                        "lop_deduction": float(lop_deduction),
+                        "net_salary": float(net_salary)
+                    })
+                
+                # Commit after each employee to ensure data is saved
+                db.commit()
+                processed_count += 1
+                print(f"✓ Processed {emp.name} successfully")
+                
+            except Exception as e:
+                print(f"✗ Failed to process {emp.name}: {str(e)}")
+                db.rollback()  # Rollback failed employee processing
+                failed_count += 1
+                continue
+        
+        # Final commit to ensure all data is saved
+        db.commit()
+        
+        # Verify data was actually saved by checking the database
+        verification_query = text("""
+            SELECT COUNT(*) as count FROM payroll_runs 
+            WHERE month = :month AND year = :year
+        """)
+        verification_result = db.execute(verification_query, {
+            "month": month_name,
+            "year": year
+        }).fetchone()
+        
+        actual_records = verification_result.count if verification_result else 0
+        print(f"Verification: {actual_records} payroll records found in database for {month_name} {year}")
+        
+        return {
+            "message": f"Payroll processed successfully for {processed_count} employees. {failed_count} failed. {actual_records} records saved to database.",
+            "processed_count": processed_count,
+            "failed_count": failed_count,
+            "total_employees": len(employees),
+            "database_records": actual_records
+        }
         
     except Exception as e:
         db.rollback()
-        print(f"Error creating payroll run: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 async def create_payroll_run_internal(data: dict, request: Request, db: Session):
     """Internal function to handle payroll creation logic"""
@@ -248,10 +592,11 @@ def get_payroll_runs(
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
-    # Check permissions
-    user_permissions = user.get('permissions', [])
-    if 'view_payroll_run' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
-        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    # Check permissions - Admin has all access
+    if user.get('role') != 'admin':
+        user_permissions = user.get('permissions', [])
+        if 'view_payroll_run' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
     
     try:
         create_table_query = text("""
@@ -284,7 +629,7 @@ def get_payroll_runs(
         base_query = "SELECT * FROM payroll_runs"
         
         # If user has view_self or view_salary_slips permission (regardless of other permissions), restrict to own records
-        if ('view_self' in user_permissions or 'view_salary_slips' in user_permissions) and 'view_payroll_run' not in user_permissions:
+        if user.get('role') != 'admin' and ('view_self' in user_permissions or 'view_salary_slips' in user_permissions) and 'view_payroll_run' not in user_permissions:
             current_user_id = user.get('user_id')
             if current_user_id:
                 base_query += f" WHERE employee_id = '{current_user_id}'"
@@ -304,6 +649,8 @@ def get_payroll_runs(
                 "year": row.year,
                 "present_days": row.present_days,
                 "leave_days": row.leave_days,
+                "holiday_days": getattr(row, 'holiday_days', 0),
+                "total_working_days": getattr(row, 'total_working_days', 0),
                 "lop_days": row.lop_days,
                 "basic_salary": float(row.basic_salary) if row.basic_salary else 0,
                 "hra_salary": float(row.hra_salary) if row.hra_salary else 0,
@@ -325,10 +672,11 @@ def download_payslip(
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
-    # Check permissions
-    user_permissions = user.get('permissions', [])
-    if 'download_salary_slips' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
-        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    # Check permissions - Admin has all access
+    if user.get('role') != 'admin':
+        user_permissions = user.get('permissions', [])
+        if 'download_salary_slips' not in user_permissions and 'view_salary_slips' not in user_permissions and 'view_self' not in user_permissions:
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
     
     try:
         result = db.execute(text("SELECT * FROM payroll_runs WHERE id = :id"), {"id": payroll_id}).fetchone()
@@ -336,7 +684,7 @@ def download_payslip(
             raise HTTPException(404, "Payslip not found")
         
         # If user has view_salary_slips or view_self permission, check if they can access this payslip
-        if ('view_salary_slips' in user_permissions or 'view_self' in user_permissions) and 'download_salary_slips' not in user_permissions:
+        if user.get('role') != 'admin' and ('view_salary_slips' in user_permissions or 'view_self' in user_permissions) and 'download_salary_slips' not in user_permissions:
             current_user_id = user.get('user_id')
             if current_user_id and str(result.employee_id) != str(current_user_id):
                 raise HTTPException(status_code=403, detail="You can only download your own payslips")
@@ -769,7 +1117,6 @@ async def send_bulk_payslip_emails(
     except Exception as e:
         raise HTTPException(500, f"Bulk email failed: {str(e)}")
 
-@router.get("/reports/summary")
 def get_payroll_summary(
     db: Session = Depends(get_tenant_db),
     _: dict = Depends(require_permission("view_payroll_reports"))

@@ -3,12 +3,22 @@ from models.models_tenant import AuditLog, ErrorLog
 from database import get_tenant_db
 import json
 import traceback
-from datetime import datetime
+from datetime import datetime, date
 from fastapi import Request
 from utils.token import verify_token
 import os
 
 from sqlalchemy import text
+
+def serialize_for_json(obj):
+    """Convert objects to JSON serializable format"""
+    if isinstance(obj, (date, datetime)):
+        return obj.isoformat()
+    elif isinstance(obj, dict):
+        return {k: serialize_for_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [serialize_for_json(item) for item in obj]
+    return obj
 
 def get_employee_details(db: Session, user: dict):
     """Get employee details from JWT token and database"""
@@ -70,8 +80,8 @@ def log_audit(
             action=action,
             table_name=table_name,
             record_id=str(record_id) if record_id else None,
-            old_values=old_values,
-            new_values=new_values,
+            old_values=serialize_for_json(old_values) if old_values else None,
+            new_values=serialize_for_json(new_values) if new_values else None,
             ip_address=ip_address,
             user_agent=user_agent
         )
@@ -126,7 +136,7 @@ def log_error(
             stack_trace=stack_trace or traceback.format_exc(),
             request_url=request_url,
             request_method=request_method,
-            request_data=request_data,
+            request_data=serialize_for_json(request_data) if request_data else None,
             ip_address=ip_address
         )
         

@@ -48,17 +48,9 @@ export default function Payslips() {
 
   const fetchEmployees = async () => {
     try {
-      // Fetch from Employee Directory first
-      const empRes = await api.get('/api/employees/list');
-      let employeeList = empRes.data || [];
-      
-      // If no employees in directory, fallback to users
-      if (employeeList.length === 0) {
-        const tenantDb = localStorage.getItem('tenant_db');
-        const userRes = await api.get(`/api/users/${tenantDb}/list`);
-        employeeList = userRes.data?.users?.filter(u => u.is_employee) || [];
-      }
-      
+      const tenantDb = localStorage.getItem('tenant_db');
+      const userRes = await api.get(`/api/users/${tenantDb}/list`);
+      const employeeList = userRes.data?.users?.filter(u => u.is_employee) || [];
       setEmployees(employeeList);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -269,22 +261,13 @@ export default function Payslips() {
     }
     try {
       // Try to fetch employee email from database
-      const empRes = await api.get('/api/employees/list');
-      const employee = empRes.data?.find(emp => emp.id == payslip.employee_id);
+      const tenantDb = localStorage.getItem('tenant_db');
+      const userRes = await api.get(`/api/users/${tenantDb}/list`);
+      const employee = userRes.data?.users?.find(u => u.id == payslip.employee_id);
       
       let defaultEmail = '';
       if (employee?.email) {
         defaultEmail = employee.email;
-      } else {
-        // Fallback to users table
-        try {
-          const tenantDb = localStorage.getItem('tenant_db');
-          const userRes = await api.get(`/api/users/${tenantDb}/list`);
-          const user = userRes.data?.users?.find(u => u.id == payslip.employee_id);
-          if (user?.email) defaultEmail = user.email;
-        } catch (e) {
-          console.log('Could not fetch user email');
-        }
       }
       
       setEmailForm({ email: defaultEmail, payslip });

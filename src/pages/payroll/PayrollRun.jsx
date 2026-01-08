@@ -59,8 +59,11 @@ export default function PayrollRun() {
 
   const fetchRuns = async () => {
     try {
+      console.log('Fetching payroll runs...');
       const res = await api.get("/api/payroll/runs");
+      console.log('Payroll runs response:', res.data);
       setRuns(res.data || []);
+      console.log('Payroll runs set to state:', res.data?.length || 0, 'records');
     } catch (error) {
       console.error("Error fetching payroll runs:", error);
       setRuns([]);
@@ -163,182 +166,37 @@ export default function PayrollRun() {
     try {
       setLoading(true);
       
-      // First check validation
-      const validation = await checkPayrollValidation(runData.month, runData.year);
+      // Use bulk processing endpoint
+      const payrollData = {
+        month: runData.month,
+        year: runData.year
+      };
       
-      if (!validation.can_run_payroll && !runData.force_run) {
-        setValidationResult(validation);
-        setShowValidationModal(true);
-        setLoading(false);
-        return;
-      }
+      console.log('Sending bulk payroll request:', payrollData);
       
-      // If validation passes, proceed with payroll
+      // Call the bulk processing endpoint
+      const response = await api.post("/api/payroll/runs/bulk", payrollData);
       
-      const employeesWithSalary = employees.filter(employee => {
-        // Check if employee is linked to any salary structure in database
-        const linkedStructure = structures.find(structure => {
-          if (!structure.employee_ids) return false;
-          const storedIds = structure.employee_ids.split(',').filter(id => id.trim());
-          // Convert stored IDs to match employee ID types
-          const normalizedIds = storedIds.map(id => {
-            const numId = parseInt(id);
-            return isNaN(numId) ? id : numId;
-          });
-          return normalizedIds.includes(employee.id);
-        });
-        return linkedStructure;
-      });
+      console.log('Payroll processing response:', response.data);
       
-      if (employeesWithSalary.length === 0) {
-        showToast('No employees with salary structures found to process payroll.', 'error');
-        return;
-      }
+      // Wait a moment for database to be fully updated
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('Employees with salary structures:', employeesWithSalary.map(e => ({ id: e.id, name: e.name, employee_code: e.employee_code })));
-      
-      const payrollPromises = employeesWithSalary.map(async (employee) => {
-        try {
-          console.log(`\n=== Processing Employee: ${employee.name} ===`);
-          console.log(`Employee data:`, {
-            id: employee.id,
-            original_user_id: employee.original_user_id,
-            employee_code: employee.employee_code,
-            name: employee.name
-          });
-          
-          // Find employee's salary structure from database
-          const linkedStructure = structures.find(structure => {
-            if (!structure.employee_ids) return false;
-            const storedIds = structure.employee_ids.split(',').filter(id => id.trim());
-            // Convert stored IDs to match employee ID types
-            const normalizedIds = storedIds.map(id => {
-              const numId = parseInt(id);
-              return isNaN(numId) ? id : numId;
-            });
-            return normalizedIds.includes(employee.id);
-          });
-          
-          if (!linkedStructure) {
-            console.warn(`❌ No salary structure linked for employee ${employee.name}`);
-            return null;
-          }
-          
-          console.log(`✅ Found salary structure ${linkedStructure.id} for ${employee.name}`);
-          
-          const salaryStructure = linkedStructure;
-          
-          // Calculate attendance data
-          const attendanceRes = await api.get(`/api/attendance/punches/`, {
-            params: {
-              employee_id: employee.original_user_id || employee.id,
-              month: runData.month,
-              year: runData.year
-            }
-          });
-          
-          // Calculate leave data  
-          const leaveRes = await api.get(`/api/leave/applications/`, {
-            params: {
-              employee_id: employee.original_user_id || employee.id,
-              status: 'Approved',
-              from_date: `${runData.year}-${String(months.indexOf(runData.month) + 1).padStart(2, '0')}-01`,
-              to_date: `${runData.year}-${String(months.indexOf(runData.month) + 1).padStart(2, '0')}-31`
-            }
-          });
-          
-          // Process attendance data
-          const monthlyAttendance = attendanceRes.data.filter(record => {
-            const recordDate = new Date(record.date);
-            return recordDate.getMonth() === months.indexOf(runData.month) && 
-                   recordDate.getFullYear() === runData.year &&
-                   record.employee_id == (employee.original_user_id || employee.id);
-          });
-          
-          // Process leave data
-          const monthlyLeaves = leaveRes.data.filter(leave => {
-            const fromDate = new Date(leave.from_date);
-            const toDate = new Date(leave.to_date);
-            const monthStart = new Date(runData.year, months.indexOf(runData.month), 1);
-            const monthEnd = new Date(runData.year, months.indexOf(runData.month) + 1, 0);
-            
-            return leave.employee_id == (employee.original_user_id || employee.id) &&
-                   leave.status === 'Approved' &&
-                   ((fromDate >= monthStart && fromDate <= monthEnd) ||
-                    (toDate >= monthStart && toDate <= monthEnd) ||
-                    (fromDate <= monthStart && toDate >= monthEnd));
-          });
-          
-          const presentDays = monthlyAttendance.filter(record => 
-            record.status === 'Present' || record.status === 'Late'
-          ).length;
-          
-          const leaveDays = monthlyLeaves.reduce((total, leave) => {
-            const fromDate = new Date(leave.from_date);
-            const toDate = new Date(leave.to_date);
-            const monthStart = new Date(runData.year, months.indexOf(runData.month), 1);
-            const monthEnd = new Date(runData.year, months.indexOf(runData.month) + 1, 0);
-            
-            const actualFromDate = fromDate < monthStart ? monthStart : fromDate;
-            const actualToDate = toDate > monthEnd ? monthEnd : toDate;
-            
-            const timeDiff = actualToDate.getTime() - actualFromDate.getTime();
-            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-            
-            return total + Math.max(0, daysDiff);
-          }, 0);
-          
-          const daysInMonth = new Date(runData.year, months.indexOf(runData.month) + 1, 0).getDate();
-          const lopDays = Math.max(0, daysInMonth - presentDays - leaveDays);
-          
-          // Calculate salary
-          const monthlyCTC = (salaryStructure.ctc || 0) / 12;
-          const basicSalary = (monthlyCTC * (salaryStructure.basic_percent || 40)) / 100;
-          const hraSalary = (monthlyCTC * (salaryStructure.hra_percent || 20)) / 100;
-          const allowances = monthlyCTC - basicSalary - hraSalary;
-          
-          const grossSalary = monthlyCTC;
-          const lopDeduction = (grossSalary / 30) * lopDays;
-          const netSalary = grossSalary - lopDeduction;
-          
-          // Create payroll run record and save to database
-          const payrollData = {
-            employee_id: employee.original_user_id || employee.id,
-            employee_name: employee.name,
-            employee_code: employee.employee_code,
-            month: runData.month,
-            year: runData.year,
-            present_days: presentDays,
-            leave_days: leaveDays,
-            lop_days: lopDays,
-            basic_salary: basicSalary,
-            hra_salary: hraSalary,
-            allowances: allowances,
-            gross_salary: grossSalary,
-            lop_deduction: lopDeduction,
-            net_salary: netSalary,
-            status: 'Completed',
-            processed_date: new Date().toISOString()
-          };
-          
-          // Save to database
-          await api.post("/api/payroll/runs", payrollData);
-          return payrollData;
-        } catch (error) {
-          console.error(`Error processing payroll for ${employee.name}:`, error);
-          return null;
-        }
-      });
-      
-      const payrollResults = await Promise.all(payrollPromises);
-      const validResults = payrollResults.filter(result => result !== null);
-      
-      // Fetch updated data from database
+      // Fetch updated data from database multiple times to ensure we get the latest data
       await fetchRuns();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await fetchRuns(); // Fetch again to ensure we have the latest data
+      
       setShowRunModal(false);
       setRunData({ month: "", year: new Date().getFullYear() });
       
-      showToast(`Payroll processed successfully for ${validResults.length} employees!`);
+      const successMessage = response.data.message || `Payroll processed successfully!`;
+      if (response.data.database_records) {
+        showToast(`${successMessage} (${response.data.database_records} records saved)`);
+      } else {
+        showToast(successMessage);
+      }
+      
     } catch (error) {
       console.error("Error running payroll:", error);
       
@@ -349,11 +207,13 @@ export default function PayrollRun() {
           can_run_payroll: false,
           total_issues: validationError.total_issues,
           critical_issues: validationError.critical_issues,
+          warning_issues: validationError.warning_issues,
           issues: validationError.issues || []
         });
         setShowValidationModal(true);
       } else {
-        showToast('Failed to process payroll. Please try again.', 'error');
+        const errorMessage = error.response?.data?.detail || error.message || 'Failed to process payroll. Please try again.';
+        showToast(errorMessage, 'error');
       }
     } finally {
       setLoading(false);
@@ -832,7 +692,7 @@ export default function PayrollRun() {
               {/* Attendance Details */}
               <div className="bg-gray-50 rounded-lg border border-black p-4">
                 <h4 className="font-medium text-gray-900 mb-2">Attendance Summary</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 text-sm">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-700">{selectedRun.present_days}</div>
                     <div className="text-gray-600">Present Days</div>
@@ -840,6 +700,14 @@ export default function PayrollRun() {
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-700">{selectedRun.leave_days || 0}</div>
                     <div className="text-gray-600">Leave Days</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-700">{selectedRun.holiday_days || 0}</div>
+                    <div className="text-gray-600">Holiday Days</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-700">{selectedRun.total_working_days || 0}</div>
+                    <div className="text-gray-600">Total Working Days</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-700">{selectedRun.lop_days}</div>

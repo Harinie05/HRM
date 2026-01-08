@@ -143,21 +143,20 @@ def list_leave_applications(
     db: Session = Depends(get_tenant_db),
     user = Depends(get_current_user)
 ):
-    # Check permissions
-    user_permissions = user.get('permissions', [])
-    if 'view_leave_applications' not in user_permissions and 'view_self' not in user_permissions:
-        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    # Check permissions - Admin has all access
+    if user.get('role') != 'admin':
+        user_permissions = user.get('permissions', [])
+        if 'view_leave_applications' not in user_permissions and 'view_self' not in user_permissions:
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
     
     query = db.query(LeaveApplication)
     
-    # If user has view_self permission, restrict to own records
-    if 'view_self' in user_permissions:
+    # If user has view_self permission (and not admin), restrict to own records
+    if user.get('role') != 'admin' and 'view_self' in user.get('permissions', []):
         current_user_id = user.get('user_id')
         if current_user_id:
             query = query.filter(LeaveApplication.employee_id == current_user_id)
-    # If user has view_leave_applications permission, they can see all records
-    elif 'view_leave_applications' in user_permissions:
-        pass  # No filtering - show all records
+    # Admin or users with view_leave_applications can see all records
     
     return query.all()
 
@@ -324,16 +323,17 @@ def get_leave_balances(
     user = Depends(get_current_user)
 ):
     """Get all leave balances for an employee with pending applications"""
-    # Check permissions
-    user_permissions = user.get('permissions', [])
-    if 'view_leave_balance' not in user_permissions and 'view_self' not in user_permissions:
-        raise HTTPException(status_code=403, detail="Insufficient permissions")
-    
-    # If user has view_self permission, restrict to own records
-    if 'view_self' in user_permissions:
-        current_user_id = user.get('user_id')
-        if current_user_id and employee_id != current_user_id:
-            raise HTTPException(status_code=403, detail="You can only view your own leave balances")
+    # Check permissions - Admin has all access
+    if user.get('role') != 'admin':
+        user_permissions = user.get('permissions', [])
+        if 'view_leave_balance' not in user_permissions and 'view_self' not in user_permissions:
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
+        
+        # If user has view_self permission, restrict to own records
+        if 'view_self' in user_permissions:
+            current_user_id = user.get('user_id')
+            if current_user_id and employee_id != current_user_id:
+                raise HTTPException(status_code=403, detail="You can only view your own leave balances")
     
     # Get all balances for the employee (works for both User table and onboarding employees)
     balances = db.query(LeaveBalance, LeaveType).join(
