@@ -29,6 +29,7 @@ class MasterUser(MasterBase):
 
     id = Column(Integer, primary_key=True)
     hospital_id = Column(Integer, ForeignKey("hospitals.id", ondelete="CASCADE"))
+    tenant_code = Column(String(50), nullable=False)
     email = Column(String(191), unique=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     is_admin = Column(Boolean, default=False)

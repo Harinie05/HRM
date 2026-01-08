@@ -169,6 +169,7 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 
         admin = MasterUser(
             hospital_id=hospital.id,
+            tenant_code=payload.tenant_code,
             email=payload.email,
             hashed_password=hash_password(payload.password),
             is_admin=True,
@@ -197,8 +198,8 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 # =================================================================
 # ADMIN AUTH CHECK
 # =================================================================
-def authenticate_admin(db: Session, tenant_id: str, email: str, password: str):
-    logger.info(f"Authenticating admin for tenant_id={tenant_id}")
+def authenticate_admin(db: Session, tenant_id: str, tenant_code: str, email: str, password: str):
+    logger.info(f"Authenticating admin for tenant_id={tenant_id}, tenant_code={tenant_code}")
 
     hospital = db.query(Hospital).filter(Hospital.tenant_id == tenant_id).first()
     if not hospital:
@@ -207,6 +208,7 @@ def authenticate_admin(db: Session, tenant_id: str, email: str, password: str):
 
     admin = db.query(MasterUser).filter(
         MasterUser.hospital_id == hospital.id,
+        MasterUser.tenant_code == tenant_code,
         MasterUser.email == email,
         MasterUser.is_admin == True
     ).first()
@@ -234,7 +236,7 @@ def create_dynamic_table(
 ):
     logger.info(f"User {user.get('email')} creating table '{payload.table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
 
     table_name = payload.table_name
     columns = payload.columns
@@ -276,7 +278,7 @@ def add_column(
 ):
     logger.info(f"User {user.get('email')} adding column to '{table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
 
     col = payload.column
     part = f"`{col.name}` {col.type}"
@@ -309,7 +311,7 @@ def insert_row(
 ):
     logger.info(f"User {user.get('email')} inserting row into '{table_name}'")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=payload.admin.email, password=payload.admin.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
 
     data = payload.row
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -343,7 +345,7 @@ def list_rows(
 ):
     logger.info(f"User {user.get('email')} listing rows from '{table_name}'")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, email=auth.email, password=auth.password)
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=auth.tenant_code, email=auth.email, password=auth.password)
     engine = database.get_tenant_engine(str(hospital.db_name))
 
     with engine.connect() as conn:
@@ -358,9 +360,13 @@ def list_rows(
 @router.post("/login")
 def login(response: Response, payload: AdminAuth, db: Session = Depends(database.get_master_db)):
 
-    logger.info(f"Login attempt by {payload.email}")
+    logger.info(f"Login attempt by {payload.email} with tenant_code {payload.tenant_code}")
 
-    admin = db.query(MasterUser).filter(MasterUser.email == payload.email).first()
+    # ADMIN LOGIN - Check master_users table first
+    admin = db.query(MasterUser).filter(
+        MasterUser.email == payload.email,
+        MasterUser.tenant_code == payload.tenant_code
+    ).first()
 
     if admin and verify_password(payload.password, str(admin.hashed_password)):
         logger.info("Admin login successful")
@@ -373,13 +379,15 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
         access = create_access_token({
             "email": payload.email,
             "role": "admin",
-            "tenant_db": str(hospital.db_name)
+            "tenant_db": str(hospital.db_name),
+            "tenant_code": payload.tenant_code
         })
 
         refresh = create_refresh_token({
             "email": payload.email,
             "role": "admin",
-            "tenant_db": str(hospital.db_name)
+            "tenant_db": str(hospital.db_name),
+            "tenant_code": payload.tenant_code
         })
 
         response.set_cookie(
@@ -396,12 +404,13 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             "access_token": access,
             "tenant_id": str(hospital.tenant_id),
             "tenant_db": str(hospital.db_name),
+            "tenant_code": payload.tenant_code,
             "email": payload.email,
             "role_name": "Admin",
             "permissions": []
         }
 
-    # TENANT USER LOGIN
+    # TENANT USER LOGIN - Check all tenant databases
     hospitals = db.query(Hospital).all()
 
     for hosp in hospitals:
@@ -414,6 +423,11 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             user = tdb.query(TenantUser).filter(TenantUser.email == payload.email).first()
 
             if user and verify_password(payload.password, str(user.password)):
+                # Verify tenant_code matches hospital's tenant_id
+                if payload.tenant_code != hosp.tenant_id:
+                    logger.warning(f"Tenant code mismatch for user {payload.email}")
+                    continue
+                    
                 logger.info(f"Tenant user login successful for {payload.email} in DB {hosp.db_name}")
 
                 # Get user permissions
@@ -430,6 +444,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
+                    "tenant_code": payload.tenant_code,
                     "permissions": permissions
                 })
 
@@ -439,6 +454,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
+                    "tenant_code": payload.tenant_code,
                     "permissions": permissions
                 })
 
@@ -455,6 +471,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "login_type": "user",
                     "access_token": access,
                     "tenant_db": str(hosp.db_name),
+                    "tenant_code": payload.tenant_code,
                     "email": user.email,
                     "user_name": user.name,
                     "user_id": user.id,
@@ -468,7 +485,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
             tdb.close()
 
     logger.warning("Invalid login attempt")
-    raise HTTPException(400, "Invalid email/password")
+    raise HTTPException(400, "Invalid tenant code, email or password")
 
 # =================================================================
 # 7. REFRESH TOKEN

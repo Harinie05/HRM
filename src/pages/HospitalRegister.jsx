@@ -13,6 +13,7 @@ const HospitalRegister = () => {
   const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     tenant_id: "",
+    tenant_code: "",
     tenant_db: "",
     name: "",
     email: "",
@@ -140,6 +141,18 @@ const HospitalRegister = () => {
               name="tenant_id"
               className="w-full border rounded-lg px-4 py-2"
               placeholder="HSP001"
+              required
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="font-medium">Tenant Code *</label>
+            <input
+              type="text"
+              name="tenant_code"
+              className="w-full border rounded-lg px-4 py-2"
+              placeholder="NUTRYAH001"
               required
               onChange={handleChange}
             />

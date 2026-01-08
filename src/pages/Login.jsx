@@ -3,6 +3,7 @@ import api from "../api";
 
 export default function Login() {
   const [form, setForm] = useState({
+    tenant_code: "",
     email: "",
     password: "",
   });
@@ -53,6 +54,7 @@ export default function Login() {
         localStorage.setItem("is_admin", "true");
         localStorage.setItem("user_name", data.email.split("@")[0]);
         localStorage.setItem("role_name", "HR Admin");
+        localStorage.setItem("tenant_code", data.tenant_code);
         localStorage.setItem("permissions", JSON.stringify([]));
       } else {
         console.log('Regular user login, storing user data:', {
@@ -69,6 +71,7 @@ export default function Login() {
         localStorage.setItem("user_id", data.user_id);
         localStorage.setItem("role_id", data.role_id);
         localStorage.setItem("department_id", data.department_id);
+        localStorage.setItem("tenant_code", data.tenant_code);
         localStorage.setItem("permissions", JSON.stringify(data.permissions || []));
       }
 
@@ -129,6 +132,20 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Tenant Code
+            </label>
+            <input
+              type="text"
+              name="tenant_code"
+              required
+              onChange={handleChange}
+              placeholder="Enter tenant code"
+              className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-900 bg-white"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-2">
               Email Address

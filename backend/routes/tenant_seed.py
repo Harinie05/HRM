@@ -632,8 +632,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "cancel_leave_application", "description": "Can cancel leave applications"},
     {"name": "approve_leave", "description": "Can approve leave applications"},
     {"name": "reject_leave", "description": "Can reject leave applications"},
-   
-    {"name": "view_self", "description": "Can view only own records and data"},
 
     # Leave Calendar
     {"name": "view_leave_calendar", "description": "Can view leave calendar"},
@@ -670,7 +668,14 @@ def seed_tenant(tenant_db: str):
             # Seed ONLY Permissions (NO Default Roles)
             # -----------------------------------------------------
             added_count = 0
+            seen_permissions = set()
             for perm in DEFAULT_PERMISSIONS:
+                # Skip duplicate permission names
+                if perm["name"] in seen_permissions:
+                    print(f"  - Skipping duplicate permission: {perm['name']}")
+                    continue
+                    
+                seen_permissions.add(perm["name"])
                 exists = db.query(Permission).filter_by(name=perm["name"]).first()
                 if not exists:
                     new_perm = Permission(**perm)

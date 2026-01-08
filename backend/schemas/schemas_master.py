@@ -7,6 +7,7 @@ from datetime import date
 # ---------------------------
 class HospitalRegister(BaseModel):
     tenant_id: str
+    tenant_code: str
     tenant_db: str
     name: str
     email: EmailStr
@@ -38,6 +39,7 @@ class HospitalOut(BaseModel):
 # MASTER: ADMIN AUTH
 # ---------------------------
 class AdminAuth(BaseModel):
+    tenant_code: str
     email: EmailStr
     password: str
 
