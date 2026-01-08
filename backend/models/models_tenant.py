@@ -1953,3 +1953,17 @@ class ErrorLog(MasterBase):
     request_data = Column(JSON, nullable=True)
     ip_address = Column(String(45), nullable=True)
     created_at = Column(DateTime, default=func.now())
+
+# ============================================================
+# OTP VERIFICATION
+# ============================================================
+class LoginOTP(MasterBase):
+    __tablename__ = "login_otps"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(150), nullable=False)
+    tenant_code = Column(String(50), nullable=False)
+    otp_code = Column(String(6), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    is_used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=func.now())

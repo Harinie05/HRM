@@ -355,7 +355,7 @@ def list_rows(
     return {"rows": [dict(r._mapping) for r in rows]}
 
 # =================================================================
-# 6. LOGIN → RETURN ACCESS + REFRESH TOKEN
+# 6. LOGIN → SEND OTP FIRST, THEN VERIFY
 # =================================================================
 @router.post("/login")
 def login(response: Response, payload: AdminAuth, db: Session = Depends(database.get_master_db)):
@@ -369,46 +369,32 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
     ).first()
 
     if admin and verify_password(payload.password, str(admin.hashed_password)):
-        logger.info("Admin login successful")
+        logger.info("Admin credentials verified, sending OTP")
 
         hospital = db.query(Hospital).filter(Hospital.id == admin.hospital_id).first()
         if not hospital:
             logger.error("Hospital not found for admin")
             raise HTTPException(400, "Hospital not found")
 
-        access = create_access_token({
-            "email": payload.email,
-            "role": "admin",
-            "tenant_db": str(hospital.db_name),
-            "tenant_code": payload.tenant_code
-        })
-
-        refresh = create_refresh_token({
-            "email": payload.email,
-            "role": "admin",
-            "tenant_db": str(hospital.db_name),
-            "tenant_code": payload.tenant_code
-        })
-
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh,
-            httponly=True,
-            samesite="none",
-            secure=False
-        )
-
-        return {
-            "message": "Login successful",
-            "login_type": "admin",
-            "access_token": access,
-            "tenant_id": str(hospital.tenant_id),
-            "tenant_db": str(hospital.db_name),
-            "tenant_code": payload.tenant_code,
-            "email": payload.email,
-            "role_name": "Admin",
-            "permissions": []
-        }
+        # Send OTP for admin
+        from utils.otp import send_login_otp
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        tdb = Session(bind=engine)
+        
+        try:
+            otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, "Admin")
+            if not otp_sent:
+                raise HTTPException(500, "Failed to send OTP")
+            
+            return {
+                "message": "OTP sent to your email",
+                "otp_required": True,
+                "email": payload.email,
+                "tenant_code": payload.tenant_code,
+                "login_type": "admin"
+            }
+        finally:
+            tdb.close()
 
     # TENANT USER LOGIN - Check all tenant databases
     hospitals = db.query(Hospital).all()
@@ -428,8 +414,125 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     logger.warning(f"Tenant code mismatch for user {payload.email}")
                     continue
                     
-                logger.info(f"Tenant user login successful for {payload.email} in DB {hosp.db_name}")
+                logger.info(f"Tenant user credentials verified, sending OTP for {payload.email} in DB {hosp.db_name}")
 
+                # Send OTP for tenant user
+                from utils.otp import send_login_otp
+                otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, user.name)
+                if not otp_sent:
+                    raise HTTPException(500, "Failed to send OTP")
+                
+                return {
+                    "message": "OTP sent to your email",
+                    "otp_required": True,
+                    "email": payload.email,
+                    "tenant_code": payload.tenant_code,
+                    "login_type": "user"
+                }
+
+        finally:
+            tdb.close()
+
+    logger.warning("Invalid login attempt")
+    raise HTTPException(400, "Invalid tenant code, email or password")
+
+# =================================================================
+# 6.1 VERIFY OTP AND COMPLETE LOGIN
+# =================================================================
+@router.post("/verify-otp")
+def verify_otp_and_login(response: Response, payload: dict, db: Session = Depends(database.get_master_db)):
+    
+    email = payload.get("email")
+    tenant_code = payload.get("tenant_code")
+    otp_code = payload.get("otp_code")
+    login_type = payload.get("login_type")
+    
+    if not all([email, tenant_code, otp_code, login_type]):
+        raise HTTPException(400, "Missing required fields")
+    
+    logger.info(f"OTP verification attempt by {email} with tenant_code {tenant_code}")
+    
+    if login_type == "admin":
+        # Admin OTP verification
+        admin = db.query(MasterUser).filter(
+            MasterUser.email == email,
+            MasterUser.tenant_code == tenant_code
+        ).first()
+        
+        if not admin:
+            raise HTTPException(400, "Admin not found")
+            
+        hospital = db.query(Hospital).filter(Hospital.id == admin.hospital_id).first()
+        if not hospital:
+            raise HTTPException(400, "Hospital not found")
+            
+        # Verify OTP
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        tdb = Session(bind=engine)
+        
+        try:
+            from utils.otp import verify_login_otp
+            if not verify_login_otp(tdb, email, tenant_code, otp_code):
+                raise HTTPException(400, "Invalid or expired OTP")
+            
+            # Generate tokens
+            access = create_access_token({
+                "email": email,
+                "role": "admin",
+                "tenant_db": str(hospital.db_name),
+                "tenant_code": tenant_code
+            })
+
+            refresh = create_refresh_token({
+                "email": email,
+                "role": "admin",
+                "tenant_db": str(hospital.db_name),
+                "tenant_code": tenant_code
+            })
+
+            response.set_cookie(
+                key="refresh_token",
+                value=refresh,
+                httponly=True,
+                samesite="none",
+                secure=False
+            )
+
+            return {
+                "message": "Login successful",
+                "login_type": "admin",
+                "access_token": access,
+                "tenant_id": str(hospital.tenant_id),
+                "tenant_db": str(hospital.db_name),
+                "tenant_code": tenant_code,
+                "email": email,
+                "role_name": "Admin",
+                "permissions": []
+            }
+        finally:
+            tdb.close()
+    
+    elif login_type == "user":
+        # Tenant user OTP verification
+        hospitals = db.query(Hospital).all()
+        
+        for hosp in hospitals:
+            if tenant_code != hosp.tenant_id:
+                continue
+                
+            engine = database.get_tenant_engine(str(hosp.db_name))
+            tdb = Session(bind=engine)
+            
+            try:
+                user = tdb.query(TenantUser).filter(TenantUser.email == email).first()
+                if not user:
+                    continue
+                    
+                # Verify OTP
+                from utils.otp import verify_login_otp
+                if not verify_login_otp(tdb, email, tenant_code, otp_code):
+                    raise HTTPException(400, "Invalid or expired OTP")
+                
                 # Get user permissions
                 role_permissions = tdb.query(RolePermission).filter(RolePermission.role_id == user.role_id).all()
                 permissions = []
@@ -444,7 +547,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
-                    "tenant_code": payload.tenant_code,
+                    "tenant_code": tenant_code,
                     "permissions": permissions
                 })
 
@@ -454,7 +557,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "user_id": user.id,
                     "role_id": user.role_id,
                     "tenant_db": str(hosp.db_name),
-                    "tenant_code": payload.tenant_code,
+                    "tenant_code": tenant_code,
                     "permissions": permissions
                 })
 
@@ -471,7 +574,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "login_type": "user",
                     "access_token": access,
                     "tenant_db": str(hosp.db_name),
-                    "tenant_code": payload.tenant_code,
+                    "tenant_code": tenant_code,
                     "email": user.email,
                     "user_name": user.name,
                     "user_id": user.id,
@@ -480,16 +583,10 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     "role_name": user.role.name if user.role else "User",
                     "permissions": permissions
                 }
-
-        finally:
-            tdb.close()
-
-    logger.warning("Invalid login attempt")
-    raise HTTPException(400, "Invalid tenant code, email or password")
-
-# =================================================================
-# 7. REFRESH TOKEN
-# =================================================================
+            finally:
+                tdb.close()
+    
+    raise HTTPException(400, "Invalid OTP or user not found")
 @router.post("/refresh")
 def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
 
@@ -519,7 +616,7 @@ def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
     return {"access_token": new_access}
 
 # =================================================================
-# 8. SEED PERMISSIONS 🔒 PROTECTED
+# 7. REFRESH TOKEN
 # =================================================================
 @router.get("/seed/{tenant_db}")
 def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
@@ -528,7 +625,7 @@ def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
     return {"message": f"Tenant '{tenant_db}' seeded"}
 
 # =================================================================
-# 9. LOGOUT
+# 8. SEED PERMISSIONS 🔒 PROTECTED
 # =================================================================
 @router.post("/logout")
 def logout(response: Response):
