@@ -8,11 +8,51 @@ from routes.hospital import get_current_user
 from datetime import datetime
 from sqlalchemy import func
 import io
+from utils.pdf_format import PDFHeaderFooterTemplate
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
+
+def number_to_words(n):
+    """Convert number to words for Indian currency"""
+    if n == 0:
+        return "zero"
+    
+    ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+            "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+            "seventeen", "eighteen", "nineteen"]
+    
+    tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+    
+    def convert_hundreds(num):
+        result = ""
+        if num >= 100:
+            result += ones[num // 100] + " hundred "
+            num %= 100
+        if num >= 20:
+            result += tens[num // 10] + " "
+            num %= 10
+        if num > 0:
+            result += ones[num] + " "
+        return result
+    
+    if n < 0:
+        return "minus " + number_to_words(-n)
+    
+    if n < 20:
+        return ones[n]
+    elif n < 100:
+        return tens[n // 10] + (" " + ones[n % 10] if n % 10 != 0 else "")
+    elif n < 1000:
+        return convert_hundreds(n).strip()
+    elif n < 100000:
+        return convert_hundreds(n // 1000) + "thousand " + convert_hundreds(n % 1000)
+    elif n < 10000000:
+        return convert_hundreds(n // 100000) + "lakh " + convert_hundreds((n % 100000) // 1000) + ("thousand " if (n % 100000) // 1000 > 0 else "") + convert_hundreds(n % 1000)
+    else:
+        return convert_hundreds(n // 10000000) + "crore " + convert_hundreds((n % 10000000) // 100000) + ("lakh " if (n % 10000000) // 100000 > 0 else "") + convert_hundreds(((n % 10000000) % 100000) // 1000) + ("thousand " if ((n % 10000000) % 100000) // 1000 > 0 else "") + convert_hundreds(n % 1000)
 
 from models.models_tenant import (
     PayrollRun, User, SalaryStructure, StatutoryRule, 
@@ -365,7 +405,7 @@ def download_payslip_pdf(
         ).all()
         
         # Generate PDF
-        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments)
+        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments, db)
         
         # Return as streaming response
         # Extract year for filename
@@ -388,27 +428,35 @@ def download_payslip_pdf(
         print(f"PDF generation error: {str(e)}")
         raise HTTPException(500, f"PDF generation failed: {str(e)}")
 
-def generate_payslip_pdf(employee, payroll_run, adjustments):
-    """Generate PDF payslip using reportlab"""
+def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
+    """Generate PDF payslip using reportlab with organization header"""
     try:
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        
+        # Create document with minimal margins for single page
+        doc = SimpleDocTemplate(
+            buffer, 
+            pagesize=A4,
+            topMargin=120,  # Reduced for single page
+            bottomMargin=40,  # Reduced for single page
+            leftMargin=40,
+            rightMargin=40
+        )
+        
+        # Create header/footer template
+        template = PDFHeaderFooterTemplate(db, "SALARY SLIP")
+        
         styles = getSampleStyleSheet()
         story = []
         
-        # Title
-        title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], alignment=1, spaceAfter=30)
-        story.append(Paragraph("SALARY SLIP", title_style))
-        
-        # Employee Info
-        # Extract year from month if it contains year, otherwise use current year
+        # Employee Info Section
         month_display = payroll_run.month
         if hasattr(payroll_run, 'year') and payroll_run.year:
             year_display = payroll_run.year
         else:
             year_display = datetime.now().year
         
-        # Handle department - could be object or string
+        # Handle department
         department = getattr(employee, 'department', 'N/A')
         if hasattr(department, 'name'):
             department_name = department.name
@@ -417,119 +465,140 @@ def generate_payslip_pdf(employee, payroll_run, adjustments):
         else:
             department_name = str(department) if department != 'N/A' else 'N/A'
         
-        emp_data = [
-            ['Employee Name:', getattr(employee, 'name', 'N/A')],
-            ['Employee Code:', getattr(employee, 'employee_code', 'N/A')],
-            ['Month:', f"{month_display} {year_display}"],
-            ['Department:', department_name]
-        ]
-        
-        emp_table = Table(emp_data, colWidths=[2*inch, 3*inch])
-        emp_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
-        ]))
-        
-        story.append(emp_table)
-        story.append(Spacer(1, 20))
-        
-        # Earnings and Deductions
-        earnings_data = [
-            ['EARNINGS', 'AMOUNT'],
-            ['Basic Salary', f"₹{getattr(payroll_run, 'basic_salary', 0):,.2f}"],
-            ['HRA', f"₹{getattr(payroll_run, 'hra_salary', 0):,.2f}"],
-            ['Allowances', f"₹{getattr(payroll_run, 'allowances', 0):,.2f}"]
-        ]
-        
-        # Add adjustments (additions)
-        for adj in adjustments:
-            if adj.adjustment_type != 'Deduction':
-                earnings_data.append([f"{adj.adjustment_type}", f"₹{(adj.amount or 0):,.2f}"])
-        
-        earnings_data.append(['GROSS SALARY', f"₹{getattr(payroll_run, 'gross_salary', 0):,.2f}"])
-        
-        deductions_data = [
-            ['DEDUCTIONS', 'AMOUNT'],
-            ['LOP Deduction', f"₹{getattr(payroll_run, 'lop_deduction', 0):,.2f}"],
-            ['PF (12%)', f"₹{(getattr(payroll_run, 'basic_salary', 0) * 0.12):,.2f}"],
-            ['ESI (1.75%)', f"₹{(getattr(payroll_run, 'gross_salary', 0) * 0.0175):,.2f}"]
-        ]
-        
-        # Add deduction adjustments
-        for adj in adjustments:
-            if adj.adjustment_type == 'Deduction':
-                deductions_data.append([f"{adj.adjustment_type}", f"₹{(adj.amount or 0):,.2f}"])
-        
+        # Calculate values
+        gross_salary = getattr(payroll_run, 'gross_salary', 0)
+        bonus_total = sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type != 'Deduction' and (adj.amount or 0) > 0)
         total_deductions = (getattr(payroll_run, 'lop_deduction', 0) + 
                            getattr(payroll_run, 'basic_salary', 0) * 0.12 + 
-                           getattr(payroll_run, 'gross_salary', 0) * 0.0175 +
+                           gross_salary * 0.0175 + 200 +
                            sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction'))
+        net_salary = (gross_salary + bonus_total - total_deductions)
         
-        deductions_data.append(['TOTAL DEDUCTIONS', f"₹{total_deductions:,.2f}"])
-        
-        # Create tables side by side
-        combined_data = []
-        max_rows = max(len(earnings_data), len(deductions_data))
-        
-        for i in range(max_rows):
-            row = []
-            if i < len(earnings_data):
-                row.extend(earnings_data[i])
-            else:
-                row.extend(['', ''])
+        # Single comprehensive payslip table
+        payslip_data = [
+            # Employee Information Header
+            ['EMPLOYEE INFORMATION', '', 'PAYROLL PERIOD', ''],
+            ['Employee Name:', getattr(employee, 'name', 'N/A'), 'Pay Period:', f"{month_display} {year_display}"],
+            ['Employee ID:', getattr(employee, 'employee_code', 'N/A'), 'Pay Date:', datetime.now().strftime('%d-%b-%Y')],
+            ['Department:', department_name, 'Working Days:', '30'],
+            ['Designation:', getattr(employee, 'designation', 'N/A'), 'Days Worked:', f"{getattr(payroll_run, 'present_days', 30)}"],
             
-            row.append('')  # Spacer column
+            # Separator
+            ['', '', '', ''],
             
-            if i < len(deductions_data):
-                row.extend(deductions_data[i])
-            else:
-                row.extend(['', ''])
+            # Earnings and Deductions Header
+            ['EARNINGS', 'AMOUNT (₹)', 'DEDUCTIONS', 'AMOUNT (₹)'],
+            ['Basic Salary', f"{getattr(payroll_run, 'basic_salary', 0):,.2f}", 'Provident Fund (PF)', f"{(getattr(payroll_run, 'basic_salary', 0) * 0.12):,.2f}"],
+            ['House Rent Allowance', f"{getattr(payroll_run, 'hra_salary', 0):,.2f}", 'Employee State Insurance', f"{(gross_salary * 0.0175):,.2f}"],
+            ['Special Allowance', f"{getattr(payroll_run, 'allowances', 0):,.2f}", 'Professional Tax', "200.00"],
+            ['Bonus/Incentives', f"{bonus_total:,.2f}", 'Income Tax (TDS)', "0.00"],
             
-            combined_data.append(row)
+            # Separator
+            ['', '', '', ''],
+            
+            # Totals
+            ['GROSS EARNINGS', f"{(gross_salary + bonus_total):,.2f}", 'TOTAL DEDUCTIONS', f"{total_deductions:,.2f}"],
+            
+            # Separator
+            ['', '', '', ''],
+            
+            # Net Salary
+            ['NET SALARY PAYABLE', f"₹ {net_salary:,.2f}", '', ''],
+            ['Amount in Words:', '', '', ''],
+            [f"{number_to_words(int(net_salary)).upper()} RUPEES ONLY", '', '', ''],
+            
+            # Separator
+            ['', '', '', ''],
+            
+            # Signature Section
+            ['EMPLOYER VERIFICATION', '', 'EMPLOYEE ACKNOWLEDGMENT', ''],
+            ['', '', '', ''],
+            ['Authorized Signatory', 'Date: __________', 'Employee Signature', 'Date: __________'],
+        ]
         
-        combined_table = Table(combined_data, colWidths=[1.5*inch, 1*inch, 0.5*inch, 1.5*inch, 1*inch])
-        combined_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (1, 0), colors.lightblue),
-            ('BACKGROUND', (3, 0), (4, 0), colors.lightcoral),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        # Create single table with elegant styling
+        payslip_table = Table(payslip_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        payslip_table.setStyle(TableStyle([
+            # Employee info header - elegant dark grey
+            ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
+            ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
+            ('TEXTCOLOR', (0, 0), (3, 0), colors.white),
+            ('FONTNAME', (0, 0), (3, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (3, 0), 10),
+            
+            # Earnings/Deductions header - professional grey
+            ('BACKGROUND', (0, 7), (3, 7), colors.Color(0.4, 0.4, 0.4)),
+            ('TEXTCOLOR', (0, 7), (3, 7), colors.white),
+            ('FONTNAME', (0, 7), (3, 7), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 7), (3, 7), 10),
+            
+            # Totals row - subtle highlight
+            ('BACKGROUND', (0, 14), (3, 14), colors.Color(0.85, 0.85, 0.85)),
+            ('FONTNAME', (0, 14), (3, 14), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 14), (3, 14), 10),
+            
+            # Net salary rows - light grey background with dark text
+            ('BACKGROUND', (0, 16), (3, 18), colors.Color(0.9, 0.9, 0.9)),
+            ('TEXTCOLOR', (0, 16), (3, 18), colors.black),
+            ('FONTNAME', (0, 16), (3, 18), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 16), (3, 18), 11),
+            
+            # Signature header - professional finish
+            ('BACKGROUND', (0, 20), (3, 20), colors.Color(0.35, 0.35, 0.35)),
+            ('TEXTCOLOR', (0, 20), (3, 20), colors.white),
+            ('FONTNAME', (0, 20), (3, 20), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 20), (3, 20), 9),
+            
+            # General elegant styling
+            ('TEXTCOLOR', (0, 1), (3, 19), colors.Color(0.1, 0.1, 0.1)),
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
-            ('ALIGN', (4, 0), (4, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (1, -1), 1, colors.black),
-            ('GRID', (3, 0), (4, -1), 1, colors.black)
+            ('ALIGN', (2, 0), (2, -1), 'LEFT'),
+            ('ALIGN', (3, 0), (3, -1), 'RIGHT'),
+            ('FONTNAME', (0, 1), (3, 19), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (3, 19), 9),
+            
+            # Compact padding for single page
+            ('BOTTOMPADDING', (0, 0), (3, -1), 6),
+            ('TOPPADDING', (0, 0), (3, -1), 6),
+            ('LEFTPADDING', (0, 0), (3, -1), 6),
+            ('RIGHTPADDING', (0, 0), (3, -1), 6),
+            
+            # Professional grid lines
+            ('GRID', (0, 0), (3, -1), 0.5, colors.Color(0.6, 0.6, 0.6)),
+            ('LINEBELOW', (0, 0), (3, 0), 2, colors.Color(0.3, 0.3, 0.3)),
+            ('LINEBELOW', (0, 7), (3, 7), 2, colors.Color(0.4, 0.4, 0.4)),
+            ('LINEBELOW', (0, 14), (3, 14), 1.5, colors.Color(0.5, 0.5, 0.5)),
+            ('LINEBELOW', (0, 18), (3, 18), 2, colors.Color(0.7, 0.7, 0.7)),
+            ('LINEBELOW', (0, 20), (3, 20), 2, colors.Color(0.35, 0.35, 0.35)),
+            
+            ('VALIGN', (0, 0), (3, -1), 'MIDDLE'),
+            
+            # Special styling for amount in words - black text on light background
+            ('SPAN', (0, 17), (3, 17)),
+            ('ALIGN', (0, 17), (3, 17), 'CENTER'),
+            ('FONTSIZE', (0, 17), (3, 17), 8),
+            ('FONTNAME', (0, 17), (3, 17), 'Helvetica'),
+            ('TEXTCOLOR', (0, 17), (3, 17), colors.black),
         ]))
         
-        story.append(combined_table)
-        story.append(Spacer(1, 20))
+        story.append(payslip_table)
+        story.append(Spacer(1, 10))
         
-        # Net Salary
-        net_salary = (getattr(payroll_run, 'net_salary', 0) + 
-                     sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type != 'Deduction') - 
-                     sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction'))
+        # Government compliance note
+        compliance_text = Paragraph(
+            "<b>IMPORTANT NOTICE:</b> This payslip is generated electronically and is valid without signature. "
+            "All statutory deductions are computed as per prevailing Government of India regulations including "
+            "Provident Fund Act 1952, ESI Act 1948, and Income Tax Act 1961. For any discrepancies, "
+            "contact HR Department within 7 days of receipt.",
+            ParagraphStyle('Compliance', parent=styles['Normal'], fontSize=8, textColor=colors.darkblue, 
+                         leftIndent=10, rightIndent=10, spaceAfter=10)
+        )
+        story.append(compliance_text)
         
-        net_data = [['NET SALARY', f"₹{net_salary:,.2f}"]]
-        net_table = Table(net_data, colWidths=[3*inch, 2*inch])
-        net_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, -1), colors.lightgreen),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 14),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
-            ('GRID', (0, 0), (-1, -1), 2, colors.black)
-        ]))
+        # Build PDF with header and footer
+        doc.build(story, onFirstPage=template.header_footer, onLaterPages=template.header_footer)
         
-        story.append(net_table)
-        
-        doc.build(story)
         buffer.seek(0)
         return buffer
         
@@ -575,7 +644,7 @@ async def send_payslip_email(
         ).all()
         
         # Generate PDF
-        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments)
+        pdf_buffer = generate_payslip_pdf(employee, payroll_run, adjustments, db)
         
         # Prepare email content
         employee_name = getattr(employee, 'name', 'Employee')

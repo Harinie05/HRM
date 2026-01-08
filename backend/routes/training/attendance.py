@@ -142,16 +142,17 @@ def get_attendance_record(training_id: int, employee_id: int, request: Request, 
 
 @router.get("/")
 def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    # Check permissions - allow both view_training_attendance and view_self
-    user_permissions = user.get('permissions', [])
-    if not any(perm in user_permissions for perm in ['view_training_attendance', 'view_self']) and not user.get('is_admin', False):
-        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    # Admin has all access
+    if user.get('role') != 'admin':
+        user_permissions = user.get('permissions', [])
+        if not any(perm in user_permissions for perm in ['view_training_attendance', 'view_self']):
+            raise HTTPException(status_code=403, detail="Insufficient permissions")
     
     try:
         query = db.query(TrainingAttendance)
         
-        # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
-        if 'view_self' in user_permissions:
+        # If user has view_self permission and is not admin, restrict to own records
+        if user.get('role') != 'admin' and 'view_self' in user.get('permissions', []):
             current_user_id = user.get('user_id')
             if current_user_id:
                 query = query.filter(TrainingAttendance.employee_id == current_user_id)

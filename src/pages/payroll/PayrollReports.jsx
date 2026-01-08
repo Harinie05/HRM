@@ -154,7 +154,8 @@ export default function PayrollReports() {
       
       switch(reportType) {
         case 'pf-challan':
-          endpoint = '/api/payroll/reports/pf-challan/pdf';
+          const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+          endpoint = `/api/payroll/reports/pf-challan/pdf?month=${currentMonth}`;
           filename = 'pf_challan_report.pdf';
           break;
         case 'esi-challan':
@@ -245,16 +246,7 @@ export default function PayrollReports() {
               <option value="quarter">This Quarter</option>
               <option value="year">This Year</option>
             </select>
-            {canExport && (
-              <button 
-                onClick={handleExportReport}
-                disabled={loading}
-                className="px-4 py-2 rounded-full flex items-center gap-2 transition-colors text-sm font-medium justify-center bg-white text-black border border-black hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Download size={16} />
-                {loading ? "Loading..." : "Export"}
-              </button>
-            )}
+
           </div>
         </div>
 

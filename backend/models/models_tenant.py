@@ -806,6 +806,7 @@ class OrganizationBranding(MasterBase):
     gstin = Column(String(15), nullable=True)
     logo = Column(Text, nullable=True)  # Base64 encoded logo
     logo_filename = Column(String(255), nullable=True)
+    logo_path = Column(String(500), nullable=True)  # File path for logo
     
     # Essential color fields only
     primary_color = Column(String(7), nullable=True, default="#2862e9")
