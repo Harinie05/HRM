@@ -641,7 +641,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Exit Management */}
-        {(isAdmin() || hasPermission("view_resignation_tracking") || hasPermission("view_clearance_process") || hasPermission("view_knowledge_transfer") || hasPermission("view_settlement_documents")) && (
+        {(isAdmin() || hasPermission("apply_resignation") || hasPermission("view_resignations") || hasPermission("view_resignation_tracking") || hasPermission("view_clearance_process") || hasPermission("view_knowledge_transfer") || hasPermission("view_settlement_documents")) && (
           <Link
             to="/exit"
             className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${

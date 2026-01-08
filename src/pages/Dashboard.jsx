@@ -7,6 +7,7 @@ import {
   ArrowRight, Star, Zap, Globe, Bell, Eye, Database
 } from "lucide-react";
 import api from "../api";
+import { hasPermission } from "../utils/permissions";
 
 export default function Dashboard() {
   const [holidays, setHolidays] = useState([]);
@@ -396,6 +397,7 @@ export default function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* License & Document Alerts */}
+          {hasPermission("view_documents_alerts") && (
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => setShowDocumentModal(true)}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-gray-900">Document Alerts</h3>
@@ -436,6 +438,7 @@ export default function Dashboard() {
               )}
             </div>
           </div>
+          )}
 
           {/* Attrition Analysis */}
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
@@ -517,6 +520,7 @@ export default function Dashboard() {
           </div>
 
           {/* Audit Logs Summary */}
+          {hasPermission("view_audit_log") && (
           <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-gray-900">Audit Logs</h3>
@@ -570,6 +574,7 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+          )}
         </div>
 
         {/* Product Overview */}

@@ -594,6 +594,16 @@ DEFAULT_PERMISSIONS = [
     {"name": "generate_compliance_reports", "description": "Can generate compliance reports"},
 
     # =====================================================
+    # 📊 DASHBOARD PERMISSIONS
+    # =====================================================
+
+    # Dashboard Document Alerts
+    {"name": "view_documents_alerts", "description": "Can view document expiry alerts on dashboard"},
+    
+    # Dashboard Audit Logs
+    {"name": "view_audit_log", "description": "Can view audit log summary and access audit logs from dashboard"},
+
+    # =====================================================
     # 📅 LEAVE MANAGEMENT
     # =====================================================
 

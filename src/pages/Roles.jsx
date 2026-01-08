@@ -3332,7 +3332,7 @@ export default function Roles() {
                       </div>
                       
                       <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">GPS & Location Tracking</h5>
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
                             false
@@ -3398,10 +3398,10 @@ export default function Roles() {
                       </div>
                       
                       <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">REMOVED_SECTION</h5>
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_live_attendance' || p.name === 'real_time_tracking' || p.name === 'view_active_records' || p.name === 'select_employee_attendance'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4206,10 +4206,10 @@ export default function Roles() {
                       </div>
                       
                       <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">GPS & Location Tracking</h5>
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_gps_tracking' || p.name === 'enable_web_gps' || p.name === 'enable_mobile_gps' || p.name === 'view_location_logs'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4272,10 +4272,10 @@ export default function Roles() {
                       </div>
                       
                       <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">REMOVED_SECTION</h5>
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_live_attendance' || p.name === 'real_time_tracking' || p.name === 'view_active_records' || p.name === 'select_employee_attendance'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

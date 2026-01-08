@@ -7,6 +7,7 @@ from models.models_master import Hospital
 from models.models_tenant import AuditLog
 from routes.hospital import get_current_user
 from utils.audit_logger import audit_crud
+from utils.permission import check_permission
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -62,6 +63,10 @@ def get_id_document_alerts(
 ):
     """Get ID document expiry alerts"""
     try:
+        # Check permission
+        if not check_permission(user, "view_documents_alerts"):
+            raise HTTPException(status_code=403, detail="Permission denied")
+            
         tenant_db = user.get("tenant_db")
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))
@@ -143,6 +148,10 @@ def get_audit_summary(
 ):
     """Get audit log summary for dashboard"""
     try:
+        # Check permission
+        if not check_permission(user, "view_audit_log"):
+            raise HTTPException(status_code=403, detail="Permission denied")
+            
         tenant_db = user.get("tenant_db")
         hospital = get_hospital_by_db(db, tenant_db)
         engine = database.get_tenant_engine(str(hospital.db_name))

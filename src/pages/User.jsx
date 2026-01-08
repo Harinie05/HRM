@@ -384,8 +384,8 @@ export default function Users() {
                       
                       <div className="pt-3 border-t border-gray-100">
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>Active User</span>
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                          <span>{u.is_active !== false ? 'Active User' : 'Inactive User'}</span>
+                          <div className={`w-2 h-2 rounded-full ${u.is_active !== false ? 'bg-green-400' : 'bg-red-400'}`}></div>
                         </div>
                       </div>
                     </div>
