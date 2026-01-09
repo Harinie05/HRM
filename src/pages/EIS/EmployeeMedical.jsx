@@ -653,7 +653,20 @@ export default function EmployeeMedical() {
               <button
                 onClick={submit}
                 disabled={loading}
-                className="px-6 py-3 bg-white text-black border border-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="px-6 py-3 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                style={{
+                  backgroundColor: loading ? '#d1d5db' : 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }
+                }}
               >
                 {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
               </button>

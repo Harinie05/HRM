@@ -1229,7 +1229,16 @@ export default function Onboarding() {
                           </p>
                           
                           <button
-                            className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                            className="w-full px-3 py-2 text-white text-sm rounded-lg transition-colors flex items-center justify-center"
+                            style={{
+                              backgroundColor: 'var(--primary-color, #4575b5)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                            }}
                             onClick={() => window.open(`http://localhost:8000/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
                           >
                             <FiEye className="mr-2" size={14} />

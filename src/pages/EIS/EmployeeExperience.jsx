@@ -240,7 +240,16 @@ export default function EmployeeExperience() {
           {canAdd && (
             <button
               onClick={openAdd}
-              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+              className="flex items-center gap-2 text-white px-6 py-3 rounded-2xl transition-colors font-medium"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               <FiPlus className="w-4 h-4" />
               Add Experience
@@ -662,7 +671,16 @@ export default function EmployeeExperience() {
                 </button>
                 <button
                   onClick={saveExperience}
-                  className="px-4 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-4 py-2 text-white rounded-lg transition-colors"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   {editing ? "Update" : "Save"} Experience
                 </button>

@@ -385,16 +385,19 @@ export default function EmployeeListPage() {
               />
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
-              <button
-                onClick={() => fetchEmployees()}
-                className="flex-1 sm:flex-none px-4 py-2 text-sm bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors border border-black"
-              >
-                Refresh
-              </button>
               {canCreate && (
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors border border-black"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-white rounded-xl transition-colors border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   <Plus size={16} />
                   <span className="hidden sm:inline">Create Employee Code</span>
@@ -680,7 +683,20 @@ export default function EmployeeListPage() {
               <button
                 onClick={handleCreateEmployee}
                 disabled={!formData.selectedUser || !formData.employeeCode}
-                className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium border border-black text-sm"
+                className="flex-1 px-4 py-3 text-white rounded-xl disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium border border-black text-sm"
+                style={{
+                  backgroundColor: !formData.selectedUser || !formData.employeeCode ? '' : 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }
+                }}
               >
                 Create
               </button>

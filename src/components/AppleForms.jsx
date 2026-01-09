@@ -99,7 +99,7 @@ export const AppleButton = ({
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
+    primary: 'text-white focus:ring-blue-500',
     secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
     danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500'
   };
@@ -112,9 +112,47 @@ export const AppleButton = ({
   
   const widthClass = fullWidth ? 'w-full' : '';
   
+  // Get primary color from CSS variables
+  const getPrimaryColor = () => {
+    if (typeof window !== 'undefined') {
+      return getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#4575b5';
+    }
+    return '#4575b5';
+  };
+  
+  const getPrimaryHover = () => {
+    if (typeof window !== 'undefined') {
+      return getComputedStyle(document.documentElement).getPropertyValue('--primary-hover').trim() || '#3a6299';
+    }
+    return '#3a6299';
+  };
+  
+  const buttonStyle = variant === 'primary' ? {
+    backgroundColor: getPrimaryColor() + ' !important',
+    borderColor: getPrimaryColor() + ' !important',
+    color: 'white !important'
+  } : {};
+  
+  const handleMouseEnter = (e) => {
+    if (variant === 'primary') {
+      e.target.style.setProperty('background-color', getPrimaryHover(), 'important');
+      e.target.style.setProperty('border-color', getPrimaryHover(), 'important');
+    }
+  };
+  
+  const handleMouseLeave = (e) => {
+    if (variant === 'primary') {
+      e.target.style.setProperty('background-color', getPrimaryColor(), 'important');
+      e.target.style.setProperty('border-color', getPrimaryColor(), 'important');
+    }
+  };
+  
   return (
     <button 
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`}
+      style={buttonStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       disabled={loading || props.disabled}
       {...props}
     >

@@ -214,7 +214,16 @@ export default function CompanyProfile() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              className="text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               {loading ? (
                 <>

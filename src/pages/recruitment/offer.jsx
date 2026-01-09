@@ -566,7 +566,16 @@ export default function Offer() {
                             {/* Step 1: Generate Document Upload Link */}
                             {(o.offer_status === "Accepted" || o.offer_status === "Draft") && canGenerateOfferLink && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => generateDocumentLink(o.id)}
                               >
                                 <FiLink className="mr-1" size={12} />
@@ -577,7 +586,16 @@ export default function Offer() {
                             {/* Document Verification Button for Draft Status */}
                             {o.offer_status === "Draft" && canVerifyDocuments && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => {
                                   setSelectedOfferForVerification(o);
                                   setShowDocVerificationModal(true);
@@ -591,7 +609,16 @@ export default function Offer() {
                             {/* Step 2: View Documents */}
                             {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && canViewDocuments && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => viewDocuments(o.id)}
                               >
                                 <FiEye className="mr-1" size={12} />
@@ -602,7 +629,16 @@ export default function Offer() {
                             {/* Step 3: Manage BGV */}
                             {o.offer_status === "Documents Verified" && canManageBGV && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => {
                                   if (!o.bgv_id) {
                                     startBGV(o.candidate_id);
@@ -619,7 +655,16 @@ export default function Offer() {
                             {/* Step 4: Start Onboarding */}
                             {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && canStartOnboarding && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
                               >
                                 <FiUser className="mr-1" size={12} />
@@ -630,7 +675,16 @@ export default function Offer() {
                             {/* Onboarding Started Status - Show Onboarded Button */}
                             {o.offer_status === "Onboarding Started" && canMarkOnboarded && (
                               <button
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                                 onClick={() => handleOnboarded(o.id)}
                               >
                                 <FiCheck className="mr-1" size={12} />
@@ -719,7 +773,16 @@ export default function Offer() {
                       {/* Step 1: Generate Document Upload Link */}
                       {(o.offer_status === "Accepted" || o.offer_status === "Draft") && canGenerateOfferLink && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => generateDocumentLink(o.id)}
                         >
                           <FiLink className="mr-1" size={12} />
@@ -730,7 +793,16 @@ export default function Offer() {
                       {/* Document Verification Button for Draft Status */}
                       {o.offer_status === "Draft" && canVerifyDocuments && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => {
                             setSelectedOfferForVerification(o);
                             setShowDocVerificationModal(true);
@@ -744,7 +816,16 @@ export default function Offer() {
                       {/* Step 2: View Documents */}
                       {(o.offer_status === "Documents Verified" || o.offer_status === "BGV Cleared") && canViewDocuments && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => viewDocuments(o.id)}
                         >
                           <FiEye className="mr-1" size={12} />
@@ -755,7 +836,16 @@ export default function Offer() {
                       {/* Step 3: Manage BGV */}
                       {o.offer_status === "Documents Verified" && canManageBGV && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => {
                             if (!o.bgv_id) {
                               startBGV(o.candidate_id);
@@ -772,7 +862,16 @@ export default function Offer() {
                       {/* Step 4: Start Onboarding */}
                       {o.offer_status === "BGV Cleared" && o.offer_status !== "Onboarding Started" && canStartOnboarding && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => startOnboarding(o.candidate_id, o.candidate_name, o.job_title, o.department)}
                         >
                           <FiUser className="mr-1" size={12} />
@@ -783,7 +882,16 @@ export default function Offer() {
                       {/* Onboarding Started Status - Show Onboarded Button */}
                       {o.offer_status === "Onboarding Started" && canMarkOnboarded && (
                         <button
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                           onClick={() => handleOnboarded(o.id)}
                         >
                           <FiCheck className="mr-1" size={12} />
@@ -870,7 +978,17 @@ export default function Offer() {
                           </span>
                         ) : (
                           <button
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition-colors"
+                            style={{
+                              backgroundColor: 'var(--primary-color, #4575b5)',
+                              borderColor: 'var(--primary-color, #4575b5)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                            }}
                             onClick={() => {
                               setSelected(c);
                               setOfferForm({
@@ -924,7 +1042,17 @@ export default function Offer() {
                       </span>
                     ) : (
                       <button
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white transition-colors"
+                        style={{
+                          backgroundColor: 'var(--primary-color, #4575b5)',
+                          borderColor: 'var(--primary-color, #4575b5)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                        }}
                         onClick={() => {
                           setSelected(c);
                           setOfferForm({
@@ -1067,7 +1195,16 @@ export default function Offer() {
                   </button>
 
                   <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                    className="px-4 py-2 text-white rounded transition-colors"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                     onClick={generateOffer}
                   >
                     Preview
@@ -1254,7 +1391,16 @@ export default function Offer() {
                   </button>
 
                   <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                    className="px-4 py-2 text-white rounded transition-colors"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                     onClick={updateBGV}
                   >
                     Update
@@ -1615,7 +1761,16 @@ export default function Offer() {
                   </button>
 
                   <button
-                    className="px-6 py-2 bg-blue-600 text-white rounded"
+                    className="px-6 py-2 text-white rounded transition-colors"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                     onClick={submitOnboardingForm}
                   >
                     Submit Onboarding Form
@@ -1804,7 +1959,16 @@ export default function Offer() {
                   </button>
 
                   <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                    className="px-4 py-2 text-white rounded transition-colors"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                     onClick={copyToClipboard}
                   >
                     📋 Copy Link

@@ -183,7 +183,16 @@ export default function HolidayCalendar() {
             </div>
             <button
               onClick={() => setShowViewHolidays(!showViewHolidays)}
-              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -290,7 +299,16 @@ export default function HolidayCalendar() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                className="text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 {loading ? (
                   <>

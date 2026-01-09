@@ -269,7 +269,16 @@ export default function ReportingStructure() {
                   setShowCreateLevel(!showCreateLevel);
                   setEditingLevel(null);
                 }}
-                className="inline-flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium border border-black"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-black"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -328,7 +337,16 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={editingLevel ? updateLevel : createLevel}
-                  className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors border border-black"
+                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   {editingLevel ? 'Update Level' : 'Create Level'}
                 </button>
@@ -513,7 +531,16 @@ export default function ReportingStructure() {
                   setShowCreateHierarchy(!showCreateHierarchy);
                   setEditingHierarchy(null);
                 }}
-                className="inline-flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors text-sm font-medium border border-black"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-black"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -581,7 +608,16 @@ export default function ReportingStructure() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={editingHierarchy ? updateHierarchy : createHierarchy}
-                  className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors border border-black"
+                  className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   {editingHierarchy ? 'Update Rule' : 'Create Rule'}
                 </button>

@@ -209,7 +209,17 @@ export default function EmployeeEducation() {
           {canAdd && (
             <button
               onClick={openAdd}
-              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-3 rounded-2xl transition-colors font-medium text-white border-2"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)',
+                borderColor: 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               <FiPlus className="w-4 h-4" />
               Add Education
@@ -222,7 +232,19 @@ export default function EmployeeEducation() {
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              color: 'var(--secondary-color, #474e71)',
+              borderColor: 'var(--primary-color, #4575b5)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.color = 'var(--secondary-color, #474e71)';
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
@@ -584,7 +606,20 @@ export default function EmployeeEducation() {
                 <button
                   onClick={saveEducation}
                   disabled={!form.degree.trim() || !form.university.trim()}
-                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: !form.degree.trim() || !form.university.trim() ? '#d1d5db' : 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }
+                  }}
                 >
                   {editing ? "Update" : "Save"} Education
                 </button>

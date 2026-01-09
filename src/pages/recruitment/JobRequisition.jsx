@@ -133,7 +133,16 @@ export default function JobRequisition() {
             {canAdd && (
               <button
                 onClick={openCreate}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+                className="text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
                   <Plus className="w-3 h-3" />
@@ -299,7 +308,16 @@ export default function JobRequisition() {
             {canAdd && (
               <button
                 onClick={openCreate}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                className="text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 Create Job Requisition
               </button>
@@ -655,7 +673,16 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             
             {!isView && (
               <button
-                className="px-8 py-3 bg-black text-white border border-black rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 hover:bg-gray-800"
+                className="px-8 py-3 text-white border border-black rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
                 onClick={submitForm}
               >
                 Create Requisition

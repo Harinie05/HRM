@@ -11,11 +11,31 @@ import DesignationList from "./Designation";
 import ReportingStructure from "./ReportingStructure";
 
 import HolidayCalender from "./HolidayCalender";
-import PolicySetup from "./PolicySetup";
+
 
 
 export default function OrganizationLayout() {
   const location = useLocation();
+  
+  // Function to determine if a color is light or dark
+  const isLightColor = (color) => {
+    if (!color) return false;
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return brightness > 128;
+  };
+  
+  // Get colors from CSS variables
+  const getPrimaryColor = () => {
+    return getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#4575b5';
+  };
+  
+  const getSecondaryColor = () => {
+    return getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim() || '#474e71';
+  };
   
   // Define all tabs with their permission requirements
   const allTabs = [
@@ -89,19 +109,42 @@ export default function OrganizationLayout() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
             <span className="text-sm text-gray-600">Setup</span>
             <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              {visibleTabs.map((tabItem) => (
-                <button
-                  key={tabItem.name}
-                  onClick={() => setTab(tabItem.name)}
-                  className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                    tab === tabItem.name 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  {tabItem.name}
-                </button>
-              ))}
+              {visibleTabs.map((tabItem) => {
+                const primaryColor = getPrimaryColor();
+                const secondaryColor = getSecondaryColor();
+                const primaryTextColor = isLightColor(primaryColor) ? 'black' : 'white';
+                const secondaryTextColor = isLightColor(secondaryColor) ? 'black' : 'white';
+                
+                return (
+                  <button
+                    key={tabItem.name}
+                    onClick={() => setTab(tabItem.name)}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
+                      tab === tabItem.name 
+                        ? "shadow-sm" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                    style={tab === tabItem.name ? {
+                      backgroundColor: primaryColor,
+                      color: primaryTextColor
+                    } : {}}
+                    onMouseEnter={(e) => {
+                      if (tab !== tabItem.name) {
+                        e.target.style.backgroundColor = secondaryColor;
+                        e.target.style.color = secondaryTextColor;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (tab !== tabItem.name) {
+                        e.target.style.backgroundColor = '';
+                        e.target.style.color = '';
+                      }
+                    }}
+                  >
+                    {tabItem.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
           {/* Scroll indicator */}

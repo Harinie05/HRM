@@ -150,7 +150,16 @@ export default function EmployeeFamily() {
           {canAdd && (
             <button
               onClick={openAdd}
-              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+              className="flex items-center gap-2 text-white px-6 py-3 rounded-2xl transition-colors font-medium"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               <FiPlus className="w-4 h-4" />
               Add Family Member
@@ -417,7 +426,16 @@ export default function EmployeeFamily() {
                 </button>
                 <button
                   onClick={saveFamily}
-                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
+                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   {editing ? "Update" : "Save"} Member
                 </button>

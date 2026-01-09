@@ -278,7 +278,16 @@ export default function EmployeeSalary() {
             {(canAdd || canEdit) && (
               <button
                 onClick={submit}
-                className="px-6 py-3 bg-white text-black border border-black rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+                className="px-6 py-3 text-white rounded-2xl transition-colors font-medium"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 {isEditing ? 'Update Salary Structure' : 'Save Salary Structure'}
               </button>

@@ -567,7 +567,10 @@ export default function Dashboard() {
               
               <button
                 onClick={viewAuditLogs}
-                className="w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium border border-black shadow-md flex items-center justify-center gap-2"
+                className="w-full text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium border border-black shadow-md flex items-center justify-center gap-2"
+                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
               >
                 <Eye className="h-4 w-4" />
                 View All Audit Logs
@@ -650,10 +653,10 @@ export default function Dashboard() {
               </div>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                 className="text-white px-4 py-2 rounded-xl transition-colors duration-200 text-sm font-medium border border-black shadow-md"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
               >
                 {showCalendar ? 'Hide Calendar' : 'View Calendar'}
               </button>
@@ -698,10 +701,10 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center mb-6">
                   <button 
                     onClick={prevMonth} 
-                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                     className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium border border-black shadow-sm"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                    style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
                   >
                     ‹ Previous
                   </button>
@@ -710,10 +713,10 @@ export default function Dashboard() {
                   </h2>
                   <button 
                     onClick={nextMonth} 
-                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                     className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium border border-black shadow-sm"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                    style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
                   >
                     Next ›
                   </button>
@@ -930,7 +933,10 @@ export default function Dashboard() {
               </div>
               <button
                 onClick={() => setShowDocumentModal(false)}
-                className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium border border-black shadow-md"
+                className="text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium border border-black shadow-md"
+                style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-hover, #3a3f5c)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
                 Close
               </button>

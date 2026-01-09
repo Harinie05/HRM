@@ -420,7 +420,16 @@ const LocumConsultants = () => {
                   {canAddConsultant && (
                     <button
                       onClick={() => setShowModal(true)}
-                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       <Plus size={16} />
                       Add Consultant
@@ -677,7 +686,16 @@ const LocumConsultants = () => {
                   {canAddAvailability && (
                     <button
                       onClick={() => setShowAvailabilityModal(true)}
-                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       <Plus size={16} />
                       Add Availability
@@ -779,7 +797,16 @@ const LocumConsultants = () => {
                   {canAddPayout && (
                     <button
                       onClick={() => setShowPayoutModal(true)}
-                      className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       <Plus size={16} />
                       Add Payout
@@ -1089,7 +1116,16 @@ const LocumConsultants = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
+                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       {editingConsultant ? 'Update' : 'Create'}
                     </button>
@@ -1181,7 +1217,16 @@ const LocumConsultants = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
+                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       Add Availability
                     </button>
@@ -1295,7 +1340,16 @@ const LocumConsultants = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border border-black font-semibold"
+                      className="px-4 py-2 text-white rounded-lg transition-colors border border-black font-semibold"
+                      style={{
+                        backgroundColor: 'var(--primary-color, #4575b5)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                      }}
                     >
                       Add Payout
                     </button>

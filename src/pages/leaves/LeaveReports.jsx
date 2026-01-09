@@ -266,7 +266,17 @@ export default function LeaveReports() {
             {hasPermission("export_leave_reports") && (
               <button 
                 onClick={exportToCSV}
-                className="bg-white text-black px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold"
+                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold border"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  borderColor: 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 <Download size={18} />
                 Export Report

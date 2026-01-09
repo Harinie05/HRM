@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
+import api from "./api";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -19,7 +20,7 @@ import HolidayCalender from "./pages/organization/HolidayCalender";
 // ⭐ Authentication protection
 import ProtectedRoute from "./components/ProctectedRoute";
 
-import PolicySetup from "./pages/organization/PolicySetup";
+
 import RecruitmentSetup from "./pages/recruitment/Recruitment";
 import JobRequisition from "./pages/recruitment/JobRequisition";
 import ATS from "./pages/recruitment/ATS";
@@ -208,7 +209,6 @@ function App() {
           <Route path="branch" element={<ProtectedRoute><Branch /></ProtectedRoute>} />
 
           <Route path="holiday-calender" element={<ProtectedRoute><HolidayCalender /></ProtectedRoute>} />
-          <Route path="policy-setup" element={<ProtectedRoute><PolicySetup /></ProtectedRoute>} />
           <Route path="reporting" element={<ProtectedRoute><ReportingStructure /></ProtectedRoute>} />
         </Route>
 

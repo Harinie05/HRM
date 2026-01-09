@@ -253,7 +253,16 @@ export default function EmployeeProfile() {
                 {(isAdmin() || hasPermission("edit_profile")) && (
                   <button
                     onClick={() => setShowEditModal(true)}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-3 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                   >
                     <FiUser size={16} />
                     <span className="hidden sm:inline">Edit Profile</span>
@@ -601,7 +610,16 @@ export default function EmployeeProfile() {
                       showToast('Failed to update profile', 'error');
                     }
                   }}
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium shadow-lg border border-black"
+                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   Save Changes
                 </button>

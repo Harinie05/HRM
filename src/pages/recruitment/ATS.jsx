@@ -327,7 +327,16 @@ export default function ATS() {
                             {canMoveCandidates && (
                               <button
                                 onClick={() => handleMoveCandidate(candidate)}
-                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white transition-colors"
+                                style={{
+                                  backgroundColor: 'var(--primary-color, #4575b5)',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                                }}
                               >
                                 <FiArrowRight className="mr-1" size={12} />
                                 Move
@@ -381,7 +390,16 @@ export default function ATS() {
                       <div className="flex items-center justify-end mt-3 pt-3 border-t border-gray-100">
                         <button
                           onClick={() => handleMoveCandidate(candidate)}
-                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-white rounded-md transition-colors"
+                          style={{
+                            backgroundColor: 'var(--primary-color, #4575b5)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                          }}
                         >
                           <FiArrowRight size={12} />
                           Move

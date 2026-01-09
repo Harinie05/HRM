@@ -135,7 +135,16 @@ const EmployeeProbation = ({ employeeId, employee }) => {
         {!probation && (isAdmin() || hasPermission("add_probation")) && (
           <button
             onClick={() => setShowForm(true)}
-            className="bg-black text-white px-3 py-1 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2 text-sm"
+            className="text-white px-3 py-1 rounded-md transition-colors border border-black flex items-center gap-2 text-sm"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+            }}
           >
             <Plus className="w-4 h-4" />
             Add Probation
@@ -194,7 +203,16 @@ const EmployeeProbation = ({ employeeId, employee }) => {
               {(isAdmin() || hasPermission("extend_probation")) && (
                 <button
                   onClick={() => setShowExtendModal(true)}
-                  className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
+                  className="px-3 py-1.5 text-white text-sm rounded-md transition-colors border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   Extend Probation
                 </button>
@@ -202,7 +220,16 @@ const EmployeeProbation = ({ employeeId, employee }) => {
               {(isAdmin() || hasPermission("end_probation")) && (
                 <button
                   onClick={handleEnd}
-                  className="px-3 py-1.5 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-colors border border-black"
+                  className="px-3 py-1.5 text-white text-sm rounded-md transition-colors border border-black"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   End Probation
                 </button>
@@ -250,7 +277,20 @@ const EmployeeProbation = ({ employeeId, employee }) => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black"
+              className="text-white px-4 py-2 rounded-md transition-colors border border-black"
+              style={{
+                backgroundColor: loading ? '#d1d5db' : 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.target.disabled) {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.target.disabled) {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }
+              }}
             >
               {loading ? 'Saving...' : 'Save Probation'}
             </button>
@@ -306,7 +346,16 @@ const EmployeeProbation = ({ employeeId, employee }) => {
                   </button>
                   <button
                     onClick={handleExtend}
-                    className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 border-2 border-black font-semibold"
+                    className="px-4 py-2 text-white rounded-lg transition-colors border-2 border-black font-semibold"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                   >
                     Extend Probation
                   </button>

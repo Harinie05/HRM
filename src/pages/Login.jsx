@@ -186,8 +186,22 @@ export default function Login() {
       {!showOtpForm ? (
         <div className="bg-white rounded-2xl border border-gray-300 shadow-lg p-8 max-w-md w-full">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div 
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)',
+                opacity: 0.1
+              }}
+            >
+              <svg 
+                className="w-8 h-8" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                style={{
+                  color: 'var(--primary-color, #4575b5)'
+                }}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
@@ -208,7 +222,16 @@ export default function Login() {
                 required
                 onChange={handleChange}
                 placeholder="Enter your tenant code"
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-gray-50 transition-all duration-200"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-gray-50 transition-all duration-200"
+                style={{
+                  '--tw-ring-color': 'var(--primary-color, #4575b5)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
               />
             </div>
 
@@ -222,7 +245,16 @@ export default function Login() {
                 required
                 onChange={handleChange}
                 placeholder="Enter your email address"
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-gray-50 transition-all duration-200"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-gray-50 transition-all duration-200"
+                style={{
+                  '--tw-ring-color': 'var(--primary-color, #4575b5)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
               />
             </div>
 
@@ -236,14 +268,32 @@ export default function Login() {
                 required
                 onChange={handleChange}
                 placeholder="Enter your password"
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-gray-50 transition-all duration-200"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-gray-50 transition-all duration-200"
+                style={{
+                  '--tw-ring-color': 'var(--primary-color, #4575b5)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#d1d5db';
+                }}
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
+              className="w-full text-white py-3 px-4 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              }}
             >
               {loading ? (
                 <div className="flex items-center justify-center">
@@ -261,8 +311,22 @@ export default function Login() {
         /* OTP VERIFICATION CARD */
         <div className="bg-white rounded-2xl border border-gray-300 shadow-lg p-8 max-w-md w-full">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div 
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{
+                backgroundColor: 'var(--primary-color, #4575b5)',
+                opacity: 0.1
+              }}
+            >
+              <svg 
+                className="w-8 h-8" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                style={{
+                  color: 'var(--primary-color, #4575b5)'
+                }}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
@@ -270,7 +334,7 @@ export default function Login() {
               Verify Your Email
             </h1>
             <p className="text-gray-600 mb-2">We've sent a 6-digit verification code to</p>
-            <p className="text-sm font-medium text-blue-600">{otpForm.email}</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--primary-color, #4575b5)' }}>{otpForm.email}</p>
             <p className="text-xs text-gray-500 mt-2">Code expires in 5 minutes</p>
           </div>
 
@@ -287,8 +351,17 @@ export default function Login() {
                   maxLength="6"
                   onChange={handleOtpChange}
                   placeholder="------"
-                  className="w-48 px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-gray-50 text-center text-3xl font-mono tracking-[0.5em] placeholder-gray-400"
-                  style={{ letterSpacing: '0.5em' }}
+                  className="w-48 px-4 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 text-gray-900 bg-gray-50 text-center text-3xl font-mono tracking-[0.5em] placeholder-gray-400"
+                  style={{
+                    letterSpacing: '0.5em',
+                    '--tw-ring-color': 'var(--primary-color, #4575b5)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db';
+                  }}
                 />
               </div>
               <p className="text-xs text-gray-500 text-center mt-2">Enter the 6-digit code from your email</p>
@@ -298,7 +371,16 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading || otpForm.otp_code.length !== 6}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
+                className="w-full text-white py-3 px-4 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -325,7 +407,18 @@ export default function Login() {
             <p className="text-xs text-gray-500">
               Didn't receive the code? Check your spam folder or
             </p>
-            <button className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-1">
+            <button 
+              className="text-xs font-medium mt-1 transition-colors"
+              style={{
+                color: 'var(--primary-color, #4575b5)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = 'var(--primary-hover, #3a6299)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = 'var(--primary-color, #4575b5)';
+              }}
+            >
               resend code
             </button>
           </div>

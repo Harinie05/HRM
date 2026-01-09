@@ -69,13 +69,35 @@ export default function AttendanceReports() {
               <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                 <button
                   onClick={loadDaily}
-                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 bg-white text-gray-900 shadow-sm mr-2"
+                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 text-white shadow-sm mr-2 border"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)',
+                    borderColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   Daily Report
                 </button>
                 <button
                   onClick={loadMonthly}
-                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 text-gray-600 hover:text-gray-900"
+                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 border"
+                  style={{
+                    color: 'var(--secondary-color, #474e71)',
+                    borderColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    e.target.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = 'var(--secondary-color, #474e71)';
+                  }}
                 >
                   Monthly Report
                 </button>
