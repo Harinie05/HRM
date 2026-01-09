@@ -19,12 +19,16 @@ export default function Roles() {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedPerms, setSelectedPerms] = useState([]);
+  const [permissionSearch, setPermissionSearch] = useState("");
+  const [moduleFilter, setModuleFilter] = useState("");
 
   // EDIT ROLE
   const [editing, setEditing] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [editPerms, setEditPerms] = useState([]);
+  const [editPermissionSearch, setEditPermissionSearch] = useState("");
+  const [editModuleFilter, setEditModuleFilter] = useState("");
   const { toast, showToast, hideToast } = useToast();
 
   // Handle "Select All" for main sections and subsections
@@ -172,6 +176,204 @@ export default function Roles() {
   const getDashboardPerms = () => permissions.filter(p => 
     p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
   ).map(p => p.name);
+
+  // Get module heading
+  const getModuleHeading = (moduleFilter) => {
+    const moduleMap = {
+      'organization_setup': '🏢 ORGANIZATION SETUP',
+      'reporting_structure': '📊 REPORTING STRUCTURE',
+      'holiday_calendar': '📅 HOLIDAY CALENDAR',
+      'job_requisition': '💼 JOB REQUISITION',
+      'recruitment_setup': '🎯 RECRUITMENT SETUP',
+      'offers_contracts': '📄 OFFERS & CONTRACTS',
+      'onboarding': '🎓 ONBOARDING',
+      'consultants': '🩺 CONSULTANTS',
+      'exit_management': '🚪 EXIT MANAGEMENT',
+      'statutory_compliance': '💰 STATUTORY RULES & COMPLIANCE',
+      'training_development': '🎓 TRAINING & DEVELOPMENT',
+      'performance_management': '📊 PERFORMANCE MANAGEMENT SYSTEM',
+      'shift_roster': '🕐 SHIFT & ROSTER MANAGEMENT',
+      'attendance_management': '🕐 ATTENDANCE MANAGEMENT',
+      'hr_operations': '🏢 HR OPERATIONS & WORKFORCE MANAGEMENT',
+      'dashboard_permissions': '📊 DASHBOARD PERMISSIONS',
+      'payroll_management': '💰 PAYROLL MANAGEMENT',
+      'leave_management': '📅 LEAVE MANAGEMENT',
+      'user_management': '👥 USER MANAGEMENT',
+      'employee_management': '👤 EMPLOYEE MANAGEMENT'
+    };
+    return moduleMap[moduleFilter] || null;
+  };
+  const getFilteredPermissions = (searchTerm, moduleFilter) => {
+    let filtered = permissions;
+    
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter(p => {
+        // Search in permission name
+        const nameMatch = p.name.toLowerCase().includes(searchLower);
+        // Search in permission description
+        const descMatch = p.description.toLowerCase().includes(searchLower);
+        // Search in module names
+        const moduleMatch = (
+          searchLower.includes('organization') || searchLower.includes('setup') ||
+          searchLower.includes('reporting') || searchLower.includes('structure') ||
+          searchLower.includes('holiday') || searchLower.includes('calendar') ||
+          searchLower.includes('job') || searchLower.includes('requisition') ||
+          searchLower.includes('recruitment') || searchLower.includes('candidate') ||
+          searchLower.includes('offer') || searchLower.includes('contract') ||
+          searchLower.includes('onboarding') || searchLower.includes('consultant') ||
+          searchLower.includes('exit') || searchLower.includes('management') ||
+          searchLower.includes('statutory') || searchLower.includes('compliance') ||
+          searchLower.includes('training') || searchLower.includes('development') ||
+          searchLower.includes('performance') || searchLower.includes('shift') ||
+          searchLower.includes('roster') || searchLower.includes('attendance') ||
+          searchLower.includes('hr') || searchLower.includes('operation') ||
+          searchLower.includes('dashboard') || searchLower.includes('payroll') ||
+          searchLower.includes('leave') || searchLower.includes('user') ||
+          searchLower.includes('employee')
+        );
+        return nameMatch || descMatch || moduleMatch;
+      });
+    }
+    
+    if (moduleFilter) {
+      switch (moduleFilter) {
+        case 'organization_setup':
+          filtered = filtered.filter(p => 
+            p.name.includes('company') || p.name.includes('branch') || 
+            (p.name.includes('department') && !p.name.includes('user')) ||
+            p.name.includes('designation')
+          );
+          break;
+        case 'reporting_structure':
+          filtered = filtered.filter(p => 
+            p.name.includes('reporting') || p.name.includes('hierarchy')
+          );
+          break;
+        case 'holiday_calendar':
+          filtered = filtered.filter(p => p.name.includes('holiday'));
+          break;
+        case 'job_requisition':
+          filtered = filtered.filter(p => p.name.includes('job_requisition'));
+          break;
+        case 'recruitment_setup':
+          filtered = filtered.filter(p => 
+            p.name.includes('candidates') || p.name.includes('screen_candidates') || 
+            p.name === 'publish_job' || p.name === 'generate_job_link' || 
+            p.name === 'view_candidate' || p.name === 'select_candidates' || 
+            p.name === 'schedule_interviews' || p.name === 'view_resumes' || 
+            p.name === 'view_ats_pipeline' || p.name === 'move_candidates' || 
+            p.name === 'view_active_jobs' || p.name === 'view_ats_candidates'
+          );
+          break;
+        case 'offers_contracts':
+          filtered = filtered.filter(p => 
+            p.name === 'generate_offer_link' || p.name === 'verify_documents' || 
+            p.name === 'view_documents' || p.name === 'manage_bgv' || 
+            p.name === 'start_onboarding' || p.name === 'mark_onboarded' || 
+            p.name === 'view_offers_sent' || p.name === 'view_selected_candidates'
+          );
+          break;
+        case 'onboarding':
+          filtered = filtered.filter(p => 
+            p.name === 'view_onboarding_documents' || p.name === 'view_onboarding_candidates' || 
+            p.name === 'view_document_collected' || p.name === 'add_document_collected' || 
+            p.name === 'start_onboarding' || p.name === 'mark_onboarded'
+          );
+          break;
+        case 'consultants':
+          filtered = filtered.filter(p => 
+            p.name === 'view_consultants' || p.name === 'add_consultant' || 
+            p.name === 'edit_consultant' || p.name === 'delete_consultant' || 
+            p.name === 'view_availability' || p.name === 'add_availability' ||
+            p.name === 'view_payouts' || p.name === 'generate_payslip' || 
+            p.name === 'send_payslip_email' || p.name === 'process_payroll'
+          );
+          break;
+        case 'exit_management':
+          filtered = filtered.filter(p => 
+            p.name === 'apply_resignation' || p.name === 'view_resignations' || 
+            p.name === 'approve_resignation' || p.name === 'manage_handover' || 
+            p.name === 'manage_clearance' || p.name === 'manage_assets' || 
+            p.name === 'manage_settlement' || p.name === 'hr_clearance' || 
+            p.name === 'it_clearance' || p.name === 'finance_clearance' || 
+            p.name === 'admin_clearance' || p.name === 'conduct_exit_interview' ||
+            p.name === 'view_exit_interviews' || p.name.includes('kt_') || 
+            p.name.includes('settlement')
+          );
+          break;
+        case 'statutory_compliance':
+          filtered = filtered.filter(p => 
+            p.name.includes('statutory') || p.name.includes('labour_register') || 
+            p.name.includes('leave_compliance') || p.name.includes('nabh_compliance')
+          );
+          break;
+        case 'training_development':
+          filtered = filtered.filter(p => p.name.includes('training'));
+          break;
+        case 'performance_management':
+          filtered = filtered.filter(p => 
+            p.name.includes('work_assignment') || p.name.includes('goals_kpi') || 
+            p.name.includes('review_cycle') || p.name.includes('feedback') || 
+            p.name.includes('appraisal') || p.name.includes('quality_indicator')
+          );
+          break;
+        case 'shift_roster':
+          filtered = filtered.filter(p => 
+            p.name === 'view_shifts' || p.name === 'create_shifts' || 
+            p.name === 'delete_shifts' || p.name === 'view_roster' || 
+            p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' ||
+            p.name === 'manage_on_call_duty'
+          );
+          break;
+        case 'attendance_management':
+          filtered = filtered.filter(p => 
+            p.name.includes('attendance') || p.name.includes('punch') || 
+            p.name.includes('regularization') || p.name.includes('od_') || 
+            p.name.includes('daily_update')
+          );
+          break;
+        case 'hr_operations':
+          filtered = filtered.filter(p => 
+            p.name.includes('lifecycle') || p.name.includes('hr_letter') || 
+            p.name.includes('grievance') || p.name.includes('asset') || 
+            p.name.includes('insurance') || p.name.includes('staff_schedule')
+          );
+          break;
+        case 'dashboard_permissions':
+          filtered = filtered.filter(p => 
+            p.name === 'view_documents_alerts' || p.name === 'view_audit_log'
+          );
+          break;
+        case 'payroll_management':
+          filtered = filtered.filter(p => 
+            p.name.includes('salary') || p.name.includes('payroll') || 
+            p.name.includes('statutory_rule')
+          );
+          break;
+        case 'leave_management':
+          filtered = filtered.filter(p => p.name.includes('leave'));
+          break;
+        case 'user_management':
+          filtered = filtered.filter(p => 
+            p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+          );
+          break;
+        case 'employee_management':
+          filtered = filtered.filter(p => 
+            p.name === 'view_employees' || p.name === 'add_employee' || 
+            p.name === 'edit_employee' || p.name === 'delete_employee' || 
+            p.name === 'create_employee_code' || p.name === 'view_employee_profile' || 
+            p.name === 'export_employee_data'
+          );
+          break;
+        default:
+          break;
+      }
+    }
+    
+    return filtered;
+  };
 
 
 
@@ -511,7 +713,7 @@ export default function Roles() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>
@@ -530,246 +732,116 @@ export default function Roles() {
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter role name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
+              {/* Grid Layout: Left side for role info, Right side for permissions */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Left Side - Role Information */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter role name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
+                    <textarea
+                      placeholder="Enter role description"
+                      value={desc}
+                      onChange={(e) => setDesc(e.target.value)}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                    />
+                  </div>
                 </div>
 
+                {/* Right Side - Permissions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
-                  <textarea
-                    placeholder="Enter role description"
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({selectedPerms.length} selected)</label>
-                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
-                    {/* 👥 USER MANAGEMENT */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                          <span>👥</span> USER MANAGEMENT
-                        </h4>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={permissions.filter(p => 
-                              p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
-                            ).every(p => selectedPerms.includes(p.name))}
-                            onChange={() => handleSelectAllSection(
-                              permissions.filter(p => 
-                                p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
-                              ).map(p => p.name),
-                              setSelectedPerms,
-                              selectedPerms
-                            )}
-                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                          />
-                          <span className="text-xs text-gray-600">Select All</span>
-                        </label>
-                      </div>
-                      <div className="space-y-2 ml-6">
-                        {permissions.filter(p => 
-                          p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
-                        ).map((p) => (
-                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={selectedPerms.includes(p.name)}
-                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                            />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                              <p className="text-xs text-gray-500">{p.name}</p>
-                            </div>
-                          </label>
-                        ))}
-                      </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="block text-sm font-medium text-gray-700">Permissions ({selectedPerms.length} selected)</label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPerms(getFilteredPermissions(permissionSearch, moduleFilter).map(p => p.name))}
+                        className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPerms([])}
+                        className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Deselect All
+                      </button>
                     </div>
-
-                    {/* 👤 EMPLOYEE MANAGEMENT */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                          <span>👤</span> EMPLOYEE MANAGEMENT
-                        </h4>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={getEmployeeManagementPerms().every(perm => selectedPerms.includes(perm))}
-                            onChange={() => handleSelectAllSection(
-                              getEmployeeManagementPerms(),
-                              setSelectedPerms,
-                              selectedPerms
-                            )}
-                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                          />
-                          <span className="text-xs text-gray-600">Select All</span>
-                        </label>
+                  </div>
+                  
+                  <div className="flex gap-3 mb-4">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Search permissions..."
+                        value={permissionSearch}
+                        onChange={(e) => setPermissionSearch(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="w-48">
+                      <select
+                        value={moduleFilter}
+                        onChange={(e) => setModuleFilter(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">All Modules</option>
+                        <option value="organization_setup">🏢 Organization Setup</option>
+                        <option value="reporting_structure">📊 Reporting Structure</option>
+                        <option value="holiday_calendar">📅 Holiday Calendar</option>
+                        <option value="job_requisition">💼 Job Requisition</option>
+                        <option value="recruitment_setup">🎯 Recruitment Setup</option>
+                        <option value="offers_contracts">📄 Offers & Contracts</option>
+                        <option value="onboarding">🎓 Onboarding</option>
+                        <option value="consultants">🩺 Consultants</option>
+                        <option value="exit_management">🚪 Exit Management</option>
+                        <option value="statutory_compliance">💰 Statutory Rules & Compliance</option>
+                        <option value="training_development">🎓 Training & Development</option>
+                        <option value="performance_management">📊 Performance Management System</option>
+                        <option value="shift_roster">🕐 Shift & Roster Management</option>
+                        <option value="attendance_management">🕐 Attendance Management</option>
+                        <option value="hr_operations">🏢 HR Operations & Workforce Management</option>
+                        <option value="dashboard_permissions">📊 Dashboard Permissions</option>
+                        <option value="payroll_management">💰 Payroll Management</option>
+                        <option value="leave_management">📅 Leave Management</option>
+                        <option value="user_management">👥 User Management</option>
+                        <option value="employee_management">👤 Employee Management</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2">
+                    {moduleFilter && (
+                      <div className="mb-4 pb-2 border-b border-gray-200">
+                        <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(moduleFilter)}</h4>
                       </div>
-                      <div className="space-y-2 ml-6">
-                        {permissions.filter(p => 
-                          p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'export_employee_data' || p.name === 'view_self'
-                        ).map((p) => (
-                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={selectedPerms.includes(p.name)}
-                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                            />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                              <p className="text-xs text-gray-500">{p.name}</p>
-                            </div>
-                          </label>
-                        ))}
-                      </div>
-                      
-                      <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Employee Directory</h5>
-                        <div className="space-y-2 ml-3">
-                          {permissions.filter(p => 
-                            p.name === 'view_employee_directory' || p.name === 'search_employees' || p.name === 'export_directory' || p.name === 'view_self'
-                          ).map((p) => (
-                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={selectedPerms.includes(p.name)}
-                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                              />
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                                <p className="text-xs text-gray-500">{p.name}</p>
-                              </div>
-                            </label>
-                          ))}
+                    )}
+                    {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
+                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedPerms.includes(p.name)}
+                          onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                          <p className="text-xs text-gray-500">{p.name}</p>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* 👤 EMPLOYEE INFORMATION SYSTEM (EIS) */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                          <span>👤</span> EMPLOYEE INFORMATION SYSTEM (EIS)
-                        </h4>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={getProfileDocumentsPerms().concat(getEmploymentProbationPerms()).every(perm => selectedPerms.includes(perm))}
-                            onChange={() => handleSelectAllSection(
-                              getProfileDocumentsPerms().concat(getEmploymentProbationPerms()),
-                              setSelectedPerms,
-                              selectedPerms
-                            )}
-                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                          />
-                          <span className="text-xs text-gray-600">Select All</span>
-                        </label>
-                      </div>
-                      <div className="space-y-2 ml-6">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Profile & Documents</h5>
-                        <div className="space-y-2 ml-3">
-                          {permissions.filter(p => 
-                            p.name === 'edit_employee_profile' || p.name === 'view_employee_documents' || p.name === 'upload_employee_documents' || p.name === 'delete_employee_documents' || p.name === 'edit_profile' || p.name === 'view_documents' || p.name === 'verify_employee_documents' || p.name === 'verify_bank_details' || p.name === 'view_self'
-                          ).map((p) => (
-                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={selectedPerms.includes(p.name)}
-                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                              />
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                                <p className="text-xs text-gray-500">{p.name}</p>
-                              </div>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="ml-6 mt-3">
-                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Employment & Probation</h5>
-                        <div className="space-y-2 ml-3">
-                          {permissions.filter(p => 
-                            p.name === 'view_probation_details' || p.name === 'add_probation' || p.name === 'extend_probation' || p.name === 'end_probation'
-                          ).map((p) => (
-                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={selectedPerms.includes(p.name)}
-                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                              />
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                                <p className="text-xs text-gray-500">{p.name}</p>
-                              </div>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                      
-
-                    </div>
-
-                    {/* 🏢 ORGANIZATION SETUP */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                          <span>🏢</span> ORGANIZATION SETUP
-                        </h4>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={getOrganizationSetupPerms().every(perm => selectedPerms.includes(perm))}
-                            onChange={() => handleSelectAllSection(
-                              getOrganizationSetupPerms(),
-                              setSelectedPerms,
-                              selectedPerms
-                            )}
-                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                          />
-                          <span className="text-xs text-gray-600">Select All</span>
-                        </label>
-                      </div>
-                      <div className="space-y-2 ml-6">
-                        {permissions.filter(p => 
-                          p.name.includes('company') || p.name.includes('branch') || 
-                          (p.name.includes('department') && !p.name.includes('user')) ||
-                          p.name.includes('designation')
-                        ).map((p) => (
-                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={selectedPerms.includes(p.name)}
-                              onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                            />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                              <p className="text-xs text-gray-500">{p.name}</p>
-                            </div>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                      </label>
+                    ))}
 
                     {/* 📊 REPORTING STRUCTURE */}
                     <div>
@@ -2434,7 +2506,7 @@ export default function Roles() {
       {/* Edit Modal */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Edit Role</h3>
@@ -2448,69 +2520,114 @@ export default function Roles() {
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
+              {/* Grid Layout: Left side for role info, Right side for permissions */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Left Side - Role Information */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea
+                      value={editDesc}
+                      onChange={(e) => setEditDesc(e.target.value)}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                    />
+                  </div>
                 </div>
 
+                {/* Right Side - Permissions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <textarea
-                    value={editDesc}
-                    onChange={(e) => setEditDesc(e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Permissions ({editPerms.length} selected)</label>
-                  <div className="max-h-64 overflow-y-auto border border-black rounded-xl p-4 space-y-4">
-                    {/* 👥 USER MANAGEMENT */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                          <span>👥</span> USER MANAGEMENT
-                        </h4>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={getUserManagementPerms().every(perm => editPerms.includes(perm))}
-                            onChange={() => handleSelectAllSection(
-                              getUserManagementPerms(),
-                              setEditPerms,
-                              editPerms
-                            )}
-                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                          />
-                          <span className="text-xs text-gray-600">Select All</span>
-                        </label>
-                      </div>
-                      <div className="space-y-2 ml-6">
-                        {permissions.filter(p => 
-                          p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
-                        ).map((p) => (
-                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={editPerms.includes(p.name)}
-                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
-                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                            />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                              <p className="text-xs text-gray-500">{p.name}</p>
-                            </div>
-                          </label>
-                        ))}
-                      </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="block text-sm font-medium text-gray-700">Permissions ({editPerms.length} selected)</label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditPerms(getFilteredPermissions(editPermissionSearch, editModuleFilter).map(p => p.name))}
+                        className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditPerms([])}
+                        className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Deselect All
+                      </button>
                     </div>
+                  </div>
+                  
+                  <div className="flex gap-3 mb-4">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Search permissions..."
+                        value={editPermissionSearch}
+                        onChange={(e) => setEditPermissionSearch(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="w-48">
+                      <select
+                        value={editModuleFilter}
+                        onChange={(e) => setEditModuleFilter(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">All Modules</option>
+                        <option value="organization_setup">🏢 Organization Setup</option>
+                        <option value="reporting_structure">📊 Reporting Structure</option>
+                        <option value="holiday_calendar">📅 Holiday Calendar</option>
+                        <option value="job_requisition">💼 Job Requisition</option>
+                        <option value="recruitment_setup">🎯 Recruitment Setup</option>
+                        <option value="offers_contracts">📄 Offers & Contracts</option>
+                        <option value="onboarding">🎓 Onboarding</option>
+                        <option value="consultants">🩺 Consultants</option>
+                        <option value="exit_management">🚪 Exit Management</option>
+                        <option value="statutory_compliance">💰 Statutory Rules & Compliance</option>
+                        <option value="training_development">🎓 Training & Development</option>
+                        <option value="performance_management">📊 Performance Management System</option>
+                        <option value="shift_roster">🕐 Shift & Roster Management</option>
+                        <option value="attendance_management">🕐 Attendance Management</option>
+                        <option value="hr_operations">🏢 HR Operations & Workforce Management</option>
+                        <option value="dashboard_permissions">📊 Dashboard Permissions</option>
+                        <option value="payroll_management">💰 Payroll Management</option>
+                        <option value="leave_management">📅 Leave Management</option>
+                        <option value="user_management">👥 User Management</option>
+                        <option value="employee_management">👤 Employee Management</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2">
+                    {editModuleFilter && (
+                      <div className="mb-4 pb-2 border-b border-gray-200">
+                        <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(editModuleFilter)}</h4>
+                      </div>
+                    )}
+                    {getFilteredPermissions(editPermissionSearch, editModuleFilter).map((p) => (
+                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={editPerms.includes(p.name)}
+                          onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                          <p className="text-xs text-gray-500">{p.name}</p>
+                        </div>
+                      </label>
+                    ))}
 
                     {/* 👤 EMPLOYEE MANAGEMENT */}
                     <div>
