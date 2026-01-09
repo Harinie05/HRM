@@ -418,7 +418,7 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
 
                 # Send OTP for tenant user
                 from utils.otp import send_login_otp
-                otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, user.name)
+                otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, str(user.name))
                 if not otp_sent:
                     raise HTTPException(500, "Failed to send OTP")
                 
@@ -472,7 +472,7 @@ def verify_otp_and_login(response: Response, payload: dict, db: Session = Depend
         
         try:
             from utils.otp import verify_login_otp
-            if not verify_login_otp(tdb, email, tenant_code, otp_code):
+            if not verify_login_otp(tdb, str(email), str(tenant_code), str(otp_code)):
                 raise HTTPException(400, "Invalid or expired OTP")
             
             # Generate tokens
@@ -530,7 +530,7 @@ def verify_otp_and_login(response: Response, payload: dict, db: Session = Depend
                     
                 # Verify OTP
                 from utils.otp import verify_login_otp
-                if not verify_login_otp(tdb, email, tenant_code, otp_code):
+                if not verify_login_otp(tdb, str(email), str(tenant_code), str(otp_code)):
                     raise HTTPException(400, "Invalid or expired OTP")
                 
                 # Get user permissions

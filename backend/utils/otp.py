@@ -12,7 +12,7 @@ def generate_otp() -> str:
     """Generate a 6-digit OTP"""
     return ''.join(random.choices(string.digits, k=6))
 
-def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str = None) -> bool:
+def send_login_otp(db: Session, email: str, tenant_code: str, user_name: str | None = None) -> bool:
     """Generate and send OTP for login verification"""
     try:
         # Generate OTP
@@ -102,7 +102,7 @@ def verify_login_otp(db: Session, email: str, tenant_code: str, otp_code: str) -
             return False
         
         # Mark OTP as used
-        otp_record.is_used = True
+        db.query(LoginOTP).filter(LoginOTP.id == otp_record.id).update({"is_used": True})
         db.commit()
         
         logger.info(f"OTP verified successfully for {email}")
