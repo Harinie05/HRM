@@ -774,7 +774,7 @@ export default function Payslips() {
                 </div>
 
                 {/* Attendance */}
-                <div className="bg-blue-50 rounded-lg p-4">
+                <div className="text-white rounded-lg p-4" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                   <h4 className="font-medium text-gray-900 mb-3">Attendance Summary</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
                     <div className="text-center">
@@ -795,7 +795,7 @@ export default function Payslips() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {/* Earnings */}
-                <div className="bg-green-50 rounded-lg p-4">
+                <div className="text-white rounded-lg p-4" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                   <h4 className="font-medium text-gray-900 mb-3">Earnings</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -855,7 +855,7 @@ export default function Payslips() {
 
               {/* Net Salary */}
               <div className="mt-6 text-center">
-                <div className="bg-green-100 border-2 border-green-500 rounded-lg p-4 inline-block">
+                <div className="text-white border-2 border-green-500 rounded-lg p-4 inline-block" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                   <h3 className="text-lg font-bold text-green-700">NET SALARY: ₹{selectedPayslip.finalNetSalary?.toLocaleString()}</h3>
                 </div>
               </div>
@@ -863,7 +863,10 @@ export default function Payslips() {
               <div className="flex gap-4 mt-6">
                 <button
                   onClick={() => handleDownloadPayslip(selectedPayslip)}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 text-white text-white rounded-lg hover:text-white flex items-center justify-center gap-2"
+                  style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                 >
                   <Download size={16} />
                   Download Payslip

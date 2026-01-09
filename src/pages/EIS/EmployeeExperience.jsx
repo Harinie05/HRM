@@ -245,7 +245,7 @@ export default function EmployeeExperience() {
                 backgroundColor: 'var(--primary-color, #4575b5)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -262,7 +262,20 @@ export default function EmployeeExperience() {
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
+              borderColor: 'var(--primary-color, #4575b5)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
@@ -676,7 +689,7 @@ export default function EmployeeExperience() {
                     backgroundColor: 'var(--primary-color, #4575b5)'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';

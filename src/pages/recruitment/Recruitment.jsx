@@ -362,7 +362,7 @@ export default function Recruitment() {
                   onClick={clearFilters}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="px-4 py-2 text-white border border-black rounded-xl transition-colors"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Clear Filters
@@ -389,7 +389,7 @@ export default function Recruitment() {
                 onClick={clearFilters}
                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                 className="mt-2 text-white transition-colors"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 Clear filters

@@ -70,16 +70,12 @@ export default function AttendanceReports() {
                 <button
                   onClick={loadDaily}
                   className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 text-white shadow-sm mr-2 border"
-                  style={{
+                  style={{ 
                     backgroundColor: 'var(--primary-color, #4575b5)',
                     borderColor: 'var(--primary-color, #4575b5)'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-                  }}
+                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                 >
                   Daily Report
                 </button>

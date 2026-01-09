@@ -397,7 +397,10 @@ export default function LeaveCalendar() {
                     )}
                     {getLeaveForDay(day).length > 0 && (
                       <div 
-                        className="text-xs p-2 rounded bg-green-100 text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                        className="text-xs p-2 rounded text-white text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                        style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                        onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                        onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                         onClick={() => {
                           setSelectedDayLeaves(getLeaveForDay(day));
                           setShowLeaveModal(true);
@@ -440,7 +443,10 @@ export default function LeaveCalendar() {
                   )}
                   {isCurrentMonth && getLeaveForDay(day).length > 0 && (
                     <div 
-                      className="text-xs p-2 rounded bg-green-100 text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                      className="text-xs p-2 rounded text-white text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
+                      style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                      onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                      onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                       onClick={() => {
                         setSelectedDayLeaves(getLeaveForDay(day));
                         setShowLeaveModal(true);
@@ -469,7 +475,7 @@ export default function LeaveCalendar() {
                 leaves.map((leave, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border border-black rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 text-white rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                         <Calendar size={20} className="text-blue-600" />
                       </div>
                       <div>
@@ -498,7 +504,7 @@ export default function LeaveCalendar() {
       <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded"></div>
+            <div className="w-3 h-3 text-white rounded" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}></div>
             <span className="font-medium text-gray-700">Approved</span>
           </div>
           <div className="flex items-center gap-2">

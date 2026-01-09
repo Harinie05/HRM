@@ -78,6 +78,19 @@ export default function JobRequisition() {
     setShowForm(true);
   };
 
+  const handleStatusToggle = async (req) => {
+    const newStatus = req.status === 'Active' ? 'Inactive' : 'Active';
+    
+    try {
+      await api.put(`/recruitment/update-status/${req.id}`, { status: newStatus });
+      showToast(`Job ${newStatus.toLowerCase()} successfully!`);
+      fetchRequisitions();
+    } catch (err) {
+      console.error("Failed to update status:", err);
+      showToast('Failed to update job status', 'error');
+    }
+  };
+
   const handleDelete = async (req) => {
     if (!canDelete) {
       showToast("You do not have permission to delete job requisitions", 'error');
@@ -138,7 +151,7 @@ export default function JobRequisition() {
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -249,16 +262,20 @@ export default function JobRequisition() {
                   )}
                 </div>
                 
-                <div className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg ${
-                  req.status === 'Active' ? 'bg-green-50' : 'bg-red-50'
-                }`}>
+                <button
+                  onClick={() => handleStatusToggle(req)}
+                  className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg cursor-pointer transition-colors hover:opacity-80 ${
+                    req.status === 'Active' ? 'bg-green-50 hover:bg-green-100' : 'bg-red-50 hover:bg-red-100'
+                  }`}
+                  title="Click to toggle status"
+                >
                   <div className={`w-2 h-2 rounded-full ${
                     req.status === 'Active' ? 'bg-green-400' : 'bg-red-400'
                   }`}></div>
                   <span className={`text-xs font-medium ${
                     req.status === 'Active' ? 'text-green-600' : 'text-red-600'
                   }`}>{req.status || 'Active'}</span>
-                </div>
+                </button>
               </div>
               
               {/* Location & Type */}
@@ -313,7 +330,7 @@ export default function JobRequisition() {
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -406,6 +423,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         skills: Array.isArray(form.skills) ? form.skills : [],
         description: form.description || null,
         deadline: form.deadline || null,
+        status: "Active",
       };
 
       const response = await api.post("/recruitment/create", cleanedForm);
@@ -678,7 +696,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';

@@ -347,7 +347,7 @@ export default function LeaveApplications() {
                   });
                   setShowModal(true);
                 }}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
                 className="text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
@@ -441,7 +441,7 @@ export default function LeaveApplications() {
                           </div>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white text-blue-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                             {app.total_days} days
                           </span>
                         </td>
@@ -464,7 +464,10 @@ export default function LeaveApplications() {
                               {(hasPermission("view_leave_balance") || hasPermission("view_self")) && (
                                 <button 
                                   onClick={() => fetchLeaveBalances(app.employee_id)}
-                                  className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                  className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:text-white transition-colors"
+                                  style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                                   title="View Leave Balances"
                                 >
                                   <Eye size={14} />
@@ -474,7 +477,10 @@ export default function LeaveApplications() {
                                 <>
                                   <button 
                                     onClick={() => openReviewModal(app)}
-                                    className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                                    className="text-green-600 hover:text-green-900 p-2 rounded-lg hover:text-white transition-colors"
+                                    style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                                    onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                    onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                                     title="Review & Approve"
                                   >
                                     <Check size={14} />
@@ -515,7 +521,7 @@ export default function LeaveApplications() {
               </div>
             ) : (
               filteredApplications.map((app, index) => (
-                <div key={app.id} className="p-4 border-b border-gray-100 hover:bg-blue-50 transition-colors">
+                <div key={app.id} className="p-4 border-b border-gray-100 hover:text-white transition-colors" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
@@ -534,7 +540,7 @@ export default function LeaveApplications() {
                       <span className="text-sm font-medium text-gray-900">Duration:</span>
                       <div className="text-right">
                         <div className="text-sm text-gray-600">{app.from_date} to {app.to_date}</div>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold text-white text-blue-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                           {app.total_days} days
                         </span>
                       </div>
@@ -561,7 +567,10 @@ export default function LeaveApplications() {
                       {(hasPermission("view_leave_balance") || hasPermission("view_self")) && (
                         <button 
                           onClick={() => fetchLeaveBalances(app.employee_id)}
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
+                          style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                          onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                          onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                         >
                           <Eye size={14} />
                           Balance
@@ -571,7 +580,10 @@ export default function LeaveApplications() {
                         <>
                           <button 
                             onClick={() => openReviewModal(app)}
-                            className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                            className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
+                            style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                            onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                            onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                           >
                             <Check size={14} />
                             Review
@@ -731,7 +743,7 @@ export default function LeaveApplications() {
                 </button>
                 <button
                   type="submit"
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
                   className="px-3 py-2 text-white rounded-lg transition-colors text-sm"
                   onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
@@ -763,7 +775,10 @@ export default function LeaveApplications() {
                 <p className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>No leave balances found for this employee.</p>
                 <button 
                   onClick={() => initializeBalances(selectedEmployeeId, "undefined")}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                  className="text-white hover:text-white text-white px-4 py-2 rounded-lg"
+                  style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                 >
                   Initialize Leave Balances
                 </button>
@@ -930,7 +945,7 @@ export default function LeaveApplications() {
               </button>
               <button
                 onClick={() => approve(reviewingApplication.id, "Approved after review")}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
                 className="flex-1 px-4 py-2 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}

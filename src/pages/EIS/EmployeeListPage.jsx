@@ -393,7 +393,7 @@ export default function EmployeeListPage() {
                     backgroundColor: 'var(--primary-color, #4575b5)'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -689,7 +689,7 @@ export default function EmployeeListPage() {
                 }}
                 onMouseEnter={(e) => {
                   if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }
                 }}
                 onMouseLeave={(e) => {

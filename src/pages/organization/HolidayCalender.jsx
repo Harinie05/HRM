@@ -188,7 +188,7 @@ export default function HolidayCalendar() {
                 backgroundColor: 'var(--primary-color, #4575b5)',
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -304,7 +304,7 @@ export default function HolidayCalendar() {
                   backgroundColor: 'var(--primary-color, #4575b5)',
                 }}
                 onMouseEnter={(e) => {
-                  if (!loading) e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                  if (!loading) e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                 }}
                 onMouseLeave={(e) => {
                   if (!loading) e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';

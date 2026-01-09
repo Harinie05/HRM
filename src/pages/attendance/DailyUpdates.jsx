@@ -243,7 +243,10 @@ const DailyUpdates = () => {
             {canAdd && (
               <button
                 onClick={handleNewUpdate}
-                className="bg-black text-white px-4 py-2 rounded-lg border border-black hover:bg-gray-800 transition-colors flex items-center gap-2"
+                className="text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 <FiPlus size={16} />
                 New Update
@@ -509,7 +512,10 @@ const DailyUpdates = () => {
                           {canEdit && canEditUpdate(update) && (
                             <button
                               onClick={() => handleEdit(update)}
-                              className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                              className="text-gray-600 hover:text-blue-600 hover:text-white p-2 rounded-lg transition-colors"
+                              style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                              onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                              onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                             >
                               <FiEdit size={16} />
                             </button>
@@ -569,7 +575,10 @@ const DailyUpdates = () => {
                           {canEdit && canEditUpdate(update) && (
                             <button
                               onClick={() => handleEdit(update)}
-                              className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-2 text-gray-600 hover:text-blue-600 hover:text-white rounded-lg transition-colors"
+                              style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                              onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                              onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                             >
                               <FiEdit size={16} />
                             </button>

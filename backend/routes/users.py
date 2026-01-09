@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, text
 from models.models_master import Hospital
-from models.models_tenant import User, Role, Department, OnboardingCandidate, ReportingLevel
+from models.models_tenant import User, Role, Department, OnboardingCandidate, ReportingLevel, ReportingHierarchy
 import schemas.schemas_tenant as schemas_tenant
 import database
 from database import logger
@@ -170,7 +170,7 @@ def list_users(
                 onboarding = tdb.query(OnboardingCandidate).filter(
                     OnboardingCandidate.candidate_name == u.name
                 ).first()
-                if onboarding and onboarding.employee_id:
+                if onboarding and getattr(onboarding, 'employee_id', None):
                     employee_code = onboarding.employee_id
             
             output.append({
@@ -249,7 +249,7 @@ def get_current_user_info(
                 onboarding = tdb.query(OnboardingCandidate).filter(
                     OnboardingCandidate.candidate_name == current_user_db.name
                 ).first()
-                if onboarding and onboarding.employee_id:
+                if onboarding and getattr(onboarding, 'employee_id', None):
                     employee_code = onboarding.employee_id
             
             role_name = current_user_db.role.name if current_user_db.role else "No Role"
@@ -401,7 +401,7 @@ def delete_user(
         old_values = {"name": user_to_delete.name, "email": user_to_delete.email, "status": user_to_delete.status}
 
         # Soft delete by setting status to Inactive
-        user_to_delete.status = "Inactive"
+        setattr(user_to_delete, 'status', "Inactive")
         tdb.commit()
         
         # Audit log
@@ -536,8 +536,8 @@ def get_hierarchy_rules(
     with tdb:
         try:
             # Try to get from hierarchy table if it exists
-            rules = tdb.query(HierarchyRule).filter(
-                HierarchyRule.is_active == True
+            rules = tdb.query(ReportingHierarchy).filter(
+                ReportingHierarchy.is_active == True
             ).all()
             
             hierarchy_rules = [{

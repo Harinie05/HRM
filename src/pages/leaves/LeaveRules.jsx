@@ -278,14 +278,22 @@ export default function LeaveRules() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex items-center gap-2">
                             {hasPermission("view_leave_rules") && (
-                              <button className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                              <button 
+                                className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:text-white transition-colors"
+                                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                              >
                                 <Settings size={16} />
                               </button>
                             )}
                             {hasPermission("edit_leave_rule") && (
                               <button 
                                 onClick={() => handleOpenModal(rule)}
-                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-colors"
+                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:text-white transition-colors"
+                                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                               >
                                 <Edit size={16} />
                               </button>
@@ -369,7 +377,12 @@ export default function LeaveRules() {
                   {(hasPermission("view_leave_rules") || hasPermission("edit_leave_rule") || hasPermission("delete_leave_rule")) && (
                     <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
                       {hasPermission("view_leave_rules") && (
-                        <button className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm">
+                        <button 
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
+                          style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                          onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                          onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                        >
                           <Settings size={14} />
                           View
                         </button>
@@ -377,7 +390,10 @@ export default function LeaveRules() {
                       {hasPermission("edit_leave_rule") && (
                         <button 
                           onClick={() => handleOpenModal(rule)}
-                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:bg-indigo-50 transition-colors text-sm"
+                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
+                          style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
+                          onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                          onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                         >
                           <Edit size={14} />
                           Edit

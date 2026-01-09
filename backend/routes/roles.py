@@ -178,13 +178,14 @@ def delete_role(
             raise HTTPException(404, "Role not found")
 
         # Store old values for audit
-        old_values = {"name": role.name, "description": role.description}
+        old_values: dict = {"name": role.name, "description": role.description}
         role_name = role.name  # Store name before deletion
         
         try:
             # Try soft delete if is_active column exists
-            old_values["is_active"] = getattr(role, 'is_active', True)
-            role.is_active = False
+            is_active_value = getattr(role, 'is_active', True)
+            old_values["is_active"] = bool(is_active_value)
+            setattr(role, 'is_active', False)
             tdb.commit()
             audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {"is_active": False})
         except Exception:

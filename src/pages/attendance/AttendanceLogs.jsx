@@ -1185,7 +1185,10 @@ export default function AttendanceLogs() {
                       </div>
                       <button
                         onClick={handleRegularizationSubmit}
-                        className="w-full py-2 sm:py-3 bg-black text-white border border-black rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
+                        className="w-full py-2 sm:py-3 text-white border border-black rounded-lg font-medium transition-colors text-sm sm:text-base"
+                        style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                       >
                         Submit Request
                       </button>
@@ -1215,13 +1218,16 @@ export default function AttendanceLogs() {
                             <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => handleApprove(request.id)}
-                                className="px-3 sm:px-4 py-2 bg-black text-white border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800"
+                                className="px-3 sm:px-4 py-2 text-white border border-black rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleReject(request.id)}
-                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100"
+                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors"
                               >
                                 Reject
                               </button>
@@ -1362,7 +1368,10 @@ export default function AttendanceLogs() {
                             <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => handleOdApprove(application.id)}
-                                className="px-3 sm:px-4 py-2 bg-black text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-800"
+                                className="px-3 sm:px-4 py-2 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                               >
                                 Approve
                               </button>
@@ -1453,13 +1462,15 @@ export default function AttendanceLogs() {
                         });
                         setReportData(filteredLogs);
                       }}
-                      className="px-4 sm:px-6 py-2 sm:py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
+                      className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
+                      style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Generate Report
                     </button>
-                    <button
-                      onClick={exportToExcel}
-                      className="px-4 sm:px-6 py-2 sm:py-3 bg-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base"
+                    <button onClick={exportToExcel}
+                      className="px-4 sm:px-6 py-2 sm:py-3 text-white text-black border border-black rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
                     >
                       Export to Excel
                     </button>

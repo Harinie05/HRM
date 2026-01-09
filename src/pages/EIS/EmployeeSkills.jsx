@@ -147,7 +147,19 @@ export default function EmployeeSkills() {
           {canAdd && (
             <button
               onClick={openAdd}
-              className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+              className="flex items-center gap-2 text-white border-2 px-6 py-3 rounded-2xl transition-colors font-medium"
+              style={{ 
+                backgroundColor: "var(--primary-color, #4575b5)", 
+                borderColor: "var(--primary-color, #4575b5)" 
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
+                e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
+                e.target.style.borderColor = "var(--primary-color, #4575b5)";
+              }}
             >
               <FiPlus className="w-4 h-4" />
               Add Skill
@@ -159,7 +171,19 @@ export default function EmployeeSkills() {
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 text-white border rounded-lg transition-colors text-sm"
+            style={{ 
+              backgroundColor: "var(--primary-color, #4575b5)", 
+              borderColor: "var(--primary-color, #4575b5)" 
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
+              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
+              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
@@ -377,7 +401,7 @@ export default function EmployeeSkills() {
                 <button
                   onClick={saveSkill}
                   className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
-                >
+                 style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>
                   {editing ? "Update" : "Save"} Skill
                 </button>
               </div>

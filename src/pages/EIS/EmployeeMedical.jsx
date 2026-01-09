@@ -216,18 +216,32 @@ export default function EmployeeMedical() {
               </div>
             </div>
           </div>
-          
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 bg-white text-black border-2 border-black px-6 py-3 rounded-2xl hover:bg-gray-100 transition-colors font-medium"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
+              borderColor: 'var(--primary-color, #4575b5)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
           </button>
         </div>
-      </div>
-
-      <div className="p-6">
         <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
 
           <div className="space-y-8">
@@ -591,7 +605,16 @@ export default function EmployeeMedical() {
                       vaccination_records: [...form.vaccination_records, { vaccine: "", date: "", status: "" }]
                     });
                   }}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 text-white rounded-xl transition-colors"
+                  style={{
+                    backgroundColor: 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }}
                 >
                   Add Vaccination Record
                 </button>
@@ -659,7 +682,7 @@ export default function EmployeeMedical() {
                 }}
                 onMouseEnter={(e) => {
                   if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                   }
                 }}
                 onMouseLeave={(e) => {

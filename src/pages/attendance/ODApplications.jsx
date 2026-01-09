@@ -19,7 +19,7 @@ export default function ODApplications() {
   
   if (!canViewOdApplications) {
     return (
-      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
@@ -160,7 +160,7 @@ export default function ODApplications() {
   };
 
   return (
-    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
       {/* Header */}
       <div className="p-4 sm:p-6 border-b ">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
@@ -171,7 +171,10 @@ export default function ODApplications() {
           {canApplyOd && (
             <button 
               onClick={() => setShowModal(true)}
-              className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               <Plus size={16} />
               Apply OD
@@ -252,7 +255,10 @@ export default function ODApplications() {
                             {canApproveOd && (
                               <button 
                                 onClick={() => handleApprove(app.id)}
-                                className="bg-black hover:bg-gray-800 text-white px-2 py-1 rounded text-xs"
+                                className="text-white px-2 py-1 rounded text-xs transition-colors"
+                                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 title="Approve"
                               >
                                 Approve
@@ -322,7 +328,10 @@ export default function ODApplications() {
                       {canApproveOd && (
                         <button 
                           onClick={() => handleApprove(app.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm bg-black hover:bg-gray-800 text-white rounded"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded transition-colors"
+                          style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                         >
                           Approve
                         </button>
@@ -454,7 +463,10 @@ export default function ODApplications() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-400 text-sm"
+                  className="flex-1 px-4 py-2 text-white rounded-lg disabled:bg-gray-400 text-sm transition-colors"
+                  style={{ backgroundColor: loading ? '#9ca3af' : 'var(--primary-color, #2862e9)' }}
+                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
+                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   {loading ? "Submitting..." : "Submit"}
                 </button>

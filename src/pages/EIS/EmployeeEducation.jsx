@@ -215,7 +215,7 @@ export default function EmployeeEducation() {
                 borderColor: 'var(--primary-color, #4575b5)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
@@ -234,16 +234,17 @@ export default function EmployeeEducation() {
             onClick={() => navigate(`/eis/${id}`)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
             style={{
-              color: 'var(--secondary-color, #474e71)',
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
               borderColor: 'var(--primary-color, #4575b5)'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-              e.target.style.color = 'white';
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-              e.target.style.color = 'var(--secondary-color, #474e71)';
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
             <FiArrowLeft className="w-4 h-4" />
@@ -612,7 +613,7 @@ export default function EmployeeEducation() {
                   }}
                   onMouseEnter={(e) => {
                     if (!e.target.disabled) {
-                      e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
+                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
                     }
                   }}
                   onMouseLeave={(e) => {

@@ -135,7 +135,19 @@ export default function EmployeeExit() {
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 text-white border rounded-lg transition-colors text-sm"
+            style={{ 
+              backgroundColor: "var(--primary-color, #4575b5)", 
+              borderColor: "var(--primary-color, #4575b5)" 
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
+              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
+              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
@@ -284,11 +296,25 @@ export default function EmployeeExit() {
               <button
                 onClick={submit}
                 disabled={loading}
-                className={`px-6 py-3 border border-black rounded-2xl font-medium transition-colors ${
+                className={`px-6 py-3 text-white rounded-2xl font-medium transition-colors ${
                   saved 
                     ? 'bg-green-100 text-green-800 border-green-500' 
-                    : 'bg-white text-black hover:bg-gray-100'
+                    : ''
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
+                style={{
+                  backgroundColor: saved ? '#dcfce7' : 'var(--primary-color, #4575b5)',
+                  color: saved ? '#166534' : 'white'
+                }}
+                onMouseEnter={(e) => {
+                  if (!saved && !loading) {
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!saved && !loading) {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }
+                }}
               >
                 {loading ? 'Saving...' : saved ? '✓ Saved' : 'Save Exit Details'}
               </button>

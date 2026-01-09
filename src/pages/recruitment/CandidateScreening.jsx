@@ -178,7 +178,7 @@ export default function CandidateScreening() {
                   disabled={selectedCandidates.length === 0}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="text-white px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-400 text-sm"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)')}
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
                   onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
                 >
                   Schedule Interviews ({selectedCandidates.length})
@@ -190,7 +190,7 @@ export default function CandidateScreening() {
                   onClick={() => window.location.href = `/ats?job=${jobId}`}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                   className="text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   View ATS Pipeline
@@ -454,7 +454,7 @@ export default function CandidateScreening() {
                 onClick={shortlistWithInterviews}
                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
                 className="px-4 py-2 text-white rounded hover:opacity-90 text-sm"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
                 Schedule Round 1 & Send Invitations

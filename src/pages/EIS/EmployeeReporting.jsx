@@ -223,7 +223,19 @@ export default function EmployeeReporting() {
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 border border-black rounded-lg transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 text-white border rounded-lg transition-colors text-sm"
+            style={{ 
+              backgroundColor: "var(--primary-color, #4575b5)", 
+              borderColor: "var(--primary-color, #4575b5)" 
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
+              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
+              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+            }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
@@ -273,13 +285,13 @@ export default function EmployeeReporting() {
             {/* Manager Selection */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                  <FiUser className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Select Reporting Manager</h3>
               </div>
               {form.employee_level_id && hierarchyRule && parentLevelName && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4" style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>
                   <p className="text-sm text-blue-800">
                     <strong>Based on hierarchy:</strong> {selectedLevelInfo?.level_name} reports to {parentLevelName}
                   </p>
@@ -344,13 +356,13 @@ export default function EmployeeReporting() {
             {/* Simple Reporting Summary */}
             {form.reporting_manager_id && (
               <div className="bg-gray-100 border border-black rounded-lg p-6">
-                <h4 className="font-semibold text-primary mb-4">Reporting Structure</h4>
+                <h4 className="font-semibold text-primary mb-4" style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>Reporting Structure</h4>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 border border-black rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-blue-100 border border-black rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>
                     <FiUsers className="text-blue-600 text-sm" />
                   </div>
                   <div>
-                    <p className="font-medium text-primary">Reports To</p>
+                    <p className="font-medium text-primary" style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>Reports To</p>
                     <p className="text-sm text-secondary">
                       {availableManagers.find(manager => manager.id && manager.id.toString() === form.reporting_manager_id)?.name || 'Not selected'}
                       {availableManagers.find(manager => manager.id && manager.id.toString() === form.reporting_manager_id)?.employee_code && 
@@ -369,7 +381,7 @@ export default function EmployeeReporting() {
                 onClick={submit}
                 disabled={loading}
                 className="px-6 py-3 bg-black text-white border border-black rounded-2xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-              >
+               style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>
                 {loading ? 'Saving...' : (isEditing ? 'Update Reporting Structure' : 'Save Reporting Structure')}
               </button>
             )}

@@ -267,19 +267,15 @@ export default function LeaveReports() {
               <button 
                 onClick={exportToCSV}
                 className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold border"
-                style={{
+                style={{ 
                   backgroundColor: 'var(--primary-color, #4575b5)',
                   borderColor: 'var(--primary-color, #4575b5)'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-                }}
+                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
+                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
               >
                 <Download size={18} />
-                Export Report
+                Export CSV
               </button>
             )}
           </div>
@@ -417,7 +413,7 @@ export default function LeaveReports() {
                           {dept.total}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white text-green-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                             {dept.approved}
                           </span>
                         </td>
@@ -435,8 +431,11 @@ export default function LeaveReports() {
                           <div className="flex items-center">
                             <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                               <div 
-                                className="bg-green-600 h-2 rounded-full" 
-                                style={{ width: `${approvalRate}%` }}
+                                className="text-white h-2 rounded-full"
+                                style={{ 
+                                  backgroundColor: 'var(--primary-color, #4575b5)',
+                                  width: `${approvalRate}%`
+                                }}
                               ></div>
                             </div>
                             <span className="text-sm font-semibold">{approvalRate}%</span>
@@ -481,7 +480,7 @@ export default function LeaveReports() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-900">Approved:</span>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold text-white text-green-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
                           {dept.approved}
                         </span>
                       </div>
@@ -504,8 +503,11 @@ export default function LeaveReports() {
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
-                            className="bg-green-600 h-2 rounded-full" 
-                            style={{ width: `${approvalRate}%` }}
+                            className="text-white h-2 rounded-full"
+                            style={{ 
+                              backgroundColor: 'var(--primary-color, #4575b5)',
+                              width: `${approvalRate}%`
+                            }}
                           ></div>
                         </div>
                       </div>
