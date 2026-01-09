@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function CompanyProfile() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     name: "",
     website: "",
@@ -236,7 +236,7 @@ export default function CompanyProfile() {
           </div>
         )}
       </form>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function DesignationList() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,7 +34,7 @@ export default function DesignationList() {
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
         <p className="text-gray-600">You do not have permission to view Designations.</p>
-        <Toast toast={toast} />
+        <Toast toast={toast} hideToast={hideToast} />
       </div>
     );
   }
@@ -253,7 +253,7 @@ export default function DesignationList() {
           </div>
         )}
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

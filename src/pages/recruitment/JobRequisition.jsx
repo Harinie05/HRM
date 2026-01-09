@@ -48,10 +48,13 @@ export default function JobRequisition() {
 
   const fetchRequisitions = async () => {
     try {
-      const res = await api.get("/recruitment/list");
+      // Add timestamp to prevent caching
+      const res = await api.get(`/recruitment/list?t=${Date.now()}`);
+      console.log('Fetched requisitions:', res.data);
       setRequisitions(res.data || []);
     } catch (err) {
-      console.error("Failed to load requisitions");
+      console.error("Failed to load requisitions:", err);
+      showToast('Failed to load job requisitions', 'error');
     }
   };
 
@@ -98,7 +101,7 @@ export default function JobRequisition() {
                          r.department?.toLowerCase().includes(search.toLowerCase());
     
     const matchesStatus = statusFilter === "all" || 
-                         (statusFilter === "active" && (r.status === "Active" || !r.status)) ||
+                         (statusFilter === "active" && (r.status === "Active" || r.status === "Draft" || !r.status)) ||
                          (statusFilter === "inactive" && r.status === "Inactive");
     
     return matchesSearch && matchesStatus;
@@ -322,7 +325,7 @@ export default function JobRequisition() {
 }
 
 function JobRequisitionForm({ mode, requisition, onClose }) {
-  const { showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const isView = mode === "view";
 
   const [form, setForm] = useState({
@@ -387,9 +390,13 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         deadline: form.deadline || null,
       };
 
-      await api.post("/recruitment/create", cleanedForm);
+      const response = await api.post("/recruitment/create", cleanedForm);
+      console.log('Job created:', response.data);
       showToast("Job created successfully!");
-      onClose();
+      // Force refresh the parent component
+      setTimeout(() => {
+        onClose();
+      }, 500);
     } catch (err) {
       console.error("Form submission error:", err);
       showToast("Failed to save requisition", 'error');
@@ -657,6 +664,7 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

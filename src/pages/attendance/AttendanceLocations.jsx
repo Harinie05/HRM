@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function AttendanceLocations() {
   const [locations, setLocations] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     loadLocations();
   }, []);
 
   const loadLocations = async () => {
-    const res = await api.get("/attendance/locations/");
-    setLocations(res.data);
+    try {
+      const res = await api.get("/attendance/locations/");
+      setLocations(res.data);
+      showToast("Locations loaded successfully", "success");
+    } catch (error) {
+      console.error("Failed to load locations:", error);
+      showToast("Failed to load locations", "error");
+    }
   };
 
   return (
@@ -74,6 +83,7 @@ export default function AttendanceLocations() {
           ))
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ClearanceWorkflow() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Permission checks
   const canView = isAdmin() || hasPermission('view_resignations');
@@ -586,7 +586,7 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
       )}
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

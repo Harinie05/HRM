@@ -6,7 +6,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollAdjustments() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [adjustments, setAdjustments] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,6 +50,7 @@ export default function PayrollAdjustments() {
       setAdjustments(res.data || []);
     } catch (error) {
       console.error("Error fetching adjustments:", error);
+      showToast("Failed to load adjustments", "error");
       setAdjustments([]);
     } finally {
       setLoading(false);
@@ -115,6 +116,7 @@ export default function PayrollAdjustments() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast("Failed to load employees", "error");
       setEmployees([]);
     }
   };
@@ -153,8 +155,10 @@ export default function PayrollAdjustments() {
       
       if (editingAdjustment) {
         await api.put(`/api/payroll/adjustments/${editingAdjustment.id}`, payload);
+        showToast("Adjustment updated successfully!", "success");
       } else {
         await api.post("/api/payroll/adjustments", payload);
+        showToast("Adjustment created successfully!", "success");
       }
       
       // Force refresh the adjustments list
@@ -177,9 +181,11 @@ export default function PayrollAdjustments() {
     if (window.confirm("Are you sure you want to delete this adjustment?")) {
       try {
         await api.delete(`/api/payroll/adjustments/${id}`);
+        showToast("Adjustment deleted successfully!", "success");
         fetchAdjustments();
       } catch (error) {
         console.error("Error deleting adjustment:", error);
+        showToast("Failed to delete adjustment", "error");
       }
     }
   };
@@ -548,7 +554,7 @@ export default function PayrollAdjustments() {
           </div>
         </div>
       )}
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Edit, Trash2, Settings } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveRules() {
+  const { toast, showToast, hideToast } = useToast();
   // Check if user has permission to view leave rules
   if (!hasPermission("view_leave_rules")) {
     return (
@@ -60,6 +63,7 @@ export default function LeaveRules() {
       setRules(res.data);
     } catch (error) {
       console.error("Error fetching leave rules:", error);
+      showToast("Failed to load leave rules", "error");
     }
   };
 
@@ -68,13 +72,16 @@ export default function LeaveRules() {
     try {
       if (editingRule) {
         await api.put(`/api/leave/rules/${editingRule.id}`, formData);
+        showToast("Leave rule updated successfully!", "success");
       } else {
         await api.post("/api/leave/rules/", formData);
+        showToast("Leave rule created successfully!", "success");
       }
       fetchRules();
       handleCloseModal();
     } catch (error) {
       console.error("Error saving leave rule:", error);
+      showToast("Failed to save leave rule", "error");
     }
   };
 
@@ -82,9 +89,11 @@ export default function LeaveRules() {
     if (window.confirm("Are you sure you want to delete this rule?")) {
       try {
         await api.delete(`/api/leave/rules/${id}`);
+        showToast("Leave rule deleted successfully!", "success");
         fetchRules();
       } catch (error) {
         console.error("Error deleting leave rule:", error);
+        showToast("Failed to delete leave rule", "error");
       }
     }
   };
@@ -499,6 +508,7 @@ export default function LeaveRules() {
           </div>
         </div>
       )}
+      <Toast toast={toast} />
     </div>
   );
 }

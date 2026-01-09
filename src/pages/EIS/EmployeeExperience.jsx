@@ -10,7 +10,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 export default function EmployeeExperience() {
   const { id } = useParams(); // employee_id
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
 
   const [experience, setExperience] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -671,7 +671,7 @@ export default function EmployeeExperience() {
           </div>
         )}
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

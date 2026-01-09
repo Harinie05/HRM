@@ -3,11 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiZap, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiStar } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeSkills() {
   const { id } = useParams(); // employee_id
   const navigate = useNavigate();
+  const { toast, showToast, hideToast } = useToast();
 
   const [skills, setSkills] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -88,14 +91,17 @@ export default function EmployeeSkills() {
 
       if (editing) {
         await api.put(`/employee/skills/${editing.id}`, payload);
+        showToast("Skill updated successfully!", "success");
       } else {
         await api.post("/employee/skills/add", payload);
+        showToast("Skill added successfully!", "success");
       }
 
       setShowForm(false);
       fetchSkills();
     } catch (err) {
       console.error("Failed to save skill", err);
+      showToast("Failed to save skill", "error");
     }
   };
 
@@ -104,9 +110,11 @@ export default function EmployeeSkills() {
 
     try {
       await api.delete(`/employee/skills/${skillId}`);
+      showToast("Skill deleted successfully!", "success");
       fetchSkills();
     } catch (err) {
       console.error("Failed to delete skill", err);
+      showToast("Failed to delete skill", "error");
     }
   };
 
@@ -377,6 +385,7 @@ export default function EmployeeSkills() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

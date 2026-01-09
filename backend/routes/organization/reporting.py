@@ -71,10 +71,25 @@ async def create_reporting_level(request: Request):
                 print(f"Form parsing failed: {form_error}")
                 return JSONResponse({"error": "Could not parse request data"}, status_code=400)
         
-        # For now, just return success to test if the endpoint works
+        # Extract tenant from header
+        tenant = request.headers.get("tenant-id") or "test"
+        engine = get_tenant_engine(tenant)
+        
+        with engine.connect() as conn:
+            # Insert new reporting level
+            conn.execute(text("""
+                INSERT INTO reporting_levels (level_name, level_order, description, is_active)
+                VALUES (:level_name, :level_order, :description, 1)
+            """), {
+                "level_name": payload.get("level_name"),
+                "level_order": int(payload.get("level_order", 1)),
+                "description": payload.get("description", "")
+            })
+            conn.commit()
+            
         return JSONResponse({
-            "message": "Reporting level endpoint reached",
-            "payload": payload
+            "message": "Reporting level created successfully",
+            "data": payload
         })
         
     except Exception as e:
@@ -250,10 +265,32 @@ async def create_hierarchy_rule(request: Request):
                 print(f"Form parsing failed: {form_error}")
                 return JSONResponse({"error": "Could not parse request data"}, status_code=400)
         
-        # For now, just return success to test if the endpoint works
+        # Extract tenant from header
+        tenant = request.headers.get("tenant-id") or "test"
+        engine = get_tenant_engine(tenant)
+        
+        with engine.connect() as conn:
+            # Handle empty department_id
+            dept_id = payload.get("department_id")
+            if dept_id == "" or dept_id is None:
+                dept_id = 0
+            else:
+                dept_id = int(dept_id)
+                
+            # Insert new hierarchy rule
+            conn.execute(text("""
+                INSERT INTO reporting_hierarchy (parent_level_id, child_level_id, department_id, is_active)
+                VALUES (:parent_level_id, :child_level_id, :department_id, 1)
+            """), {
+                "parent_level_id": int(payload.get("parent_level_id")),
+                "child_level_id": int(payload.get("child_level_id")),
+                "department_id": dept_id
+            })
+            conn.commit()
+            
         return JSONResponse({
-            "message": "Hierarchy endpoint reached",
-            "payload": payload
+            "message": "Hierarchy rule created successfully",
+            "data": payload
         })
         
     except Exception as e:

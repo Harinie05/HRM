@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ReportingStructure() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Permission checks - separate for levels and hierarchy
   const canViewLevels = isAdmin() || hasPermission("view_reporting_levels");
@@ -748,7 +748,7 @@ export default function ReportingStructure() {
           </div>
         </div>
       </div>
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

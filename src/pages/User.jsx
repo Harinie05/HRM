@@ -98,14 +98,14 @@ export default function Users() {
     if (!canAdd) return showToast("You do not have permission to add users", 'error');
 
     if (!name.trim() || !email.trim() || !password.trim() || !role || !department) {
-      showToast("All fields required", 'error');
+      showToast("All fields are required to create a user", 'error');
       return;
     }
 
     setLoading(true);
 
     try {
-      await api.post(`/hospitals/users/${tenant_db}/create`, {
+      const response = await api.post(`/hospitals/users/${tenant_db}/create`, {
         name,
         email,
         password,
@@ -120,9 +120,13 @@ export default function Users() {
       setDepartment("");
       setShowCreateModal(false);
       loadUsers();
-      showToast("User created!");
+      
+      // Show success toast with user name
+      const message = response.data.message || `User '${name}' created successfully`;
+      showToast(message, 'success');
     } catch (err) {
-      showToast("Create failed", 'error');
+      const errorMessage = err.response?.data?.detail || "Failed to create user";
+      showToast(errorMessage, 'error');
       console.error(err);
     }
 
@@ -147,14 +151,22 @@ export default function Users() {
     if (!canDelete)
       return showToast("You do not have permission to delete users", 'error');
 
-    if (!window.confirm("Delete this user?")) return;
+    const userToDelete = users.find(u => u.id === id);
+    const userName = userToDelete ? userToDelete.name : 'User';
+    
+    if (!window.confirm(`Are you sure you want to deactivate ${userName}?`)) return;
 
     try {
-      await api.delete(`/hospitals/users/${tenant_db}/delete/${id}`);
+      const response = await api.delete(`/hospitals/users/${tenant_db}/delete/${id}`);
       loadUsers();
+      
+      // Show success toast with user name
+      const message = response.data.message || `${userName} has been deactivated successfully`;
+      showToast(message, 'success');
     } catch (err) {
       console.error('Delete user failed:', err);
-      showToast("Delete failed", 'error');
+      const errorMessage = err.response?.data?.detail || `Failed to deactivate ${userName}`;
+      showToast(errorMessage, 'error');
     }
   };
 
@@ -162,21 +174,21 @@ export default function Users() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header with gradient background matching Department/Roles page */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                 </svg>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">User Management</h1>
-                <p className="text-gray-600 text-lg mb-1">Manage employees, assign roles & access levels</p>
-                <p className="text-gray-500 text-sm">User & Access Management</p>
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">User Management</h1>
+                <p className="text-gray-600 text-base sm:text-lg mb-1">Manage employees, assign roles & access levels</p>
+                <p className="text-gray-500 text-xs sm:text-sm">User & Access Management</p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-left lg:text-right flex-shrink-0">
               <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Users</span>
@@ -188,67 +200,69 @@ export default function Users() {
         </div>
 
         {/* Search and Filter matching Department/Roles page */}
-        <div className="bg-white rounded-2xl border border-black p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
               Total: {users.length}
             </div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
               Showing: {filteredUsers.length}
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Status</span>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="all">All</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Filter</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black">
-                <button 
-                  onClick={() => setFilter("all")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                    filter === "all" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Status</span>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 >
-                  All
-                </button>
-                <button 
-                  onClick={() => setFilter("with-role")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                    filter === "with-role" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  With role
-                </button>
-                <button 
-                  onClick={() => setFilter("without-role")}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                    filter === "without-role" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  Without role
-                </button>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Filter</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black">
+                  <button 
+                    onClick={() => setFilter("all")}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
+                      filter === "all" 
+                        ? "bg-white text-gray-900 shadow-sm" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    All
+                  </button>
+                  <button 
+                    onClick={() => setFilter("with-role")}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
+                      filter === "with-role" 
+                        ? "bg-white text-gray-900 shadow-sm" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    With role
+                  </button>
+                  <button 
+                    onClick={() => setFilter("without-role")}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
+                      filter === "without-role" 
+                        ? "bg-white text-gray-900 shadow-sm" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Without role
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 sm:ml-auto">
-              <div className="relative">
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+              <div className="relative flex-1">
                 <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -257,21 +271,22 @@ export default function Users() {
                   placeholder="Search name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-80 border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="pl-10 pr-4 py-2 w-full border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
               {canAdd && (
                 <button 
                   onClick={() => setShowCreateModal(true)}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-full hover:opacity-90 transition-colors text-sm font-medium"
+                  className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
                   onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  New
+                  <span className="hidden sm:inline">New User</span>
+                  <span className="sm:hidden">New</span>
                 </button>
               )}
             </div>
@@ -291,7 +306,7 @@ export default function Users() {
               <p className="text-gray-500 text-sm">Try changing your search/filter, or create a new user.</p>
             </div>
           ) : (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredUsers.map((u, index) => (
                   <div key={u.id} className="bg-white border border-black rounded-xl p-3 hover:shadow-lg transition-all duration-300 group">
@@ -622,17 +637,20 @@ export default function Users() {
                         updateData.password = editPassword;
                       }
 
-                      await api.put(
+                      const response = await api.put(
                         `/hospitals/users/${tenant_db}/update/${editing.id}`,
                         updateData
                       );
 
-                      showToast("Updated successfully!");
+                      // Show success toast with user name
+                      const message = response.data.message || `User '${editName}' updated successfully`;
+                      showToast(message, 'success');
                       setEditing(null);
                       loadUsers();
                     } catch (err) {
                       console.error('Update user failed:', err);
-                      showToast("Update failed", 'error');
+                      const errorMessage = err.response?.data?.detail || "Failed to update user";
+                      showToast(errorMessage, 'error');
                     }
                   }}
                   style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}

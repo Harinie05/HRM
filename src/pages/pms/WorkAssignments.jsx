@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, CheckCircle, Clock, XCircle } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 // Helper function to get status icon
@@ -48,6 +50,7 @@ export default function WorkAssignments() {
   });
   const [currentCycle, setCurrentCycle] = useState(null);
   const [employeePMSData, setEmployeePMSData] = useState(null);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
     createSampleData();
@@ -220,8 +223,10 @@ export default function WorkAssignments() {
         assigned_employee_id: ""
       });
       fetchData();
+      showToast('Work assignment created successfully!', 'success');
     } catch (error) {
       console.error("Error creating assignment:", error);
+      showToast('Failed to create work assignment. Please try again.', 'error');
     }
   };
 
@@ -233,8 +238,10 @@ export default function WorkAssignments() {
       setSelectedAssignment(null);
       setStatusData({ completion_status: "Not Completed", remarks: "" });
       fetchData();
+      showToast('Assignment status updated successfully!', 'success');
     } catch (error) {
       console.error("Error updating status:", error);
+      showToast('Failed to update assignment status. Please try again.', 'error');
     }
   };
 
@@ -244,8 +251,10 @@ export default function WorkAssignments() {
     try {
       await api.delete(`/api/pms/work-assignments/assignments/${assignmentId}`);
       fetchData();
+      showToast('Assignment deleted successfully!', 'success');
     } catch (error) {
       console.error("Error deleting assignment:", error);
+      showToast('Failed to delete assignment. Please try again.', 'error');
     }
   };
 
@@ -253,8 +262,10 @@ export default function WorkAssignments() {
     try {
       await api.put(`/api/pms/work-assignments/assignments/${assignmentId}/restore`);
       fetchData();
+      showToast('Assignment restored successfully!', 'success');
     } catch (error) {
       console.error("Error restoring assignment:", error);
+      showToast('Failed to restore assignment. Please try again.', 'error');
     }
   };
 
@@ -654,6 +665,7 @@ export default function WorkAssignments() {
           </div>
         </div>
       )}
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

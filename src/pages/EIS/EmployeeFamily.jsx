@@ -3,11 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiUsers, FiPlus, FiEdit, FiTrash2, FiArrowLeft, FiPhone, FiUser } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeFamily() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast, hideToast } = useToast();
   const [family, setFamily] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -96,10 +99,12 @@ export default function EmployeeFamily() {
         });
       }
 
+      showToast("Family member saved successfully", "success");
       setShowForm(false);
       fetchFamily();
     } catch (err) {
       console.error("Failed to save family", err);
+      showToast("Failed to save family member", "error");
     }
   };
 
@@ -108,9 +113,11 @@ export default function EmployeeFamily() {
 
     try {
       await api.delete(`/employee/family/${familyId}`);
+      showToast("Family member deleted successfully", "success");
       fetchFamily();
     } catch (err) {
       console.error("Failed to delete family", err);
+      showToast("Failed to delete family member", "error");
     }
   };
 
@@ -419,6 +426,7 @@ export default function EmployeeFamily() {
           </div>
         )}
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

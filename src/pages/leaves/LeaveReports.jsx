@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Download, Calendar, Users, TrendingUp, BarChart3, Filter } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveReports() {
+  const { toast, showToast, hideToast } = useToast();
   // Check if user has permission to view leave reports
   if (!hasPermission("view_leave_reports")) {
     return (
@@ -61,6 +64,7 @@ export default function LeaveReports() {
       setApplications(applicationsRes.data || []);
     } catch (error) {
       console.error("Error fetching reports:", error);
+      showToast("Failed to load report data", "error");
     }
   };
 
@@ -236,6 +240,7 @@ export default function LeaveReports() {
     link.download = `leave-report-${dateRange}-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
     window.URL.revokeObjectURL(url);
+    showToast("Report exported successfully!", "success");
   };
 
   return (
@@ -503,6 +508,7 @@ export default function LeaveReports() {
         </div>
       )}
 
+      <Toast toast={toast} />
     </div>
   );
 }

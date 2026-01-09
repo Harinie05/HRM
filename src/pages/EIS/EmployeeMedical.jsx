@@ -10,7 +10,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 export default function EmployeeMedical() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   // Check permissions - removed to allow access
   // const canView = isAdmin() || hasPermission("view_medical");
   // const canAdd = isAdmin() || hasPermission("add_medical_record");
@@ -661,7 +661,7 @@ export default function EmployeeMedical() {
           </div>
         </div>
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

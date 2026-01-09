@@ -76,6 +76,7 @@ export default function PayrollReports() {
       
     } catch (error) {
       console.error("Error fetching data:", error);
+      showToast("Failed to load payroll data", "error");
       // Fallback to existing logic if API fails
       const tenantDb = localStorage.getItem('tenant_db');
       const empRes = await api.get(`/api/users/${tenantDb}/list`);
@@ -133,6 +134,7 @@ export default function PayrollReports() {
     link.download = `payroll-report-${selectedPeriod}-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
+    showToast("Report exported successfully!", "success");
   };
 
   const handleDownloadReport = async (reportType) => {

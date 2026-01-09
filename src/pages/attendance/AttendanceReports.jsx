@@ -2,18 +2,33 @@ import { useState } from "react";
 import api from "../../api";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function AttendanceReports() {
   const [report, setReport] = useState([]);
+  const { toast, showToast, hideToast } = useToast();
 
   const loadDaily = async () => {
-    const res = await api.get("/api/attendance/reports/daily");
-    setReport(res.data);
+    try {
+      const res = await api.get("/api/attendance/reports/daily");
+      setReport(res.data);
+      showToast("Daily report loaded successfully", "success");
+    } catch (err) {
+      console.error("Failed to load daily report:", err);
+      showToast("Failed to load daily report", "error");
+    }
   };
 
   const loadMonthly = async () => {
-    const res = await api.get("/api/attendance/reports/monthly");
-    setReport(res.data);
+    try {
+      const res = await api.get("/api/attendance/reports/monthly");
+      setReport(res.data);
+      showToast("Monthly report loaded successfully", "success");
+    } catch (err) {
+      console.error("Failed to load monthly report:", err);
+      showToast("Failed to load monthly report", "error");
+    }
   };
 
   return (
@@ -152,6 +167,7 @@ export default function AttendanceReports() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

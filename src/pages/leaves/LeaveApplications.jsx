@@ -6,7 +6,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveApplications() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Check if user has permission to view leave applications
   if (!hasPermission("view_leave_applications")) {

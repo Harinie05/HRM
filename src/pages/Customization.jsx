@@ -104,9 +104,7 @@ export default function Customization() {
         header_text_color: colors.headerTextColor
       });
 
-      // Save to localStorage for immediate UI updates
-      localStorage.setItem('org-details', JSON.stringify(orgDetails));
-      localStorage.setItem('theme-colors', JSON.stringify(colors));
+      // Update localStorage with essential data only
       localStorage.setItem('hospital_name', orgDetails.name);
       localStorage.setItem('hospital_tagline', orgDetails.tagline);
       
@@ -138,10 +136,13 @@ export default function Customization() {
       // Trigger sidebar update
       window.dispatchEvent(new CustomEvent('organization-updated'));
       
-      showToast('Settings saved successfully!');
+      // Trigger global theme update
+      window.dispatchEvent(new CustomEvent('theme-updated', { detail: colors }));
+      
+      showToast('Settings saved successfully!', 'success');
     } catch (error) {
       console.error('Error saving settings:', error);
-      showToast('Failed to save settings. Please try again.');
+      showToast('Failed to save settings. Please try again.', 'error');
     }
   };
 
@@ -201,58 +202,15 @@ export default function Customization() {
             }
           });
           
-          // Update localStorage with backend data
+          // Update localStorage with essential data only
           localStorage.setItem('hospital_name', data.organization_name);
           localStorage.setItem('hospital_tagline', data.tagline || "");
-          localStorage.setItem('theme-colors', JSON.stringify(backendColors));
-          localStorage.setItem('org-details', JSON.stringify({
-            name: data.organization_name || "Your Hospital Name",
-            tagline: data.tagline || "Smart • Secure • NABH-Standard",
-            address: data.address || "Address line for letterhead & PDFs",
-            phone: data.phone || "+91-XXXXXXXXXX",
-            email: data.email || "info@example.com",
-            website: data.website || "https://your-hospital.com",
-            gstin: data.gstin || "GSTIN (optional, for bills)",
-            logo: data.logo || null,
-            logoFilename: data.logo_filename || null
-          }));
         }
       } catch (error) {
         console.log('No organization branding data found, using localStorage or defaults');
         
         // Fallback to localStorage only if backend fails
-        const savedColors = localStorage.getItem('theme-colors');
         const savedOrg = localStorage.getItem('org-details');
-        
-        if (savedColors) {
-          const theme = JSON.parse(savedColors);
-          setColors(prev => ({ ...prev, ...theme }));
-          
-          // Apply saved colors to CSS variables on load
-          Object.entries(theme).forEach(([key, value]) => {
-            if (key === 'primaryColor') {
-              document.documentElement.style.setProperty('--primary-color', value);
-              document.documentElement.style.setProperty('--primary-bg', value);
-              const hoverColor = adjustBrightness(value, -20);
-              document.documentElement.style.setProperty('--primary-hover', hoverColor);
-            } else if (key === 'secondaryColor') {
-              document.documentElement.style.setProperty('--secondary-color', value);
-              document.documentElement.style.setProperty('--text-secondary', value);
-              document.documentElement.style.setProperty('--muted-text', value);
-            } else if (key === 'sidebarBg') {
-              document.documentElement.style.setProperty('--sidebar-bg', value);
-            } else if (key === 'headerFooterBg') {
-              document.documentElement.style.setProperty('--header-bg', value);
-              document.documentElement.style.setProperty('--footer-bg', value);
-            } else if (key === 'sidebarTextColor') {
-              document.documentElement.style.setProperty('--sidebar-text-color', value);
-            } else if (key === 'headerTextColor') {
-              document.documentElement.style.setProperty('--header-text-color', value);
-              document.documentElement.style.setProperty('--text-color', value);
-              document.documentElement.style.setProperty('--text-primary', value);
-            }
-          });
-        }
         
         if (savedOrg) {
           setOrgDetails(JSON.parse(savedOrg));

@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight, Filter, Users, Clock } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveCalendar() {
+  const { toast, showToast, hideToast } = useToast();
   // Check if user has permission to view leave calendar
   if (!hasPermission("view_leave_calendar")) {
     return (
@@ -67,6 +70,7 @@ export default function LeaveCalendar() {
       setLeaves(res.data || []);
     } catch (error) {
       console.error("Error fetching leaves:", error);
+      showToast("Failed to load leave data", "error");
       setLeaves([]);
     } finally {
       setLoading(false);
@@ -127,6 +131,7 @@ export default function LeaveCalendar() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast("Failed to load employee data", "error");
     }
   };
 
@@ -541,6 +546,8 @@ export default function LeaveCalendar() {
           </div>
         </div>
       )}
+
+      <Toast toast={toast} />
     </div>
   );
 }

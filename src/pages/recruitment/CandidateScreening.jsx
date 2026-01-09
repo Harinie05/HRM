@@ -9,7 +9,7 @@ import { hasPermission } from "../../utils/permissions";
 export default function CandidateScreening() {
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("job");
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   const [job, setJob] = useState(null);
   const [applications, setApplications] = useState([]);
@@ -463,7 +463,7 @@ export default function CandidateScreening() {
           </div>
         </div>
       )}
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

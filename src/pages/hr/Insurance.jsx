@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission } from "../../utils/permissions";
 
 export default function Insurance() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Permission checks
   const canView = hasPermission('view_insurance_benefits');
@@ -100,6 +100,7 @@ export default function Insurance() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error('Error fetching employees:', error);
+      showToast('Failed to load employees', 'error');
     }
   };
 
@@ -109,6 +110,7 @@ export default function Insurance() {
       setStats(response.data || { total: 0, active: 0, expiring_soon: 0, expired: 0 });
     } catch (error) {
       console.error('Error fetching stats:', error);
+      showToast('Failed to load insurance statistics', 'error');
     }
   };
 
@@ -118,6 +120,7 @@ export default function Insurance() {
       setPolicies(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching policies:', error);
+      showToast('Failed to load insurance policies', 'error');
       setPolicies([]);
     }
   };
@@ -395,7 +398,7 @@ export default function Insurance() {
           )}
         </div>
       </div>
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

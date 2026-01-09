@@ -10,7 +10,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 export default function EmployeeBankDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     bank_name: "",
     account_number: "",
@@ -300,7 +300,7 @@ export default function EmployeeBankDetails() {
           </div>
         </div>
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

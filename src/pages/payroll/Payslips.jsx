@@ -105,6 +105,7 @@ export default function Payslips() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast("Failed to load employees", "error");
       setEmployees([]);
     }
   };
@@ -163,6 +164,7 @@ export default function Payslips() {
       setPayslips(uniquePayslips);
     } catch (error) {
       console.error("Error fetching payroll runs:", error);
+      showToast("Failed to load payslips", "error");
       setPayrollRuns([]);
       setPayslips([]);
     } finally {
@@ -196,7 +198,7 @@ export default function Payslips() {
       }
       
       // In a real implementation, this would call a payslip generation API
-      showToast(`Generated ${completedRuns.length} payslips successfully!`);
+      showToast(`Generated ${completedRuns.length} payslips successfully!`, "success");
       await fetchPayrollRuns();
     } catch (error) {
       console.error("Error generating payslips:", error);
@@ -226,7 +228,7 @@ export default function Payslips() {
       });
       
       if (res.data.success_count > 0) {
-        showToast(`Email sending completed. Sent: ${res.data.success_count}, Failed: ${res.data.failed_count}`);
+        showToast(`Email sending completed. Sent: ${res.data.success_count}, Failed: ${res.data.failed_count}`, "success");
         
         // Update status to 'Sent' for successful sends
         const updatedPayslips = payslips.map(p => 
@@ -729,7 +731,7 @@ export default function Payslips() {
                         payslip_id: emailForm.payslip.id,
                         email: emailForm.email
                       });
-                      showToast(`Payslip sent successfully to ${emailForm.email}`);
+                      showToast(`Payslip sent successfully to ${emailForm.email}`, "success");
                       setShowEmailModal(false);
                     } catch (error) {
                       console.error('Email sending error:', error);

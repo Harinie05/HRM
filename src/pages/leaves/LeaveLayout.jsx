@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 // Pages
@@ -11,6 +13,7 @@ import LeaveCalendar from "./LeaveCalendar";
 import LeaveReports from "./LeaveReports";
 
 export default function LeaveLayout() {
+  const { toast, showToast, hideToast } = useToast();
   const location = useLocation();
   
   // Define all tabs with their permission requirements
@@ -107,6 +110,7 @@ export default function LeaveLayout() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} />
     </Layout>
   );
 }

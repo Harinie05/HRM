@@ -5,7 +5,7 @@ import useToast from '../../utils/useToast';
 import Toast from '../../components/Toast';
 
 const QualityIndicators = () => {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [activeTab, setActiveTab] = useState('manage');
   const [indicators, setIndicators] = useState([]);
   const [records, setRecords] = useState([]);
@@ -91,6 +91,7 @@ const QualityIndicators = () => {
           setDepartments(newDepartmentsRes.data || []);
         } catch (seedError) {
           console.error('Error seeding departments:', seedError);
+          showToast('Failed to load departments', 'error');
           setDepartments([]);
         }
       } else {
@@ -102,6 +103,7 @@ const QualityIndicators = () => {
       
     } catch (error) {
       console.error('Error fetching data:', error);
+      showToast('Failed to load quality indicators data', 'error');
       setIndicators([]);
       setRecords([]);
       setDepartments([]);
@@ -129,6 +131,7 @@ const QualityIndicators = () => {
       
       resetIndicatorForm();
       fetchData();
+      showToast('Quality indicator saved successfully!', 'success');
     } catch (error) {
       console.error('Error saving indicator:', error);
       showToast('Error saving quality indicator', 'error');
@@ -156,6 +159,7 @@ const QualityIndicators = () => {
       
       resetRecordForm();
       fetchData();
+      showToast('KPI record saved successfully!', 'success');
     } catch (error) {
       console.error('Error saving record:', error);
       showToast('Error saving KPI record', 'error');
@@ -686,7 +690,7 @@ const QualityIndicators = () => {
           </div>
         </div>
       )}
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

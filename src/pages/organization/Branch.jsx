@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Branch() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     branch_name: "",
     branch_code: "",
@@ -233,7 +233,7 @@ export default function Branch() {
           </div>
         )}
       </form>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

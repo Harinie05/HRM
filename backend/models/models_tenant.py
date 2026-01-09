@@ -73,24 +73,6 @@ class CompanyProfile(MasterBase):
     contact_number = Column(String(20), nullable=True)
     contact_email = Column(String(255), nullable=True)
     address = Column(Text, nullable=True)
-    
-    # Branding & Customization Fields
-    tagline = Column(String(500), nullable=True)
-    logo = Column(Text, nullable=True)  # Base64 encoded logo
-    logo_filename = Column(String(255), nullable=True)
-    
-    # UI Color Palette
-    primary_color = Column(String(7), nullable=True)  # Hex color code
-    secondary_color = Column(String(7), nullable=True)
-    accent_color = Column(String(7), nullable=True)
-    
-    # PDF Header/Footer Configuration
-    pdf_header_text = Column(Text, nullable=True)
-    pdf_footer_text = Column(Text, nullable=True)
-    show_logo_in_pdf = Column(Boolean, default=True)
-    
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, onupdate=func.now())
 
 class Branch(MasterBase):
     __tablename__ = "branches"

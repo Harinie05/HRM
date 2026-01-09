@@ -134,6 +134,9 @@ def upload_attachment(job_id: int, request: Request, file: UploadFile = File(...
 def list_jobs(request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_job_requisition"))):    # Force refresh from database
     db.commit()  # Ensure any pending changes are committed
     jobs = db.query(JobRequisition).order_by(JobRequisition.created_at.desc()).all()
+    logger.info(f"Retrieved {len(jobs)} job requisitions from database")
+    for job in jobs:
+        logger.info(f"Job ID: {job.id}, Title: {job.title}, Status: {job.status}")
     return jobs
 
 # ----------------------------------------------------------

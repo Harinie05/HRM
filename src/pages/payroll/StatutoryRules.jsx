@@ -52,6 +52,7 @@ export default function StatutoryRules() {
       });
     } catch (err) {
       console.error("Failed to fetch rules:", err);
+      showToast("Failed to load statutory rules", "error");
     }
   };
 

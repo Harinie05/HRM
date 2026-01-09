@@ -448,14 +448,14 @@ export default function Roles() {
     if (!canAdd) return showToast("You do not have permission to add roles", 'error');
 
     if (!name.trim()) {
-      showToast("Role name required", 'error');
+      showToast("Role name is required to create a role", 'error');
       return;
     }
 
     setLoading(true);
 
     try {
-      await api.post(`/hospitals/roles/${tenant_db}/create`, {
+      const response = await api.post(`/hospitals/roles/${tenant_db}/create`, {
         name,
         description: desc,
         permissions: selectedPerms,
@@ -466,9 +466,13 @@ export default function Roles() {
       setSelectedPerms([]);
       setShowCreateModal(false);
       fetchRoles();
-      showToast("Role created!");
+      
+      // Show success toast with role name
+      const message = response.data.message || `Role '${name}' created successfully`;
+      showToast(message, 'success');
     } catch (err) {
-      showToast("Create failed", 'error');
+      const errorMessage = err.response?.data?.detail || "Failed to create role";
+      showToast(errorMessage, 'error');
       console.error(err);
     }
 
@@ -479,14 +483,14 @@ export default function Roles() {
     if (!canEdit) return showToast("You do not have permission to edit roles", 'error');
 
     if (!editName.trim()) {
-      showToast("Role name required", 'error');
+      showToast("Role name is required to update a role", 'error');
       return;
     }
 
     setLoading(true);
 
     try {
-      await api.put(`/hospitals/roles/${tenant_db}/update/${editing.id}`, {
+      const response = await api.put(`/hospitals/roles/${tenant_db}/update/${editing.id}`, {
         name: editName,
         description: editDesc,
         permissions: editPerms,
@@ -494,9 +498,13 @@ export default function Roles() {
 
       setEditing(null);
       fetchRoles();
-      showToast("Role updated!");
+      
+      // Show success toast with role name
+      const message = response.data.message || `Role '${editName}' updated successfully`;
+      showToast(message, 'success');
     } catch (err) {
-      showToast("Update failed", 'error');
+      const errorMessage = err.response?.data?.detail || "Failed to update role";
+      showToast(errorMessage, 'error');
       console.error(err);
     }
 
@@ -507,14 +515,22 @@ export default function Roles() {
     if (!canDelete)
       return showToast("You do not have permission to delete roles", 'error');
 
-    if (!window.confirm("Delete this role?")) return;
+    const roleToDelete = roles.find(r => r.id === id);
+    const roleName = roleToDelete ? roleToDelete.name : 'Role';
+    
+    if (!window.confirm(`Are you sure you want to delete the role '${roleName}'?`)) return;
 
     try {
-      await api.delete(`/hospitals/roles/${tenant_db}/delete/${id}`);
+      const response = await api.delete(`/hospitals/roles/${tenant_db}/delete/${id}`);
       fetchRoles();
+      
+      // Show success toast with role name
+      const message = response.data.message || `Role '${roleName}' has been deleted successfully`;
+      showToast(message, 'success');
     } catch (err) {
       console.error('Delete role failed:', err);
-      showToast("Delete failed", 'error');
+      const errorMessage = err.response?.data?.detail || `Failed to delete role '${roleName}'`;
+      showToast(errorMessage, 'error');
     }
   };
 

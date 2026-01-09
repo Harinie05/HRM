@@ -10,7 +10,7 @@ import OriginalDocumentsModal from "../../components/OriginalDocumentsModal";
 
 export default function Onboarding() {
   const location = useLocation();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [candidates, setCandidates] = useState([]);
 
   // Check permissions
@@ -1260,7 +1260,7 @@ export default function Onboarding() {
 
         </div>
       </Layout>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
       
       {/* Original Documents Collection Modal */}
       <OriginalDocumentsModal

@@ -105,110 +105,76 @@ import ProbationTracking from "./pages/recruitment/ProbationTracking";
 function App() {
   // Load saved theme colors on app startup
   useEffect(() => {
+    const applyColors = (colors) => {
+      Object.entries(colors).forEach(([key, value]) => {
+        if (key === 'primaryColor') {
+          document.documentElement.style.setProperty('--primary-color', value);
+          document.documentElement.style.setProperty('--primary-bg', value);
+          const num = parseInt(value.replace('#', ''), 16);
+          const amt = Math.round(2.55 * -20);
+          const R = (num >> 16) + amt;
+          const G = (num >> 8 & 0x00FF) + amt;
+          const B = (num & 0x0000FF) + amt;
+          const hoverColor = '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+          document.documentElement.style.setProperty('--primary-hover', hoverColor);
+        } else if (key === 'secondaryColor') {
+          document.documentElement.style.setProperty('--secondary-color', value);
+          document.documentElement.style.setProperty('--text-secondary', value);
+          document.documentElement.style.setProperty('--muted-text', value);
+        } else if (key === 'sidebarBg') {
+          document.documentElement.style.setProperty('--sidebar-bg', value);
+        } else if (key === 'headerFooterBg') {
+          document.documentElement.style.setProperty('--header-bg', value);
+          document.documentElement.style.setProperty('--footer-bg', value);
+        } else if (key === 'sidebarTextColor') {
+          document.documentElement.style.setProperty('--sidebar-text-color', value);
+        } else if (key === 'headerTextColor') {
+          document.documentElement.style.setProperty('--header-text-color', value);
+          document.documentElement.style.setProperty('--text-color', value);
+          document.documentElement.style.setProperty('--text-primary', value);
+        }
+      });
+    };
+
     const loadColorsFromBackend = async () => {
       try {
-        const response = await fetch('/api/organization/branding', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        const response = await api.get('/api/organization/branding');
         
-        if (response.ok) {
-          const data = await response.json();
-          if (data.primary_color) {
-            const colors = {
-              primaryColor: data.primary_color,
-              secondaryColor: data.secondary_color,
-              sidebarBg: data.sidebar_bg,
-              headerFooterBg: data.header_footer_bg,
-              sidebarTextColor: data.sidebar_text_color,
-              headerTextColor: data.header_text_color
-            };
-            
-            // Apply colors to CSS variables
-            Object.entries(colors).forEach(([key, value]) => {
-              if (key === 'primaryColor') {
-                document.documentElement.style.setProperty('--primary-color', value);
-                document.documentElement.style.setProperty('--primary-bg', value);
-                // Calculate hover color (darker version)
-                const num = parseInt(value.replace('#', ''), 16);
-                const amt = Math.round(2.55 * -20);
-                const R = (num >> 16) + amt;
-                const G = (num >> 8 & 0x00FF) + amt;
-                const B = (num & 0x0000FF) + amt;
-                const hoverColor = '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-                  (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-                  (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
-                document.documentElement.style.setProperty('--primary-hover', hoverColor);
-              } else if (key === 'secondaryColor') {
-                document.documentElement.style.setProperty('--secondary-color', value);
-                document.documentElement.style.setProperty('--text-secondary', value);
-                document.documentElement.style.setProperty('--muted-text', value);
-              } else if (key === 'sidebarBg') {
-                document.documentElement.style.setProperty('--sidebar-bg', value);
-              } else if (key === 'headerFooterBg') {
-                document.documentElement.style.setProperty('--header-bg', value);
-                document.documentElement.style.setProperty('--footer-bg', value);
-              } else if (key === 'sidebarTextColor') {
-                document.documentElement.style.setProperty('--sidebar-text-color', value);
-              } else if (key === 'headerTextColor') {
-                document.documentElement.style.setProperty('--header-text-color', value);
-                document.documentElement.style.setProperty('--text-color', value);
-                document.documentElement.style.setProperty('--text-primary', value);
-              }
-            });
-            
-            // Save to localStorage as backup
-            localStorage.setItem('theme-colors', JSON.stringify(colors));
-          }
+        if (response.data && response.data.primary_color) {
+          const colors = {
+            primaryColor: response.data.primary_color,
+            secondaryColor: response.data.secondary_color,
+            sidebarBg: response.data.sidebar_bg,
+            headerFooterBg: response.data.header_footer_bg,
+            sidebarTextColor: response.data.sidebar_text_color,
+            headerTextColor: response.data.header_text_color
+          };
+          
+          // Apply colors to CSS variables
+          applyColors(colors);
         }
       } catch (error) {
-        console.log('Failed to load colors from backend, trying localStorage');
-        
-        // Fallback to localStorage
-        const savedColors = localStorage.getItem('theme-colors');
-        if (savedColors) {
-          const colors = JSON.parse(savedColors);
-          
-          // Apply saved colors to CSS variables
-          Object.entries(colors).forEach(([key, value]) => {
-            if (key === 'primaryColor') {
-              document.documentElement.style.setProperty('--primary-color', value);
-              document.documentElement.style.setProperty('--primary-bg', value);
-              const num = parseInt(value.replace('#', ''), 16);
-              const amt = Math.round(2.55 * -20);
-              const R = (num >> 16) + amt;
-              const G = (num >> 8 & 0x00FF) + amt;
-              const B = (num & 0x0000FF) + amt;
-              const hoverColor = '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
-              document.documentElement.style.setProperty('--primary-hover', hoverColor);
-            } else if (key === 'secondaryColor') {
-              document.documentElement.style.setProperty('--secondary-color', value);
-              document.documentElement.style.setProperty('--text-secondary', value);
-              document.documentElement.style.setProperty('--muted-text', value);
-            } else if (key === 'sidebarBg') {
-              document.documentElement.style.setProperty('--sidebar-bg', value);
-            } else if (key === 'headerFooterBg') {
-              document.documentElement.style.setProperty('--header-bg', value);
-              document.documentElement.style.setProperty('--footer-bg', value);
-            } else if (key === 'sidebarTextColor') {
-              document.documentElement.style.setProperty('--sidebar-text-color', value);
-            } else if (key === 'headerTextColor') {
-              document.documentElement.style.setProperty('--header-text-color', value);
-              document.documentElement.style.setProperty('--text-color', value);
-              document.documentElement.style.setProperty('--text-primary', value);
-            }
-          });
-        }
+        console.log('No branding data found in database');
       }
     };
     
     // Only load colors if user is authenticated
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('access_token')) {
       loadColorsFromBackend();
     }
+
+    // Listen for theme updates from customization page
+    const handleThemeUpdate = (event) => {
+      applyColors(event.detail);
+    };
+
+    window.addEventListener('theme-updated', handleThemeUpdate);
+
+    return () => {
+      window.removeEventListener('theme-updated', handleThemeUpdate);
+    };
   }, []);
 
   return (

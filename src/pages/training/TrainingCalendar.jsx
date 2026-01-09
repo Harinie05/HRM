@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Calendar, Clock, Users, MapPin } from "lucide-react";
 import api from "../../api";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function TrainingCalendar() {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
 
   // Check permissions
   if (!hasPermission('view_training_calendar') && !isAdmin()) {
@@ -56,6 +59,7 @@ export default function TrainingCalendar() {
         console.log('Request timed out');
       } else {
         console.error("Error fetching training calendar:", error);
+        showToast('Failed to load training calendar. Please try again.', 'error');
       }
       setCalendarEvents([]);
     } finally {
@@ -121,6 +125,7 @@ export default function TrainingCalendar() {
         )}
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

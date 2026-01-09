@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 import { useParams } from "react-router-dom";
+import Toast from "../../components/Toast";
+import useToast from "../../utils/useToast";
 
 export default function JobApply() {
   const { jobId } = useParams();
+  const { toast, showToast, hideToast } = useToast();
 
   // 🔹 Capture referral code silently from URL
   const referralCode = new URLSearchParams(window.location.search).get("ref");
@@ -28,6 +31,7 @@ export default function JobApply() {
       setJob(res.data);
     } catch (err) {
       console.error("Failed to load job", err);
+      showToast("Failed to load job details", "error");
     }
     setLoading(false);
   };
@@ -43,7 +47,7 @@ export default function JobApply() {
   // -------------------- SUBMIT APPLICATION --------------------
   const submitApplication = async () => {
     if (!resume) {
-      alert("Please upload your resume");
+      showToast("Please upload your resume", "error");
       return;
     }
 
@@ -65,7 +69,7 @@ export default function JobApply() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Application submitted successfully!");
+      showToast("Application submitted successfully!");
 
       // Reset form
       setForm({
@@ -78,7 +82,7 @@ export default function JobApply() {
       setResume(null);
     } catch (err) {
       console.error("Application failed", err);
-      alert("Failed to submit application");
+      showToast("Failed to submit application", "error");
     }
   };
 
@@ -193,6 +197,7 @@ export default function JobApply() {
         </div>
 
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

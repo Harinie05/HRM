@@ -6,7 +6,7 @@ import { hasPermission, isAdmin } from '../../utils/permissions';
 import Toast from '../../components/Toast';
 
 const ResignationTracking = () => {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Permission checks
   const canApply = isAdmin() || hasPermission('apply_resignation');
@@ -618,7 +618,7 @@ const ResignationTracking = () => {
           </div>
         )}
       </div>
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

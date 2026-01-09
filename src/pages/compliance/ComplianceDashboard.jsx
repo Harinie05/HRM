@@ -1,7 +1,19 @@
 import React from 'react';
 import { Shield, FileText, AlertTriangle, CheckCircle, Clock, Users, Calendar, TrendingUp } from 'lucide-react';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 
 const ComplianceDashboard = () => {
+  const { toast, showToast, hideToast } = useToast();
+
+  const handleTakeAction = () => {
+    showToast('Action initiated successfully!', 'success');
+  };
+
+  const handleUpdateNow = () => {
+    showToast('Update completed successfully!', 'success');
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
@@ -164,19 +176,26 @@ const ComplianceDashboard = () => {
           <div className="p-4 border-l-4 border-red-500 bg-red-50">
             <div className="font-semibold text-red-800">Critical</div>
             <div className="text-sm text-red-700">File overdue Professional Tax return immediately</div>
-            <button className="mt-2 bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">
+            <button 
+              onClick={handleTakeAction}
+              className="mt-2 bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+            >
               Take Action
             </button>
           </div>
           <div className="p-4 border-l-4 border-yellow-500 bg-yellow-50">
             <div className="font-semibold text-yellow-800">High Priority</div>
             <div className="text-sm text-yellow-700">Update overtime register for December 2024</div>
-            <button className="mt-2 bg-yellow-600 text-white px-3 py-1 rounded text-xs hover:bg-yellow-700">
+            <button 
+              onClick={handleUpdateNow}
+              className="mt-2 bg-yellow-600 text-white px-3 py-1 rounded text-xs hover:bg-yellow-700"
+            >
               Update Now
             </button>
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

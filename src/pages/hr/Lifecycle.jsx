@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Lifecycle() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Check permissions
   const canView = hasPermission('view_lifecycle_actions') || hasPermission('view_self');
@@ -216,6 +216,7 @@ export default function Lifecycle() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error('Error fetching employees:', error);
+      showToast('Failed to load employees', 'error');
     }
   };
 
@@ -225,6 +226,7 @@ export default function Lifecycle() {
       setPendingActions(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching pending actions:', error);
+      showToast('Failed to load pending lifecycle actions', 'error');
       setPendingActions([]);
     }
   };
@@ -235,6 +237,7 @@ export default function Lifecycle() {
       setActions(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching approved actions:', error);
+      showToast('Failed to load approved lifecycle actions', 'error');
       setActions([]);
     }
   };
@@ -754,7 +757,7 @@ export default function Lifecycle() {
           </div>
         </div>
       )}
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

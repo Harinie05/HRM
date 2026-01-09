@@ -6,7 +6,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function SalaryStructure() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [structures, setStructures] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -59,6 +59,7 @@ export default function SalaryStructure() {
       setStructures(res.data || []);
     } catch (error) {
       console.error("Error fetching salary structures:", error);
+      showToast("Failed to load salary structures", "error");
       setStructures([]);
     } finally {
       setLoading(false);
@@ -129,6 +130,7 @@ export default function SalaryStructure() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error("Error fetching employees:", error);
+      showToast("Failed to load employees", "error");
       setEmployees([]);
     }
   };
@@ -155,8 +157,10 @@ export default function SalaryStructure() {
       
       if (editingStructure) {
         await api.put(`/api/payroll/salary-structures/${editingStructure.id}`, payload);
+        showToast("Salary structure updated successfully!", "success");
       } else {
         await api.post("/api/payroll/salary-structures", payload);
+        showToast("Salary structure created successfully!", "success");
       }
       await fetchStructures();
       handleCloseModal();
@@ -176,9 +180,11 @@ export default function SalaryStructure() {
     if (window.confirm("Are you sure you want to delete this salary structure?")) {
       try {
         await api.delete(`/api/payroll/salary-structures/${id}`);
+        showToast("Salary structure deleted successfully!", "success");
         fetchStructures();
       } catch (error) {
         console.error("Error deleting salary structure:", error);
+        showToast("Failed to delete salary structure", "error");
       }
     }
   };
@@ -682,7 +688,7 @@ export default function SalaryStructure() {
           </div>
         </div>
       )}
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import { DollarSign, Users, Calculator, FileText } from 'lucide-react';
+import useToast from '../../utils/useToast';
+import Toast from '../../components/Toast';
 import api from '../../api';
 
 const PayrollDashboard = () => {
   const navigate = useNavigate();
+  const { toast, showToast, hideToast } = useToast();
   const [payrollData, setPayrollData] = useState({
     totalPayroll: 0,
     employeesProcessed: 0,
@@ -140,6 +143,7 @@ const PayrollDashboard = () => {
       
     } catch (error) {
       console.error('Error fetching payroll data:', error);
+      showToast('Failed to load payroll data', 'error');
     } finally {
       setLoading(false);
     }
@@ -367,6 +371,7 @@ const PayrollDashboard = () => {
 
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 };

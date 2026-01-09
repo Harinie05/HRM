@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { DollarSign } from "lucide-react";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 // Pages
@@ -13,6 +15,7 @@ import Payslips from "./Payslips";
 import PayrollReports from "./PayrollReports";
 
 export default function PayrollLayout() {
+  const { toast, showToast, hideToast } = useToast();
   const location = useLocation();
   
   const allTabs = [
@@ -110,6 +113,7 @@ export default function PayrollLayout() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

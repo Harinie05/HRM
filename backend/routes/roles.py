@@ -76,7 +76,12 @@ def create_role(
             audit_crud(request, tdb, user, "CREATE_ROLE", "roles", str(new_role.id), {}, {"name": payload["name"], "permissions": permission_names})
             
             logger.info(f"Role '{payload['name']}' created successfully with ID {new_role.id}")
-            return {"detail": "Role created", "role_id": new_role.id}
+            return {
+                "detail": "Role created successfully", 
+                "message": f"Role '{payload['name']}' has been created successfully",
+                "role_id": new_role.id,
+                "success": True
+            }
     except HTTPException as he:
         logger.error(f"HTTP Exception in create_role: {he.detail}")
         raise
@@ -174,6 +179,7 @@ def delete_role(
 
         # Store old values for audit
         old_values = {"name": role.name, "description": role.description}
+        role_name = role.name  # Store name before deletion
         
         try:
             # Try soft delete if is_active column exists
@@ -188,7 +194,11 @@ def delete_role(
             tdb.commit()
             audit_crud(request, tdb, user, "DELETE_ROLE", "roles", str(role_id), old_values, {})
 
-        return {"detail": "Role deleted"}
+        return {
+            "detail": "Role deleted successfully", 
+            "message": f"Role '{role_name}' has been deleted successfully",
+            "success": True
+        }
 
 # ---------------------------------------------------
 # DELETE ROLE (hospitals endpoint) 🔒 Protected
@@ -245,7 +255,11 @@ def update_role(
         # Audit log
         audit_crud(request, tdb, user, "UPDATE_ROLE", "roles", str(role_id), old_values, {"name": payload["name"], "permissions": payload.get("permissions", [])})
 
-        return {"detail": "Role updated"}
+        return {
+            "detail": "Role updated successfully", 
+            "message": f"Role '{payload['name']}' has been updated successfully",
+            "success": True
+        }
 
 # ---------------------------------------------------
 # DEBUG ROUTES 🔒 (optional protect)

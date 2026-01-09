@@ -7,7 +7,7 @@ import Toast from "../../components/Toast";
 import { hasPermission } from "../../utils/permissions";
 
 export default function ATS() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [candidates, setCandidates] = useState([]);
@@ -533,7 +533,7 @@ export default function ATS() {
           </div>
         )}
         </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

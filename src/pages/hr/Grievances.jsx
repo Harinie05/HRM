@@ -5,7 +5,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Grievances() {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Permission checks
   const canView = hasPermission('view_grievances') || hasPermission('view_self');
@@ -72,6 +72,7 @@ export default function Grievances() {
       setGrievances(response.data || []);
     } catch (error) {
       console.error('Error fetching grievances:', error);
+      showToast('Failed to load grievances', 'error');
       setGrievances([]);
     }
   };
@@ -133,6 +134,7 @@ export default function Grievances() {
       setEmployees(allEmployees);
     } catch (error) {
       console.error('Error fetching employees:', error);
+      showToast('Failed to load employees', 'error');
     }
   };
 
@@ -561,7 +563,7 @@ export default function Grievances() {
           </div>
         </div>
       )}
-      <Toast {...toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

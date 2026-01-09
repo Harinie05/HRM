@@ -10,7 +10,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 export default function EmployeeSalary() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [form, setForm] = useState({
     ctc: "",
     basic_percent: "40",
@@ -286,7 +286,7 @@ export default function EmployeeSalary() {
           </div>
         </div>
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

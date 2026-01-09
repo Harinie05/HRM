@@ -6,7 +6,7 @@ import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveTypes({ activeView = "types" }) {
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   
   // Check permissions for the current view
   const canViewTypes = isAdmin() || hasPermission("view_leave_types");
@@ -70,6 +70,7 @@ export default function LeaveTypes({ activeView = "types" }) {
       setLeaveTypes(res.data);
     } catch (error) {
       console.error("Error fetching leave types:", error);
+      showToast("Failed to load leave types", "error");
       setLeaveTypes([]);
     }
   };
@@ -83,6 +84,7 @@ export default function LeaveTypes({ activeView = "types" }) {
       setLeavePolicies(res.data || []);
     } catch (error) {
       console.error("Error fetching leave policies:", error);
+      showToast("Failed to load leave policies", "error");
       setLeavePolicies([]);
     }
   };
@@ -92,13 +94,16 @@ export default function LeaveTypes({ activeView = "types" }) {
     try {
       if (editingType) {
         await api.put(`/api/leave/types/${editingType.id}`, formData);
+        showToast("Leave type updated successfully!", "success");
       } else {
         await api.post("/api/leave/types/", formData);
+        showToast("Leave type created successfully!", "success");
       }
       fetchLeaveTypes();
       handleCloseModal();
     } catch (error) {
       console.error("Error saving leave type:", error);
+      showToast("Failed to save leave type", "error");
     }
   };
 
@@ -106,9 +111,11 @@ export default function LeaveTypes({ activeView = "types" }) {
     if (window.confirm("Are you sure you want to delete this leave type?")) {
       try {
         await api.delete(`/api/leave/types/${id}`);
+        showToast("Leave type deleted successfully!", "success");
         fetchLeaveTypes();
       } catch (error) {
         console.error("Error deleting leave type:", error);
+        showToast("Failed to delete leave type", "error");
       }
     }
   };
@@ -118,13 +125,16 @@ export default function LeaveTypes({ activeView = "types" }) {
     try {
       if (editingPolicy) {
         await api.put(`/policies/leave/update/${editingPolicy.id}`, policyFormData);
+        showToast("Leave policy updated successfully!", "success");
       } else {
         await api.post("/policies/leave/create", policyFormData);
+        showToast("Leave policy created successfully!", "success");
       }
       fetchLeavePolicies();
       handleClosePolicyModal();
     } catch (error) {
       console.error("Error saving leave policy:", error);
+      showToast("Failed to save leave policy", "error");
     }
   };
 
@@ -132,9 +142,11 @@ export default function LeaveTypes({ activeView = "types" }) {
     if (window.confirm("Are you sure you want to delete this leave policy?")) {
       try {
         await api.delete(`/policies/leave/delete/${id}`);
+        showToast("Leave policy deleted successfully!", "success");
         fetchLeavePolicies();
       } catch (error) {
         console.error("Error deleting leave policy:", error);
+        showToast("Failed to delete leave policy", "error");
       }
     }
   };

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Plus, Trash2, Check, Clock, AlertCircle } from "lucide-react";
 import api from "../../api";
 import { hasPermission, isAdmin, getUserPermissions } from "../../utils/permissions";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 
 export default function KnowledgeTransfer() {
   // Permission checks
@@ -11,6 +13,8 @@ export default function KnowledgeTransfer() {
   const canComplete = isAdmin() || hasPermission('complete_kt_items');
   const canHRApprove = isAdmin() || hasPermission('hr_approve_kt');
   const canManagerApprove = isAdmin() || hasPermission('manager_approve_kt');
+  
+  const { toast, showToast, hideToast } = useToast();
   
   // Debug: Check actual permissions
   console.log('Permission Debug:', {
@@ -158,11 +162,13 @@ export default function KnowledgeTransfer() {
     try {
       await api.post(`/api/exit/knowledge-transfer/?exit_id=${selectedExit.id}`, formData);
       alert("Knowledge Transfer created successfully!");
+      showToast("Knowledge Transfer created successfully!", "success");
       fetchKTData(selectedExit.id);
       setShowCreateForm(false);
     } catch (error) {
       console.error("Error creating KT:", error);
       alert("Error creating Knowledge Transfer");
+      showToast("Error creating Knowledge Transfer", "error");
     }
   };
 
@@ -170,11 +176,13 @@ export default function KnowledgeTransfer() {
     try {
       await api.put(`/api/exit/knowledge-transfer/item/${itemId}/acknowledge`);
       alert("KT Item acknowledged successfully!");
+      showToast("KT Item acknowledged successfully!", "success");
       await fetchKTData(selectedExit.id);
       await fetchExits(); // Force refresh exits list
     } catch (error) {
       console.error("Error acknowledging item:", error);
       alert("Error acknowledging KT item");
+      showToast("Error acknowledging KT item", "error");
     }
   };
 
@@ -182,11 +190,13 @@ export default function KnowledgeTransfer() {
     try {
       await api.put(`/api/exit/knowledge-transfer/${ktData.id}/approve?approval_type=${type}`);
       alert(`${type.charAt(0).toUpperCase() + type.slice(1)} approval completed!`);
+      showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} approval completed!`, "success");
       fetchKTData(selectedExit.id);
       fetchExits(); // Refresh exits list to update KT status
     } catch (error) {
       console.error("Error approving KT:", error);
       alert("Error approving Knowledge Transfer");
+      showToast("Error approving Knowledge Transfer", "error");
     }
   };
 
@@ -462,6 +472,7 @@ export default function KnowledgeTransfer() {
           )}
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

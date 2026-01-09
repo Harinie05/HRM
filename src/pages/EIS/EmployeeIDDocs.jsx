@@ -3,11 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { FiCreditCard, FiArrowLeft, FiUpload, FiCheck, FiX, FiFileText } from "react-icons/fi";
 import api from "../../api";
 import Layout from "../../components/Layout";
+import useToast from "../../utils/useToast";
+import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function EmployeeIDDocs() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast, showToast, hideToast } = useToast();
   const [docs, setDocs] = useState([]);
   const [file, setFile] = useState(null);
   const [type, setType] = useState("");
@@ -64,21 +67,25 @@ export default function EmployeeIDDocs() {
       }
 
       await api.post("/employee/id-docs/upload", data);
+      showToast("Document uploaded successfully", "success");
       setType("");
       setFile(null);
       setExpiryDate("");
       fetchDocs();
     } catch (err) {
       console.error("Failed to upload ID document", err);
+      showToast("Failed to upload document", "error");
     }
   };
 
   const verify = async (docId, status) => {
     try {
       await api.post(`/employee/id-docs/verify/${docId}?action=${status}`);
+      showToast(`Document ${status.toLowerCase()} successfully`, "success");
       fetchDocs();
     } catch (err) {
       console.error("Failed to verify document", err);
+      showToast("Failed to verify document", "error");
     }
   };
 
@@ -300,6 +307,7 @@ export default function EmployeeIDDocs() {
           </div>
         </div>
       </div>
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

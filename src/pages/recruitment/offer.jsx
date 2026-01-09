@@ -1817,7 +1817,7 @@ export default function Offer() {
 
         </div>
       </Layout>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </>
   );
 }

@@ -10,7 +10,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 export default function EmployeeDocuments() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast, showToast } = useToast();
+  const { toast, showToast, hideToast } = useToast();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -268,7 +268,7 @@ export default function EmployeeDocuments() {
           </div>
         </div>
       </div>
-      <Toast toast={toast} />
+      <Toast toast={toast} hideToast={hideToast} />
     </Layout>
   );
 }

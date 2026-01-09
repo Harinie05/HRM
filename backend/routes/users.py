@@ -98,7 +98,12 @@ def create_user(
             audit_crud(request, tdb, user, "CREATE_USER", "users", str(new_user.id), {}, {"name": payload.name, "email": payload.email})
             
             logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
-            return {"detail": "User created", "user_id": new_user.id}
+            return {
+                "detail": "User created successfully", 
+                "message": f"User '{payload.name}' has been created successfully",
+                "user_id": new_user.id,
+                "success": True
+            }
     except HTTPException:
         raise
     except Exception as e:
@@ -350,7 +355,11 @@ def update_user(
         audit_crud(request, tdb, user, "UPDATE_USER", "users", str(user_id), old_values, payload.dict(exclude_unset=True))
         
         logger.info(f"User {user_id} updated successfully")
-        return {"detail": "User updated"}
+        return {
+            "detail": "User updated successfully", 
+            "message": f"User '{existing_user.name}' has been updated successfully",
+            "success": True
+        }
 
 # ============================================================
 # UPDATE USER (Alternative endpoint) 🔒 Protected
@@ -398,7 +407,11 @@ def delete_user(
         # Audit log
         audit_crud(request, tdb, user, "DELETE_USER", "users", str(user_id), old_values, {"status": "Inactive"})
 
-        return {"detail": "User deleted"}
+        return {
+            "detail": "User deleted successfully", 
+            "message": f"User '{user_to_delete.name}' has been deactivated successfully",
+            "success": True
+        }
 
 # ============================================================
 # DELETE USER (hospitals endpoint) 🔒 Protected
