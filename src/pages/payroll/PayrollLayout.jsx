@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import { DollarSign } from "lucide-react";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import api from "../../api";
 
 // Pages
 import SalaryStructure from "./SalaryStructure";
@@ -17,6 +18,7 @@ import PayrollReports from "./PayrollReports";
 export default function PayrollLayout() {
   const { toast, showToast, hideToast } = useToast();
   const location = useLocation();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   const allTabs = [
     { name: "Salary Structure", permission: "view_salary_structure" },
@@ -36,6 +38,30 @@ export default function PayrollLayout() {
   
   const initialTab = location.state?.tab && tabs.includes(location.state.tab) ? location.state.tab : tabs[0];
   const [tab, setTab] = useState(initialTab);
+
+  useEffect(() => {
+    fetchColors();
+  }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   if (tabs.length === 0) {
     return (
@@ -89,11 +115,23 @@ export default function PayrollLayout() {
               <button
                 key={tabName}
                 onClick={() => setTab(tabName)}
-                className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
-                  tab === tabName
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
+                className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0`}
+                style={{
+                  backgroundColor: tab === tabName ? colors.primary : 'transparent',
+                  color: tab === tabName ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabName) {
+                    e.target.style.backgroundColor = colors.secondary;
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabName) {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = '#6b7280';
+                  }
+                }}
               >
                 {tabName}
               </button>

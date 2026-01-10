@@ -7,6 +7,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function LeaveTypes({ activeView = "types" }) {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Check permissions for the current view
   const canViewTypes = isAdmin() || hasPermission("view_leave_types");
@@ -55,6 +56,7 @@ export default function LeaveTypes({ activeView = "types" }) {
   const [editingPolicy, setEditingPolicy] = useState(null);
 
   useEffect(() => {
+    fetchColors();
     if (activeView === "types" && canViewTypes) {
       fetchLeaveTypes();
     }
@@ -62,6 +64,26 @@ export default function LeaveTypes({ activeView = "types" }) {
       fetchLeavePolicies();
     }
   }, [statusFilter, canViewTypes, canViewPolicies, activeView]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchLeaveTypes = async () => {
     if (!canViewTypes) return;
@@ -269,7 +291,10 @@ export default function LeaveTypes({ activeView = "types" }) {
               (activeView === "policies" && (isAdmin() || hasPermission("add_leave_policy")))) && (
               <button 
                 onClick={() => activeView === "types" ? handleOpenModal() : handleOpenPolicyModal()}
-                className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                style={{ backgroundColor: colors.primary }}
+                className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
               >
                 <Plus size={18} />
                 {activeView === "types" ? "Add Leave Type" : "Add Leave Policy"}
@@ -950,7 +975,10 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: colors.primary }}
+                  className="flex-1 px-6 py-3 text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   {editingType ? "Update" : "Create"}
                 </button>
@@ -1071,7 +1099,10 @@ export default function LeaveTypes({ activeView = "types" }) {
                         setAllocationDays("");
                       }
                     }}
-                    className="px-4 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    style={{ backgroundColor: colors.primary }}
+                    className="px-4 py-3 text-white rounded-2xl text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                   >
                     Add
                   </button>
@@ -1133,7 +1164,10 @@ export default function LeaveTypes({ activeView = "types" }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-black text-white rounded-2xl hover:bg-gray-800 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: colors.primary }}
+                  className="flex-1 px-6 py-3 text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   {editingPolicy ? "Update" : "Create"}
                 </button>

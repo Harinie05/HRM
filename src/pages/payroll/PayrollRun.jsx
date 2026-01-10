@@ -15,6 +15,7 @@ export default function PayrollRun() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedRun, setSelectedRun] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [runData, setRunData] = useState({
     month: "",
     year: new Date().getFullYear()
@@ -42,10 +43,31 @@ export default function PayrollRun() {
   }
 
   useEffect(() => {
+    fetchColors();
     fetchRuns();
     fetchEmployees();
     fetchStructures();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchStructures = async () => {
     try {
@@ -280,11 +302,25 @@ export default function PayrollRun() {
           <button 
             onClick={() => setShowRunModal(true)}
             disabled={!canCreate}
-            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center ${
+            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border w-full sm:w-auto justify-center ${
               canCreate 
-                ? 'bg-gray-900 hover:bg-gray-800 text-white' 
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'text-white' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300'
             }`}
+            style={{
+              backgroundColor: canCreate ? colors.primary : '#d1d5db',
+              borderColor: canCreate ? colors.primary : '#d1d5db'
+            }}
+            onMouseEnter={(e) => {
+              if (canCreate) {
+                e.target.style.backgroundColor = colors.secondary;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canCreate) {
+                e.target.style.backgroundColor = colors.primary;
+              }
+            }}
           >
             <Play size={18} />
             Run Payroll
@@ -627,7 +663,21 @@ export default function PayrollRun() {
                 <button
                   type="submit"
                   disabled={loading || !validationChecked}
-                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 text-white px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!loading && validationChecked) {
+                      e.target.style.backgroundColor = colors.secondary;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading && validationChecked) {
+                      e.target.style.backgroundColor = colors.primary;
+                    }
+                  }}
                 >
                   {loading ? (
                     <>
@@ -862,7 +912,13 @@ export default function PayrollRun() {
                     // Trigger payroll run
                     handleRunPayroll({ preventDefault: () => {} });
                   }}
-                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"
+                  className="flex-1 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   <Play size={16} />
                   Proceed with Payroll

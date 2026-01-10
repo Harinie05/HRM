@@ -79,6 +79,7 @@ class UserCreate(BaseModel):
     password: str
     role_id: int
     department_id: int
+    two_factor_enabled: Optional[bool] = False
 
 class UserOut(BaseModel):
     id: int
@@ -97,6 +98,7 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
     role_id: Optional[int] = None
     department_id: Optional[int] = None
+    two_factor_enabled: Optional[bool] = None
 
 class CompanyProfileBase(BaseModel):
     name: str

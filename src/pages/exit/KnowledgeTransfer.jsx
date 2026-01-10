@@ -16,6 +16,23 @@ export default function KnowledgeTransfer() {
   
   const { toast, showToast, hideToast } = useToast();
   
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
+  
   // Debug: Check actual permissions
   console.log('Permission Debug:', {
     isAdmin: isAdmin(),
@@ -252,7 +269,10 @@ export default function KnowledgeTransfer() {
                 {!ktData && !showCreateForm && canCreate && (
                   <button
                     onClick={() => setShowCreateForm(true)}
-                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                    className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm whitespace-nowrap"
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                   >
                     Create KT Plan
                   </button>
@@ -371,7 +391,10 @@ export default function KnowledgeTransfer() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="submit"
-                      className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                      style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                      className="px-4 sm:px-6 py-2 text-white rounded-lg text-sm"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Create KT Plan
                     </button>
@@ -411,7 +434,10 @@ export default function KnowledgeTransfer() {
                               {item.status !== "Completed" && canComplete && (
                                 <button
                                   onClick={() => acknowledgeItem(item.id)}
-                                  className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-green-600 text-white rounded hover:bg-green-700 whitespace-nowrap"
+                                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                                  className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-white rounded whitespace-nowrap"
+                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 >
                                   Mark Complete
                                 </button>
@@ -446,7 +472,10 @@ export default function KnowledgeTransfer() {
                       {!ktData.manager_approved && canManagerApprove && (
                         <button
                           onClick={() => approveKT("manager")}
-                          className="px-3 sm:px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
+                          style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                          className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm"
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                         >
                           Manager Approve
                         </button>
@@ -454,7 +483,10 @@ export default function KnowledgeTransfer() {
                       {ktData.manager_approved && !ktData.hr_approved && canHRApprove && (
                         <button
                           onClick={() => approveKT("hr")}
-                          className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                          style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+                          className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm"
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                         >
                           HR Approve
                         </button>

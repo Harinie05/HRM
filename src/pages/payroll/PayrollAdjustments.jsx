@@ -7,6 +7,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function PayrollAdjustments() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [adjustments, setAdjustments] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +28,21 @@ export default function PayrollAdjustments() {
   const canEdit = isAdmin() || hasPermission("edit_payroll_adjustment");
   const canDelete = isAdmin() || hasPermission("delete_payroll_adjustment");
 
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const res = await api.get(`/auth/branding/${tenantCode}`);
+        setColors({
+          primary: res.data.primary_color || '#2862e9',
+          secondary: res.data.secondary_color || '#474e71'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch colors:', err);
+    }
+  };
+
   if (!canView) {
     return (
       <div className="p-6 text-center">
@@ -41,6 +57,7 @@ export default function PayrollAdjustments() {
   useEffect(() => {
     fetchAdjustments();
     fetchEmployees();
+    fetchColors();
   }, []);
 
   const fetchAdjustments = async () => {
@@ -305,7 +322,10 @@ export default function PayrollAdjustments() {
           {canAdd && (
             <button 
               onClick={() => handleOpenModal()}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center text-white"
+              style={{ backgroundColor: colors.primary }}
             >
               <Plus size={18} />
               Add Adjustment
@@ -545,7 +565,10 @@ export default function PayrollAdjustments() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black"
+                  style={{ backgroundColor: colors.primary }}
                 >
                   {loading ? "Saving..." : (editingAdjustment ? "Update" : "Create")}
                 </button>

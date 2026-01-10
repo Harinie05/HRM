@@ -2,10 +2,30 @@ import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import Layout from "../../components/Layout";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import { useEffect } from "react";
 
 export default function TrainingLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
+  }, []);
   
   // Check if we're on a nested route (like applications)
   const isNestedRoute = location.pathname.includes('/applications');
@@ -85,9 +105,25 @@ export default function TrainingLayout() {
                       onClick={() => navigate(tab.path)}
                       className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                         currentTab.name === tab.name
-                          ? "bg-white text-gray-900 shadow-sm"
+                          ? "text-white"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
+                      style={{
+                        backgroundColor: currentTab.name === tab.name ? 'var(--primary-color)' : 'transparent',
+                        color: currentTab.name === tab.name ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentTab.name !== tab.name) {
+                          e.target.style.backgroundColor = 'var(--secondary-color)';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentTab.name !== tab.name) {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
                     >
                       {tab.name}
                     </button>

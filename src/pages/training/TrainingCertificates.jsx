@@ -36,6 +36,23 @@ export default function TrainingCertificates() {
   useEffect(() => {
     fetchCertificates();
     fetchPrograms();
+    
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
   }, []);
 
   useEffect(() => {
@@ -145,7 +162,12 @@ export default function TrainingCertificates() {
             {(hasPermission('generate_training_certificate') || isAdmin()) && (
               <button 
                 onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
               >
                 <Award className="w-4 h-4" />
                 Generate Certificate
@@ -404,7 +426,12 @@ export default function TrainingCertificates() {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="flex-1 px-4 py-2 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color)')}
+                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color)')}
               >
                 {loading ? "Generating..." : "Generate Certificate"}
               </button>

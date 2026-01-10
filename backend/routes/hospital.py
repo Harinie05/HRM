@@ -106,7 +106,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 # =================================================================
 # 1. REGISTER HOSPITAL + AUTO CREATE TENANT DB + ADMIN USER
 # =================================================================
-@router.post("/register", response_model=HospitalOut, status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_hospital(payload: HospitalRegister, db: Session = Depends(database.get_master_db)):
 
     logger.info(f"Starting registration for tenant_id={payload.tenant_id}")
@@ -114,15 +114,33 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
     try:
         if db.query(Hospital).filter(Hospital.tenant_id == payload.tenant_id).first():
             logger.warning("tenant_id already exists")
-            raise HTTPException(400, "tenant_id already exists")
+            raise HTTPException(400, detail={
+                "message": "tenant_id already exists",
+                "toast": {
+                    "type": "error",
+                    "message": "Tenant ID already exists. Please choose a different one."
+                }
+            })
 
         if db.query(Hospital).filter(Hospital.db_name == payload.tenant_db).first():
             logger.warning("tenant_db already exists")
-            raise HTTPException(400, "tenant_db exists")
+            raise HTTPException(400, detail={
+                "message": "tenant_db exists",
+                "toast": {
+                    "type": "error",
+                    "message": "Database name already exists. Please choose a different one."
+                }
+            })
 
         if db.query(Hospital).filter(Hospital.email == payload.email).first():
             logger.warning("email already registered")
-            raise HTTPException(400, "email already registered")
+            raise HTTPException(400, detail={
+                "message": "email already registered",
+                "toast": {
+                    "type": "error",
+                    "message": "Email already registered. Please use a different email."
+                }
+            })
 
         logger.info(f"Creating tenant database: {payload.tenant_db}")
         database.create_tenant_database(payload.tenant_db)
@@ -133,6 +151,57 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
 
         seed_tenant(payload.tenant_db)
         logger.info("Tenant DB seeded successfully")
+        
+        # Add admin user to tenant database
+        engine = database.get_tenant_engine(payload.tenant_db)
+        tdb = Session(bind=engine)
+        
+        try:
+            from models.models_tenant import User as TenantUser, Role, Department
+            import random
+            import string
+            
+            # Generate unique login code
+            def generate_login_code():
+                while True:
+                    code = ''.join(random.choices(string.digits, k=6))
+                    if not tdb.query(TenantUser).filter(TenantUser.login_code == code).first():
+                        return code
+            
+            # Get or create Admin role
+            admin_role = tdb.query(Role).filter(Role.name == "Admin").first()
+            if not admin_role:
+                admin_role = Role(name="Admin", description="System Administrator")
+                tdb.add(admin_role)
+                tdb.commit()
+                tdb.refresh(admin_role)
+            
+            # Get or create HR department
+            hr_dept = tdb.query(Department).filter(Department.name == "HR").first()
+            if not hr_dept:
+                hr_dept = Department(name="HR", description="Human Resources")
+                tdb.add(hr_dept)
+                tdb.commit()
+                tdb.refresh(hr_dept)
+            
+            # Create admin user in tenant database
+            admin_user = TenantUser(
+                name=payload.contact_person or "Admin",
+                email=payload.email,
+                password=hash_password(payload.password),
+                role_id=admin_role.id,
+                department_id=hr_dept.id,
+                login_code=generate_login_code(),
+                two_factor_enabled=False,
+                status="Active"
+            )
+            
+            tdb.add(admin_user)
+            tdb.commit()
+            logger.info(f"Admin user added to tenant DB with login code: {admin_user.login_code}")
+            
+        finally:
+            tdb.close()
 
         # Calculate license end date based on subscription plan
         from datetime import datetime, timedelta
@@ -179,7 +248,20 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
         db.commit()
         logger.info(f"Master admin created for hospital={hospital.id}")
 
-        return hospital
+        return {
+            "id": hospital.id,
+            "tenant_id": hospital.tenant_id,
+            "db_name": hospital.db_name,
+            "name": hospital.name,
+            "email": str(hospital.email),
+            "subscription_plan": hospital.subscription_plan,
+            "license_start_date": hospital.license_start_date,
+            "license_end_date": hospital.license_end_date,
+            "toast": {
+                "type": "success",
+                "message": "Hospital registered successfully!"
+            }
+        }
         
     except HTTPException:
         raise
@@ -193,7 +275,13 @@ def register_hospital(payload: HospitalRegister, db: Session = Depends(database.
             request_method="POST",
             request_data=payload.model_dump(exclude={"password"})
         )
-        raise HTTPException(500, f"Registration failed: {str(e)}")
+        raise HTTPException(500, detail={
+            "message": f"Registration failed: {str(e)}",
+            "toast": {
+                "type": "error",
+                "message": "Registration failed. Please try again."
+            }
+        })
 
 # =================================================================
 # ADMIN AUTH CHECK
@@ -236,7 +324,9 @@ def create_dynamic_table(
 ):
     logger.info(f"User {user.get('email')} creating table '{payload.table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
+    if not payload.admin.email:
+        raise HTTPException(400, "Email is required for admin authentication")
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=str(payload.admin.email), password=payload.admin.password)
 
     table_name = payload.table_name
     columns = payload.columns
@@ -278,7 +368,9 @@ def add_column(
 ):
     logger.info(f"User {user.get('email')} adding column to '{table_name}' in tenant {tenant_id}")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
+    if not payload.admin.email:
+        raise HTTPException(400, "Email is required for admin authentication")
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=str(payload.admin.email), password=payload.admin.password)
 
     col = payload.column
     part = f"`{col.name}` {col.type}"
@@ -311,7 +403,9 @@ def insert_row(
 ):
     logger.info(f"User {user.get('email')} inserting row into '{table_name}'")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=payload.admin.email, password=payload.admin.password)
+    if not payload.admin.email:
+        raise HTTPException(400, "Email is required for admin authentication")
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=payload.admin.tenant_code, email=str(payload.admin.email), password=payload.admin.password)
 
     data = payload.row
     engine = database.get_tenant_engine(str(hospital.db_name))
@@ -345,7 +439,9 @@ def list_rows(
 ):
     logger.info(f"User {user.get('email')} listing rows from '{table_name}'")
 
-    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=auth.tenant_code, email=auth.email, password=auth.password)
+    if not auth.email:
+        raise HTTPException(400, "Email is required for admin authentication")
+    hospital = authenticate_admin(db=db, tenant_id=tenant_id, tenant_code=auth.tenant_code, email=str(auth.email), password=auth.password)
     engine = database.get_tenant_engine(str(hospital.db_name))
 
     with engine.connect() as conn:
@@ -360,41 +456,95 @@ def list_rows(
 @router.post("/login")
 def login(response: Response, payload: AdminAuth, db: Session = Depends(database.get_master_db)):
 
-    logger.info(f"Login attempt by {payload.email} with tenant_code {payload.tenant_code}")
+    logger.info(f"Login attempt with tenant_code {payload.tenant_code}")
+    
+    # Validate that either email or login_code is provided
+    if not payload.email and not payload.login_code:
+        raise HTTPException(400, "Either email or login_code must be provided")
 
-    # ADMIN LOGIN - Check master_users table first
-    admin = db.query(MasterUser).filter(
-        MasterUser.email == payload.email,
-        MasterUser.tenant_code == payload.tenant_code
-    ).first()
+    # ADMIN LOGIN - Check master_users table first (only supports email)
+    if payload.email:
+        admin = db.query(MasterUser).filter(
+            MasterUser.email == payload.email,
+            MasterUser.tenant_code == payload.tenant_code
+        ).first()
 
-    if admin and verify_password(payload.password, str(admin.hashed_password)):
-        logger.info("Admin credentials verified, sending OTP")
+        if admin and verify_password(payload.password, str(admin.hashed_password)):
+            logger.info("Admin credentials verified")
 
-        hospital = db.query(Hospital).filter(Hospital.id == admin.hospital_id).first()
-        if not hospital:
-            logger.error("Hospital not found for admin")
-            raise HTTPException(400, "Hospital not found")
+            hospital = db.query(Hospital).filter(Hospital.id == admin.hospital_id).first()
+            if not hospital:
+                logger.error("Hospital not found for admin")
+                raise HTTPException(400, "Hospital not found")
 
-        # Send OTP for admin
-        from utils.otp import send_login_otp
-        engine = database.get_tenant_engine(str(hospital.db_name))
-        tdb = Session(bind=engine)
-        
-        try:
-            otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, "Admin")
-            if not otp_sent:
-                raise HTTPException(500, "Failed to send OTP")
+            # Check if admin has 2FA enabled (check in tenant database)
+            engine = database.get_tenant_engine(str(hospital.db_name))
+            tdb = Session(bind=engine)
             
-            return {
-                "message": "OTP sent to your email",
-                "otp_required": True,
-                "email": payload.email,
-                "tenant_code": payload.tenant_code,
-                "login_type": "admin"
-            }
-        finally:
-            tdb.close()
+            try:
+                # Check if admin user exists in tenant database with 2FA enabled
+                tenant_admin = tdb.query(TenantUser).filter(TenantUser.email == payload.email).first()
+                
+                if tenant_admin and getattr(tenant_admin, 'two_factor_enabled', False):
+                    # Send OTP for admin
+                    from utils.otp import send_login_otp
+                    otp_sent = send_login_otp(tdb, str(payload.email), payload.tenant_code, "Admin")
+                    if not otp_sent:
+                        raise HTTPException(500, "Failed to send OTP")
+                    
+                    return {
+                        "message": "OTP sent to your email",
+                        "otp_required": True,
+                        "email": payload.email,
+                        "tenant_code": payload.tenant_code,
+                        "login_type": "admin",
+                        "toast": {
+                            "type": "success",
+                            "message": "OTP sent to your email successfully"
+                        }
+                    }
+                else:
+                    # Direct login without OTP
+                    access = create_access_token({
+                        "email": str(payload.email),
+                        "role": "admin",
+                        "tenant_db": str(hospital.db_name),
+                        "tenant_code": payload.tenant_code
+                    })
+
+                    refresh = create_refresh_token({
+                        "email": str(payload.email),
+                        "role": "admin",
+                        "tenant_db": str(hospital.db_name),
+                        "tenant_code": payload.tenant_code
+                    })
+
+                    response.set_cookie(
+                        key="refresh_token",
+                        value=refresh,
+                        httponly=True,
+                        samesite="none",
+                        secure=False
+                    )
+
+                    return {
+                        "message": "Login successful",
+                        "login_type": "admin",
+                        "access_token": access,
+                        "tenant_id": str(hospital.tenant_id),
+                        "tenant_db": str(hospital.db_name),
+                        "tenant_code": payload.tenant_code,
+                        "email": str(payload.email),
+                        "role_name": "Admin",
+                        "permissions": [],
+                        "otp_required": False,
+                        "toast": {
+                            "type": "success",
+                            "message": "Login successful"
+                        }
+                    }
+            finally:
+                tdb.close()
 
     # TENANT USER LOGIN - Check all tenant databases
     hospitals = db.query(Hospital).all()
@@ -406,7 +556,17 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
         tdb = Session(bind=engine)
 
         try:
-            user = tdb.query(TenantUser).filter(TenantUser.email == payload.email).first()
+            user = None
+            
+            # Check if payload has login_code (new login method)
+            if payload.login_code:
+                logger.info(f"Attempting login with login_code: {payload.login_code}")
+                user = tdb.query(TenantUser).filter(TenantUser.login_code == payload.login_code).first()
+            elif payload.email:
+                # Traditional email login
+                user = tdb.query(TenantUser).filter(TenantUser.email == payload.email).first()
+            else:
+                continue  # Skip if neither email nor login_code provided
 
             if user and verify_password(payload.password, str(user.password)):
                 # Verify tenant_code matches hospital's tenant_id
@@ -414,27 +574,96 @@ def login(response: Response, payload: AdminAuth, db: Session = Depends(database
                     logger.warning(f"Tenant code mismatch for user {payload.email}")
                     continue
                     
-                logger.info(f"Tenant user credentials verified, sending OTP for {payload.email} in DB {hosp.db_name}")
+                logger.info(f"Tenant user credentials verified for {user.email} in DB {hosp.db_name}")
 
-                # Send OTP for tenant user
-                from utils.otp import send_login_otp
-                otp_sent = send_login_otp(tdb, payload.email, payload.tenant_code, str(user.name))
-                if not otp_sent:
-                    raise HTTPException(500, "Failed to send OTP")
-                
-                return {
-                    "message": "OTP sent to your email",
-                    "otp_required": True,
-                    "email": payload.email,
-                    "tenant_code": payload.tenant_code,
-                    "login_type": "user"
-                }
+                # Check if two-factor authentication is enabled
+                if getattr(user, 'two_factor_enabled', False):
+                    # Send OTP for tenant user
+                    from utils.otp import send_login_otp
+                    otp_sent = send_login_otp(tdb, str(user.email), payload.tenant_code, str(user.name))
+                    if not otp_sent:
+                        raise HTTPException(500, "Failed to send OTP")
+                    
+                    return {
+                        "message": "OTP sent to your email",
+                        "otp_required": True,
+                        "email": user.email,
+                        "tenant_code": payload.tenant_code,
+                        "login_type": "user",
+                        "toast": {
+                            "type": "success",
+                            "message": "OTP sent to your email successfully"
+                        }
+                    }
+                else:
+                    # Direct login without OTP
+                    # Get user permissions
+                    role_permissions = tdb.query(RolePermission).filter(RolePermission.role_id == user.role_id).all()
+                    permissions = []
+                    for rp in role_permissions:
+                        perm = tdb.query(Permission).filter(Permission.id == rp.permission_id).first()
+                        if perm:
+                            permissions.append(str(perm.name))
+
+                    access = create_access_token({
+                        "email": user.email,
+                        "role": "user",
+                        "user_id": user.id,
+                        "role_id": user.role_id,
+                        "tenant_db": str(hosp.db_name),
+                        "tenant_code": payload.tenant_code,
+                        "permissions": permissions
+                    })
+
+                    refresh = create_refresh_token({
+                        "email": user.email,
+                        "role": "user",
+                        "user_id": user.id,
+                        "role_id": user.role_id,
+                        "tenant_db": str(hosp.db_name),
+                        "tenant_code": payload.tenant_code,
+                        "permissions": permissions
+                    })
+
+                    response.set_cookie(
+                        key="refresh_token",
+                        value=refresh,
+                        httponly=True,
+                        samesite="none",
+                        secure=False
+                    )
+
+                    return {
+                        "message": "Login successful",
+                        "login_type": "user",
+                        "access_token": access,
+                        "tenant_db": str(hosp.db_name),
+                        "tenant_code": payload.tenant_code,
+                        "email": user.email,
+                        "user_name": user.name,
+                        "user_id": user.id,
+                        "role_id": user.role_id,
+                        "department_id": user.department_id,
+                        "role_name": user.role.name if user.role else "User",
+                        "permissions": permissions,
+                        "otp_required": False,
+                        "toast": {
+                            "type": "success",
+                            "message": "Login successful"
+                        }
+                    }
 
         finally:
             tdb.close()
 
     logger.warning("Invalid login attempt")
-    raise HTTPException(400, "Invalid tenant code, email or password")
+    raise HTTPException(400, detail={
+        "message": "Invalid tenant code, credentials or password",
+        "toast": {
+            "type": "error",
+            "message": "Invalid credentials. Please check your details and try again."
+        }
+    })
 
 # =================================================================
 # 6.1 VERIFY OTP AND COMPLETE LOGIN
@@ -507,7 +736,11 @@ def verify_otp_and_login(response: Response, payload: dict, db: Session = Depend
                 "tenant_code": tenant_code,
                 "email": email,
                 "role_name": "Admin",
-                "permissions": []
+                "permissions": [],
+                "toast": {
+                    "type": "success",
+                    "message": "Login successful"
+                }
             }
         finally:
             tdb.close()
@@ -581,12 +814,22 @@ def verify_otp_and_login(response: Response, payload: dict, db: Session = Depend
                     "role_id": user.role_id,
                     "department_id": user.department_id,
                     "role_name": user.role.name if user.role else "User",
-                    "permissions": permissions
+                    "permissions": permissions,
+                    "toast": {
+                        "type": "success",
+                        "message": "Login successful"
+                    }
                 }
             finally:
                 tdb.close()
     
-    raise HTTPException(400, "Invalid OTP or user not found")
+    raise HTTPException(400, detail={
+        "message": "Invalid OTP or user not found",
+        "toast": {
+            "type": "error",
+            "message": "Invalid OTP. Please try again."
+        }
+    })
 @router.post("/refresh")
 def refresh_token(response: Response, refresh_token: str | None = Cookie(None)):
 
@@ -623,6 +866,41 @@ def seed_permissions(tenant_db: str, user = Depends(get_current_user)):
     logger.info(f"Seeding tenant DB: {tenant_db}")
     seed_tenant(tenant_db)
     return {"message": f"Tenant '{tenant_db}' seeded"}
+
+# =================================================================
+# GET ORGANIZATION BRANDING COLORS
+# =================================================================
+@router.get("/branding/{tenant_code}")
+def get_organization_branding(tenant_code: str, db: Session = Depends(database.get_master_db)):
+    
+    # Find hospital by tenant_code
+    hospital = db.query(Hospital).filter(Hospital.tenant_id == tenant_code).first()
+    if not hospital:
+        return {
+            "primary_color": "#2862e9",
+            "secondary_color": "#474e71"
+        }
+    
+    # Get tenant database
+    engine = database.get_tenant_engine(str(hospital.db_name))
+    tdb = Session(bind=engine)
+    
+    try:
+        from models.models_tenant import OrganizationBranding
+        branding = tdb.query(OrganizationBranding).first()
+        
+        if branding:
+            return {
+                "primary_color": branding.primary_color or "#2862e9",
+                "secondary_color": branding.secondary_color or "#474e71"
+            }
+        else:
+            return {
+                "primary_color": "#2862e9",
+                "secondary_color": "#474e71"
+            }
+    finally:
+        tdb.close()
 
 # =================================================================
 # 8. SEED PERMISSIONS 🔒 PROTECTED

@@ -11,6 +11,7 @@ export default function Communication() {
   const canEdit = hasPermission('edit_hr_letter');
   const canDelete = hasPermission('delete_hr_letter');
   const canPrint = hasPermission('print_hr_letter');
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   if (!canView) {
     return (
@@ -45,11 +46,32 @@ export default function Communication() {
 
   useEffect(() => {
     const loadData = async () => {
+      await fetchColors();
       await fetchEmployees();
       await fetchLetters();
     };
     loadData();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
   
   // Auto-populate employee ID for non-admin users
   useEffect(() => {
@@ -536,7 +558,13 @@ export default function Communication() {
                 <button 
                   type="button"
                   onClick={handleOK}
-                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                  className="w-full sm:w-auto px-6 py-2 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   OK
                 </button>

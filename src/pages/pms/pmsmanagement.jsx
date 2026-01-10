@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Target, RotateCcw, MessageSquare, Award } from "lucide-react";
 import Layout from "../../components/Layout";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import { useEffect } from "react";
 import WorkAssignments from "./WorkAssignments";
 import GoalsKPI from "./GoalsKPI";
 import ReviewCycle from "./ReviewCycle";
@@ -21,6 +22,25 @@ export default function PMSManagement() {
 
   const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
   const [tab, setTab] = useState(tabs[0]);
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
+  }, []);
 
   if (tabs.length === 0) {
     return (
@@ -82,9 +102,25 @@ export default function PMSManagement() {
                       onClick={() => setTab(tabName)}
                       className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                         tab === tabName 
-                          ? "bg-white text-gray-900 shadow-sm" 
+                          ? "text-white" 
                           : "text-gray-600 hover:text-gray-900"
                       }`}
+                      style={{
+                        backgroundColor: tab === tabName ? 'var(--primary-color)' : 'transparent',
+                        color: tab === tabName ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (tab !== tabName) {
+                          e.target.style.backgroundColor = 'var(--secondary-color)';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (tab !== tabName) {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
                     >
                       {tabName}
                     </button>

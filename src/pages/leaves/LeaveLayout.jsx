@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import api from "../../api";
 
 // Pages
 import LeaveTypes from "./LeaveTypes";
@@ -15,6 +16,7 @@ import LeaveReports from "./LeaveReports";
 export default function LeaveLayout() {
   const { toast, showToast, hideToast } = useToast();
   const location = useLocation();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Define all tabs with their permission requirements
   const allTabs = [
@@ -47,6 +49,30 @@ export default function LeaveLayout() {
   
   const initialTab = location.state?.tab || visibleTabs[0].name;
   const [tab, setTab] = useState(initialTab);
+
+  useEffect(() => {
+    fetchColors();
+  }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   return (
     <Layout breadcrumb="Leave Management">
@@ -86,11 +112,23 @@ export default function LeaveLayout() {
               <button
                 key={tabItem.name}
                 onClick={() => setTab(tabItem.name)}
-                className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
-                  tab === tabItem.name
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
+                className={`px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0`}
+                style={{
+                  backgroundColor: tab === tabItem.name ? colors.primary : 'transparent',
+                  color: tab === tabItem.name ? 'white' : '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  if (tab !== tabItem.name) {
+                    e.target.style.backgroundColor = colors.secondary;
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (tab !== tabItem.name) {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = '#6b7280';
+                  }
+                }}
               >
                 {tabItem.name}
               </button>

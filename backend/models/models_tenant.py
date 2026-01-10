@@ -55,6 +55,10 @@ class User(MasterBase):
     joining_date = Column(Date, nullable=True)
     status = Column(String(50), default="Active")  # Active/Inactive
     leave_policy_id = Column(Integer, nullable=True)  # Assigned leave policy
+    
+    # Login authentication fields
+    login_code = Column(String(20), nullable=True, unique=True)  # Unique login code
+    two_factor_enabled = Column(Boolean, default=False)  # Two-factor authentication flag
 
     created_at = Column(DateTime, default=datetime.utcnow)
 

@@ -11,6 +11,7 @@ export default function Users() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [department, setDepartment] = useState("");
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -27,6 +28,7 @@ export default function Users() {
   const [editPassword, setEditPassword] = useState("");
   const [editRole, setEditRole] = useState("");
   const [editDepartment, setEditDepartment] = useState("");
+  const [editTwoFactorEnabled, setEditTwoFactorEnabled] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
   const tenant_db = localStorage.getItem("tenant_db");
@@ -38,20 +40,6 @@ export default function Users() {
   const canAdd = isAdmin() || hasPermission("add_user");
   const canEdit = isAdmin() || hasPermission("edit_user");
   const canDelete = isAdmin() || hasPermission("delete_user");
-
-  // If user does NOT have view permission → block entire page
-  if (!canView) {
-    return (
-      <Layout>
-        <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-            <p className="text-gray-600">You do not have permission to view Users.</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   const loadUsers = async (status = statusFilter) => {
     try {
@@ -111,6 +99,7 @@ export default function Users() {
         password,
         role_id: Number(role),
         department_id: Number(department),
+        two_factor_enabled: twoFactorEnabled,
       });
 
       setName("");
@@ -118,10 +107,11 @@ export default function Users() {
       setPassword("");
       setRole("");
       setDepartment("");
+      setTwoFactorEnabled(false);
       setShowCreateModal(false);
       loadUsers();
       
-      // Show success toast with user name
+      // Show success toast with user name and login code
       const message = response.data.message || `User '${name}' created successfully`;
       showToast(message, 'success');
     } catch (err) {
@@ -169,6 +159,20 @@ export default function Users() {
       showToast(errorMessage, 'error');
     }
   };
+
+  // If user does NOT have view permission → block entire page
+  if (!canView) {
+    return (
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-600">You do not have permission to view Users.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -333,6 +337,7 @@ export default function Users() {
                               const userDept = departments.find(d => d.name === u.department);
                               setEditRole(userRole ? userRole.id : "");
                               setEditDepartment(userDept ? userDept.id : "");
+                              setEditTwoFactorEnabled(u.two_factor_enabled || false);
                             }}
                             className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="Edit"
@@ -369,6 +374,13 @@ export default function Users() {
                         </div>
                       )}
                       
+                      {u.login_code && (
+                        <div>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Login Code</p>
+                          <p className="text-sm text-gray-700 font-mono bg-blue-50 px-2 py-1 rounded">{u.login_code}</p>
+                        </div>
+                      )}
+                      
                       <div className="grid grid-cols-1 gap-3">
                         <div>
                           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Role</p>
@@ -398,10 +410,18 @@ export default function Users() {
                       </div>
                       
                       <div className="pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                           <span>{u.status === 'Active' ? 'Active User' : 'Inactive User'}</span>
                           <div className={`w-2 h-2 rounded-full ${u.status === 'Active' ? 'bg-green-400' : 'bg-red-400'}`}></div>
                         </div>
+                        {u.two_factor_enabled && (
+                          <div className="flex items-center gap-1 text-xs text-blue-600">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                            </svg>
+                            <span>2FA Enabled</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -415,7 +435,7 @@ export default function Users() {
       {/* Create Modal matching Department/Roles page */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Create User</h3>
@@ -437,53 +457,58 @@ export default function Users() {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter full name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter full name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input
+                      type="email"
+                      placeholder="Enter email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="Enter email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                  <input
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  >
-                    <option value="">Select role</option>
-                    {roles.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Login Code *</label>
+                    <div className="flex gap-2">
+                      <div className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-600 font-mono">
+                        Auto-generated
+                      </div>
+                      <button
+                        type="button"
+                        className="px-3 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        title="Generate new code"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Unique code for user login (e.g., AB123456)</p>
+                  </div>
                 </div>
 
                 <div>
@@ -491,7 +516,7 @@ export default function Users() {
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select department</option>
                     {departments.map((d) => (
@@ -500,6 +525,58 @@ export default function Users() {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="activeUser"
+                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                    defaultChecked
+                  />
+                  <label htmlFor="activeUser" className="text-sm font-medium text-gray-700">Active User</label>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Authentication Settings</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        id="twoFactor"
+                        checked={twoFactorEnabled}
+                        onChange={(e) => setTwoFactorEnabled(e.target.checked)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
+                      />
+                      <div>
+                        <label htmlFor="twoFactor" className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
+                        <p className="text-xs text-gray-500">Require OTP verification for login</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Roles ({roles.length} available)</h3>
+                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
+                    {roles.map((r) => (
+                      <div key={r.id} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          id={`role-${r.id}`}
+                          name="role"
+                          value={r.id}
+                          checked={role == r.id}
+                          onChange={(e) => setRole(e.target.value)}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <label htmlFor={`role-${r.id}`} className="text-sm text-gray-700">
+                          <div className="font-medium">{r.name}</div>
+                          <div className="text-xs text-gray-500">Role description</div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -512,6 +589,7 @@ export default function Users() {
                     setPassword("");
                     setRole("");
                     setDepartment("");
+                    setTwoFactorEnabled(false);
                   }}
                   className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm"
                 >
@@ -536,7 +614,7 @@ export default function Users() {
       {/* Edit Modal matching Department/Roles page */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-black">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Edit User</h3>
@@ -551,51 +629,56 @@ export default function Users() {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input
+                      type="email"
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    value={editEmail}
-                    onChange={(e) => setEditEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                  <input
-                    type="password"
-                    placeholder="Leave blank to keep current password"
-                    value={editPassword}
-                    onChange={(e) => setEditPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                  <select
-                    value={editRole}
-                    onChange={(e) => setEditRole(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  >
-                    <option value="">Select role</option>
-                    {roles.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input
+                      type="password"
+                      placeholder="Leave blank to keep current password"
+                      value={editPassword}
+                      onChange={(e) => setEditPassword(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Login Code *</label>
+                    <div className="flex gap-2">
+                      <div className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-600 font-mono">
+                        {editing?.login_code || 'Not assigned'}
+                      </div>
+                      <button
+                        type="button"
+                        className="px-3 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        title="Generate new code"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Unique code for user login (e.g., AB123456)</p>
+                  </div>
                 </div>
 
                 <div>
@@ -603,7 +686,7 @@ export default function Users() {
                   <select
                     value={editDepartment}
                     onChange={(e) => setEditDepartment(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select department</option>
                     {departments.map((d) => (
@@ -612,6 +695,58 @@ export default function Users() {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="editActiveUser"
+                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
+                    defaultChecked
+                  />
+                  <label htmlFor="editActiveUser" className="text-sm font-medium text-gray-700">Active User</label>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Authentication Settings</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        id="editTwoFactor"
+                        checked={editTwoFactorEnabled}
+                        onChange={(e) => setEditTwoFactorEnabled(e.target.checked)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
+                      />
+                      <div>
+                        <label htmlFor="editTwoFactor" className="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
+                        <p className="text-xs text-gray-500">Require OTP verification for login</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Roles ({roles.length} available)</h3>
+                  <div className="grid grid-cols-2 gap-3 max-h-32 overflow-y-auto">
+                    {roles.map((r) => (
+                      <div key={r.id} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          id={`edit-role-${r.id}`}
+                          name="editRole"
+                          value={r.id}
+                          checked={editRole == r.id}
+                          onChange={(e) => setEditRole(e.target.value)}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <label htmlFor={`edit-role-${r.id}`} className="text-sm text-gray-700">
+                          <div className="font-medium">{r.name}</div>
+                          <div className="text-xs text-gray-500">Role description</div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -630,6 +765,7 @@ export default function Users() {
                         email: editEmail,
                         role_id: Number(editRole),
                         department_id: Number(editDepartment),
+                        two_factor_enabled: editTwoFactorEnabled,
                       };
                       
                       // Only include password if it's provided

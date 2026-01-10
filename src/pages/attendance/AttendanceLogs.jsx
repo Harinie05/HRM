@@ -14,6 +14,7 @@ import { hasPermission, isAdmin } from '../../utils/permissions';
 export default function AttendanceLogs() {
   const [logs, setLogs] = useState([]);
   const [activeTab, setActiveTab] = useState('logs');
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Permission checks
   const canViewPunchLogs = isAdmin() || hasPermission('view_punch_logs');
@@ -133,6 +134,7 @@ export default function AttendanceLogs() {
   }, [employees]);
 
   useEffect(() => {
+    fetchColors();
     fetchCurrentUserInfo();
     fetchEmployees();
     fetchLogs();
@@ -140,6 +142,26 @@ export default function AttendanceLogs() {
     fetchRegularizationRequests();
     fetchOdApplications();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchCurrentUserInfo = async () => {
     try {
@@ -775,16 +797,46 @@ export default function AttendanceLogs() {
           <div className="bg-white rounded-lg border border-black p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-6">
               <span className="text-sm text-gray-600">Attendance</span>
-              <div className="flex items-center bg-gray-100 rounded-lg border border-black p-1 overflow-x-auto scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              <div className="flex items-center bg-gray-100 rounded-full border border-black p-1 overflow-x-auto scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      // Reset all button styles
+                      setTimeout(() => {
+                        const buttons = document.querySelectorAll('[data-tab-button]');
+                        buttons.forEach(btn => {
+                          if (btn.getAttribute('data-tab-id') !== tab.id) {
+                            btn.style.backgroundColor = 'transparent';
+                            btn.style.color = '#6b7280';
+                          }
+                        });
+                      }, 0);
+                    }}
+                    data-tab-button
+                    data-tab-id={tab.id}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                       activeTab === tab.id
-                        ? "bg-black text-white" 
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
+                        ? "text-white" 
+                        : "text-gray-500"
                     }`}
+                    style={{
+                      backgroundColor: activeTab === tab.id ? colors.primary : 'transparent',
+                      color: activeTab === tab.id ? 'white' : '#6b7280'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== tab.id) {
+                        e.target.style.backgroundColor = colors.secondary;
+                        e.target.style.color = 'white';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== tab.id) {
+                        e.target.style.backgroundColor = 'transparent';
+                        e.target.style.color = '#6b7280';
+                      }
+                    }}
                   >
                     {tab.label}
                   </button>
@@ -1287,9 +1339,9 @@ export default function AttendanceLogs() {
                       <button
                         onClick={handleRegularizationSubmit}
                         className="w-full py-2 sm:py-3 text-white border border-black rounded-lg font-medium transition-colors text-sm sm:text-base"
-                        style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                        style={{ backgroundColor: colors.primary }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                       >
                         Submit Request
                       </button>
@@ -1320,9 +1372,9 @@ export default function AttendanceLogs() {
                               <button
                                 onClick={() => handleApprove(request.id)}
                                 className="px-3 sm:px-4 py-2 text-white border border-black rounded-lg text-xs sm:text-sm font-medium transition-colors"
-                                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                style={{ backgroundColor: colors.primary }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                               >
                                 Approve
                               </button>

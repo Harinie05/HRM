@@ -42,6 +42,23 @@ export default function TrainingApplications() {
       fetchProgram();
       fetchApplications();
     }
+    
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
   }, [programId]);
 
   const fetchProgram = async () => {
@@ -200,7 +217,12 @@ export default function TrainingApplications() {
                 console.log('Send Email button clicked!');
                 setShowEmailModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               <Send className="w-4 h-4" />
               Send Email
@@ -313,7 +335,12 @@ export default function TrainingApplications() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleStatusUpdate(application.id, "Accepted")}
-                            className="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
+                            className="px-3 py-1 text-white text-sm rounded-lg transition-colors"
+                            style={{
+                              backgroundColor: 'var(--primary-color)'
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                           >
                             Accept
                           </button>
@@ -382,7 +409,12 @@ export default function TrainingApplications() {
               </button>
               <button
                 onClick={handleSendEmails}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
               >
                 <Send className="w-4 h-4" />
                 Send Emails

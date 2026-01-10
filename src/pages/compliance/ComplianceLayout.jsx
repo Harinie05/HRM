@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Shield } from "lucide-react";
 import Layout from "../../components/Layout";
@@ -8,6 +8,7 @@ import LabourRegister from "./LabourRegister";
 import LeaveCompliance from "./LeaveCompliance";
 import NABHCompliance from "./NABHCompliance";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import api from "../../api";
 
 export default function ComplianceLayout() {
   const location = useLocation();
@@ -27,6 +28,23 @@ export default function ComplianceLayout() {
   const initialTab = location.state?.tab || "Statutory Rules";
   const validInitialTab = tabs.includes(initialTab) ? initialTab : tabs[0];
   const [tab, setTab] = useState(validInitialTab);
+
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
 
   return (
     <Layout>
@@ -63,6 +81,22 @@ export default function ComplianceLayout() {
                         ? "bg-white text-gray-900 shadow-sm" 
                         : "text-gray-600 hover:text-gray-900"
                     }`}
+                    style={tab === tabName ? {
+                      backgroundColor: 'var(--primary-color, #2862e9)',
+                      color: 'white'
+                    } : {}}
+                    onMouseEnter={(e) => {
+                      if (tab !== tabName) {
+                        e.target.style.backgroundColor = 'var(--secondary-color, #474e71)';
+                        e.target.style.color = 'white';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (tab !== tabName) {
+                        e.target.style.backgroundColor = '';
+                        e.target.style.color = '';
+                      }
+                    }}
                   >
                     {tabName}
                   </button>

@@ -16,6 +16,8 @@ const QualityIndicators = () => {
   const [editingIndicator, setEditingIndicator] = useState(null);
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const [indicatorForm, setIndicatorForm] = useState({
     kpi_name: '',
@@ -40,10 +42,31 @@ const QualityIndicators = () => {
   const frequencies = ['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'];
 
   useEffect(() => {
+    fetchColors();
     fetchData();
     // Seed departments on page load
     seedDepartments();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const seedDepartments = async () => {
     try {
@@ -315,9 +338,14 @@ const QualityIndicators = () => {
             onClick={() => setActiveTab('manage')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'manage'
-                ? 'border-black text-black'
+                ? 'text-white'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
+            style={{
+              borderBottomColor: activeTab === 'manage' ? colors.primary : 'transparent',
+              backgroundColor: activeTab === 'manage' ? colors.primary : 'transparent',
+              color: activeTab === 'manage' ? 'white' : '#6b7280'
+            }}
           >
             Manage KPIs
           </button>
@@ -325,9 +353,14 @@ const QualityIndicators = () => {
             onClick={() => setActiveTab('records')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'records'
-                ? 'border-black text-black'
+                ? 'text-white'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
+            style={{
+              borderBottomColor: activeTab === 'records' ? colors.primary : 'transparent',
+              backgroundColor: activeTab === 'records' ? colors.primary : 'transparent',
+              color: activeTab === 'records' ? 'white' : '#6b7280'
+            }}
           >
             KPI Records
           </button>
@@ -338,10 +371,41 @@ const QualityIndicators = () => {
       {activeTab === 'manage' && (
         <div>
           <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Quality Indicators</h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-semibold">Quality Indicators</h2>
+              <button
+                onClick={() => setShowDeleted(!showDeleted)}
+                className="px-3 py-1 rounded-md text-sm transition-colors"
+                style={{
+                  backgroundColor: showDeleted ? colors.primary : 'transparent',
+                  color: showDeleted ? 'white' : colors.primary,
+                  border: `1px solid ${colors.primary}`
+                }}
+                onMouseEnter={(e) => {
+                  if (!showDeleted) {
+                    e.target.style.backgroundColor = colors.secondary;
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!showDeleted) {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = colors.primary;
+                  }
+                }}
+              >
+                Show Deleted (1)
+              </button>
+            </div>
             <button
               onClick={() => setShowIndicatorForm(true)}
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
+              className="text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              style={{
+                backgroundColor: colors.primary,
+                borderColor: colors.primary
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             >
               <Plus className="w-4 h-4" />
               Add Quality Indicator
@@ -441,7 +505,13 @@ const QualityIndicators = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black"
+                    className="text-white px-4 py-2 rounded-md transition-colors"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderColor: colors.primary
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                   >
                     {loading ? 'Saving...' : editingIndicator ? 'Update' : 'Save'}
                   </button>
@@ -527,7 +597,19 @@ const QualityIndicators = () => {
             <h2 className="text-lg font-semibold">KPI Records</h2>
             <button
               onClick={() => setShowRecordForm(true)}
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
+              className="text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors border"
+              style={{
+                backgroundColor: colors.primary,
+                borderColor: colors.primary
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = colors.secondary;
+                e.target.style.borderColor = colors.secondary;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = colors.primary;
+                e.target.style.borderColor = colors.primary;
+              }}
             >
               <Plus className="w-4 h-4" />
               Add KPI Record
@@ -601,7 +683,13 @@ const QualityIndicators = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black"
+                    className="text-white px-4 py-2 rounded-md transition-colors"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderColor: colors.primary
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                   >
                     {loading ? 'Saving...' : editingRecord ? 'Update' : 'Save'}
                   </button>

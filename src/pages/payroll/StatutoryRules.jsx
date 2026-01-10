@@ -7,6 +7,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function StatutoryRules() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [form, setForm] = useState({
     pf_enabled: true,
     pf_percent: "12",
@@ -23,6 +24,21 @@ export default function StatutoryRules() {
   // Permission checks
   const canView = isAdmin() || hasPermission("view_statutory_rules");
   const canEdit = isAdmin() || hasPermission("edit_statutory_rule");
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const res = await api.get(`/auth/branding/${tenantCode}`);
+        setColors({
+          primary: res.data.primary_color || '#2862e9',
+          secondary: res.data.secondary_color || '#474e71'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch colors:', err);
+    }
+  };
 
   if (!canView) {
     return (
@@ -58,6 +74,7 @@ export default function StatutoryRules() {
 
   useEffect(() => {
     fetchRules();
+    fetchColors();
   }, []);
 
   const submit = async () => {
@@ -236,7 +253,10 @@ export default function StatutoryRules() {
         <div className="mt-8 flex justify-center sm:justify-end">
           <button
             onClick={submit}
-            className="px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 text-sm border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+            className="px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 text-sm border border-black w-full sm:w-auto justify-center text-white"
+            style={{ backgroundColor: colors.primary }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

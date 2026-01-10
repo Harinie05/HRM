@@ -6,6 +6,7 @@ import useToast from "../../utils/useToast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Payslips() {
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [payslips, setPayslips] = useState([]);
@@ -24,6 +25,21 @@ export default function Payslips() {
   const canGenerate = isAdmin() || hasPermission("generate_salary_slips");
   const canDownload = isAdmin() || hasPermission("download_salary_slips") || hasPermission("view_self");
   const canEmail = isAdmin() || hasPermission("email_salary_slips");
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const res = await api.get(`/auth/branding/${tenantCode}`);
+        setColors({
+          primary: res.data.primary_color || '#2862e9',
+          secondary: res.data.secondary_color || '#474e71'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch colors:', err);
+    }
+  };
 
   if (!canView) {
     return (
@@ -44,6 +60,7 @@ export default function Payslips() {
   useEffect(() => {
     fetchEmployees();
     fetchPayrollRuns();
+    fetchColors();
   }, []);
 
   const fetchEmployees = async () => {
@@ -391,7 +408,10 @@ export default function Payslips() {
             <button 
               onClick={handleGeneratePayslips}
               disabled={loading}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: colors.primary }}
             >
               <FileText size={18} />
               {loading ? "Generating..." : "Generate Payslips"}
@@ -401,7 +421,10 @@ export default function Payslips() {
             <button 
               onClick={handleSendEmail}
               disabled={loading}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: colors.primary }}
             >
               <Send size={18} />
               {loading ? "Sending..." : "Send via Email"}
@@ -518,7 +541,10 @@ export default function Payslips() {
                           <div className="mt-6">
                             <button 
                               onClick={handleGeneratePayslips}
-                              className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                              className="text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                              style={{ backgroundColor: colors.primary }}
                             >
                               <FileText size={16} />
                               Generate First Payslip
@@ -601,7 +627,10 @@ export default function Payslips() {
                   <div className="mt-6">
                     <button 
                       onClick={handleGeneratePayslips}
-                      className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                      className="text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors border border-black"
+                      style={{ backgroundColor: colors.primary }}
                     >
                       <FileText size={16} />
                       Generate First Payslip
@@ -741,7 +770,10 @@ export default function Payslips() {
                     }
                   }}
                   disabled={loading}
-                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-xl disabled:opacity-50"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  className="flex-1 text-white px-4 py-2 rounded-xl disabled:opacity-50"
+                  style={{ backgroundColor: colors.primary }}
                 >
                   {loading ? 'Sending...' : 'Send Email'}
                 </button>
@@ -863,10 +895,10 @@ export default function Payslips() {
               <div className="flex gap-4 mt-6">
                 <button
                   onClick={() => handleDownloadPayslip(selectedPayslip)}
-                  className="flex-1 px-4 py-2 text-white text-white rounded-lg hover:text-white flex items-center justify-center gap-2"
-                  style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  className="flex-1 px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2"
+                  style={{ backgroundColor: colors.primary }}
                 >
                   <Download size={16} />
                   Download Payslip

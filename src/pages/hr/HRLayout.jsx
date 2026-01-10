@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Users } from "lucide-react";
 import Layout from "../../components/Layout";
 import { hasPermission, isAdmin } from "../../utils/permissions";
+import api from "../../api";
 import Insurance from "./Insurance";
 import Lifecycle from "./Lifecycle";
 import Communication from "./Communication";
@@ -12,6 +13,7 @@ import StaffScheduling from "./StaffScheduling";
 
 export default function HRLayout() {
   const location = useLocation();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   const allTabs = [
     { name: "Lifecycle Actions", permission: "view_lifecycle_actions" },
@@ -26,6 +28,30 @@ export default function HRLayout() {
   
   const initialTab = location.state?.tab && tabs.includes(location.state.tab) ? location.state.tab : tabs[0];
   const [tab, setTab] = useState(initialTab);
+
+  useEffect(() => {
+    fetchColors();
+  }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   if (tabs.length === 0) {
     return (
@@ -84,11 +110,24 @@ export default function HRLayout() {
                     <button
                       key={tabName}
                       onClick={() => setTab(tabName)}
-                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                        tab === tabName
-                          ? "bg-white text-gray-900 shadow-sm border border-gray-300"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0`}
+                      style={{
+                        backgroundColor: tab === tabName ? colors.primary : 'transparent',
+                        borderColor: tab === tabName ? colors.primary : 'transparent',
+                        color: tab === tabName ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (tab !== tabName) {
+                          e.target.style.backgroundColor = colors.secondary;
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (tab !== tabName) {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
                     >
                       {tabName}
                     </button>

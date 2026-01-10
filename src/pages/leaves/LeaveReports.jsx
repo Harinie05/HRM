@@ -7,6 +7,7 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveReports() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   // Check if user has permission to view leave reports
   if (!hasPermission("view_leave_reports")) {
     return (
@@ -45,10 +46,31 @@ export default function LeaveReports() {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
+    fetchColors();
     fetchReport();
     fetchDepartments();
     fetchEmployees();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   useEffect(() => {
     fetchReport();
@@ -266,13 +288,10 @@ export default function LeaveReports() {
             {hasPermission("export_leave_reports") && (
               <button 
                 onClick={exportToCSV}
+                style={{ backgroundColor: colors.primary, borderColor: colors.primary }}
                 className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 font-semibold border"
-                style={{ 
-                  backgroundColor: 'var(--primary-color, #4575b5)',
-                  borderColor: 'var(--primary-color, #4575b5)'
-                }}
-                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
               >
                 <Download size={18} />
                 Export CSV
@@ -413,7 +432,7 @@ export default function LeaveReports() {
                           {dept.total}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white text-green-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                             {dept.approved}
                           </span>
                         </td>
@@ -431,9 +450,8 @@ export default function LeaveReports() {
                           <div className="flex items-center">
                             <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                               <div 
-                                className="text-white h-2 rounded-full"
+                                className="bg-green-600 h-2 rounded-full"
                                 style={{ 
-                                  backgroundColor: 'var(--primary-color, #4575b5)',
                                   width: `${approvalRate}%`
                                 }}
                               ></div>
@@ -480,7 +498,7 @@ export default function LeaveReports() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-900">Approved:</span>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold text-white text-green-800" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                           {dept.approved}
                         </span>
                       </div>
@@ -503,9 +521,8 @@ export default function LeaveReports() {
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div 
-                            className="text-white h-2 rounded-full"
+                            className="bg-green-600 h-2 rounded-full"
                             style={{ 
-                              backgroundColor: 'var(--primary-color, #4575b5)',
                               width: `${approvalRate}%`
                             }}
                           ></div>

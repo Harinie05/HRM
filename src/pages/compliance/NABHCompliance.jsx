@@ -74,6 +74,20 @@ export default function NABHCompliance() {
 
   // Load NABH compliance data
   useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+
     async function fetchData() {
       try {
         const tenant = localStorage.getItem("tenant_db");
@@ -702,7 +716,10 @@ export default function NABHCompliance() {
           <div className="text-center">
             <button
               type="submit"
-              className="bg-gray-800 px-8 py-3 text-white rounded-lg border border-black hover:bg-gray-900 transition-colors text-lg"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="px-8 py-3 text-white rounded-lg border border-black transition-colors text-lg"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               Save NABH Compliance Record
             </button>

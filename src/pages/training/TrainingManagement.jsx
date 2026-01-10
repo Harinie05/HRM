@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BookOpen, Users, Calendar, Award, BarChart } from "lucide-react";
 import Layout from "../../components/Layout";
+import { useEffect } from "react";
 
 // Module Components
 import SkillDevelopment from "./SkillDevelopment";
@@ -11,6 +12,25 @@ import TrainingAnalytics from "./TrainingAnalytics";
 
 export default function TrainingManagement() {
   const [activeModule, setActiveModule] = useState("Skill Development");
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
+  }, []);
 
   const modules = [
     {
@@ -85,14 +105,26 @@ export default function TrainingManagement() {
                     ? "border-blue-500 bg-blue-50 shadow-md"
                     : "border-black bg-white hover:shadow-md hover:border-gray-400"
                 }`}
+                style={activeModule === module.name ? {
+                  borderColor: 'var(--primary-color)',
+                  backgroundColor: 'var(--primary-color)15'
+                } : {}}
               >
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     activeModule === module.name ? "bg-blue-100" : "bg-gray-100"
-                  }`}>
+                  }`}
+                    style={activeModule === module.name ? {
+                      backgroundColor: 'var(--primary-color)25'
+                    } : {}}
+                  >
                     <IconComponent className={`w-6 h-6 ${
                       activeModule === module.name ? "text-blue-600" : "text-gray-600"
-                    }`} />
+                    }`}
+                      style={activeModule === module.name ? {
+                        color: 'var(--primary-color)'
+                      } : {}}
+                    />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900 text-sm">{module.name}</h3>

@@ -21,7 +21,7 @@ router = APIRouter(
     tags=["Payroll - Reports"]
 )
 
-@router.get("/summary")
+@router.get("/reports/summary")
 def payroll_summary(
     request: Request,
     db: Session = Depends(get_tenant_db),

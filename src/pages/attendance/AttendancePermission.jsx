@@ -8,6 +8,7 @@ export default function AttendancePermission() {
   const [list, setList] = useState([]);
   const [employees, setEmployees] = useState([]);
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
 
   const [form, setForm] = useState({
     employee_id: localStorage.getItem("user_id"),
@@ -93,9 +94,28 @@ export default function AttendancePermission() {
   };
 
   useEffect(() => {
+    fetchColors();
     fetchList();
     fetchEmployees();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const submit = async () => {
     if (!canApply) {
@@ -209,7 +229,13 @@ export default function AttendancePermission() {
           className="border p-2 w-full rounded"
         />
 
-        <button onClick={submit} className="bg-black text-white px-4 py-2 rounded">
+        <button 
+          onClick={submit} 
+          className="text-white px-4 py-2 rounded transition-colors"
+          style={{ backgroundColor: colors.primary }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+        >
           Submit
         </button>
       </div>
@@ -233,13 +259,16 @@ export default function AttendancePermission() {
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => updateStatus(r.id, "approve")}
-                    className="bg-green-600 text-white px-3 py-1 rounded"
+                    className="text-white px-3 py-1 rounded transition-colors"
+                    style={{ backgroundColor: colors.primary }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => updateStatus(r.id, "reject")}
-                    className="bg-red-600 text-white px-3 py-1 rounded"
+                    className="bg-white hover:bg-gray-100 text-black border border-black px-3 py-1 rounded"
                   >
                     Reject
                   </button>

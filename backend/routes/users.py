@@ -9,6 +9,8 @@ from database import logger
 from passlib.context import CryptContext
 from utils.permission import require_permission
 from utils.audit_logger import audit_crud
+import random
+import string
 
 # 🔐 added for token authentication
 from routes.hospital import get_current_user
@@ -22,6 +24,16 @@ def get_hospital_by_db(db: Session, tenant_db: str):
     if not hospital:
         raise HTTPException(404, "Hospital not found")
     return hospital
+
+def generate_unique_login_code(tdb: Session) -> str:
+    """Generate a unique 6-digit login code"""
+    while True:
+        # Generate 6-digit code
+        code = ''.join(random.choices(string.digits, k=6))
+        # Check if code already exists
+        existing = tdb.query(User).filter(User.login_code == code).first()
+        if not existing:
+            return code
 
 # ============================================================
 # CREATE USER 🔒 Protected
@@ -81,13 +93,18 @@ def create_user(
                 raise HTTPException(400, f"Department with id {payload.department_id} not found. Available departments: {dept_list}")
 
             hashed_pwd = pwd_context.hash(payload.password)
+            
+            # Generate unique login code
+            login_code = generate_unique_login_code(tdb)
 
             new_user = User(
                 name=payload.name,
                 email=payload.email,
                 password=hashed_pwd,
                 role_id=payload.role_id,
-                department_id=payload.department_id
+                department_id=payload.department_id,
+                login_code=login_code,
+                two_factor_enabled=payload.two_factor_enabled or False
             )
 
             tdb.add(new_user)
@@ -100,8 +117,9 @@ def create_user(
             logger.info(f"User {payload.email} created successfully with ID {new_user.id}")
             return {
                 "detail": "User created successfully", 
-                "message": f"User '{payload.name}' has been created successfully",
+                "message": f"User '{payload.name}' has been created successfully with login code: {login_code}",
                 "user_id": new_user.id,
+                "login_code": login_code,
                 "success": True
             }
     except HTTPException:
@@ -188,6 +206,8 @@ def list_users(
                 "designation": getattr(u, 'designation', None),
                 "joining_date": str(getattr(u, 'joining_date', None)) if getattr(u, 'joining_date', None) else None,
                 "status": getattr(u, 'status', 'Active'),
+                "login_code": getattr(u, 'login_code', None),
+                "two_factor_enabled": getattr(u, 'two_factor_enabled', False),
                 "is_employee": bool(employee_code),
                 "created_at": str(u.created_at)
             })
@@ -348,6 +368,8 @@ def update_user(
             setattr(existing_user, 'department_id', payload.department_id)
         if payload.password is not None:
             setattr(existing_user, 'password', pwd_context.hash(payload.password))
+        if payload.two_factor_enabled is not None:
+            setattr(existing_user, 'two_factor_enabled', payload.two_factor_enabled)
 
         tdb.commit()
         

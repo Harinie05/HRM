@@ -7,6 +7,7 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveCalendar() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   // Check if user has permission to view leave calendar
   if (!hasPermission("view_leave_calendar")) {
     return (
@@ -56,11 +57,32 @@ export default function LeaveCalendar() {
   ];
 
   useEffect(() => {
+    fetchColors();
     fetchLeaves();
     fetchEmployees();
     fetchDepartments();
     fetchHolidays();
   }, [currentDate]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchLeaves = async () => {
     try {
@@ -367,7 +389,10 @@ export default function LeaveCalendar() {
           </div>
           <button 
             onClick={() => setCurrentDate(new Date())}
-            className="px-6 py-3 text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            style={{ backgroundColor: colors.primary }}
+            className="px-6 py-3 text-sm text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
           >
             Today
           </button>
@@ -397,10 +422,7 @@ export default function LeaveCalendar() {
                     )}
                     {getLeaveForDay(day).length > 0 && (
                       <div 
-                        className="text-xs p-2 rounded text-white text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
-                        style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                        onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                        onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                        className="text-xs p-2 rounded bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200 text-center font-medium"
                         onClick={() => {
                           setSelectedDayLeaves(getLeaveForDay(day));
                           setShowLeaveModal(true);
@@ -443,10 +465,7 @@ export default function LeaveCalendar() {
                   )}
                   {isCurrentMonth && getLeaveForDay(day).length > 0 && (
                     <div 
-                      className="text-xs p-2 rounded text-white text-green-800 cursor-pointer hover:bg-green-200 text-center font-medium"
-                      style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                      onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                      onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                      className="text-xs p-2 rounded bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200 text-center font-medium"
                       onClick={() => {
                         setSelectedDayLeaves(getLeaveForDay(day));
                         setShowLeaveModal(true);
@@ -475,7 +494,7 @@ export default function LeaveCalendar() {
                 leaves.map((leave, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border border-black rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 text-white rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <Calendar size={20} className="text-blue-600" />
                       </div>
                       <div>
@@ -504,7 +523,7 @@ export default function LeaveCalendar() {
       <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-100">
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 text-white rounded" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}></div>
+            <div className="w-3 h-3 bg-blue-600 rounded"></div>
             <span className="font-medium text-gray-700">Approved</span>
           </div>
           <div className="flex items-center gap-2">

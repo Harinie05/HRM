@@ -16,6 +16,23 @@ export default function ClearanceWorkflow() {
   const canManageAdmin = isAdmin() || hasPermission('admin_clearance');
   const canConductInterview = isAdmin() || hasPermission('conduct_exit_interview');
   
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
+  
   if (!canView) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -331,7 +348,10 @@ export default function ClearanceWorkflow() {
                   {!selectedExit.exit_interview_completed && areAllClearancesCompleted() && canConductInterview && (
                     <button
                       onClick={() => setShowInterviewForm(true)}
-                      className="bg-gray-800 px-3 sm:px-4 py-2 text-white text-xs sm:text-sm rounded-xl border border-black hover:bg-gray-900 font-semibold transition-all duration-200 whitespace-nowrap"
+                      style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                      className="px-3 sm:px-4 py-2 text-white text-xs sm:text-sm rounded-xl border border-black font-semibold transition-all duration-200 whitespace-nowrap"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Conduct Exit Interview
                     </button>
@@ -386,7 +406,10 @@ export default function ClearanceWorkflow() {
                               {clearance.status === 'Pending' && canManage && (
                                 <button
                                   onClick={() => handleApproveClearance(clearance.id)}
-                                  className="text-gray-800 hover:text-gray-900 text-xs sm:text-sm px-3 sm:px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200 whitespace-nowrap"
+                                  style={{ backgroundColor: 'var(--primary-color, #2862e9)', borderColor: 'var(--primary-color, #2862e9)' }}
+                                  className="text-white text-xs sm:text-sm px-3 sm:px-4 py-2 border rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 >
                                   Mark Completed
                                 </button>
@@ -442,7 +465,10 @@ export default function ClearanceWorkflow() {
                               {currentStatus === 'Pending' && canManage && (
                                 <button
                                   onClick={() => updateDepartmentClearance(selectedExit.id, clearance.department, 'Completed')}
-                                  className="text-gray-800 hover:text-gray-900 text-xs sm:text-sm px-3 sm:px-4 py-2 border border-black rounded-xl hover:bg-gray-100 font-medium transition-all duration-200 whitespace-nowrap"
+                                  style={{ backgroundColor: 'var(--primary-color, #2862e9)', borderColor: 'var(--primary-color, #2862e9)' }}
+                                  className="text-white text-xs sm:text-sm px-3 sm:px-4 py-2 border rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                                 >
                                   Mark Completed
                                 </button>
@@ -570,7 +596,10 @@ export default function ClearanceWorkflow() {
               <div className="flex gap-4 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-xl border border-black hover:bg-gray-900 font-semibold transition-all duration-200"
+                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                  className="flex-1 text-white px-6 py-3 rounded-xl border border-black font-semibold transition-all duration-200"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 >
                   Complete Interview
                 </button>

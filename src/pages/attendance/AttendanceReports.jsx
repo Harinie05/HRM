@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -8,6 +8,31 @@ import Toast from "../../components/Toast";
 export default function AttendanceReports() {
   const [report, setReport] = useState([]);
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchColors();
+  }, []);
 
   const loadDaily = async () => {
     try {
@@ -71,11 +96,11 @@ export default function AttendanceReports() {
                   onClick={loadDaily}
                   className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 text-white shadow-sm mr-2 border"
                   style={{ 
-                    backgroundColor: 'var(--primary-color, #4575b5)',
-                    borderColor: 'var(--primary-color, #4575b5)'
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
                   }}
-                  onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                  onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                  onMouseEnter={(e) => { e.target.style.backgroundColor = colors.secondary; }}
+                  onMouseLeave={(e) => { e.target.style.backgroundColor = colors.primary; }}
                 >
                   Daily Report
                 </button>
@@ -83,16 +108,16 @@ export default function AttendanceReports() {
                   onClick={loadMonthly}
                   className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 border"
                   style={{
-                    color: 'var(--secondary-color, #474e71)',
-                    borderColor: 'var(--primary-color, #4575b5)'
+                    color: colors.secondary,
+                    borderColor: colors.primary
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    e.target.style.backgroundColor = colors.primary;
                     e.target.style.color = 'white';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = 'var(--secondary-color, #474e71)';
+                    e.target.style.color = colors.secondary;
                   }}
                 >
                   Monthly Report

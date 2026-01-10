@@ -8,6 +8,7 @@ import { hasPermission, isAdmin } from '../../utils/permissions';
 
 const AttendanceDashboard = () => {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Permission checks
   const canViewAttendance = isAdmin() || hasPermission('view_attendance');
@@ -40,8 +41,29 @@ const AttendanceDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchColors();
     fetchAttendanceData();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchAttendanceData = async () => {
     try {
@@ -292,7 +314,7 @@ const AttendanceDashboard = () => {
                   <span className="font-medium text-gray-700 text-sm sm:text-base">{dept.name}</span>
                   <div className="flex items-center space-x-3">
                     <div className="w-20 sm:w-24 bg-gray-200 border border-black rounded-full h-2">
-                      <div className="bg-gray-600 h-2 rounded-full transition-all duration-300" style={{width: `${dept.attendance}%`}}></div>
+                      <div className="h-2 rounded-full transition-all duration-300" style={{backgroundColor: colors.primary, width: `${dept.attendance}%`}}></div>
                     </div>
                     <span className="text-sm font-semibold text-gray-900 w-8 sm:w-10 text-right">{dept.attendance}%</span>
                   </div>

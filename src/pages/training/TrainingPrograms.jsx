@@ -53,6 +53,23 @@ export default function TrainingPrograms() {
   useEffect(() => {
     fetchPrograms();
     
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
+    
     const handleClickOutside = (event) => {
       if (!event.target.closest('.link-dropdown')) {
         setOpenLinkMenu(null);
@@ -192,7 +209,12 @@ export default function TrainingPrograms() {
           {canAdd && (
             <button 
               onClick={() => handleOpenModal()}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               New Program
@@ -257,7 +279,12 @@ export default function TrainingPrograms() {
                           <div className="mt-6">
                             <button 
                               onClick={() => handleOpenModal()}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
+                              className="text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto transition-colors"
+                              style={{
+                                backgroundColor: 'var(--primary-color)'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                             >
                               <Plus size={16} />
                               Create First Program
@@ -649,7 +676,12 @@ export default function TrainingPrograms() {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="flex-1 px-4 py-2 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color)')}
+                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color)')}
               >
                 {loading ? "Saving..." : (editingProgram ? "Update Program" : "Create Program")}
               </button>

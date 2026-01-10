@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogOut } from "lucide-react";
 import Layout from "../../components/Layout";
 import { ResponsiveContainer, ResponsiveHeader, ResponsiveTabs, ResponsiveCard } from "../../components/ResponsiveUtils";
@@ -7,6 +7,7 @@ import ResignationTrackingEnhanced from "./ResignationTrackingEnhanced";
 import ClearanceWorkflow from "./ClearanceWorkflow";
 import SettlementDocuments from "./SettlementDocuments";
 import KnowledgeTransfer from "./KnowledgeTransfer";
+import api from "../../api";
 
 export default function ExitLayout() {
   const allTabs = [
@@ -18,6 +19,29 @@ export default function ExitLayout() {
 
   const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [brandingColors, setBrandingColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          setBrandingColors({
+            primary: response.data.primary_color || '#2862e9',
+            secondary: response.data.secondary_color || '#474e71'
+          });
+          // Apply colors to CSS custom properties
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
 
   if (tabs.length === 0) {
     return (
@@ -145,6 +169,22 @@ export default function ExitLayout() {
                         ? "bg-white text-gray-900 shadow-sm" 
                         : "text-gray-600 hover:text-gray-900"
                     }`}
+                    style={activeTab === tabName ? {
+                      backgroundColor: 'var(--primary-color, #2862e9)',
+                      color: 'white'
+                    } : {}}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== tabName) {
+                        e.target.style.backgroundColor = 'var(--secondary-color, #474e71)';
+                        e.target.style.color = 'white';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== tabName) {
+                        e.target.style.backgroundColor = '';
+                        e.target.style.color = '';
+                      }
+                    }}
                   >
                     {tabName}
                   </button>

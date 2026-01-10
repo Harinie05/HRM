@@ -23,6 +23,7 @@ export default function ShiftRoster() {
   const [viewMode, setViewMode] = useState("week"); // week or month
   const [currentDate, setCurrentDate] = useState(new Date());
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [bulkDateRange, setBulkDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -74,6 +75,7 @@ export default function ShiftRoster() {
       await fetchEmployees(); // Then fetch employees so department lookup works
     };
     
+    fetchColors();
     fetchShifts();
     fetchData();
     fetchNightShiftRules();
@@ -82,6 +84,26 @@ export default function ShiftRoster() {
     fetchOnCallDuties();
     fetchEmergencyCalls();
   }, [showInactiveShifts]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {

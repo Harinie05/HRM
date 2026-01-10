@@ -53,6 +53,20 @@ export default function Statutory() {
 
   // Load statutory rules and calculations
   useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+
     async function fetchData() {
       try {
         const tenant = localStorage.getItem("tenant_db");
@@ -600,7 +614,10 @@ export default function Statutory() {
           <div className="col-span-2 flex gap-4">
             <button
               type="submit"
-              className="bg-gray-800 px-6 py-2 text-white rounded-lg border border-black hover:bg-gray-900 transition-colors"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               {editingRecord ? 'Update' : 'Calculate & Save'} Statutory Deductions
             </button>
@@ -608,7 +625,10 @@ export default function Statutory() {
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="bg-gray-600 px-6 py-2 text-white rounded-lg border border-black hover:bg-gray-700 transition-colors"
+                style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+                className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
                 Cancel Edit
               </button>

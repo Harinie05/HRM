@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Shield, FileText, AlertTriangle, CheckCircle, Clock, Users, Calendar, TrendingUp } from 'lucide-react';
 import useToast from '../../utils/useToast';
 import Toast from '../../components/Toast';
+import api from '../../api';
 
 const ComplianceDashboard = () => {
   const { toast, showToast, hideToast } = useToast();
+
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
 
   const handleTakeAction = () => {
     showToast('Action initiated successfully!', 'success');
@@ -178,7 +196,10 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-red-700">File overdue Professional Tax return immediately</div>
             <button 
               onClick={handleTakeAction}
-              className="mt-2 bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="mt-2 text-white px-3 py-1 rounded text-xs transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
               Take Action
             </button>
@@ -188,7 +209,10 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-yellow-700">Update overtime register for December 2024</div>
             <button 
               onClick={handleUpdateNow}
-              className="mt-2 bg-yellow-600 text-white px-3 py-1 rounded text-xs hover:bg-yellow-700"
+              style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+              className="mt-2 text-white px-3 py-1 rounded text-xs transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
             >
               Update Now
             </button>

@@ -6,6 +6,7 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function Insurance() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Permission checks
   const canView = hasPermission('view_insurance_benefits');
@@ -41,10 +42,31 @@ export default function Insurance() {
   const [stats, setStats] = useState({ total: 0, active: 0, expiring_soon: 0, expired: 0 });
 
   useEffect(() => {
+    fetchColors();
     fetchEmployees();
     fetchPolicies();
     fetchStats();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchEmployees = async () => {
     try {
@@ -264,7 +286,13 @@ export default function Insurance() {
               <div className="mt-4 sm:mt-6 flex justify-end">
                 <button 
                   type="submit"
-                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                  className="w-full sm:w-auto px-6 py-2 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   Add Policy
                 </button>

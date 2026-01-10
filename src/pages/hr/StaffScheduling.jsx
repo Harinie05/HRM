@@ -11,6 +11,7 @@ export default function StaffScheduling() {
   const canAdd = hasPermission('add_staff_schedule');
   const canEdit = hasPermission('edit_staff_schedule');
   const canDelete = hasPermission('delete_staff_schedule');
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   if (!canView) {
     return (
@@ -60,10 +61,31 @@ export default function StaffScheduling() {
   });
 
   useEffect(() => {
+    fetchColors();
     fetchPatientLoads();
     fetchStaffAllocations();
     fetchDepartments();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchPatientLoads = async () => {
     try {
@@ -382,7 +404,13 @@ export default function StaffScheduling() {
               <div className="md:col-span-3">
                 <button
                   type="submit"
-                  className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 w-full md:w-auto border border-black"
+                  className="text-white px-6 py-2 rounded-md w-full md:w-auto transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   {editingLoad ? 'Update Patient Load' : 'Record Patient Load'}
                 </button>
@@ -511,7 +539,13 @@ export default function StaffScheduling() {
               <div className="md:col-span-3">
                 <button
                   type="submit"
-                  className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 w-full md:w-auto border border-black"
+                  className="text-white px-6 py-2 rounded-md w-full md:w-auto transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   {editingAllocation ? 'Update Staff Allocation' : 'Create Staff Allocation'}
                 </button>

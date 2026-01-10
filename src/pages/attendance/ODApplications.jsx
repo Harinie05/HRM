@@ -10,6 +10,7 @@ export default function ODApplications() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Permission checks
   const canViewOdApplications = isAdmin() || hasPermission('view_od_applications');
@@ -42,10 +43,31 @@ export default function ODApplications() {
   const [currentUserInfo, setCurrentUserInfo] = useState(null);
 
   useEffect(() => {
+    fetchColors();
     fetchCurrentUserInfo();
     fetchApplications();
     fetchEmployees();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchCurrentUserInfo = async () => {
     try {
@@ -172,9 +194,9 @@ export default function ODApplications() {
             <button 
               onClick={() => setShowModal(true)}
               className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors text-sm whitespace-nowrap"
-              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+              style={{ backgroundColor: colors.primary }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             >
               <Plus size={16} />
               Apply OD
@@ -256,9 +278,9 @@ export default function ODApplications() {
                               <button 
                                 onClick={() => handleApprove(app.id)}
                                 className="text-white px-2 py-1 rounded text-xs transition-colors"
-                                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                style={{ backgroundColor: colors.primary }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                                 title="Approve"
                               >
                                 Approve
@@ -329,9 +351,9 @@ export default function ODApplications() {
                         <button 
                           onClick={() => handleApprove(app.id)}
                           className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded transition-colors"
-                          style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                          style={{ backgroundColor: colors.primary }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                         >
                           Approve
                         </button>
@@ -463,12 +485,12 @@ export default function ODApplications() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 text-white rounded-lg disabled:bg-gray-400 text-sm transition-colors"
-                  style={{ backgroundColor: loading ? '#9ca3af' : 'var(--primary-color, #2862e9)' }}
-                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  className="flex-1 px-4 py-2 text-white rounded-lg text-sm transition-colors"
+                  style={{ backgroundColor: loading ? '#9ca3af' : colors.primary }}
+                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = colors.secondary)}
+                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = colors.primary)}
                 >
-                  {loading ? "Submitting..." : "Submit"}
+                  {loading ? "Submitting..." : "Submit Application"}
                 </button>
               </div>
             </form>

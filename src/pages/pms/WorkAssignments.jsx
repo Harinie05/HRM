@@ -55,6 +55,23 @@ export default function WorkAssignments() {
   useEffect(() => {
     createSampleData();
     fetchData();
+    
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
   }, [showDeleted]);
 
   const createSampleData = async () => {
@@ -291,24 +308,15 @@ export default function WorkAssignments() {
               Hide Deleted
             </button>
           )}
-          <button
-            onClick={async () => {
-              try {
-                const response = await api.get("/api/pms/debug/user-info");
-                console.log("Debug info:", response.data);
-                alert("Check console for debug info");
-              } catch (error) {
-                console.error("Debug error:", error);
-              }
-            }}
-            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
-          >
-            Debug
-          </button>
           {(hasPermission('add_work_assignment') || isAdmin()) && (
             <button
               onClick={() => setShowModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm whitespace-nowrap transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               New Assignment

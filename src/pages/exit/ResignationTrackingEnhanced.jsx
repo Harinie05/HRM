@@ -539,8 +539,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Handover Status</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
                           value={resignation.handover_status || 'Pending'}
+                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
+                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Handover Pending</option>
                           <option value="In Progress">Handover In Progress</option>
@@ -554,8 +557,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Clearance Status</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
                           value={resignation.clearance_status || 'Pending'}
+                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
+                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Clearance Pending</option>
                           <option value="In Progress">Clearance In Progress</option>
@@ -569,8 +575,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Asset Return</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
                           value={resignation.asset_return_status || 'Pending'}
+                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
+                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Assets Pending</option>
                           <option value="Completed">Assets Returned</option>
@@ -583,8 +592,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Final Settlement</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
                           value={resignation.final_settlement_status || 'Pending'}
+                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
+                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Settlement Pending</option>
                           <option value="Completed">Settlement Done</option>

@@ -66,6 +66,23 @@ export default function Feedback() {
   useEffect(() => {
     fetchEmployees();
     fetchFeedbacks();
+    
+    const fetchColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
+            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch branding colors:', error);
+      }
+    };
+    fetchColors();
   }, [showDeleted]);
 
   const fetchFeedbacks = async () => {
@@ -301,8 +318,13 @@ export default function Feedback() {
           )}
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 border border-black flex items-center gap-2 text-sm sm:text-base w-fit"
-            style={{ display: (hasPermission('give_feedback') || isAdmin()) ? 'flex' : 'none' }}
+            className="text-white px-4 py-2 rounded-lg border border-black flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
+            style={{
+              backgroundColor: 'var(--primary-color)',
+              display: (hasPermission('give_feedback') || isAdmin()) ? 'flex' : 'none'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
           >
             <Plus className="w-4 h-4" />
             Give Feedback
@@ -478,7 +500,12 @@ export default function Feedback() {
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 border border-black text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
               >
                 {editingFeedback ? 'Update Feedback' : 'Submit Feedback'}
               </button>
@@ -545,7 +572,12 @@ export default function Feedback() {
                   setShowViewModal(false);
                   setViewFeedback(null);
                 }}
-                className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 border border-black text-sm sm:text-base"
+                className="px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                style={{
+                  backgroundColor: 'var(--primary-color)'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
               >
                 Close
               </button>

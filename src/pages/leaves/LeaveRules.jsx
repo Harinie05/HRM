@@ -7,6 +7,7 @@ import { hasPermission } from "../../utils/permissions";
 
 export default function LeaveRules() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   // Check if user has permission to view leave rules
   if (!hasPermission("view_leave_rules")) {
     return (
@@ -54,8 +55,29 @@ export default function LeaveRules() {
   });
 
   useEffect(() => {
+    fetchColors();
     fetchRules();
   }, [statusFilter]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchRules = async () => {
     try {
@@ -154,7 +176,10 @@ export default function LeaveRules() {
           {hasPermission("add_leave_rule") && (
             <button 
               onClick={() => handleOpenModal()}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              style={{ backgroundColor: colors.primary }}
+              className="text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             >
               <Plus size={18} />
               Add Rule
@@ -279,10 +304,7 @@ export default function LeaveRules() {
                           <div className="flex items-center gap-2">
                             {hasPermission("view_leave_rules") && (
                               <button 
-                                className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:text-white transition-colors"
-                                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                                className="text-blue-600 hover:text-blue-900 p-2 rounded-lg transition-colors"
                               >
                                 <Settings size={16} />
                               </button>
@@ -290,10 +312,7 @@ export default function LeaveRules() {
                             {hasPermission("edit_leave_rule") && (
                               <button 
                                 onClick={() => handleOpenModal(rule)}
-                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:text-white transition-colors"
-                                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                                onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                                className="text-indigo-600 hover:text-indigo-900 p-2 rounded-lg transition-colors"
                               >
                                 <Edit size={16} />
                               </button>
@@ -378,10 +397,7 @@ export default function LeaveRules() {
                     <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
                       {hasPermission("view_leave_rules") && (
                         <button 
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
-                          style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                          onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                          onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg transition-colors text-sm"
                         >
                           <Settings size={14} />
                           View
@@ -390,10 +406,7 @@ export default function LeaveRules() {
                       {hasPermission("edit_leave_rule") && (
                         <button 
                           onClick={() => handleOpenModal(rule)}
-                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg hover:text-white transition-colors text-sm"
-                          style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                          onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'; }}
-                          onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'; }}
+                          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-900 px-3 py-1 rounded-lg transition-colors text-sm"
                         >
                           <Edit size={14} />
                           Edit
@@ -515,7 +528,10 @@ export default function LeaveRules() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: colors.primary }}
+                  className="flex-1 px-6 py-3 text-white rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   {editingRule ? "Update" : "Create"}
                 </button>

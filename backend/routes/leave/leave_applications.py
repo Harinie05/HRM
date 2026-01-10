@@ -158,7 +158,14 @@ def list_leave_applications(
             query = query.filter(LeaveApplication.employee_id == current_user_id)
     # Admin or users with view_leave_applications can see all records
     
-    return query.all()
+    applications = query.all()
+    
+    # Fix None applied_at values
+    for app in applications:
+        if app.applied_at is None:
+            app.applied_at = datetime.now()
+    
+    return applications
 
 @router.put("/{leave_id}", response_model=LeaveApplicationOut)
 def update_leave_application(

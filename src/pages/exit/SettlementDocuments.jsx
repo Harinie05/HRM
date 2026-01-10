@@ -17,6 +17,23 @@ export default function SettlementDocuments() {
   const canEmail = isAdmin() || hasPermission('email_settlement_docs');
   const canEdit = isAdmin() || hasPermission('edit_settlements');
   
+  // Fetch branding colors
+  useEffect(() => {
+    const fetchBrandingColors = async () => {
+      try {
+        const tenantCode = localStorage.getItem('tenant_code');
+        if (tenantCode) {
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
+        }
+      } catch (error) {
+        console.error('Error fetching branding colors:', error);
+      }
+    };
+    fetchBrandingColors();
+  }, []);
+  
   if (!canView) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -510,7 +527,10 @@ export default function SettlementDocuments() {
                 {!settlement && canCalculate && (
                   <button
                     onClick={handleCalculateSettlement}
-                    className="bg-gray-900 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded-lg hover:bg-gray-700 border border-black whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                    className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded-lg border border-black whitespace-nowrap"
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                   >
                     Calculate Settlement
                   </button>
@@ -608,7 +628,10 @@ export default function SettlementDocuments() {
                     {settlement.payment_status === 'Pending' && canApprove && (
                       <button
                         onClick={handleApproveSettlement}
-                        className="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 border border-black text-sm"
+                        style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                        className="mt-3 w-full text-white py-2 rounded-lg border border-black text-sm"
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                       >
                         Approve Settlement
                       </button>
@@ -651,14 +674,20 @@ export default function SettlementDocuments() {
                   {!experienceLetter && canGenerateLetter ? (
                     <button
                       onClick={handleGenerateExperienceLetter}
-                      className="bg-green-600 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded hover:bg-green-700 whitespace-nowrap"
+                      style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                      className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded whitespace-nowrap"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                     >
                       Generate Letter
                     </button>
                   ) : experienceLetter && canEdit ? (
                     <button
                       onClick={() => setIsEditingLetter(!isEditingLetter)}
-                      className="bg-blue-600 px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded hover:bg-blue-700 whitespace-nowrap"
+                      style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+                      className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded whitespace-nowrap"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                     >
                       {isEditingLetter ? 'Preview' : 'Edit'}
                     </button>
@@ -770,7 +799,10 @@ export default function SettlementDocuments() {
                       <div className="mt-3 sm:mt-4">
                         <button
                           onClick={handleSaveExperienceLetter}
-                          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 text-sm"
+                          style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                          className="w-full text-white py-2 rounded text-sm"
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                         >
                           Save Changes
                         </button>
@@ -826,7 +858,10 @@ export default function SettlementDocuments() {
                     {canDownloadPDF && (
                       <button 
                         onClick={handleDownloadPDF}
-                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 text-sm"
+                        style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+                        className="w-full text-white py-2 rounded text-sm"
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                       >
                         Download PDF
                       </button>
@@ -834,7 +869,10 @@ export default function SettlementDocuments() {
                     {canEmail && (
                       <button 
                         onClick={handleEmailEmployee}
-                        className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 text-sm"
+                        style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
+                        className="w-full text-white py-2 rounded text-sm"
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                       >
                         Email to Employee
                       </button>

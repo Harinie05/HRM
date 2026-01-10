@@ -6,6 +6,7 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function Lifecycle() {
   const { toast, showToast, hideToast } = useToast();
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   // Check permissions
   const canView = hasPermission('view_lifecycle_actions') || hasPermission('view_self');
@@ -48,10 +49,31 @@ export default function Lifecycle() {
   const [emailData, setEmailData] = useState({ email: '', actionId: null, approved: false, action: null });
 
   useEffect(() => {
+    fetchColors();
     fetchEmployees();
     fetchPendingActions();
     fetchApprovedActions();
   }, []);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
   
   // Auto-populate employee ID for non-admin users
   useEffect(() => {
@@ -477,7 +499,13 @@ export default function Lifecycle() {
               <div className="mt-4 sm:mt-6 flex justify-end">
                 <button 
                   type="submit"
-                  className="w-full sm:w-auto px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 border border-black text-sm sm:text-base"
+                  className="w-full sm:w-auto px-6 py-2 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                 >
                   Submit for Approval
                 </button>
@@ -525,7 +553,13 @@ export default function Lifecycle() {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleApproval(action.id, true)}
-                          className="inline-flex items-center px-3 py-1 border border-black text-sm leading-4 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          className="inline-flex items-center px-3 py-1 border text-sm leading-4 font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
+                          style={{
+                            backgroundColor: colors.primary,
+                            borderColor: colors.primary
+                          }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                         >
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -587,7 +621,13 @@ export default function Lifecycle() {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleApproval(action.id, true)}
-                      className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-black text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2 border text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
+                      style={{
+                        backgroundColor: colors.primary,
+                        borderColor: colors.primary
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
                     >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

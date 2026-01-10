@@ -40,6 +40,7 @@ class HospitalOut(BaseModel):
 # ---------------------------
 class AdminAuth(BaseModel):
     tenant_code: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
+    login_code: Optional[str] = None
     password: str
 

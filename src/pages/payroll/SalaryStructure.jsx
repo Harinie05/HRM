@@ -18,6 +18,7 @@ export default function SalaryStructure() {
   const [linkingStructure, setLinkingStructure] = useState(null);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   const [formData, setFormData] = useState({
     name: "",
     ctc: 0,
@@ -48,9 +49,30 @@ export default function SalaryStructure() {
   }
 
   useEffect(() => {
+    fetchColors();
     fetchStructures();
     fetchEmployees();
   }, [statusFilter]);
+
+  const fetchColors = async () => {
+    try {
+      const tenantCode = localStorage.getItem('tenantCode');
+      if (tenantCode) {
+        const response = await api.get(`/auth/branding/${tenantCode}`);
+        if (response.data.primary_color && response.data.secondary_color) {
+          const newColors = {
+            primary: response.data.primary_color,
+            secondary: response.data.secondary_color
+          };
+          setColors(newColors);
+          document.documentElement.style.setProperty('--primary-color', newColors.primary);
+          document.documentElement.style.setProperty('--secondary-color', newColors.secondary);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching colors:', error);
+    }
+  };
 
   const fetchStructures = async () => {
     try {
@@ -335,7 +357,13 @@ export default function SalaryStructure() {
           {canAdd && (
             <button 
               onClick={() => handleOpenModal()}
-              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border border-black w-full sm:w-auto justify-center bg-gray-900 hover:bg-gray-800 text-white"
+              className="px-6 py-3 rounded-xl flex items-center gap-2 transition-colors text-sm font-medium border w-full sm:w-auto justify-center text-white"
+              style={{
+                backgroundColor: colors.primary,
+                borderColor: colors.primary
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
+              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
             >
               <Plus size={18} />
               Add Structure
@@ -609,7 +637,13 @@ export default function SalaryStructure() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-black"
+                  className="flex-1 px-4 py-2 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border transition-colors"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary
+                  }}
+                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = colors.secondary)}
+                  onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = colors.primary)}
                 >
                   {loading ? "Saving..." : (editingStructure ? "Update" : "Create")}
                 </button>
@@ -674,11 +708,25 @@ export default function SalaryStructure() {
               <button
                 onClick={handleLinkEmployees}
                 disabled={loading}
-                className={`flex-1 px-4 py-2 rounded-lg text-white border border-black ${
+                className={`flex-1 px-4 py-2 rounded-lg text-white border transition-colors ${
                   selectedEmployees.length === 0 
-                    ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-gray-900 hover:bg-gray-800'
+                    ? 'bg-gray-400 cursor-not-allowed border-gray-400' 
+                    : ''
                 }`}
+                style={{
+                  backgroundColor: selectedEmployees.length === 0 ? '#9ca3af' : colors.primary,
+                  borderColor: selectedEmployees.length === 0 ? '#9ca3af' : colors.primary
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedEmployees.length > 0 && !loading) {
+                    e.target.style.backgroundColor = colors.secondary;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedEmployees.length > 0 && !loading) {
+                    e.target.style.backgroundColor = colors.primary;
+                  }
+                }}
               >
                 {loading ? "Linking..." : 
                  selectedEmployees.length === 0 ? "Select Employees" : 
