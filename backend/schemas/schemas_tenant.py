@@ -937,6 +937,28 @@ class AttendanceRegularizationOut(AttendanceRegularizationCreate):
     class Config:
         from_attributes = True
 
+class AttendancePermissionCreate(BaseModel):
+    employee_id: int
+    date: date
+    request_type: str
+    from_time: Optional[time] = None
+    to_time: Optional[time] = None
+    reason: str
+
+
+class AttendancePermissionOut(BaseModel):
+    id: int
+    employee_id: int
+    date: date
+    request_type: str
+    from_time: Optional[time]
+    to_time: Optional[time]
+    reason: str
+    status: str
+
+    class Config:
+        from_attributes = True
+
 # =====================================================
 # ATTENDANCE RULE SCHEMAS
 # =====================================================

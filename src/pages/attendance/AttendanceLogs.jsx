@@ -6,6 +6,8 @@ import Footer from "../../components/Footer";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import DailyUpdates from "./DailyUpdates";
+import AttendancePermission from "./AttendancePermission";
+
 import * as XLSX from 'xlsx';
 import { hasPermission, isAdmin } from '../../utils/permissions';
 
@@ -137,7 +139,6 @@ export default function AttendanceLogs() {
     fetchOfficeLocations();
     fetchRegularizationRequests();
     fetchOdApplications();
-    checkTodayStatus();
   }, []);
 
   const fetchCurrentUserInfo = async () => {
@@ -149,9 +150,9 @@ export default function AttendanceLogs() {
     }
   };
 
-  // Auto-select current user when employees are loaded
+  // Auto-select current user and check status when both employees and logs are loaded
   useEffect(() => {
-    if (employees.length > 0 && !selectedEmployee) {
+    if (employees.length > 0 && logs.length > 0 && !selectedEmployee) {
       const currentUserId = localStorage.getItem('user_id');
       if (currentUserId) {
         const currentUserEmployee = employees.find(emp => {
@@ -165,7 +166,14 @@ export default function AttendanceLogs() {
         }
       }
     }
-  }, [employees]);
+  }, [employees, logs]);
+
+  // Check status when employee is selected and logs are available
+  useEffect(() => {
+    if (selectedEmployee && logs.length > 0) {
+      checkTodayStatus();
+    }
+  }, [selectedEmployee, logs]);
 
   const fetchEmployees = async () => {
     try {
@@ -234,8 +242,10 @@ export default function AttendanceLogs() {
     try {
       const res = await api.get("/api/attendance/punches/");
       setLogs(res.data);
+      return res.data;
     } catch (err) {
       console.error("Failed to fetch logs:", err);
+      return [];
     }
   };
 
@@ -253,30 +263,69 @@ export default function AttendanceLogs() {
     }
   };
 
-  const checkTodayStatus = () => {
+  const checkTodayStatus = async () => {
     if (!selectedEmployee) {
       setCurrentStatus('not_checked_in');
       setCheckInSource(null);
+      setAttendanceMode('');
       return;
     }
     
     const today = new Date().toISOString().split('T')[0];
     const actualEmployeeId = selectedEmployee.startsWith('user_') ? selectedEmployee.replace('user_', '') : selectedEmployee;
+    
+    console.log('Checking status for employee:', actualEmployeeId, 'on date:', today);
+    
+    // First check local logs
     const todayLog = logs.find(log => 
       log.employee_id == actualEmployeeId && log.date === today
     );
     
+    console.log('Found local log:', todayLog);
+    
     if (todayLog) {
       if (todayLog.out_time) {
+        console.log('Setting status to checked_out');
         setCurrentStatus('checked_out');
         setCheckInSource(null);
+        setAttendanceMode('');
       } else {
+        console.log('Setting status to checked_in with source:', todayLog.source);
         setCurrentStatus('checked_in');
         setCheckInSource(todayLog.source);
+        setAttendanceMode(todayLog.source);
       }
-    } else {
+      return;
+    }
+    
+    // If no local log found, check API
+    try {
+      const statusRes = await api.get(`/api/attendance/punches/check-status/${actualEmployeeId}`);
+      const status = statusRes.data;
+      
+      console.log('API status response:', status);
+      
+      if (status.checked_in && !status.checked_out) {
+        console.log('API: Setting status to checked_in with source:', status.source);
+        setCurrentStatus('checked_in');
+        setCheckInSource(status.source);
+        setAttendanceMode(status.source);
+      } else if (status.checked_out) {
+        console.log('API: Setting status to checked_out');
+        setCurrentStatus('checked_out');
+        setCheckInSource(null);
+        setAttendanceMode('');
+      } else {
+        console.log('API: Setting status to not_checked_in');
+        setCurrentStatus('not_checked_in');
+        setCheckInSource(null);
+        setAttendanceMode('');
+      }
+    } catch (err) {
+      console.error('Failed to check status:', err);
       setCurrentStatus('not_checked_in');
       setCheckInSource(null);
+      setAttendanceMode('');
     }
   };
 
@@ -302,21 +351,46 @@ export default function AttendanceLogs() {
   };
 
   const handlePunchIn = async (source) => {
-    if (currentStatus === 'checked_in') {
-      showToast('You are already checked in today!', 'error');
-      return;
-    }
-    
-    const today = new Date().toISOString().split('T')[0];
-    const actualEmployeeId = selectedEmployee.startsWith('user_') ? selectedEmployee.replace('user_', '') : selectedEmployee;
-    const existingRecord = logs.find(log => 
-      log.employee_id == actualEmployeeId && log.date === today
-    );
-    
-    if (existingRecord) {
-      setCurrentStatus(existingRecord.out_time ? 'checked_out' : 'checked_in');
-      setCheckInSource(existingRecord.source);
-      return;
+    // Check status first
+    const currentUserId = selectedEmployee.startsWith('user_') ? selectedEmployee.replace('user_', '') : selectedEmployee;
+    try {
+      const statusRes = await api.get(`/api/attendance/punches/check-status/${currentUserId}`);
+      const status = statusRes.data;
+      
+      // Handle missed checkout alert
+      if (status.missed_checkout_yesterday) {
+        const confirmRegularization = window.confirm(
+          `You haven't checked out yesterday (${status.yesterday_date}). It has been automatically processed. Do you want to apply for regularization?`
+        );
+        
+        if (confirmRegularization) {
+          // Auto-fill regularization form
+          setRegularizationForm({
+            employee_id: selectedEmployee,
+            date: status.yesterday_date,
+            issue_type: "Missed OUT",
+            reason: "Forgot to check out yesterday"
+          });
+          setActiveTab('regularization');
+          return;
+        }
+      }
+      
+      if (status.checked_in && !status.checked_out) {
+        showToast('You are already checked in today!', 'error');
+        setCurrentStatus('checked_in');
+        setCheckInSource(status.source);
+        return;
+      }
+      
+      if (status.checked_out) {
+        showToast('You have already completed attendance for today!', 'error');
+        setCurrentStatus('checked_out');
+        return;
+      }
+    } catch (err) {
+      console.error('Status check failed:', err);
+      // Continue with punch-in attempt even if status check fails
     }
     
     setLoading(true);
@@ -351,9 +425,27 @@ export default function AttendanceLogs() {
       
       const response = await api.post("/api/attendance/punches/", punchData);
       
+      // Handle missed checkout alert from response
+      if (response.data.alert === 'missed_checkout') {
+        const confirmRegularization = window.confirm(response.data.message + ' Do you want to apply for regularization?');
+        
+        if (confirmRegularization) {
+          setRegularizationForm({
+            employee_id: selectedEmployee,
+            date: response.data.yesterday_date,
+            issue_type: "Missed OUT",
+            reason: "Forgot to check out yesterday"
+          });
+          setActiveTab('regularization');
+          setLoading(false);
+          return;
+        }
+      }
+      
       setCurrentStatus('checked_in');
       setCheckInSource(source);
       fetchLogs();
+      checkTodayStatus(); // Refresh status after successful check-in
       
       const notification = document.createElement('div');
       notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
@@ -373,7 +465,17 @@ export default function AttendanceLogs() {
       
     } catch (err) {
       console.error("Punch-in failed:", err);
-      const errorDetail = err.response?.data?.detail?.[0]?.msg || err.response?.data?.detail || err.message;
+      const errorDetail = err.response?.data?.detail || err.message;
+      
+      // Handle specific error messages
+      if (errorDetail.includes('Already checked in today')) {
+        setCurrentStatus('checked_in');
+        checkTodayStatus(); // Refresh status
+      } else if (errorDetail.includes('Attendance already completed')) {
+        setCurrentStatus('checked_out');
+        checkTodayStatus(); // Refresh status
+      }
+      
       showToast(`Check-in failed: ${errorDetail}`, 'error');
     } finally {
       setLoading(false);
@@ -595,10 +697,6 @@ export default function AttendanceLogs() {
   };
 
   useEffect(() => {
-    checkTodayStatus();
-  }, [logs, selectedEmployee]);
-
-  useEffect(() => {
     if (employees.length > 0) {
       fetchRegularizationRequests();
       fetchOdApplications();
@@ -636,6 +734,7 @@ export default function AttendanceLogs() {
     ...(isAdmin() || hasPermission('view_daily_updates') ? [{ id: 'daily-updates', label: 'Daily Updates' }] : []),
     ...(canViewRegularization ? [{ id: 'regularization', label: 'Regularization' }] : []),
     ...(canViewOdApplications ? [{ id: 'od', label: 'OD Applications' }] : []),
+    ...(isAdmin() || hasPermission('apply_attendance_permission') ? [{ id: 'attendance-permission', label: 'Attendance Permission' }] : []),
     ...(canViewReports ? [{ id: 'reports', label: 'Reports' }] : []),
   ];
 
@@ -949,7 +1048,7 @@ export default function AttendanceLogs() {
                             )}
                           </p>
                           <button 
-                            onClick={() => handlePunchIn(attendanceMode)}
+                            onClick={() => currentStatus === 'checked_in' ? handlePunchOut(attendanceMode) : handlePunchIn(attendanceMode)}
                             disabled={loading}
                             className="py-2 sm:py-3 lg:py-4 px-4 sm:px-6 lg:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 mx-auto shadow-xl hover:shadow-2xl bg-white text-black border border-black hover:bg-gray-100"
                           >
@@ -960,7 +1059,9 @@ export default function AttendanceLogs() {
                                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                               )}
                             </svg>
-                            <span className="text-xs sm:text-sm lg:text-base">{attendanceMode} Check-In</span>
+                            <span className="text-xs sm:text-sm lg:text-base">
+                              {currentStatus === 'checked_in' ? `${attendanceMode} Check-Out` : `${attendanceMode} Check-In`}
+                            </span>
                           </button>
                           <button 
                             onClick={() => {
@@ -1388,6 +1489,12 @@ export default function AttendanceLogs() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'attendance-permission' && (
+              <div className="p-0">
+                <AttendancePermission />
               </div>
             )}
 

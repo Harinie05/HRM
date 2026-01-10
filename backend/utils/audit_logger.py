@@ -14,6 +14,8 @@ def serialize_for_json(obj):
     """Convert objects to JSON serializable format"""
     if isinstance(obj, (date, datetime)):
         return obj.isoformat()
+    elif hasattr(obj, 'strftime'):  # Handle time objects
+        return obj.strftime('%H:%M:%S')
     elif isinstance(obj, dict):
         return {k: serialize_for_json(v) for k, v in obj.items()}
     elif isinstance(obj, list):

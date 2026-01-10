@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from database import get_tenant_db
-from datetime import datetime, time
-from typing import Optional
+from datetime import datetime, time, date
+from typing import Optional, Union
 from utils.audit_logger import audit_crud
 from utils.permission import require_permission
 from routes.hospital import get_current_user
@@ -36,13 +36,19 @@ def get_current_user_info(
         "employee_code": user_info.employee_code or f"EMP{user_info.id}"
     }
 
-def calculate_attendance_status(employee_id: int, punch_date: str, in_time: time, out_time: Optional[time], db: Session) -> str:
+def calculate_attendance_status(employee_id: int, punch_date: Union[str, date], in_time: time, out_time: Optional[time], db: Session) -> str:
     """Calculate attendance status based on shift timings and rules"""
     try:
+        # Convert date to string if it's a date object
+        if isinstance(punch_date, date):
+            punch_date_str = punch_date.strftime('%Y-%m-%d')
+        else:
+            punch_date_str = punch_date
+        
         # Get employee's shift for the date
         roster = db.query(EmployeeRoster).filter(
             EmployeeRoster.employee_id == employee_id,
-            EmployeeRoster.date == punch_date
+            EmployeeRoster.date == punch_date_str
         ).first()
         
         if not roster:
@@ -106,45 +112,178 @@ def create_punch(
     try:
         punch_data = data.dict()
         
-        # Debug logging
-        print(f"Received punch data: {punch_data}")
-        
         # Validate required fields
         if not punch_data.get('employee_id') or not punch_data.get('date'):
             raise HTTPException(status_code=400, detail="Employee ID and date are required")
         
-        print(f"Employee ID being used: {punch_data['employee_id']}")
+        employee_id = punch_data['employee_id']
+        punch_date = punch_data['date']
         
-        # Auto-calculate status based on shift and rules
-        if punch_data.get('in_time'):
-            punch_data['status'] = calculate_attendance_status(
-                punch_data['employee_id'],
-                punch_data['date'],
-                punch_data['in_time'],
-                punch_data.get('out_time'),
-                db
-            )
+        # Check for existing record today
+        existing_punch = db.query(AttendancePunch).filter(
+            AttendancePunch.employee_id == employee_id,
+            AttendancePunch.date == punch_date
+        ).first()
         
-        punch = AttendancePunch(**punch_data)
-        db.add(punch)
-        db.commit()
-        db.refresh(punch)
+        # Get employee's shift for validation
+        roster = db.query(EmployeeRoster).filter(
+            EmployeeRoster.employee_id == employee_id,
+            EmployeeRoster.date == punch_date
+        ).first()
         
-        print(f"Created punch with ID: {punch.id}, Employee ID: {punch.employee_id}")
+        # Check for missed checkout from previous day
+        from datetime import datetime, timedelta
         
-        # Audit log
-        audit_crud(request, db, user, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), {}, punch_data)
+        # Convert punch_date to string if it's a date object
+        if isinstance(punch_date, date):
+            punch_date_str = punch_date.strftime('%Y-%m-%d')
+        else:
+            punch_date_str = punch_date
+            
+        yesterday = (datetime.strptime(punch_date_str, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
+        yesterday_punch = db.query(AttendancePunch).filter(
+            AttendancePunch.employee_id == employee_id,
+            AttendancePunch.date == yesterday,
+            AttendancePunch.in_time.isnot(None),
+            AttendancePunch.out_time.is_(None)
+        ).first()
         
-        return punch
+        # If trying to check in but missed checkout yesterday
+        if punch_data.get('in_time') and yesterday_punch and not existing_punch:
+            # Auto checkout yesterday at shift end time
+            if roster:
+                shift = db.query(Shift).filter(Shift.id == roster.shift_id).first()
+                if shift:
+                    yesterday_punch.out_time = shift.end_time
+                    yesterday_punch.status = 'Auto Checkout'
+                    db.commit()
+            
+            # Return alert for missed checkout
+            return {
+                "alert": "missed_checkout",
+                "message": "You haven't checked out yesterday. It has been automatically processed. Please apply for regularization if needed.",
+                "yesterday_date": yesterday
+            }
+        
+        # Normal punch processing
+        if existing_punch:
+            # Check if trying to check in when already checked in
+            if punch_data.get('in_time') and existing_punch.in_time and not existing_punch.out_time:
+                raise HTTPException(status_code=400, detail="Already checked in today. Please check out first.")
+            
+            # Check if trying to check in when already completed for the day
+            if punch_data.get('in_time') and existing_punch.in_time and existing_punch.out_time:
+                raise HTTPException(status_code=400, detail="Attendance already completed for today.")
+            
+            # Update existing record (checkout)
+            if punch_data.get('out_time') and existing_punch.in_time and not existing_punch.out_time:
+                existing_punch.out_time = punch_data['out_time']
+                existing_punch.status = calculate_attendance_status(
+                    employee_id, punch_date, existing_punch.in_time, punch_data['out_time'], db
+                )
+                if punch_data.get('location'):
+                    existing_punch.location = f"{existing_punch.location} | Out: {punch_data['location']}"
+                db.commit()
+                db.refresh(existing_punch)
+                return existing_punch
+            else:
+                raise HTTPException(status_code=400, detail="Invalid checkout request")
+        else:
+            # Create new record (checkin)
+            if punch_data.get('in_time'):
+                punch_data['status'] = calculate_attendance_status(
+                    employee_id, punch_date, punch_data['in_time'], None, db
+                )
+                punch = AttendancePunch(**punch_data)
+                db.add(punch)
+                db.commit()
+                db.refresh(punch)
+                
+                # Audit log
+                audit_crud(request, db, user, "CREATE_ATTENDANCE_PUNCH", "attendance_punches", str(punch.id), {}, punch_data)
+                return punch
+            else:
+                raise HTTPException(status_code=400, detail="Check-in time is required")
     
     except HTTPException:
         raise
     except Exception as e:
         db.rollback()
-        print(f"Error creating punch: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to create punch record: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process attendance: {str(e)}")
 
-@router.get("/", response_model=list[AttendancePunchOut])
+@router.get("/check-status/{employee_id}")
+def check_attendance_status(
+    employee_id: int,
+    date: str = None,
+    db: Session = Depends(get_tenant_db),
+    user = Depends(require_permission("view_punch_logs"))
+):
+    """Check current attendance status and validate shift timing"""
+    from datetime import datetime, timedelta
+    
+    if not date:
+        date = datetime.now().strftime('%Y-%m-%d')
+    
+    # Get today's punch record
+    today_punch = db.query(AttendancePunch).filter(
+        AttendancePunch.employee_id == employee_id,
+        AttendancePunch.date == date
+    ).first()
+    
+    # Check for missed checkout from previous day
+    yesterday = (datetime.strptime(date, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
+    yesterday_punch = db.query(AttendancePunch).filter(
+        AttendancePunch.employee_id == employee_id,
+        AttendancePunch.date == yesterday,
+        AttendancePunch.in_time.isnot(None),
+        AttendancePunch.out_time.is_(None)
+    ).first()
+    
+    # Get shift information
+    roster = db.query(EmployeeRoster).filter(
+        EmployeeRoster.employee_id == employee_id,
+        EmployeeRoster.date == date
+    ).first()
+    
+    shift_info = None
+    if roster:
+        shift = db.query(Shift).filter(Shift.id == roster.shift_id).first()
+        if shift:
+            shift_info = {
+                "start_time": str(shift.start_time),
+                "end_time": str(shift.end_time),
+                "name": shift.name
+            }
+    
+    status = {
+        "date": date,
+        "employee_id": employee_id,
+        "shift": shift_info,
+        "missed_checkout_yesterday": bool(yesterday_punch),
+        "yesterday_date": yesterday if yesterday_punch else None
+    }
+    
+    if today_punch:
+        status.update({
+            "checked_in": bool(today_punch.in_time),
+            "checked_out": bool(today_punch.out_time),
+            "in_time": str(today_punch.in_time) if today_punch.in_time else None,
+            "out_time": str(today_punch.out_time) if today_punch.out_time else None,
+            "source": today_punch.source,
+            "status": today_punch.status
+        })
+    else:
+        status.update({
+            "checked_in": False,
+            "checked_out": False,
+            "in_time": None,
+            "out_time": None,
+            "source": None,
+            "status": None
+        })
+    
+    return status
+@router.get("/")
 def get_all_punches(
     limit: int = 100,
     offset: int = 0,
@@ -199,7 +338,7 @@ def update_punch(
         if in_time:
             update_data['status'] = calculate_attendance_status(
                 getattr(punch, 'employee_id'),
-                str(getattr(punch, 'date')),
+                getattr(punch, 'date'),
                 in_time,
                 out_time,
                 db

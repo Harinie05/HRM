@@ -58,6 +58,8 @@ import AttendanceRules from "./pages/attendance/AttendanceRules";
 import AttendanceLocations from "./pages/attendance/AttendanceLocations";
 import AttendanceDashboard from "./pages/attendance/AttendanceDashboard";
 import ODApplications from "./pages/attendance/ODApplications";
+import AttendancePermission from "./pages/attendance/AttendancePermission";
+
 
 // Leave Management
 import LeaveLayout from "./pages/leaves/LeaveLayout";
@@ -248,6 +250,7 @@ function App() {
         <Route path="/attendance/reports" element={<ProtectedRoute><AttendanceReports /></ProtectedRoute>} />
         <Route path="/attendance/rules" element={<ProtectedRoute><AttendanceRules /></ProtectedRoute>} />
         <Route path="/attendance/locations" element={<ProtectedRoute><AttendanceLocations /></ProtectedRoute>} />
+       <Route path="/attendance/attendance-permission" element={<ProtectedRoute><AttendancePermission /></ProtectedRoute>} />
 
         {/* LEAVE */}
         <Route path="/leave" element={<ProtectedRoute><LeaveLayout /></ProtectedRoute>} />

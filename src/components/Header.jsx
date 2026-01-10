@@ -216,12 +216,47 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     }
   };
 
-  // Check today's attendance status
+  // Check today's attendance status - always check on page load
   useEffect(() => {
     if (userInfo.id) {
-      checkTodayAttendance();
+      // Force a fresh check from database on page load
+      const checkStatus = async () => {
+        try {
+          const statusRes = await api.get(`/api/attendance/punches/check-status/${userInfo.id}`);
+          const status = statusRes.data;
+          
+          console.log('Page load - API status response:', status);
+          
+          if (status.checked_in && !status.checked_out) {
+            console.log('Page load - User is checked in');
+            setAttendanceStatus('checked_in');
+          } else if (status.checked_out) {
+            console.log('Page load - User is checked out');
+            setAttendanceStatus('checked_out');
+          } else {
+            console.log('Page load - User not checked in');
+            setAttendanceStatus('not_checked_in');
+          }
+        } catch (err) {
+          console.error('Page load status check failed:', err);
+          setAttendanceStatus('not_checked_in');
+        }
+      };
+      
+      checkStatus();
     }
   }, [userInfo.id]);
+
+  // Add a periodic refresh only for not_checked_in status
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (userInfo.id && attendanceStatus === 'not_checked_in') {
+        checkTodayAttendance();
+      }
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [userInfo.id, attendanceStatus]);
 
   const checkTodayAttendance = async () => {
     try {
@@ -230,15 +265,20 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         return;
       }
       
-      const today = new Date().toISOString().split('T')[0];
-      const res = await api.get('/api/attendance/punches/');
-      const todayLog = res.data.find(log => 
-        log.employee_id == userInfo.id && log.date === today
-      );
+      // Always check API for current status
+      const statusRes = await api.get(`/api/attendance/punches/check-status/${userInfo.id}`);
+      const status = statusRes.data;
       
-      if (todayLog) {
-        setAttendanceStatus(todayLog.out_time ? 'checked_out' : 'checked_in');
+      console.log('Header: API status response:', status);
+      
+      if (status.checked_in && !status.checked_out) {
+        console.log('Header: User is checked in, setting status to checked_in');
+        setAttendanceStatus('checked_in');
+      } else if (status.checked_out) {
+        console.log('Header: User is checked out, setting status to checked_out');
+        setAttendanceStatus('checked_out');
       } else {
+        console.log('Header: User not checked in, setting status to not_checked_in');
         setAttendanceStatus('not_checked_in');
       }
     } catch (err) {
@@ -287,6 +327,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       console.log('Sending punch data:', punchData); // Debug log
       
       await api.post('/api/attendance/punches/', punchData);
+      
+      // Immediately set status to checked_in
       setAttendanceStatus('checked_in');
       
       // Show success notification
@@ -299,6 +341,13 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     } catch (err) {
       console.error('Swipe in failed:', err);
       console.error('Error details:', err.response?.data);
+      
+      // Handle specific error messages and update status accordingly
+      if (err.response?.data?.detail?.includes('Already checked in today')) {
+        setAttendanceStatus('checked_in');
+        return;
+      }
+      
       alert(`Swipe in failed: ${err.response?.data?.detail || err.message}`);
     } finally {
       setLoading(false);
@@ -342,6 +391,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         console.log('Sending update data:', updateData); // Debug log
         
         await api.put(`/api/attendance/punches/${todayLog.id}/`, updateData);
+        
+        // Immediately set status to checked_out
         setAttendanceStatus('checked_out');
         
         // Show success notification

@@ -834,6 +834,24 @@ class AttendanceRegularization(MasterBase):
     status = Column(String(50), default="Pending")  # Pending / Approved / Rejected
     created_at = Column(DateTime, server_default=func.now())
 
+class AttendancePermissionRequest(MasterBase):
+    __tablename__ = "attendance_permission_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, nullable=False, index=True)
+
+    date = Column(Date, nullable=False)
+    request_type = Column(String(50), nullable=False)
+    # HALF_DAY_FIRST, HALF_DAY_SECOND, SHORT_LEAVE, LATE_COMING, EARLY_GOING
+
+    from_time = Column(Time, nullable=True)
+    to_time = Column(Time, nullable=True)
+
+    reason = Column(Text, nullable=False)
+    status = Column(String(20), default="Pending")  # Pending / Approved / Rejected
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 # =====================================================
 # OD APPLICATIONS
 # =====================================================

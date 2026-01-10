@@ -424,6 +424,13 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_attendance_location", "description": "Can edit attendance capture locations"},
     {"name": "delete_attendance_location", "description": "Can delete attendance capture locations"},
 
+    # Attendance Permission
+    {"name": "apply_attendance_permission", "description": "Can apply for attendance permission"},
+    {"name": "view_attendance_permission", "description": "Can view attendance permission requests"},
+    {"name": "approve_attendance_permission", "description": "Can approve attendance permission requests"},
+    {"name": "reject_attendance_permission", "description": "Can reject attendance permission requests"},
+    {"name": "view_self", "description": "Can view only own records and data"},
+
     # Daily Updates
     {"name": "view_daily_updates", "description": "Can view daily work updates"},
     {"name": "add_daily_update", "description": "Can add daily work updates"},

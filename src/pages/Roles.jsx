@@ -1982,6 +1982,28 @@ export default function Roles() {
                       </div>
                       
                       <div className="ml-6 mt-3">
+                        <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance Permission</h5>
+                        <div className="space-y-2 ml-3">
+                          {permissions.filter(p => 
+                            p.name === 'apply_attendance_permission' || p.name === 'view_attendance_permission' || p.name === 'approve_attendance_permission' || p.name === 'reject_attendance_permission' || p.name === 'view_self'
+                          ).map((p) => (
+                            <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                <p className="text-xs text-gray-500">{p.name}</p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="ml-6 mt-3">
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Daily Updates</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
@@ -3658,8 +3680,8 @@ export default function Roles() {
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
                                 type="checkbox"
-                                checked={editPerms.includes(p.name)}
-                                onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                                checked={selectedPerms.includes(p.name)}
+                                onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
                                 className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
                               />
                               <div>
