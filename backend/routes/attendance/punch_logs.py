@@ -80,8 +80,8 @@ def calculate_attendance_status(employee_id: int, punch_date: Union[str, date], 
         def to_minutes(t: time) -> int:
             return t.hour * 60 + t.minute
         
-        in_minutes = to_minutes(in_time) if in_time else None
-        out_minutes = to_minutes(out_time) if out_time else None
+        in_minutes = to_minutes(in_time) if in_time is not None else None
+        out_minutes = to_minutes(out_time) if out_time is not None else None
         shift_start_minutes = to_minutes(shift_start)
         shift_end_minutes = to_minutes(shift_end)
         
@@ -154,8 +154,15 @@ def create_punch(
             if roster:
                 shift = db.query(Shift).filter(Shift.id == roster.shift_id).first()
                 if shift:
-                    yesterday_punch.out_time = shift.end_time
-                    yesterday_punch.status = 'Auto Checkout'
+                    # Convert shift.end_time to proper time object and update
+                    if isinstance(shift.end_time, str):
+                        end_time = datetime.strptime(shift.end_time, '%H:%M').time()
+                    else:
+                        end_time = shift.end_time
+                    
+                    # Update the punch record
+                    setattr(yesterday_punch, 'out_time', end_time)
+                    setattr(yesterday_punch, 'status', 'Auto Checkout')
                     db.commit()
             
             # Return alert for missed checkout
@@ -168,21 +175,21 @@ def create_punch(
         # Normal punch processing
         if existing_punch:
             # Check if trying to check in when already checked in
-            if punch_data.get('in_time') and existing_punch.in_time and not existing_punch.out_time:
+            if punch_data.get('in_time') and existing_punch.in_time is not None and existing_punch.out_time is None:
                 raise HTTPException(status_code=400, detail="Already checked in today. Please check out first.")
             
             # Check if trying to check in when already completed for the day
-            if punch_data.get('in_time') and existing_punch.in_time and existing_punch.out_time:
+            if punch_data.get('in_time') and existing_punch.in_time is not None and existing_punch.out_time is not None:
                 raise HTTPException(status_code=400, detail="Attendance already completed for today.")
             
             # Update existing record (checkout)
-            if punch_data.get('out_time') and existing_punch.in_time and not existing_punch.out_time:
-                existing_punch.out_time = punch_data['out_time']
-                existing_punch.status = calculate_attendance_status(
-                    employee_id, punch_date, existing_punch.in_time, punch_data['out_time'], db
-                )
+            if punch_data.get('out_time') and existing_punch.in_time is not None and existing_punch.out_time is None:
+                setattr(existing_punch, 'out_time', punch_data['out_time'])
+                setattr(existing_punch, 'status', calculate_attendance_status(
+                    employee_id, punch_date, getattr(existing_punch, 'in_time'), punch_data['out_time'], db
+                ))
                 if punch_data.get('location'):
-                    existing_punch.location = f"{existing_punch.location} | Out: {punch_data['location']}"
+                    setattr(existing_punch, 'location', f"{existing_punch.location} | Out: {punch_data['location']}")
                 db.commit()
                 db.refresh(existing_punch)
                 return existing_punch
@@ -214,7 +221,7 @@ def create_punch(
 @router.get("/check-status/{employee_id}")
 def check_attendance_status(
     employee_id: int,
-    date: str = None,
+    date: Optional[str] = None,
     db: Session = Depends(get_tenant_db),
     user = Depends(require_permission("view_punch_logs"))
 ):
@@ -265,10 +272,10 @@ def check_attendance_status(
     
     if today_punch:
         status.update({
-            "checked_in": bool(today_punch.in_time),
-            "checked_out": bool(today_punch.out_time),
-            "in_time": str(today_punch.in_time) if today_punch.in_time else None,
-            "out_time": str(today_punch.out_time) if today_punch.out_time else None,
+            "checked_in": today_punch.in_time is not None,
+            "checked_out": today_punch.out_time is not None,
+            "in_time": str(today_punch.in_time) if today_punch.in_time is not None else None,
+            "out_time": str(today_punch.out_time) if today_punch.out_time is not None else None,
             "source": today_punch.source,
             "status": today_punch.status
         })
@@ -335,7 +342,7 @@ def update_punch(
         in_time = update_data.get('in_time', punch.in_time)
         out_time = update_data.get('out_time', punch.out_time)
         
-        if in_time:
+        if in_time is not None:
             update_data['status'] = calculate_attendance_status(
                 getattr(punch, 'employee_id'),
                 getattr(punch, 'date'),

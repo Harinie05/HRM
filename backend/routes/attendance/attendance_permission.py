@@ -70,7 +70,7 @@ def approve_permission(
     if not req:
         raise HTTPException(404, "Request not found")
 
-    req.status = "Approved"
+    setattr(req, 'status', 'Approved')
     db.commit()
     db.refresh(req)
 
@@ -97,7 +97,7 @@ def reject_permission(
     if not req:
         raise HTTPException(404, "Request not found")
 
-    req.status = "Rejected"
+    setattr(req, 'status', 'Rejected')
     db.commit()
     db.refresh(req)
 
