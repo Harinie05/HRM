@@ -59,7 +59,7 @@ export default function EmployeeProfile() {
       // If not found in onboarding, check user management
       if (!emp) {
         try {
-          const usersRes = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+          const usersRes = await fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (usersRes.ok) {
@@ -133,7 +133,7 @@ export default function EmployeeProfile() {
               } catch {
                 // Fallback to direct URL with token
                 const token = localStorage.getItem('token');
-                setPhotoUrl(`http://localhost:8000/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`);
+                setPhotoUrl(`${api.defaults.baseURL}/recruitment/onboarding/document/${latestPhoto.id}/view?token=${token}`);
               }
             }
           } catch (docErr) {
@@ -577,7 +577,7 @@ export default function EmployeeProfile() {
                         const tenant = localStorage.getItem("tenant_db");
                         const token = localStorage.getItem("access_token");
                         
-                        const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/${actualUserId}`, {
+                        const response = await fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/${actualUserId}`, {
                           method: 'PUT',
                           headers: {
                             'Content-Type': 'application/json',

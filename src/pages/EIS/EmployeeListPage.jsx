@@ -51,7 +51,7 @@ export default function EmployeeListPage() {
       
       const [onboardingRes, usersRes, offersRes] = await Promise.all([
         api.get(`/recruitment/onboarding/list?status=${status}`).catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list?status=${status}`, {
+        fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list?status=${status}`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] })),
         api.get('/recruitment/offer/list').catch(() => ({ data: [] }))
@@ -142,7 +142,7 @@ export default function EmployeeListPage() {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/hospitals/departments/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/departments/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -158,7 +158,7 @@ export default function EmployeeListPage() {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/hospitals/roles/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/roles/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -174,7 +174,7 @@ export default function EmployeeListPage() {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -211,7 +211,7 @@ export default function EmployeeListPage() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      const response = await fetch(`http://localhost:8000/employee/convert-user-to-employee/${formData.selectedUser}`, {
+      const response = await fetch(`${api.defaults.baseURL}/employee/convert-user-to-employee/${formData.selectedUser}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ export default function EmployeeListPage() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      const response = await fetch(`http://localhost:8000/users/${tenant}/remove-employee-code/${userId}`, {
+      const response = await fetch(`${api.defaults.baseURL}/users/${tenant}/remove-employee-code/${userId}`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -289,7 +289,7 @@ export default function EmployeeListPage() {
       const token = localStorage.getItem("access_token");
       
       // Use the soft delete endpoint
-      const response = await fetch(`http://localhost:8000/employee/delete/${employee.id}`, {
+      const response = await fetch(`${api.defaults.baseURL}/employee/delete/${employee.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });

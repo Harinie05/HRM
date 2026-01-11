@@ -26,6 +26,11 @@ export default function CandidateScreening() {
   const canViewATS = hasPermission('view_ats_pipeline');
   const canViewResumes = hasPermission('view_resumes');
 
+  // Get base URL from api instance
+  const getResumeUrl = (resumeUrl) => {
+    return `${api.defaults.baseURL}/uploads/resumes/${resumeUrl}`;
+  };
+
   if (!canViewCandidates) {
     return (
       <Layout>
@@ -289,7 +294,7 @@ export default function CandidateScreening() {
                         <td className="p-3 text-center">
                           {canViewResumes && app.resume_url ? (
                             <a
-                              href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
+                              href={getResumeUrl(app.resume_url)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-800 text-sm"
@@ -375,7 +380,7 @@ export default function CandidateScreening() {
                         <span className="text-sm">
                           {canViewResumes && app.resume_url ? (
                             <a
-                              href={`http://localhost:8000/uploads/resumes/${app.resume_url}`}
+                              href={getResumeUrl(app.resume_url)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-800"

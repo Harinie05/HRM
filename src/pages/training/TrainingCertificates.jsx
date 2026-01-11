@@ -41,12 +41,9 @@ export default function TrainingCertificates() {
       try {
         const tenantCode = localStorage.getItem('tenant_code');
         if (tenantCode) {
-          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
-          if (response.ok) {
-            const data = await response.json();
-            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
-            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
-          }
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
         }
       } catch (error) {
         console.error('Failed to fetch branding colors:', error);
@@ -130,7 +127,7 @@ export default function TrainingCertificates() {
   const handleDownload = async (certificate) => {
     try {
       // Create download URL similar to payroll
-      const downloadUrl = `http://localhost:8000/api/training/certificates/${certificate.id}/download`;
+      const downloadUrl = `/api/training/certificates/${certificate.id}/download`;
       
       // Create temporary link and trigger download
       const link = document.createElement('a');

@@ -131,28 +131,12 @@ export default function ShiftRoster() {
       
       console.log("Fetching shifts for tenant:", tenant);
       const activeParam = showInactiveShifts ? 'false' : 'true';
-      const response = await fetch(`http://localhost:8000/shifts/${tenant}/list?active_only=${activeParam}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/shifts/${tenant}/list?active_only=${activeParam}`);
       
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers.get('content-type'));
-      
-      const responseText = await response.text();
-      console.log("Raw response:", responseText.substring(0, 200));
-      
-      if (!response.ok) {
-        console.error("API Error - Full response:", responseText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      try {
-        const data = JSON.parse(responseText);
+      if (response.data) {
+        const data = response.data;
         console.log("Shifts data received:", data);
         setShifts(data.shifts || []);
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        console.error("Response was not JSON:", responseText.substring(0, 500));
       }
     } catch (error) {
       console.error("Error fetching shifts:", error);
@@ -169,13 +153,11 @@ export default function ShiftRoster() {
       // Fetch from both onboarding and user management (same as Employee Directory)
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
+        api.get(`/hospitals/users/${tenant}/list`).catch(() => ({ users: [] }))
       ]);
       
       const onboardedEmployees = onboardingRes.data || [];
-      const userEmployees = usersRes.users || [];
+      const userEmployees = usersRes.data?.users || [];
       
       // Process onboarded employees (same logic as Employee Directory)
       const validOnboardedEmployees = onboardedEmployees.filter(emp => {
@@ -258,14 +240,12 @@ export default function ShiftRoster() {
       const startDate = dates[0];
       const endDate = dates[dates.length - 1];
       
-      const url = `http://localhost:8000/api/roster/schedule?start_date=${startDate}&end_date=${endDate}${selectedDepartment ? `&department=${selectedDepartment}` : ''}${showDeleted ? '&show_deleted=true' : ''}`;
+      const url = `/api/roster/schedule?start_date=${startDate}&end_date=${endDate}${selectedDepartment ? `&department=${selectedDepartment}` : ''}${showDeleted ? '&show_deleted=true' : ''}`;
       
-      const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(url);
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         console.log("Roster data received:", data);
         setRosterData(data.roster || []);
         setDeletedCount(data.deleted_count || 0);
@@ -346,8 +326,6 @@ export default function ShiftRoster() {
         }
         
         setAllocatedUsers(rosterUsers);
-      } else {
-        console.error("Failed to fetch roster data:", await response.text());
       }
     } catch (error) {
       console.error("Error fetching roster data:", error);
@@ -365,19 +343,14 @@ export default function ShiftRoster() {
       }
       
       console.log("Fetching departments for tenant:", tenant);
-      const response = await fetch(`http://localhost:8000/hospitals/departments/${tenant}/list`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/hospitals/departments/${tenant}/list`);
       
       console.log("Departments response status:", response.status);
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         console.log("Departments data:", data);
         setDepartments(data.departments || []);
-      } else {
-        const errorText = await response.text();
-        console.error("Departments API error:", errorText);
       }
     } catch (error) {
       console.error("Error fetching departments:", error);
@@ -389,12 +362,10 @@ export default function ShiftRoster() {
       const token = localStorage.getItem("access_token");
       if (!token) return;
       
-      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get("/api/roster/night-shift-rules");
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         if (data.rules) {
           setNightShiftRules(data.rules);
         }
@@ -409,12 +380,10 @@ export default function ShiftRoster() {
       const token = localStorage.getItem("access_token");
       if (!token) return;
       
-      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules/list", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get("/api/roster/night-shift-rules/list");
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         setAllNightShiftRules(data.rules || []);
       }
     } catch (error) {
@@ -427,12 +396,10 @@ export default function ShiftRoster() {
       const token = localStorage.getItem("access_token");
       if (!token) return;
       
-      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/api/roster/night-shift-rules/${ruleId}`);
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         setEditingNightShiftRule(data.rule);
         setNightShiftRules(data.rule);
       }
@@ -444,16 +411,9 @@ export default function ShiftRoster() {
   const updateNightShiftRule = async (ruleId) => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(nightShiftRules)
-      });
+      const response = await api.put(`/api/roster/night-shift-rules/${ruleId}`, nightShiftRules);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Night shift rule updated successfully!");
         setEditingNightShiftRule(null);
         fetchAllNightShiftRules();
@@ -470,12 +430,9 @@ export default function ShiftRoster() {
     
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/api/roster/night-shift-rules/${ruleId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.delete(`/api/roster/night-shift-rules/${ruleId}`);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Night shift rule deleted successfully!");
         fetchAllNightShiftRules();
       }
@@ -509,30 +466,20 @@ export default function ShiftRoster() {
       console.log("Converted employee ID:", actualEmployeeId);
       console.log("Using employee details:", { employeeName, employeeCode });
       
-      const response = await fetch("http://localhost:8000/api/roster/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          employee_id: actualEmployeeId,
-          date: date,
-          shift_id: shiftId,
-          status: status,
-          employee_name: employeeName,
-          employee_code: employeeCode
-        })
+      const response = await api.post("/api/roster/save", {
+        employee_id: actualEmployeeId,
+        date: date,
+        shift_id: shiftId,
+        status: status,
+        employee_name: employeeName,
+        employee_code: employeeCode
       });
       
       console.log("Response status:", response.status);
       
-      if (response.ok) {
-        const result = await response.json();
+      if (response.data) {
+        const result = response.data;
         console.log("Roster entry saved successfully:", result);
-      } else {
-        const errorText = await response.text();
-        console.error("Failed to save roster entry:", errorText);
       }
     } catch (error) {
       console.error("Error saving roster:", error);
@@ -546,12 +493,10 @@ export default function ShiftRoster() {
       
       if (!tenant || !token) return;
       
-      const response = await fetch(`http://localhost:8000/hospitals/roles/${tenant}/list`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/hospitals/roles/${tenant}/list`);
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         setRoles(data.roles || []);
       }
     } catch (error) {
@@ -566,12 +511,10 @@ export default function ShiftRoster() {
       
       if (!tenant || !token) return;
       
-      const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/hospitals/users/${tenant}/list`);
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         setUsers(data.users || []);
       }
     } catch (error) {
@@ -712,24 +655,15 @@ export default function ShiftRoster() {
       }
       
       // Soft delete all roster entries for this employee
-      const response = await fetch(`http://localhost:8000/api/roster/remove-employee/${actualUserId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await api.delete(`/api/roster/remove-employee/${actualUserId}`);
       
-      if (response.ok) {
+      if (response.data) {
         // Remove from frontend state
         setAllocatedUsers(allocatedUsers.filter(user => user.id !== userId));
         showToast("Employee removed from roster successfully!");
         
         // Refresh roster data
         await fetchRosterData();
-      } else {
-        const errorText = await response.text();
-        console.error("Failed to remove employee:", errorText);
-        showToast("Error removing employee from roster", 'error');
       }
     } catch (error) {
       console.error("Error removing user from roster:", error);
@@ -764,16 +698,9 @@ export default function ShiftRoster() {
         return;
       }
       
-      const response = await fetch(`http://localhost:8000/shifts/${tenant}/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(newShift)
-      });
+      const response = await api.post(`/shifts/${tenant}/create`, newShift);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Shift created successfully!");
         setNewShift({ name: "", start_time: "", end_time: "" });
         setShowCreateShift(false);
@@ -793,14 +720,9 @@ export default function ShiftRoster() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      const response = await fetch(`http://localhost:8000/shifts/${tenant}/${shiftId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await api.delete(`/shifts/${tenant}/${shiftId}`);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Shift deleted successfully!");
         fetchShifts();
       } else {
@@ -815,21 +737,10 @@ export default function ShiftRoster() {
   const saveNightShiftRules = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/roster/night-shift-rules", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(nightShiftRules)
-      });
+      const response = await api.post("/api/roster/night-shift-rules", nightShiftRules);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Night shift rules saved successfully!");
-      } else {
-        const errorText = await response.text();
-        console.error("Failed to save night shift rules:", errorText);
-        showToast("Failed to save night shift rules", 'error');
       }
     } catch (error) {
       console.error("Error saving night shift rules:", error);
@@ -841,11 +752,9 @@ export default function ShiftRoster() {
   const fetchOnCallDuties = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/roster/on-call", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
+      const response = await api.get("/api/roster/on-call");
+      if (response.data) {
+        const data = response.data;
         setOnCallDuties(data.on_call_duties || []);
       }
     } catch (error) {
@@ -856,11 +765,9 @@ export default function ShiftRoster() {
   const fetchEmergencyCalls = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/roster/emergency-calls", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
+      const response = await api.get("/api/roster/emergency-calls");
+      if (response.data) {
+        const data = response.data;
         setEmergencyCalls(data.emergency_calls || []);
       }
     } catch (error) {
@@ -900,20 +807,12 @@ export default function ShiftRoster() {
       
       console.log('Sending payload:', payload);
       
-      const response = await fetch("http://localhost:8000/api/roster/on-call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await api.post("/api/roster/on-call", payload);
       
       console.log('Response status:', response.status);
-      const responseText = await response.text();
-      console.log('Response text:', responseText);
+      console.log('Response data:', response.data);
       
-      if (response.ok) {
+      if (response.data) {
         console.log('On-call duty saved successfully');
         showToast("On-call duty created successfully!");
         setShowOnCallForm(false);
@@ -928,9 +827,6 @@ export default function ShiftRoster() {
           remarks: ""
         });
         fetchOnCallDuties();
-      } else {
-        console.error('API error:', responseText);
-        showToast(`Failed to create on-call duty: ${responseText}`, 'error');
       }
     } catch (error) {
       console.error("Error saving on-call duty:", error);
@@ -941,16 +837,9 @@ export default function ShiftRoster() {
   const logEmergencyCall = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/roster/emergency-call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(emergencyForm)
-      });
+      const response = await api.post("/api/roster/emergency-call", emergencyForm);
       
-      if (response.ok) {
+      if (response.data) {
         showToast("Emergency call logged successfully!");
         setShowEmergencyForm(false);
         setEmergencyForm({

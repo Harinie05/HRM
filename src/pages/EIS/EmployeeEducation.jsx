@@ -305,7 +305,7 @@ export default function EmployeeEducation() {
                               showToast('Authentication token not found. Please login again.', "error");
                               return;
                             }
-                            window.open(`http://localhost:8000/employee/education/certificate/${e.id}?token=${token}`, '_blank');
+                            window.open(`${api.defaults.baseURL}/employee/education/certificate/${e.id}?token=${token}`, '_blank');
                           }}
                         >
                           <FiEye className="w-4 h-4" />
@@ -376,7 +376,7 @@ export default function EmployeeEducation() {
                             showToast('Authentication token not found. Please login again.', "error");
                             return;
                           }
-                          window.open(`http://localhost:8000/employee/education/certificate/${e.id}?token=${token}`, '_blank');
+                          window.open(`${api.defaults.baseURL}/employee/education/certificate/${e.id}?token=${token}`, '_blank');
                         }}
                       >
                         <FiEye className="w-4 h-4" />

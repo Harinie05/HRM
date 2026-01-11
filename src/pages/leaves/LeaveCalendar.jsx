@@ -107,7 +107,7 @@ export default function LeaveCalendar() {
       // Fetch from both onboarding and user management like EIS does
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+        fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
       ]);
@@ -161,7 +161,7 @@ export default function LeaveCalendar() {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/hospitals/departments/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/departments/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {

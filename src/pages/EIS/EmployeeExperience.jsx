@@ -351,7 +351,7 @@ export default function EmployeeExperience() {
                               showToast('Authentication token not found. Please login again.', "error");
                               return;
                             }
-                            const url = `http://localhost:8000/employee/experience/document/${e.id}`;
+                            const url = `${api.defaults.baseURL}/employee/experience/document/${e.id}`;
                             window.open(`${url}?token=${token}`, '_blank');
                           }}
                         >
@@ -433,7 +433,7 @@ export default function EmployeeExperience() {
                             showToast('Authentication token not found. Please login again.', "error");
                             return;
                           }
-                          const url = `http://localhost:8000/employee/experience/document/${e.id}`;
+                          const url = `${api.defaults.baseURL}/employee/experience/document/${e.id}`;
                           window.open(`${url}?token=${token}`, '_blank');
                         }}
                       >

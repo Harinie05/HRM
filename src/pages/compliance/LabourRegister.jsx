@@ -70,9 +70,7 @@ export default function LabourRegister() {
         const token = localStorage.getItem("access_token");
         
         // Fetch employees from user management only
-        const usersRes = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }));
+        const usersRes = await api.get(`/hospitals/users/${tenant}/list`).then(res => res.data ? { users: res.data } : { users: [] }).catch(() => ({ users: [] }));
         
         const userEmployees = usersRes.users || [];
         

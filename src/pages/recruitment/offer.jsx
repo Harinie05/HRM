@@ -1433,7 +1433,7 @@ export default function Offer() {
                         <div className="flex-1">
                           <p className="font-medium">{doc.document_type}</p>
                           <a 
-                            href={`http://localhost:8000/recruitment/offer/documents/file/${doc.file_name}`}
+                            href={`${api.defaults.baseURL}/recruitment/offer/documents/file/${doc.file_name}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer"

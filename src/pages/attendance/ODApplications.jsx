@@ -106,12 +106,10 @@ export default function ODApplications() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      const res = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/hospitals/users/${tenant}/list`);
       
-      if (res.ok) {
-        const data = await res.json();
+      if (response.data) {
+        const data = response.data;
         setEmployees(data.users || []);
       }
     } catch (error) {

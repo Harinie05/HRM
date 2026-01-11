@@ -51,12 +51,9 @@ export default function ReviewCycle() {
       try {
         const tenantCode = localStorage.getItem('tenant_code');
         if (tenantCode) {
-          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
-          if (response.ok) {
-            const data = await response.json();
-            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
-            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
-          }
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
         }
       } catch (error) {
         console.error('Failed to fetch branding colors:', error);
@@ -94,7 +91,7 @@ export default function ReviewCycle() {
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+        fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
       ]);
@@ -145,7 +142,7 @@ export default function ReviewCycle() {
     try {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/hospitals/departments/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/departments/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {

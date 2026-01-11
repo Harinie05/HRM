@@ -34,9 +34,7 @@ export default function AttendancePermission() {
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
+        api.get(`/hospitals/users/${tenant}/list`).then(res => res.data ? { users: res.data } : { users: [] }).catch(() => ({ users: [] }))
       ]);
       
       const onboardedEmployees = onboardingRes.data || [];

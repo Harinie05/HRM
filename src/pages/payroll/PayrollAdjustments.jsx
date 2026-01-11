@@ -82,7 +82,7 @@ export default function PayrollAdjustments() {
       // Use the same employee fetching logic as PayrollRun
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+        fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
       ]);

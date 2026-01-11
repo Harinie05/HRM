@@ -47,7 +47,7 @@ export default function TrainingApplications() {
       try {
         const tenantCode = localStorage.getItem('tenant_code');
         if (tenantCode) {
-          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
+          const response = await api.get(`/auth/branding/${tenantCode}`);
           if (response.ok) {
             const data = await response.json();
             document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');

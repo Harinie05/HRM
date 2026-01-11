@@ -220,7 +220,7 @@ export default function EmployeeDocuments() {
                         showToast('Authentication token not found. Please login again.', "error");
                         return;
                       }
-                      window.open(`http://localhost:8000${d.view_url}?token=${token}`, '_blank');
+                      window.open(`${api.defaults.baseURL}${d.view_url}?token=${token}`, '_blank');
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">

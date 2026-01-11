@@ -1239,7 +1239,7 @@ export default function Onboarding() {
                             onMouseLeave={(e) => {
                               e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
                             }}
-                            onClick={() => window.open(`http://localhost:8000/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
+                            onClick={() => window.open(`${api.defaults.baseURL}/recruitment/onboarding/document/${doc.id}/view`, '_blank')}
                           >
                             <FiEye className="mr-2" size={14} />
                             View Document

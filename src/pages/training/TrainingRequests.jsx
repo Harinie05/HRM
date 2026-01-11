@@ -68,12 +68,9 @@ export default function TrainingRequests() {
       try {
         const tenantCode = localStorage.getItem('tenant_code');
         if (tenantCode) {
-          const response = await fetch(`http://localhost:8000/auth/branding/${tenantCode}`);
-          if (response.ok) {
-            const data = await response.json();
-            document.documentElement.style.setProperty('--primary-color', data.primary_color || '#2862e9');
-            document.documentElement.style.setProperty('--secondary-color', data.secondary_color || '#474e71');
-          }
+          const response = await api.get(`/auth/branding/${tenantCode}`);
+          document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
+          document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
         }
       } catch (error) {
         console.error('Failed to fetch branding colors:', error);
@@ -113,9 +110,7 @@ export default function TrainingRequests() {
       // Fetch from both onboarding and user management like EIS module
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).then(res => res.ok ? res.json() : { users: [] }).catch(() => ({ users: [] }))
+        api.get(`/hospitals/users/${tenant}/list`).then(res => res.data).catch(() => ({ users: [] }))
       ]);
       
       const onboardedEmployees = onboardingRes.data || [];

@@ -176,7 +176,7 @@ export default function StatutoryRules() {
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
                   className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
                 />
-                <p className="text-xs text-gray-500 mt-1">Salary > threshold → ESI auto = 0</p>
+                <p className="text-xs text-gray-500 mt-1">Salary &gt; threshold → ESI auto = 0</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ESI %</label>

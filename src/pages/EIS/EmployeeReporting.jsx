@@ -39,7 +39,7 @@ export default function EmployeeReporting() {
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      const response = await fetch(`http://localhost:8000/hospitals/users/${tenant}/list`, {
+      const response = await fetch(`${api.defaults.baseURL}/hospitals/users/${tenant}/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
