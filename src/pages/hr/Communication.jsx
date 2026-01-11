@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Eye, EyeOff, RotateCcw } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
@@ -11,6 +12,8 @@ export default function Communication() {
   const canEdit = hasPermission('edit_hr_letter');
   const canDelete = hasPermission('delete_hr_letter');
   const canPrint = hasPermission('print_hr_letter');
+  const canViewDeleted = isAdmin() || hasPermission('show_deleted_hr_letters');
+  const canRestore = isAdmin() || hasPermission('restore_hr_letter');
   const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
   
   if (!canView) {
@@ -38,6 +41,8 @@ export default function Communication() {
   });
 
   const [letters, setLetters] = useState([]);
+  const [deletedLetters, setDeletedLetters] = useState([]);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('view'); // 'view' or 'edit'
@@ -114,6 +119,32 @@ export default function Communication() {
         };
       });
       setLetters(fetchedLetters);
+      
+      // Fetch deleted letters only if user has permission
+      if (canViewDeleted) {
+        try {
+          const deletedRes = await api.get('/hr/communication/deleted');
+          const fetchedDeletedLetters = deletedRes.data.map(comm => {
+            const employeeCode = comm.sent_to_ids?.[0];
+            const employee = employees.find(emp => emp.employee_code === employeeCode);
+            
+            return {
+              id: comm.id,
+              employee: employeeCode || 'All',
+              name: employee ? employee.name : (employeeCode ? 'Employee Name' : 'All Employees'),
+              type: comm.letter_type,
+              subject: comm.subject,
+              date: comm.created_at ? new Date(comm.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+              status: 'Deleted',
+              deleted_at: comm.deleted_at
+            };
+          });
+          setDeletedLetters(fetchedDeletedLetters);
+        } catch (err) {
+          console.log('No permission to view deleted letters or endpoint error:', err);
+          setDeletedLetters([]);
+        }
+      }
     } catch (error) {
       console.error('Error fetching letters:', error);
     }
@@ -325,13 +356,32 @@ export default function Communication() {
       try {
         await api.delete(`/hr/communication/${letterId}`);
         
-        // Remove the letter from the list
+        // Remove the letter from the active list
         setLetters(prev => prev.filter(letter => letter.id !== letterId));
+        
+        // Refresh both lists to get updated data
+        await fetchLetters();
         
         showToast('Letter deleted successfully!', 'success');
       } catch (error) {
         console.error('Error deleting letter:', error);
         showToast('Failed to delete letter. Please try again.', 'error');
+      }
+    }
+  };
+
+  const handleRestoreLetter = async (letterId) => {
+    if (window.confirm('Are you sure you want to restore this letter?')) {
+      try {
+        await api.put(`/hr/communication/restore/${letterId}`);
+        
+        // Refresh both lists
+        await fetchLetters();
+        
+        showToast('Letter restored successfully!', 'success');
+      } catch (error) {
+        console.error('Error restoring letter:', error);
+        showToast('Failed to restore letter. Please try again.', 'error');
       }
     }
   };
@@ -577,7 +627,26 @@ export default function Communication() {
       {/* Letters History */}
       <div className="rounded-lg shadow-sm border border-black bg-white">
         <div className="px-6 py-4 border-b border-black">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Letters</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {showDeleted ? 'Deleted HR Letters' : 'Recent Letters'}
+            </h3>
+            <div className="flex gap-2">
+              {canViewDeleted && (
+                <button
+                  onClick={() => setShowDeleted(!showDeleted)}
+                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
+                    showDeleted 
+                      ? 'bg-gray-800 text-white border-black hover:bg-gray-900' 
+                      : 'bg-white text-gray-800 border-black hover:bg-gray-50'
+                  }`}
+                >
+                  {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? letters.length : deletedLetters.length})
+                </button>
+              )}
+            </div>
+          </div>
         </div>
         
         {/* Desktop Table View */}
@@ -590,17 +659,20 @@ export default function Communication() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Subject</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                {showDeleted && <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Deleted At</th>}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {letters.length === 0 ? (
+              {(showDeleted ? deletedLetters : letters).length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No letters found</td>
+                  <td colSpan={showDeleted ? 7 : 6} className="px-6 py-4 text-center text-gray-500">
+                    {showDeleted ? 'No deleted letters found' : 'No letters found'}
+                  </td>
                 </tr>
               ) : (
-                letters.map((letter) => (
-                  <tr key={letter.id}>
+                (showDeleted ? deletedLetters : letters).map((letter) => (
+                  <tr key={letter.id} className={showDeleted ? 'bg-red-50' : ''}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{letter.name}</div>
@@ -612,55 +684,76 @@ export default function Communication() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{letter.date}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                        letter.status === 'Ready' ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-gray-50 text-gray-600 border-gray-200'
+                        letter.status === 'Ready' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
+                        letter.status === 'Deleted' ? 'bg-red-100 text-red-800 border-red-300' :
+                        'bg-gray-50 text-gray-600 border-gray-200'
                       }`}>
                         {letter.status}
                       </span>
                     </td>
+                    {showDeleted && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {letter.deleted_at ? new Date(letter.deleted_at).toLocaleDateString() : 'N/A'}
+                      </td>
+                    )}
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex flex-wrap gap-1 sm:gap-2">
-                        <button
-                          onClick={() => handleViewLetter(letter.id)}
-                          className="p-1 hover:text-primary" style={{color: 'var(--text-secondary, #374151)'}}
-                          title="View Letter"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        </button>
-                        {canEdit && letter.status === 'Draft' && (
-                          <button
-                            onClick={() => handleEditLetter(letter.id)}
-                            className="p-1 text-blue-600 hover:text-blue-900"
-                            title="Edit & Send"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                        )}
-                        {canPrint && (
-                          <button
-                            onClick={() => handlePrintLetter(letter)}
-                            className="p-1 text-green-600 hover:text-green-900"
-                            title="Print Letter"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                          </button>
-                        )}
-                        {canDelete && (
-                          <button
-                            onClick={() => handleDeleteLetter(letter.id)}
-                            className="p-1 text-red-600 hover:text-red-900"
-                            title="Delete Letter"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
+                        {showDeleted ? (
+                          canRestore && (
+                            <button
+                              onClick={() => handleRestoreLetter(letter.id)}
+                              className="p-1 text-green-600 hover:text-green-800 rounded"
+                              title="Restore Letter"
+                            >
+                              <RotateCcw size={16} />
+                            </button>
+                          )
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleViewLetter(letter.id)}
+                              className="p-1 hover:text-primary" style={{color: 'var(--text-secondary, #374151)'}}
+                              title="View Letter"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            </button>
+                            {canEdit && letter.status === 'Draft' && (
+                              <button
+                                onClick={() => handleEditLetter(letter.id)}
+                                className="p-1 text-blue-600 hover:text-blue-900"
+                                title="Edit & Send"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                            )}
+                            {canPrint && (
+                              <button
+                                onClick={() => handlePrintLetter(letter)}
+                                className="p-1 text-green-600 hover:text-green-900"
+                                title="Print Letter"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button
+                                onClick={() => handleDeleteLetter(letter.id)}
+                                className="p-1 text-red-600 hover:text-red-900"
+                                title="Delete Letter"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                          </>
                         )}
                       </div>
                     </td>
@@ -673,20 +766,22 @@ export default function Communication() {
 
         {/* Mobile Card View */}
         <div className="md:hidden">
-          {letters.length === 0 ? (
+          {(showDeleted ? deletedLetters : letters).length === 0 ? (
             <div className="p-6 text-center text-gray-500">
-              <p>No letters found</p>
+              <p>{showDeleted ? 'No deleted letters found' : 'No letters found'}</p>
             </div>
           ) : (
-            letters.map((letter) => (
-              <div key={letter.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+            (showDeleted ? deletedLetters : letters).map((letter) => (
+              <div key={letter.id} className={`p-4 border-b border-gray-200 hover:bg-gray-50 ${showDeleted ? 'bg-red-50' : ''}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{letter.name}</div>
                     <div className="text-sm text-gray-500">{letter.employee}</div>
                   </div>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${
-                    letter.status === 'Ready' ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-gray-50 text-gray-600 border-gray-200'
+                    letter.status === 'Ready' ? 'bg-gray-100 text-gray-800 border-gray-300' : 
+                    letter.status === 'Deleted' ? 'bg-red-100 text-red-800 border-red-300' :
+                    'bg-gray-50 text-gray-600 border-gray-200'
                   }`}>
                     {letter.status}
                   </span>
@@ -704,50 +799,70 @@ export default function Communication() {
                     <span className="text-sm font-medium text-gray-900">Date:</span>
                     <span className="text-sm text-gray-600">{letter.date}</span>
                   </div>
+                  {showDeleted && (
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-gray-900">Deleted At:</span>
+                      <span className="text-sm text-gray-600">{letter.deleted_at ? new Date(letter.deleted_at).toLocaleDateString() : 'N/A'}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => handleViewLetter(letter.id)}
-                    className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    View
-                  </button>
-                  {canEdit && letter.status === 'Draft' && (
-                    <button
-                      onClick={() => handleEditLetter(letter.id)}
-                      className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      Edit
-                    </button>
-                  )}
-                  {canPrint && (
-                    <button
-                      onClick={() => handlePrintLetter(letter)}
-                      className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                      </svg>
-                      Print
-                    </button>
-                  )}
-                  {canDelete && (
-                    <button
-                      onClick={() => handleDeleteLetter(letter.id)}
-                      className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      Delete
-                    </button>
+                  {showDeleted ? (
+                    canRestore && (
+                      <button
+                        onClick={() => handleRestoreLetter(letter.id)}
+                        className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        Restore
+                      </button>
+                    )
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleViewLetter(letter.id)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View
+                      </button>
+                      {canEdit && letter.status === 'Draft' && (
+                        <button
+                          onClick={() => handleEditLetter(letter.id)}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                      )}
+                      {canPrint && (
+                        <button
+                          onClick={() => handlePrintLetter(letter)}
+                          className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                          </svg>
+                          Print
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeleteLetter(letter.id)}
+                          className="flex items-center gap-1 text-red-600 hover:text-red-900 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

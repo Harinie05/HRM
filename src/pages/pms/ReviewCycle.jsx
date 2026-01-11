@@ -292,7 +292,7 @@ export default function ReviewCycle() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_review_cycles') || isAdmin()) && (
+          {!showDeleted && deletedCount > 0 && (hasPermission('view_deleted_review_cycles') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(true)}
               className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
@@ -300,7 +300,7 @@ export default function ReviewCycle() {
               Show Deleted ({deletedCount})
             </button>
           )}
-          {showDeleted && (hasPermission('show_deleted_review_cycles') || isAdmin()) && (
+          {showDeleted && (hasPermission('view_deleted_review_cycles') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(false)}
               className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"

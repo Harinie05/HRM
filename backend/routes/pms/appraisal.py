@@ -23,7 +23,7 @@ class AppraisalCreate(BaseModel):
     status: str = "Proposed"
 
 @router.post("/appraisals")
-async def create_appraisal(appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("conduct_appraisal"))):
+async def create_appraisal(appraisal: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("add_appraisal"))):
     try:
         # Parse date if provided
         effective_from = None

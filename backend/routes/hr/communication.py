@@ -173,11 +173,12 @@ def delete_communication(
             raise HTTPException(status_code=404, detail="Communication not found")
         
         old_values = communication.__dict__.copy()
-        db.delete(communication)
+        # Soft delete: set deleted_at timestamp
+        communication.deleted_at = datetime.now()
         db.commit()
-        audit_crud(request, db, {"email": "system"}, "DELETE", "hr_communications", str(communication_id), old_values, {})
+        audit_crud(request, db, {"email": "system"}, "SOFT_DELETE", "hr_communications", str(communication_id), old_values, {"deleted_at": communication.deleted_at})
         
-        logger.info(f"✅ Communication {communication_id} deleted successfully")
+        logger.info(f"✅ Communication {communication_id} soft deleted successfully")
         return {"message": "Communication deleted successfully"}
     except Exception as e:
         logger.error(f"❌ Error deleting communication: {e}")
@@ -192,9 +193,9 @@ def list_communications(db: Session = Depends(get_tenant_db), user = Depends(get
         raise HTTPException(status_code=403, detail="Insufficient permissions")
     
     try:
-        query = db.query(HRCommunication).order_by(
-            HRCommunication.created_at.desc()
-        )
+        query = db.query(HRCommunication).filter(
+            HRCommunication.deleted_at.is_(None)
+        ).order_by(HRCommunication.created_at.desc())
         
         # view_self takes precedence - if user has view_self, restrict to own records regardless of other permissions
         if 'view_self' in user_permissions:
@@ -223,7 +224,7 @@ def list_communications(db: Session = Depends(get_tenant_db), user = Depends(get
             
             result.append({
                 "id": comm.id,
-                "employee": employee_names[0].split(' (')[1].replace(')', '') if employee_names else "All",
+                "employee": employee_names[0].split(' (')[1].replace(')', '') if employee_names and '(' in employee_names[0] else "All",
                 "employeeType": comm.letter_type,
                 "subject": comm.subject,
                 "date": comm.created_at.strftime('%Y-%m-%d') if comm.created_at else None,
@@ -238,4 +239,74 @@ def list_communications(db: Session = Depends(get_tenant_db), user = Depends(get
         return result
     except Exception as e:
         logger.error(f"❌ Error fetching communications: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/deleted", response_model=list)
+def list_deleted_communications(
+    db: Session = Depends(get_tenant_db), 
+    user = Depends(require_permission("show_deleted_hr_letters"))
+):
+    try:
+        communications = db.query(HRCommunication).filter(
+            HRCommunication.deleted_at.isnot(None)
+        ).order_by(HRCommunication.deleted_at.desc()).all()
+        
+        result = []
+        for comm in communications:
+            from models.models_tenant import User
+            employee_names = []
+            if comm.sent_to_ids:
+                for emp_id in comm.sent_to_ids:
+                    emp_user = db.query(User).filter(User.id == emp_id).first()
+                    if emp_user:
+                        employee_names.append(f"{emp_user.name} ({emp_user.employee_code})")
+                    else:
+                        employee_names.append(f"Employee {emp_id}")
+            
+            result.append({
+                "id": comm.id,
+                "employee": employee_names[0].split(' (')[1].replace(')', '') if employee_names and '(' in employee_names[0] else "All",
+                "employeeType": comm.letter_type,
+                "subject": comm.subject,
+                "date": comm.created_at.strftime('%Y-%m-%d') if comm.created_at else None,
+                "status": "Deleted",
+                "letter_type": comm.letter_type,
+                "content": comm.content,
+                "sent_to_type": comm.sent_to_type,
+                "sent_to_ids": comm.sent_to_ids,
+                "created_at": comm.created_at.isoformat() if comm.created_at is not None else None,
+                "deleted_at": comm.deleted_at.isoformat() if comm.deleted_at is not None else None
+            })
+        
+        return result
+    except Exception as e:
+        logger.error(f"❌ Error fetching deleted communications: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/restore/{communication_id}", response_model=dict)
+def restore_communication(
+    communication_id: int,
+    request: Request,
+    db: Session = Depends(get_tenant_db),
+    _: dict = Depends(require_permission("restore_hr_letter"))
+):
+    try:
+        communication = db.query(HRCommunication).filter(
+            HRCommunication.id == communication_id,
+            HRCommunication.deleted_at.isnot(None)
+        ).first()
+        
+        if not communication:
+            raise HTTPException(status_code=404, detail="Deleted communication not found")
+        
+        old_values = {"deleted_at": communication.deleted_at}
+        communication.deleted_at = None
+        db.commit()
+        audit_crud(request, db, {"email": "system"}, "RESTORE", "hr_communications", str(communication_id), old_values, {"deleted_at": None})
+        
+        logger.info(f"✅ Communication {communication_id} restored successfully")
+        return {"message": "Communication restored successfully"}
+    except Exception as e:
+        logger.error(f"❌ Error restoring communication: {e}")
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))

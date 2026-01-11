@@ -224,8 +224,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "generate_experience_letter", "description": "Can generate experience letters"},
     {"name": "edit_experience_letter", "description": "Can edit experience letters"},
     {"name": "download_settlement_pdf", "description": "Can download settlement PDFs"},
-    {"name": "email_settlement_docs", "description": "Can email settlement documents"},
-    {"name": "edit_settlements", "description": "Can edit F&F settlements"},
 
     # =====================================================
     # 💰 STATUTORY RULES & COMPLIANCE
@@ -289,9 +287,7 @@ DEFAULT_PERMISSIONS = [
     # Attendance & Assessment
     {"name": "view_training_attendance", "description": "Can view training attendance"},
     {"name": "mark_training_attendance", "description": "Can mark training attendance"},
-    {"name": "view_training_assessments", "description": "Can view training assessments"},
-    {"name": "conduct_training_assessment", "description": "Can conduct training assessments"},
-    {"name": "grade_training_assessment", "description": "Can grade training assessments"},
+    {"name": "update_attendance_training", "description": "Can update attendance training"},
 
     # Certificates
     {"name": "view_training_certificates", "description": "Can view training certificates"},
@@ -321,16 +317,11 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_review_cycle", "description": "Can delete performance review cycles"},
     {"name": "view_deleted_review_cycles", "description": "Can view deleted performance review cycles"},
     {"name": "restore_review_cycle", "description": "Can restore deleted performance review cycles"},
-    {"name": "start_review_cycle", "description": "Can start performance review cycles"},
-    {"name": "close_review_cycle", "description": "Can close performance review cycles"},
-    {"name": "show_deleted_review_cycles", "description": "Can access show deleted review cycles button"},
 
     # Feedback
     {"name": "view_feedback", "description": "Can view performance feedback"},
     {"name": "give_feedback", "description": "Can provide performance feedback"},
-    {"name": "request_feedback", "description": "Can request performance feedback"},
     {"name": "view_360_feedback", "description": "Can view 360-degree feedback"},
-    {"name": "manage_feedback_forms", "description": "Can manage feedback forms and templates"},
     {"name": "edit_feedback", "description": "Can edit performance feedback"},
     {"name": "delete_feedback", "description": "Can delete performance feedback"},
     {"name": "restore_feedback", "description": "Can restore deleted performance feedback"},
@@ -338,10 +329,8 @@ DEFAULT_PERMISSIONS = [
 
     # Appraisal
     {"name": "view_appraisals", "description": "Can view performance appraisals"},
-    {"name": "conduct_appraisal", "description": "Can conduct performance appraisals"},
-    {"name": "submit_self_appraisal", "description": "Can submit self-appraisal"},
-    {"name": "approve_appraisal", "description": "Can approve performance appraisals"},
-    {"name": "view_appraisal_reports", "description": "Can view appraisal reports and analytics"},
+    {"name": "add_appraisal", "description": "Can add performance appraisals"},
+
     {"name": "edit_appraisal", "description": "Can edit performance appraisals"},
     {"name": "delete_appraisal", "description": "Can delete performance appraisals"},
     {"name": "restore_appraisal", "description": "Can restore deleted performance appraisals"},
@@ -381,9 +370,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_attendance", "description": "Can view attendance records"},
     {"name": "mark_attendance", "description": "Can mark attendance for employees"},
     {"name": "approve_attendance", "description": "Can approve attendance records"},
-    {"name": "view_attendance_reports", "description": "Can view attendance reports"},
-    {"name": "generate_attendance_reports", "description": "Can generate attendance reports"},
-    {"name": "export_attendance_data", "description": "Can export attendance data"},
 
     # Punch Logs
     {"name": "view_punch_logs", "description": "Can view employee punch logs"},
@@ -412,6 +398,10 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_attendance_location", "description": "Can add attendance capture locations"},
     {"name": "edit_attendance_location", "description": "Can edit attendance capture locations"},
     {"name": "delete_attendance_location", "description": "Can delete attendance capture locations"},
+    {"name": "view_gps_tracking", "description": "Can view GPS location tracking"},
+    {"name": "enable_web_gps", "description": "Can enable web GPS tracking"},
+    {"name": "enable_mobile_gps", "description": "Can enable mobile GPS tracking"},
+    {"name": "view_location_logs", "description": "Can view employee location logs"},
 
     # Attendance Permission
     {"name": "apply_attendance_permission", "description": "Can apply for attendance permission"},
@@ -435,8 +425,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_lifecycle_action", "description": "Can edit employee lifecycle actions"},
     {"name": "delete_lifecycle_action", "description": "Can delete employee lifecycle actions"},
     {"name": "approve_lifecycle_action", "description": "Can approve employee lifecycle actions"},
-    {"name": "restore_lifecycle_action", "description": "Can restore deleted lifecycle actions"},
-    {"name": "show_deleted_lifecycle_actions", "description": "Can access show deleted lifecycle actions button"},
 
     # HR Letters
     {"name": "view_hr_letters", "description": "Can view HR letters and templates"},
@@ -444,8 +432,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_hr_letter", "description": "Can edit HR letters"},
     {"name": "delete_hr_letter", "description": "Can delete HR letters"},
     {"name": "print_hr_letter", "description": "Can print HR letters"},
-    {"name": "generate_hr_letter", "description": "Can generate HR letters from templates"},
-    {"name": "send_hr_letter", "description": "Can send HR letters to employees"},
     {"name": "restore_hr_letter", "description": "Can restore deleted HR letters"},
     {"name": "show_deleted_hr_letters", "description": "Can access show deleted HR letters button"},
 
@@ -456,9 +442,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_grievance", "description": "Can delete employee grievances"},
     {"name": "assign_grievance", "description": "Can assign grievances to handlers"},
     {"name": "resolve_grievance", "description": "Can resolve employee grievances"},
-    {"name": "escalate_grievance", "description": "Can escalate employee grievances"},
-    {"name": "restore_grievance", "description": "Can restore deleted grievances"},
-    {"name": "show_deleted_grievances", "description": "Can access show deleted grievances button"},
+    
 
     # Assets
     {"name": "view_assets", "description": "Can view company assets"},
@@ -466,19 +450,16 @@ DEFAULT_PERMISSIONS = [
     {"name": "edit_asset", "description": "Can edit company assets"},
     {"name": "delete_asset", "description": "Can delete company assets"},
     {"name": "assign_asset", "description": "Can assign assets to employees"},
-    {"name": "return_asset", "description": "Can process asset returns"},
-    {"name": "track_asset", "description": "Can track asset location and status"},
+  
     {"name": "approve_asset", "description": "Can approve asset assignments"},
     {"name": "reject_asset", "description": "Can reject asset assignments"},
-    {"name": "restore_asset", "description": "Can restore deleted assets"},
-    {"name": "show_deleted_assets", "description": "Can access show deleted assets button"},
 
     # Insurance & Benefits
     {"name": "view_insurance_benefits", "description": "Can view insurance and benefits"},
     {"name": "add_insurance_benefit", "description": "Can add insurance and benefits"},
     {"name": "edit_insurance_benefit", "description": "Can edit insurance and benefits"},
     {"name": "delete_insurance_benefit", "description": "Can delete insurance and benefits"},
-
+   
     # =====================================================
     # 👤 EMPLOYEE PROFILE & INFORMATION MANAGEMENT
     # =====================================================
@@ -495,9 +476,6 @@ DEFAULT_PERMISSIONS = [
     # Employment Details
     {"name": "view_employment_details", "description": "Can view employment details"},
     {"name": "edit_employment_details", "description": "Can edit employment details"},
-    {"name": "manage_work_location", "description": "Can manage employee work location"},
-    {"name": "manage_reporting_manager", "description": "Can manage reporting manager assignments"},
-    {"name": "manage_work_shift", "description": "Can manage employee work shifts"},
 
     # Probation Management
     {"name": "view_probation_details", "description": "Can view probation period details"},
@@ -514,13 +492,8 @@ DEFAULT_PERMISSIONS = [
 
 
 
-    {"name": "enroll_employee_benefits", "description": "Can enroll employees in benefits"},
-    {"name": "process_claims", "description": "Can process insurance claims"},
-    {"name": "manage_beneficiaries", "description": "Can manage employee beneficiaries"},
     {"name": "add_insurance_policy", "description": "Can add insurance policies"},
     {"name": "delete_insurance_policy", "description": "Can delete insurance policies"},
-    {"name": "restore_insurance_benefit", "description": "Can restore deleted insurance benefits"},
-    {"name": "show_deleted_insurance_benefits", "description": "Can access show deleted insurance benefits button"},
 
     # Staff Scheduling
     {"name": "view_staff_schedules", "description": "Can view staff schedules"},
@@ -529,9 +502,6 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_staff_schedule", "description": "Can delete staff schedules"},
     {"name": "assign_shifts", "description": "Can assign shifts to employees"},
     {"name": "manage_shift_swaps", "description": "Can manage employee shift swaps"},
-    {"name": "approve_schedule_changes", "description": "Can approve schedule changes"},
-    {"name": "restore_staff_schedule", "description": "Can restore deleted staff schedules"},
-    {"name": "show_deleted_staff_schedules", "description": "Can access show deleted staff schedules button"},
 
     # =====================================================
     # 💰 PAYROLL MANAGEMENT
@@ -563,15 +533,12 @@ DEFAULT_PERMISSIONS = [
     {"name": "add_payroll_adjustment", "description": "Can add payroll adjustments"},
     {"name": "edit_payroll_adjustment", "description": "Can edit payroll adjustments"},
     {"name": "delete_payroll_adjustment", "description": "Can delete payroll adjustments"},
-    {"name": "approve_payroll_adjustment", "description": "Can approve payroll adjustments"},
 
     # Salary Slip & Payment
     {"name": "view_salary_slips", "description": "Can view salary slips"},
     {"name": "generate_salary_slips", "description": "Can generate salary slips"},
     {"name": "download_salary_slips", "description": "Can download salary slips"},
     {"name": "email_salary_slips", "description": "Can email salary slips"},
-    {"name": "process_payments", "description": "Can process salary payments"},
-    {"name": "view_payment_status", "description": "Can view payment status"},
 
     # Reports & Compliance
     {"name": "view_payroll_reports", "description": "Can view payroll reports"},
@@ -617,17 +584,14 @@ DEFAULT_PERMISSIONS = [
     {"name": "view_leave_applications", "description": "Can view leave applications"},
     {"name": "apply_leave", "description": "Can apply for leave"},
     {"name": "edit_leave_application", "description": "Can edit leave applications"},
-    {"name": "cancel_leave_application", "description": "Can cancel leave applications"},
     {"name": "approve_leave", "description": "Can approve leave applications"},
     {"name": "reject_leave", "description": "Can reject leave applications"},
 
     # Leave Calendar
     {"name": "view_leave_calendar", "description": "Can view leave calendar"},
-    {"name": "export_leave_calendar", "description": "Can export leave calendar"},
 
     # Leave Reports
     {"name": "view_leave_reports", "description": "Can view leave reports"},
-    {"name": "generate_leave_reports", "description": "Can generate leave reports"},
     {"name": "export_leave_reports", "description": "Can export leave reports"},
     {"name": "view_leave_balance", "description": "Can view leave balance reports"},
     {"name": "view_leave_trends", "description": "Can view leave trend analysis"},

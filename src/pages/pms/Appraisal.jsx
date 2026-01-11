@@ -319,7 +319,7 @@ export default function Appraisal() {
             className="text-white px-4 py-2 rounded-lg border border-black flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
             style={{
               backgroundColor: 'var(--primary-color)',
-              display: (hasPermission('conduct_appraisal') || isAdmin()) ? 'flex' : 'none'
+              display: (hasPermission('add_appraisal') || isAdmin()) ? 'flex' : 'none'
             }}
             onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}

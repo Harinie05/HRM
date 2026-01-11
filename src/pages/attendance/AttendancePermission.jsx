@@ -7,6 +7,7 @@ import Toast from "../../components/Toast";
 export default function AttendancePermission() {
   const [list, setList] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
   const { toast, showToast, hideToast } = useToast();
   const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
 
@@ -27,18 +28,22 @@ export default function AttendancePermission() {
   const fetchEmployees = async () => {
     if (!canSelectEmployee) return;
     try {
+      setEmployeesLoading(true);
       const tenant = localStorage.getItem("tenant_db");
       const token = localStorage.getItem("access_token");
       
-      if (!tenant || !token) return;
+      if (!tenant || !token) {
+        setEmployeesLoading(false);
+        return;
+      }
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        api.get(`/hospitals/users/${tenant}/list`).then(res => res.data ? { users: res.data } : { users: [] }).catch(() => ({ users: [] }))
+        api.get(`/hospitals/users/${tenant}/list`).catch(() => ({ users: [] }))
       ]);
       
       const onboardedEmployees = onboardingRes.data || [];
-      const userEmployees = usersRes.users || [];
+      const userEmployees = usersRes.data?.users || [];
       
       const validOnboardedEmployees = onboardedEmployees.filter(emp => {
         if (!emp.employee_id || emp.employee_id.trim() === '') return false;
@@ -77,6 +82,8 @@ export default function AttendancePermission() {
     } catch (error) {
       console.error('Failed to fetch employees:', error);
       showToast('Failed to load employees', 'error');
+    } finally {
+      setEmployeesLoading(false);
     }
   };
 
@@ -168,8 +175,9 @@ export default function AttendancePermission() {
             value={form.employee_id}
             onChange={e => setForm({ ...form, employee_id: e.target.value })}
             className="border p-2 w-full rounded"
+            disabled={employeesLoading}
           >
-            <option value="">Select Employee</option>
+            <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
             {employees.map(emp => (
               <option key={emp.id} value={emp.id}>
                 {emp.employee_code || `EMP${emp.id}`} - {emp.name}

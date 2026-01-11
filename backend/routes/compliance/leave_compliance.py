@@ -66,10 +66,13 @@ def create_leave_compliance(data: LeaveComplianceRequest, request: Request, db: 
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.get("/")
-def get_leave_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_leave_compliance"))):
+def get_leave_compliance(show_deleted: bool = False, request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_leave_compliance"))):
     try:
-        records = db.query(LeaveWorkingCompliance).order_by(LeaveWorkingCompliance.created_at.desc()).all()
-        print(f"Found {len(records)} leave compliance records")
+        if show_deleted:
+            records = db.query(LeaveWorkingCompliance).filter(LeaveWorkingCompliance.is_deleted == True).order_by(LeaveWorkingCompliance.created_at.desc()).all()
+        else:
+            records = db.query(LeaveWorkingCompliance).filter(LeaveWorkingCompliance.is_deleted != True).order_by(LeaveWorkingCompliance.created_at.desc()).all()
+        print(f"Found {len(records)} leave compliance records (show_deleted={show_deleted})")
         
         result = []
         for record in records:
@@ -94,4 +97,52 @@ def get_leave_compliance(request: Request, db: Session = Depends(get_tenant_db),
         
     except Exception as e:
         print(f"Error in get_leave_compliance: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.delete("/{record_id}")
+def delete_leave_compliance(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("delete_leave_compliance"))):
+    try:
+        record = db.query(LeaveWorkingCompliance).filter(LeaveWorkingCompliance.id == record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        old_data = {
+            "employee_id": record.employee_id,
+            "compliance_status": record.compliance_status,
+            "is_deleted": getattr(record, 'is_deleted', False)
+        }
+        
+        # Soft delete
+        record.is_deleted = True
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "DELETE_LEAVE_COMPLIANCE", "leave_working_compliance", str(record.id), old_data, {"is_deleted": True})
+        
+        return {"message": "Record deleted successfully"}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.put("/{record_id}/restore")
+def restore_leave_compliance(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_leave_compliance"))):
+    try:
+        record = db.query(LeaveWorkingCompliance).filter(LeaveWorkingCompliance.id == record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        old_data = {"is_deleted": getattr(record, 'is_deleted', False)}
+        
+        # Restore record
+        record.is_deleted = False
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_LEAVE_COMPLIANCE", "leave_working_compliance", str(record.id), old_data, {"is_deleted": False})
+        
+        return {"message": "Record restored successfully"}
+        
+    except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")

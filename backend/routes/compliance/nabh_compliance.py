@@ -54,9 +54,12 @@ def create_nabh_compliance(data: NABHComplianceRequest, request: Request, db: Se
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.get("/")
-def get_nabh_compliance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_nabh_compliance"))):
+def get_nabh_compliance(show_deleted: bool = False, request: Request = None, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_nabh_compliance"))):
     try:
-        records = db.query(NABHHRMCompliance).order_by(NABHHRMCompliance.created_at.desc()).all()
+        if show_deleted:
+            records = db.query(NABHHRMCompliance).filter(NABHHRMCompliance.is_deleted == True).order_by(NABHHRMCompliance.created_at.desc()).all()
+        else:
+            records = db.query(NABHHRMCompliance).filter(NABHHRMCompliance.is_deleted != True).order_by(NABHHRMCompliance.created_at.desc()).all()
         
         result = []
         for record in records:
@@ -77,8 +80,10 @@ def get_nabh_compliance(request: Request, db: Session = Depends(get_tenant_db), 
                 "employee_id": user_record.employee_code if user_record else str(record.employee_id),
                 "employee_name": user_record.name if user_record else f"Employee {record.employee_id}",
                 "department": user_record.department.name if user_record and user_record.department else "N/A",
-                "compliance_score": round(compliance_score_float, 1),
-                "status": "Compliant" if compliance_score_float >= 80 else "Pending",
+                "compliance_percentage": round(compliance_score_float, 1),
+                "overall_compliance_status": "Compliant" if compliance_score_float >= 80 else "Non-Compliant" if compliance_score_float < 50 else "Partially Compliant",
+                "last_audit_date": None,
+                "next_audit_due": None,
                 "staff_qualification_verified": record.staff_qualification_verified,
                 "medical_fitness_done": record.medical_fitness_done,
                 "credentialing_done": record.credentialing_done,
@@ -132,12 +137,43 @@ def delete_nabh_compliance(record_id: int, request: Request, db: Session = Depen
         if not record:
             raise HTTPException(status_code=404, detail="Record not found")
         
-        db.delete(record)
+        old_data = {
+            "employee_id": record.employee_id,
+            "is_deleted": getattr(record, 'is_deleted', False)
+        }
+        
+        # Soft delete
+        record.is_deleted = True
+        record.deleted_at = datetime.now()
         db.commit()
         
-        audit_crud(request, db, user, "DELETE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), {}, {})
+        # Audit log
+        audit_crud(request, db, user, "DELETE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), old_data, {"is_deleted": True})
         
         return {"message": "Record deleted successfully"}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.put("/{record_id}/restore")
+def restore_nabh_compliance(record_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("restore_nabh_compliance"))):
+    try:
+        record = db.query(NABHHRMCompliance).filter(NABHHRMCompliance.id == record_id).first()
+        if not record:
+            raise HTTPException(status_code=404, detail="Record not found")
+        
+        old_data = {"is_deleted": getattr(record, 'is_deleted', False)}
+        
+        # Restore record
+        record.is_deleted = False
+        record.deleted_at = None
+        db.commit()
+        
+        # Audit log
+        audit_crud(request, db, user, "RESTORE_NABH_COMPLIANCE", "nabh_hrm_compliance", str(record.id), old_data, {"is_deleted": False})
+        
+        return {"message": "Record restored successfully"}
         
     except Exception as e:
         db.rollback()

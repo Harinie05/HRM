@@ -78,7 +78,7 @@ def mark_attendance(data: dict, request: Request, db: Session = Depends(get_tena
         raise HTTPException(status_code=422, detail=f"Error saving attendance: {str(e)}")
 
 @router.put("/{training_id}/{employee_id}")
-def update_attendance(training_id: int, employee_id: int, data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def update_attendance(training_id: int, employee_id: int, data: dict, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("update_attendance_training"))):
     try:
         attendance_days = data.get('attendance_days', {})
         assessments = data.get('assessments', {})
@@ -122,7 +122,7 @@ def update_attendance(training_id: int, employee_id: int, data: dict, request: R
         raise HTTPException(status_code=422, detail=f"Error updating attendance: {str(e)}")
 
 @router.get("/{training_id}/{employee_id}")
-def get_attendance_record(training_id: int, employee_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
+def get_attendance_record(training_id: int, employee_id: int, request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_attendance"))):
     try:
         record = db.query(TrainingAttendance).filter(
             TrainingAttendance.training_id == training_id,
@@ -141,21 +141,12 @@ def get_attendance_record(training_id: int, employee_id: int, request: Request, 
         raise HTTPException(status_code=500, detail=f"Error fetching attendance record: {str(e)}")
 
 @router.get("/")
-def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(get_current_user)):
-    # Admin has all access
-    if user.get('role') != 'admin':
-        user_permissions = user.get('permissions', [])
-        if not any(perm in user_permissions for perm in ['view_training_attendance', 'view_self']):
-            raise HTTPException(status_code=403, detail="Insufficient permissions")
+def list_attendance(request: Request, db: Session = Depends(get_tenant_db), user = Depends(require_permission("view_training_attendance"))):
     
     try:
         query = db.query(TrainingAttendance)
         
-        # If user has view_self permission and is not admin, restrict to own records
-        if user.get('role') != 'admin' and 'view_self' in user.get('permissions', []):
-            current_user_id = user.get('user_id')
-            if current_user_id:
-                query = query.filter(TrainingAttendance.employee_id == current_user_id)
+        # Admin has all access, others see all records with view_training_attendance permission
         
         attendance_records = query.all()
         

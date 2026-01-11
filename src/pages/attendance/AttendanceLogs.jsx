@@ -143,6 +143,14 @@ export default function AttendanceLogs() {
     fetchOdApplications();
   }, []);
 
+  // Refresh employees when selectedEmployee changes
+  useEffect(() => {
+    if (selectedEmployee) {
+      fetchLogs();
+      checkTodayStatus();
+    }
+  }, [selectedEmployee]);
+
   const fetchColors = async () => {
     try {
       const tenantCode = localStorage.getItem('tenantCode');
@@ -210,11 +218,11 @@ export default function AttendanceLogs() {
       
       const [onboardingRes, usersRes] = await Promise.all([
         api.get('/recruitment/onboarding/list').catch(() => ({ data: [] })),
-        api.get(`/hospitals/users/${tenant}/list`).then(res => res.data ? { users: res.data } : { users: [] }).catch(() => ({ users: [] }))
+        api.get(`/hospitals/users/${tenant}/list`).catch(() => ({ users: [] }))
       ]);
       
       const onboardedEmployees = onboardingRes.data || [];
-      const userEmployees = usersRes.users || [];
+      const userEmployees = usersRes.data?.users || [];
       
       const validOnboardedEmployees = onboardedEmployees.filter(emp => {
         if (!emp.employee_id || emp.employee_id.trim() === '') return false;
@@ -859,10 +867,16 @@ export default function AttendanceLogs() {
                       {isAdmin() ? (
                         <select
                           value={selectedEmployee}
-                          onChange={(e) => setSelectedEmployee(e.target.value)}
+                          onChange={(e) => {
+                            setSelectedEmployee(e.target.value);
+                            if (e.target.value) {
+                              fetchLogs();
+                            }
+                          }}
                           className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          disabled={employeesLoading}
                         >
-                          <option value="">Select Employee</option>
+                          <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
                           {employees.map(emp => (
                             <option key={emp.id} value={emp.id}>
                               {emp.employee_code || `EMP${emp.id}`} - {emp.name}
@@ -1269,8 +1283,9 @@ export default function AttendanceLogs() {
                             value={regularizationForm.employee_id}
                             onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
                             className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                            disabled={employeesLoading}
                           >
-                            <option value="">Select Employee</option>
+                            <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
                             {employees.map(emp => (
                               <option key={emp.id} value={emp.id}>
                                 {emp.employee_code || `EMP${emp.id}`} - {emp.name}
@@ -1406,8 +1421,9 @@ export default function AttendanceLogs() {
                             value={odForm.employee_id}
                             onChange={(e) => setOdForm({...odForm, employee_id: e.target.value})}
                             className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                            disabled={employeesLoading}
                           >
-                            <option value="">Select Employee</option>
+                            <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
                             {employees.map(emp => (
                               <option key={emp.id} value={emp.id}>
                                 {emp.employee_code || `EMP${emp.id}`} - {emp.name}
@@ -1590,8 +1606,9 @@ export default function AttendanceLogs() {
                         value={reportFilters.employeeId}
                         onChange={(e) => setReportFilters({...reportFilters, employeeId: e.target.value})}
                         className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-black focus:border-black text-sm sm:text-base"
+                        disabled={employeesLoading}
                       >
-                        <option value="">All Employees</option>
+                        <option value="">{employeesLoading ? 'Loading employees...' : 'All Employees'}</option>
                         {employees.map((employee) => (
                           <option key={employee.id} value={employee.id}>
                             {employee.employee_code} - {employee.name}

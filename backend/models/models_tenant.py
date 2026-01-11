@@ -1191,6 +1191,9 @@ class HRCommunication(MasterBase):
     status = Column(String(50), default="Sent")
     created_by = Column(Integer, nullable=True)
 
+    # Soft delete field
+    deleted_at = Column(DateTime, nullable=True)
+
     created_at = Column(DateTime, default=func.now())
 
 # =========================
@@ -1612,6 +1615,10 @@ class LeaveWorkingCompliance(MasterBase):
     month = Column(String(20), nullable=True)
     year = Column(Integer, nullable=True)
 
+    # Soft delete fields
+    is_deleted = Column(Boolean, default=False)
+    deleted_at = Column(DateTime, nullable=True)
+
     created_at = Column(DateTime, default=func.now())
 
 # ------------------------------
@@ -1628,6 +1635,10 @@ class NABHHRMCompliance(MasterBase):
     credentialing_done = Column(Boolean, default=False)
     fire_safety_training_done = Column(Boolean, default=False)
     performance_monitoring_done = Column(Boolean, default=False)
+
+    # Soft delete fields
+    is_deleted = Column(Boolean, default=False)
+    deleted_at = Column(DateTime, nullable=True)
 
     remarks = Column(Text)
     created_at = Column(DateTime, default=func.now())
