@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import api from "../api";
+import Toast from "../components/Toast";
+import useToast from "../utils/useToast";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -17,11 +19,7 @@ export default function Login() {
 
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [popup, setPopup] = useState({
-    show: false,
-    message: "",
-    success: false,
-  });
+  const { toast, showToast, hideToast } = useToast();
 
   const handleChange = (e) => {
     setForm({
@@ -61,20 +59,12 @@ export default function Login() {
           login_type: data.login_type
         });
         setShowOtpForm(true);
-        setPopup({
-          show: true,
-          message: "OTP sent to your email. Please check and enter the code.",
-          success: true,
-        });
+        showToast("OTP sent to your email. Please check and enter the code.", 'success');
       } else {
         handleLoginSuccess(data);
       }
     } catch (error) {
-      setPopup({
-        show: true,
-        message: error.response?.data?.detail || "Login Failed",
-        success: false,
-      });
+      showToast(error.response?.data?.detail || "Login Failed", 'error');
     } finally {
       setLoading(false);
     }
@@ -94,11 +84,7 @@ export default function Login() {
       handleLoginSuccess(data);
     } catch (error) {
       console.error('OTP verification failed:', error.response?.data || error.message);
-      setPopup({
-        show: true,
-        message: error.response?.data?.detail || "Invalid OTP",
-        success: false,
-      });
+      showToast(error.response?.data?.detail || "Invalid OTP", 'error');
     } finally {
       setLoading(false);
     }
@@ -141,11 +127,7 @@ export default function Login() {
       localStorage.setItem("permissions", JSON.stringify(data.permissions || []));
     }
 
-    setPopup({
-      show: true,
-      message: `Login Successful!`,
-      success: true,
-    });
+    showToast(`Login Successful!`, 'success');
 
     // Dispatch event to load customization colors
     window.dispatchEvent(new CustomEvent('user-logged-in'));
@@ -167,30 +149,6 @@ export default function Login() {
         <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-yellow-400 to-pink-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-72 h-72 bg-gradient-to-br from-green-400 to-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
       </div>
-
-      {/* POPUP */}
-      {popup.show && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center border border-black">
-            <h2
-              className={`text-xl font-bold mb-3 ${
-                popup.success ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {popup.success ? "Success!" : "Error!"}
-            </h2>
-
-            <p className="text-gray-700 mb-4">{popup.message}</p>
-
-            <button
-              className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
-              onClick={() => setPopup({ ...popup, show: false })}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* LOGIN CARD */}
       {!showOtpForm ? (
@@ -501,6 +459,8 @@ export default function Login() {
           </div>
         </div>
       )}
+      
+      <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
 }

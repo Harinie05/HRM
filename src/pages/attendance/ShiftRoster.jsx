@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
-import { hasPermissionSync, getUserPermissions, clearPermissionsCache, isAdmin } from "../../utils/permissions";
+import { hasPermission, isAdmin } from "../../utils/permissions";
 
 export default function ShiftRoster() {
   const [shifts, setShifts] = useState([]);
@@ -1072,7 +1072,7 @@ export default function ShiftRoster() {
               </select>
             </div>
             
-            {(isAdmin() || hasPermission("MANAGE_ROSTER")) && permissionsLoaded && (
+            {(isAdmin() || hasPermission("MANAGE_ROSTER") || hasPermission("manage_roster")) && (
               <div className="flex items-end">
                 <button
                   onClick={addEmployeeToRoster}

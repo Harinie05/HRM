@@ -216,47 +216,12 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
     }
   };
 
-  // Check today's attendance status - always check on page load
+  // Check today's attendance status - only on page load
   useEffect(() => {
     if (userInfo.id) {
-      // Force a fresh check from database on page load
-      const checkStatus = async () => {
-        try {
-          const statusRes = await api.get(`/api/attendance/punches/check-status/${userInfo.id}`);
-          const status = statusRes.data;
-          
-          console.log('Page load - API status response:', status);
-          
-          if (status.checked_in && !status.checked_out) {
-            console.log('Page load - User is checked in');
-            setAttendanceStatus('checked_in');
-          } else if (status.checked_out) {
-            console.log('Page load - User is checked out');
-            setAttendanceStatus('checked_out');
-          } else {
-            console.log('Page load - User not checked in');
-            setAttendanceStatus('not_checked_in');
-          }
-        } catch (err) {
-          console.error('Page load status check failed:', err);
-          setAttendanceStatus('not_checked_in');
-        }
-      };
-      
-      checkStatus();
+      checkTodayAttendance();
     }
   }, [userInfo.id]);
-
-  // Add a periodic refresh only for not_checked_in status
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (userInfo.id && attendanceStatus === 'not_checked_in') {
-        checkTodayAttendance();
-      }
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [userInfo.id, attendanceStatus]);
 
   const checkTodayAttendance = async () => {
     try {
@@ -476,18 +441,8 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         paddingRight: window.innerWidth >= 768 ? "24px" : "16px"
       }}
     >
-      {/* 🔵 Left: Hospital name */}
-      <div className="leading-tight min-w-0 flex-1">
-        <h1 className="text-sm sm:text-lg font-semibold tracking-wide truncate" style={{ color: 'var(--header-text-color, #ffffff)' }}>
-          {hospitalInfo.name}
-        </h1>
-        <p className="text-xs sm:text-sm font-medium hidden sm:block" style={{ color: 'var(--header-text-color, #ffffff)', opacity: 0.8 }}>
-          {hospitalInfo.tagline}
-        </p>
-      </div>
-
-      {/* 🔵 Right controls */}
-      <div className="flex items-center gap-1 sm:gap-3">
+      {/* 🔵 Left: Mobile Menu Button + Hospital name */}
+      <div className="flex items-center gap-3 leading-tight min-w-0 flex-1">
         {/* Mobile Menu Button */}
         <button
           onClick={onMobileMenuToggle}
@@ -497,6 +452,19 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         >
           <Menu size={18} />
         </button>
+        
+        <div className="min-w-0 flex-1">
+          <h1 className="text-sm sm:text-lg font-semibold tracking-wide truncate" style={{ color: 'var(--header-text-color, #ffffff)' }}>
+            {hospitalInfo.name}
+          </h1>
+          <p className="text-xs sm:text-sm font-medium hidden sm:block" style={{ color: 'var(--header-text-color, #ffffff)', opacity: 0.8 }}>
+            {hospitalInfo.tagline}
+          </p>
+        </div>
+      </div>
+
+      {/* 🔵 Right controls */}
+      <div className="flex items-center gap-1 sm:gap-3">
 
         {/* Date + Time */}
         <div className="hidden md:flex items-center gap-2 bg-white/10 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm">

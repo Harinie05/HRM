@@ -1104,6 +1104,7 @@ class PayrollRun(MasterBase):
 
     id = Column(Integer, primary_key=True, index=True)
     month = Column(String(50), nullable=False)
+    year = Column(Integer, nullable=False)
     employee_id = Column(Integer, ForeignKey("users.id"))
 
     present_days = Column(Integer)

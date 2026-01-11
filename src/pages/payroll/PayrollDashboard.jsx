@@ -10,6 +10,8 @@ import api from '../../api';
 const PayrollDashboard = () => {
   const navigate = useNavigate();
   const { toast, showToast, hideToast } = useToast();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [payrollData, setPayrollData] = useState({
     totalPayroll: 0,
     employeesProcessed: 0,
@@ -21,6 +23,14 @@ const PayrollDashboard = () => {
   });
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   useEffect(() => {
     fetchPayrollData();
@@ -152,9 +162,29 @@ const PayrollDashboard = () => {
   if (loading) {
     return (
       <div className="flex bg-[#F5F7FA] min-h-screen">
-        <Sidebar />
+        {/* Mobile Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+        
+        {/* Sidebar */}
+        <div className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out`}>
+          <Sidebar 
+            isCollapsed={isSidebarCollapsed} 
+            onToggle={toggleSidebar}
+            isMobile={false}
+            onMobileClose={() => setIsMobileMenuOpen(false)}
+          />
+        </div>
+        
         <div className="flex-1 flex flex-col">
-          <Header />
+          <Header 
+            isSidebarCollapsed={isSidebarCollapsed} 
+            onMobileMenuToggle={toggleMobileMenu}
+          />
           <div className="p-6">Loading...</div>
         </div>
       </div>
@@ -162,10 +192,29 @@ const PayrollDashboard = () => {
   }
   return (
     <div className="flex">
-      <Sidebar />
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out`}>
+        <Sidebar 
+          isCollapsed={isSidebarCollapsed} 
+          onToggle={toggleSidebar}
+          isMobile={false}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
+        />
+      </div>
       
       <div className="flex-1 bg-content min-h-screen">
-        <Header />
+        <Header 
+          isSidebarCollapsed={isSidebarCollapsed} 
+          onMobileMenuToggle={toggleMobileMenu}
+        />
         
         <div className="p-4 sm:p-6 pt-20 sm:pt-24">
           {/* Enhanced Header */}

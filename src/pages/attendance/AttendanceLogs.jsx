@@ -15,7 +15,17 @@ export default function AttendanceLogs() {
   const [logs, setLogs] = useState([]);
   const [activeTab, setActiveTab] = useState('logs');
   const [colors, setColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   // Permission checks
   const canViewPunchLogs = isAdmin() || hasPermission('view_punch_logs');
   const canMarkAttendance = isAdmin() || hasPermission('mark_attendance');
@@ -769,12 +779,31 @@ export default function AttendanceLogs() {
 
   return (
     <div className="flex bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
-      <Sidebar />
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out`}>
+        <Sidebar 
+          isCollapsed={isSidebarCollapsed} 
+          onToggle={toggleSidebar}
+          isMobile={false}
+          onMobileClose={() => setIsMobileMenuOpen(false)}
+        />
+      </div>
       
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header 
+          isSidebarCollapsed={isSidebarCollapsed} 
+          onMobileMenuToggle={toggleMobileMenu}
+        />
         
-        <div className="p-4 sm:p-6 pt-24 space-y-4 sm:space-y-6">
+        <div className="p-4 sm:p-6 pt-16 sm:pt-20 lg:pt-24 space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="bg-white rounded-lg border-2 border-black mb-6 p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -1183,7 +1212,7 @@ export default function AttendanceLogs() {
 
           <div className="bg-white rounded-lg border border-black overflow-hidden">
             {activeTab === 'logs' && (
-              <div className="overflow-x-auto">
+              <div>
                 <div className="px-4 py-3 bg-gray-50 border-b border-black">
                   <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                     Punch Logs - {new Date().toLocaleDateString('en-US', { 
@@ -1194,7 +1223,9 @@ export default function AttendanceLogs() {
                     })}
                   </h3>
                 </div>
-                <div className="overflow-x-auto">
+                
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
@@ -1260,6 +1291,79 @@ export default function AttendanceLogs() {
                       })()}
                     </tbody>
                   </table>
+                </div>
+                
+                {/* Mobile Card View */}
+                <div className="md:hidden">
+                  {(() => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayLogs = logs.filter(log => log.date === today);
+                    
+                    if (todayLogs.length === 0) {
+                      return (
+                        <div className="p-6 text-center text-gray-500">
+                          <div className="flex flex-col items-center gap-3">
+                            <svg className="w-12 h-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                            </svg>
+                            <p className="text-base font-medium">No attendance records for today</p>
+                            <p className="text-sm">Records will appear here once employees check in</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    
+                    return todayLogs.map((log, index) => (
+                      <div key={log.id} className={`p-4 border-b border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {(() => {
+                                  const employee = employees.find(emp => {
+                                    if (emp.source === 'user_management') {
+                                      return emp.original_user_id == log.employee_id;
+                                    }
+                                    return emp.id == log.employee_id;
+                                  });
+                                  return employee?.employee_code || log.employee_id;
+                                })()}
+                              </p>
+                              <p className="text-xs text-gray-500">{log.date}</p>
+                            </div>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              log.status === 'Present' ? 'bg-green-100 text-green-800' :
+                              log.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {log.status}
+                            </span>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                              <span className="text-gray-500">In:</span>
+                              <span className="ml-2 font-medium text-gray-900">{log.in_time || "-"}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">Out:</span>
+                              <span className="ml-2 font-medium text-gray-900">{log.out_time || "-"}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="text-sm">
+                            <span className="text-gray-500">Location:</span>
+                            <span className="ml-2 text-gray-700">{log.location || "-"}</span>
+                          </div>
+                          
+                          <div className="text-sm">
+                            <span className="text-gray-500">Source:</span>
+                            <span className="ml-2 font-medium text-gray-700">{log.source}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ));
+                  })()}
                 </div>
               </div>
             )}
@@ -1657,23 +1761,25 @@ export default function AttendanceLogs() {
                     <div className="px-3 sm:px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
                       <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Report Results ({reportData.length} records)</h4>
                     </div>
-                    <div className="overflow-x-auto">
+                    
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
                       <table className="w-full">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Employee</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Date</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">In Time</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Out Time</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Location</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Status</th>
-                            <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Source</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Employee</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Date</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">In</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Out</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Location</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Status</th>
+                            <th className="px-4 sm:px-6 py-4 text-left font-semibold text-gray-700 text-xs sm:text-sm">Source</th>
                           </tr>
                         </thead>
                         <tbody>
                           {reportData.map((log, index) => (
                             <tr key={log.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
+                              <td className="px-6 py-4 text-sm text-gray-900">
                                 {(() => {
                                   const employee = employees.find(emp => {
                                     if (emp.source === 'user_management') {
@@ -1684,12 +1790,12 @@ export default function AttendanceLogs() {
                                   return employee ? `${employee.employee_code} - ${employee.name}` : log.employee_id;
                                 })()}
                               </td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.date}</td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.in_time || "-"}</td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.out_time || "-"}</td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.location || "-"}</td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
-                                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold ${
+                              <td className="px-6 py-4 text-sm text-gray-700">{log.date}</td>
+                              <td className="px-6 py-4 text-sm text-gray-700 font-medium">{log.in_time || "-"}</td>
+                              <td className="px-6 py-4 text-sm text-gray-700 font-medium">{log.out_time || "-"}</td>
+                              <td className="px-6 py-4 text-sm text-gray-700">{log.location || "-"}</td>
+                              <td className="px-6 py-4 text-sm">
+                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                                   log.status === 'Present' ? 'bg-green-100 text-green-800' :
                                   log.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
                                   'bg-red-100 text-red-800'
@@ -1697,11 +1803,65 @@ export default function AttendanceLogs() {
                                   {log.status}
                                 </span>
                               </td>
-                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">{log.source}</td>
+                              <td className="px-6 py-4 text-sm font-medium text-gray-700">{log.source}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                    
+                    {/* Mobile Card View */}
+                    <div className="md:hidden">
+                      {reportData.map((log, index) => (
+                        <div key={log.id} className={`p-4 border-b border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {(() => {
+                                    const employee = employees.find(emp => {
+                                      if (emp.source === 'user_management') {
+                                        return emp.original_user_id == log.employee_id;
+                                      }
+                                      return emp.id == log.employee_id;
+                                    });
+                                    return employee ? `${employee.employee_code} - ${employee.name}` : log.employee_id;
+                                  })()}
+                                </p>
+                                <p className="text-xs text-gray-500">{log.date}</p>
+                              </div>
+                              <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                log.status === 'Present' ? 'bg-green-100 text-green-800' :
+                                log.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {log.status}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <span className="text-gray-500">In:</span>
+                                <span className="ml-2 font-medium text-gray-900">{log.in_time || "-"}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Out:</span>
+                                <span className="ml-2 font-medium text-gray-900">{log.out_time || "-"}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="text-sm">
+                              <span className="text-gray-500">Location:</span>
+                              <span className="ml-2 text-gray-700">{log.location || "-"}</span>
+                            </div>
+                            
+                            <div className="text-sm">
+                              <span className="text-gray-500">Source:</span>
+                              <span className="ml-2 font-medium text-gray-700">{log.source}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

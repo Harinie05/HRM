@@ -129,9 +129,10 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                 }
             )
         
-        # Get employees with salary structures
+        # Get employees with salary structures (avoid duplicates with GROUP BY)
         employees_query = text("""
-            SELECT DISTINCT u.id, u.employee_code, u.name, u.status, ss.id as structure_id, ss.ctc, ss.basic_percent, ss.hra_percent
+            SELECT DISTINCT u.id, u.employee_code, u.name, u.status, 
+                   ss.id as structure_id, ss.ctc, ss.basic_percent, ss.hra_percent
             FROM users u
             INNER JOIN salary_structures ss ON (
                 FIND_IN_SET(u.id, ss.employee_ids) > 0 OR
@@ -139,8 +140,14 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                 (u.employee_code IS NOT NULL AND FIND_IN_SET(u.employee_code, ss.employee_ids) > 0)
             )
             WHERE u.status = 'Active' AND ss.is_active = 1
+            GROUP BY u.id
+            ORDER BY u.id
         """)
         employees = db.execute(employees_query).fetchall()
+        
+        print(f"Found {len(employees)} employees with salary structures:")
+        for emp in employees:
+            print(f"  - {emp.name} (ID: {emp.id}, Code: {emp.employee_code}, CTC: {emp.ctc})")
         
         if not employees:
             return {"message": "No employees with salary structures found", "processed_count": 0}
@@ -177,14 +184,31 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
         db.execute(create_table_query)
         
         # Add missing columns if they don't exist
-        try:
-            db.execute(text("ALTER TABLE payroll_runs ADD COLUMN holiday_days INT DEFAULT 0"))
-        except:
-            pass
-        try:
-            db.execute(text("ALTER TABLE payroll_runs ADD COLUMN total_working_days INT DEFAULT 0"))
-        except:
-            pass
+        columns_to_add = [
+            "ALTER TABLE payroll_runs ADD COLUMN employee_name VARCHAR(255)",
+            "ALTER TABLE payroll_runs ADD COLUMN employee_code VARCHAR(50)",
+            "ALTER TABLE payroll_runs ADD COLUMN leave_days INT DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN holiday_days INT DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN total_working_days INT DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN month VARCHAR(20)",
+            "ALTER TABLE payroll_runs ADD COLUMN year INT",
+            "ALTER TABLE payroll_runs ADD COLUMN status VARCHAR(50) DEFAULT 'Completed'",
+            "ALTER TABLE payroll_runs ADD COLUMN basic_salary DECIMAL(15,2) DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN hra_salary DECIMAL(15,2) DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN allowances DECIMAL(15,2) DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN gross_salary DECIMAL(15,2) DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN lop_deduction DECIMAL(15,2) DEFAULT 0",
+            "ALTER TABLE payroll_runs ADD COLUMN net_salary DECIMAL(15,2) DEFAULT 0"
+        ]
+        
+        for column_query in columns_to_add:
+            try:
+                db.execute(text(column_query))
+            except:
+                pass
+        
+        # Ensure changes are committed
+        db.flush()
         db.commit()
         
         # Process each employee
@@ -359,7 +383,7 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                         WHERE employee_id = :employee_id AND month = :month AND year = :year
                     """)
                     
-                    db.execute(update_query, {
+                    update_params = {
                         "employee_id": str(emp.id),
                         "employee_name": emp.name,
                         "employee_code": emp.employee_code,
@@ -376,9 +400,14 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                         "gross_salary": float(gross_salary),
                         "lop_deduction": float(lop_deduction),
                         "net_salary": float(net_salary)
-                    })
+                    }
+                    
+                    print(f"  Update parameters: {update_params}")
+                    result = db.execute(update_query, update_params)
+                    print(f"  Update result: rows affected")
                 else:
                     # Insert new record
+                    print(f"  Inserting new payroll record")
                     insert_query = text("""
                         INSERT INTO payroll_runs (
                             employee_id, employee_name, employee_code, month, year,
@@ -391,7 +420,7 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                         )
                     """)
                     
-                    db.execute(insert_query, {
+                    insert_params = {
                         "employee_id": str(emp.id),
                         "employee_name": emp.name,
                         "employee_code": emp.employee_code,
@@ -408,34 +437,83 @@ async def process_bulk_payroll_internal(data: dict, request: Request, db: Sessio
                         "gross_salary": float(gross_salary),
                         "lop_deduction": float(lop_deduction),
                         "net_salary": float(net_salary)
-                    })
+                    }
+                    
+                    print(f"  Insert parameters: {insert_params}")
+                    result = db.execute(insert_query, insert_params)
+                    print(f"  Insert result: rows affected")
                 
                 # Commit after each employee to ensure data is saved
-                db.commit()
-                processed_count += 1
-                print(f"✓ Processed {emp.name} successfully")
+                try:
+                    db.flush()  # Flush changes to database
+                    db.commit()  # Commit transaction
+                    processed_count += 1
+                    print(f"✓ Processed {emp.name} successfully - Record committed to database")
+                    
+                    # Immediate verification that the record was saved
+                    verify_query = text("""
+                        SELECT COUNT(*) as count FROM payroll_runs 
+                        WHERE employee_id = :emp_id AND month = :month AND year = :year
+                    """)
+                    verify_result = db.execute(verify_query, {
+                        "emp_id": str(emp.id),
+                        "month": month_name,
+                        "year": year
+                    }).fetchone()
+                    
+                    if verify_result and getattr(verify_result, 'count', 0) > 0:
+                        print(f"  ✓ Verified: Record exists in database for {emp.name}")
+                    else:
+                        print(f"  ✗ Warning: Record not found in database for {emp.name} after commit")
+                        
+                except Exception as commit_error:
+                    print(f"✗ Commit failed for {emp.name}: {commit_error}")
+                    db.rollback()
+                    failed_count += 1
+                    continue
                 
             except Exception as e:
                 print(f"✗ Failed to process {emp.name}: {str(e)}")
+                print(f"  Error details: {type(e).__name__}: {e}")
+                import traceback
+                print(f"  Traceback: {traceback.format_exc()}")
                 db.rollback()  # Rollback failed employee processing
                 failed_count += 1
                 continue
         
         # Final commit to ensure all data is saved
-        db.commit()
+        try:
+            db.flush()  # Flush all pending changes
+            db.commit()  # Final commit
+            print(f"Final commit completed successfully")
+        except Exception as commit_error:
+            print(f"Final commit failed: {commit_error}")
+            db.rollback()
+            raise commit_error
         
         # Verify data was actually saved by checking the database
-        verification_query = text("""
-            SELECT COUNT(*) as count FROM payroll_runs 
-            WHERE month = :month AND year = :year
-        """)
-        verification_result = db.execute(verification_query, {
-            "month": month_name,
-            "year": year
-        }).fetchone()
-        
-        actual_records = verification_result.count if verification_result else 0
-        print(f"Verification: {actual_records} payroll records found in database for {month_name} {year}")
+        try:
+            verification_query = text("""
+                SELECT COUNT(*) as count FROM payroll_runs 
+                WHERE month = :month AND year = :year
+            """)
+            verification_result = db.execute(verification_query, {
+                "month": month_name,
+                "year": year
+            }).fetchone()
+            
+            actual_records = verification_result.count if verification_result else 0
+            print(f"Verification: {actual_records} payroll records found in database for {month_name} {year}")
+            
+            # Additional verification - check if records exist at all
+            total_records_query = text("SELECT COUNT(*) as total FROM payroll_runs")
+            total_result = db.execute(total_records_query).fetchone()
+            total_records = total_result.total if total_result else 0
+            print(f"Total payroll records in database: {total_records}")
+            
+        except Exception as verify_error:
+            print(f"Verification query failed: {verify_error}")
+            actual_records = 0
         
         return {
             "message": f"Payroll processed successfully for {processed_count} employees. {failed_count} failed. {actual_records} records saved to database.",
@@ -1186,7 +1264,7 @@ def get_payroll_summary(
         try:
             payroll_emp_query = text("SELECT COUNT(DISTINCT employee_id) as count FROM payroll_runs WHERE month = :month AND year = :year")
             payroll_emp_result = db.execute(payroll_emp_query, {"month": current_month, "year": current_year}).fetchone()
-            actual_employee_count = payroll_emp_result[0] if payroll_emp_result and payroll_emp_result[0] > 0 else 0
+            actual_employee_count = getattr(payroll_emp_result, 'count', 0) if payroll_emp_result else 0
         except:
             actual_employee_count = 0
         
