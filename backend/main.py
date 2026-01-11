@@ -127,8 +127,6 @@ from routes.exit.knowledge_transfer import router as knowledge_transfer_router
 
 app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
 
-logger.info("🚀 FastAPI HRM Backend started")
-
 # Custom exception handler for RequestValidationError
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -196,9 +194,7 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # ---------------- STARTUP ----------------
 @app.on_event("startup")
 def create_tables():
-    logger.info("Creating master database tables...")
     models_master.MasterBase.metadata.create_all(bind=master_engine)
-    logger.info("Master tables created.")
 
     try:
         from database import create_tenant_database, get_tenant_engine, get_master_db
@@ -208,18 +204,15 @@ def create_tables():
 
         for hospital in hospitals:
             try:
-                logger.info(f"Ensuring tenant database exists: {hospital.db_name}")
                 create_tenant_database(hospital.db_name)
-
                 tenant_engine = get_tenant_engine(hospital.db_name)
                 models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
-                logger.info(f"Tenant tables created/verified for {hospital.db_name}")
-            except Exception as e:
-                logger.error(f"Error creating tenant DB {hospital.db_name}: {str(e)}")
+            except:
+                pass
 
         master_db.close()
-    except Exception as e:
-        logger.error(f"Error during tenant database setup: {str(e)}")
+    except:
+        pass
 
 # ---------------- REGISTER ROUTERS ----------------
 app.include_router(hospital_router, prefix="/auth", tags=["Hospitals"])
@@ -333,7 +326,7 @@ app.include_router(knowledge_transfer_router, prefix="/api")
 from routes.audit_logs import router as audit_logs_router
 app.include_router(audit_logs_router, prefix="/api")
 
-logger.info("All routers loaded successfully")
+# All routers loaded
 
 # ======================= 📧 EMAIL ENDPOINT =======================
 class EmailRequest(BaseModel):
@@ -611,5 +604,4 @@ def send_email_endpoint(email_request: EmailRequest):
 # ---------------- ROOT ----------------
 @app.get("/")
 def root():
-    logger.info("Root endpoint hit")
     return {"message": "Nutryah HRM Backend Running 🚀"}

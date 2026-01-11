@@ -538,7 +538,61 @@ export default function Roles() {
     } else {
       let newList = [...list, perm];
       
-      // Auto-selecting dependent permissions
+      // Auto-select view permissions for ALL modules when any permission is selected
+      const getViewPermissionsForAllModules = () => {
+        return [
+          // Global
+          'view_self',
+          // User Management
+          'view_users', 'view_user_roles',
+          // Employee Management
+          'view_employees', 'view_employee_profile', 'view_employee_documents',
+          // Organization Setup
+          'view_company_profile', 'view_branch', 'view_department', 'view_designation',
+          // Reporting Structure
+          'view_reporting_structure', 'view_hierarchy',
+          // Holiday Calendar
+          'view_holidays',
+          // Job Requisition
+          'view_job_requisition',
+          // Recruitment
+          'view_candidates', 'view_candidate', 'view_ats_candidates', 'view_offers_sent', 'view_onboarding_candidates', 'view_consultants',
+          // Exit Management
+          'view_resignations', 'view_kt_plans', 'view_settlements', 'view_exit_interviews',
+          // Compliance
+          'view_statutory_calculations', 'view_labour_register', 'view_leave_compliance', 'view_nabh_compliance',
+          // Training & Development
+          'view_training_programs', 'view_training_calendar', 'view_training_requests', 'view_training_attendance', 'view_training_certificates',
+          // Performance Management
+          'view_work_assignments', 'view_goals_kpi', 'view_review_cycles', 'view_feedback', 'view_appraisals', 'view_quality_indicators',
+          // Shift & Roster Management
+          'view_shifts', 'view_roster', 'view_weekly_roster', 'VIEW_ROSTER', 'MANAGE_ROSTER', 'MANAGE_NIGHT_SHIFT_RULES', 'MANAGE_ON_CALL_DUTY',
+          // Attendance Management
+          'view_attendance', 'view_punch_logs', 'view_od_applications', 'view_attendance_rules', 'view_attendance_locations', 'view_daily_updates', 'view_attendance_permission', 'view_attendance_reports',
+          // HR Operations
+          'view_lifecycle_actions', 'view_hr_letters', 'view_grievances', 'view_assets', 'view_insurance_benefits', 'view_staff_schedules',
+          // Dashboard
+          'view_documents_alerts', 'view_audit_log',
+          // Payroll Management
+          'view_salary_structure', 'view_statutory_rules', 'view_payroll_run', 'view_payroll_adjustments', 'view_salary_slips', 'view_payroll_reports', 'view_compliance_reports', 'view_payment_status',
+          // Leave Management
+          'view_leave_types', 'view_leave_policies', 'view_leave_rules', 'view_leave_applications', 'view_leave_calendar', 'view_leave_reports', 'view_leave_balance', 'view_leave_trends',
+          // Customization
+          'view_customization'
+        ];
+      };
+      
+      // Get all view permissions
+      const allViewPermissions = getViewPermissionsForAllModules();
+      
+      // Add all missing view permissions that exist in the system
+      allViewPermissions.forEach(viewPerm => {
+        if (!newList.includes(viewPerm) && permissions.some(p => p.name === viewPerm)) {
+          newList.push(viewPerm);
+        }
+      });
+      
+      // Existing auto-selecting dependent permissions
       if (perm === 'view_employees' && !newList.includes('mark_onboarded')) {
         newList.push('mark_onboarded');
       }

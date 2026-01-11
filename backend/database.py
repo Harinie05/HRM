@@ -83,13 +83,9 @@ def get_tenant_db(Authorization: str = Header(None)) -> Generator:
             payload = verify_token(token)
             if payload and "tenant_db" in payload:
                 tenant_db_name = payload["tenant_db"]
-                logger.info(f"Using tenant DB from token: {tenant_db_name}")
-            else:
-                logger.warning(f"No tenant_db in token payload, using default: {tenant_db_name}")
         except Exception as e:
-            logger.warning(f"Error parsing Authorization header, using default tenant DB: {tenant_db_name}. Error: {str(e)}")
-    else:
-        logger.info(f"No Authorization header provided, using default tenant DB: {tenant_db_name}")
+            # Silently use default tenant DB on error
+            pass
     
     engine = get_tenant_engine(tenant_db_name)
     SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)

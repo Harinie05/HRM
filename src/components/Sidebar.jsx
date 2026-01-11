@@ -505,7 +505,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
                   </Link>
                 )}
 
-                {(isAdmin() || hasPermission("VIEW_SHIFTS") || hasPermission("VIEW_ROSTER")) && (
+                {(isAdmin() || hasPermission("view_shifts") || hasPermission("view_roster")) && (
                   <Link
                     to="/shift-roster"
                     className={`block px-2 py-2 text-sm rounded hover:text-white/90 hover:bg-white/5 transition-colors ${

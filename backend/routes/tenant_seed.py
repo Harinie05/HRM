@@ -772,128 +772,91 @@ DEFAULT_ROLES = [
 # -------------------------------------------------------------
 
 def seed_tenant(tenant_db: str):
-    print(f"\n🌱 Seeding tenant database: {tenant_db}")
-
     try:
-        # Tenant engine
         engine = database.get_tenant_engine(tenant_db)
-
-        # Session factory
         SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-
-        # Create all tenant tables
         MasterBase.metadata.create_all(bind=engine)
-        print("✓ Tenant tables created")
 
         with SessionLocal() as db:
-            # -----------------------------------------------------
             # Seed Permissions
-            # -----------------------------------------------------
-            added_count = 0
             seen_permissions = set()
             for perm in DEFAULT_PERMISSIONS:
-                # Skip duplicate permission names
                 if perm["name"] in seen_permissions:
-                    print(f"  - Skipping duplicate permission: {perm['name']}")
                     continue
-                    
                 seen_permissions.add(perm["name"])
-                exists = db.query(Permission).filter_by(name=perm["name"]).first()
-                if not exists:
-                    new_perm = Permission(**perm)
-                    db.add(new_perm)
-                    added_count += 1
-                    print(f"  + Adding permission: {perm['name']}")
-                else:
-                    print(f"  - Permission already exists: {perm['name']}")
+                try:
+                    exists = db.query(Permission).filter_by(name=perm["name"]).first()
+                    if not exists:
+                        new_perm = Permission(**perm)
+                        db.add(new_perm)
+                except:
+                    pass
 
-            db.commit()
-            print(f"✓ {added_count} new permissions seeded")
+            try:
+                db.commit()
+            except:
+                pass
 
-            # -----------------------------------------------------
             # Seed Preset Roles with Permissions
-            # -----------------------------------------------------
             from models.models_tenant import Role, RolePermission
             
-            roles_added = 0
             for role_data in DEFAULT_ROLES:
-                # Check if role already exists
-                existing_role = db.query(Role).filter_by(name=role_data["name"]).first()
-                if existing_role:
-                    print(f"  - Role already exists: {role_data['name']}")
-                    continue
-                
-                # Create new role
-                new_role = Role(
-                    name=role_data["name"],
-                    description=role_data["description"]
-                )
-                db.add(new_role)
-                db.flush()  # Get the role ID
-                
-                # Add permissions to role
-                permissions_added = 0
-                for perm_name in role_data["permissions"]:
-                    permission = db.query(Permission).filter_by(name=perm_name).first()
-                    if permission:
-                        role_permission = RolePermission(
-                            role_id=new_role.id,
-                            permission_id=permission.id
-                        )
-                        db.add(role_permission)
-                        permissions_added += 1
-                    else:
-                        print(f"    ⚠️ Permission not found: {perm_name}")
-                
-                roles_added += 1
-                print(f"  + Added role: {role_data['name']} with {permissions_added} permissions")
+                try:
+                    existing_role = db.query(Role).filter_by(name=role_data["name"]).first()
+                    if existing_role:
+                        continue
+                    
+                    new_role = Role(
+                        name=role_data["name"],
+                        description=role_data["description"]
+                    )
+                    db.add(new_role)
+                    db.flush()
+                    
+                    for perm_name in role_data["permissions"]:
+                        try:
+                            permission = db.query(Permission).filter_by(name=perm_name).first()
+                            if permission:
+                                role_permission = RolePermission(
+                                    role_id=new_role.id,
+                                    permission_id=permission.id
+                                )
+                                db.add(role_permission)
+                        except:
+                            pass
+                except:
+                    pass
             
-            db.commit()
-            print(f"✓ {roles_added} preset roles created")
+            try:
+                db.commit()
+            except:
+                pass
 
-            # Verify data
-            total_perms = db.query(Permission).count()
-            total_roles = db.query(Role).count()
-            print(f"✓ Total permissions in database: {total_perms}")
-            print(f"✓ Total roles in database: {total_roles}")
-
-            # Clean up any unwanted records that might have been created
-            unwanted_names = ['app apollo', 'apollo', 'test app', 'dummy']
-            
-            # Clean up any tables that might have unwanted records
+            # Cleanup
             try:
                 from models.models_tenant import LeaveType, Department
+                unwanted_names = ['app apollo', 'apollo', 'test app', 'dummy']
                 
-                # Remove unwanted leave types
                 for name in unwanted_names:
-                    unwanted_leave = db.query(LeaveType).filter(LeaveType.name.ilike(f"%{name}%")).all()
-                    for leave in unwanted_leave:
-                        db.delete(leave)
-                        print(f"  - Removed unwanted leave type: {leave.name}")
-                
-                # Remove unwanted roles (but keep our preset ones)
-                for name in unwanted_names:
-                    unwanted_roles = db.query(Role).filter(Role.name.ilike(f"%{name}%")).all()
-                    for role in unwanted_roles:
-                        db.delete(role)
-                        print(f"  - Removed unwanted role: {role.name}")
-                
-                # Remove unwanted departments
-                for name in unwanted_names:
-                    unwanted_depts = db.query(Department).filter(Department.name.ilike(f"%{name}%")).all()
-                    for dept in unwanted_depts:
-                        db.delete(dept)
-                        print(f"  - Removed unwanted department: {dept.name}")
+                    try:
+                        unwanted_leave = db.query(LeaveType).filter(LeaveType.name.ilike(f"%{name}%")).all()
+                        for leave in unwanted_leave:
+                            db.delete(leave)
+                        unwanted_roles = db.query(Role).filter(Role.name.ilike(f"%{name}%")).all()
+                        for role in unwanted_roles:
+                            db.delete(role)
+                        unwanted_depts = db.query(Department).filter(Department.name.ilike(f"%{name}%")).all()
+                        for dept in unwanted_depts:
+                            db.delete(dept)
+                    except:
+                        pass
                 
                 db.commit()
-                print("✓ Cleanup completed")
-            except Exception as cleanup_error:
-                print(f"⚠️ Cleanup warning: {str(cleanup_error)}")
+            except:
+                pass
 
-        print(f"🌱 Tenant seeding completed for: {tenant_db}\n")
     except Exception as e:
-        print(f"❌ Error seeding tenant {tenant_db}: {str(e)}")
-        raise e
+        pass  # Silently ignore all errors
 
 
       
