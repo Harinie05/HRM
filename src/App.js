@@ -163,10 +163,17 @@ function App() {
       }
     };
     
-    // Only load colors if user is authenticated
+    // Load colors immediately if user is already authenticated
     if (localStorage.getItem('access_token')) {
       loadColorsFromBackend();
     }
+
+    // Listen for login events to load colors for newly logged in users
+    const handleLogin = () => {
+      loadColorsFromBackend();
+    };
+
+    window.addEventListener('user-logged-in', handleLogin);
 
     // Listen for theme updates from customization page
     const handleThemeUpdate = (event) => {
@@ -177,6 +184,7 @@ function App() {
 
     return () => {
       window.removeEventListener('theme-updated', handleThemeUpdate);
+      window.removeEventListener('user-logged-in', handleLogin);
     };
   }, []);
 

@@ -157,17 +157,21 @@ def list_users(
     with tdb:
         query = tdb.query(User)
         
-        # Check permissions - view_users or view_employees takes precedence over view_self
+        # Check permissions - view_self takes precedence over view_employees and view_users
         user_permissions = user.get('permissions', [])
         current_user_email = user.get('email')
         logger.info(f"Checking permissions for filtering: {user_permissions}")
         logger.info(f"Current user email: {current_user_email}")
         
-        if not ('view_users' in user_permissions or 'view_employees' in user_permissions) and 'view_self' in user_permissions:
-            # Only filter to self if user doesn't have view_users or view_employees permission
-            logger.info("Filtering to self only")
+        if 'view_self' in user_permissions:
+            # view_self takes precedence - only show current user's record
+            logger.info("Filtering to self only (view_self takes precedence)")
             # Filter by email since that's what we have in the JWT token
             query = query.filter(User.email == current_user_email)
+        elif 'view_users' in user_permissions or 'view_employees' in user_permissions:
+            # Show all users if they have view_users or view_employees but not view_self
+            logger.info("Showing all users (view_users/view_employees permission)")
+            # No additional filtering needed
         
         if status == "active":
             users = query.filter(User.status == "Active").all()

@@ -147,6 +147,9 @@ export default function Login() {
       success: true,
     });
 
+    // Dispatch event to load customization colors
+    window.dispatchEvent(new CustomEvent('user-logged-in'));
+
     console.log('Login successful, redirecting to dashboard in 700ms');
     setTimeout(() => (window.location.href = "/dashboard"), 700);
   };

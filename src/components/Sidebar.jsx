@@ -458,7 +458,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* EIS */}
-        {hasAnyPermission(["view_employees", "create_employee_code", "view_employee_profile", "delete_employee", "add_employee", "edit_employee", "export_employee_data", "view_employee_documents", "upload_employee_documents", "verify_employee_documents", "verify_bank_details", "delete_employee_documents", "view_employment_details", "edit_employment_details", "manage_work_location", "manage_reporting_manager", "manage_work_shift", "view_probation_details", "manage_probation_period", "add_probation", "extend_probation", "end_probation", "edit_probation_remarks", "edit_profile", "view_documents"]) && (
+        {hasAnyPermission(["view_self", "view_employees", "create_employee_code", "view_employee_profile", "delete_employee", "edit_employee", "view_employee_documents", "upload_employee_documents", "verify_employee_documents", "verify_bank_details", "delete_employee_documents", "view_employment_details", "edit_employment_details", "manage_work_location", "manage_reporting_manager", "manage_work_shift", "view_probation_details", "manage_probation_period", "add_probation", "extend_probation", "end_probation", "edit_probation_remarks", "edit_profile", "view_documents"]) && (
           <Link
             to="/eis"
             className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
@@ -476,7 +476,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Attendance */}
-        {hasAnyPermission(["view_attendance", "mark_attendance", "approve_attendance", "view_attendance_reports", "generate_attendance_reports", "export_attendance_data", "view_punch_logs", "punch_in", "punch_out", "view_regularization", "apply_regularization", "approve_regularization", "reject_regularization", "view_od_applications", "apply_od", "approve_od", "reject_od", "edit_od_applications", "view_attendance_rules", "add_attendance_rule", "edit_attendance_rule", "delete_attendance_rule", "view_attendance_locations", "add_attendance_location", "edit_attendance_location", "delete_attendance_location", "view_daily_updates", "add_daily_update", "edit_daily_update", "delete_daily_update", "view_shifts", "create_shifts", "delete_shifts", "view_roster", "manage_roster", "manage_night_shift_rules", "manage_on_call_duty", "view_weekly_roster", "manage_weekly_roster"]) && (
+        {hasAnyPermission(["view_self", "view_attendance", "mark_attendance", "approve_attendance", "view_attendance_reports", "generate_attendance_reports", "export_attendance_data", "view_punch_logs", "punch_in", "punch_out", "view_regularization", "apply_regularization", "approve_regularization", "reject_regularization", "view_od_applications", "apply_od", "approve_od", "reject_od", "edit_od_applications", "view_attendance_rules", "add_attendance_rule", "edit_attendance_rule", "delete_attendance_rule", "view_attendance_locations", "add_attendance_location", "edit_attendance_location", "delete_attendance_location", "view_daily_updates", "add_daily_update", "edit_daily_update", "delete_daily_update", "view_shifts", "create_shifts", "delete_shifts", "view_roster", "manage_roster", "manage_night_shift_rules", "manage_on_call_duty", "view_weekly_roster", "manage_weekly_roster"]) && (
           <div>
             <button
               onClick={() => !isCollapsed && setOpenAttendanceMenu(!openAttendanceMenu)}
@@ -549,7 +549,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Leave Management */}
-        {hasAnyPermission(["view_leave_types", "add_leave_type", "edit_leave_type", "delete_leave_type", "view_leave_policies", "add_leave_policy", "edit_leave_policy", "delete_leave_policy", "assign_leave_policy", "view_leave_rules", "add_leave_rule", "edit_leave_rule", "delete_leave_rule", "view_leave_applications", "apply_leave", "edit_leave_application", "cancel_leave_application", "approve_leave", "reject_leave", "view_leave_calendar", "export_leave_calendar", "view_leave_reports", "generate_leave_reports", "export_leave_reports", "view_leave_balance", "view_leave_trends"]) && (
+        {hasAnyPermission(["view_self", "view_leave_types", "add_leave_type", "edit_leave_type", "delete_leave_type", "view_leave_policies", "add_leave_policy", "edit_leave_policy", "delete_leave_policy", "assign_leave_policy", "view_leave_rules", "add_leave_rule", "edit_leave_rule", "delete_leave_rule", "view_leave_applications", "apply_leave", "edit_leave_application", "cancel_leave_application", "approve_leave", "reject_leave", "view_leave_calendar", "export_leave_calendar", "view_leave_reports", "generate_leave_reports", "export_leave_reports", "view_leave_balance", "view_leave_trends"]) && (
           <Link
             to="/leave"
             className={`flex items-center rounded-xl hover:bg-white/10 transition-colors ${
@@ -567,7 +567,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Payroll Management */}
-        {hasAnyPermission(["view_salary_structure", "add_salary_structure", "edit_salary_structure", "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure", "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule", "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run", "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment", "edit_payroll_adjustment", "delete_payroll_adjustment", "approve_payroll_adjustment", "view_salary_slips", "generate_salary_slips", "download_salary_slips", "email_salary_slips", "process_payments", "view_payment_status", "view_payroll_reports", "generate_payroll_reports", "export_payroll_data", "view_compliance_reports", "generate_compliance_reports"]) && (
+        {hasAnyPermission(["view_self", "view_salary_structure", "add_salary_structure", "edit_salary_structure", "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure", "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule", "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run", "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment", "edit_payroll_adjustment", "delete_payroll_adjustment", "approve_payroll_adjustment", "view_salary_slips", "generate_salary_slips", "download_salary_slips", "email_salary_slips", "process_payments", "view_payment_status", "view_payroll_reports", "generate_payroll_reports", "export_payroll_data", "view_compliance_reports", "generate_compliance_reports"]) && (
           <div>
             <button
               onClick={() => !isCollapsed && setOpenPayrollMenu(!openPayrollMenu)}
@@ -628,7 +628,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Performance Management (PMS) */}
-        {hasAnyPermission(["view_work_assignments", "add_work_assignment", "edit_work_assignment", "delete_work_assignment", "restore_work_assignment", "assign_to_employees", "view_goals_kpi", "view_review_cycles", "create_review_cycle", "edit_review_cycle", "delete_review_cycle", "view_deleted_review_cycles", "restore_review_cycle", "start_review_cycle", "close_review_cycle", "show_deleted_review_cycles", "view_feedback", "give_feedback", "request_feedback", "view_360_feedback", "manage_feedback_forms", "edit_feedback", "delete_feedback", "restore_feedback", "show_deleted_feedback", "view_appraisals", "conduct_appraisal", "submit_self_appraisal", "approve_appraisal", "view_appraisal_reports", "edit_appraisal", "delete_appraisal", "restore_appraisal", "show_deleted_appraisals", "view_quality_indicators", "add_quality_indicator", "edit_quality_indicator", "delete_quality_indicator", "measure_quality_metrics", "restore_quality_indicator", "show_deleted_quality_indicators"]) && (
+        {hasAnyPermission(["view_self", "view_work_assignments", "add_work_assignment", "edit_work_assignment", "delete_work_assignment", "restore_work_assignment", "assign_to_employees", "view_goals_kpi", "view_review_cycles", "create_review_cycle", "edit_review_cycle", "delete_review_cycle", "view_deleted_review_cycles", "restore_review_cycle", "start_review_cycle", "close_review_cycle", "show_deleted_review_cycles", "view_feedback", "give_feedback", "request_feedback", "view_360_feedback", "manage_feedback_forms", "edit_feedback", "delete_feedback", "restore_feedback", "show_deleted_feedback", "view_appraisals", "conduct_appraisal", "submit_self_appraisal", "approve_appraisal", "view_appraisal_reports", "edit_appraisal", "delete_appraisal", "restore_appraisal", "show_deleted_appraisals", "view_quality_indicators", "add_quality_indicator", "edit_quality_indicator", "delete_quality_indicator", "measure_quality_metrics", "restore_quality_indicator", "show_deleted_quality_indicators"]) && (
           <Link
             to="/pms"
             className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
@@ -644,7 +644,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Training & Development */}
-        {hasAnyPermission(["view_training_programs", "add_training_program", "edit_training_program", "delete_training_program", "view_enrolled_trainees", "generate_training_link", "approve_training_applications", "select_send_training_emails", "view_training_calendar", "view_training_requests", "add_training_request", "approve_training_request", "reject_training_request", "view_training_attendance", "mark_training_attendance", "view_training_assessments", "conduct_training_assessment", "grade_training_assessment", "view_training_certificates", "generate_training_certificate", "download_training_certificate", "email_training_certificate"]) && (
+        {hasAnyPermission(["view_self", "view_training_programs", "add_training_program", "edit_training_program", "delete_training_program", "view_enrolled_trainees", "generate_training_link", "approve_training_applications", "select_send_training_emails", "view_training_calendar", "view_training_requests", "add_training_request", "approve_training_request", "reject_training_request", "view_training_attendance", "mark_training_attendance", "view_training_assessments", "conduct_training_assessment", "grade_training_assessment", "view_training_certificates", "generate_training_certificate", "download_training_certificate", "email_training_certificate"]) && (
           <Link
             to="/training"
             className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${
@@ -679,7 +679,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         )}
 
         {/* Exit Management */}
-        {hasAnyPermission(["apply_resignation", "view_resignations", "approve_resignation", "manage_handover", "manage_clearance", "manage_assets", "manage_settlement", "hr_clearance", "it_clearance", "finance_clearance", "admin_clearance", "conduct_exit_interview", "view_exit_interviews", "view_kt_plans", "add_kt_plan", "create_kt_plan", "complete_kt_items", "hr_approve_kt", "manager_approve_kt", "view_settlements", "calculate_settlements", "approve_settlements", "generate_experience_letter", "edit_experience_letter", "download_settlement_pdf", "email_settlement_docs", "edit_settlements"]) && (
+        {hasAnyPermission(["view_self", "apply_resignation", "view_resignations", "approve_resignation", "manage_handover", "manage_clearance", "manage_assets", "manage_settlement", "hr_clearance", "it_clearance", "finance_clearance", "admin_clearance", "conduct_exit_interview", "view_exit_interviews", "view_kt_plans", "add_kt_plan", "create_kt_plan", "complete_kt_items", "hr_approve_kt", "manager_approve_kt", "view_settlements", "calculate_settlements", "approve_settlements", "generate_experience_letter", "edit_experience_letter", "download_settlement_pdf", "email_settlement_docs", "edit_settlements"]) && (
           <Link
             to="/exit"
             className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg hover:bg-white/10 ${

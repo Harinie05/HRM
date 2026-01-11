@@ -56,14 +56,13 @@ def save_logo_file(base64_data, filename=None):
         return None
 
 # ---------------------------------------------------
-# GET ORGANIZATION BRANDING 🔒 Protected
+# GET ORGANIZATION BRANDING (Public for all authenticated users)
 # ---------------------------------------------------
 @router.get("/branding", response_model=OrganizationBrandingResponse | dict)
 def get_organization_branding(
-    tenant: str = Header(...),
-    user = Depends(require_permission("view_organization_branding"))
+    tenant: str = Header(...)
 ):
-    logger.info(f"Getting organization branding for tenant {tenant} by user {user.get('email')}")
+    logger.info(f"Getting organization branding for tenant {tenant}")
     try:
         engine = get_tenant_engine(tenant)
         db = Session(bind=engine)
@@ -86,7 +85,7 @@ def save_organization_branding(
     data: OrganizationBrandingCreate,
     request: Request,
     tenant: str = Header(...),
-    user = Depends(require_permission("add_organization_branding"))
+    user = Depends(require_permission("view_customization"))
 ):
     logger.info(f"Saving organization branding for tenant {tenant} by user {user.get('email')}")
 

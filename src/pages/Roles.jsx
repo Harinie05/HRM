@@ -48,9 +48,9 @@ export default function Roles() {
   ).map(p => p.name);
 
   const getEmployeeManagementPerms = () => permissions.filter(p => 
-    p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || 
+    p.name === 'view_self' || p.name === 'view_employees' || p.name === 'edit_employee' || 
     p.name === 'delete_employee' || p.name === 'create_employee_code' || 
-    p.name === 'view_employee_profile' || p.name === 'export_employee_data'
+    p.name === 'view_employee_profile'
   ).map(p => p.name);
 
   const getProfileDocumentsPerms = () => permissions.filter(p => 
@@ -171,6 +171,10 @@ export default function Roles() {
 
   const getDocumentVerificationPerms = () => permissions.filter(p => 
     p.name === 'verify_employee_documents' || p.name === 'reject_employee_documents'
+  ).map(p => p.name);
+
+  const getCustomizationPerms = () => permissions.filter(p => 
+    p.name === 'view_customization'
   ).map(p => p.name);
 
   const getDashboardPerms = () => permissions.filter(p => 
@@ -356,15 +360,20 @@ export default function Roles() {
           break;
         case 'user_management':
           filtered = filtered.filter(p => 
-            p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+            (p.name.includes('user') || p.name.includes('department') || p.name.includes('role')) &&
+            p.name !== 'view_department'
           );
           break;
         case 'employee_management':
           filtered = filtered.filter(p => 
-            p.name === 'view_employees' || p.name === 'add_employee' || 
-            p.name === 'edit_employee' || p.name === 'delete_employee' || 
-            p.name === 'create_employee_code' || p.name === 'view_employee_profile' || 
-            p.name === 'export_employee_data'
+            p.name === 'view_employees' || p.name === 'edit_employee' || 
+            p.name === 'delete_employee' || p.name === 'create_employee_code' || 
+            p.name === 'view_employee_profile'
+          );
+          break;
+        case 'customization':
+          filtered = filtered.filter(p => 
+            p.name === 'view_customization'
           );
           break;
         default:
@@ -1568,7 +1577,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Training Requests</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request' || p.name === 'view_self'
+                            p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1590,7 +1599,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance & Assessment</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'view_training_assessments' || p.name === 'conduct_training_assessment' || p.name === 'grade_training_assessment' || p.name === 'view_self'
+                            p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'view_training_assessments' || p.name === 'conduct_training_assessment' || p.name === 'grade_training_assessment'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1612,7 +1621,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Certificates</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate' || p.name === 'view_self'
+                            p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1655,7 +1664,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'assign_to_employees' || p.name === 'view_self'
+                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1677,7 +1686,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Goals & KPI (Read-Only Auto-Calculated)</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_goals_kpi' || p.name === 'view_self'
+                            p.name === 'view_goals_kpi'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1895,7 +1904,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out' || p.name === 'view_self'
+                            p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1918,7 +1927,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1940,7 +1949,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications' || p.name === 'view_self'
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1985,7 +1994,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance Permission</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'apply_attendance_permission' || p.name === 'view_attendance_permission' || p.name === 'approve_attendance_permission' || p.name === 'reject_attendance_permission' || p.name === 'view_self'
+                            p.name === 'apply_attendance_permission' || p.name === 'view_attendance_permission' || p.name === 'approve_attendance_permission' || p.name === 'reject_attendance_permission'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2007,7 +2016,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Daily Updates</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update' || p.name === 'view_self'
+                            p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2035,7 +2044,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Lifecycle Actions</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions' || p.name === 'view_self'
+                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2057,7 +2066,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">HR Letters</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters' || p.name === 'view_self'
+                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2079,7 +2088,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Grievances Desk</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances' || p.name === 'view_self'
+                            p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2101,7 +2110,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Assets</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset' || p.name === 'view_self'
+                            p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2316,7 +2325,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Salary Slip & Payment</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status' || p.name === 'view_self'
+                            p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2447,7 +2456,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Applications & Approvals</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_self'
+                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2491,7 +2500,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Reports</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends' || p.name === 'view_self'
+                            p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2689,7 +2698,7 @@ export default function Roles() {
                       </div>
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
-                          p.name === 'view_employees' || p.name === 'add_employee' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'export_employee_data' || p.name === 'view_self'
+                          p.name === 'view_employees' || p.name === 'edit_employee' || p.name === 'delete_employee' || p.name === 'create_employee_code' || p.name === 'view_employee_profile'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                             <input
@@ -2710,7 +2719,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Employee Directory</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_employee_directory' || p.name === 'search_employees' || p.name === 'export_directory' || p.name === 'view_self'
+                            p.name === 'view_employee_directory' || p.name === 'search_employees' || p.name === 'export_directory'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2753,7 +2762,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Profile & Documents</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'edit_employee_profile' || p.name === 'view_employee_documents' || p.name === 'upload_employee_documents' || p.name === 'delete_employee_documents' || p.name === 'edit_profile' || p.name === 'view_documents' || p.name === 'verify_employee_documents' || p.name === 'verify_bank_details' || p.name === 'view_self'
+                            p.name === 'edit_employee_profile' || p.name === 'view_employee_documents' || p.name === 'upload_employee_documents' || p.name === 'delete_employee_documents' || p.name === 'edit_profile' || p.name === 'view_documents' || p.name === 'verify_employee_documents' || p.name === 'verify_bank_details'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3242,7 +3251,7 @@ export default function Roles() {
                       <div className="space-y-2 ml-6">
                         {permissions.filter(p => 
                           p.name === 'apply_resignation' || p.name === 'view_resignations' || p.name === 'approve_resignation' ||
-                          p.name === 'manage_handover' || p.name === 'manage_clearance' || p.name === 'manage_assets' || p.name === 'manage_settlement' || p.name === 'view_self'
+                          p.name === 'manage_handover' || p.name === 'manage_clearance' || p.name === 'manage_assets' || p.name === 'manage_settlement'
                         ).map((p) => (
                           <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                             <input
@@ -3543,7 +3552,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out' || p.name === 'view_self'
+                            p.name === 'view_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3587,7 +3596,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3609,7 +3618,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications' || p.name === 'view_self'
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3631,7 +3640,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3675,7 +3684,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Daily Updates</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update' || p.name === 'view_self'
+                            p.name === 'view_daily_updates' || p.name === 'add_daily_update' || p.name === 'edit_daily_update' || p.name === 'delete_daily_update'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3784,7 +3793,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Training Requests</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request' || p.name === 'view_self'
+                            p.name === 'view_training_requests' || p.name === 'add_training_request' || p.name === 'approve_training_request' || p.name === 'reject_training_request'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3806,7 +3815,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Attendance & Assessment</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'view_training_assessments' || p.name === 'conduct_training_assessment' || p.name === 'grade_training_assessment' || p.name === 'view_self'
+                            p.name === 'view_training_attendance' || p.name === 'mark_training_attendance' || p.name === 'view_training_assessments' || p.name === 'conduct_training_assessment' || p.name === 'grade_training_assessment'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3828,7 +3837,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Certificates</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate' || p.name === 'view_self'
+                            p.name === 'view_training_certificates' || p.name === 'generate_training_certificate' || p.name === 'download_training_certificate' || p.name === 'email_training_certificate'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3871,7 +3880,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Work Assignments</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees' || p.name === 'view_self'
+                            p.name === 'view_work_assignments' || p.name === 'add_work_assignment' || p.name === 'edit_work_assignment' || p.name === 'delete_work_assignment' || p.name === 'view_deleted_work_assignments' || p.name === 'restore_work_assignment' || p.name === 'view_my_assignments' || p.name === 'assign_to_employees'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -3893,7 +3902,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Goals & KPI (Read-Only Auto-Calculated)</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_goals_kpi' || p.name === 'view_self'
+                            p.name === 'view_goals_kpi'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4024,7 +4033,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Lifecycle Actions</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions' || p.name === 'view_self'
+                            p.name === 'view_lifecycle_actions' || p.name === 'add_lifecycle_action' || p.name === 'edit_lifecycle_action' || p.name === 'delete_lifecycle_action' || p.name === 'approve_lifecycle_action' || p.name === 'restore_lifecycle_action' || p.name === 'show_deleted_lifecycle_actions'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4046,7 +4055,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">HR Letters</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters' || p.name === 'view_self'
+                            p.name === 'view_hr_letters' || p.name === 'add_hr_letter' || p.name === 'edit_hr_letter' || p.name === 'delete_hr_letter' || p.name === 'print_hr_letter' || p.name === 'generate_hr_letter' || p.name === 'send_hr_letter' || p.name === 'restore_hr_letter' || p.name === 'show_deleted_hr_letters'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4068,7 +4077,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Grievances Desk</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances' || p.name === 'view_self'
+                            p.name === 'view_grievances' || p.name === 'add_grievance' || p.name === 'edit_grievance' || p.name === 'delete_grievance' || p.name === 'assign_grievance' || p.name === 'resolve_grievance' || p.name === 'escalate_grievance' || p.name === 'restore_grievance' || p.name === 'show_deleted_grievances'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4090,7 +4099,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Assets</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset' || p.name === 'view_self'
+                            p.name === 'view_assets' || p.name === 'add_asset' || p.name === 'edit_asset' || p.name === 'delete_asset' || p.name === 'assign_asset' || p.name === 'return_asset' || p.name === 'track_asset' || p.name === 'restore_asset' || p.name === 'show_deleted_assets' || p.name === 'approve_asset' || p.name === 'reject_asset'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4265,7 +4274,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Salary Slip & Payment</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status' || p.name === 'view_self'
+                            p.name === 'view_salary_slips' || p.name === 'generate_salary_slips' || p.name === 'download_salary_slips' || p.name === 'email_salary_slips' || p.name === 'process_payments' || p.name === 'view_payment_status'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4395,7 +4404,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Real-time Attendance Tracking</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'view_time_logs' || p.name === 'edit_time_logs' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data' || p.name === 'view_self'
+                            p.name === 'view_attendance' || p.name === 'mark_attendance' || p.name === 'view_time_logs' || p.name === 'edit_time_logs' || p.name === 'approve_attendance' || p.name === 'view_attendance_reports' || p.name === 'generate_attendance_reports' || p.name === 'export_attendance_data'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4417,7 +4426,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Punch Logs</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out' || p.name === 'view_self'
+                            p.name === 'view_punch_logs' || p.name === 'edit_punch_logs' || p.name === 'delete_punch_logs' || p.name === 'view_daily_punch_logs' || p.name === 'punch_in' || p.name === 'punch_out'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4439,7 +4448,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4461,7 +4470,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4483,7 +4492,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">OD Applications</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications' || p.name === 'view_self'
+                            p.name === 'view_od_applications' || p.name === 'apply_od' || p.name === 'approve_od' || p.name === 'reject_od' || p.name === 'edit_od_applications'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4505,7 +4514,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Regularization</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization' || p.name === 'view_self'
+                            p.name === 'view_regularization' || p.name === 'apply_regularization' || p.name === 'approve_regularization' || p.name === 'reject_regularization'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4636,7 +4645,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Applications & Approvals</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave' || p.name === 'view_self'
+                            p.name === 'view_leave_applications' || p.name === 'apply_leave' || p.name === 'edit_leave_application' || p.name === 'cancel_leave_application' || p.name === 'approve_leave' || p.name === 'reject_leave'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -4680,7 +4689,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Leave Reports</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends' || p.name === 'view_self'
+                            p.name === 'view_leave_reports' || p.name === 'generate_leave_reports' || p.name === 'export_leave_reports' || p.name === 'view_leave_balance' || p.name === 'view_leave_trends'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input

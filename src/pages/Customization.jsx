@@ -3,10 +3,12 @@ import Layout from "../components/Layout";
 import useToast from "../utils/useToast";
 import Toast from "../components/Toast";
 import api from "../api";
+import { hasPermission } from "../utils/permissions";
 
 export default function Customization() {
   const [activeTab, setActiveTab] = useState("branding");
   const { toast, showToast, hideToast } = useToast();
+  const canEdit = hasPermission('view_customization');
   const [colors, setColors] = useState({
     primaryColor: "#2862e9",
     secondaryColor: "#474e71", 
@@ -17,7 +19,7 @@ export default function Customization() {
   });
 
   const [orgDetails, setOrgDetails] = useState({
-    name: "Your Hospital Name",
+    name: "Setup Organization Name",
     tagline: "Smart • Secure • NABH-Standard", 
     address: "Address line for letterhead & PDFs",
     phone: "+91-XXXXXXXXXX",
@@ -281,7 +283,8 @@ export default function Customization() {
                       type="text"
                       value={orgDetails.name}
                       onChange={(e) => setOrgDetails(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      disabled={!canEdit}
+                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     />
                   </div>
 
@@ -503,17 +506,19 @@ export default function Customization() {
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={saveSettings}
-            style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-            className="px-6 py-2 text-white rounded-lg transition-colors"
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-          >
-            Save branding
-          </button>
-        </div>
+        {canEdit && (
+          <div className="flex justify-end">
+            <button
+              onClick={saveSettings}
+              style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
+              className="px-6 py-2 text-white rounded-lg transition-colors"
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #1e4bb8)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+            >
+              Save branding
+            </button>
+          </div>
+        )}
         
         <Toast toast={toast} hideToast={hideToast} />
       </div>
