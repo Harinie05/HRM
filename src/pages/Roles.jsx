@@ -31,6 +31,119 @@ export default function Roles() {
   const [editModuleFilter, setEditModuleFilter] = useState("");
   const { toast, showToast, hideToast } = useToast();
 
+  // Preset roles data
+  const PRESET_ROLES = [
+    {
+      name: "HR Manager",
+      description: "Full HR management access with all permissions",
+      permissions: [
+        "view_all", "view_employees", "add_employee", "edit_employee", "delete_employee",
+        "view_employee_details", "view_employee_documents", "upload_employee_documents",
+        "edit_employee_documents", "delete_employee_documents", "view_employee_profile",
+        "edit_employee_profile", "view_employee_history", "bulk_employee_operations",
+        "view_departments", "add_department", "edit_department", "delete_department",
+        "view_designations", "add_designation", "edit_designation", "delete_designation",
+        "view_users", "add_user", "edit_user", "delete_user",
+        "move_candidates", "view_candidate", "view_resumes", "view_ats_pipeline",
+        "view_salary_structures", "add_salary_structure", "edit_salary_structure",
+        "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure",
+        "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule",
+        "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run",
+        "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment",
+        "edit_payroll_adjustment", "delete_payroll_adjustment", "view_salary_slips",
+        "generate_salary_slips", "download_salary_slips", "email_salary_slips",
+        "view_payroll_reports", "generate_payroll_reports", "export_payroll_data",
+        "view_compliance_reports", "generate_compliance_reports",
+        "view_leave_types", "add_leave_type", "edit_leave_type", "delete_leave_type",
+        "view_leave_policies", "add_leave_policy", "edit_leave_policy", "delete_leave_policy",
+        "assign_leave_policy", "view_leave_rules", "add_leave_rule", "edit_leave_rule",
+        "delete_leave_rule", "view_leave_applications", "approve_leave", "reject_leave",
+        "view_leave_calendar", "view_leave_reports", "export_leave_reports",
+        "view_leave_balance", "view_leave_trends",
+        "view_documents_alerts", "view_audit_log", "view_customization"
+      ]
+    },
+    {
+      name: "Employee",
+      description: "Basic employee access for self-service",
+      permissions: [
+        "view_self", "view_employee_profile", "edit_employee_profile", "view_employee_documents",
+        "upload_employee_documents", "apply_leave", "edit_leave_application", 
+        "view_leave_calendar", "view_leave_balance", "view_salary_slips", "download_salary_slips"
+      ]
+    },
+    {
+      name: "Manager",
+      description: "Team management access with approval rights",
+      permissions: [
+        "view_all", "view_employees", "view_employee_details", "view_employee_documents",
+        "view_employee_profile", "view_employee_history", "edit_employee_profile", 
+        "upload_employee_documents", "apply_leave", "edit_leave_application", 
+        "view_leave_applications", "approve_leave", "reject_leave", "view_leave_calendar", 
+        "view_leave_balance", "view_leave_reports", "view_salary_slips", "download_salary_slips", 
+        "view_payroll_reports"
+      ]
+    },
+    {
+      name: "Payroll Admin",
+      description: "Specialized role for payroll processing",
+      permissions: [
+        "view_all", "view_employees", "view_employee_details", "view_employee_profile",
+        "view_salary_structures", "add_salary_structure", "edit_salary_structure",
+        "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure",
+        "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule",
+        "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run",
+        "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment",
+        "edit_payroll_adjustment", "delete_payroll_adjustment", "view_salary_slips",
+        "generate_salary_slips", "download_salary_slips", "email_salary_slips",
+        "view_payroll_reports", "generate_payroll_reports", "export_payroll_data",
+        "view_compliance_reports", "generate_compliance_reports",
+        "view_leave_applications", "view_leave_balance", "view_leave_reports"
+      ]
+    },
+    {
+      name: "Recruiter",
+      description: "Recruitment and candidate management access",
+      permissions: [
+        "view_all", "move_candidates", "view_candidate", "view_resumes", "view_ats_pipeline",
+        "view_employees", "add_employee", "view_employee_details", "view_employee_documents",
+        "upload_employee_documents", "view_departments", "view_designations"
+      ]
+    },
+    {
+      name: "Admin",
+      description: "System administration with user and company management",
+      permissions: [
+        "view_all", "view_users", "add_user", "edit_user", "delete_user",
+        "view_departments", "add_department", "edit_department", "delete_department",
+        "view_designations", "add_designation", "edit_designation", "delete_designation",
+        "view_employees", "add_employee", "edit_employee", "view_employee_details",
+        "view_employee_documents", "upload_employee_documents", "edit_employee_documents",
+        "delete_employee_documents", "view_employee_profile", "edit_employee_profile",
+        "view_employee_history", "bulk_employee_operations",
+        "view_customization", "view_audit_log", "view_documents_alerts"
+      ]
+    }
+  ];
+
+  // Function to apply preset role
+  const applyPresetRole = (preset) => {
+    setName(preset.name);
+    setDesc(preset.description);
+    setSelectedPerms(preset.permissions.filter(perm => 
+      permissions.some(p => p.name === perm)
+    ));
+  };
+
+  // Function to apply preset role in edit mode
+  const applyPresetRoleEdit = (preset) => {
+    setEditName(preset.name);
+    setEditDesc(preset.description);
+    setEditPerms(preset.permissions.filter(perm => 
+      permissions.some(p => p.name === perm)
+    ));
+  };
+
   // Handle "Select All" for main sections and subsections
   const handleSelectAllSection = (sectionPerms, setter, currentList) => {
     const allSelected = sectionPerms.every(perm => currentList.includes(perm));
@@ -44,13 +157,14 @@ export default function Roles() {
 
   // Get permissions for specific sections
   const getUserManagementPerms = () => permissions.filter(p => 
-    p.name.includes('user') || p.name.includes('department') || p.name.includes('role')
+    (p.name.includes('user') || p.name.includes('department') || p.name.includes('role')) &&
+    p.name !== 'view_department'
   ).map(p => p.name);
 
   const getEmployeeManagementPerms = () => permissions.filter(p => 
-    p.name === 'view_self' || p.name === 'view_employees' || p.name === 'edit_employee' || 
+    p.name === 'view_employees' || p.name === 'edit_employee' || 
     p.name === 'delete_employee' || p.name === 'create_employee_code' || 
-    p.name === 'view_employee_profile'
+    p.name === 'view_employee_profile' || p.name === 'view_all'
   ).map(p => p.name);
 
   const getProfileDocumentsPerms = () => permissions.filter(p => 
@@ -141,9 +255,9 @@ export default function Roles() {
   ).map(p => p.name);
 
   const getShiftRosterPerms = () => permissions.filter(p => 
-    p.name === 'view_shifts' || p.name === 'create_shifts' || p.name === 'delete_shifts' ||
+    p.name === 'view_shifts' || p.name === 'add_shift' || p.name === 'edit_shift' || p.name === 'delete_shift' ||
     p.name === 'view_roster' || p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' ||
-    p.name === 'manage_on_call_duty'
+    p.name === 'manage_on_call_duty' || p.name === 'view_weekly_roster' || p.name === 'manage_weekly_roster'
   ).map(p => p.name);
 
   const getAttendanceManagementPerms = () => permissions.filter(p => 
@@ -171,6 +285,10 @@ export default function Roles() {
 
   const getDocumentVerificationPerms = () => permissions.filter(p => 
     p.name === 'verify_employee_documents' || p.name === 'reject_employee_documents'
+  ).map(p => p.name);
+
+  const getGlobalPerms = () => permissions.filter(p => 
+    p.name === 'view_self'
   ).map(p => p.name);
 
   const getCustomizationPerms = () => permissions.filter(p => 
@@ -208,112 +326,7 @@ export default function Roles() {
     return moduleMap[moduleFilter] || null;
   };
   const getFilteredPermissions = (searchTerm, moduleFilter) => {
-    let filtered = permissions.filter(p => 
-      p.name !== 'view_training_assessments' && 
-      p.name !== 'conduct_training_assessment' && 
-      p.name !== 'grade_training_assessment' &&
-      p.name !== 'start_review_cycle' &&
-      p.name !== 'close_review_cycle' &&
-      p.name !== 'show_deleted_review_cycles' &&
-      p.name !== 'request_feedback' &&
-      p.name !== 'manage_feedback_forms' &&
-      p.name !== 'conduct_appraisal' &&
-      p.name !== 'submit_self_appraisal' &&
-      p.name !== 'approve_appraisal' &&
-      p.name !== 'view_appraisal_reports' &&
-      p.name !== 'view_self_weekly_roster' &&
-      p.name !== 'view_attendance_reports' &&
-      p.name !== 'generate_attendance_reports' &&
-      p.name !== 'export_attendance_data' &&
-      p.name !== 'view_time_logs' &&
-      p.name !== 'view_daily_punch_logs' &&
-      p.name !== 'smart_regularization' &&
-      p.name !== 'view_live_attendance' &&
-      p.name !== 'select_employee_attendance' &&
-      p.name !== 'manage_employee_attendance' &&
-      p.name !== 'view_self' &&
-      p.name !== 'edit_punch_log' &&
-      p.name !== 'delete_punch_log' &&
-      p.name !== 'add_punch_log' &&
-      p.name !== 'view_punch_logs_page' &&
-      p.name !== 'view_regularization_page' &&
-      p.name !== 'add_regularization_request' &&
-      p.name !== 'edit_regularization_request' &&
-      p.name !== 'delete_regularization_request' &&
-      p.name !== 'restore_lifecycle_action' &&
-      p.name !== 'show_deleted_lifecycle_actions' &&
-      p.name !== 'restore_grievance' &&
-      p.name !== 'show_deleted_grievances' &&
-      p.name !== 'escalate_grievance' &&
-      p.name !== 'return_asset' &&
-      p.name !== 'track_asset' &&
-      p.name !== 'restore_asset' &&
-      p.name !== 'show_deleted_assets' &&
-      p.name !== 'restore_insurance_benefit' &&
-      p.name !== 'show_deleted_insurance_benefits' &&
-      p.name !== 'enroll_employee_benefits' &&
-      p.name !== 'process_claims' &&
-      p.name !== 'manage_beneficiaries' &&
-      p.name !== 'approve_schedule_changes' &&
-      p.name !== 'restore_staff_schedule' &&
-      p.name !== 'show_deleted_staff_schedules' &&
-      p.name !== 'approve_payroll_adjustment' &&
-      p.name !== 'process_payments' &&
-      p.name !== 'view_payment_status' &&
-      p.name !== 'view_self_leave' &&
-      p.name !== 'view_self_payroll' &&
-      p.name !== 'view_gps_tracking' &&
-      p.name !== 'enable_web_gps' &&
-      p.name !== 'enable_mobile_gps' &&
-      p.name !== 'view_location_logs' &&
-      p.name !== 'real_time_tracking' &&
-      p.name !== 'manage_work_location' &&
-      p.name !== 'manage_reporting_manager' &&
-      p.name !== 'manage_work_shift' &&
-      p.name !== 'cancel_leave_application' &&
-      p.name !== 'export_leave_calendar' &&
-      p.name !== 'generate_leave_reports' &&
-      p.name !== 'view_team_leaves' &&
-      p.name !== 'view_all_leaves' &&
-      p.name !== 'edit_time_logs' &&
-      p.name !== 'delete_punch_logs' &&
-      p.name !== 'view_active_records' &&
-      p.name !== 'real_time_tracking' &&
-      p.name !== 'assign_reporting_manager' &&
-      p.name !== 'view_team_hierarchy' &&
-      p.name !== 'view_employee_exit' &&
-      p.name !== 'initiate_employee_exit' &&
-      p.name !== 'manage_employee_exit' &&
-      p.name !== 'approve_employee_exit' &&
-      p.name !== 'complete_employee_exit' &&
-      p.name !== 'add_skill_record' &&
-      p.name !== 'edit_skill_record' &&
-      p.name !== 'delete_skill_record' &&
-      p.name !== 'view_skill_details' &&
-      p.name !== 'add_id_document_record' &&
-      p.name !== 'edit_id_document_record' &&
-      p.name !== 'delete_id_document_record' &&
-      p.name !== 'view_id_document_details' &&
-      p.name !== 'edit_bank_details' &&
-      p.name !== 'reject_documents' &&
-      p.name !== 'reject_bank_details' &&
-      p.name !== 'view_bank_details' &&
-      p.name !== 'add_reporting_record' &&
-      p.name !== 'edit_reporting_record' &&
-      p.name !== 'delete_reporting_record' &&
-      p.name !== 'view_reporting_details' &&
-      p.name !== 'add_exit_record' &&
-      p.name !== 'edit_exit_record' &&
-      p.name !== 'delete_exit_record' &&
-      p.name !== 'view_exit_details' &&
-      p.name !== 'view_od_page' &&
-      p.name !== 'add_od_request' &&
-      p.name !== 'edit_od_request' &&
-      p.name !== 'delete_od_request' &&
-      p.name !== 'view_attendance_reports_page' &&
-      p.name !== 'export_attendance_reports' &&
-      p.name !== 'generate_custom_reports'
-    );
+    let filtered = permissions;
     
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
@@ -321,41 +334,9 @@ export default function Roles() {
         // Search in permission name
         const nameMatch = p.name.toLowerCase().includes(searchLower);
         // Search in permission description
-        const descMatch = p.description.toLowerCase().includes(searchLower);
-        // Search in module names and section headings
-        const moduleMatch = (
-          searchLower.includes('organization') || searchLower.includes('setup') ||
-          searchLower.includes('reporting') || searchLower.includes('structure') ||
-          searchLower.includes('holiday') || searchLower.includes('calendar') ||
-          searchLower.includes('job') || searchLower.includes('requisition') ||
-          searchLower.includes('recruitment') || searchLower.includes('candidate') ||
-          searchLower.includes('offer') || searchLower.includes('contract') ||
-          searchLower.includes('onboarding') || searchLower.includes('consultant') ||
-          searchLower.includes('exit') || searchLower.includes('management') ||
-          searchLower.includes('statutory') || searchLower.includes('compliance') ||
-          searchLower.includes('training') || searchLower.includes('development') ||
-          searchLower.includes('performance') || searchLower.includes('shift') ||
-          searchLower.includes('roster') || searchLower.includes('attendance') ||
-          searchLower.includes('hr') || searchLower.includes('operation') ||
-          searchLower.includes('dashboard') || searchLower.includes('payroll') ||
-          searchLower.includes('leave') || searchLower.includes('user') ||
-          searchLower.includes('employee') || searchLower.includes('weekly')
-        );
+        const descMatch = p.description && p.description.toLowerCase().includes(searchLower);
         
-        // Enhanced search for specific permission categories
-        const categoryMatch = (
-          (searchLower.includes('shift') && (p.name.includes('shift') || p.name.includes('roster'))) ||
-          (searchLower.includes('roster') && (p.name.includes('roster') || p.name.includes('shift'))) ||
-          (searchLower.includes('weekly') && p.name.includes('weekly')) ||
-          (searchLower.includes('attendance') && p.name.includes('attendance')) ||
-          (searchLower.includes('payroll') && (p.name.includes('payroll') || p.name.includes('salary'))) ||
-          (searchLower.includes('salary') && (p.name.includes('salary') || p.name.includes('payroll'))) ||
-          (searchLower.includes('create') && p.name.includes('create')) ||
-          (searchLower.includes('view') && p.name.includes('view')) ||
-          (searchLower.includes('delete') && p.name.includes('delete'))
-        );
-        
-        return nameMatch || descMatch || moduleMatch || categoryMatch;
+        return nameMatch || descMatch;
       });
     }
     
@@ -443,10 +424,11 @@ export default function Roles() {
           break;
         case 'shift_roster':
           filtered = filtered.filter(p => 
-            p.name === 'view_shifts' || p.name === 'create_shifts' || 
-            p.name === 'delete_shifts' || p.name === 'view_roster' || 
-            p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' ||
-            p.name === 'manage_on_call_duty'
+            p.name === 'view_shifts' || p.name === 'add_shift' || 
+            p.name === 'edit_shift' || p.name === 'delete_shift' || 
+            p.name === 'view_roster' || p.name === 'manage_roster' || 
+            p.name === 'manage_night_shift_rules' || p.name === 'manage_on_call_duty' ||
+            p.name === 'view_weekly_roster' || p.name === 'manage_weekly_roster'
           );
           break;
         case 'attendance_management':
@@ -481,7 +463,7 @@ export default function Roles() {
         case 'user_management':
           filtered = filtered.filter(p => 
             (p.name.includes('user') || p.name.includes('department') || p.name.includes('role')) &&
-            p.name !== 'view_department'
+            p.name !== 'view_department' && p.name !== 'view_self'
           );
           break;
         case 'employee_management':
@@ -881,6 +863,31 @@ export default function Roles() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Side - Role Information */}
                 <div className="space-y-4">
+                  {/* Preset Roles Section */}
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-800 mb-3">Quick Start - Preset Roles</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {PRESET_ROLES.map((preset, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => applyPresetRole(preset)}
+                          className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                        >
+                          <div className="font-medium text-sm text-gray-900 group-hover:text-blue-700">
+                            {preset.name}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {preset.description}
+                          </div>
+                          <div className="text-xs text-blue-600 mt-1">
+                            {preset.permissions.length} permissions
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
                     <input
@@ -911,17 +918,32 @@ export default function Roles() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => setSelectedPerms(getFilteredPermissions(permissionSearch, moduleFilter).map(p => p.name))}
+                        onClick={() => {
+                          const filteredPerms = getFilteredPermissions(permissionSearch, moduleFilter).map(p => p.name);
+                          const allSelected = filteredPerms.length > 0 && filteredPerms.every(perm => selectedPerms.includes(perm));
+                          if (allSelected) {
+                            // Deselect all filtered permissions
+                            setSelectedPerms(selectedPerms.filter(perm => !filteredPerms.includes(perm)));
+                          } else {
+                            // Select all filtered permissions
+                            const newList = [...new Set([...selectedPerms, ...filteredPerms])];
+                            setSelectedPerms(newList);
+                          }
+                        }}
                         className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
                       >
-                        Select All
+                        {(() => {
+                          const filteredPerms = getFilteredPermissions(permissionSearch, moduleFilter).map(p => p.name);
+                          const allSelected = filteredPerms.length > 0 && filteredPerms.every(perm => selectedPerms.includes(perm));
+                          return allSelected ? 'Deselect All' : 'Select All';
+                        })()}
                       </button>
                       <button
                         type="button"
                         onClick={() => setSelectedPerms([])}
                         className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                       >
-                        Deselect All
+                        Clear All
                       </button>
                     </div>
                   </div>
@@ -967,26 +989,219 @@ export default function Roles() {
                     </div>
                   </div>
                   
-                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2">
-                    {moduleFilter && (
-                      <div className="mb-4 pb-2 border-b border-gray-200">
-                        <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(moduleFilter)}</h4>
+                  <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-4">
+                    {getFilteredPermissions(permissionSearch, moduleFilter).length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500 text-sm">No permissions found matching your search criteria.</p>
                       </div>
-                    )}
-                    {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
-                      <label key={p.name} className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedPerms.includes(p.name)}
-                          onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
-                          className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
-                        />
+                    ) : (
+                      <>
+                        {moduleFilter ? (
+                          <div className="mb-4 pb-2 border-b border-gray-200">
+                            <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(moduleFilter)}</h4>
+                            <div className="space-y-2 mt-3">
+                              {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
+                                <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedPerms.includes(p.name)}
+                                    onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                    className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                  />
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                    <p className="text-xs text-gray-500">{p.name}</p>
+                                  </div>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                        ) : permissionSearch ? (
+                          <div className="space-y-2">
+                            {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
+                              <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPerms.includes(p.name)}
+                                  onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                  className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                  <p className="text-xs text-gray-500">{p.name}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        ) : (
+                          <>
+                            {/* 🌐 GLOBAL PERMISSIONS */}
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                                  <span>🌐</span> GLOBAL PERMISSIONS
+                                </h4>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={getGlobalPerms().every(perm => selectedPerms.includes(perm))}
+                                    onChange={() => handleSelectAllSection(
+                                      getGlobalPerms(),
+                                      setSelectedPerms,
+                                      selectedPerms
+                                    )}
+                                    className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                  />
+                                  <span className="text-xs text-gray-600">Select All</span>
+                                </label>
+                              </div>
+                              <div className="space-y-2 ml-6">
+                                {permissions.filter(p => 
+                                  p.name === 'view_self'
+                                ).map((p) => (
+                                  <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedPerms.includes(p.name)}
+                                      onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                      className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                    />
+                                    <div>
+                                      <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                      <p className="text-xs text-gray-500">{p.name}</p>
+                                    </div>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {/* 👥 USER MANAGEMENT */}
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{p.description}</p>
-                          <p className="text-xs text-gray-500">{p.name}</p>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                              <span>👥</span> USER MANAGEMENT
+                            </h4>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={getUserManagementPerms().every(perm => selectedPerms.includes(perm))}
+                                onChange={() => handleSelectAllSection(
+                                  getUserManagementPerms(),
+                                  setSelectedPerms,
+                                  selectedPerms
+                                )}
+                                className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <span className="text-xs text-gray-600">Select All</span>
+                            </label>
+                          </div>
+                          <div className="space-y-2 ml-6">
+                            {permissions.filter(p => 
+                              (p.name.includes('user') || p.name.includes('department') || p.name.includes('role')) &&
+                              p.name !== 'view_department' && p.name !== 'view_self'
+                            ).map((p) => (
+                              <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPerms.includes(p.name)}
+                                  onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                  className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                  <p className="text-xs text-gray-500">{p.name}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
                         </div>
-                      </label>
-                    ))}
+
+                        {/* 👤 EMPLOYEE MANAGEMENT */}
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                              <span>👤</span> EMPLOYEE MANAGEMENT
+                            </h4>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={getEmployeeManagementPerms().every(perm => selectedPerms.includes(perm))}
+                                onChange={() => handleSelectAllSection(
+                                  getEmployeeManagementPerms(),
+                                  setSelectedPerms,
+                                  selectedPerms
+                                )}
+                                className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <span className="text-xs text-gray-600">Select All</span>
+                            </label>
+                          </div>
+                          <div className="space-y-2 ml-6">
+                            {permissions.filter(p => 
+                              p.name === 'view_employees' || p.name === 'edit_employee' || p.name === 'delete_employee' || 
+                              p.name === 'create_employee_code' || p.name === 'view_employee_profile' || p.name === 'view_all'
+                            ).map((p) => (
+                              <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPerms.includes(p.name)}
+                                  onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                  className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                  <p className="text-xs text-gray-500">{p.name}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 🏢 ORGANIZATION SETUP */}
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                              <span>🏢</span> ORGANIZATION SETUP
+                            </h4>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={getOrganizationSetupPerms().every(perm => selectedPerms.includes(perm))}
+                                onChange={() => handleSelectAllSection(
+                                  getOrganizationSetupPerms(),
+                                  setSelectedPerms,
+                                  selectedPerms
+                                )}
+                                className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                              />
+                              <span className="text-xs text-gray-600">Select All</span>
+                            </label>
+                          </div>
+                          <div className="space-y-2 ml-6">
+                            {permissions.filter(p => 
+                              p.name.includes('company') || p.name.includes('branch') || 
+                              (p.name.includes('department') && !p.name.includes('user')) ||
+                              p.name.includes('designation')
+                            ).map((p) => (
+                              <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPerms.includes(p.name)}
+                                  onChange={() => togglePerm(p.name, setSelectedPerms, selectedPerms)}
+                                  className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                                />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                                  <p className="text-xs text-gray-500">{p.name}</p>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     {/* 📊 REPORTING STRUCTURE */}
                     <div>
@@ -1936,7 +2151,7 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Shift Management</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_shifts' || p.name === 'create_shifts' || p.name === 'edit_shifts' || p.name === 'delete_shifts'
+                            p.name === 'view_shifts' || p.name === 'add_shift' || p.name === 'edit_shift' || p.name === 'delete_shift'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -1958,7 +2173,8 @@ export default function Roles() {
                         <h5 className="text-xs font-semibold text-gray-700 mb-2">Roster Management</h5>
                         <div className="space-y-2 ml-3">
                           {permissions.filter(p => 
-                            p.name === 'view_roster' || p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' || p.name === 'manage_on_call_duty' || p.name === 'view_weekly_roster' || p.name === 'manage_weekly_roster'
+                            p.name === 'view_roster' || p.name === 'manage_roster' || p.name === 'manage_night_shift_rules' ||
+                            p.name === 'manage_on_call_duty' || p.name === 'view_weekly_roster' || p.name === 'manage_weekly_roster'
                           ).map((p) => (
                             <label key={p.name} className="flex items-start gap-3 cursor-pointer">
                               <input
@@ -2668,6 +2884,31 @@ export default function Roles() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left Side - Role Information */}
                 <div className="space-y-4">
+                  {/* Preset Roles Section */}
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-800 mb-3">Quick Start - Preset Roles</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {PRESET_ROLES.map((preset, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => applyPresetRoleEdit(preset)}
+                          className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                        >
+                          <div className="font-medium text-sm text-gray-900 group-hover:text-blue-700">
+                            {preset.name}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {preset.description}
+                          </div>
+                          <div className="text-xs text-blue-600 mt-1">
+                            {preset.permissions.length} permissions
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
                     <input
@@ -2696,17 +2937,32 @@ export default function Roles() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => setEditPerms(getFilteredPermissions(editPermissionSearch, editModuleFilter).map(p => p.name))}
+                        onClick={() => {
+                          const filteredPerms = getFilteredPermissions(editPermissionSearch, editModuleFilter).map(p => p.name);
+                          const allSelected = filteredPerms.length > 0 && filteredPerms.every(perm => editPerms.includes(perm));
+                          if (allSelected) {
+                            // Deselect all filtered permissions
+                            setEditPerms(editPerms.filter(perm => !filteredPerms.includes(perm)));
+                          } else {
+                            // Select all filtered permissions
+                            const newList = [...new Set([...editPerms, ...filteredPerms])];
+                            setEditPerms(newList);
+                          }
+                        }}
                         className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
                       >
-                        Select All
+                        {(() => {
+                          const filteredPerms = getFilteredPermissions(editPermissionSearch, editModuleFilter).map(p => p.name);
+                          const allSelected = filteredPerms.length > 0 && filteredPerms.every(perm => editPerms.includes(perm));
+                          return allSelected ? 'Deselect All' : 'Select All';
+                        })()}
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditPerms([])}
                         className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                       >
-                        Deselect All
+                        Clear All
                       </button>
                     </div>
                   </div>
@@ -2772,6 +3028,46 @@ export default function Roles() {
                         </div>
                       </label>
                     ))}
+
+                    {/* 🌐 GLOBAL PERMISSIONS */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                          <span>🌐</span> GLOBAL PERMISSIONS
+                        </h4>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={getGlobalPerms().every(perm => editPerms.includes(perm))}
+                            onChange={() => handleSelectAllSection(
+                              getGlobalPerms(),
+                              setEditPerms,
+                              editPerms
+                            )}
+                            className="w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs text-gray-600">Select All</span>
+                        </label>
+                      </div>
+                      <div className="space-y-2 ml-6">
+                        {permissions.filter(p => 
+                          p.name === 'view_self'
+                        ).map((p) => (
+                          <label key={p.name} className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editPerms.includes(p.name)}
+                              onChange={() => togglePerm(p.name, setEditPerms, editPerms)}
+                              className="mt-1 w-4 h-4 text-blue-600 border border-black rounded focus:ring-blue-500"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{p.description}</p>
+                              <p className="text-xs text-gray-500">{p.name}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
 
                     {/* 👤 EMPLOYEE MANAGEMENT */}
                     <div>

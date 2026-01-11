@@ -56,6 +56,7 @@ DEFAULT_PERMISSIONS = [
     {"name": "delete_employee", "description": "Can delete employees"},
     {"name": "edit_employee", "description": "Can edit employee information"},
     {"name": "view_self", "description": "Can view only own records and data"},
+    {"name": "view_all", "description": "Can view all records and data (overrides view_self)"},
 
 
     # =====================================================
@@ -351,8 +352,9 @@ DEFAULT_PERMISSIONS = [
 
     # Shift Management
     {"name": "view_shifts", "description": "Can view shift schedules and configurations"},
-    {"name": "create_shifts", "description": "Can create new shift schedules"},
-    {"name": "delete_shifts", "description": "Can delete or deactivate shift schedules"},
+    {"name": "add_shift", "description": "Can create new shift schedules"},
+    {"name": "edit_shift", "description": "Can edit shift schedules"},
+    {"name": "delete_shift", "description": "Can delete or deactivate shift schedules"},
 
     # Roster Management
     {"name": "view_roster", "description": "Can view employee roster and schedules"},
@@ -606,8 +608,169 @@ DEFAULT_PERMISSIONS = [
 ]
 
 # -------------------------------------------------------------
-# SEED TENANT DATABASE AFTER CREATION (ONLY PERMISSIONS)
+# PRESET ROLES WITH PERMISSIONS
 # -------------------------------------------------------------
+DEFAULT_ROLES = [
+    {
+        "name": "HR Manager",
+        "description": "Full HR management access with all permissions",
+        "permissions": [
+            # Global Access - Can view all records
+            "view_all",
+            
+            # Employee Management
+            "view_employees", "add_employee", "edit_employee", "delete_employee",
+            "view_employee_details", "view_employee_documents", "upload_employee_documents",
+            "edit_employee_documents", "delete_employee_documents", "view_employee_profile",
+            "edit_employee_profile", "view_employee_history", "bulk_employee_operations",
+            
+            # Department & Designation Management
+            "view_departments", "add_department", "edit_department", "delete_department",
+            "view_designations", "add_designation", "edit_designation", "delete_designation",
+            
+            # User Management
+            "view_users", "add_user", "edit_user", "delete_user",
+            
+            # ATS & Recruitment
+            "move_candidates", "view_candidate", "view_resumes", "view_ats_pipeline",
+            
+            # Payroll Management
+            "view_salary_structures", "add_salary_structure", "edit_salary_structure",
+            "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure",
+            "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule",
+            "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run",
+            "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment",
+            "edit_payroll_adjustment", "delete_payroll_adjustment", "view_salary_slips",
+            "generate_salary_slips", "download_salary_slips", "email_salary_slips",
+            "view_payroll_reports", "generate_payroll_reports", "export_payroll_data",
+            "view_compliance_reports", "generate_compliance_reports",
+            
+            # Leave Management
+            "view_leave_types", "add_leave_type", "edit_leave_type", "delete_leave_type",
+            "view_leave_policies", "add_leave_policy", "edit_leave_policy", "delete_leave_policy",
+            "assign_leave_policy", "view_leave_rules", "add_leave_rule", "edit_leave_rule",
+            "delete_leave_rule", "view_leave_applications", "approve_leave", "reject_leave",
+            "view_leave_calendar", "view_leave_reports", "export_leave_reports",
+            "view_leave_balance", "view_leave_trends",
+            
+            # Dashboard & Reports
+            "view_documents_alerts", "view_audit_log", "view_customization"
+        ]
+    },
+    {
+        "name": "Employee",
+        "description": "Basic employee access for self-service",
+        "permissions": [
+            # Self Access Only - Can only view own records
+            "view_self",
+            
+            # Self Profile Management
+            "view_employee_profile", "edit_employee_profile", "view_employee_documents",
+            "upload_employee_documents",
+            
+            # Leave Management (Self)
+            "apply_leave", "edit_leave_application", "view_leave_calendar", "view_leave_balance",
+            
+            # Payroll (View Only)
+            "view_salary_slips", "download_salary_slips"
+        ]
+    },
+    {
+        "name": "Manager",
+        "description": "Team management access with approval rights",
+        "permissions": [
+            # Global Access - Can view all records
+            "view_all",
+            
+            # Employee Management (Team)
+            "view_employees", "view_employee_details", "view_employee_documents",
+            "view_employee_profile", "view_employee_history",
+            
+            # Self Profile Management
+            "edit_employee_profile", "upload_employee_documents",
+            
+            # Leave Management
+            "apply_leave", "edit_leave_application", "view_leave_applications",
+            "approve_leave", "reject_leave", "view_leave_calendar", "view_leave_balance",
+            "view_leave_reports",
+            
+            # Payroll (View Only)
+            "view_salary_slips", "download_salary_slips", "view_payroll_reports"
+        ]
+    },
+    {
+        "name": "Payroll Admin",
+        "description": "Specialized role for payroll processing",
+        "permissions": [
+            # Global Access - Can view all records
+            "view_all",
+            
+            # Employee Data (Read Only)
+            "view_employees", "view_employee_details", "view_employee_profile",
+            
+            # Payroll Management (Full Access)
+            "view_salary_structures", "add_salary_structure", "edit_salary_structure",
+            "delete_salary_structure", "view_salary_structure_details", "link_employees_salary_structure",
+            "view_statutory_rules", "add_statutory_rule", "edit_statutory_rule", "delete_statutory_rule",
+            "view_payroll_run", "create_payroll_run", "process_payroll_run", "approve_payroll_run",
+            "delete_payroll_run", "view_payroll_adjustments", "add_payroll_adjustment",
+            "edit_payroll_adjustment", "delete_payroll_adjustment", "view_salary_slips",
+            "generate_salary_slips", "download_salary_slips", "email_salary_slips",
+            "view_payroll_reports", "generate_payroll_reports", "export_payroll_data",
+            "view_compliance_reports", "generate_compliance_reports",
+            
+            # Leave Data (Read Only for payroll calculations)
+            "view_leave_applications", "view_leave_balance", "view_leave_reports"
+        ]
+    },
+    {
+        "name": "Recruiter",
+        "description": "Recruitment and candidate management access",
+        "permissions": [
+            # Global Access - Can view all records
+            "view_all",
+            
+            # ATS & Recruitment (Full Access)
+            "move_candidates", "view_candidate", "view_resumes", "view_ats_pipeline",
+            
+            # Employee Management (Limited)
+            "view_employees", "add_employee", "view_employee_details", "view_employee_documents",
+            "upload_employee_documents",
+            
+            # Department Info (Read Only)
+            "view_departments", "view_designations"
+        ]
+    },
+    {
+        "name": "Admin",
+        "description": "System administration with user and company management",
+        "permissions": [
+            # Global Access - Can view all records
+            "view_all",
+            
+            # User Management
+            "view_users", "add_user", "edit_user", "delete_user",
+            
+            # Department & Designation Management
+            "view_departments", "add_department", "edit_department", "delete_department",
+            "view_designations", "add_designation", "edit_designation", "delete_designation",
+            
+            # Employee Management
+            "view_employees", "add_employee", "edit_employee", "view_employee_details",
+            "view_employee_documents", "upload_employee_documents", "edit_employee_documents",
+            "delete_employee_documents", "view_employee_profile", "edit_employee_profile",
+            "view_employee_history", "bulk_employee_operations",
+            
+            # System Settings
+            "view_customization", "view_audit_log", "view_documents_alerts"
+        ]
+    }
+]
+
+# -------------------------------------------------------------
+# SEED TENANT DATABASE AFTER CREATION (PERMISSIONS & ROLES)
+# -------------------------------------------------------------
+
 def seed_tenant(tenant_db: str):
     print(f"\n🌱 Seeding tenant database: {tenant_db}")
 
@@ -624,7 +787,7 @@ def seed_tenant(tenant_db: str):
 
         with SessionLocal() as db:
             # -----------------------------------------------------
-            # Seed ONLY Permissions (NO Default Roles)
+            # Seed Permissions
             # -----------------------------------------------------
             added_count = 0
             seen_permissions = set()
@@ -647,16 +810,59 @@ def seed_tenant(tenant_db: str):
             db.commit()
             print(f"✓ {added_count} new permissions seeded")
 
-            # Verify permissions were added
+            # -----------------------------------------------------
+            # Seed Preset Roles with Permissions
+            # -----------------------------------------------------
+            from models.models_tenant import Role, RolePermission
+            
+            roles_added = 0
+            for role_data in DEFAULT_ROLES:
+                # Check if role already exists
+                existing_role = db.query(Role).filter_by(name=role_data["name"]).first()
+                if existing_role:
+                    print(f"  - Role already exists: {role_data['name']}")
+                    continue
+                
+                # Create new role
+                new_role = Role(
+                    name=role_data["name"],
+                    description=role_data["description"]
+                )
+                db.add(new_role)
+                db.flush()  # Get the role ID
+                
+                # Add permissions to role
+                permissions_added = 0
+                for perm_name in role_data["permissions"]:
+                    permission = db.query(Permission).filter_by(name=perm_name).first()
+                    if permission:
+                        role_permission = RolePermission(
+                            role_id=new_role.id,
+                            permission_id=permission.id
+                        )
+                        db.add(role_permission)
+                        permissions_added += 1
+                    else:
+                        print(f"    ⚠️ Permission not found: {perm_name}")
+                
+                roles_added += 1
+                print(f"  + Added role: {role_data['name']} with {permissions_added} permissions")
+            
+            db.commit()
+            print(f"✓ {roles_added} preset roles created")
+
+            # Verify data
             total_perms = db.query(Permission).count()
+            total_roles = db.query(Role).count()
             print(f"✓ Total permissions in database: {total_perms}")
+            print(f"✓ Total roles in database: {total_roles}")
 
             # Clean up any unwanted records that might have been created
             unwanted_names = ['app apollo', 'apollo', 'test app', 'dummy']
             
             # Clean up any tables that might have unwanted records
             try:
-                from models.models_tenant import LeaveType, Role, Department
+                from models.models_tenant import LeaveType, Department
                 
                 # Remove unwanted leave types
                 for name in unwanted_names:
@@ -665,7 +871,7 @@ def seed_tenant(tenant_db: str):
                         db.delete(leave)
                         print(f"  - Removed unwanted leave type: {leave.name}")
                 
-                # Remove unwanted roles
+                # Remove unwanted roles (but keep our preset ones)
                 for name in unwanted_names:
                     unwanted_roles = db.query(Role).filter(Role.name.ilike(f"%{name}%")).all()
                     for role in unwanted_roles:
