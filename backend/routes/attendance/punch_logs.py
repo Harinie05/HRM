@@ -267,7 +267,8 @@ def check_attendance_status(
         "employee_id": employee_id,
         "shift": shift_info,
         "missed_checkout_yesterday": bool(yesterday_punch),
-        "yesterday_date": yesterday if yesterday_punch else None
+        "yesterday_date": yesterday if yesterday_punch else None,
+        "can_check_in": True  # Always allow check-in, but show alert if missed checkout
     }
     
     if today_punch:

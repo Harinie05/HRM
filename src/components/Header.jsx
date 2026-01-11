@@ -308,6 +308,28 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       return;
     }
 
+    // Check for missed checkout first
+    try {
+      const statusRes = await api.get(`/api/attendance/punches/check-status/${userInfo.id}`);
+      const status = statusRes.data;
+      
+      if (status.missed_checkout_yesterday) {
+        const userConfirmed = window.confirm(
+          `You have missed yesterday's punch out (${status.yesterday_date}). Add regularization?`
+        );
+        
+        if (userConfirmed) {
+          // Navigate to attendance page with regularization tab
+          navigate('/attendance?tab=regularization&date=' + status.yesterday_date);
+          return;
+        }
+        // If user clicks "No", continue with normal check-in
+      }
+    } catch (err) {
+      console.error('Status check failed:', err);
+      // Continue with punch-in attempt even if status check fails
+    }
+
     setLoading(true);
     try {
       const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format

@@ -806,7 +806,7 @@ export default function Payslips() {
                 </div>
 
                 {/* Attendance */}
-                <div className="text-white rounded-lg p-4" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                <div className="bg-gray-50 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Attendance Summary</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
                     <div className="text-center">
@@ -827,7 +827,7 @@ export default function Payslips() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {/* Earnings */}
-                <div className="text-white rounded-lg p-4" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                <div className="bg-green-50 rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Earnings</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -887,7 +887,7 @@ export default function Payslips() {
 
               {/* Net Salary */}
               <div className="mt-6 text-center">
-                <div className="text-white border-2 border-green-500 rounded-lg p-4 inline-block" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
+                <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 inline-block">
                   <h3 className="text-lg font-bold text-green-700">NET SALARY: ₹{selectedPayslip.finalNetSalary?.toLocaleString()}</h3>
                 </div>
               </div>

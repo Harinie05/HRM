@@ -379,14 +379,14 @@ export default function AttendanceLogs() {
       const statusRes = await api.get(`/api/attendance/punches/check-status/${currentUserId}`);
       const status = statusRes.data;
       
-      // Handle missed checkout alert
+      // Handle missed checkout alert - Show alert but allow check-in
       if (status.missed_checkout_yesterday) {
-        const confirmRegularization = window.confirm(
-          `You haven't checked out yesterday (${status.yesterday_date}). It has been automatically processed. Do you want to apply for regularization?`
+        const userConfirmed = window.confirm(
+          `You have missed yesterday's punch out (${status.yesterday_date}). Add regularization?`
         );
         
-        if (confirmRegularization) {
-          // Auto-fill regularization form
+        if (userConfirmed) {
+          // Auto-fill regularization form and switch to regularization tab
           setRegularizationForm({
             employee_id: selectedEmployee,
             date: status.yesterday_date,
@@ -396,6 +396,7 @@ export default function AttendanceLogs() {
           setActiveTab('regularization');
           return;
         }
+        // If user clicks "No", continue with normal check-in
       }
       
       if (status.checked_in && !status.checked_out) {
