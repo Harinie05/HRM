@@ -107,13 +107,17 @@ export default function DesignationList() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <svg className="w-5 h-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
@@ -138,7 +142,10 @@ export default function DesignationList() {
                 placeholder="Search roles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
               />
             </div>
           </div>
@@ -155,7 +162,10 @@ export default function DesignationList() {
                   type="text"
                   value={newRole.name}
                   onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
                   placeholder="e.g., Senior Developer, HR Manager"
                 />
               </div>
@@ -164,7 +174,10 @@ export default function DesignationList() {
                 <select
                   value={newRole.level}
                   onChange={(e) => setNewRole({...newRole, level: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
                 >
                   <option value="employee">Employee</option>
                   <option value="supervisor">Supervisor</option>
@@ -179,7 +192,10 @@ export default function DesignationList() {
                 value={newRole.description}
                 onChange={(e) => setNewRole({...newRole, description: e.target.value})}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
                 placeholder="Describe the role responsibilities and scope..."
               />
             </div>
@@ -188,13 +204,13 @@ export default function DesignationList() {
                 onClick={createRole}
                 className="px-4 py-2 text-white text-sm font-medium rounded-xl transition-colors"
                 style={{
-                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 Create Role
@@ -233,7 +249,7 @@ export default function DesignationList() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRoles.map((role) => (
-              <div key={role.id} className="bg-white rounded-xl border border-black p-6 hover:shadow-sm transition-shadow">
+              <div key={role.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 ${getRoleColor(role.level)} rounded-xl flex items-center justify-center text-white`}>
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">

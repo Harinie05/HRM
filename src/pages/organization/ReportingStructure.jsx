@@ -226,12 +226,16 @@ export default function ReportingStructure() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <svg className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -249,7 +253,10 @@ export default function ReportingStructure() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+            style={{
+              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }}
           >
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -269,15 +276,15 @@ export default function ReportingStructure() {
                   setShowCreateLevel(!showCreateLevel);
                   setEditingLevel(null);
                 }}
-                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-black"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-gray-200"
                 style={{
-                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -363,98 +370,10 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto border border-black rounded-xl">
-            <table className="min-w-full">
-              <thead className="bg-gray-50/50 border-b border-black">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level Name</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {levels.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">No reporting levels found</p>
-                          <p className="text-sm text-gray-500 mt-1">Create your first level to get started</p>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  levels.map((level) => (
-                    <tr key={level.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-medium text-sm">{level.level_order}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{level.level_name}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-700">{level.description || '-'}</div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          level.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {level.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          {canEditLevels && (
-                            <button
-                              onClick={() => {
-                                setEditingLevel(level);
-                                setShowCreateLevel(false);
-                              }}
-                              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Edit"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                          )}
-                          {canDeleteLevels && (
-                            <button
-                              onClick={() => deleteLevel(level.id)}
-                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="md:hidden">
+          {/* Desktop and Mobile Card View */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {levels.length === 0 ? (
-              <div className="p-6 text-center">
+              <div className="col-span-full p-6 text-center">
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,45 +388,61 @@ export default function ReportingStructure() {
               </div>
             ) : (
               levels.map((level) => (
-                <div key={level.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-3">
+                <div key={level.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-medium text-sm">{level.level_order}</span>
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
+                        <span className="font-bold text-lg" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}>
+                          {level.level_order}
+                        </span>
                       </div>
-                      <div className="font-medium text-gray-900">{level.level_name}</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{level.level_name}</h3>
+                        <p className="text-sm text-gray-600">Level {level.level_order}</p>
+                      </div>
                     </div>
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                    <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${
                       level.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {level.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Description:</span>
-                      <span className="text-sm text-gray-600">{level.description || '-'}</span>
-                    </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-600">
+                      {level.description || 'No description provided'}
+                    </p>
                   </div>
+                  
                   {(canEditLevels || canDeleteLevels) && (
-                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
                       {canEditLevels && (
                         <button
                           onClick={() => {
                             setEditingLevel(level);
                             setShowCreateLevel(false);
                           }}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit"
                         >
-                          Edit
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
                         </button>
                       )}
                       {canDeleteLevels && (
                         <button
                           onClick={() => deleteLevel(level.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete"
                         >
-                          Delete
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                         </button>
                       )}
                     </div>
@@ -634,94 +569,10 @@ export default function ReportingStructure() {
             </div>
           )}
 
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto border border-black rounded-xl">
-            <table className="min-w-full">
-              <thead className="bg-gray-50/50 border-b border-black">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor Level</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subordinate Level</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                  <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {hierarchy.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">No hierarchy rules found</p>
-                          <p className="text-sm text-gray-500 mt-1">Create rules to establish reporting relationships</p>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  hierarchy.map((rule) => (
-                    <tr key={rule.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{rule.parent_level_name || 'Top Level'}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{rule.child_level_name}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-700">{rule.department_name || 'All Departments'}</div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          rule.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {rule.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          {canEditHierarchy && (
-                            <button
-                              onClick={() => {
-                                setEditingHierarchy(rule);
-                                setShowCreateHierarchy(false);
-                              }}
-                              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Edit"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                          )}
-                          {canDeleteHierarchy && (
-                            <button
-                              onClick={() => deleteHierarchy(rule.id)}
-                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="md:hidden">
+          {/* Desktop and Mobile Card View */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {hierarchy.length === 0 ? (
-              <div className="p-6 text-center">
+              <div className="col-span-full p-6 text-center">
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -736,44 +587,67 @@ export default function ReportingStructure() {
               </div>
             ) : (
               hierarchy.map((rule) => (
-                <div key={rule.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="font-medium text-gray-900">{rule.child_level_name}</div>
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                <div key={rule.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <svg className="w-6 h-6" style={{
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${
                       rule.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {rule.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Supervisor:</span>
-                      <span className="text-sm text-gray-600">{rule.parent_level_name || 'Top Level'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Department:</span>
-                      <span className="text-sm text-gray-600">{rule.department_name || 'All Departments'}</span>
+                  
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{rule.child_level_name}</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        <span className="text-sm text-gray-600">Reports to: <span className="font-medium text-gray-900">{rule.parent_level_name || 'Top Level'}</span></span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span className="text-sm text-gray-600">Department: <span className="font-medium text-gray-900">{rule.department_name || 'All Departments'}</span></span>
+                      </div>
                     </div>
                   </div>
+                  
                   {(canEditHierarchy || canDeleteHierarchy) && (
-                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
                       {canEditHierarchy && (
                         <button
                           onClick={() => {
                             setEditingHierarchy(rule);
                             setShowCreateHierarchy(false);
                           }}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit"
                         >
-                          Edit
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
                         </button>
                       )}
                       {canDeleteHierarchy && (
                         <button
                           onClick={() => deleteHierarchy(rule.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete"
                         >
-                          Delete
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                         </button>
                       )}
                     </div>

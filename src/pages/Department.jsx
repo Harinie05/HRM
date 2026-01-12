@@ -251,8 +251,12 @@ export default function Departments() {
                 <p className="text-2xl font-bold text-gray-900">{departments.length > 0 ? Math.round(users.length / departments.length) : 0}</p>
                 <p className="text-gray-400 text-xs mt-1">Per department</p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg">
-                <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
@@ -318,9 +322,7 @@ export default function Departments() {
                       </div>
                       <div className="text-right">
                         <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 rounded-full" style={{
-                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-                          }}></div>
+                          <div className="w-2 h-2 rounded-full bg-green-400"></div>
                           <span className="text-xs font-medium text-gray-700">{dept.is_active === 1 || dept.is_active === true ? 'Active' : 'Inactive'}</span>
                         </div>
                         <div className="text-lg font-bold" style={{

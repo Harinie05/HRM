@@ -144,30 +144,39 @@ export default function CandidateScreening() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="w-6 h-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Candidate Screening</h1>
-                <p className="text-gray-600 text-lg mb-1">Job: <span className="font-medium">{job.title}</span> - {job.department}</p>
-                <p className="text-gray-500 text-sm">Review applications and shortlist candidates for ATS pipeline</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Candidate Screening</h1>
+                <p className="text-gray-600 text-sm mb-1">Job: <span className="font-medium">{job.title}</span> - {job.department}</p>
+                <p className="text-gray-500 text-xs">Review applications and shortlist candidates for ATS pipeline</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* ACTIONS */}
-        <div className="bg-white rounded-2xl border border-black p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <button
                 onClick={selectAll}
-                className="text-sm text-blue-600 hover:text-blue-800 self-start"
+                className="text-sm hover:text-blue-800 self-start"
+                style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
               >
                 {selectedCandidates.length === applications.length ? "Deselect All" : "Select All"}
               </button>
@@ -181,10 +190,12 @@ export default function CandidateScreening() {
                 <button
                   onClick={openScheduleModal}
                   disabled={selectedCandidates.length === 0}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="text-white px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-400 text-sm"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  className="text-white px-4 py-2 rounded-lg disabled:bg-gray-400 text-sm transition-colors"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71')}
+                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5')}
                 >
                   Schedule Interviews ({selectedCandidates.length})
                 </button>
@@ -193,10 +204,12 @@ export default function CandidateScreening() {
               {canViewATS && (
                 <button
                   onClick={() => window.location.href = `/ats?job=${jobId}`}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                  className="text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                 >
                   View ATS Pipeline
                 </button>
@@ -206,7 +219,7 @@ export default function CandidateScreening() {
         </div>
 
         {/* APPLICATIONS TABLE */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           {applications.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               No applications found for this job
@@ -216,7 +229,7 @@ export default function CandidateScreening() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-100 text-gray-600 text-sm border-b border-black">
+                  <thead className="bg-gray-100 text-gray-600 text-sm border-b border-gray-200">
                     <tr>
                       <th className="p-3 text-left">
                         {canSelectCandidates && (
@@ -239,7 +252,7 @@ export default function CandidateScreening() {
 
                   <tbody>
                     {applications.map((app) => (
-                      <tr key={app.id} className="border-t hover:bg-gray-50 border-black">
+                      <tr key={app.id} className="border-t hover:bg-gray-50 border-gray-200">
                         <td className="p-3">
                           {canSelectCandidates && (
                             <input

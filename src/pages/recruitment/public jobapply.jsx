@@ -96,10 +96,17 @@ export default function JobApply() {
     <div className="min-h-screen bg-gray-50 flex justify-center p-6">
       <div className="w-full max-w-2xl">
 
-        {/* JOB HEADER */}
-        <div className="bg-white rounded-2xl mb-6 p-8 border border-black">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <span className="text-lg">📄</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
               {job.title}
             </h1>
             <p className="text-lg text-gray-600 mb-4">
@@ -118,7 +125,7 @@ export default function JobApply() {
         </div>
 
         {/* APPLICATION FORM */}
-        <div className="bg-white rounded-2xl border border-black p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
               Apply for this job
@@ -131,7 +138,10 @@ export default function JobApply() {
               placeholder="Full Name"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-gray-500 transition-all"
+              className="w-full px-4 py-3 bg-white text-black border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent transition-all"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
             />
 
             <input
@@ -190,7 +200,17 @@ export default function JobApply() {
 
           <button
             onClick={submitApplication}
-            className="mt-8 w-full bg-white text-black font-semibold py-4 px-6 rounded-xl border border-black hover:bg-gray-50 transition-colors"
+            className="mt-8 w-full font-semibold py-4 px-6 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+            style={{
+              backgroundColor: 'white',
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') + '10' || '#4575b510';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'white';
+            }}
           >
             Submit Application
           </button>

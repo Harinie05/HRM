@@ -159,22 +159,37 @@ const ProbationTracking = () => {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6 mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-black">
-                <Clock className="w-8 h-8 text-gray-700" />
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Clock className="w-6 h-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Probation Period Tracking</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Monitor and manage employee probation periods</p>
-                <p className="text-gray-500 text-sm">Track and manage employee probation periods</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Probation Period Tracking</h1>
+                <p className="text-gray-600 text-sm mb-1">Monitor and manage employee probation periods</p>
+                <p className="text-gray-500 text-xs">Track and manage employee probation periods</p>
               </div>
             </div>
-            <div className="text-left sm:text-right">
+            <div className="text-right">
               <button
                 onClick={() => setShowModal(true)}
-                className="bg-gray-900 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors border border-black"
+                className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
               >
                 <Plus size={16} />
                 Add Probation
@@ -186,7 +201,7 @@ const ProbationTracking = () => {
 
 
         {/* Tabs and Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <div className="p-4 sm:p-6">
 
 

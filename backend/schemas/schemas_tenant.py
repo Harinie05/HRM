@@ -333,7 +333,7 @@ class ApplicationOut(BaseModel):
     resume: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class CandidateProfileOut(BaseModel):
     id: int
@@ -346,7 +346,7 @@ class CandidateProfileOut(BaseModel):
     applied_on: datetime           # ← FIXED
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 # ================================================================
 #                        ONBOARDING SCHEMAS (UPDATED)
 # ================================================================
@@ -530,7 +530,7 @@ class OfferOut(BaseModel):
     token: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # ---------------------------- BGV SCHEMAS ----------------------------
 class BGVCreate(BaseModel):
@@ -1572,7 +1572,7 @@ class VisitingConsultantOut(VisitingConsultantBase):
 
 class ConsultantAvailabilityBase(BaseModel):
     consultant_id: int
-    availability_date: date
+    date: date
     from_time: time
     to_time: time
     availability_type: str  # OPD / Surgery / On-call

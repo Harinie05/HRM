@@ -24,7 +24,7 @@ export default function CompanyProfile() {
   // Block access if no view permission
   if (!canView) {
     return (
-      <div className="bg-white rounded-2xl border border-black p-8 text-center">
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
         <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -87,17 +87,21 @@ export default function CompanyProfile() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-black">
+      <div className="p-5 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+          <div className="p-2 rounded-lg" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <svg className="h-5 w-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} fill="currentColor" viewBox="0 0 20 20">
               <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-medium text-gray-900">Company Profile</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Company Profile</h2>
             <p className="text-sm text-gray-600">Configure your organization's basic information</p>
           </div>
         </div>
@@ -117,7 +121,10 @@ export default function CompanyProfile() {
               name="name"
               value={form.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
               placeholder="Enter company name"
             />
           </div>
@@ -130,7 +137,10 @@ export default function CompanyProfile() {
               name="website"
               value={form.website}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
               placeholder="https://www.company.com"
             />
           </div>
@@ -142,7 +152,10 @@ export default function CompanyProfile() {
               name="organization_type"
               value={form.organization_type}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
             >
               <option value="">Select organization type</option>
               <option value="Hospital">Hospital</option>
@@ -163,7 +176,10 @@ export default function CompanyProfile() {
               name="contact_person"
               value={form.contact_person}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
               placeholder="Primary contact person"
             />
           </div>
@@ -176,7 +192,10 @@ export default function CompanyProfile() {
               name="contact_number"
               value={form.contact_number}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
               placeholder="Phone number"
             />
           </div>
@@ -189,7 +208,10 @@ export default function CompanyProfile() {
               name="contact_email"
               value={form.contact_email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
               placeholder="contact@company.com"
             />
           </div>
@@ -203,7 +225,10 @@ export default function CompanyProfile() {
             value={form.address}
             onChange={handleChange}
             rows={4}
-            className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+            style={{
+              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }}
             placeholder="Complete business address"
           />
         </div>
@@ -214,15 +239,19 @@ export default function CompanyProfile() {
             <button
               type="submit"
               disabled={loading}
-              className="text-white px-8 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+              className="text-white px-8 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
               style={{
-                backgroundColor: 'var(--primary-color, #4575b5)',
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                if (!e.target.disabled) {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                if (!e.target.disabled) {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }
               }}
             >
               {loading ? (

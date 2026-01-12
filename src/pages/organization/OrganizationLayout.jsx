@@ -78,80 +78,99 @@ export default function OrganizationLayout() {
   return (
     <Layout>
       <div className="p-6 space-y-6">
-        {/* Header with gradient background matching Department/Roles page */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
+        {/* Hero Header matching User Management */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
                 </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Organization Setup</h1>
-                <p className="text-gray-600 text-lg mb-1">Configure company profile, departments, branches and organizational structure</p>
-                <p className="text-gray-500 text-sm">Company Structure & Setup</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Organization Setup</h1>
+                <p className="text-gray-600 text-sm mb-1">Configure company profile, departments, branches and organizational structure</p>
+                <p className="text-gray-500 text-xs">Company Structure & Setup</p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+                  </svg>
                   <span className="text-xs font-medium">Components</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{visibleTabs.length}</p>
+                <p className="text-sm font-semibold text-gray-900">{visibleTabs.length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tab Navigation matching Department/Roles style */}
-        <div className="bg-white rounded-2xl border border-black p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-            <span className="text-sm text-gray-600">Setup</span>
-            <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-              {visibleTabs.map((tabItem) => {
-                const primaryColor = getPrimaryColor();
-                const secondaryColor = getSecondaryColor();
-                const primaryTextColor = isLightColor(primaryColor) ? 'black' : 'white';
-                const secondaryTextColor = isLightColor(secondaryColor) ? 'black' : 'white';
-                
-                return (
-                  <button
-                    key={tabItem.name}
-                    onClick={() => setTab(tabItem.name)}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                      tab === tabItem.name 
-                        ? "shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                    style={tab === tabItem.name ? {
-                      backgroundColor: primaryColor,
-                      color: primaryTextColor
-                    } : {}}
-                    onMouseEnter={(e) => {
-                      if (tab !== tabItem.name) {
-                        e.target.style.backgroundColor = secondaryColor;
-                        e.target.style.color = secondaryTextColor;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (tab !== tabItem.name) {
-                        e.target.style.backgroundColor = '';
-                        e.target.style.color = '';
-                      }
-                    }}
-                  >
-                    {tabItem.name}
-                  </button>
-                );
-              })}
+        {/* Organization Management Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Setup Modules</h3>
+              </div>
             </div>
           </div>
-          {/* Scroll indicator */}
-          <div className="flex justify-center">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+          
+          <div className="p-5 space-y-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Setup</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                  {visibleTabs.map((tabItem) => {
+                    return (
+                      <button
+                        key={tabItem.name}
+                        onClick={() => setTab(tabItem.name)}
+                        className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                          tab === tabItem.name 
+                            ? "bg-white text-gray-900 shadow-sm" 
+                            : "text-gray-600 hover:text-gray-900"
+                        }`}
+                        style={{
+                          backgroundColor: tab === tabItem.name ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                          color: tab === tabItem.name ? 'white' : '#6b7280'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (tab !== tabItem.name) {
+                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            e.target.style.color = 'white';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (tab !== tabItem.name) {
+                            e.target.style.backgroundColor = 'transparent';
+                            e.target.style.color = '#6b7280';
+                          }
+                        }}
+                      >
+                        {tabItem.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -162,11 +181,7 @@ export default function OrganizationLayout() {
           {tab === "Department" && <DepartmentList />}
           {tab === "Designation" && <DesignationList />}
           {tab === "Reporting Structure" && <ReportingStructure />}
-          {tab === "Grades / Pay Structure" && <GradePayStructure />}
-          {tab === "Grades / Pay Structure" && <GradePayStructure />}
           {tab === "Holiday Calendar" && <HolidayCalender />}
-          {tab === "Rules & Policies" && <RulesPolicies />}
-          {tab === "Rules & Policies" && <RulesPolicies />}
         </div>
       </div>
     </Layout>

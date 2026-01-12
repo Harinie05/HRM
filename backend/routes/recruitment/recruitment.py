@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from database import get_tenant_db
 from utils.audit_logger import audit_crud
-from models.models_tenant import JobRequisition
+from models.models_tenant import JobRequisition, PublicCandidate
 from schemas.schemas_tenant import (
     JobReqCreate,
     JobReqUpdate,
@@ -191,6 +191,14 @@ def delete_job(job_id: int, request: Request, db: Session = Depends(get_tenant_d
     return {"message": "Job requisition deleted successfully"}
 
 # ----------------------------------------------------------
+# GET PUBLIC CANDIDATES (for dashboard metrics)
+# ----------------------------------------------------------
+@router.get("/public-candidates")
+def get_public_candidates(request: Request, db: Session = Depends(get_tenant_db), user = Depends(check_permission("view_candidates"))):
+    candidates = db.query(PublicCandidate).all()
+    return candidates
+
+# ----------------------------------------------------------
 # GENERATE PUBLIC APPLY LINK
 # ----------------------------------------------------------
 @router.post("/generate-link/{job_id}")
@@ -209,4 +217,3 @@ def generate_job_link(job_id: int, request: Request, db: Session = Depends(get_t
     audit_crud(request, db, user, "GENERATE_JOB_LINK", "job_requisitions", str(job_id), {}, {"apply_url": apply_url})
     
     return {"url": apply_url, "message": "Apply link generated successfully"}
-

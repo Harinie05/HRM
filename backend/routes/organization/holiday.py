@@ -67,7 +67,7 @@ def list_holidays(user = Depends(require_permission("view_holiday"))):
             "date": h.date,
             "type": h.type,
             "description": h.description,
-            "repeat_yearly": h.repeat_yearly,
+            "repeat_yearly": h.repeat_yearly if h.repeat_yearly is not None else True,
             "status": h.status
         } for h in holidays]
     finally:

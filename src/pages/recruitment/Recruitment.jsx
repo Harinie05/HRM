@@ -216,22 +216,22 @@ export default function Recruitment() {
     <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiUsers className="w-7 h-7 text-gray-600" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUsers className="w-6 h-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-1">Recruitment Setup</h1>
-                <p className="text-gray-600 text-base font-medium">Manage job postings and recruitment process</p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500 font-medium">{jobs.length} Active Jobs</span>
-                  </div>
-                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
-                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
-                </div>
+                <p className="text-gray-600 text-sm mb-1">Manage job postings and recruitment process</p>
+                <p className="text-gray-500 text-xs">{jobs.length} Active Jobs • Real-time Updates</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function Recruitment() {
         {/* Enhanced Search */}
         <div className="mb-6">
           <div className="relative max-w-md mx-auto">
-            <div className="bg-white border border-black rounded-xl p-1">
+            <div className="bg-white border border-gray-200 rounded-xl p-1">
               <div className="flex items-center space-x-2 px-3 py-2">
                 <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
                   <FiSearch className="w-3 h-3 text-gray-600" />
@@ -272,7 +272,7 @@ export default function Recruitment() {
 
         {/* STATS CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-2xl p-6 border border-black">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Total Jobs</p>
@@ -284,7 +284,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-black">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Published</p>
@@ -296,7 +296,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-black">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Drafts</p>
@@ -308,7 +308,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-black">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Closed</p>
@@ -324,7 +324,7 @@ export default function Recruitment() {
         {/* Filter Options */}
         {showFilters && (
           <div className="mb-6">
-            <div className="bg-white border border-black rounded-2xl p-4">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <select
                   value={filters.department}
@@ -373,7 +373,7 @@ export default function Recruitment() {
         )}
 
         {/* JOB TABLE */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -400,7 +400,7 @@ export default function Recruitment() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-black">
+                  <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
@@ -411,7 +411,7 @@ export default function Recruitment() {
                     </tr>
                   </thead>
 
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {filteredJobs.map((job) => (
                       <tr key={job.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">

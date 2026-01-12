@@ -124,43 +124,43 @@ export default function JobRequisition() {
     <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <Users className="w-7 h-7 text-gray-600" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Users className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-1">Job Requisition</h1>
-                <p className="text-gray-600 text-base font-medium">Manage job postings and recruitment process</p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500 font-medium">{requisitions.length} Active Jobs</span>
-                  </div>
-                  <div className="w-px h-3 bg-gray-300 rounded-full"></div>
-                  <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
-                </div>
+                <p className="text-gray-600 text-sm mb-1">Manage job postings and recruitment process</p>
+                <p className="text-gray-500 text-xs">{requisitions.length} Active Jobs • Real-time Updates</p>
               </div>
             </div>
             
             {canAdd && (
               <button
                 onClick={openCreate}
-                className="text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2"
+                className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap hover:shadow-lg hover:transform hover:-translate-y-0.5"
                 style={{
-                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  e.target.style.color = 'white';
                 }}
               >
-                <div className="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center">
-                  <Plus className="w-3 h-3" />
-                </div>
-                <span className="text-sm">Create Job</span>
+                <Plus className="w-4 h-4" />
+                <span>Create Job</span>
               </button>
             )}
           </div>
@@ -174,7 +174,10 @@ export default function JobRequisition() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -183,20 +186,19 @@ export default function JobRequisition() {
             </div>
             
             <div className="relative max-w-md">
-              <div className="bg-white border border-black rounded-xl p-1">
-                <div className="flex items-center space-x-2 px-3 py-2">
-                  <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
-                    <Search className="w-3 h-3 text-gray-600" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Search jobs..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
-                  />
-                </div>
-              </div>
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+              />
             </div>
           </div>
         </div>
@@ -204,12 +206,12 @@ export default function JobRequisition() {
         {/* Job Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRequisitions.map((req) => (
-            <div key={req.id} className="bg-white rounded-xl p-6 border border-black hover:shadow-lg transition-all duration-200">
+            <div key={req.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all duration-200">
               {/* Header */}
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{req.title}</h3>
-                  <div className="flex items-center space-x-2 text-gray-500 mb-3">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{req.title}</h3>
+                  <div className="flex items-center space-x-2 text-gray-500 mb-2">
                     <Building2 className="w-4 h-4" />
                     <span className="text-sm">{req.department}</span>
                   </div>
@@ -246,7 +248,7 @@ export default function JobRequisition() {
               </div>
               
               {/* Stats */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-1">
                     <Users className="w-4 h-4 text-blue-500" />
@@ -280,7 +282,7 @@ export default function JobRequisition() {
               
               {/* Location & Type */}
               {(req.location || req.work_mode) && (
-                <div className="flex items-center space-x-4 mb-4">
+                <div className="flex items-center space-x-4 mb-3">
                   {req.location && (
                     <div className="flex items-center space-x-1">
                       <MapPin className="w-4 h-4 text-gray-400" />
@@ -298,14 +300,14 @@ export default function JobRequisition() {
               
               {/* Description */}
               {req.description && (
-                <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                   {req.description}
                 </p>
               )}
               
               {/* Salary */}
               {req.salary_range && (
-                <div className="pt-4 border-t border-gray-100">
+                <div className="pt-3 border-t border-gray-100">
                   <div className="text-sm font-semibold text-gray-900">{req.salary_range}</div>
                   <div className="text-xs text-gray-500">Salary Range</div>
                 </div>
@@ -325,15 +327,17 @@ export default function JobRequisition() {
             {canAdd && (
               <button
                 onClick={openCreate}
-                className="text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                className="text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5"
                 style={{
-                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  e.target.style.color = 'white';
                 }}
               >
                 Create Job Requisition
@@ -441,9 +445,9 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-black">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border border-gray-200">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-black px-8 py-6 rounded-t-3xl">
+        <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-6 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-black">
@@ -473,17 +477,22 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             {/* Left Column */}
             <div className="space-y-6">
               {/* Basic Information */}
-              <div className="bg-white border border-black rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
-                  <Briefcase className="w-5 h-5 mr-2 text-black" />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Briefcase className="w-5 h-5 mr-2" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                   Basic Information
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Job Title *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
                     <input
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       placeholder="e.g., Senior Software Engineer"
                       disabled={isView}
                       value={form.title}
@@ -493,9 +502,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Department</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
                       <input
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         placeholder="e.g., Engineering"
                         disabled={isView}
                         value={form.department}
@@ -504,9 +516,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Hiring Manager</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Hiring Manager</label>
                       <input
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         placeholder="Manager name"
                         disabled={isView}
                         value={form.hiring_manager}
@@ -517,9 +532,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Openings</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Openings</label>
                       <input
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         type="number"
                         min="1"
                         disabled={isView}
@@ -529,9 +547,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Experience</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
                       <input
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         placeholder="e.g., 3-5 years"
                         disabled={isView}
                         value={form.experience}
@@ -543,17 +564,22 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Job Details */}
-              <div className="bg-white border border-black rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
-                  <Building2 className="w-5 h-5 mr-2 text-black" />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Building2 className="w-5 h-5 mr-2" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                   Job Details
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Salary Range</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Salary Range</label>
                     <input
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       placeholder="e.g., 5-8 LPA"
                       disabled={isView}
                       value={form.salary_range}
@@ -563,9 +589,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Job Type</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
                       <select
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         disabled={isView}
                         value={form.job_type}
                         onChange={(e) => updateField("job_type", e.target.value)}
@@ -578,9 +607,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Work Mode</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
                       <select
-                        className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                        style={{
+                          focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}
                         disabled={isView}
                         value={form.work_mode}
                         onChange={(e) => updateField("work_mode", e.target.value)}
@@ -593,9 +625,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Work Location</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
                     <input
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       placeholder="e.g., Bangalore, India"
                       disabled={isView}
                       value={form.location}
@@ -609,9 +644,11 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Job Description */}
-              <div className="bg-white border border-black rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   Job Description
@@ -619,9 +656,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Brief Description</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Brief Description</label>
                     <textarea
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       rows="3"
                       placeholder="Brief overview of the role..."
                       disabled={isView}
@@ -631,9 +671,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Detailed Job Description</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Job Description</label>
                     <textarea
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       rows="6"
                       placeholder="Detailed job description, responsibilities, requirements..."
                       disabled={isView}
@@ -643,9 +686,12 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Required Skills</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Required Skills</label>
                     <input
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       placeholder="e.g., React, Node.js, Python (comma-separated)"
                       disabled={isView}
                       value={Array.isArray(form.skills) ? form.skills.join(', ') : (form.skills || '')}
@@ -656,17 +702,22 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
               </div>
               
               {/* Interview Process */}
-              <div className="bg-white border border-black rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-black" />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Users className="w-5 h-5 mr-2" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                   Interview Process
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-black mb-2">Application Deadline</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Application Deadline</label>
                     <input
-                      className="w-full px-4 py-3 bg-white text-black border border-black rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                      style={{
+                        focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}
                       type="date"
                       disabled={isView}
                       value={form.deadline}
@@ -680,10 +731,10 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
         </div>
         
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-black px-8 py-6 rounded-b-3xl">
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-8 py-6 rounded-b-2xl">
           <div className="flex items-center justify-between">
             <button
-              className="px-6 py-3 bg-white text-black border border-black rounded-xl font-medium transition-colors hover:bg-gray-100"
+              className="px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-lg font-medium transition-colors hover:bg-gray-50"
               onClick={onClose}
             >
               Cancel
@@ -691,15 +742,15 @@ function JobRequisitionForm({ mode, requisition, onClose }) {
             
             {!isView && (
               <button
-                className="px-8 py-3 text-white border border-black rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                className="px-8 py-3 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 style={{
-                  backgroundColor: 'var(--primary-color, #4575b5)',
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                 }}
                 onClick={submitForm}
               >

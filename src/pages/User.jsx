@@ -240,8 +240,12 @@ export default function Users() {
                 <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.status === 'Active').length}</p>
                 <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg">
-                <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -274,8 +278,12 @@ export default function Users() {
                 <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role && u.role.trim() !== '').length}</p>
                 <p className="text-gray-400 text-xs mt-1">Role assigned</p>
               </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <svg className="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>

@@ -256,10 +256,19 @@ def apply_deductions(db: Session, payroll: dict):
     """Apply statutory and other deductions"""
     statutory = db.query(StatutoryRule).first()
     
-    # Calculate deductions
-    pf = payroll["basic"] * 0.12 if statutory and getattr(statutory, 'pf_enabled', False) else 0
-    esi = payroll["gross_salary"] * 0.0175 if statutory and getattr(statutory, 'esi_enabled', False) else 0
-    pt = 200 if statutory and getattr(statutory, 'pt_amount', False) else 0
+    # Calculate deductions - use safe attribute access and explicit boolean checks
+    pf_enabled = False
+    esi_enabled = False
+    pt_amount_value = 0
+    
+    if statutory:
+        pf_enabled = bool(getattr(statutory, 'pf_enabled', False))
+        esi_enabled = bool(getattr(statutory, 'esi_enabled', False))
+        pt_amount_value = getattr(statutory, 'pt_amount', 0) or 0
+    
+    pf = payroll["basic"] * 0.12 if pf_enabled else 0
+    esi = payroll["gross_salary"] * 0.0175 if esi_enabled else 0
+    pt = 200 if pt_amount_value > 0 else 0
     
     total_deductions = pf + esi + pt
     net_salary = payroll["gross_salary"] - total_deductions
@@ -455,12 +464,7 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         
         # Handle department
         department = getattr(employee, 'department', 'N/A')
-        if hasattr(department, 'name'):
-            department_name = department.name
-        elif hasattr(department, 'department_name'):
-            department_name = department.department_name
-        else:
-            department_name = str(department) if department != 'N/A' else 'N/A'
+        department_name = str(department) if department != 'N/A' else 'N/A'
         
         # Calculate salary components using same logic as frontend view modal
         gross_salary = getattr(payroll_run, 'gross_salary', 0) or 100000
