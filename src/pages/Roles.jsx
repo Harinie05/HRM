@@ -708,96 +708,204 @@ export default function Roles() {
   return (
     <Layout>
       <div className="p-6 space-y-6">
-        {/* Header with gradient background matching Department page */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-6 lg:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Roles & Permissions</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Define role templates and attach permission sets for access control</p>
-                <p className="text-gray-500 text-xs sm:text-sm">Access Control & Security</p>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Roles & Permissions</h1>
+                <p className="text-gray-600 text-sm mb-1">Define role templates and attach permission sets for access control</p>
+                <p className="text-gray-500 text-xs">Access Control & Security Management</p>
               </div>
             </div>
-            <div className="text-left lg:text-right flex-shrink-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
-                    <span className="text-xs font-medium">Roles</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">{roles.length}</p>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span className="text-xs font-medium">Roles</span>
                 </div>
-                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
-                    <span className="text-xs font-medium">Permissions</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">{permissions.length}</p>
+                <p className="text-sm font-semibold text-gray-900">{roles.length}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                  </svg>
+                  <span className="text-xs font-medium">Permissions</span>
                 </div>
+                <p className="text-sm font-semibold text-gray-900">{permissions.length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Search and Filter matching Department page */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Total: {roles.length}
-            </div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Showing: {filteredRoles.length}
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="all">All</option>
-              </select>
-            </div>
-            <div className="relative flex-1">
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search name or description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              />
-            </div>
-            {canAdd && (
-              <button 
-                onClick={() => setShowCreateModal(true)}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Roles</p>
+                <p className="text-2xl font-bold text-gray-900">{roles.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Access templates</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span className="hidden sm:inline">New Role</span>
-                <span className="sm:hidden">New</span>
-              </button>
-            )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Permissions</p>
+                <p className="text-2xl font-bold text-gray-900">{permissions.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Available actions</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
+                <p className="text-2xl font-bold text-gray-900">{filteredRoles.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Currently showing</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">System Status</p>
+                <p className="text-2xl font-bold text-green-600">Secure</p>
+                <p className="text-gray-400 text-xs mt-1">Access controlled</p>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-lg">
+                <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Role List matching Department page */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        {/* Role Management Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Role Directory</h3>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-5 space-y-4">
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <label className="text-sm font-medium text-gray-700">Status:</label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+              <div className="relative flex-1">
+                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search name or description..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                />
+              </div>
+              {canAdd && (
+                <button 
+                  onClick={() => setShowCreateModal(true)}
+                  className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap hover:opacity-100"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="hidden sm:inline">New Role</span>
+                  <span className="sm:hidden">New</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Role List */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {filteredRoles.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -809,22 +917,27 @@ export default function Roles() {
               <p className="text-gray-500 text-sm">Try changing your search, or create a new role.</p>
             </div>
           ) : (
-            <div className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredRoles.map((role, index) => (
-                  <div key={role.id} className="bg-white border border-black rounded-xl p-3 hover:shadow-lg transition-all duration-300 group">
+                  <div key={role.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <span className="text-purple-600 font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <span className="font-bold text-sm" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}>
                             {role.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-semibold text-gray-900 truncate">{role.name}</h3>
+                          <h3 className="text-base font-semibold text-gray-900">{role.name}</h3>
+                          <p className="text-xs text-gray-500">Role</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         {canEdit && (
                           <button
                             onClick={() => {
@@ -833,7 +946,7 @@ export default function Roles() {
                               setEditDesc(role.description || "");
                               setEditPerms(role.permissions);
                             }}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -855,7 +968,7 @@ export default function Roles() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div>
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Description</p>
                         <p className="text-sm text-gray-700">
@@ -867,19 +980,17 @@ export default function Roles() {
                         </p>
                       </div>
                       
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Permissions</p>
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">
-                            {role.permissions.length} permissions
-                          </span>
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs text-gray-600">Permissions</span>
+                          <span className="text-sm font-bold text-gray-900">{role.permissions.length}</span>
                         </div>
-                      </div>
-                      
-                      <div className="pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>{role.is_active !== false ? 'Active Role' : 'Inactive Role'}</span>
-                          <div className={`w-2 h-2 rounded-full ${role.is_active !== false ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Status</span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${role.is_active !== false ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                            <span className="text-xs font-medium text-gray-700">{role.is_active !== false ? 'Active' : 'Inactive'}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -894,7 +1005,7 @@ export default function Roles() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-2 border-black">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border border-gray-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>

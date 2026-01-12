@@ -200,3 +200,41 @@ def get_audit_summary(
             "active_users_24h": 0,
             "top_actions": []
         }
+
+@router.get("/document-alerts-summary")
+def get_document_alerts_summary(
+    request: Request,
+    db: Session = Depends(database.get_master_db),
+    user = Depends(get_current_user)
+):
+    """Get document alerts summary for dashboard"""
+    try:
+        # Check permission
+        if not check_permission(user, "view_documents_alerts"):
+            raise HTTPException(status_code=403, detail="Permission denied")
+            
+        tenant_db = user.get("tenant_db")
+        hospital = get_hospital_by_db(db, tenant_db)
+        engine = database.get_tenant_engine(str(hospital.db_name))
+        
+        from datetime import date, timedelta
+        today = date.today()
+        thirty_days_from_now = today + timedelta(days=30)
+        
+        with engine.connect() as conn:
+            # Get total document alerts count
+            total_alerts = conn.execute(text("""
+                SELECT COUNT(*) FROM employee_id_docs 
+                WHERE expiry_date IS NOT NULL 
+                AND expiry_date <= :thirty_days
+            """), {"thirty_days": thirty_days_from_now}).scalar() or 0
+        
+        return {
+            "total_alerts": total_alerts
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching document alerts summary: {str(e)}")
+        return {
+            "total_alerts": 0
+        }

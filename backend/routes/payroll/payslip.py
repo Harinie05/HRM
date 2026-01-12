@@ -444,10 +444,21 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         )
         
         # Create header/footer template
-        template = PDFHeaderFooterTemplate(db, "SALARY SLIP")
+        template = PDFHeaderFooterTemplate(db, "")
         
         styles = getSampleStyleSheet()
         story = []
+        
+        # Add SALARY SLIP heading
+        title_style = ParagraphStyle(
+            'Title',
+            parent=styles['Heading1'],
+            fontSize=16,
+            spaceAfter=20,
+            alignment=1,  # Center alignment
+            textColor=colors.black
+        )
+        story.append(Paragraph("SALARY SLIP", title_style))
         
         # Employee Info Section
         month_display = payroll_run.month
@@ -465,14 +476,27 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         else:
             department_name = str(department) if department != 'N/A' else 'N/A'
         
-        # Calculate values
-        gross_salary = getattr(payroll_run, 'gross_salary', 0)
+        # Calculate values using the same logic as the view modal
+        basic_salary = getattr(payroll_run, 'basic_salary', 0) or 0
+        hra_salary = getattr(payroll_run, 'hra_salary', 0) or 0
+        allowances = getattr(payroll_run, 'allowances', 0) or 0
+        
+        # Calculate bonus/incentives from adjustments
         bonus_total = sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type != 'Deduction' and (adj.amount or 0) > 0)
-        total_deductions = (getattr(payroll_run, 'lop_deduction', 0) + 
-                           getattr(payroll_run, 'basic_salary', 0) * 0.12 + 
-                           gross_salary * 0.0175 + 200 +
-                           sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction'))
-        net_salary = (gross_salary + bonus_total - total_deductions)
+        
+        # Use the same calculation as frontend view
+        total_earnings = basic_salary + hra_salary + allowances + bonus_total
+        
+        # Calculate deductions using same logic as view
+        pf_deduction = basic_salary * 0.12
+        esi_deduction = total_earnings * 0.0175
+        pt_deduction = 200
+        tds_deduction = 0
+        lop_deduction = getattr(payroll_run, 'lop_deduction', 0) or 0
+        adjustment_deductions = sum(adj.amount or 0 for adj in adjustments if adj.adjustment_type == 'Deduction')
+        
+        total_deductions = pf_deduction + esi_deduction + pt_deduction + tds_deduction + lop_deduction + adjustment_deductions
+        net_salary = total_earnings - total_deductions
         
         # Single comprehensive payslip table
         payslip_data = [
@@ -488,16 +512,16 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
             
             # Earnings and Deductions Header
             ['EARNINGS', 'AMOUNT (₹)', 'DEDUCTIONS', 'AMOUNT (₹)'],
-            ['Basic Salary', f"{getattr(payroll_run, 'basic_salary', 0):,.2f}", 'Provident Fund (PF)', f"{(getattr(payroll_run, 'basic_salary', 0) * 0.12):,.2f}"],
-            ['House Rent Allowance', f"{getattr(payroll_run, 'hra_salary', 0):,.2f}", 'Employee State Insurance', f"{(gross_salary * 0.0175):,.2f}"],
-            ['Special Allowance', f"{getattr(payroll_run, 'allowances', 0):,.2f}", 'Professional Tax', "200.00"],
-            ['Bonus/Incentives', f"{bonus_total:,.2f}", 'Income Tax (TDS)', "0.00"],
+            ['Basic Salary', f"{basic_salary:,.2f}", 'Provident Fund (PF)', f"{pf_deduction:,.2f}"],
+            ['House Rent Allowance', f"{hra_salary:,.2f}", 'Employee State Insurance', f"{esi_deduction:,.2f}"],
+            ['Special Allowance', f"{allowances:,.2f}", 'Professional Tax', f"{pt_deduction:.2f}"],
+            ['Bonus/Incentives', f"{bonus_total:,.2f}", 'LOP Deduction', f"{lop_deduction:,.2f}"],
             
             # Separator
             ['', '', '', ''],
             
             # Totals
-            ['GROSS EARNINGS', f"{(gross_salary + bonus_total):,.2f}", 'TOTAL DEDUCTIONS', f"{total_deductions:,.2f}"],
+            ['GROSS EARNINGS', f"{total_earnings:,.2f}", 'TOTAL DEDUCTIONS', f"{total_deductions:,.2f}"],
             
             # Separator
             ['', '', '', ''],
@@ -517,7 +541,7 @@ def generate_payslip_pdf(employee, payroll_run, adjustments, db: Session):
         ]
         
         # Create single table with elegant styling
-        payslip_table = Table(payslip_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        payslip_table = Table(payslip_data, colWidths=[1.8*inch, 1.5*inch, 1.8*inch, 1.5*inch])
         payslip_table.setStyle(TableStyle([
             # Employee info header - elegant dark grey
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),

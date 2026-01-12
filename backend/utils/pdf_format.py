@@ -1,5 +1,5 @@
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch
+from reportlab.lib.units import inch, mm
 from reportlab.platypus import Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
@@ -10,87 +10,71 @@ import base64
 import io
 from sqlalchemy.orm import Session
 from models.models_tenant import OrganizationBranding
+from pathlib import Path
+import os
 
 def get_organization_data(db: Session):
     """Fetch organization branding data from database"""
     try:
-        from sqlalchemy import text
-        # Use raw SQL to get the full logo data without truncation
-        result = db.execute(text("""
-            SELECT organization_name, tagline, address, phone, email, website, gstin, logo, logo_filename, logo_path
-            FROM organization_branding 
-            LIMIT 1
-        """)).fetchone()
+        # Query the OrganizationBranding table directly
+        branding = db.query(OrganizationBranding).first()
         
-        print(f"Debug: Raw SQL result found: {result is not None}")
-        if result:
-            logo_data = result[9] or result[7]  # logo_path or logo field
-            print(f"Debug: Logo path: {result[9]}, Logo data length: {len(result[7]) if result[7] else 0}")
+        if branding:
             return {
-                'name': result[0] or "Your Hospital Name",
-                'tagline': result[1] or "Smart • Secure • NABH-Standard",
-                'address': result[2] or "Address line for letterhead & PDFs",
-                'phone': result[3] or "+91-XXXXXXXXXX",
-                'email': result[4] or "info@example.com",
-                'website': result[5] or "https://your-hospital.com",
-                'gstin': result[6] or "",
-                'logo': logo_data,  # This will be either file path or base64
-                'logo_filename': result[8]
+                'name': branding.organization_name or "Your Organization",
+                'tagline': branding.tagline or "Smart • Secure • NABH-Standard",
+                'address': branding.address or "Address line for letterhead & PDFs",
+                'phone': branding.phone or "+91-XXXXXXXXXX",
+                'email': branding.email or "info@example.com",
+                'website': branding.website or "https://your-hospital.com",
+                'gstin': branding.gstin or "GSTIN (optional)",
+                'logo': branding.logo_path or branding.logo,  # Prefer file path over base64
+                'logo_filename': branding.logo_filename
             }
         else:
-            print("Debug: No organization data found in database")
+            # Return default values if no data found
             return {
-                'name': "Your Hospital Name",
+                'name': "Your Organization",
                 'tagline': "Smart • Secure • NABH-Standard",
                 'address': "Address line for letterhead & PDFs",
                 'phone': "+91-XXXXXXXXXX",
                 'email': "info@example.com",
                 'website': "https://your-hospital.com",
-                'gstin': "",
+                'gstin': "GSTIN (optional)",
                 'logo': None,
                 'logo_filename': None
             }
     except Exception as e:
         print(f"Error fetching organization data: {e}")
         return {
-            'name': "Your Hospital Name",
+            'name': "Your Organization",
             'tagline': "Smart • Secure • NABH-Standard",
             'address': "Address line for letterhead & PDFs",
             'phone': "+91-XXXXXXXXXX",
             'email': "info@example.com",
             'website': "https://your-hospital.com",
-            'gstin': "",
+            'gstin': "GSTIN (optional)",
             'logo': None,
             'logo_filename': None
         }
 
 def process_logo_image(logo_data):
-    """Process logo - either from base64 or file path"""
+    """Process logo - either from base64 or file path, optimized for rectangular shape"""
     try:
-        print(f"Debug: Processing logo, data type: {type(logo_data)}, length: {len(logo_data) if logo_data else 0}")
         if not logo_data:
-            print("Debug: No logo data provided")
             return None
         
-        # Check if it's a file path (starts with 'uploads/' or similar)
+        # Check if it's a file path
         if isinstance(logo_data, str) and not logo_data.startswith('data:image'):
-            print(f"Debug: Logo appears to be a file path: {logo_data}")
-            # Return file path directly for ReportLab
             import os
             if os.path.exists(logo_data):
-                print(f"Debug: File exists, returning path: {logo_data}")
                 return logo_data
             else:
-                print(f"Debug: File path does not exist: {logo_data}")
                 return None
         else:
-            # Handle base64 data - convert to BytesIO
-            print("Debug: Processing as base64 data")
-            
-            # Remove data URL prefix if present
+            # Handle base64 data
             if logo_data.startswith('data:image'):
                 logo_data = logo_data.split(',')[1]
-                print("Debug: Removed data URL prefix")
             
             # Clean and fix base64 padding
             logo_data = ''.join(logo_data.split())
@@ -99,152 +83,211 @@ def process_logo_image(logo_data):
             while len(logo_data) % 4 != 0:
                 logo_data += '='
             
-            print(f"Debug: Cleaned base64 length: {len(logo_data)}")
-            
-            # Try to decode
             try:
                 image_data = base64.b64decode(logo_data, validate=True)
-            except Exception as decode_error:
-                print(f"Debug: Base64 decode failed: {decode_error}")
+            except Exception:
                 return None
             
             try:
                 image = Image.open(io.BytesIO(image_data))
-                print(f"Debug: Opened image from base64, size: {image.size}")
-            except Exception as img_error:
-                print(f"Debug: Failed to open image from base64: {img_error}")
+            except Exception:
                 return None
             
             # Convert to RGB if necessary
             if image.mode != 'RGB':
                 image = image.convert('RGB')
-                print("Debug: Converted image to RGB")
             
-            # Resize image to fit header (max 80px height)
-            max_height = 80
+            # Resize for rectangular logo (80x40 aspect ratio)
+            target_width = 80
+            target_height = 40
+            
+            # Maintain aspect ratio but fit within rectangular bounds
             aspect_ratio = image.width / image.height
-            if image.height > max_height:
-                new_height = max_height
-                new_width = int(new_height * aspect_ratio)
-                image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
-                print(f"Debug: Resized image to {new_width}x{new_height}")
+            if aspect_ratio > 2:  # Very wide image
+                new_width = target_width
+                new_height = int(target_width / aspect_ratio)
+            else:  # Square or tall image
+                new_height = target_height
+                new_width = int(target_height * aspect_ratio)
+            
+            image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
             
             # Convert PIL Image to BytesIO for ReportLab
             img_buffer = io.BytesIO()
             image.save(img_buffer, format='PNG')
             img_buffer.seek(0)
-            print("Debug: Successfully processed logo image")
             
             return img_buffer
             
     except Exception as e:
         print(f"Error processing logo: {e}")
-        import traceback
-        traceback.print_exc()
         return None
 
 def create_pdf_header(canvas, doc, db: Session, title="Document"):
     """
     Create standardized PDF header with organization branding
-    
-    Args:
-        canvas: ReportLab canvas object
-        doc: ReportLab document template
-        db: Database session
-        title: Document title (optional)
+    Logo on left, company details on right (matching friend's format)
     """
     # Get organization data
     org_data = get_organization_data(db)
     
     # Header dimensions
     page_width = A4[0]
-    header_height = 120
-    margin = 50
+    page_height = A4[1]
+    header_y = page_height - 30  # Very close to top
+    left_margin = 40
+    right_margin = page_width - 40
     
     # Save canvas state
     canvas.saveState()
     
-    # Draw header background (optional light gray)
-    canvas.setFillColor(colors.white)
-    canvas.rect(0, A4[1] - header_height, page_width, header_height, fill=1, stroke=0)
+    # Left side - Logo (72mm width like friend's code)
+    _draw_logo(canvas, org_data['logo'], left_margin, header_y)
     
-    # Draw header border
+    # Right side - Company details
+    _draw_company_details(canvas, org_data, right_margin, header_y)
+    
+    # Draw separator line
     canvas.setStrokeColor(colors.black)
-    canvas.setLineWidth(1)
-    canvas.line(margin, A4[1] - header_height, page_width - margin, A4[1] - header_height)
-    
-    # Left side - Logo and Organization Name only
-    left_x = margin
-    logo_y = A4[1] - 40
-    
-    # Process and draw logo
-    print(f"Debug: About to process logo for organization: {org_data['name']}")
-    logo_img = process_logo_image(org_data['logo'])
-    if logo_img:
-        try:
-            print("Debug: Drawing logo image")
-            canvas.drawImage(logo_img, left_x, logo_y - 60, width=60, height=60)
-            text_start_x = left_x + 70  # Start text after logo
-            print("Debug: Logo drawn successfully")
-        except Exception as e:
-            print(f"Error drawing logo: {e}")
-            import traceback
-            traceback.print_exc()
-            text_start_x = left_x
-    else:
-        print("Debug: No logo image to draw - drawing placeholder")
-        # Draw a simple placeholder rectangle for logo
-        canvas.setStrokeColor(colors.grey)
-        canvas.setFillColor(colors.lightgrey)
-        canvas.rect(left_x, logo_y - 60, 60, 60, fill=1, stroke=1)
-        canvas.setFillColor(colors.black)
-        canvas.setFont("Helvetica", 8)
-        canvas.drawCentredString(left_x + 30, logo_y - 35, "LOGO")
-        text_start_x = left_x + 70
-    
-    # Organization name only
-    canvas.setFont("Helvetica-Bold", 16)
-    canvas.setFillColor(colors.black)
-    canvas.drawString(text_start_x, logo_y - 15, org_data['name'])
-    
-    # Tagline
-    canvas.setFont("Helvetica", 10)
-    canvas.setFillColor(colors.grey)
-    canvas.drawString(text_start_x, logo_y - 30, org_data['tagline'])
-    
-    # Right side - Contact Details
-    right_x = page_width - margin - 200  # 200px from right edge
-    contact_y = logo_y
-    
-    canvas.setFont("Helvetica", 9)
-    canvas.setFillColor(colors.black)
-    
-    # Phone
-    canvas.drawRightString(page_width - margin, contact_y, org_data['phone'])
-    
-    # Email
-    canvas.drawRightString(page_width - margin, contact_y - 12, org_data['email'])
-    
-    # Website
-    canvas.drawRightString(page_width - margin, contact_y - 24, org_data['website'])
-    
-    # Address
-    canvas.setFont("Helvetica", 8)
-    canvas.drawRightString(page_width - margin, contact_y - 40, org_data['address'])
-    
-    # GSTIN (if available)
-    if org_data['gstin']:
-        canvas.drawRightString(page_width - margin, contact_y - 52, f"GSTIN: {org_data['gstin']}")
+    canvas.setLineWidth(1.5)
+    canvas.line(left_margin, header_y - 85, right_margin, header_y - 85)
     
     # Document title (centered below header)
     if title:
         canvas.setFont("Helvetica-Bold", 14)
         canvas.setFillColor(colors.black)
-        title_y = A4[1] - header_height - 30
+        title_y = header_y - 110
         canvas.drawCentredString(page_width / 2, title_y, title.upper())
     
     # Restore canvas state
     canvas.restoreState()
+
+def _draw_company_details(canvas, org_data, right_x, y):
+    """Draw company details on the right side"""
+    canvas.setFont("Helvetica-Bold", 16)
+    canvas.setFillColor(colors.HexColor("#2E8B57"))  # Sea green color
+    
+    # Company name - right aligned, lowercase
+    company_name = org_data.get('name', 'your company').lower()
+    text_width = canvas.stringWidth(company_name, "Helvetica-Bold", 16)
+    canvas.drawString(right_x - text_width, y, company_name)
+    
+    # Contact details - right aligned
+    canvas.setFont("Helvetica", 8)
+    canvas.setFillColor(colors.black)
+    
+    details_y = y - 20
+    line_height = 10
+    
+    # Phone with + prefix
+    if org_data.get('phone'):
+        phone_text = f"+{org_data['phone']}"
+        phone_width = canvas.stringWidth(phone_text, "Helvetica", 8)
+        canvas.drawString(right_x - phone_width, details_y, phone_text)
+        details_y -= line_height
+    
+    # Email
+    if org_data.get('email'):
+        email_width = canvas.stringWidth(org_data['email'], "Helvetica", 8)
+        canvas.drawString(right_x - email_width, details_y, org_data['email'])
+        details_y -= line_height
+    
+    # GST Number
+    if org_data.get('gstin'):
+        gst_text = f"GST: {org_data['gstin']}"
+        gst_width = canvas.stringWidth(gst_text, "Helvetica", 8)
+        canvas.drawString(right_x - gst_width, details_y, gst_text)
+        details_y -= line_height
+    
+    # Address - right aligned, compact formatting
+    if org_data.get('address'):
+        address_lines = _split_text(org_data['address'], 40)
+        for line in address_lines[:2]:  # Max 2 lines
+            line_width = canvas.stringWidth(line, "Helvetica", 8)
+            canvas.drawString(right_x - line_width, details_y, line)
+            details_y -= line_height
+
+def _draw_logo(canvas, logo_data, left_x, y):
+    """Draw logo on the left side with 72mm width"""
+    logo_width = 72 * mm
+    logo_max_height = 25 * mm
+    
+    try:
+        # Process logo image
+        logo_img = process_logo_image(logo_data)
+        if logo_img:
+            # Handle different logo data types
+            if isinstance(logo_img, str) and os.path.exists(logo_img):
+                # File path
+                with open(logo_img, 'rb') as f:
+                    logo_data_bytes = f.read()
+                img = Image.open(io.BytesIO(logo_data_bytes))
+            else:
+                # BytesIO object
+                img = Image.open(logo_img)
+            
+            # Convert to RGBA and remove green background
+            if img.mode != 'RGBA':
+                img = img.convert('RGBA')
+            
+            data = img.getdata()
+            new_data = []
+            for item in data:
+                # Remove greenish background
+                if item[1] > item[0] + 30 and item[1] > item[2] + 30:
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(item)
+            img.putdata(new_data)
+            
+            # Calculate dimensions
+            original_width, original_height = img.size
+            aspect_ratio = original_height / original_width
+            logo_height = logo_width * aspect_ratio
+            
+            if logo_height > logo_max_height:
+                logo_height = logo_max_height
+                logo_width = logo_height / aspect_ratio
+            
+            # Position and draw logo
+            logo_y = y - logo_height + 10
+            canvas.drawInlineImage(img, left_x, logo_y, width=logo_width, height=logo_height)
+            return
+            
+    except Exception as e:
+        print(f"Error drawing logo: {e}")
+    
+    # Fallback: draw placeholder
+    canvas.setStrokeColor(colors.black)
+    canvas.setFillColor(colors.lightgrey)
+    placeholder_height = 50
+    placeholder_y = y - placeholder_height + 15
+    canvas.rect(left_x, placeholder_y, 72 * mm, placeholder_height, fill=1, stroke=1)
+    canvas.setFillColor(colors.black)
+    canvas.setFont("Helvetica", 12)
+    text_width = canvas.stringWidth("LOGO", "Helvetica", 12)
+    canvas.drawString(left_x + (72 * mm - text_width) / 2, placeholder_y + 20, "LOGO")
+
+def _split_text(text, max_length):
+    """Split text into lines of maximum length"""
+    if not text:
+        return []
+    words = text.split()
+    lines = []
+    current_line = ""
+    
+    for word in words:
+        if len(current_line + " " + word) <= max_length:
+            current_line += " " + word if current_line else word
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+    
+    if current_line:
+        lines.append(current_line)
+    
+    return lines
 
 def create_pdf_footer(canvas, doc, db: Session):
     """

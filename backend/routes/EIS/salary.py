@@ -1,6 +1,7 @@
 # routes/EIS/salary.py
 
 from fastapi import APIRouter, Depends, HTTPException, Form, Request
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from routes.hospital import get_current_user
@@ -11,6 +12,7 @@ from schemas.schemas_tenant import SalaryCreate, SalaryOut
 from pydantic import BaseModel
 from typing import Optional
 import json
+import os
 from utils.permission import require_permission
 
 # Simple salary input schema
@@ -274,3 +276,36 @@ def create_simple_salary(data: SimpleSalaryCreate, user=Depends(get_current_user
         raise HTTPException(500, f"Failed to create salary: {str(e)}")
     finally:
         db.close()
+
+# -------------------------------------------------------------------------
+# 5. SERVE PAYSLIP PDF
+# -------------------------------------------------------------------------
+@router.get("/payslip/{filename}")
+def serve_payslip(filename: str, user=Depends(get_current_user)):
+    """Serve payslip PDF files"""
+    try:
+        # Security: Only allow PDF files and sanitize filename
+        if not filename.endswith('.pdf'):
+            raise HTTPException(status_code=400, detail="Only PDF files allowed")
+        
+        # Remove any path traversal attempts
+        filename = os.path.basename(filename)
+        
+        # Construct file path (adjust path as needed)
+        file_path = os.path.join("C:/Users/Harinie/Downloads", filename)
+        
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="Payslip not found")
+        
+        return FileResponse(
+            path=file_path,
+            media_type='application/pdf',
+            filename=filename,
+            headers={
+                "Content-Disposition": f"inline; filename={filename}",
+                "Cache-Control": "no-cache"
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error serving payslip: {str(e)}")

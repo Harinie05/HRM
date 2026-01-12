@@ -181,21 +181,6 @@ export default function Dashboard() {
     return holidays.find((h) => h.date === dateStr);
   };
 
-  // Mock data for professional dashboard
-  const attritionData = {
-    currentMonth: 0,
-    lastMonth: 0,
-    yearToDate: 0,
-    trend: "stable"
-  };
-
-  const complianceData = {
-    totalCompliant: 0,
-    pendingDocuments: 0,
-    expiringSoon: 0,
-    complianceRate: 0
-  };
-
   const upcomingHolidays = holidays
     .filter(h => new Date(h.date) >= today)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
@@ -295,270 +280,185 @@ export default function Dashboard() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <Building2 className="h-8 w-8 text-gray-700" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Building2 className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Healthcare HRM Suite</h1>
-                <p className="text-gray-600 text-lg mb-1">Complete Human Resource Management Solution</p>
-                <p className="text-gray-500 text-sm">Empowering Healthcare Organizations with Smart HR Technology</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Healthcare HRM Suite</h1>
+                <p className="text-gray-600 text-sm mb-1">Complete Human Resource Management Solution</p>
+                <p className="text-gray-500 text-xs">Empowering Healthcare Organizations with Smart HR Technology</p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="bg-gray-100 rounded-xl p-3 border border-black">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <Globe className="h-3 w-3" />
-                    <span className="text-xs font-medium">Compliance</span>
-                  </div>
-                  <p className="text-sm font-bold text-gray-900">NABH Standard</p>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <Globe className="h-3 w-3" />
+                  <span className="text-xs font-medium">Compliance</span>
                 </div>
-                <div className="bg-gray-100 rounded-xl p-3 border border-black">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <span className="text-xs font-medium">Date</span>
-                  </div>
-                  <p className="text-sm font-bold text-gray-900">{today.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}</p>
+                <p className="text-sm font-semibold text-gray-900">NABH Standard</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <Calendar className="h-3 w-3" />
+                  <span className="text-xs font-medium">Date</span>
                 </div>
+                <p className="text-sm font-semibold text-gray-900">{today.toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  day: 'numeric' 
+                })}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Key Performance Indicators */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Total Employees</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{dashboardData.totalEmployees}</p>
-                <p className="text-gray-500 text-xs mt-1">Active workforce</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Employees</p>
+                <p className="text-2xl font-bold text-gray-900">{dashboardData.totalEmployees}</p>
+                <p className="text-gray-400 text-xs mt-1">Active workforce</p>
               </div>
-              <div className="p-2 sm:p-3 bg-gray-100 rounded-xl flex-shrink-0 shadow-sm">
-                <Users className="h-5 w-5 sm:h-7 sm:w-7 text-gray-700" />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Users className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Departments</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{dashboardData.totalDepartments}</p>
-                <p className="text-gray-500 text-xs mt-1">Organizational units</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Departments</p>
+                <p className="text-2xl font-bold text-gray-900">{dashboardData.totalDepartments}</p>
+                <p className="text-gray-400 text-xs mt-1">Organizational units</p>
               </div>
-              <div className="p-2 sm:p-3 bg-gray-100 rounded-xl flex-shrink-0 shadow-sm">
-                <Building2 className="h-5 w-5 sm:h-7 sm:w-7 text-gray-700" />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Building2 className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Active Roles</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{dashboardData.totalRoles}</p>
-                <p className="text-gray-500 text-xs mt-1">Defined positions</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Roles</p>
+                <p className="text-2xl font-bold text-gray-900">{dashboardData.totalRoles}</p>
+                <p className="text-gray-400 text-xs mt-1">Defined positions</p>
               </div>
-              <div className="p-2 sm:p-3 bg-gray-100 rounded-xl flex-shrink-0 shadow-sm">
-                <UserCheck className="h-5 w-5 sm:h-7 sm:w-7 text-gray-700" />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <UserCheck className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 sm:p-6 border border-black shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-gray-600 text-xs sm:text-sm font-semibold uppercase tracking-wide">Compliance Rate</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{complianceData.complianceRate}%</p>
-                <p className="text-gray-500 text-xs mt-1">NABH compliant</p>
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">System Status</p>
+                <p className="text-2xl font-bold text-green-600">Operational</p>
+                <p className="text-gray-400 text-xs mt-1">All systems running</p>
               </div>
-              <div className="p-2 sm:p-3 bg-gray-100 rounded-xl flex-shrink-0 shadow-sm">
-                <Shield className="h-5 w-5 sm:h-7 sm:w-7 text-gray-700" />
-              </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="flex justify-between items-center text-xs text-gray-600">
-                <span>0 Active Records</span>
-                <span>Real-time Updates</span>
-              </div>
-              <div className="mt-2">
-                <span className="text-xs text-gray-600">0 Active Rules</span>
+              <div className="p-3 bg-emerald-50 rounded-lg">
+                <Shield className="h-6 w-6 text-emerald-600" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Analytics Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* License & Document Alerts */}
-          {hasPermission("view_documents_alerts") && (
-          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => setShowDocumentModal(true)}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Document Alerts</h3>
-              <div className="flex items-center gap-2">
-                <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-                {(licenseAlerts.length + documentAlerts.length) > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                    {licenseAlerts.length + documentAlerts.length}
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            <div className="text-center py-6">
-              {(licenseAlerts.length + documentAlerts.length) > 0 ? (
-                <div>
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <AlertTriangle className="h-8 w-8 text-red-600" />
-                  </div>
-                  <h4 className="text-lg font-bold text-gray-900 mb-2">
-                    {licenseAlerts.length + documentAlerts.length} Document Alerts
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Documents requiring immediate attention
-                  </p>
-                  <p className="text-sm text-blue-600 font-medium hover:text-blue-800">
-                    Click to view all alerts
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                  <h4 className="text-lg font-bold text-gray-900 mb-2">All Documents Current</h4>
-                  <p className="text-sm text-gray-600">No alerts at this time</p>
-                </div>
-              )}
-            </div>
-          </div>
-          )}
-
-          {/* Attrition Analysis */}
-          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Attrition Analysis</h3>
-              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <div>
-                  <p className="text-sm text-gray-700 font-medium">Current Month</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{attritionData.currentMonth}%</p>
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <span className="text-sm">No change</span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                  <p className="text-xs text-gray-600">Last Month</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-900">{attritionData.lastMonth}%</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                  <p className="text-xs text-gray-600">Year to Date</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-900">{attritionData.yearToDate}%</p>
-                </div>
-              </div>
-              
-              <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
-                <p className="text-sm text-gray-800 font-medium">Industry Benchmark: 15-20%</p>
-                <p className="text-xs text-gray-600 mt-1">No attrition data available for new tenant</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Manpower Compliance */}
-          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Manpower Compliance</h3>
-              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-gray-600 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">Compliant Employees</p>
-                    <p className="text-xs text-gray-600">{complianceData.complianceRate}% of workforce</p>
-                  </div>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-gray-900">{complianceData.totalCompliant}</p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-gray-600 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">Pending Documents</p>
-                    <p className="text-xs text-gray-600">Require immediate attention</p>
-                  </div>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-gray-900">{complianceData.pendingDocuments}</p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex items-center">
-                  <AlertTriangle className="h-5 w-5 text-gray-600 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">Expiring Soon</p>
-                    <p className="text-xs text-gray-600">Within next 30 days</p>
-                  </div>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-gray-900">{complianceData.expiringSoon}</p>
-              </div>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Audit Logs Summary */}
           {hasPermission("view_audit_log") && (
-          <div className="rounded-xl shadow-lg border border-black p-4 sm:p-6 bg-white hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Audit Logs</h3>
-              <Database className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <Database className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Audit Logs</h3>
+                </div>
+              </div>
             </div>
             
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                <div>
-                  <p className="text-sm text-gray-700 font-medium">Total Logs</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{auditSummary.total_logs}</p>
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <span className="text-sm">All time</span>
+            <div className="p-5 space-y-4">
+              <div className="rounded-lg p-4" style={{
+                background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+              }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Logs</p>
+                    <p className="text-2xl font-bold text-gray-900">{auditSummary.total_logs}</p>
+                    <p className="text-xs text-gray-500">All time</p>
+                  </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                  <p className="text-xs text-gray-600">Recent Activity</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-900">{auditSummary.recent_activity}</p>
-                  <p className="text-xs text-gray-500">Last 7 days</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg p-3 border" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                }}>
+                  <p className="text-xs font-medium mb-1" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Recent Activity</p>
+                  <p className="text-lg font-bold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>{auditSummary.recent_activity}</p>
+                  <p className="text-xs" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Last 7 days</p>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                  <p className="text-xs text-gray-600">Active Users</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-900">{auditSummary.active_users_24h}</p>
-                  <p className="text-xs text-gray-500">Last 24 hours</p>
+                <div className="rounded-lg p-3 border" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                }}>
+                  <p className="text-xs font-medium mb-1" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Active Users</p>
+                  <p className="text-lg font-bold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>{auditSummary.active_users_24h}</p>
+                  <p className="text-xs" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Last 24 hours</p>
                 </div>
               </div>
               
               {auditSummary.top_actions.length > 0 && (
-                <div className="p-3 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
-                  <p className="text-sm text-gray-800 font-medium mb-2">Top Actions</p>
-                  <div className="space-y-1">
+                <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                  <p className="text-sm text-gray-700 font-medium mb-2">Top Actions</p>
+                  <div className="space-y-2">
                     {auditSummary.top_actions.slice(0, 3).map((action, index) => (
                       <div key={index} className="flex justify-between items-center">
                         <span className="text-xs text-gray-600">{action.action}</span>
-                        <span className="text-xs font-semibold text-gray-900">{action.count}</span>
+                        <span className="text-xs font-semibold text-gray-900 bg-white px-2 py-1 rounded">{action.count}</span>
                       </div>
                     ))}
                   </div>
@@ -567,10 +467,17 @@ export default function Dashboard() {
               
               <button
                 onClick={viewAuditLogs}
-                className="w-full text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium border border-black shadow-md flex items-center justify-center gap-2"
-                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
+                className="w-full text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.backgroundColor = hoverColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
               >
                 <Eye className="h-4 w-4" />
                 View All Audit Logs
@@ -578,33 +485,141 @@ export default function Dashboard() {
             </div>
           </div>
           )}
+
+          {/* Document Alerts */}
+          {hasPermission("view_documents_alerts") && (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <Bell className="h-5 w-5 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Document Alerts</h3>
+                </div>
+                {(licenseAlerts.length + documentAlerts.length) > 0 && (
+                  <span className="bg-red-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold">
+                    {licenseAlerts.length + documentAlerts.length}
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <div className="p-5">
+              {(licenseAlerts.length + documentAlerts.length) > 0 ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    {[...licenseAlerts, ...documentAlerts].slice(0, 5).map((alert, index) => (
+                      <div key={index} className={`p-3 rounded-lg border-l-4 ${
+                        alert.alert_level === 'critical' 
+                          ? 'bg-red-50 border-l-red-500 border-red-100' 
+                          : 'bg-yellow-50 border-l-yellow-500 border-yellow-100'
+                      }`}>
+                        <div className="flex justify-between items-center">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">
+                              {alert.document_type || alert.license_type}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {alert.employee_name || `Employee ${alert.employee_id}`}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className={`text-sm font-bold ${
+                              alert.alert_level === 'critical' ? 'text-red-700' : 'text-yellow-700'
+                            }`}>
+                              {alert.days_until_expiry <= 0 ? 'EXPIRED' : `${alert.days_until_expiry}d`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {(licenseAlerts.length + documentAlerts.length) > 5 && (
+                    <p className="text-sm text-gray-600 text-center py-2">
+                      +{(licenseAlerts.length + documentAlerts.length) - 5} more alerts
+                    </p>
+                  )}
+                  
+                  <button
+                    onClick={() => setShowDocumentModal(true)}
+                    className="w-full text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <Bell className="h-4 w-4" />
+                    View All Alerts
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">All Documents Current</h4>
+                  <p className="text-sm text-gray-600">No alerts at this time</p>
+                </div>
+              )}
+            </div>
+          </div>
+          )}
         </div>
 
         {/* Product Overview */}
-        <div className="rounded-2xl shadow-xl border border-black overflow-hidden bg-white">
-          <div className="p-8 border-b border-black bg-gray-50">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+          }}>
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete HRM Module Suite</h2>
-                <p className="text-gray-600">Comprehensive human resource management modules designed for healthcare organizations</p>
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Activity className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete HRM Module Suite</h2>
+                  <p className="text-gray-600">Comprehensive human resource management modules designed for healthcare organizations</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-gray-700">
-                <Activity className="h-5 w-5" />
-                <span className="font-semibold">All Systems Operational</span>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}>
+                <div className="w-2 h-2 rounded-full" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}></div>
+                <span className="font-semibold text-sm">All Systems Operational</span>
               </div>
             </div>
           </div>
 
-          <div className="p-8">
+          <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {hrmModules.map((module, index) => {
                 const IconComponent = module.icon;
+                const isEven = index % 2 === 0;
                 return (
-                  <div key={index} className="bg-white rounded-xl p-6 border border-black shadow-lg hover:shadow-xl transition-all duration-300 group">
+                  <div key={index} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gray-100 rounded-xl group-hover:bg-gray-200 transition-all duration-300 shadow-sm">
-                          <IconComponent className="h-6 w-6 text-gray-700" />
+                        <div className="p-3 rounded-xl transition-all duration-300" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <IconComponent className="h-6 w-6" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
                         </div>
                         <div>
                           <h3 className="text-lg font-bold text-gray-900">{module.title}</h3>
@@ -612,20 +627,26 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="flex items-center gap-1 mb-1">
-                          <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 rounded-full" style={{
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}></div>
                           <span className="text-xs font-medium text-gray-700">{module.status}</span>
                         </div>
-                        <div className="text-sm font-bold text-gray-900">{module.usage}</div>
+                        <div className="text-sm font-bold" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}>{module.usage}</div>
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Key Features</p>
                       <div className="grid grid-cols-2 gap-2">
                         {module.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-sm">
-                            <CheckCircle className="h-3 w-3 text-gray-500" />
+                            <CheckCircle className="h-3 w-3" style={{
+                              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }} />
                             <span className="text-gray-700">{feature}</span>
                           </div>
                         ))}
@@ -639,12 +660,18 @@ export default function Dashboard() {
         </div>
 
         {/* Holiday Gallery Section */}
-        <div className="rounded-xl shadow-lg border border-black overflow-hidden bg-white">
-          <div className="p-6 border-b border-black bg-gray-50">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05)`
+          }}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-200 rounded-xl shadow-sm">
-                  <Calendar className="h-5 w-5 text-gray-600" />
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Calendar className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">Holiday Gallery</h3>
@@ -653,11 +680,19 @@ export default function Dashboard() {
               </div>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className="text-white px-4 py-2 rounded-xl transition-colors duration-200 text-sm font-medium border border-black shadow-md"
-                style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
+                className="text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.backgroundColor = hoverColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
               >
+                <Calendar className="h-4 w-4" />
                 {showCalendar ? 'Hide Calendar' : 'View Calendar'}
               </button>
             </div>
@@ -665,15 +700,22 @@ export default function Dashboard() {
 
           {/* Upcoming Holidays Preview */}
           <div className="p-6">
-            <h4 className="font-semibold text-gray-900 mb-4">Upcoming Holidays</h4>
+            <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="w-1 h-5 rounded" style={{
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}></div>
+              Upcoming Holidays
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {upcomingHolidays.length > 0 ? (
                 upcomingHolidays.map((holiday, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-black shadow-sm">
+                  <div key={index} className="p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200" style={{
+                    background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+                  }}>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">{holiday.name}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 mt-1">
                           {new Date(holiday.date).toLocaleDateString('en-US', {
                             weekday: 'long',
                             month: 'short',
@@ -681,14 +723,23 @@ export default function Dashboard() {
                           })}
                         </p>
                       </div>
-                      <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                      <div className="w-3 h-3 rounded-full" style={{
+                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }}></div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="col-span-3 text-center py-8 text-gray-500">
-                  <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                  <p>No upcoming holidays found</p>
+                <div className="col-span-3 text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                  }}>
+                    <Calendar className="h-8 w-8" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Upcoming Holidays</h4>
+                  <p className="text-gray-600">Check back later for holiday updates</p>
                 </div>
               )}
             </div>
@@ -696,15 +747,24 @@ export default function Dashboard() {
 
           {/* Calendar View */}
           {showCalendar && (
-            <div className="p-6 border-t border-black bg-gray-50">
-              <div className="rounded-lg p-6 border border-black bg-white shadow-sm">
+            <div className="p-6 border-t border-gray-100" style={{
+              background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}02, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}02)`
+            }}>
+              <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
                 <div className="flex justify-between items-center mb-6">
                   <button 
                     onClick={prevMonth} 
-                    className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium border border-black shadow-sm"
-                    style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
+                    className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium flex items-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
                   >
                     ‹ Previous
                   </button>
@@ -713,10 +773,17 @@ export default function Dashboard() {
                   </h2>
                   <button 
                     onClick={nextMonth} 
-                    className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium border border-black shadow-sm"
-                    style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-hover, #3a6299)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #4575b5)'}
+                    className="px-4 py-2 text-white rounded-lg transition-colors duration-200 font-medium flex items-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
                   >
                     Next ›
                   </button>
@@ -740,13 +807,20 @@ export default function Dashboard() {
                     return (
                       <div
                         key={day}
-                        className={`h-16 p-2 border border-black rounded-lg relative transition-all duration-200 ${
+                        className={`h-16 p-2 border border-gray-200 rounded-lg relative transition-all duration-200 ${
                           holiday 
-                            ? "bg-gray-100 hover:bg-gray-200 shadow-sm" 
+                            ? "hover:shadow-md" 
                             : isToday
-                            ? "bg-gray-200 shadow-md"
+                            ? "shadow-md"
                             : "bg-white hover:bg-gray-50"
                         }`}
+                        style={{
+                          backgroundColor: holiday 
+                            ? `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                            : isToday
+                            ? `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}15`
+                            : 'white'
+                        }}
                       >
                         <span className={`text-sm font-semibold ${
                           isToday ? "text-gray-900" : holiday ? "text-gray-800" : "text-gray-600"
@@ -755,14 +829,18 @@ export default function Dashboard() {
                         </span>
                         {holiday && (
                           <>
-                            <div className="absolute top-1 right-1 w-2 h-2 bg-gray-600 rounded-full"></div>
+                            <div className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}></div>
                             <p className="text-xs text-gray-700 mt-1 font-medium truncate leading-tight">
                               {holiday.name}
                             </p>
                           </>
                         )}
                         {isToday && !holiday && (
-                          <div className="absolute top-1 right-1 w-2 h-2 bg-gray-800 rounded-full"></div>
+                          <div className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}></div>
                         )}
                       </div>
                     );

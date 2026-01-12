@@ -177,128 +177,278 @@ export default function Users() {
   return (
     <Layout>
       <div className="p-6 space-y-6">
-        {/* Header with gradient background matching Department/Roles page */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-6 lg:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                 </svg>
               </div>
-              <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">User Management</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Manage employees, assign roles & access levels</p>
-                <p className="text-gray-500 text-xs sm:text-sm">User & Access Management</p>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">User Management</h1>
+                <p className="text-gray-600 text-sm mb-1">Manage employees, assign roles & access levels</p>
+                <p className="text-gray-500 text-xs">User & Access Management</p>
               </div>
             </div>
-            <div className="text-left lg:text-right flex-shrink-0">
-              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                  </svg>
                   <span className="text-xs font-medium">Users</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{users.length}</p>
+                <p className="text-sm font-semibold text-gray-900">{users.length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Search and Filter matching Department/Roles page */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Total: {users.length}
-            </div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Showing: {filteredUsers.length}
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Users</p>
+                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                <p className="text-gray-400 text-xs mt-1">System accounts</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                </svg>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Status</span>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="all">All</option>
-                </select>
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Users</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.status === 'Active').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Filter</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 border border-black">
-                  <button 
-                    onClick={() => setFilter("all")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
-                      filter === "all" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
+              <div className="p-3 bg-emerald-50 rounded-lg">
+                <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
+                <p className="text-2xl font-bold text-gray-900">{filteredUsers.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Currently showing</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">With Roles</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role && u.role.trim() !== '').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Role assigned</p>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <svg className="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* User Management Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">User Directory</h3>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-5 space-y-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Status</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   >
-                    All
-                  </button>
-                  <button 
-                    onClick={() => setFilter("with-role")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
-                      filter === "with-role" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    With role
-                  </button>
-                  <button 
-                    onClick={() => setFilter("without-role")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors ${
-                      filter === "without-role" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    Without role
-                  </button>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                    <button 
+                      onClick={() => setFilter("all")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "all" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "all" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "all" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "all") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "all") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      All
+                    </button>
+                    <button 
+                      onClick={() => setFilter("with-role")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "with-role" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "with-role" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "with-role" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "with-role") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "with-role") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      With role
+                    </button>
+                    <button 
+                      onClick={() => setFilter("without-role")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "without-role" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "without-role" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "without-role" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "without-role") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "without-role") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      Without role
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-              <div className="relative flex-1">
-                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-              </div>
-              {canAdd && (
-                <button 
-                  onClick={() => setShowCreateModal(true)}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <div className="relative flex-1">
+                  <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                  <span className="hidden sm:inline">New User</span>
-                  <span className="sm:hidden">New</span>
-                </button>
-              )}
+                  <input
+                    type="text"
+                    placeholder="Search name or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                  />
+                </div>
+                {canAdd && (
+                  <button 
+                    onClick={() => setShowCreateModal(true)}
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span className="hidden sm:inline">New User</span>
+                    <span className="sm:hidden">New</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* User List matching Department/Roles page */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        {/* User List */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {filteredUsers.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -310,22 +460,27 @@ export default function Users() {
               <p className="text-gray-500 text-sm">Try changing your search/filter, or create a new user.</p>
             </div>
           ) : (
-            <div className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredUsers.map((u, index) => (
-                  <div key={u.id} className="bg-white border border-black rounded-xl p-3 hover:shadow-lg transition-all duration-300 group">
+                  <div key={u.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <span className="text-emerald-600 font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <span className="font-bold text-sm" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}>
                             {u.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-semibold text-gray-900 truncate">{u.name}</h3>
+                          <h3 className="text-base font-semibold text-gray-900">{u.name}</h3>
+                          <p className="text-xs text-gray-500">User</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         {canEdit && (
                           <button
                             onClick={() => {
@@ -339,7 +494,7 @@ export default function Users() {
                               setEditDepartment(userDept ? userDept.id : "");
                               setEditTwoFactorEnabled(u.two_factor_enabled || false);
                             }}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -361,10 +516,10 @@ export default function Users() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div>
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Email</p>
-                        <p className="text-sm text-gray-700 truncate">{u.email}</p>
+                        <p className="text-sm text-gray-700">{u.email}</p>
                       </div>
                       
                       {u.employee_code && (
@@ -377,51 +532,30 @@ export default function Users() {
                       {u.login_code && (
                         <div>
                           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Login Code</p>
-                          <p className="text-sm text-gray-700 font-mono bg-blue-50 px-2 py-1 rounded">{u.login_code}</p>
+                          <p className="text-sm text-gray-700 font-mono">{u.login_code}</p>
                         </div>
                       )}
                       
-                      <div className="grid grid-cols-1 gap-3">
-                        <div>
-                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Role</p>
-                          <div className="text-sm text-gray-700">
-                            {u.role ? (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 truncate max-w-full">
-                                {u.role}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400 italic text-xs">No role</span>
-                            )}
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs text-gray-600">Role</span>
+                          <span className="text-sm font-bold text-gray-900 text-right break-words">
+                            {u.role || 'No Role'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs text-gray-600">Department</span>
+                          <span className="text-sm font-bold text-gray-900 text-right break-words">
+                            {u.department || 'No Department'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Status</span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${u.status === 'Active' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                            <span className="text-xs font-medium text-gray-700">{u.status === 'Active' ? 'Active User' : 'Inactive User'}</span>
                           </div>
                         </div>
-                        
-                        <div>
-                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Department</p>
-                          <div className="text-sm text-gray-700">
-                            {u.department ? (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 truncate max-w-full">
-                                {u.department}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400 italic text-xs">No dept</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                          <span>{u.status === 'Active' ? 'Active User' : 'Inactive User'}</span>
-                          <div className={`w-2 h-2 rounded-full ${u.status === 'Active' ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                        </div>
-                        {u.two_factor_enabled && (
-                          <div className="flex items-center gap-1 text-xs text-blue-600">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                            </svg>
-                            <span>2FA Enabled</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

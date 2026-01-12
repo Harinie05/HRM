@@ -141,150 +141,384 @@ export default function Departments() {
   return (
     <Layout>
       <div className="p-6 space-y-6">
-        {/* Header with gradient background matching Dashboard */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-6 lg:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                 </svg>
               </div>
-              <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Department Management</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Define organizational departments and structure for staff assignment</p>
-                <p className="text-gray-500 text-xs sm:text-sm">Organizational Structure</p>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Department Management</h1>
+                <p className="text-gray-600 text-sm mb-1">Define organizational departments and structure for staff assignment</p>
+                <p className="text-gray-500 text-xs">Organizational Structure & Workforce Planning</p>
               </div>
             </div>
-            <div className="text-left lg:text-right flex-shrink-0">
-              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
                   <span className="text-xs font-medium">Departments</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{departments.length}</p>
+                <p className="text-sm font-semibold text-gray-900">{departments.length}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                  <span className="text-xs font-medium">Total Staff</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{users.length}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards matching Dashboard style */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Total: {departments.length}
-            </div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-xs sm:text-sm text-gray-600 border border-black">
-              Showing: {filteredDepartments.length}
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Departments</p>
+                <p className="text-2xl font-bold text-gray-900">{departments.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Organizational units</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+              </div>
             </div>
           </div>
 
-          {/* Department-wise Headcount */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Department-wise Headcount</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {departments.map((dept) => (
-                <div key={dept.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">{dept.name}</h4>
-                      <p className="text-xs text-gray-500 mt-1">Employees</p>
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Staff</p>
+                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Active employees</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
+                <p className="text-2xl font-bold text-gray-900">{filteredDepartments.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Currently showing</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <svg className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Avg Headcount</p>
+                <p className="text-2xl font-bold text-gray-900">{departments.length > 0 ? Math.round(users.length / departments.length) : 0}</p>
+                <p className="text-gray-400 text-xs mt-1">Per department</p>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-lg">
+                <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Department Analytics Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+          }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Department-wise Headcount Analysis</h2>
+                  <p className="text-gray-600">Staff distribution across organizational departments</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}>
+                <div className="w-2 h-2 rounded-full" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}></div>
+                <span className="font-semibold text-sm">Live Data</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6">
+
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+              {departments.map((dept, index) => {
+                const headcount = getDepartmentHeadcount(dept.name);
+                return (
+                  <div key={dept.id} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 rounded-lg transition-all duration-300" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <span className="text-sm font-bold" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}>
+                            {dept.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-gray-900">{dept.name}</h3>
+                          <p className="text-xs text-gray-600 mt-1">{dept.description || 'No description provided'}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 rounded-full" style={{
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}></div>
+                          <span className="text-xs font-medium text-gray-700">{dept.is_active === 1 || dept.is_active === true ? 'Active' : 'Inactive'}</span>
+                        </div>
+                        <div className="text-lg font-bold" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}>{headcount}</div>
+                        <div className="text-xs text-gray-500">Employees</div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-gray-900">{getDepartmentHeadcount(dept.name)}</p>
-                      <p className="text-xs text-gray-500">Active</p>
+                    
+                    <div className="space-y-3">
+                      
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center gap-2">
+                          <svg className="h-4 w-4" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                          </svg>
+                          <span className="text-sm text-gray-700">Staff Allocation</span>
+                        </div>
+                        <div className="text-sm font-bold text-gray-900">
+                          {departments.length > 0 ? ((headcount / users.length) * 100).toFixed(1) : 0}%
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Search and Filter matching Dashboard */}
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Status</span>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="all">All</option>
-                </select>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black">
-                  <button 
-                    onClick={() => setFilter("all")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                      filter === "all" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    All
-                  </button>
-                  <button 
-                    onClick={() => setFilter("with-description")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                      filter === "with-description" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    With description
-                  </button>
-                  <button 
-                    onClick={() => setFilter("without-description")}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                      filter === "without-description" 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    Without description
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-              <div className="relative flex-1">
-                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search name or description..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-              </div>
-              {canAdd && (
-                <button 
-                  onClick={() => setShowCreateModal(true)}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span className="hidden sm:inline">New Department</span>
-                  <span className="sm:hidden">New</span>
-                </button>
-              )}
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Department List matching Dashboard style */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        {/* Department Management Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Department Directory</h3>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-5 space-y-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Status</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="all">All</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                    <button 
+                      onClick={() => setFilter("all")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "all" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "all" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "all" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "all") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "all") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      All
+                    </button>
+                    <button 
+                      onClick={() => setFilter("with-description")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "with-description" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "with-description" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "with-description" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "with-description") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "with-description") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      With description
+                    </button>
+                    <button 
+                      onClick={() => setFilter("without-description")}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        filter === "without-description" 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: filter === "without-description" ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: filter === "without-description" ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (filter !== "without-description") {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== "without-description") {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      Without description
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <div className="relative flex-1">
+                  <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search name or description..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                  />
+                </div>
+                {canAdd && (
+                  <button 
+                    onClick={() => setShowCreateModal(true)}
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap hover:opacity-100"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span className="hidden sm:inline">New Department</span>
+                    <span className="sm:hidden">New</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Department List */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {filteredDepartments.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -296,20 +530,24 @@ export default function Departments() {
               <p className="text-gray-500 text-sm">Try changing your search/filter, or create a new department.</p>
             </div>
           ) : (
-            <div className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredDepartments.map((dept, index) => (
-                  <div key={dept.id} className="bg-white border border-black rounded-xl p-3 hover:shadow-lg transition-all duration-300 group">
+                  <div key={dept.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <span className="text-blue-600 font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <span className="font-bold text-sm" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}>
                             {dept.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-semibold text-gray-900 truncate">{dept.name}</h3>
-                          <p className="text-xs text-gray-500">Department #{index + 1}</p>
+                          <h3 className="text-base font-semibold text-gray-900 truncate">{dept.name}</h3>
+                          <p className="text-xs text-gray-500">Department</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
@@ -320,7 +558,7 @@ export default function Departments() {
                               setEditName(dept.name);
                               setEditDesc(dept.description || "");
                             }}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,7 +580,7 @@ export default function Departments() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div>
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Description</p>
                         <p className="text-sm text-gray-700">
@@ -354,10 +592,17 @@ export default function Departments() {
                         </p>
                       </div>
                       
-                      <div className="pt-3 border-t border-gray-100">
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>{dept.is_active === 1 || dept.is_active === true ? 'Active' : 'Inactive'}</span>
-                          <div className={`w-2 h-2 rounded-full ${dept.is_active === 1 || dept.is_active === true ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs text-gray-600">Staff Count</span>
+                          <span className="text-sm font-bold text-gray-900">{getDepartmentHeadcount(dept.name)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Status</span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${dept.is_active === 1 || dept.is_active === true ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                            <span className="text-xs font-medium text-gray-700">{dept.is_active === 1 || dept.is_active === true ? 'Active' : 'Inactive'}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -369,10 +614,10 @@ export default function Departments() {
         </div>
       </div>
 
-      {/* Create Modal matching Dashboard style */}
+      {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-black">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Create Department</h3>
@@ -398,7 +643,10 @@ export default function Departments() {
                     placeholder="Enter department name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
 
@@ -409,7 +657,10 @@ export default function Departments() {
                     value={desc}
                     onChange={(e) => setDesc(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
               </div>
@@ -421,17 +672,28 @@ export default function Departments() {
                     setName("");
                     setDesc("");
                   }}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm border border-black"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border border-gray-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={addDepartment}
                   disabled={loading || !name.trim()}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-black"
-                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)')}
-                  onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'var(--primary-color, #2862e9)')}
+                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.target.disabled) {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }
+                  }}
                 >
                   {loading ? "Creating..." : "Create"}
                 </button>
@@ -441,10 +703,10 @@ export default function Departments() {
         </div>
       )}
 
-      {/* Edit Modal matching Dashboard style */}
+      {/* Edit Modal */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-black">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Edit Department</h3>
@@ -465,7 +727,10 @@ export default function Departments() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
 
@@ -475,7 +740,10 @@ export default function Departments() {
                     value={editDesc}
                     onChange={(e) => setEditDesc(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
               </div>
@@ -483,7 +751,7 @@ export default function Departments() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setEditing(null)}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 font-medium transition-colors text-sm border border-black"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border border-gray-200"
                 >
                   Cancel
                 </button>
@@ -512,10 +780,17 @@ export default function Departments() {
                       showToast("Update failed", 'error');
                     }
                   }}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="flex-1 px-4 py-3 text-white rounded-xl font-medium transition-colors text-sm border border-black"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm border border-gray-200"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.target.style.backgroundColor = hoverColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
                 >
                   Update
                 </button>

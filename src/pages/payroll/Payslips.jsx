@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FileText, Download, Send, Search, Eye, Calendar } from "lucide-react";
+import { FileText, Download, Send, Search, Eye, Calendar, Printer } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
 import useToast from "../../utils/useToast";
@@ -342,6 +342,47 @@ export default function Payslips() {
     }
   };
 
+  const handlePrintPayslip = async (payslip) => {
+    if (!canDownload) {
+      showToast("You do not have permission to print payslips", "error");
+      return;
+    }
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${api.defaults.baseURL}/api/payroll/payslips/payslip/${payslip.id}/download`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      // Open PDF in new window for printing
+      const printWindow = window.open(url, '_blank');
+      if (printWindow) {
+        printWindow.onload = () => {
+          printWindow.print();
+        };
+      }
+      
+      // Clean up
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Print error:', error);
+      showToast(`Error printing payslip for ${payslip.employee_name}`, 'error');
+    }
+  };
+
   const handleSendIndividual = async (payslip) => {
     if (!canEmail) {
       showToast("You do not have permission to email payslips", "error");
@@ -592,6 +633,15 @@ export default function Payslips() {
                                 <Download size={16} />
                               </button>
                             )}
+                            {canDownload && (
+                              <button 
+                                onClick={() => handlePrintPayslip(payslip)}
+                                className="text-gray-600 hover:text-gray-900 p-1 rounded border border-gray-300 hover:border-gray-400"
+                                title="Print Payslip"
+                              >
+                                <Printer size={16} />
+                              </button>
+                            )}
                             {canEmail && (
                               <button 
                                 onClick={() => handleSendIndividual(payslip)}
@@ -679,6 +729,15 @@ export default function Payslips() {
                       >
                         <Download size={14} />
                         Download
+                      </button>
+                    )}
+                    {canDownload && (
+                      <button 
+                        onClick={() => handlePrintPayslip(payslip)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      >
+                        <Printer size={14} />
+                        Print
                       </button>
                     )}
                     {canEmail && (
