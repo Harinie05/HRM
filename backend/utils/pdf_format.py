@@ -21,39 +21,39 @@ def get_organization_data(db: Session):
         
         if branding:
             return {
-                'name': branding.organization_name or "Your Organization",
-                'tagline': branding.tagline or "Smart • Secure • NABH-Standard",
-                'address': branding.address or "Address line for letterhead & PDFs",
-                'phone': branding.phone or "+91-XXXXXXXXXX",
-                'email': branding.email or "info@example.com",
-                'website': branding.website or "https://your-hospital.com",
-                'gstin': branding.gstin or "GSTIN (optional)",
-                'logo': branding.logo_path or branding.logo,  # Prefer file path over base64
+                'name': branding.organization_name or "NUTRYAH HRM",
+                'tagline': branding.tagline or "Healthcare Management System",
+                'address': branding.address or "Your Organization Address",
+                'phone': branding.phone or "XXXXXXXXXX",
+                'email': branding.email or "info@nutryah.com",
+                'website': branding.website or "https://nutryah.com",
+                'gstin': branding.gstin or "IGAK",
+                'logo': branding.logo_path or branding.logo,
                 'logo_filename': branding.logo_filename
             }
         else:
-            # Return default values if no data found
+            # Return NUTRYAH defaults if no data found
             return {
-                'name': "Your Organization",
-                'tagline': "Smart • Secure • NABH-Standard",
-                'address': "Address line for letterhead & PDFs",
-                'phone': "+91-XXXXXXXXXX",
-                'email': "info@example.com",
-                'website': "https://your-hospital.com",
-                'gstin': "GSTIN (optional)",
+                'name': "NUTRYAH HRM",
+                'tagline': "Healthcare Management System",
+                'address': "mathupallaymalakam",
+                'phone': "8765556768768",
+                'email': "sush@example.com",
+                'website': "https://nutryah.com",
+                'gstin': "IGAK",
                 'logo': None,
                 'logo_filename': None
             }
     except Exception as e:
         print(f"Error fetching organization data: {e}")
         return {
-            'name': "Your Organization",
-            'tagline': "Smart • Secure • NABH-Standard",
-            'address': "Address line for letterhead & PDFs",
-            'phone': "+91-XXXXXXXXXX",
-            'email': "info@example.com",
-            'website': "https://your-hospital.com",
-            'gstin': "GSTIN (optional)",
+            'name': "NUTRYAH HRM",
+            'tagline': "Healthcare Management System",
+            'address': "mathupallaymalakam",
+            'phone': "8765556768768",
+            'email': "sush@example.com",
+            'website': "https://nutryah.com",
+            'gstin': "IGAK",
             'logo': None,
             'logo_filename': None
         }

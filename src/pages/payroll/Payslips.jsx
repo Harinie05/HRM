@@ -368,14 +368,17 @@ export default function Payslips() {
       const printWindow = window.open(url, '_blank');
       if (printWindow) {
         printWindow.onload = () => {
-          printWindow.print();
+          setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+          }, 1000);
         };
       }
       
       // Clean up
       setTimeout(() => {
         window.URL.revokeObjectURL(url);
-      }, 1000);
+      }, 5000);
       
     } catch (error) {
       console.error('Print error:', error);

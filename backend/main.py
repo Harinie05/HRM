@@ -48,6 +48,7 @@ from routes.recruitment.probation import router as probation_router
 
 # ======================= 🔥 EIS ROUTERS =======================
 from routes.EIS.employee import router as employee_router
+from routes.EIS.employee_details import router as employee_details_router
 from routes.EIS.family import router as family_router
 from routes.EIS.education import router as education_router
 from routes.EIS.experience import router as experience_router
@@ -243,6 +244,7 @@ app.include_router(probation_router, prefix="/recruitment")
 # ======================= 🔥 EIS MODULE =======================
 app.include_router(employee_router, prefix="/eis")
 app.include_router(employee_router)  # Also include without prefix for backward compatibility
+app.include_router(employee_details_router, prefix="/api")
 app.include_router(family_router)
 app.include_router(education_router)
 app.include_router(experience_router)

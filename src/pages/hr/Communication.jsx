@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, RotateCcw } from "lucide-react";
 import api from "../../api";
 import Toast from "../../components/Toast";
+import EmployeeDetailsModal from "../../components/EmployeeDetailsModal";
 import useToast from "../../utils/useToast";
 import { hasPermission, isAdmin } from "../../utils/permissions";
 
@@ -47,6 +48,8 @@ export default function Communication() {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('view'); // 'view' or 'edit'
   const [selectedLetter, setSelectedLetter] = useState(null);
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState(false);
+  const [selectedEmployeeDetails, setSelectedEmployeeDetails] = useState(null);
   const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
@@ -239,65 +242,64 @@ export default function Communication() {
     }
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!formData.content || !formData.subject) {
       showToast('Please fill in the subject and content before printing.', 'error');
       return;
     }
 
-    const employeeName = employees.find(emp => emp.employee_code === formData.employeeId)?.name || 'Employee';
-    
-    const printContent = `
-      <html>
-        <head>
-          <title>HR Letter - ${formData.subject}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
-            .company-name { font-size: 24px; font-weight: bold; color: #2c5aa0; }
-            .letter-type { font-size: 16px; color: #666; margin-top: 5px; }
-            .content { margin: 30px 0; }
-            .subject { font-weight: bold; margin-bottom: 20px; }
-            .footer { margin-top: 50px; }
-            .signature { margin-top: 60px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="company-name">Nutryah HRM</div>
-            <div class="letter-type">${formData.letterType.toUpperCase()} LETTER</div>
-          </div>
-          
-          <div class="content">
-            <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-            <p><strong>To:</strong> ${employeeName} (${formData.employeeId})</p>
-            
-            <div class="subject">
-              <strong>Subject:</strong> ${formData.subject}
-            </div>
-            
-            <div style="white-space: pre-line; margin-top: 20px;">
-              ${formData.content}
-            </div>
-          </div>
-          
-          <div class="footer">
-            <div class="signature">
-              <p>Best regards,</p>
-              <br><br>
-              <p>_________________________</p>
-              <p><strong>Human Resources Department</strong></p>
-              <p>Nutryah HRM</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.print();
+    try {
+      // First save the letter to get an ID
+      const response = await api.post('/hr/communication/', formData);
+      const letterId = response.data.id;
+      
+      // Then print using the backend endpoint
+      const printResponse = await api.get(`/hr/communication/print/${letterId}`, {
+        responseType: 'blob'
+      });
+      
+      // Create blob URL and trigger download/print
+      const blob = new Blob([printResponse.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Open in new window for printing
+      const printWindow = window.open(url, '_blank');
+      if (printWindow) {
+        printWindow.onload = () => {
+          printWindow.print();
+        };
+      } else {
+        // Fallback: trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `hr_letter_${formData.letterType}_${formData.employeeId}_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      
+      // Add to letters list
+      const newLetter = {
+        id: letterId,
+        employee: formData.employeeId,
+        name: employees.find(emp => emp.employee_code === formData.employeeId)?.name || 'Unknown',
+        type: formData.letterType,
+        subject: formData.subject,
+        date: new Date().toISOString().split('T')[0],
+        status: 'Ready'
+      };
+      
+      setLetters(prev => [newLetter, ...prev]);
+      showToast('Letter saved and printed successfully!');
+      resetForm();
+      
+    } catch (error) {
+      console.error('Error printing letter:', error);
+      showToast('Failed to print letter. Please try again.', 'error');
+    }
   };
 
   const handleViewLetter = async (letterId) => {
@@ -402,58 +404,108 @@ export default function Communication() {
     }
   };
 
-  const handlePrintLetter = (letter) => {
-    const printContent = `
-      <html>
-        <head>
-          <title>HR Letter - ${letter.subject}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
-            .company-name { font-size: 24px; font-weight: bold; color: #2c5aa0; }
-            .letter-type { font-size: 16px; color: #666; margin-top: 5px; }
-            .content { margin: 30px 0; }
-            .subject { font-weight: bold; margin-bottom: 20px; }
-            .footer { margin-top: 50px; }
-            .signature { margin-top: 60px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="company-name">Nutryah HRM</div>
-            <div class="letter-type">${letter.type.toUpperCase()} LETTER</div>
-          </div>
+  const handlePrintLetter = async (letter) => {
+    try {
+      // First, get comprehensive employee details and show in modal
+      if (letter.employee !== 'All') {
+        try {
+          const detailsResponse = await api.get(`/api/employee-details/${letter.employee}`);
+          console.log('Employee Details:', detailsResponse.data);
           
-          <div class="content">
-            <p><strong>Date:</strong> ${letter.date}</p>
-            <p><strong>To:</strong> ${letter.name} (${letter.employee})</p>
-            
-            <div class="subject">
-              <strong>Subject:</strong> ${letter.subject}
-            </div>
-            
-            <div style="white-space: pre-line; margin-top: 20px;">
-              [Letter content would be displayed here]
-            </div>
-          </div>
+          // Show employee details in modal
+          setSelectedEmployeeDetails(detailsResponse.data);
+          setShowEmployeeDetails(true);
           
-          <div class="footer">
-            <div class="signature">
-              <p>Best regards,</p>
-              <br><br>
-              <p>_________________________</p>
-              <p><strong>Human Resources Department</strong></p>
-              <p>Nutryah HRM</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.print();
+          // Also log to console for debugging
+          const details = detailsResponse.data;
+          console.log('\n=== EMPLOYEE COMPREHENSIVE DETAILS ===');
+          console.log('Basic Info:', {
+            name: details.name,
+            code: details.employee_code,
+            email: details.email,
+            designation: details.designation,
+            department: details.department,
+            joining_date: details.joining_date,
+            status: details.status
+          });
+          
+          if (details.experience?.length > 0) {
+            console.log('Experience:', details.experience);
+          }
+          
+          if (details.education?.length > 0) {
+            console.log('Education:', details.education);
+          }
+          
+          if (details.skills?.length > 0) {
+            console.log('Skills:', details.skills);
+          }
+          
+          if (details.family?.length > 0) {
+            console.log('Family:', details.family);
+          }
+          
+          if (details.medical) {
+            console.log('Medical/Emergency Contact:', details.medical);
+          }
+          
+          if (details.salary) {
+            console.log('Salary Details:', details.salary);
+          }
+          
+          if (details.bank_details) {
+            console.log('Bank Details:', details.bank_details);
+          }
+          
+          console.log('=== END EMPLOYEE DETAILS ===\n');
+          
+        } catch (detailsError) {
+          console.log('Could not fetch detailed employee information:', detailsError.message);
+          
+          // Try to get list of available employees for debugging
+          try {
+            const employeeListResponse = await api.get('/api/employee-details/list/all');
+            console.log('Available employees:', employeeListResponse.data);
+            showToast(`Employee ${letter.employee} not found. Check console for available employees.`, 'warning');
+          } catch (listError) {
+            console.log('Could not fetch employee list:', listError.message);
+            showToast('Could not fetch employee details, but proceeding with print', 'warning');
+          }
+        }
+      }
+      
+      // Use backend PDF generation endpoint with comprehensive details
+      const response = await api.get(`/hr/communication/print/${letter.id}`, {
+        responseType: 'blob'
+      });
+      
+      // Create blob URL and trigger download
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Open in new window for printing
+      const printWindow = window.open(url, '_blank');
+      if (printWindow) {
+        printWindow.onload = () => {
+          printWindow.print();
+        };
+      } else {
+        // Fallback: trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `hr_letter_${letter.type}_${letter.employee}_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      
+    } catch (error) {
+      console.error('Error printing letter:', error);
+      showToast('Failed to print letter. Please try again.', 'error');
+    }
   };
 
   const handleSaveDraft = async () => {
@@ -605,6 +657,15 @@ export default function Communication() {
                 >
                   Save as Draft
                 </button>
+                {canPrint && (
+                  <button 
+                    type="button"
+                    onClick={handlePrint}
+                    className="w-full sm:w-auto px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
+                  >
+                    Print
+                  </button>
+                )}
                 <button 
                   type="button"
                   onClick={handleOK}
@@ -963,6 +1024,12 @@ export default function Communication() {
           </div>
         </div>
       )}
+      {/* Employee Details Modal */}
+      <EmployeeDetailsModal 
+        isOpen={showEmployeeDetails}
+        onClose={() => setShowEmployeeDetails(false)}
+        employeeDetails={selectedEmployeeDetails}
+      />
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
