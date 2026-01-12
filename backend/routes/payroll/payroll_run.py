@@ -1325,8 +1325,6 @@ def download_pf_challan_pdf(
     db: Session = Depends(get_tenant_db)
 ):
     try:
-        from utils.pdf_format import get_organization_data, process_logo_image
-        
         query = text("""
             SELECT DISTINCT employee_name, employee_code, basic_salary,
                    (basic_salary * 0.12) as employee_pf,
@@ -1340,110 +1338,12 @@ def download_pf_challan_pdf(
         
         result = db.execute(query).fetchall()
         
-        # Get organization data
-        org_data = get_organization_data(db)
-        
         # Generate PDF using ReportLab
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=150, bottomMargin=80)
+        template = PDFHeaderFooterTemplate(db, "PF CHALLAN REPORT")
         styles = getSampleStyleSheet()
         story = []
-        
-        # Custom header function
-        def draw_header_footer(canvas, doc):
-            # Header dimensions
-            page_width = A4[0]
-            header_height = 120
-            margin = 50
-            
-            # Save canvas state
-            canvas.saveState()
-            
-            # Draw header border
-            canvas.setStrokeColor(colors.black)
-            canvas.setLineWidth(1)
-            canvas.line(margin, A4[1] - header_height, page_width - margin, A4[1] - header_height)
-            
-            # Left side - Logo and Organization Name
-            left_x = margin
-            logo_y = A4[1] - 40
-            
-            # Process and draw logo
-            logo_img = process_logo_image(org_data['logo'])
-            if logo_img:
-                try:
-                    canvas.drawImage(logo_img, left_x, logo_y - 60, width=60, height=60)
-                    text_start_x = left_x + 70
-                except Exception as e:
-                    print(f"Error drawing logo: {e}")
-                    text_start_x = left_x
-            else:
-                # Draw placeholder rectangle for logo
-                canvas.setStrokeColor(colors.grey)
-                canvas.setFillColor(colors.lightgrey)
-                canvas.rect(left_x, logo_y - 60, 60, 60, fill=1, stroke=1)
-                canvas.setFillColor(colors.black)
-                canvas.setFont("Helvetica", 8)
-                canvas.drawCentredString(left_x + 30, logo_y - 35, "LOGO")
-                text_start_x = left_x + 70
-            
-            # Organization name
-            canvas.setFont("Helvetica-Bold", 16)
-            canvas.setFillColor(colors.black)
-            canvas.drawString(text_start_x, logo_y - 15, org_data['name'])
-            
-            # Tagline
-            canvas.setFont("Helvetica", 10)
-            canvas.setFillColor(colors.grey)
-            canvas.drawString(text_start_x, logo_y - 30, org_data['tagline'])
-            
-            # Right side - Contact Details
-            canvas.setFont("Helvetica", 9)
-            canvas.setFillColor(colors.black)
-            
-            # Phone
-            canvas.drawRightString(page_width - margin, logo_y, org_data['phone'])
-            
-            # Email
-            canvas.drawRightString(page_width - margin, logo_y - 12, org_data['email'])
-            
-            # Website
-            canvas.drawRightString(page_width - margin, logo_y - 24, org_data['website'])
-            
-            # Address
-            canvas.setFont("Helvetica", 8)
-            canvas.drawRightString(page_width - margin, logo_y - 40, org_data['address'])
-            
-            # GSTIN (if available)
-            if org_data['gstin']:
-                canvas.drawRightString(page_width - margin, logo_y - 52, f"GSTIN: {org_data['gstin']}")
-            
-            # Document title
-            canvas.setFont("Helvetica-Bold", 14)
-            canvas.setFillColor(colors.black)
-            title_y = A4[1] - header_height - 30
-            canvas.drawCentredString(page_width / 2, title_y, "PF CHALLAN REPORT")
-            
-            # Footer
-            footer_height = 40
-            canvas.setStrokeColor(colors.black)
-            canvas.setLineWidth(0.5)
-            canvas.line(margin, footer_height, page_width - margin, footer_height)
-            
-            canvas.setFont("Helvetica", 8)
-            canvas.setFillColor(colors.grey)
-            
-            # Left side - Organization name
-            canvas.drawString(margin, footer_height - 15, f"© {org_data['name']}")
-            
-            # Center - Powered by
-            canvas.drawCentredString(page_width / 2, footer_height - 15, "Powered by NUTRYAH DIGITAL HEALTH")
-            
-            # Right side - Page number
-            page_num = canvas.getPageNumber()
-            canvas.drawRightString(page_width - margin, footer_height - 15, f"Page {page_num}")
-            
-            canvas.restoreState()
         
         # Period info
         period_info = Paragraph("<b>Month: December 2025</b>", 
@@ -1487,7 +1387,7 @@ def download_pf_challan_pdf(
         ])
         
         # Create table with professional styling
-        table = Table(data, colWidths=[2.2*inch, 1*inch, 1.3*inch, 1.3*inch, 1.3*inch, 1.3*inch])
+        table = Table(data, colWidths=[1.8*inch, 0.8*inch, 1.0*inch, 1.0*inch, 1.0*inch, 1.0*inch])
         table.setStyle(TableStyle([
             # Header row styling
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4a5568')),
@@ -1521,7 +1421,7 @@ def download_pf_challan_pdf(
         story.append(table)
         
         # Build PDF with header/footer
-        doc.build(story, onFirstPage=draw_header_footer, onLaterPages=draw_header_footer)
+        doc.build(story, onFirstPage=template.header_footer, onLaterPages=template.header_footer)
         buffer.seek(0)
         
         return Response(
@@ -1567,7 +1467,7 @@ def download_esi_challan_pdf(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        esi_table = Table(esi_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        esi_table = Table(esi_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         esi_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -1670,7 +1570,7 @@ def download_bank_transfer_pdf(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        bank_table = Table(bank_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        bank_table = Table(bank_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         bank_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -1770,7 +1670,7 @@ def download_tds_report(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        tds_table = Table(tds_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        tds_table = Table(tds_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         tds_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -1871,7 +1771,7 @@ def download_department_wise_report(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        dept_table = Table(dept_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        dept_table = Table(dept_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         dept_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -1976,7 +1876,7 @@ def download_grade_wise_report(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        grade_table = Table(grade_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        grade_table = Table(grade_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         grade_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -2083,7 +1983,7 @@ def download_attendance_payroll_report(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        attendance_table = Table(attendance_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        attendance_table = Table(attendance_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         attendance_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -2186,7 +2086,7 @@ def download_form16_report(
             ['Authorized Signatory', 'Date: __________', 'Employee Signature', 'Date: __________'],
         ]
         
-        form16_table = Table(form16_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        form16_table = Table(form16_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         form16_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -2292,7 +2192,7 @@ def download_payroll_summary_report(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        payroll_table = Table(payroll_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        payroll_table = Table(payroll_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         payroll_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),

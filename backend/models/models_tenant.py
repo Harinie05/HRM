@@ -583,14 +583,17 @@ class EmployeeSalary(MasterBase):
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, nullable=False)
 
-    ctc = Column(Float)
-    basic_percent = Column(Float)
-    hra_percent = Column(Float)
-    allowances_percent = Column(Float)
-    special_percent = Column(Float)
+    ctc = Column(Float, nullable=True)
+    basic_percent = Column(Float, nullable=True)
+    hra_percent = Column(Float, nullable=True)
+    allowances_percent = Column(Float, nullable=True)
+    special_percent = Column(Float, nullable=True)
 
     pf_eligible = Column(Boolean, default=True)
     esi_eligible = Column(Boolean, default=True)
+    
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
 
 # ========================= BANK DETAILS =========================
 class EmployeeBankDetails(MasterBase):

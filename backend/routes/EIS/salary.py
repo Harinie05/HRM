@@ -53,6 +53,8 @@ class SalaryAddRequest(BaseModel):
 
 @router.post("/add")
 async def add_salary(
+    request: Request,
+    user=Depends(get_current_user),
     employee_id: str = Form(...),
     ctc: str = Form(...),
     basic_percent: str = Form("40"),
@@ -60,9 +62,7 @@ async def add_salary(
     allowances_percent: str = Form("20"),
     special_percent: str = Form("20"),
     pf_eligible: str = Form("true"),
-    esi_eligible: str = Form("true"),
-    request: Request = None,
-    user=Depends(get_current_user)
+    esi_eligible: str = Form("true")
 ):
     db = None
     try:
@@ -95,13 +95,13 @@ async def add_salary(
         if existing:
             print(f"DEBUG: Updating existing salary record with ID: {existing.id}")
             # Update existing record
-            existing.ctc = ctc_val
-            existing.basic_percent = basic
-            existing.hra_percent = hra
-            existing.allowances_percent = allowances
-            existing.special_percent = special
-            existing.pf_eligible = pf
-            existing.esi_eligible = esi
+            existing.ctc = ctc_val  # type: ignore
+            existing.basic_percent = basic  # type: ignore
+            existing.hra_percent = hra  # type: ignore
+            existing.allowances_percent = allowances  # type: ignore
+            existing.special_percent = special  # type: ignore
+            existing.pf_eligible = pf  # type: ignore
+            existing.esi_eligible = esi  # type: ignore
             salary = existing
         else:
             print(f"DEBUG: Creating new salary record")
@@ -123,8 +123,7 @@ async def add_salary(
         db.commit()
         print(f"DEBUG: Refreshing salary object")
         db.refresh(salary)
-        if request:
-            audit_crud(request, user.get("tenant_db"), user, "CREATE" if not existing else "UPDATE", "employee_salary", salary.id, None, salary.__dict__)
+        audit_crud(request, user.get("tenant_db"), user, "CREATE" if not existing else "UPDATE", "employee_salary", str(salary.id), {}, salary.__dict__)
         print(f"DEBUG: Salary saved successfully with ID: {salary.id}")
 
         result = {"message": "Salary structure saved successfully", "id": salary.id}
@@ -193,23 +192,23 @@ def update_salary(employee_id: int, data: SalaryCreate, request: Request, user=D
             raise HTTPException(404, "Salary structure not found")
 
         # If grade selected → auto-apply salary split
-        grade = None
-        if hasattr(data, 'grade') and data.grade:
-            grade = db.query(Grade).filter(Grade.code == data.grade).first()
-            if not grade:
-                raise HTTPException(404, "Grade not found")
+        # grade = None
+        # if hasattr(data, 'grade') and data.grade:
+        #     grade = db.query(Grade).filter(Grade.code == data.grade).first()
+        #     if not grade:
+        #         raise HTTPException(404, "Grade not found")
 
         setattr(sal, 'ctc', data.ctc)
-        setattr(sal, 'basic_percent', grade.basic_percent if grade else getattr(data, 'basic_percent', sal.basic_percent))
-        setattr(sal, 'hra_percent', grade.hra_percent if grade else getattr(data, 'hra_percent', sal.hra_percent))
-        setattr(sal, 'allowances_percent', grade.allowance_percent if grade else getattr(data, 'allowances_percent', sal.allowances_percent))
-        setattr(sal, 'special_percent', grade.special_percent if grade else getattr(data, 'special_percent', sal.special_percent))
-        setattr(sal, 'pf_eligible', grade.pf_applicable if grade else getattr(data, 'pf_eligible', sal.pf_eligible))
-        setattr(sal, 'esi_eligible', grade.esi_applicable if grade else getattr(data, 'esi_eligible', sal.esi_eligible))
+        setattr(sal, 'basic_percent', getattr(data, 'basic_percent', sal.basic_percent))
+        setattr(sal, 'hra_percent', getattr(data, 'hra_percent', sal.hra_percent))
+        setattr(sal, 'allowances_percent', getattr(data, 'allowances_percent', sal.allowances_percent))
+        setattr(sal, 'special_percent', getattr(data, 'special_percent', sal.special_percent))
+        setattr(sal, 'pf_eligible', getattr(data, 'pf_eligible', sal.pf_eligible))
+        setattr(sal, 'esi_eligible', getattr(data, 'esi_eligible', sal.esi_eligible))
 
         db.commit()
         db.refresh(sal)
-        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_salary", employee_id, None, sal.__dict__)
+        audit_crud(request, user.get("tenant_db"), user, "UPDATE", "employee_salary", str(employee_id), {}, sal.__dict__)
 
         return sal
         
@@ -236,20 +235,20 @@ def create_simple_salary(data: SimpleSalaryCreate, user=Depends(get_current_user
             raise HTTPException(400, "Salary structure already exists for this employee")
             
         # If grade is provided, get grade details
-        grade = None
-        if data.grade:
-            grade = db.query(Grade).filter(Grade.code == data.grade).first()
-            if not grade:
-                raise HTTPException(404, f"Grade '{data.grade}' not found")
+        # grade = None
+        # if data.grade:
+        #     grade = db.query(Grade).filter(Grade.code == data.grade).first()
+        #     if not grade:
+        #         raise HTTPException(404, f"Grade '{data.grade}' not found")
 
-        # Use grade percentages if available, else use defaults
-        basic_percent = grade.basic_percent if grade else 40.0
-        hra_percent = grade.hra_percent if grade else 20.0
-        allowances_percent = grade.allowance_percent if grade else 20.0
-        special_percent = grade.special_percent if grade else 20.0
+        # Use default percentages since Grade model doesn't exist
+        basic_percent = 40.0
+        hra_percent = 20.0
+        allowances_percent = 20.0
+        special_percent = 20.0
         
-        pf_eligible = grade.pf_applicable if grade else True
-        esi_eligible = grade.esi_applicable if grade else True
+        pf_eligible = True
+        esi_eligible = True
 
         salary = EmployeeSalary(
             employee_id=data.employee_id,

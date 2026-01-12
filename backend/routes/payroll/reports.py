@@ -79,7 +79,7 @@ def generate_form16_pdf(
             ['Authorized Signatory', 'Date: __________', 'Employee Signature', 'Date: __________'],
         ]
         
-        form16_table = Table(form16_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        form16_table = Table(form16_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         form16_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -215,7 +215,7 @@ def generate_pf_challan_pdf(
         ]
         
         # Create single table with elegant styling (exact payslip format)
-        pf_table = Table(pf_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        pf_table = Table(pf_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         pf_table.setStyle(TableStyle([
             # Employee info header - elegant dark grey
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -345,7 +345,7 @@ def generate_esi_challan_pdf(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        esi_table = Table(esi_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        esi_table = Table(esi_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         esi_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -451,7 +451,7 @@ def generate_tds_pdf(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        tds_table = Table(tds_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        tds_table = Table(tds_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         tds_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -554,7 +554,7 @@ def generate_bank_transfer_pdf(
             ['Prepared By: HR Department', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        bank_table = Table(bank_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        bank_table = Table(bank_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         bank_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -658,7 +658,7 @@ def generate_department_wise_pdf(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        dept_table = Table(dept_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        dept_table = Table(dept_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         dept_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -766,7 +766,7 @@ def generate_grade_wise_pdf(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        grade_table = Table(grade_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        grade_table = Table(grade_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         grade_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
@@ -876,7 +876,7 @@ def generate_attendance_payroll_pdf(
             ['Prepared By: HR Analytics', 'Date: __________', 'Signature: __________', 'Date: __________'],
         ]
         
-        attendance_table = Table(attendance_data, colWidths=[2.2*inch, 1.8*inch, 2.2*inch, 1.8*inch])
+        attendance_table = Table(attendance_data, colWidths=[1.8*inch, 1.4*inch, 1.8*inch, 1.4*inch])
         attendance_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (1, 0), colors.Color(0.3, 0.3, 0.3)),
             ('BACKGROUND', (2, 0), (3, 0), colors.Color(0.3, 0.3, 0.3)),
