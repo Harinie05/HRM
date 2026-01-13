@@ -191,151 +191,153 @@ export default function EmployeeProfile() {
 
   return (
     <Layout>
-      <div className="p-4 sm:p-6 space-y-6">
-        {/* Profile Header Card */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
-          <div className="px-4 sm:px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                <div 
-                  className="relative w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300 overflow-hidden group shadow-lg mx-auto sm:mx-0"
-                  onClick={() => setShowPhotoUpload(true)}
-                >
-                  {photoUrl ? (
-                    <>
-                      <img 
-                        src={photoUrl} 
-                        alt="Employee Photo" 
-                        className="w-full h-full object-cover rounded-2xl"
-                        onError={() => setPhotoUrl(null)}
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                        <FiCamera className="text-white text-lg" />
-                      </div>
-                    </>
-                  ) : (
-                    <div className="text-center text-gray-600">
-                      <FiCamera className="text-xl sm:text-2xl mb-1 mx-auto" />
-                      <div className="text-xs font-medium">Add Photo</div>
+      {/* Hero Section */}
+      <div className="mb-4 p-4 sm:p-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <div 
+                className="relative w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-xl flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300 overflow-hidden group shadow-lg mx-auto sm:mx-0"
+                onClick={() => setShowPhotoUpload(true)}
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
+              >
+                {photoUrl ? (
+                  <>
+                    <img 
+                      src={photoUrl} 
+                      alt="Employee Photo" 
+                      className="w-full h-full object-cover rounded-xl"
+                      onError={() => setPhotoUrl(null)}
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                      <FiCamera className="text-white text-lg" />
                     </div>
-                  )}
-                </div>
-                <div className="text-center sm:text-left">
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{employee.candidate_name}</h1>
-                  <p className="text-gray-600 font-medium mb-3">{employee.job_title} · {employee.department || 'HR Department'}</p>
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-gray-100 rounded-lg">
-                        <FiUser className="text-gray-600 w-3 h-3" />
-                      </div>
-                      <span className="font-medium text-gray-700">{employee.employee_id}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-gray-100 rounded-lg">
-                        <FiCalendar className="text-gray-600 w-3 h-3" />
-                      </div>
-                      <span className="text-gray-600">{employee.joining_date ? new Date(employee.joining_date).toLocaleDateString() : 'N/A'}</span>
-                    </div>
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        employee.status === "Active" || employee.status === "Completed"
-                          ? "bg-gray-100 text-gray-800 border border-gray-300"
-                          : "bg-gray-100 text-gray-800 border border-gray-300"
-                      }`}
-                    >
-                      {employee.status}
-                    </span>
+                  </>
+                ) : (
+                  <div className="text-center" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>
+                    <FiCamera className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-1" />
+                    <div className="text-xs font-medium">Add Photo</div>
                   </div>
-                </div>
+                )}
               </div>
-              
-              <div className="flex items-center justify-center sm:justify-end gap-3">
-                {(isAdmin() || hasPermission("edit_profile")) && (
-                  <button
-                    onClick={() => setShowEditModal(true)}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-3 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
-                    style={{
-                      backgroundColor: 'var(--primary-color, #4575b5)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-                    }}
-                  >
-                    <FiUser size={16} />
-                    <span className="hidden sm:inline">Edit Profile</span>
-                    <span className="sm:hidden">Edit</span>
-                  </button>
-                )}
-                {(isAdmin() || hasPermission("view_documents")) && (
-                  <Link
-                    to={`/eis/${employee.application_id}/documents`}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-black"
-                  >
-                    <FiEye size={16} />
-                    <span className="hidden sm:inline">View Documents</span>
-                    <span className="sm:hidden">Documents</span>
-                  </Link>
-                )}
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{employee.candidate_name}</h1>
+                <p className="text-gray-600 text-base sm:text-lg mb-1">{employee.job_title} · {employee.department || 'HR Department'}</p>
+                <p className="text-gray-500 text-sm">Employee ID: {employee.employee_id}</p>
+              </div>
+            </div>
+            <div className="text-center sm:text-right">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                  <span className="text-xs font-medium">Status</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900">{employee.status}</p>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="p-4 sm:p-6 space-y-6">
+        {/* Action Buttons */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+          <div className="flex items-center justify-center sm:justify-end gap-3">
+            {(isAdmin() || hasPermission("edit_profile")) && (
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center gap-2 px-4 sm:px-6 py-3 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-gray-200"
+                style={{
+                  backgroundColor: 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                }}
+              >
+                <FiUser size={16} />
+                <span className="hidden sm:inline">Edit Profile</span>
+                <span className="sm:hidden">Edit</span>
+              </button>
+            )}
+            {(isAdmin() || hasPermission("view_documents")) && (
+              <Link
+                to={`/eis/${employee.application_id}/documents`}
+                className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-gray-200"
+              >
+                <FiEye size={16} />
+                <span className="hidden sm:inline">View Documents</span>
+                <span className="sm:hidden">Documents</span>
+              </Link>
+            )}
+          </div>
+        </div>
 
         {/* Employment Details */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 shadow-lg">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="p-2 bg-gray-100 rounded-xl">
-              <FiBriefcase className="text-gray-600 w-5 h-5" />
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 flex items-center px-6">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiBriefcase className="w-5 h-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
-            Employment Details
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiMail className="text-gray-600 w-4 h-4" />
+            <h2 className="text-lg font-semibold text-gray-900 ml-3">Employment Details</h2>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+                <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
+                  <FiMail className="text-gray-600 w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Email</p>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base truncate">{employee.candidate_email || 'N/A'}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Email</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base truncate">{employee.candidate_email || 'N/A'}</p>
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+                <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
+                  <FiMapPin className="text-gray-600 w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Work Location</p>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_location}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiMapPin className="text-gray-600 w-4 h-4" />
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+                <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
+                  <FiUsers className="text-gray-600 w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Reporting Manager</p>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.reporting_manager}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Work Location</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_location}</p>
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+                <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
+                  <FiClock className="text-gray-600 w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Work Shift</p>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_shift}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiUsers className="text-gray-600 w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Reporting Manager</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.reporting_manager}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiClock className="text-gray-600 w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Work Shift</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_shift}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-black">
-              <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
-                <FiCalendar className="text-gray-600 w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500 mb-1">Probation Period</p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.probation_period}</p>
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+                <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
+                  <FiCalendar className="text-gray-600 w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Probation Period</p>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.probation_period}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -345,144 +347,198 @@ export default function EmployeeProfile() {
         <EmployeeProbation employeeId={employee.application_id.toString().replace('user_', '')} employee={employee} />
 
         {/* Employee Information Modules */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 shadow-lg">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="p-2 bg-gray-100 rounded-xl">
-              <FiFileText className="text-gray-600 w-5 h-5" />
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 flex items-center px-6">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiFileText className="w-5 h-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
-            Employee Information Modules
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            <Link
-              to={`/eis/${employee.application_id}/education`}
-              className="group p-4 sm:p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiBook className="text-black w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Education</div>
-              <div className="text-xs text-gray-600">Academic Details</div>
-            </Link>
+            <h2 className="text-lg font-semibold text-gray-900 ml-3">Employee Information Modules</h2>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              <Link
+                to={`/eis/${employee.application_id}/education`}
+                className="group p-4 sm:p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiBook className="w-5 h-5 sm:w-6 sm:h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Education</div>
+                <div className="text-xs text-gray-600">Academic Details</div>
+              </Link>
             
-            <Link
-              to={`/eis/${employee.application_id}/experience`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiBriefcase className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Experience</div>
-              <div className="text-xs text-gray-600">Work History</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/skills`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiZap className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Skills</div>
-              <div className="text-xs text-gray-600">Technical Skills</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/certifications`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiAward className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Certifications</div>
-              <div className="text-xs text-gray-600">Professional Certs</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/family`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiUsers className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Family</div>
-              <div className="text-xs text-gray-600">Family Details</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/medical`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiHeart className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Medical</div>
-              <div className="text-xs text-gray-600">Health Records</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/id-docs`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
-              <div className="text-xs text-gray-600">Identity Docs</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/salary`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiDollarSign className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Salary</div>
-              <div className="text-xs text-gray-600">Compensation</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/bank-details`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiCreditCard className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
-              <div className="text-xs text-gray-600">Banking Info</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/reporting`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiTrendingUp className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Reporting</div>
-              <div className="text-xs text-gray-600">Manager & Hierarchy</div>
-            </Link>
-            
-            <Link
-              to={`/eis/${employee.application_id}/exit`}
-              className="group p-6 border border-black rounded-2xl hover:border-gray-500 hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 hover:scale-105"
-            >
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200 transition-colors">
-                <FiUserX className="text-black w-6 h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="font-semibold text-gray-900 mb-1">Exit</div>
-              <div className="text-xs text-gray-600">Exit Process</div>
-            </Link>
+              <Link
+                to={`/eis/${employee.application_id}/experience`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiBriefcase className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Experience</div>
+                <div className="text-xs text-gray-600">Work History</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/skills`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiZap className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Skills</div>
+                <div className="text-xs text-gray-600">Technical Skills</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/certifications`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiAward className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Certifications</div>
+                <div className="text-xs text-gray-600">Professional Certs</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/family`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiUsers className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Family</div>
+                <div className="text-xs text-gray-600">Family Details</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/medical`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiHeart className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Medical</div>
+                <div className="text-xs text-gray-600">Health Records</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/id-docs`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiCreditCard className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
+                <div className="text-xs text-gray-600">Identity Docs</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/salary`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiDollarSign className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Salary</div>
+                <div className="text-xs text-gray-600">Compensation</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/bank-details`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiCreditCard className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
+                <div className="text-xs text-gray-600">Banking Info</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/reporting`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiTrendingUp className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Reporting</div>
+                <div className="text-xs text-gray-600">Manager & Hierarchy</div>
+              </Link>
+              
+              <Link
+                to={`/eis/${employee.application_id}/exit`}
+                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiUserX className="w-6 h-6 transition-transform" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div className="font-semibold text-gray-900 mb-1">Exit</div>
+                <div className="text-xs text-gray-600">Exit Process</div>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Edit Profile Modal */}
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-2xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                  <FiUser className="text-indigo-600 w-5 h-5" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiUser className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Edit Employee Profile</h3>
               </div>
@@ -494,7 +550,7 @@ export default function EmployeeProfile() {
                     type="text"
                     value={editForm.work_location}
                     onChange={(e) => setEditForm({...editForm, work_location: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter work location"
                   />
                 </div>
@@ -505,7 +561,7 @@ export default function EmployeeProfile() {
                     type="text"
                     value={editForm.reporting_manager}
                     onChange={(e) => setEditForm({...editForm, reporting_manager: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter reporting manager"
                   />
                 </div>
@@ -516,7 +572,7 @@ export default function EmployeeProfile() {
                     type="date"
                     value={editForm.joining_date}
                     onChange={(e) => setEditForm({...editForm, joining_date: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -525,7 +581,7 @@ export default function EmployeeProfile() {
                   <select
                     value={editForm.work_shift}
                     onChange={(e) => setEditForm({...editForm, work_shift: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="General">General</option>
                     <option value="Morning">Morning</option>
@@ -540,7 +596,7 @@ export default function EmployeeProfile() {
                   <select
                     value={editForm.probation_period}
                     onChange={(e) => setEditForm({...editForm, probation_period: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="1 Month">1 Month</option>
                     <option value="2 Months">2 Months</option>
@@ -554,7 +610,7 @@ export default function EmployeeProfile() {
               <div className="flex justify-end gap-3 mt-6">
                 <button 
                   onClick={() => setShowEditModal(false)}
-                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-black"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-gray-200"
                 >
                   Cancel
                 </button>
@@ -610,7 +666,7 @@ export default function EmployeeProfile() {
                       showToast('Failed to update profile', 'error');
                     }
                   }}
-                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg border border-black"
+                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg border border-gray-200"
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)'
                   }}
@@ -631,7 +687,7 @@ export default function EmployeeProfile() {
         {/* Photo Upload Modal */}
         {showPhotoUpload && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl border border-white/20 shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-2xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                   <FiCamera className="text-gray-600 w-5 h-5" />
@@ -668,7 +724,7 @@ export default function EmployeeProfile() {
                       setPreviewUrl(URL.createObjectURL(file));
                     }
                   }}
-                  className="w-full px-4 py-3 bg-white/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                 />
               </div>
               

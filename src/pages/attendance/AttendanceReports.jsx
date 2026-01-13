@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
+import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
+import { FiBarChart, FiCalendar, FiFileText, FiTrendingUp } from 'react-icons/fi';
 
 export default function AttendanceReports() {
   const [report, setReport] = useState([]);
@@ -57,160 +57,250 @@ export default function AttendanceReports() {
   };
 
   return (
-    <div className="flex bg-[#F5F7FA] min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        
-        <div className="p-6 space-y-6">
-          {/* Header with gradient background matching Organization setup */}
-          <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-8">
+    <Layout>
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiBarChart className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Reports</h1>
+                <p className="text-gray-600 text-sm mb-1">Comprehensive attendance analytics and reporting dashboard</p>
+                <p className="text-gray-500 text-xs">Real-time Analytics</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiFileText className="h-3 w-3" />
+                  <span className="text-xs font-medium">Reports</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{report.length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <svg className="w-8 h-8 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
+                <p className="text-2xl font-bold text-gray-900">{report.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Report entries</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Report Type</p>
+                <p className="text-2xl font-bold text-gray-900">{report.length > 0 ? 'Generated' : 'None'}</p>
+                <p className="text-gray-400 text-xs mt-1">Current data</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiBarChart className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Data Status</p>
+                <p className="text-2xl font-bold text-gray-900">Live</p>
+                <p className="text-gray-400 text-xs mt-1">Real-time updates</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiTrendingUp className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Last Updated</p>
+                <p className="text-2xl font-bold text-gray-900">Now</p>
+                <p className="text-gray-400 text-xs mt-1">Current time</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCalendar className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Report Actions matching Dashboard */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiBarChart className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Generate Reports</h3>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-5 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={loadDaily}
+                className="flex-1 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium flex items-center justify-center gap-2"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.backgroundColor = hoverColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <FiCalendar className="h-4 w-4" />
+                Daily Report
+              </button>
+              <button
+                onClick={loadMonthly}
+                className="flex-1 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium flex items-center justify-center gap-2"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  e.target.style.backgroundColor = hoverColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <FiBarChart className="h-4 w-4" />
+                Monthly Report
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Report Content matching Dashboard */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+          }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiFileText className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Attendance Reports</h1>
-                  <p className="text-gray-600 text-lg mb-1">Comprehensive attendance analytics and reporting dashboard</p>
-                  <p className="text-gray-500 text-sm">Real-time Analytics</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Report Data</h2>
+                  <p className="text-gray-600">Attendance analytics and insights</p>
                 </div>
-              </div>
-              <div className="text-right">
-                <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="text-sm font-medium">Live Data</span>
-                </div>
-                <p className="text-lg font-bold text-gray-900">Analytics Dashboard</p>
               </div>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="bg-white rounded-2xl border border-black p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-              <span className="text-sm text-gray-600">Reports</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                <button
-                  onClick={loadDaily}
-                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 text-white shadow-sm mr-2 border"
-                  style={{ 
-                    backgroundColor: colors.primary,
-                    borderColor: colors.primary
-                  }}
-                  onMouseEnter={(e) => { e.target.style.backgroundColor = colors.secondary; }}
-                  onMouseLeave={(e) => { e.target.style.backgroundColor = colors.primary; }}
-                >
-                  Daily Report
-                </button>
-                <button
-                  onClick={loadMonthly}
-                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 border"
-                  style={{
-                    color: colors.secondary,
-                    borderColor: colors.primary
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = colors.primary;
-                    e.target.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = colors.secondary;
-                  }}
-                >
-                  Monthly Report
-                </button>
+          <div className="p-6">
+            {report.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                }}>
+                  <FiBarChart className="h-8 w-8" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">No Report Data</h4>
+                <p className="text-gray-600 mb-6">Click on Daily Report or Monthly Report to generate attendance data</p>
               </div>
-            </div>
-          </div>
-
-          {/* Report Content */}
-          <div className="bg-white rounded-3xl shadow-sm border-2 border-black overflow-hidden">
-            <div className="p-6 border-b bg-gray-50">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <svg className="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                </svg>
-                Report Data
-              </h3>
-            </div>
-            
-            {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              {report.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No report data</h3>
-                  <p className="text-gray-500 mb-6">Click on Daily Report or Monthly Report to generate attendance data</p>
-                </div>
-              ) : (
-                <table className="w-full border-collapse">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Hours</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {report.map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.employee || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.status || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.hours || 'N/A'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="md:hidden">
-              {report.length === 0 ? (
-                <div className="p-6 text-center">
-                  <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  <p className="text-gray-500">No report data available</p>
-                </div>
-              ) : (
-                report.map((item, index) => (
-                  <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm font-medium text-gray-900">Employee:</span>
-                        <span className="text-sm text-gray-600">{item.employee || 'N/A'}</span>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {report.map((item, index) => (
+                  <div key={index} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl transition-all duration-300" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <FiFileText className="h-6 w-6" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900">{item.employee || 'N/A'}</h3>
+                          <p className="text-sm text-gray-600 mt-1">Employee record</p>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm font-medium text-gray-900">Date:</span>
-                        <span className="text-sm text-gray-600">{item.date || 'N/A'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm font-medium text-gray-900">Status:</span>
-                        <span className="text-sm text-gray-600">{item.status || 'N/A'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm font-medium text-gray-900">Hours:</span>
-                        <span className="text-sm text-gray-600">{item.hours || 'N/A'}</span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs text-gray-600">Date</span>
+                          <span className="text-sm font-bold text-gray-900 text-right">
+                            {item.date || 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs text-gray-600">Status</span>
+                          <span className="text-sm font-bold text-gray-900 text-right break-words">
+                            {item.status || 'N/A'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Hours</span>
+                          <span className="text-sm font-bold text-gray-900">{item.hours || 'N/A'}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
       <Toast toast={toast} hideToast={hideToast} />
-    </div>
+    </Layout>
   );
 }

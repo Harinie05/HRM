@@ -123,52 +123,46 @@ export default function EmployeeFamily() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiUsers className="w-8 h-8 text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                Employee Family
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Family members and dependents information
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">{family.length} Family Members</span>
-                </div>
-                <span className="text-sm text-gray-600">Real-time Updates</span>
+      {/* Hero Header matching Department */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUsers className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Family</h1>
+                <p className="text-gray-600 text-sm mb-1">Family members and dependents information</p>
+                <p className="text-gray-500 text-xs">{family.length} Family Members • Real-time Updates</p>
               </div>
             </div>
+            {canAdd && (
+              <button
+                onClick={openAdd}
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <FiPlus className="w-4 h-4" />
+                Add Family Member
+              </button>
+            )}
           </div>
-          
-          {canAdd && (
-            <button
-              onClick={openAdd}
-              className="flex items-center gap-2 text-white px-6 py-3 rounded-2xl transition-colors font-medium"
-              style={{
-                backgroundColor: 'var(--primary-color, #4575b5)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-              }}
-            >
-              <FiPlus className="w-4 h-4" />
-              Add Family Member
-            </button>
-          )}
         </div>
-      </div>
-
-      <div className="p-6 space-y-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
@@ -192,11 +186,11 @@ export default function EmployeeFamily() {
         </div>
 
         {/* Family Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Relationship</th>
@@ -207,7 +201,7 @@ export default function EmployeeFamily() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200/50">
+              <tbody className="divide-y divide-gray-200">
                 {family.length === 0 && (
                   <tr>
                     <td colSpan="6" className="px-6 py-12 text-center">
@@ -219,11 +213,15 @@ export default function EmployeeFamily() {
                 )}
 
                 {family.map((f) => (
-                  <tr key={f.id} className="hover:bg-white/50 transition-colors">
+                  <tr key={f.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                          <FiUser className="w-4 h-4 text-black" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                        }}>
+                          <FiUser className="w-4 h-4" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
                         </div>
                         <div className="font-medium text-gray-900">{f.name}</div>
                       </div>
@@ -241,8 +239,10 @@ export default function EmployeeFamily() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-lg border border-black ${
-                        f.dependent ? 'bg-gray-100 text-black' : 'bg-gray-100 text-black'
+                      <span className={`px-2 py-1 text-xs font-medium rounded-lg ${
+                        f.dependent 
+                          ? 'bg-green-100 text-green-800 border border-green-300' 
+                          : 'bg-red-100 text-red-800 border border-red-300'
                       }`}>
                         {f.dependent ? 'Yes' : 'No'}
                       </span>
@@ -252,7 +252,7 @@ export default function EmployeeFamily() {
                         {canEdit && (
                           <button
                             onClick={() => openEdit(f)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                           >
                             <FiEdit className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -263,7 +263,7 @@ export default function EmployeeFamily() {
                         {canDelete && (
                           <button
                             onClick={() => deleteFamily(f.id)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
                           >
                             <FiTrash2 className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -292,13 +292,19 @@ export default function EmployeeFamily() {
                 <div key={f.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                        <FiUser className="w-4 h-4 text-black" />
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
+                        <FiUser className="w-4 h-4" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
                       </div>
                       <div className="font-medium text-gray-900">{f.name}</div>
                     </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-lg border border-black ${
-                      f.dependent ? 'bg-gray-100 text-black' : 'bg-gray-100 text-black'
+                    <span className={`px-2 py-1 text-xs font-medium rounded-lg ${
+                      f.dependent 
+                        ? 'bg-green-100 text-green-800 border border-green-300' 
+                        : 'bg-red-100 text-red-800 border border-red-300'
                     }`}>
                       {f.dependent ? 'Dependent' : 'Non-Dependent'}
                     </span>
@@ -329,7 +335,7 @@ export default function EmployeeFamily() {
                       {canEdit && (
                         <button
                           onClick={() => openEdit(f)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-colors"
                         >
                           <FiEdit className="w-4 h-4" />
                           Edit
@@ -338,7 +344,7 @@ export default function EmployeeFamily() {
                       {canDelete && (
                         <button
                           onClick={() => deleteFamily(f.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
                           Delete

@@ -129,21 +129,21 @@ const EmployeeProbation = ({ employeeId, employee }) => {
   const daysRemaining = getDaysRemaining();
 
   return (
-    <div className="bg-white p-4 rounded-lg border border-black">
+    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-base font-semibold text-gray-900">Probation Period</h3>
         {!probation && (isAdmin() || hasPermission("add_probation")) && (
           <button
             onClick={() => setShowForm(true)}
-            className="text-white px-3 py-1 rounded-md transition-colors border border-black flex items-center gap-2 text-sm"
+            className="text-white px-3 py-1 rounded-md transition-colors border border-gray-200 flex items-center gap-2 text-sm"
             style={{
-              backgroundColor: 'var(--primary-color, #4575b5)'
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
             }}
           >
             <Plus className="w-4 h-4" />
@@ -317,7 +317,7 @@ const EmployeeProbation = ({ employeeId, employee }) => {
       {/* Extend Probation Modal */}
       {showExtendModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl border-2 border-black shadow-lg w-full max-w-md">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm w-full max-w-md">
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 border-b-2 border-black pb-3">Extend Probation Period</h3>
               <div className="space-y-4">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle } from "lucide-react";
+import { FiPlus, FiCalendar, FiClock, FiMapPin, FiCheckCircle, FiXCircle, FiFileText } from 'react-icons/fi';
 import api from "../../api";
+import Layout from "../../components/Layout";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
 import { hasPermission, isAdmin } from '../../utils/permissions';
@@ -20,14 +21,14 @@ export default function ODApplications() {
   
   if (!canViewOdApplications) {
     return (
-      <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
+      <Layout>
+        <div className="p-6 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view OD applications.</p>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
   const [formData, setFormData] = useState({
@@ -180,203 +181,345 @@ export default function ODApplications() {
   };
 
   return (
-    <div className="rounded-lg shadow-sm" style={{ backgroundColor: 'var(--primary-color, #4575b5)' }}>
-      {/* Header */}
-      <div className="p-4 sm:p-6 border-b ">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div>
-            <h2 className="text-lg sm:text-xl font-semibold text-primary">OD Applications</h2>
-            <p className=" mt-1 text-sm" style={{color: 'var(--text-secondary, #374151)'}}>Manage On Duty applications for employees</p>
+    <Layout>
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">OD Applications</h1>
+                <p className="text-gray-600 text-sm mb-1">Manage On Duty applications for employees</p>
+                <p className="text-gray-500 text-xs">{applications.length} Applications • Request Management</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiFileText className="h-3 w-3" />
+                  <span className="text-xs font-medium">Applications</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{applications.length}</p>
+              </div>
+            </div>
           </div>
-          {canApplyOd && (
-            <button 
-              onClick={() => setShowModal(true)}
-              className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors text-sm whitespace-nowrap"
-              style={{ backgroundColor: colors.primary }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-            >
-              <Plus size={16} />
-              Apply OD
-            </button>
-          )}
         </div>
-      </div>
 
-      {/* Applications List */}
-      <div className="overflow-x-auto">
-        {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
-          <table style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="w-full">
-            <thead style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-content">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Employee</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Time</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Purpose</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Location</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}} className="bg-white divide-y">
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Applications</p>
+                <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
+                <p className="text-gray-400 text-xs mt-1">All requests</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
+                <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'pending').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Awaiting approval</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiClock className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
+                <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'approved').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Accepted requests</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCheckCircle className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
+                <p className="text-2xl font-bold text-gray-900">{applications.filter(app => app.status === 'rejected').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Declined requests</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiXCircle className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Applications Management */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiFileText className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">OD Applications</h3>
+              </div>
+              {canApplyOd && (
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors text-sm font-medium"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.target.style.backgroundColor = hoverColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
+                >
+                  <FiPlus className="w-4 h-4" />
+                  Apply OD
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="p-5">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Time</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Purpose</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Location</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {applications.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-12 text-center">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                        }}>
+                          <FiCalendar className="h-8 w-8" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No OD applications</h3>
+                        <p className="text-gray-600">Start by applying for an OD.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    applications.map((app) => {
+                      const employee = employees.find(emp => emp.id === app.employee_id);
+                      return (
+                        <tr key={app.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">
+                              {employee?.name || `Employee ${app.employee_id}`}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              ID: {app.employee_id}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center text-sm text-gray-900">
+                              <FiCalendar className="mr-2 h-4 w-4 text-gray-400" />
+                              {new Date(app.od_date).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center text-sm text-gray-900">
+                              <FiClock className="mr-2 h-4 w-4 text-gray-400" />
+                              {app.from_time} - {app.to_time}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-sm text-gray-900 max-w-xs truncate">
+                              {app.purpose}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center text-sm text-gray-900">
+                              <FiMapPin className="mr-2 h-4 w-4 text-gray-400" />
+                              {app.location || 'N/A'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
+                              {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            {app.status === 'pending' && (canApproveOd || canRejectOd) && (
+                              <div className="flex items-center gap-2">
+                                {canApproveOd && (
+                                  <button 
+                                    onClick={() => handleApprove(app.id)}
+                                    className="text-white px-2 py-1 rounded text-xs transition-colors"
+                                    style={{
+                                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                      e.target.style.backgroundColor = hoverColor;
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                    }}
+                                    title="Approve"
+                                  >
+                                    Approve
+                                  </button>
+                                )}
+                                {canRejectOd && (
+                                  <button 
+                                    onClick={() => handleReject(app.id)}
+                                    className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-2 py-1 rounded text-xs"
+                                    title="Reject"
+                                  >
+                                    Reject
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
               {applications.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center">
-                    <Calendar className="mx-auto h-12 w-12 text-muted" />
-                    <h3 className="mt-2 text-sm font-medium text-primary">No OD applications</h3>
-                    <p className="mt-1 text-sm text-muted">Start by applying for an OD.</p>
-                  </td>
-                </tr>
+                <div className="p-6 text-center">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                  }}>
+                    <FiCalendar className="h-8 w-8" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No OD applications</h3>
+                  <p className="text-gray-600">Start by applying for an OD.</p>
+                </div>
               ) : (
                 applications.map((app) => {
                   const employee = employees.find(emp => emp.id === app.employee_id);
                   return (
-                    <tr key={app.id} className="hover:bg-content">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-primary">
+                    <div key={app.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="font-medium text-gray-900">
                           {employee?.name || `Employee ${app.employee_id}`}
                         </div>
-                        <div className="text-sm text-muted">
-                          ID: {app.employee_id}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-primary">
-                          <Calendar size={16} className="mr-2 text-muted" />
-                          {new Date(app.od_date).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-primary">
-                          <Clock size={16} className="mr-2 text-muted" />
-                          {app.from_time} - {app.to_time}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-primary max-w-xs truncate">
-                          {app.purpose}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-primary">
-                          <MapPin size={16} className="mr-2 text-muted" />
-                          {app.location || 'N/A'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
                           {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {app.status === 'pending' && (canApproveOd || canRejectOd) && (
-                          <div className="flex items-center gap-2">
-                            {canApproveOd && (
-                              <button 
-                                onClick={() => handleApprove(app.id)}
-                                className="text-white px-2 py-1 rounded text-xs transition-colors"
-                                style={{ backgroundColor: colors.primary }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-                                title="Approve"
-                              >
-                                Approve
-                              </button>
-                            )}
-                            {canRejectOd && (
-                              <button 
-                                onClick={() => handleReject(app.id)}
-                                className="bg-white hover:bg-gray-100 text-black border border-black px-2 py-1 rounded text-xs"
-                                title="Reject"
-                              >
-                                Reject
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">Date:</span>
+                          <span className="text-sm text-gray-600">{new Date(app.od_date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">Time:</span>
+                          <span className="text-sm text-gray-600">{app.from_time} - {app.to_time}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">Purpose:</span>
+                          <span className="text-sm text-gray-600 text-right max-w-xs truncate">{app.purpose}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">Location:</span>
+                          <span className="text-sm text-gray-600">{app.location || 'N/A'}</span>
+                        </div>
+                      </div>
+                      {app.status === 'pending' && (canApproveOd || canRejectOd) && (
+                        <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                          {canApproveOd && (
+                            <button 
+                              onClick={() => handleApprove(app.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded transition-colors"
+                              style={{
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                              }}
+                              onMouseEnter={(e) => {
+                                const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                e.target.style.backgroundColor = hoverColor;
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                              }}
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {canRejectOd && (
+                            <button 
+                              onClick={() => handleReject(app.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 rounded"
+                            >
+                              Reject
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   );
                 })
               )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile Card View */}
-        <div className="md:hidden">
-          {applications.length === 0 ? (
-            <div className="p-6 text-center">
-              <Calendar className="mx-auto h-12 w-12 text-muted" />
-              <h3 className="mt-2 text-sm font-medium text-primary">No OD applications</h3>
-              <p className="mt-1 text-sm text-muted">Start by applying for an OD.</p>
             </div>
-          ) : (
-            applications.map((app) => {
-              const employee = employees.find(emp => emp.id === app.employee_id);
-              return (
-                <div key={app.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="font-medium text-primary">
-                      {employee?.name || `Employee ${app.employee_id}`}
-                    </div>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
-                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Date:</span>
-                      <span className="text-sm text-gray-600">{new Date(app.od_date).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Time:</span>
-                      <span className="text-sm text-gray-600">{app.from_time} - {app.to_time}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Purpose:</span>
-                      <span className="text-sm text-gray-600 text-right max-w-xs truncate">{app.purpose}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-900">Location:</span>
-                      <span className="text-sm text-gray-600">{app.location || 'N/A'}</span>
-                    </div>
-                  </div>
-                  {app.status === 'pending' && (canApproveOd || canRejectOd) && (
-                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-                      {canApproveOd && (
-                        <button 
-                          onClick={() => handleApprove(app.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-white rounded transition-colors"
-                          style={{ backgroundColor: colors.primary }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {canRejectOd && (
-                        <button 
-                          onClick={() => handleReject(app.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm bg-white hover:bg-gray-100 text-black border border-black rounded"
-                        >
-                          Reject
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
+          </div>
         </div>
-      </div>
 
       {/* Apply OD Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Apply for OD</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -495,8 +638,8 @@ export default function ODApplications() {
           </div>
         </div>
       )}
-      
+      </div>
       <Toast toast={toast} hideToast={hideToast} />
-    </div>
+    </Layout>
   );
 }

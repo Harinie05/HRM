@@ -120,54 +120,46 @@ export default function EmployeeSkills() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiZap className="w-8 h-8 text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                Skills & Competencies
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Technical skills and professional competencies
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">{skills.length} Active Records</span>
-                </div>
-                <span className="text-sm text-gray-600">Real-time Updates</span>
+      {/* Hero Header matching Department */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiZap className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Skills</h1>
+                <p className="text-gray-600 text-sm mb-1">Technical skills and professional competencies</p>
+                <p className="text-gray-500 text-xs">{skills.length} Active Records • Real-time Updates</p>
               </div>
             </div>
+            {canAdd && (
+              <button
+                onClick={openAdd}
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <FiPlus className="w-4 h-4" />
+                Add Skill
+              </button>
+            )}
           </div>
-          
-          {canAdd && (
-            <button
-              onClick={openAdd}
-              className="flex items-center gap-2 text-white border-2 px-6 py-3 rounded-2xl transition-colors font-medium"
-              style={{ 
-                backgroundColor: "var(--primary-color, #4575b5)", 
-                borderColor: "var(--primary-color, #4575b5)" 
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
-                e.target.style.borderColor = "var(--secondary-color, #6b7280)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
-                e.target.style.borderColor = "var(--primary-color, #4575b5)";
-              }}
-            >
-              <FiPlus className="w-4 h-4" />
-              Add Skill
-            </button>
-          )}
         </div>
-      </div>
-      <div className="p-6 space-y-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
@@ -190,11 +182,11 @@ export default function EmployeeSkills() {
           </button>
         </div>
         {/* Skills Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Skill Name</th>
                   <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Proficiency Level</th>
@@ -202,7 +194,7 @@ export default function EmployeeSkills() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200/50">
+              <tbody className="divide-y divide-gray-200">
                 {skills.length === 0 && (
                   <tr>
                     <td colSpan="3" className="px-6 py-12 text-center">
@@ -214,11 +206,15 @@ export default function EmployeeSkills() {
                 )}
 
                 {skills.map((sk) => (
-                  <tr key={sk.id} className="hover:bg-white/50 transition-colors">
+                  <tr key={sk.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                          <FiZap className="w-4 h-4 text-black" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                        }}>
+                          <FiZap className="w-4 h-4" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
                         </div>
                         <div className="font-medium text-gray-900">{sk.skill_name}</div>
                       </div>
@@ -245,7 +241,7 @@ export default function EmployeeSkills() {
                         {canEdit && (
                           <button
                             onClick={() => openEdit(sk)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                           >
                             <FiEdit className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -256,7 +252,7 @@ export default function EmployeeSkills() {
                         {canDelete && (
                           <button
                             onClick={() => deleteSkill(sk.id)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
                           >
                             <FiTrash2 className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -285,8 +281,12 @@ export default function EmployeeSkills() {
                 <div key={sk.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                        <FiZap className="w-4 h-4 text-black" />
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
+                        <FiZap className="w-4 h-4" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
                       </div>
                       <div className="font-medium text-gray-900">{sk.skill_name}</div>
                     </div>
@@ -316,7 +316,7 @@ export default function EmployeeSkills() {
                       {canEdit && (
                         <button
                           onClick={() => openEdit(sk)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-colors"
                         >
                           <FiEdit className="w-4 h-4" />
                           Edit
@@ -325,7 +325,7 @@ export default function EmployeeSkills() {
                       {canDelete && (
                         <button
                           onClick={() => deleteSkill(sk.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
                           Delete
@@ -341,7 +341,7 @@ export default function EmployeeSkills() {
 
         {showForm && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
                   <FiZap className="w-5 h-5 text-black" />
@@ -394,14 +394,22 @@ export default function EmployeeSkills() {
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-black rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-gray-200 rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveSkill}
-                  className="px-6 py-3 bg-white text-black border border-black rounded-xl hover:bg-gray-100 transition-colors font-medium shadow-lg"
-                 style={{ backgroundColor: "var(--primary-color, #2862e9)" }} onMouseEnter={(e) => e.target.style.backgroundColor = "var(--secondary-color, #6b7280)"} onMouseLeave={(e) => e.target.style.backgroundColor = "var(--primary-color, #2862e9)"}>
+                  className="px-6 py-3 text-white rounded-lg transition-colors font-medium shadow-lg"
+                  style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}>
                   {editing ? "Update" : "Save"} Skill
                 </button>
               </div>

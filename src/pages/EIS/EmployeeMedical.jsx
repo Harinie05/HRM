@@ -193,33 +193,28 @@ export default function EmployeeMedical() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiHeart className="w-8 h-8 text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                Employee Medical
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Health information and medical records
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Medical Profile</span>
-                </div>
-                <span className="text-sm text-gray-600">Real-time Updates</span>
+      {/* Hero Header matching EmployeeEducation */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiHeart className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Medical</h1>
+                <p className="text-gray-600 text-sm mb-1">Health information and medical records</p>
+                <p className="text-gray-500 text-xs">Medical Profile • Real-time Updates</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="p-6 space-y-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
@@ -242,20 +237,23 @@ export default function EmployeeMedical() {
             Back to Profile
           </button>
         </div>
-        <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6">
 
           <div className="space-y-8">
             {/* Basic Health Information */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiHeart className="text-black" />
+                <FiHeart className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
                 <h3 className="text-lg font-semibold text-primary">Basic Health Information</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Blood Group</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.blood_group}
                     onChange={(e) => setForm({ ...form, blood_group: e.target.value })}
                   >
@@ -274,7 +272,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">Height (cm)</label>
                   <input
                     type="number"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="170"
                     value={form.height}
                     onChange={(e) => setForm({ ...form, height: e.target.value })}
@@ -284,7 +282,7 @@ export default function EmployeeMedical() {
                   <label className="block text-sm font-medium text-secondary mb-2">Weight (kg)</label>
                   <input
                     type="number"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="70"
                     value={form.weight}
                     onChange={(e) => setForm({ ...form, weight: e.target.value })}
@@ -300,7 +298,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Known Allergies</label>
                   <textarea
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any food, medication, or environmental allergies..."
                     value={form.allergies}
@@ -310,7 +308,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Chronic Conditions</label>
                   <textarea
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List any chronic conditions like diabetes, hypertension, etc..."
                     value={form.chronic_conditions}
@@ -320,7 +318,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Current Medications</label>
                   <textarea
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     rows="3"
                     placeholder="List current medications and dosages..."
                     value={form.medications}
@@ -333,14 +331,16 @@ export default function EmployeeMedical() {
             {/* Emergency Contact */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiUser className="text-black" />
+                <FiUser className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
                 <h3 className="text-lg font-semibold text-primary">Emergency Contact</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Contact Name</label>
                   <input
-                   className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                   className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Full name"
                     value={form.emergency_contact_name}
                     onChange={(e) => setForm({ ...form, emergency_contact_name: e.target.value })}
@@ -349,7 +349,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Phone Number</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Phone number"
                     value={form.emergency_contact_phone}
                     onChange={(e) => setForm({ ...form, emergency_contact_phone: e.target.value })}
@@ -358,7 +358,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Relationship</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.emergency_contact_relation}
                     onChange={(e) => setForm({ ...form, emergency_contact_relation: e.target.value })}
                   >
@@ -377,14 +377,16 @@ export default function EmployeeMedical() {
             {/* Insurance Information */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiShield className="text-black" />
+                <FiShield className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
                 <h3 className="text-lg font-semibold text-primary">Medical Insurance</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Insurance Provider</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Insurance company name"
                     value={form.medical_insurance_provider}
                     onChange={(e) => setForm({ ...form, medical_insurance_provider: e.target.value })}
@@ -393,7 +395,7 @@ export default function EmployeeMedical() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Policy/Member Number</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Policy or member ID"
                     value={form.medical_insurance_number}
                     onChange={(e) => setForm({ ...form, medical_insurance_number: e.target.value })}
@@ -405,7 +407,9 @@ export default function EmployeeMedical() {
             {/* Medical Council Registration */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiShield className="text-black" />
+                <FiShield className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
                 <h3 className="text-lg font-semibold text-primary">Medical Council Registration Details</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -415,7 +419,7 @@ export default function EmployeeMedical() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Medical council registration number"
                     value={form.medical_council_registration_number}
                     onChange={(e) => setForm({ ...form, medical_council_registration_number: e.target.value })}
@@ -427,7 +431,7 @@ export default function EmployeeMedical() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Medical council name"
                     value={form.medical_council_name}
                     onChange={(e) => setForm({ ...form, medical_council_name: e.target.value })}
@@ -439,7 +443,7 @@ export default function EmployeeMedical() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="State or province"
                     value={form.medical_council_state || ''}
                     onChange={(e) => setForm({ ...form, medical_council_state: e.target.value })}
@@ -451,7 +455,7 @@ export default function EmployeeMedical() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Country"
                     value={form.medical_council_country || ''}
                     onChange={(e) => setForm({ ...form, medical_council_country: e.target.value })}
@@ -464,7 +468,7 @@ export default function EmployeeMedical() {
                   <input
                     type="date"
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.medical_council_issue_date || ''}
                     onChange={(e) => setForm({ ...form, medical_council_issue_date: e.target.value })}
                   />
@@ -476,7 +480,7 @@ export default function EmployeeMedical() {
                   <input
                     type="date"
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.medical_council_expiry_date}
                     onChange={(e) => setForm({ ...form, medical_council_expiry_date: e.target.value })}
                   />
@@ -487,7 +491,7 @@ export default function EmployeeMedical() {
                   </label>
                   <input
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="MBBS, MD, etc."
                     value={form.medical_degree || ''}
                     onChange={(e) => setForm({ ...form, medical_degree: e.target.value })}
@@ -498,7 +502,7 @@ export default function EmployeeMedical() {
                     Specialization
                   </label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Cardiology, Surgery, etc."
                     value={form.medical_specialization || ''}
                     onChange={(e) => setForm({ ...form, medical_specialization: e.target.value })}
@@ -510,7 +514,7 @@ export default function EmployeeMedical() {
                   </label>
                   <select
                     required
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.medical_council_status || 'Active'}
                     onChange={(e) => setForm({ ...form, medical_council_status: e.target.value })}
                   >
@@ -527,7 +531,9 @@ export default function EmployeeMedical() {
             {/* Vaccination Records */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <FiHeart className="text-black" />
+                <FiHeart className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
                 <h3 className="text-lg font-semibold text-primary">Vaccination Records</h3>
               </div>
               <div className="space-y-4">
@@ -536,7 +542,7 @@ export default function EmployeeMedical() {
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">Vaccine</label>
                       <select
-                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.vaccine}
                         onChange={(e) => {
                           const updated = [...form.vaccination_records];
@@ -557,7 +563,7 @@ export default function EmployeeMedical() {
                       <label className="block text-sm font-medium text-secondary mb-2">Date</label>
                       <input
                         type="date"
-                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.date}
                         onChange={(e) => {
                           const updated = [...form.vaccination_records];
@@ -569,7 +575,7 @@ export default function EmployeeMedical() {
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">Status</label>
                       <select
-                        className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                         value={vaccine.status}
                         onChange={(e) => {
                           const updated = [...form.vaccination_records];
@@ -625,7 +631,7 @@ export default function EmployeeMedical() {
             <div>
               <label className="block text-sm font-medium text-secondary mb-2">Additional Medical Information</label>
               <textarea
-                className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 rows="4"
                 placeholder="Any additional medical remarks, notes, or special considerations..."
                 value={form.remarks}
@@ -642,12 +648,12 @@ export default function EmployeeMedical() {
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                 />
               </div>
               <p className="text-xs text-muted mb-3">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
               {medicalData?.certificate_name && (
-                <div className="p-3 bg-gray-100 border border-black rounded-lg">
+                <div className="p-3 bg-gray-100 border border-gray-200 rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-secondary">Current Certificate:</span>
                     <button 
@@ -669,31 +675,32 @@ export default function EmployeeMedical() {
                 </div>
               )}
             </div>
-          </div>
+            </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-black">
-            {(canAdd || canEdit) && (
-              <button
-                onClick={submit}
-                disabled={loading}
-                className="px-6 py-3 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-                style={{
-                  backgroundColor: loading ? '#d1d5db' : 'var(--primary-color, #4575b5)'
-                }}
-                onMouseEnter={(e) => {
-                  if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!e.target.disabled) {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-                  }
-                }}
-              >
-                {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
-              </button>
-            )}
+            <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+              {(canAdd || canEdit) && (
+                <button
+                  onClick={submit}
+                  disabled={loading}
+                  className="px-6 py-3 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  style={{
+                    backgroundColor: loading ? '#d1d5db' : 'var(--primary-color, #4575b5)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }
+                  }}
+                >
+                  {loading ? 'Saving...' : (isEditing ? 'Update Medical Information' : 'Save Medical Information')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

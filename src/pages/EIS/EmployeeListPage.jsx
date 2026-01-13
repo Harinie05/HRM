@@ -329,11 +329,17 @@ export default function EmployeeListPage() {
     <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-4 sm:p-8">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mx-auto sm:mx-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Users className="w-6 h-6 sm:w-8 sm:h-8" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Employee Directory & Profiles</h1>
@@ -342,7 +348,7 @@ export default function EmployeeListPage() {
               </div>
             </div>
             <div className="text-center sm:text-right">
-              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Employees</span>
                 </div>
@@ -355,9 +361,9 @@ export default function EmployeeListPage() {
 
       <div className="p-4 sm:p-6">
         {/* Search and Actions */}
-        <div className="bg-white rounded-2xl border border-black p-4 mb-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className="inline-flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 border border-black">
+            <div className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 text-sm text-gray-600 border border-gray-200">
               Total: {employees.length}
             </div>
           </div>
@@ -368,7 +374,10 @@ export default function EmployeeListPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -381,22 +390,25 @@ export default function EmployeeListPage() {
               <input
                 type="text"
                 placeholder="Search employees..."
-                className="w-full pl-10 pr-4 py-2 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
               />
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
               {canCreate && (
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-white rounded-xl transition-colors border border-black"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-white rounded-lg transition-colors border border-gray-200"
                   style={{
-                    backgroundColor: 'var(--primary-color, #4575b5)'
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                   }}
                 >
                   <Plus size={16} />
@@ -409,11 +421,17 @@ export default function EmployeeListPage() {
         </div>
 
         {/* Employee Cards */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto" style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }} onLoad={(e) => {
+            e.target.style.setProperty('scrollbar-width', 'none');
+            e.target.style.setProperty('-ms-overflow-style', 'none');
+          }}>
             <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-black">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Employee Code
@@ -438,7 +456,7 @@ export default function EmployeeListPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black">
+              <tbody className="divide-y divide-gray-200">
                 {employees.map((employee) => (
                   <tr key={employee.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
@@ -586,7 +604,7 @@ export default function EmployeeListPage() {
       {/* Create Employee Code Modal */}
       {showCreateForm && canCreate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl border border-black p-4 sm:p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
                 <Plus className="w-5 h-5 text-indigo-600" />
@@ -715,3 +733,8 @@ export default function EmployeeListPage() {
     </Layout>
   );
 }
+<style jsx>{`
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>

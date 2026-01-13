@@ -25,50 +25,14 @@ export default function EmployeeExit() {
   const [saved, setSaved] = useState(false);
   const { toast, showToast, hideToast } = useToast();
 
-  // Check permissions - removed to allow access
-  // const canView = isAdmin() || hasPermission("view_exit");
-  // const canAdd = isAdmin() || hasPermission("add_exit_record");
-  // const canEdit = isAdmin() || hasPermission("edit_exit_record");
   const canView = true;
   const canAdd = true;
   const canEdit = true;
 
   const fetchExitDetails = async () => {
-    // Skip fetching for now since GET has issues
-    // try {
-    //   const res = await api.get(`/employee/exit/${id}`);
-    //   setExitData(res.data);
-    //   setForm({
-    //     resignation_date: res.data.resignation_date || "",
-    //     last_working_day: res.data.last_working_day || "",
-    //     notice_period: res.data.notice_period || "30",
-    //     reason: res.data.reason || "",
-    //     exit_interview_date: res.data.exit_interview_date || "",
-    //     handover_status: res.data.handover_status || "Pending",
-    //   });
-    //   setIsEditing(!!res.data.id);
-    // } catch {
-    //   setIsEditing(false);
-    // }
     setIsEditing(false);
   };
 
-  // Access denied screen removed
-  // if (!canView) {
-  //   return (
-  //     <Layout>
-  //       <div className="flex items-center justify-center min-h-[60vh]">
-  //         <div className="text-center">
-  //           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-  //             <FiUserX className="w-8 h-8 text-red-600" />
-  //           </div>
-  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-  //           <p className="text-gray-500">You don't have permission to view employee exit records.</p>
-  //         </div>
-  //       </div>
-  //     </Layout>
-  //   );
-  // }
   useEffect(() => {
     fetchExitDetails();
   }, [id]);
@@ -105,62 +69,58 @@ export default function EmployeeExit() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiUserX className="w-8 h-8 text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                Exit Management
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Employee separation and exit formalities
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Exit Process</span>
-                </div>
-                <span className="text-sm text-gray-600">Clearance Tracking</span>
+      {/* Hero Header matching EmployeeEducation */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUserX className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Exit Management</h1>
+                <p className="text-gray-600 text-sm mb-1">Employee separation and exit formalities</p>
+                <p className="text-gray-500 text-xs">Exit Process • Clearance Tracking</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="p-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-white border rounded-lg transition-colors text-sm"
-            style={{ 
-              backgroundColor: "var(--primary-color, #4575b5)", 
-              borderColor: "var(--primary-color, #4575b5)" 
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
+              borderColor: 'var(--primary-color, #4575b5)'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
-              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
-              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
           </button>
         </div>
-
-        <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6">
 
           <div className="space-y-6">
             {/* Resignation Details */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
                   <FiCalendar className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Resignation Details</h3>
@@ -170,7 +130,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Resignation Date *</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.resignation_date}
                     onChange={(e) => setForm({ ...form, resignation_date: e.target.value })}
                   />
@@ -179,7 +139,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Last Working Date *</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.last_working_day}
                     onChange={(e) => setForm({ ...form, last_working_day: e.target.value })}
                   />
@@ -188,7 +148,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Notice Period (Days)</label>
                   <input
                     type="number"
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.notice_period}
                     onChange={(e) => setForm({ ...form, notice_period: e.target.value })}
                   />
@@ -197,7 +157,7 @@ export default function EmployeeExit() {
               <div className="mt-4">
                 <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
                 <textarea
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   rows="3"
                   placeholder="Reason for resignation..."
                   value={form.reason}
@@ -208,7 +168,7 @@ export default function EmployeeExit() {
                 <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Date</label>
                 <input
                   type="date"
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={form.exit_interview_date}
                   onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
                 />
@@ -218,7 +178,7 @@ export default function EmployeeExit() {
             {/* Handover Status */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
                   <FiFileText className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Handover & Status</h3>
@@ -227,7 +187,7 @@ export default function EmployeeExit() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Handover Status</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.handover_status}
                     onChange={(e) => setForm({ ...form, handover_status: e.target.value })}
                   >
@@ -244,7 +204,7 @@ export default function EmployeeExit() {
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setFile(e.target.files[0])}
-                      className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     />
                   </div>
                 </div>
@@ -253,7 +213,7 @@ export default function EmployeeExit() {
 
             {/* Exit Status Summary */}
             {form.resignation_date && (
-              <div className="bg-gray-100 border border-black rounded-xl p-6">
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <h4 className="font-semibold text-gray-900 mb-4">Exit Process Status</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
@@ -270,7 +230,7 @@ export default function EmployeeExit() {
                   </div>
                   <div>
                     <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Handover Status:</span>
-                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border border-black ${
+                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border border-gray-200 ${
                       form.handover_status === 'Completed' ? 'bg-gray-100 text-black' :
                       form.handover_status === 'In Progress' ? 'bg-gray-100 text-black' :
                       'bg-gray-100 text-black'
@@ -291,7 +251,7 @@ export default function EmployeeExit() {
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-black">
+          <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
             {(canAdd || canEdit) && (
               <button
                 onClick={submit}
@@ -319,6 +279,7 @@ export default function EmployeeExit() {
                 {loading ? 'Saving...' : saved ? '✓ Saved' : 'Save Exit Details'}
               </button>
             )}
+          </div>
           </div>
         </div>
       </div>

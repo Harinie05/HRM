@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FiShield, FiClock, FiUser, FiCalendar, FiFileText, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import api from "../../api";
 import { isAdmin, hasPermission } from "../../utils/permissions";
 import useToast from "../../utils/useToast";
@@ -163,126 +164,374 @@ export default function AttendancePermission() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-
-      <h2 className="text-xl font-bold">Attendance Permission</h2>
-
-      {/* APPLY */}
-      <div className="border p-4 rounded-lg space-y-3">
-        {/* Employee Selection */}
-        {canSelectEmployee ? (
-          <select
-            value={form.employee_id}
-            onChange={e => setForm({ ...form, employee_id: e.target.value })}
-            className="border p-2 w-full rounded"
-            disabled={employeesLoading}
-          >
-            <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
-            {employees.map(emp => (
-              <option key={emp.id} value={emp.id}>
-                {emp.employee_code || `EMP${emp.id}`} - {emp.name}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <div className="border p-2 w-full rounded bg-gray-100">
-            <span className="text-gray-600">
-              Employee: {employees.find(emp => emp.id == form.employee_id)?.name || 'Current User'}
-            </span>
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+      {/* Hero Header matching Dashboard */}
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiShield className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Permission</h1>
+              <p className="text-gray-600 text-sm mb-1">Manage attendance permission requests and approvals</p>
+              <p className="text-gray-500 text-xs">{list.length} Requests • Permission Management</p>
+            </div>
           </div>
-        )}
-
-        <input
-          type="date"
-          value={form.date}
-          onChange={e => setForm({ ...form, date: e.target.value })}
-          className="border p-2 w-full rounded"
-        />
-
-        <select
-          value={form.request_type}
-          onChange={e => setForm({ ...form, request_type: e.target.value })}
-          className="border p-2 w-full rounded"
-        >
-          <option value="HALF_DAY_FIRST">Half Day – First Half</option>
-          <option value="HALF_DAY_SECOND">Half Day – Second Half</option>
-          <option value="SHORT_LEAVE">Short Leave</option>
-          <option value="LATE_COMING">Late Coming</option>
-          <option value="EARLY_GOING">Early Going</option>
-        </select>
-
-        {["SHORT_LEAVE", "LATE_COMING", "EARLY_GOING"].includes(form.request_type) && (
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="time"
-              value={form.from_time}
-              onChange={e => setForm({ ...form, from_time: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="time"
-              value={form.to_time}
-              onChange={e => setForm({ ...form, to_time: e.target.value })}
-              className="border p-2 rounded"
-            />
+          <div className="flex gap-3">
+            <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+              <div className="flex items-center gap-2 text-gray-600 mb-1">
+                <FiFileText className="h-3 w-3" />
+                <span className="text-xs font-medium">Requests</span>
+              </div>
+              <p className="text-sm font-semibold text-gray-900">{list.length}</p>
+            </div>
           </div>
-        )}
-
-        <textarea
-          placeholder="Reason"
-          value={form.reason}
-          onChange={e => setForm({ ...form, reason: e.target.value })}
-          className="border p-2 w-full rounded"
-        />
-
-        <button 
-          onClick={submit} 
-          className="text-white px-4 py-2 rounded transition-colors"
-          style={{ backgroundColor: colors.primary }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-        >
-          Submit
-        </button>
+        </div>
       </div>
 
-      {/* LIST */}
-      <div className="border rounded-lg p-4 space-y-3">
-        {list.map(r => {
-          const employee = employees.find(emp => emp.id == r.employee_id);
-          return (
-            <div key={r.id} className="border p-3 rounded">
-              <div className="font-semibold">
-                {employee ? `${employee.employee_code || `EMP${employee.id}`} - ${employee.name}` : `Employee ID: ${r.employee_id}`}
-              </div>
-              <div className="text-sm">
-                {r.date} • {r.request_type.replace("_", " ")}
-              </div>
-              <div className="text-sm">{r.reason}</div>
-              <div className="text-sm font-bold">{r.status}</div>
-
-              {canApprove && r.status === "Pending" && (
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => updateStatus(r.id, "approve")}
-                    className="text-white px-3 py-1 rounded transition-colors"
-                    style={{ backgroundColor: colors.primary }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => updateStatus(r.id, "reject")}
-                    className="bg-white hover:bg-gray-100 text-black border border-black px-3 py-1 rounded"
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
+      {/* Key Performance Indicators matching Dashboard */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Requests</p>
+              <p className="text-2xl font-bold text-gray-900">{list.length}</p>
+              <p className="text-gray-400 text-xs mt-1">All submissions</p>
             </div>
-          );
-        })}
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiFileText className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
+              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Pending').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Awaiting approval</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiClock className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
+              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Approved').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Accepted requests</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiCheckCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
+              <p className="text-2xl font-bold text-gray-900">{list.filter(r => r.status === 'Rejected').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Declined requests</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FiXCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Apply Permission */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiShield className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Apply for Permission</h3>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-5 space-y-4">
+          {/* Employee Selection */}
+          {canSelectEmployee ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+              <select
+                value={form.employee_id}
+                onChange={e => setForm({ ...form, employee_id: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                disabled={employeesLoading}
+              >
+                <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
+                {employees.map(emp => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.employee_code || `EMP${emp.id}`} - {emp.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
+              <div className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm">
+                Employee: {employees.find(emp => emp.id == form.employee_id)?.name || 'Current User'}
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+            <input
+              type="date"
+              value={form.date}
+              onChange={e => setForm({ ...form, date: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Request Type</label>
+            <select
+              value={form.request_type}
+              onChange={e => setForm({ ...form, request_type: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+            >
+              <option value="HALF_DAY_FIRST">Half Day – First Half</option>
+              <option value="HALF_DAY_SECOND">Half Day – Second Half</option>
+              <option value="SHORT_LEAVE">Short Leave</option>
+              <option value="LATE_COMING">Late Coming</option>
+              <option value="EARLY_GOING">Early Going</option>
+            </select>
+          </div>
+
+          {["SHORT_LEAVE", "LATE_COMING", "EARLY_GOING"].includes(form.request_type) && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">From Time</label>
+                <input
+                  type="time"
+                  value={form.from_time}
+                  onChange={e => setForm({ ...form, from_time: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">To Time</label>
+                <input
+                  type="time"
+                  value={form.to_time}
+                  onChange={e => setForm({ ...form, to_time: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+            <textarea
+              placeholder="Reason for permission request..."
+              value={form.reason}
+              onChange={e => setForm({ ...form, reason: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+              rows="3"
+            />
+          </div>
+
+          <button 
+            onClick={submit} 
+            className="text-white px-6 py-3 rounded-lg transition-colors font-medium flex items-center gap-2"
+            style={{
+              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }}
+            onMouseEnter={(e) => {
+              const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+              e.target.style.backgroundColor = hoverColor;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+            }}
+          >
+            <FiShield className="w-4 h-4" />
+            Submit Request
+          </button>
+        </div>
+      </div>
+
+      {/* Requests List */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-100" style={{
+          background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Permission Requests</h2>
+                <p className="text-gray-600">Manage attendance permission requests and approvals</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6">
+          {list.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+              }}>
+                <FiFileText className="h-8 w-8" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">No Permission Requests</h4>
+              <p className="text-gray-600">Permission requests will appear here once submitted</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {list.map(r => {
+                const employee = employees.find(emp => emp.id == r.employee_id);
+                return (
+                  <div key={r.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl transition-all duration-300" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                        }}>
+                          <FiUser className="h-6 w-6" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900">
+                            {employee ? `${employee.employee_code || `EMP${employee.id}`} - ${employee.name}` : `Employee ID: ${r.employee_id}`}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1">{r.date} • {r.request_type.replace("_", " ")}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className={`w-2 h-2 rounded-full ${
+                            r.status === 'Approved' ? 'bg-green-400' : 
+                            r.status === 'Rejected' ? 'bg-red-400' : 'bg-yellow-400'
+                          }`}></div>
+                          <span className="text-xs font-medium text-gray-700">{r.status}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs text-gray-600">Reason</span>
+                          <span className="text-sm font-bold text-gray-900 text-right break-words">
+                            {r.reason}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-600">Status</span>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${
+                              r.status === 'Approved' ? 'bg-green-400' : 
+                              r.status === 'Rejected' ? 'bg-red-400' : 'bg-yellow-400'
+                            }`}></div>
+                            <span className="text-xs font-medium text-gray-700">{r.status}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {canApprove && r.status === "Pending" && (
+                        <div className="flex gap-2 pt-2">
+                          <button
+                            onClick={() => updateStatus(r.id, "approve")}
+                            className="flex-1 text-white px-4 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                            style={{
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
+                            onMouseEnter={(e) => {
+                              const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                              e.target.style.backgroundColor = hoverColor;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            }}
+                          >
+                            <FiCheckCircle className="w-4 h-4" />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => updateStatus(r.id, "reject")}
+                            className="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2"
+                          >
+                            <FiXCircle className="w-4 h-4" />
+                            Reject
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <Toast toast={toast} hideToast={hideToast} />

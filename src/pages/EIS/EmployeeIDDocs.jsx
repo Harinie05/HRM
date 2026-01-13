@@ -106,48 +106,44 @@ export default function EmployeeIDDocs() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiCreditCard className="w-8 h-8 text-black" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                ID & Verification Documents
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Identity documents and verification status
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">{docs.length} Active Records</span>
-                </div>
-                <span className="text-sm text-gray-600">Real-time Updates</span>
+      {/* Hero Header matching EmployeeEducation */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCreditCard className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">ID Documents</h1>
+                <p className="text-gray-600 text-sm mb-1">Identity documents and verification status</p>
+                <p className="text-gray-500 text-xs">{docs.length} Active Records • Real-time Updates</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="p-6 space-y-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-white border rounded-lg transition-colors text-sm"
-            style={{ 
-              backgroundColor: "var(--primary-color, #4575b5)", 
-              borderColor: "var(--primary-color, #4575b5)" 
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
+              borderColor: 'var(--primary-color, #4575b5)'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
-              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
-              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
             <FiArrowLeft className="w-4 h-4" />
@@ -157,9 +153,9 @@ export default function EmployeeIDDocs() {
 
         {/* Upload Section */}
         {canAdd && (
-          <div className="bg-white rounded-3xl border border-black shadow-sm p-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-4">
-              <FiUpload className="text-black" />
+              <FiUpload className="text-gray-600" />
               <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
             </div>
             
@@ -167,7 +163,7 @@ export default function EmployeeIDDocs() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
                 <select
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                 >
@@ -191,7 +187,7 @@ export default function EmployeeIDDocs() {
                 <input 
                   type="file" 
                   accept=".pdf,.jpg,.jpeg,.png"
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   onChange={(e) => setFile(e.target.files[0])} 
                 />
               </div>
@@ -200,7 +196,7 @@ export default function EmployeeIDDocs() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
                 <input 
                   type="date"
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
                 />
@@ -208,7 +204,20 @@ export default function EmployeeIDDocs() {
               
               <button 
                 onClick={upload} 
-                className="flex items-center gap-2 bg-white text-black border border-black px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: !type || !file ? '#d1d5db' : 'var(--primary-color, #4575b5)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                  }
+                }}
                 disabled={!type || !file}
               >
                 <FiUpload className="w-4 h-4" />
@@ -220,10 +229,10 @@ export default function EmployeeIDDocs() {
         )}
 
         {/* Documents Table */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Document Type</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">File Name</th>
@@ -233,7 +242,7 @@ export default function EmployeeIDDocs() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200/50">
+              <tbody className="divide-y divide-gray-200">
                 {docs.length === 0 && (
                   <tr>
                     <td colSpan="5" className="px-6 py-12 text-center">
@@ -254,8 +263,8 @@ export default function EmployeeIDDocs() {
                     }`}>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                            <FiFileText className="w-4 h-4 text-black" />
+                          <div className="w-8 h-8 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center mr-3">
+                            <FiFileText className="w-4 h-4 text-gray-600" />
                           </div>
                           <div className="font-medium text-gray-900">{d.document_type}</div>
                         </div>
@@ -277,7 +286,7 @@ export default function EmployeeIDDocs() {
                         )}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-black ${
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-200 ${
                           d.status === "Verified" 
                             ? "bg-gray-100 text-black"
                             : d.status === "Rejected"
@@ -292,7 +301,16 @@ export default function EmployeeIDDocs() {
                           <div className="flex items-center justify-center gap-2">
                             <button 
                               onClick={() => verify(d.id, "Verified")} 
-                              className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                              className="group relative p-2 text-white rounded-lg transition-all duration-200"
+                              style={{
+                                backgroundColor: 'var(--primary-color, #4575b5)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                              }}
                             >
                               <FiCheck className="w-4 h-4" />
                               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -301,7 +319,16 @@ export default function EmployeeIDDocs() {
                             </button>
                             <button 
                               onClick={() => verify(d.id, "Rejected")} 
-                              className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                              className="group relative p-2 text-white rounded-lg transition-all duration-200"
+                              style={{
+                                backgroundColor: 'var(--primary-color, #4575b5)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                              }}
                             >
                               <FiX className="w-4 h-4" />
                               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

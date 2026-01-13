@@ -202,202 +202,356 @@ const AttendanceDashboard = () => {
 
   return (
     <Layout>
-      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        {/* Header with gradient background matching User page */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6 sm:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
-                <FiClock className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiClock className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Attendance Dashboard</h1>
-                <p className="text-gray-600 text-base sm:text-lg mb-1">Real-time attendance tracking, analytics & workforce insights</p>
-                <p className="text-gray-500 text-sm">Time & Attendance Management</p>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Dashboard</h1>
+                <p className="text-gray-600 text-sm mb-1">Real-time attendance tracking, analytics & workforce insights</p>
+                <p className="text-gray-500 text-xs">Time & Attendance Management</p>
               </div>
             </div>
-            <div className="text-center sm:text-right">
-              <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiTrendingUp className="h-3 w-3" />
                   <span className="text-xs font-medium">Attendance</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{attendanceData.overallAttendance}%</p>
+                <p className="text-sm font-semibold text-gray-900">{attendanceData.overallAttendance}%</p>
               </div>
             </div>
           </div>
         </div>
-        {/* Attendance Metrics Grid */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6">
-            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
-              Present: {attendanceData.presentToday}
-            </div>
-            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
-              Absent: {attendanceData.absentToday}
-            </div>
-            <div className="inline-flex items-center bg-gray-100 border border-black rounded-full px-3 py-1 text-sm text-gray-600">
-              Late: {attendanceData.lateArrivals}
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Overall Attendance</p>
+                <p className="text-2xl font-bold text-gray-900">{attendanceData.overallAttendance}%</p>
+                <p className="text-gray-400 text-xs mt-1">Today's rate</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiTrendingUp className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-700">Overall Attendance</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
-                    {attendanceData.overallAttendance}%
-                  </p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiTrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
-                </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Present Today</p>
+                <p className="text-2xl font-bold text-gray-900">{attendanceData.presentToday}</p>
+                <p className="text-gray-400 text-xs mt-1">Active employees</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUserCheck className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
-            
-            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-700">Present Today</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
-                    {attendanceData.presentToday}
-                  </p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
-                </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Absent Today</p>
+                <p className="text-2xl font-bold text-gray-900">{attendanceData.absentToday}</p>
+                <p className="text-gray-400 text-xs mt-1">Not present</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUserX className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
-            
-            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-700">Absent Today</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
-                    {attendanceData.absentToday}
-                  </p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUserX className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
-                </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Late Arrivals</p>
+                <p className="text-2xl font-bold text-gray-900">{attendanceData.lateArrivals}</p>
+                <p className="text-gray-400 text-xs mt-1">Delayed check-in</p>
               </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-black">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-700">Late Arrivals</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
-                    {attendanceData.lateArrivals}
-                  </p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiClock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
-                </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiClock className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Department Wise Attendance & Summary */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-black p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                <FiBarChart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+        {/* Analytics Section matching Dashboard */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <FiBarChart className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Department Wise Attendance</h3>
+                </div>
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Department Wise Attendance</h3>
             </div>
-            <div className="space-y-4">
+            
+            <div className="p-5 space-y-4">
               {departments.length > 0 ? departments.map((dept, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700 text-sm sm:text-base">{dept.name}</span>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-20 sm:w-24 bg-gray-200 border border-black rounded-full h-2">
-                      <div className="h-2 rounded-full transition-all duration-300" style={{backgroundColor: colors.primary, width: `${dept.attendance}%`}}></div>
+                <div key={index} className="rounded-lg p-4" style={{
+                  background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+                }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">{dept.name}</p>
+                      <p className="text-2xl font-bold text-gray-900">{dept.attendance}%</p>
+                      <p className="text-xs text-gray-500">Attendance rate</p>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900 w-8 sm:w-10 text-right">{dept.attendance}%</span>
                   </div>
                 </div>
               )) : (
-                <div className="text-center text-gray-500 py-8">
-                  <FiBarChart className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <p>No department data available</p>
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                  }}>
+                    <FiBarChart className="h-8 w-8" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Department Data</h4>
+                  <p className="text-gray-600">Department attendance will appear here</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-black p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                <FiCalendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <FiCalendar className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Today's Summary</h3>
+                </div>
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Today's Summary</h3>
             </div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 text-sm sm:text-base">Total Employees</span>
-                <span className="font-semibold text-lg text-gray-900">{attendanceData.totalEmployees}</span>
+            
+            <div className="p-5 space-y-4">
+              <div className="rounded-lg p-4" style={{
+                background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+              }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Employees</p>
+                    <p className="text-2xl font-bold text-gray-900">{attendanceData.totalEmployees}</p>
+                    <p className="text-xs text-gray-500">Workforce size</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 text-sm sm:text-base">Attendance Rate</span>
-                <span className="font-semibold text-lg text-gray-900">{attendanceData.overallAttendance}%</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 text-sm sm:text-base">On Time Arrivals</span>
-                <span className="font-semibold text-lg text-gray-900">{attendanceData.presentToday - attendanceData.lateArrivals}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 text-sm sm:text-base">Late Arrivals</span>
-                <span className="font-semibold text-lg text-gray-900">{attendanceData.lateArrivals}</span>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg p-3 border" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                }}>
+                  <p className="text-xs font-medium mb-1" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>On Time</p>
+                  <p className="text-lg font-bold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>{attendanceData.presentToday - attendanceData.lateArrivals}</p>
+                  <p className="text-xs" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Punctual arrivals</p>
+                </div>
+                <div className="rounded-lg p-3 border" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}30`
+                }}>
+                  <p className="text-xs font-medium mb-1" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Late Arrivals</p>
+                  <p className="text-lg font-bold" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>{attendanceData.lateArrivals}</p>
+                  <p className="text-xs" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}>Delayed check-in</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-2xl border border-black p-4 sm:p-6">
-          <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {canViewPunchLogs && (
-              <button 
-                onClick={() => window.location.href = '/attendance/logs'}
-                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                  <FiClock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+        {/* Quick Actions matching Dashboard */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+          }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiSettings className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Punch Logs</h3>
-                <p className="text-xs sm:text-sm text-gray-600">View attendance records</p>
-              </button>
-            )}
-            
-            {canViewShifts && (
-              <button 
-                onClick={() => window.location.href = '/shift-roster'}
-                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                  <FiUsers className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
+                  <p className="text-gray-600">Access attendance management tools and reports</p>
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Shift Roster</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Manage employee shifts</p>
-              </button>
-            )}
-            
-            {canViewRules && (
-              <button 
-                onClick={() => window.location.href = '/attendance/rules'}
-                className="group p-4 sm:p-6 border border-black rounded-2xl hover:bg-gray-50 transition-all duration-200 text-left"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center mb-4">
-                  <FiSettings className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {canViewPunchLogs && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl transition-all duration-300" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                      }}>
+                        <FiClock className="h-6 w-6" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Punch Logs</h3>
+                        <p className="text-sm text-gray-600 mt-1">View attendance records</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => window.location.href = '/attendance/logs'}
+                    className="w-full text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <FiClock className="h-4 w-4" />
+                    View Logs
+                  </button>
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Attendance Rules</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Configure policies</p>
-              </button>
-            )}
+              )}
+              
+              {canViewShifts && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl transition-all duration-300" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                      }}>
+                        <FiUsers className="h-6 w-6" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Shift Roster</h3>
+                        <p className="text-sm text-gray-600 mt-1">Manage employee shifts</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => window.location.href = '/shift-roster'}
+                    className="w-full text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <FiUsers className="h-4 w-4" />
+                    Manage Shifts
+                  </button>
+                </div>
+              )}
+              
+              {canViewRules && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-xl transition-all duration-300" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                      }}>
+                        <FiSettings className="h-6 w-6" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Attendance Rules</h3>
+                        <p className="text-sm text-gray-600 mt-1">Configure policies</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => window.location.href = '/attendance/rules'}
+                    className="w-full text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                      e.target.style.backgroundColor = hoverColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
+                  >
+                    <FiSettings className="h-4 w-4" />
+                    Configure Rules
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

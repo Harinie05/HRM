@@ -180,55 +180,46 @@ export default function EmployeeEducation() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-6 bg-white border border-black shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-black" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                Employee Education
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Manage academic qualifications and certifications
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">{education.length} Active Records</span>
-                </div>
-                <span className="text-sm text-gray-600">Real-time Updates</span>
+      {/* Hero Header matching Department */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiBook className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Education</h1>
+                <p className="text-gray-600 text-sm mb-1">Academic qualifications and certifications</p>
+                <p className="text-gray-500 text-xs">{education.length} Active Records • Real-time Updates</p>
               </div>
             </div>
+            {canAdd && (
+              <button
+                onClick={openAdd}
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <FiPlus className="w-4 h-4" />
+                Add Education
+              </button>
+            )}
           </div>
-          
-          {canAdd && (
-            <button
-              onClick={openAdd}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl transition-colors font-medium text-white border-2"
-              style={{
-                backgroundColor: 'var(--primary-color, #4575b5)',
-                borderColor: 'var(--primary-color, #4575b5)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
-              }}
-            >
-              <FiPlus className="w-4 h-4" />
-              Add Education
-            </button>
-          )}
         </div>
-      </div>
-
-      <div className="p-6 space-y-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
@@ -252,11 +243,11 @@ export default function EmployeeEducation() {
           </button>
         </div>
         {/* Education Cards */}
-        <div className="bg-white rounded-2xl border border-black overflow-hidden shadow-lg">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50/50">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Degree</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Specialization</th>
@@ -268,7 +259,7 @@ export default function EmployeeEducation() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200/50">
+              <tbody className="divide-y divide-gray-200">
                 {education.length === 0 && (
                   <tr>
                     <td colSpan="7" className="px-6 py-12 text-center">
@@ -280,11 +271,15 @@ export default function EmployeeEducation() {
                 )}
 
                 {education.map((e) => (
-                  <tr key={e.id} className="hover:bg-white/50 transition-colors">
+                  <tr key={e.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                          <FiBook className="w-4 h-4 text-black" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                          backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                        }}>
+                          <FiBook className="w-4 h-4" style={{
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }} />
                         </div>
                         <div className="font-medium text-gray-900">{e.degree}</div>
                       </div>
@@ -298,7 +293,7 @@ export default function EmployeeEducation() {
                     <td className="px-6 py-4 text-center">
                       {e.file_name ? (
                         <button 
-                          className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                          className="group relative p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
                           onClick={() => {
                             const token = localStorage.getItem('access_token');
                             if (!token) {
@@ -322,7 +317,7 @@ export default function EmployeeEducation() {
                         {canEdit && (
                           <button
                             onClick={() => openEdit(e)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-all duration-200"
                           >
                             <FiEdit className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -333,7 +328,7 @@ export default function EmployeeEducation() {
                         {canDelete && (
                           <button
                             onClick={() => deleteEducation(e.id)}
-                            className="group relative p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-all duration-200"
+                            className="group relative p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
                           >
                             <FiTrash2 className="w-4 h-4" />
                             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -362,14 +357,18 @@ export default function EmployeeEducation() {
                 <div key={e.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-100 border border-black rounded-lg flex items-center justify-center mr-3">
-                        <FiBook className="w-4 h-4 text-black" />
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
+                        backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                      }}>
+                        <FiBook className="w-4 h-4" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }} />
                       </div>
                       <div className="font-medium text-gray-900">{e.degree}</div>
                     </div>
                     {e.file_name && (
                       <button 
-                        className="p-2 text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                        className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"
                         onClick={() => {
                           const token = localStorage.getItem('access_token');
                           if (!token) {
@@ -408,7 +407,7 @@ export default function EmployeeEducation() {
                       {canEdit && (
                         <button
                           onClick={() => openEdit(e)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-black hover:text-gray-700 hover:bg-gray-100 border border-black rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 rounded-lg transition-colors"
                         >
                           <FiEdit className="w-4 h-4" />
                           Edit
@@ -417,7 +416,7 @@ export default function EmployeeEducation() {
                       {canDelete && (
                         <button
                           onClick={() => deleteEducation(e.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-300 rounded-lg transition-colors"
+                          className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
                           Delete

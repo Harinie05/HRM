@@ -47,23 +47,6 @@ export default function EmployeeBankDetails() {
     }
   };
 
-  // Access denied screen removed
-  // if (!canView) {
-  //   return (
-  //     <Layout>
-  //       <div className="flex items-center justify-center min-h-[60vh]">
-  //         <div className="text-center">
-  //           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-  //             <FiCreditCard className="w-8 h-8 text-red-600" />
-  //           </div>
-  //           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
-  //           <p className="text-gray-500">You don't have permission to view employee bank details.</p>
-  //         </div>
-  //       </div>
-  //     </Layout>
-  //   );
-  // }
-
   useEffect(() => {
     fetchBankDetails();
   }, [id]);
@@ -108,63 +91,61 @@ export default function EmployeeBankDetails() {
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="mb-6 p-4 sm:p-6 bg-white border border-black rounded-xl shadow-lg">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
-              <FiCreditCard className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
-            </div>
-            <div className="text-center sm:text-left">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                Bank Details
-              </h1>
-              <p className="text-gray-600 mb-2">
-                Banking information for salary processing
-              </p>
-              <div className="flex items-center justify-center sm:justify-start gap-4">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Secure Banking</span>
-                </div>
-                <span className="text-sm text-gray-600">Encrypted Data</span>
+      {/* Hero Header matching EmployeeEducation */}
+      <div className="p-6 space-y-6">
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCreditCard className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Bank Details</h1>
+                <p className="text-gray-600 text-sm mb-1">Banking information for salary processing</p>
+                <p className="text-gray-500 text-xs">Secure Banking • Encrypted Data</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="p-4 sm:p-6">
         <div className="flex justify-start mb-4">
           <button 
             onClick={() => navigate(`/eis/${id}`)}
-            className="flex items-center gap-2 px-3 py-1.5 text-white rounded-lg transition-colors text-sm border"
-            style={{ 
-              backgroundColor: "var(--primary-color, #4575b5)", 
-              borderColor: "var(--primary-color, #4575b5)" 
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm border"
+            style={{
+              backgroundColor: 'var(--primary-color, #4575b5)',
+              color: 'white',
+              borderColor: 'var(--primary-color, #4575b5)'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "var(--secondary-color, #6b7280)";
-              e.target.style.borderColor = "var(--secondary-color, #6b7280)";
+              e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+              e.target.style.borderColor = 'var(--secondary-color, #6b7280)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "var(--primary-color, #4575b5)";
-              e.target.style.borderColor = "var(--primary-color, #4575b5)";
+              e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+              e.target.style.borderColor = 'var(--primary-color, #4575b5)';
             }}
           >
             <FiArrowLeft className="w-4 h-4" />
             Back to Profile
           </button>
         </div>
-
-        <div className="rounded-xl shadow-sm border border-black p-4 sm:p-6 bg-white">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6">
 
           <div className="space-y-6">
             {/* Bank Information */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiHome className="w-5 h-5 text-black" />
+                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                  <FiHome className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Bank Information</h3>
               </div>
@@ -172,7 +153,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Bank Name *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="e.g., State Bank of India"
                     value={form.bank_name}
                     onChange={(e) => setForm({ ...form, bank_name: e.target.value })}
@@ -181,7 +162,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Branch Name *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Branch location"
                     value={form.branch_name}
                     onChange={(e) => setForm({ ...form, branch_name: e.target.value })}
@@ -193,8 +174,10 @@ export default function EmployeeBankDetails() {
             {/* Account Details */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiCreditCard className="w-5 h-5 text-black" />
+                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                  <FiCreditCard className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Account Details</h3>
               </div>
@@ -202,7 +185,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Holder Name *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Full name as per bank records"
                     value={form.account_holder_name}
                     onChange={(e) => setForm({ ...form, account_holder_name: e.target.value })}
@@ -211,7 +194,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Type</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.account_type}
                     onChange={(e) => setForm({ ...form, account_type: e.target.value })}
                   >
@@ -223,7 +206,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Number *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="Bank account number"
                     value={form.account_number}
                     onChange={(e) => setForm({ ...form, account_number: e.target.value })}
@@ -232,7 +215,7 @@ export default function EmployeeBankDetails() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">IFSC Code *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     placeholder="e.g., SBIN0001234"
                     value={form.ifsc_code}
                     onChange={(e) => setForm({ ...form, ifsc_code: e.target.value.toUpperCase() })}
@@ -243,7 +226,7 @@ export default function EmployeeBankDetails() {
 
             {/* Summary */}
             {form.bank_name && form.account_number && (
-              <div className="bg-gray-100 border border-black rounded-xl p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-gray-900">Bank Details Summary</h4>
                   {bankData?.verification_status && (
@@ -274,13 +257,22 @@ export default function EmployeeBankDetails() {
             )}
           </div>
 
-          <div className="flex justify-between items-center mt-8 pt-6 border-t border-black">
+          <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
             <div className="flex gap-3">
               {canVerify && bankData?.id && bankData?.verification_status !== 'verified' && (
                 <>
                   <button
                     onClick={() => verifyBankDetails('verified')}
-                    className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
+                    className="px-4 py-2 text-white rounded-xl transition-colors font-medium flex items-center gap-2"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                   >
                     <FiCheck className="w-4 h-4" />
                     Verify
@@ -290,7 +282,16 @@ export default function EmployeeBankDetails() {
                       const remarks = prompt('Enter rejection remarks (optional):');
                       if (remarks !== null) verifyBankDetails('rejected', remarks);
                     }}
-                    className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium flex items-center gap-2"
+                    className="px-4 py-2 text-white rounded-xl transition-colors font-medium flex items-center gap-2"
+                    style={{
+                      backgroundColor: 'var(--primary-color, #4575b5)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--primary-color, #4575b5)';
+                    }}
                   >
                     <FiX className="w-4 h-4" />
                     Reject
@@ -322,6 +323,7 @@ export default function EmployeeBankDetails() {
                 </button>
               )}
             </div>
+          </div>
           </div>
         </div>
       </div>
