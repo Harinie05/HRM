@@ -418,8 +418,9 @@ def download_payslip_pdf(
         
         # Return as streaming response
         # Extract year for filename
-        if hasattr(payroll_run, 'year') and payroll_run.year:
-            year_for_filename = payroll_run.year
+        year_attr = getattr(payroll_run, 'year', None)
+        if year_attr is not None and year_attr:
+            year_for_filename = year_attr
         else:
             year_for_filename = datetime.now().year
             

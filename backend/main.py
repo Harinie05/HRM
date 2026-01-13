@@ -11,6 +11,7 @@ import base64
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
+from contextlib import asynccontextmanager
 
 from database import master_engine, logger
 from utils.audit_logger import log_audit, log_error
@@ -126,7 +127,36 @@ from routes.exit.knowledge_transfer import router as knowledge_transfer_router
 
 # ============================================================
 
-app = FastAPI(title="Nutryah HRM - Multi Tenant Backend")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    create_tables()
+    yield
+    # Shutdown (if needed)
+    pass
+
+def create_tables():
+    models_master.MasterBase.metadata.create_all(bind=master_engine)
+
+    try:
+        from database import create_tenant_database, get_tenant_engine, get_master_db
+
+        master_db = next(get_master_db())
+        hospitals = master_db.query(models_master.Hospital).all()
+
+        for hospital in hospitals:
+            try:
+                create_tenant_database(hospital.db_name)
+                tenant_engine = get_tenant_engine(hospital.db_name)
+                models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
+            except:
+                pass
+
+        master_db.close()
+    except:
+        pass
+
+app = FastAPI(title="Nutryah HRM - Multi Tenant Backend", lifespan=lifespan)
 
 # Custom exception handler for RequestValidationError
 @app.exception_handler(RequestValidationError)
@@ -192,28 +222,7 @@ Path("uploads/resumes").mkdir(parents=True, exist_ok=True)
 # ---------------- STATIC FILES ----------------
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-# ---------------- STARTUP ----------------
-@app.on_event("startup")
-def create_tables():
-    models_master.MasterBase.metadata.create_all(bind=master_engine)
 
-    try:
-        from database import create_tenant_database, get_tenant_engine, get_master_db
-
-        master_db = next(get_master_db())
-        hospitals = master_db.query(models_master.Hospital).all()
-
-        for hospital in hospitals:
-            try:
-                create_tenant_database(hospital.db_name)
-                tenant_engine = get_tenant_engine(hospital.db_name)
-                models_tenant.MasterBase.metadata.create_all(bind=tenant_engine)
-            except:
-                pass
-
-        master_db.close()
-    except:
-        pass
 
 # ---------------- REGISTER ROUTERS ----------------
 app.include_router(hospital_router, prefix="/auth", tags=["Hospitals"])
