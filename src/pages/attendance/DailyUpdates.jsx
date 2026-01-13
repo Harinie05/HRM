@@ -226,39 +226,28 @@ const DailyUpdates = () => {
   return (
     <>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-        {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
-        }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiEdit className="h-6 w-6" style={{
+                <FiEdit className="h-5 w-5" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Daily Updates</h1>
-                <p className="text-gray-600 text-sm mb-1">Track your daily work progress and productivity</p>
-                <p className="text-gray-500 text-xs">Work Progress Tracking</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
-                  <FiEdit className="h-3 w-3" />
-                  <span className="text-xs font-medium">Updates</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900">{updates.length}</p>
+                <h2 className="text-lg font-semibold text-gray-900">Daily Updates Overview</h2>
+                <p className="text-sm text-gray-600">Track your daily work progress and productivity</p>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Key Performance Indicators matching Dashboard */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -329,6 +318,8 @@ const DailyUpdates = () => {
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>

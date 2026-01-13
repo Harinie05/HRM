@@ -202,17 +202,17 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
 
   return (
     <div 
-      className={`sidebar-scroll h-screen sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-3 sm:p-4'}`}
+      className={`sidebar-scroll h-screen sticky top-0 overflow-y-auto transition-all duration-300 shadow-xl z-40 border-r border-gray-200 ${isCollapsed ? 'w-16 p-2' : 'w-60 lg:w-64 p-3 sm:p-4'}`}
       style={{ 
-        background: 'var(--sidebar-bg, linear-gradient(to bottom, #6366F1, #4F46E5))',
-        color: 'var(--sidebar-text-color, #ffffff)'
+        background: 'var(--sidebar-bg, #ffffff)',
+        color: 'var(--sidebar-text-color, #1f2937)'
       }}
     >
 
       {/* Header with Logo, Title and Toggle */}
       <div className={`flex items-center ${isCollapsed ? 'justify-center mb-4' : 'mb-6'}`}>
         {/* Circular Logo */}
-        <div className={`bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center text-[#6366F1] font-bold flex-shrink-0 shadow-lg ${isCollapsed ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm mr-3'}`}>
+        <div className={`bg-blue-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-lg ${isCollapsed ? 'w-8 h-8 text-xs' : 'w-10 h-10 text-sm mr-3'}`}>
           {companyInfo.initials}
         </div>
         
@@ -220,15 +220,15 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
         {!isCollapsed && (
           <div className="flex items-center justify-between flex-1">
             <div className="flex-1">
-              <div className="font-medium text-xs leading-tight tracking-wide" style={{ color: 'var(--sidebar-text-color, #ffffff)' }}>{companyInfo.name}</div>
+              <div className="font-medium text-xs leading-tight tracking-wide" style={{ color: 'var(--sidebar-text-color, #1f2937)' }}>{companyInfo.name}</div>
             </div>
             <button 
               onClick={handleToggle}
-              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors ml-2"
+              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors ml-2"
               title="Collapse sidebar"
               type="button"
             >
-              <ChevronLeft size={16} style={{ color: 'var(--sidebar-text-color, #ffffff)' }} />
+              <ChevronLeft size={16} style={{ color: 'var(--sidebar-text-color, #1f2937)' }} />
             </button>
           </div>
         )}
@@ -238,11 +238,11 @@ export default function Sidebar({ isCollapsed = false, onToggle, isMobile = fals
       {isCollapsed && (
         <button 
           onClick={handleToggle}
-          className="w-full flex justify-center p-1.5 mb-4 hover:bg-white/10 rounded-lg transition-colors"
+          className="w-full flex justify-center p-1.5 mb-4 hover:bg-gray-100 rounded-lg transition-colors"
           title="Expand sidebar"
           type="button"
         >
-          <ChevronRight size={16} style={{ color: 'var(--sidebar-text-color, #ffffff)' }} />
+          <ChevronRight size={16} style={{ color: 'var(--sidebar-text-color, #1f2937)' }} />
         </button>
       )}
 

@@ -305,9 +305,15 @@ export default function AttendanceRules() {
                   <button 
                     onClick={() => setShowRuleModal(true)}
                     className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2"
-                    style={{ backgroundColor: colors.primary }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                    style={{ 
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
@@ -335,7 +341,7 @@ export default function AttendanceRules() {
                       <tr>
                         <td colSpan="5" className="p-8 sm:p-12 text-center text-gray-500">
                           <div className="flex flex-col items-center gap-3 sm:gap-4">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border border-black flex items-center justify-center">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
                               <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
                               </svg>
@@ -352,10 +358,10 @@ export default function AttendanceRules() {
                         <tr key={r.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
                           <td className="px-4 py-3 text-sm font-semibold text-gray-900">{r.rule_name}</td>
                           <td className="px-4 py-3 text-sm">
-                            <span className={`px-3 py-1 rounded-lg text-xs font-medium border border-black ${
-                              r.rule_type === 'Late' ? 'bg-white text-gray-800' :
-                              r.rule_type === 'Early' ? 'bg-gray-100 text-gray-800' :
-                              'bg-gray-200 text-gray-800'
+                            <span className={`px-3 py-1 rounded-lg text-xs font-medium ${
+                              r.rule_type === 'Late' ? 'bg-red-100 text-red-800' :
+                              r.rule_type === 'Early' ? 'bg-blue-100 text-blue-800' :
+                              'bg-purple-100 text-purple-800'
                             }`}>
                               {r.rule_type}
                             </span>
@@ -364,8 +370,8 @@ export default function AttendanceRules() {
                           <td className="px-4 py-3 text-sm">
                             <button
                               onClick={() => handleToggleRule(r.id, r.is_active)}
-                              className={`px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all border border-black ${
-                                r.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              className={`px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                                r.is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                               }`}
                             >
                               {r.is_active ? "Active" : "Inactive"}
@@ -376,9 +382,15 @@ export default function AttendanceRules() {
                               <button
                                 onClick={() => handleDeleteRule(r.id)}
                                 className="text-white font-medium transition-colors px-2 py-1 rounded text-xs"
-                                style={{ backgroundColor: colors.primary }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                                style={{ 
+                                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                }}
                               >
                                 {r.is_active ? 'Deactivate' : 'Activate'}
                               </button>
@@ -414,8 +426,8 @@ export default function AttendanceRules() {
                         <div className="font-semibold text-gray-900 text-sm sm:text-base">{r.rule_name}</div>
                         <button
                           onClick={() => handleToggleRule(r.id, r.is_active)}
-                          className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all border border-black ${
-                            r.is_active ? 'bg-white text-gray-800 hover:bg-gray-50' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                            r.is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
                           {r.is_active ? "Active" : "Inactive"}
@@ -424,10 +436,10 @@ export default function AttendanceRules() {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-xs sm:text-sm font-medium text-gray-900">Type:</span>
-                          <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border border-black ${
-                            r.rule_type === 'Late' ? 'bg-white text-gray-800' :
-                            r.rule_type === 'Early' ? 'bg-gray-100 text-gray-800' :
-                            'bg-gray-200 text-gray-800'
+                          <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium ${
+                            r.rule_type === 'Late' ? 'bg-red-100 text-red-800' :
+                            r.rule_type === 'Early' ? 'bg-blue-100 text-blue-800' :
+                            'bg-purple-100 text-purple-800'
                           }`}>
                             {r.rule_type}
                           </span>
@@ -442,9 +454,15 @@ export default function AttendanceRules() {
                           <button
                             onClick={() => handleDeleteRule(r.id)}
                             className="text-white font-medium transition-colors px-3 py-1 rounded text-xs sm:text-sm"
-                            style={{ backgroundColor: colors.primary }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                            style={{ 
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            }}
                           >
                             {r.is_active ? 'Deactivate' : 'Activate'}
                           </button>
@@ -469,9 +487,15 @@ export default function AttendanceRules() {
                   <button 
                     onClick={() => setShowLocationModal(true)}
                     className="text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm shadow-sm flex items-center gap-2"
-                    style={{ backgroundColor: colors.primary }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                    style={{ 
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                    }}
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
@@ -500,8 +524,8 @@ export default function AttendanceRules() {
                         <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-700 font-medium">{l.grace_time} mins</td>
                         <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-700">{l.ot_rule || 'None'}</td>
                         <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm">
-                          <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border border-black ${
-                            l.is_active ? 'bg-white text-gray-800' : 'bg-gray-200 text-gray-700'
+                          <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium ${
+                            l.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
                           }`}>
                             {l.is_active ? "Active" : "Inactive"}
                           </span>
@@ -510,9 +534,15 @@ export default function AttendanceRules() {
                           <button
                             onClick={() => handleDeleteLocation(l.id)}
                             className="text-white font-medium transition-colors px-2 py-1 rounded text-xs"
-                            style={{ backgroundColor: colors.primary }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                            style={{ 
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            }}
                           >
                             {l.is_active ? 'Deactivate' : 'Activate'}
                           </button>
@@ -544,8 +574,8 @@ export default function AttendanceRules() {
                     <div key={l.id} className="p-3 sm:p-4 border-b border-gray-200 hover:bg-gray-50">
                       <div className="flex items-center justify-between mb-3">
                         <div className="font-semibold text-gray-900 text-sm sm:text-base">{l.location_name}</div>
-                        <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium border border-black ${
-                          l.is_active ? 'bg-white text-gray-800' : 'bg-gray-200 text-gray-700'
+                        <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium ${
+                          l.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
                         }`}>
                           {l.is_active ? "Active" : "Inactive"}
                         </span>
@@ -564,9 +594,15 @@ export default function AttendanceRules() {
                         <button
                           onClick={() => handleDeleteLocation(l.id)}
                           className="text-white font-medium transition-colors px-3 py-1 rounded text-xs sm:text-sm"
-                          style={{ backgroundColor: colors.primary }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                          style={{ 
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                          }}
                         >
                           {l.is_active ? 'Deactivate' : 'Activate'}
                         </button>
@@ -582,7 +618,7 @@ export default function AttendanceRules() {
         {/* Add Rule Modal */}
         {showRuleModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg border border-black shadow-xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-xl p-6 w-full max-w-md">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Rule</h3>
               <div className="space-y-4">
                 <div>
@@ -591,7 +627,10 @@ export default function AttendanceRules() {
                     type="text"
                     value={ruleForm.rule_name}
                     onChange={(e) => setRuleForm({...ruleForm, rule_name: e.target.value})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     placeholder="e.g., Late Entry Default"
                   />
                 </div>
@@ -600,7 +639,10 @@ export default function AttendanceRules() {
                   <select
                     value={ruleForm.rule_type}
                     onChange={(e) => setRuleForm({...ruleForm, rule_type: e.target.value})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   >
                     <option value="Late">Late</option>
                     <option value="Early">Early</option>
@@ -613,7 +655,10 @@ export default function AttendanceRules() {
                     type="number"
                     value={ruleForm.value}
                     onChange={(e) => setRuleForm({...ruleForm, value: parseInt(e.target.value)})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
               </div>
@@ -621,15 +666,21 @@ export default function AttendanceRules() {
                 <button
                   onClick={handleAddRule}
                   className="flex-1 text-white py-3 rounded-lg font-medium transition-colors"
-                  style={{ backgroundColor: colors.primary }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  style={{ 
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
                 >
                   Add Rule
                 </button>
                 <button
                   onClick={() => setShowRuleModal(false)}
-                  className="flex-1 bg-gray-100 text-gray-700 border border-black py-3 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+                  className="flex-1 bg-gray-100 text-gray-700 border border-gray-200 py-3 rounded-lg hover:bg-gray-200 font-medium transition-colors"
                 >
                   Cancel
                 </button>
@@ -641,7 +692,7 @@ export default function AttendanceRules() {
         {/* Add Location Modal */}
         {showLocationModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg border border-black shadow-xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-xl p-6 w-full max-w-md">
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Add Attendance Location</h3>
               <div className="space-y-4">
                 <div>
@@ -650,7 +701,10 @@ export default function AttendanceRules() {
                     type="text"
                     value={locationForm.location_name}
                     onChange={(e) => setLocationForm({...locationForm, location_name: e.target.value})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     placeholder="e.g., Main Office"
                   />
                 </div>
@@ -660,7 +714,10 @@ export default function AttendanceRules() {
                     type="number"
                     value={locationForm.grace_time}
                     onChange={(e) => setLocationForm({...locationForm, grace_time: parseInt(e.target.value)})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                   />
                 </div>
                 <div>
@@ -669,7 +726,10 @@ export default function AttendanceRules() {
                     type="text"
                     value={locationForm.ot_rule}
                     onChange={(e) => setLocationForm({...locationForm, ot_rule: e.target.value})}
-                    className="w-full border border-black rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    style={{
+                      focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     placeholder="e.g., OT > 30 mins"
                   />
                 </div>
@@ -678,15 +738,21 @@ export default function AttendanceRules() {
                 <button
                   onClick={handleAddLocation}
                   className="flex-1 text-white py-3 rounded-lg font-medium transition-colors"
-                  style={{ backgroundColor: colors.primary }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
+                  style={{ 
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
                 >
                   Add Location
                 </button>
                 <button
                   onClick={() => setShowLocationModal(false)}
-                  className="flex-1 bg-gray-100 text-gray-700 border border-black py-3 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+                  className="flex-1 bg-gray-100 text-gray-700 border border-gray-200 py-3 rounded-lg hover:bg-gray-200 font-medium transition-colors"
                 >
                   Cancel
                 </button>

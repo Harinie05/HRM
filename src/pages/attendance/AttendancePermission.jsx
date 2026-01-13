@@ -165,39 +165,28 @@ export default function AttendancePermission() {
 
   return (
     <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-      {/* Hero Header matching Dashboard */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
-        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
-      }}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <FiShield className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Permission</h1>
-              <p className="text-gray-600 text-sm mb-1">Manage attendance permission requests and approvals</p>
-              <p className="text-gray-500 text-xs">{list.length} Requests • Permission Management</p>
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-              <div className="flex items-center gap-2 text-gray-600 mb-1">
-                <FiFileText className="h-3 w-3" />
-                <span className="text-xs font-medium">Requests</span>
-              </div>
-              <p className="text-sm font-semibold text-gray-900">{list.length}</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Key Performance Indicators matching Dashboard */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiShield className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Permission Overview</h2>
+                <p className="text-sm text-gray-600">Manage attendance permission requests and approvals</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
@@ -265,7 +254,9 @@ export default function AttendancePermission() {
             </div>
           </div>
         </div>
-      </div>
+            </div>
+          </div>
+        </div>
 
       {/* Apply Permission */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
@@ -445,63 +436,52 @@ export default function AttendancePermission() {
               <p className="text-gray-600">Permission requests will appear here once submitted</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {list.map(r => {
                 const employee = employees.find(emp => emp.id == r.employee_id);
                 return (
-                  <div key={r.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 rounded-xl transition-all duration-300" style={{
+                  <div key={r.id} className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg" style={{
                           backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
                         }}>
-                          <FiUser className="h-6 w-6" style={{
+                          <FiUser className="h-4 w-4" style={{
                             color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }} />
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-gray-900">
+                          <h3 className="text-sm font-bold text-gray-900">
                             {employee ? `${employee.employee_code || `EMP${employee.id}`} - ${employee.name}` : `Employee ID: ${r.employee_id}`}
                           </h3>
-                          <p className="text-sm text-gray-600 mt-1">{r.date} • {r.request_type.replace("_", " ")}</p>
+                          <p className="text-xs text-gray-600 mt-1">{r.date} • {r.request_type.replace("_", " ")}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className={`w-2 h-2 rounded-full ${
-                            r.status === 'Approved' ? 'bg-green-400' : 
-                            r.status === 'Rejected' ? 'bg-red-400' : 'bg-yellow-400'
-                          }`}></div>
-                          <span className="text-xs font-medium text-gray-700">{r.status}</span>
-                        </div>
-                      </div>
+                      <div className={`w-2 h-2 rounded-full ${
+                        r.status === 'Approved' ? 'bg-green-400' : 
+                        r.status === 'Rejected' ? 'bg-red-400' : 'bg-yellow-400'
+                      }`}></div>
                     </div>
                     
-                    <div className="space-y-3">
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        <div className="flex justify-between items-start mb-2">
+                    <div className="space-y-2">
+                      <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
+                        <div className="flex justify-between items-start mb-1">
                           <span className="text-xs text-gray-600">Reason</span>
-                          <span className="text-sm font-bold text-gray-900 text-right break-words">
+                          <span className="text-xs font-medium text-gray-900 text-right break-words">
                             {r.reason}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-gray-600">Status</span>
-                          <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${
-                              r.status === 'Approved' ? 'bg-green-400' : 
-                              r.status === 'Rejected' ? 'bg-red-400' : 'bg-yellow-400'
-                            }`}></div>
-                            <span className="text-xs font-medium text-gray-700">{r.status}</span>
-                          </div>
+                          <span className="text-xs font-medium text-gray-700">{r.status}</span>
                         </div>
                       </div>
                       
                       {canApprove && r.status === "Pending" && (
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 pt-1">
                           <button
                             onClick={() => updateStatus(r.id, "approve")}
-                            className="flex-1 text-white px-4 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                            className="flex-1 text-white px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center justify-center gap-1 text-xs"
                             style={{
                               backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
@@ -513,14 +493,14 @@ export default function AttendancePermission() {
                               e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
                             }}
                           >
-                            <FiCheckCircle className="w-4 h-4" />
+                            <FiCheckCircle className="w-3 h-3" />
                             Approve
                           </button>
                           <button
                             onClick={() => updateStatus(r.id, "reject")}
-                            className="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2"
+                            className="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 text-xs"
                           >
-                            <FiXCircle className="w-4 h-4" />
+                            <FiXCircle className="w-3 h-3" />
                             Reject
                           </button>
                         </div>

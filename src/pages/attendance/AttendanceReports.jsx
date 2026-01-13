@@ -59,39 +59,27 @@ export default function AttendanceReports() {
   return (
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
-        {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
-        }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Header */}
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <FiBarChart className="h-6 w-6" style={{
+                <FiBarChart className="h-5 w-5" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Attendance Reports</h1>
-                <p className="text-gray-600 text-sm mb-1">Comprehensive attendance analytics and reporting dashboard</p>
-                <p className="text-gray-500 text-xs">Real-time Analytics</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
-                  <FiFileText className="h-3 w-3" />
-                  <span className="text-xs font-medium">Reports</span>
-                </div>
-                <p className="text-sm font-semibold text-gray-900">{report.length}</p>
+                <h2 className="text-lg font-semibold text-gray-900">Reports Overview</h2>
+                <p className="text-sm text-gray-600">Comprehensive attendance analytics and reporting dashboard</p>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Key Performance Indicators matching Dashboard */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
@@ -159,6 +147,8 @@ export default function AttendanceReports() {
               </div>
             </div>
           </div>
+            </div>
+          </div>
         </div>
 
         {/* Report Actions matching Dashboard */}
@@ -219,7 +209,7 @@ export default function AttendanceReports() {
         </div>
 
         {/* Report Content matching Dashboard */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>

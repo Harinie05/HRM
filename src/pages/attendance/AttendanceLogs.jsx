@@ -804,86 +804,105 @@ export default function AttendanceLogs() {
         />
         
         <div className="p-4 sm:p-6 pt-16 sm:pt-20 lg:pt-24 space-y-4 sm:space-y-6">
-          {/* Header */}
-          <div className="bg-white rounded-lg border-2 border-black mb-6 p-4 sm:p-6">
+          {/* Hero Header matching User.jsx */}
+          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+            background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+          }}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg border border-black flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <svg className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
                   </svg>
                 </div>
-                <div>
-                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Attendance Management</h1>
-                  <p className="text-sm sm:text-base text-gray-600">Advanced tracking with Web & Mobile GPS, smart regularization, and comprehensive reporting</p>
-                  <div className="flex items-center space-x-3 mt-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                      <span className="text-xs text-gray-500">{logs.length} Active Records</span>
-                    </div>
-                    <div className="w-px h-3 bg-gray-300"></div>
-                    <span className="text-xs text-gray-600">Real-time Attendance Tracking</span>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Attendance Management</h1>
+                  <p className="text-gray-600 text-xs sm:text-sm mb-1">Advanced tracking with Web & Mobile GPS, smart regularization</p>
+                  <p className="text-gray-500 text-xs hidden sm:block">Real-time Attendance Tracking</p>
+                </div>
+              </div>
+              <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+                <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                  <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                    </svg>
+                    <span className="text-xs font-medium">Records</span>
                   </div>
+                  <p className="text-sm font-semibold text-gray-900">{logs.length}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="bg-white rounded-lg border border-black p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-6">
-              <span className="text-sm text-gray-600">Attendance</span>
-              <div className="flex items-center bg-gray-100 rounded-full border border-black p-1 overflow-x-auto scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      setActiveTab(tab.id);
-                      // Reset all button styles
-                      setTimeout(() => {
-                        const buttons = document.querySelectorAll('[data-tab-button]');
-                        buttons.forEach(btn => {
-                          if (btn.getAttribute('data-tab-id') !== tab.id) {
-                            btn.style.backgroundColor = 'transparent';
-                            btn.style.color = '#6b7280';
-                          }
-                        });
-                      }, 0);
-                    }}
-                    data-tab-button
-                    data-tab-id={tab.id}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                      activeTab === tab.id
-                        ? "text-white" 
-                        : "text-gray-500"
-                    }`}
-                    style={{
-                      backgroundColor: activeTab === tab.id ? colors.primary : 'transparent',
-                      color: activeTab === tab.id ? 'white' : '#6b7280'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== tab.id) {
-                        e.target.style.backgroundColor = colors.secondary;
-                        e.target.style.color = 'white';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== tab.id) {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.color = '#6b7280';
-                      }
-                    }}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+          {/* Tab Navigation matching User.jsx */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <svg className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Attendance Directory</h3>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-5 space-y-4">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Filter</span>
+                    <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                      {tabs.map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                            activeTab === tab.id 
+                              ? "bg-white text-gray-900 shadow-sm" 
+                              : "text-gray-600 hover:text-gray-900"
+                          }`}
+                          style={{
+                            backgroundColor: activeTab === tab.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                            color: activeTab === tab.id ? 'white' : '#6b7280'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (activeTab !== tab.id) {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                              e.target.style.color = 'white';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (activeTab !== tab.id) {
+                              e.target.style.backgroundColor = 'transparent';
+                              e.target.style.color = '#6b7280';
+                            }
+                          }}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
             {activeTab === 'logs' && (
               <div className="p-4 sm:p-6">
                 {/* Employee Selection */}
-                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-black">
+                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-lg border border-gray-200">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -902,7 +921,10 @@ export default function AttendanceLogs() {
                               fetchLogs();
                             }
                           }}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           disabled={employeesLoading}
                         >
                           <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
@@ -913,7 +935,7 @@ export default function AttendanceLogs() {
                           ))}
                         </select>
                       ) : (
-                        <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700">
+                        <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
                           {employeesLoading ? (
                             <div className="flex items-center gap-2">
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -953,7 +975,10 @@ export default function AttendanceLogs() {
                                 setSelectedLocation(e.target.value);
                               }
                             }}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           >
                             {officeLocations.map((location) => (
                               <option key={location.id} value={location.id}>
@@ -969,7 +994,10 @@ export default function AttendanceLogs() {
                               value={newLocationName}
                               onChange={(e) => setNewLocationName(e.target.value)}
                               placeholder="Enter location name"
-                              className="flex-1 px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                              className="flex-1 px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                              style={{
+                                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                              }}
                             />
                             <div className="flex gap-2 sm:gap-4">
                               <button
@@ -989,7 +1017,16 @@ export default function AttendanceLogs() {
                                     }
                                   }
                                 }}
-                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg hover:bg-gray-100 font-medium text-sm transition-colors"
+                                className="px-3 sm:px-4 py-2 text-white rounded-lg font-medium text-sm transition-colors"
+                                style={{
+                                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                }}
                               >
                                 Add
                               </button>
@@ -998,7 +1035,7 @@ export default function AttendanceLogs() {
                                   setShowAddLocation(false);
                                   setNewLocationName('');
                                 }}
-                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 border border-black rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
+                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-sm transition-colors"
                               >
                                 Cancel
                               </button>
@@ -1011,15 +1048,15 @@ export default function AttendanceLogs() {
                 </div>
 
                 {selectedEmployee && !attendanceMode && currentStatus === 'not_checked_in' && canMarkAttendance && (
-                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-black shadow-xl">
+                  <div className="mb-6 sm:mb-8 p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-gray-200 shadow-xl">
                     <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6 text-gray-900">Choose Attendance Mode</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <button
                         onClick={() => setAttendanceMode('WEB')}
-                        className="group p-4 sm:p-6 lg:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
+                        className="group p-4 sm:p-6 lg:p-8 border border-gray-200 rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
                       >
                         <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
                             <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
                             </svg>
@@ -1072,10 +1109,10 @@ export default function AttendanceLogs() {
                             }
                           );
                         }}
-                        className="group p-4 sm:p-6 lg:p-8 border border-black rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
+                        className="group p-4 sm:p-6 lg:p-8 border border-gray-200 rounded-3xl hover:bg-gray-50 transition-all duration-300 text-left shadow-lg hover:shadow-xl"
                       >
                         <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-black rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
                             <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                             </svg>
@@ -1093,7 +1130,7 @@ export default function AttendanceLogs() {
                 )}
 
                 {selectedEmployee && attendanceMode && (
-                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-black">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-gray-200">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${
@@ -1134,7 +1171,7 @@ export default function AttendanceLogs() {
                   <div>
                     {currentStatus === 'not_checked_in' && attendanceMode && (
                       <div className="text-center mb-6 sm:mb-8">
-                        <div className="inline-block p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-black shadow-2xl">
+                        <div className="inline-block p-4 sm:p-6 lg:p-8 bg-white rounded-3xl border border-gray-200 shadow-2xl">
                           <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg">
                             Ready to check in using <span className="font-bold text-gray-900">{attendanceMode}</span> mode
                             {attendanceMode === 'MOBILE' && gpsPermissionGranted && (
@@ -1144,7 +1181,16 @@ export default function AttendanceLogs() {
                           <button 
                             onClick={() => currentStatus === 'checked_in' ? handlePunchOut(attendanceMode) : handlePunchIn(attendanceMode)}
                             disabled={loading}
-                            className="py-2 sm:py-3 lg:py-4 px-4 sm:px-6 lg:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 mx-auto shadow-xl hover:shadow-2xl bg-white text-black border border-black hover:bg-gray-100"
+                            className="py-2 sm:py-3 lg:py-4 px-4 sm:px-6 lg:px-8 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 mx-auto shadow-xl hover:shadow-2xl text-white"
+                            style={{
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            }}
                           >
                             <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 20 20">
                               {attendanceMode === 'WEB' ? (
@@ -1171,7 +1217,7 @@ export default function AttendanceLogs() {
                     )}
                     
                     {currentStatus === 'checked_in' && (
-                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-black">
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white rounded-lg border border-gray-200">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                           <div>
                             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">Check Out</h3>
@@ -1182,7 +1228,16 @@ export default function AttendanceLogs() {
                           <button 
                             onClick={() => handlePunchOut(checkInSource)}
                             disabled={loading}
-                            className="py-2 px-3 sm:px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl bg-white text-black border border-black hover:bg-gray-100"
+                            className="py-2 px-3 sm:px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-white"
+                            style={{
+                              backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                            }}
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
@@ -1197,7 +1252,7 @@ export default function AttendanceLogs() {
                 
                 {loading && (
                   <div className="text-center py-6 sm:py-8">
-                    <div className="inline-flex items-center gap-2 sm:gap-3 text-gray-600 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg border border-black">
+                    <div className="inline-flex items-center gap-2 sm:gap-3 text-gray-600 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg border border-gray-200">
                       <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1213,7 +1268,7 @@ export default function AttendanceLogs() {
           <div className="bg-white rounded-lg border border-black overflow-hidden">
             {activeTab === 'logs' && (
               <div>
-                <div className="px-4 py-3 bg-gray-50 border-b border-black">
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
                   <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                     Punch Logs - {new Date().toLocaleDateString('en-US', { 
                       weekday: 'long', 
@@ -1377,7 +1432,7 @@ export default function AttendanceLogs() {
             {activeTab === 'regularization' && (
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                  <div className="bg-gray-50 rounded-lg border border-black p-4 sm:p-6 lg:p-8">
+                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 sm:p-6 lg:p-8">
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Submit Regularization Request</h3>
                     <div className="space-y-4 sm:space-y-6">
                       <div>
@@ -1386,7 +1441,10 @@ export default function AttendanceLogs() {
                           <select
                             value={regularizationForm.employee_id}
                             onChange={(e) => setRegularizationForm({...regularizationForm, employee_id: e.target.value})}
-                            className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                             disabled={employeesLoading}
                           >
                             <option value="">{employeesLoading ? 'Loading employees...' : 'Select Employee'}</option>
@@ -1397,7 +1455,7 @@ export default function AttendanceLogs() {
                             ))}
                           </select>
                         ) : (
-                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-black rounded-lg text-gray-700 text-sm sm:text-base">
+                          <div className="w-full px-3 sm:px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 text-sm sm:text-base">
                             {employeesLoading ? (
                               <div className="flex items-center gap-2">
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
@@ -1429,7 +1487,10 @@ export default function AttendanceLogs() {
                           type="date"
                           value={regularizationForm.date}
                           onChange={(e) => setRegularizationForm({...regularizationForm, date: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                         />
                       </div>
                       <div>
@@ -1437,7 +1498,10 @@ export default function AttendanceLogs() {
                         <select
                           value={regularizationForm.issue_type}
                           onChange={(e) => setRegularizationForm({...regularizationForm, issue_type: e.target.value})}
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                         >
                           <option value="Missed IN">Missed IN</option>
                           <option value="Missed OUT">Missed OUT</option>
@@ -1450,13 +1514,16 @@ export default function AttendanceLogs() {
                           value={regularizationForm.reason}
                           onChange={(e) => setRegularizationForm({...regularizationForm, reason: e.target.value})}
                           rows="4"
-                          className="w-full px-3 sm:px-4 py-2 bg-white border border-black rounded-lg focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm sm:text-base resize-none"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           placeholder="Explain the reason for regularization..."
                         ></textarea>
                       </div>
                       <button
                         onClick={handleRegularizationSubmit}
-                        className="w-full py-2 sm:py-3 text-white border border-black rounded-lg font-medium transition-colors text-sm sm:text-base"
+                        className="w-full py-2 sm:py-3 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
                         style={{ backgroundColor: colors.primary }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
                         onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
@@ -1470,13 +1537,13 @@ export default function AttendanceLogs() {
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Pending Requests</h3>
                     <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
                       {regularizationRequests.map((request) => (
-                        <div key={request.id} className="p-3 sm:p-4 border border-black rounded-lg">
+                        <div key={request.id} className="p-3 sm:p-4 border border-gray-200 rounded-lg">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
                             <div>
                               <p className="font-semibold text-gray-900 text-sm sm:text-base">{request.employee}</p>
                               <p className="text-xs sm:text-sm text-gray-600">{request.date} - {request.type}</p>
                             </div>
-                            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold border border-black self-start ${
+                            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold self-start ${
                               request.status === 'Pending' ? 'bg-gray-100 text-gray-800' :
                               request.status === 'Approved' ? 'bg-gray-100 text-gray-800' :
                               'bg-gray-100 text-gray-800'
@@ -1489,7 +1556,7 @@ export default function AttendanceLogs() {
                             <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => handleApprove(request.id)}
-                                className="px-3 sm:px-4 py-2 text-white border border-black rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                                className="px-3 sm:px-4 py-2 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
                                 style={{ backgroundColor: colors.primary }}
                                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
                                 onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
@@ -1498,7 +1565,7 @@ export default function AttendanceLogs() {
                               </button>
                               <button
                                 onClick={() => handleReject(request.id)}
-                                className="px-3 sm:px-4 py-2 bg-white text-black border border-black rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors"
+                                className="px-3 sm:px-4 py-2 bg-white text-black border border-gray-200 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors"
                               >
                                 Reject
                               </button>
