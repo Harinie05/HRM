@@ -79,29 +79,29 @@ export default function OrganizationLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching User Management */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
                 </svg>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Organization Setup</h1>
-                <p className="text-gray-600 text-sm mb-1">Configure company profile, departments, branches and organizational structure</p>
-                <p className="text-gray-500 text-xs">Company Structure & Setup</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Organization Setup</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Configure company profile, departments, branches and organizational structure</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Company Structure & Setup</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
                   </svg>
@@ -132,17 +132,17 @@ export default function OrganizationLayout() {
             </div>
           </div>
           
-          <div className="p-5 space-y-4">
+          <div className="p-4 sm:p-5 space-y-4">
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Setup</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <span className="text-sm text-gray-600 whitespace-nowrap">Setup</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                   {visibleTabs.map((tabItem) => {
                     return (
                       <button
                         key={tabItem.name}
                         onClick={() => setTab(tabItem.name)}
-                        className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
                           tab === tabItem.name 
                             ? "bg-white text-gray-900 shadow-sm" 
                             : "text-gray-600 hover:text-gray-900"

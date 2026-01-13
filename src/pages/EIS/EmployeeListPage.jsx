@@ -333,21 +333,21 @@ export default function EmployeeListPage() {
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mx-auto sm:mx-0" style={{
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 min-w-0 flex-1">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mx-auto sm:mx-0 flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
                 <Users className="w-6 h-6 sm:w-8 sm:h-8" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Employee Directory & Profiles</h1>
+              <div className="text-center sm:text-left min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 truncate">Employee Directory & Profiles</h1>
                 <p className="text-gray-600 text-base sm:text-lg mb-1">Comprehensive employee information management and profile system</p>
                 <p className="text-gray-500 text-sm">Employee Information System</p>
               </div>
             </div>
-            <div className="text-center sm:text-right">
+            <div className="text-center sm:text-right flex-shrink-0">
               <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Employees</span>

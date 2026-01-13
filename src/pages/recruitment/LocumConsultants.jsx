@@ -347,27 +347,27 @@ const LocumConsultants = () => {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <User className="w-6 h-6" style={{
+                <User className="w-5 h-5 sm:w-6 sm:h-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Locum / Visiting Consultants</h1>
-                <p className="text-gray-600 text-sm mb-1">Manage temporary and part-time medical consultants</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Locum / Visiting Consultants</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage temporary and part-time medical consultants</p>
                 <p className="text-gray-500 text-xs">Consultant Management System</p>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-center lg:text-right">
               <div className="inline-flex items-center gap-2 text-gray-600 px-3 py-1 border border-gray-200 rounded-lg">
-                <span className="text-sm font-medium">{consultants.length} Consultants</span>
+                <span className="text-xs sm:text-sm font-medium">{consultants.length} Consultants</span>
               </div>
             </div>
           </div>

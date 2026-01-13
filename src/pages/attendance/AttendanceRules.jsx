@@ -180,34 +180,122 @@ export default function AttendanceRules() {
           </div>
         </div>
 
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Rules</p>
+                <p className="text-2xl font-bold text-gray-900">{rules.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Attendance policies</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiSettings className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Rules</p>
+                <p className="text-2xl font-bold text-gray-900">{rules.filter(r => r.is_active).length}</p>
+                <p className="text-gray-400 text-xs mt-1">Currently enabled</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiToggleRight className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Locations</p>
+                <p className="text-2xl font-bold text-gray-900">{locations.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Configured sites</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiMapPin className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
+                <p className="text-2xl font-bold text-gray-900">{locations.length > 0 ? Math.max(...locations.map(l => l.grace_time || 0)) : 0}</p>
+                <p className="text-gray-400 text-xs mt-1">Max minutes</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiClock className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Status Filter */}
-          <div className="lg:col-span-2 bg-white rounded-lg border border-black p-3 sm:p-4">
+          <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <FiSettings className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Filter Options</h3>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <span className="text-sm font-medium text-gray-700">Status Filter:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
+                className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
                 <option value="all">All</option>
               </select>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 sm:ml-auto">
-                <div className="inline-flex items-center bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-600 border border-black">
+                <div className="inline-flex items-center bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-600 border border-gray-200">
                   Rules: {rules.length}
                 </div>
-                <div className="inline-flex items-center bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-600 border border-black">
+                <div className="inline-flex items-center bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-600 border border-gray-200">
                   Locations: {locations.length}
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
           {/* ATTENDANCE RULES */}
-          <div className="bg-white rounded-lg border border-black shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">Attendance Rules</h3>
@@ -370,8 +458,8 @@ export default function AttendanceRules() {
           </div>
 
           {/* ATTENDANCE LOCATIONS */}
-          <div className="bg-white rounded-lg border border-black shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">Attendance Locations</h3>

@@ -197,9 +197,9 @@ export default function EmployeeProfile() {
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 min-w-0 flex-1">
               <div 
-                className="relative w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-xl flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300 overflow-hidden group shadow-lg mx-auto sm:mx-0"
+                className="relative w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-xl flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300 overflow-hidden group shadow-lg mx-auto sm:mx-0 flex-shrink-0"
                 onClick={() => setShowPhotoUpload(true)}
                 style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -226,13 +226,13 @@ export default function EmployeeProfile() {
                   </div>
                 )}
               </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{employee.candidate_name}</h1>
+              <div className="text-center sm:text-left min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 truncate">{employee.candidate_name}</h1>
                 <p className="text-gray-600 text-base sm:text-lg mb-1">{employee.job_title} · {employee.department || 'HR Department'}</p>
                 <p className="text-gray-500 text-sm">Employee ID: {employee.employee_id}</p>
               </div>
             </div>
-            <div className="text-center sm:text-right">
+            <div className="text-center sm:text-right flex-shrink-0">
               <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Status</span>

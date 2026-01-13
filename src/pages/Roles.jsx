@@ -709,29 +709,29 @@ export default function Roles() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <svg className="h-6 w-6" style={{
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Roles & Permissions</h1>
-                <p className="text-gray-600 text-sm mb-1">Define role templates and attach permission sets for access control</p>
-                <p className="text-gray-500 text-xs">Access Control & Security Management</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Roles & Permissions</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Define role templates and attach permission sets for access control</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Access Control & Security Management</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
@@ -739,8 +739,8 @@ export default function Roles() {
                 </div>
                 <p className="text-sm font-semibold text-gray-900">{roles.length}</p>
               </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                   </svg>

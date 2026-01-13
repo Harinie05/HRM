@@ -124,21 +124,21 @@ export default function JobRequisition() {
     <Layout>
       <div className="p-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <Users className="h-6 w-6" style={{
+                <Users className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Job Requisition</h1>
-                <p className="text-gray-600 text-sm mb-1">Manage job postings and recruitment process</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Job Requisition</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage job postings and recruitment process</p>
                 <p className="text-gray-500 text-xs">{requisitions.length} Active Jobs • Real-time Updates</p>
               </div>
             </div>
@@ -146,7 +146,7 @@ export default function JobRequisition() {
             {canAdd && (
               <button
                 onClick={openCreate}
-                className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap hover:shadow-lg hover:transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 text-white px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium whitespace-nowrap hover:shadow-lg hover:transform hover:-translate-y-0.5 w-full sm:w-auto"
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}

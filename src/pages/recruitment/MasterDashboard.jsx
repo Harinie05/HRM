@@ -141,38 +141,38 @@ export default function MasterDashboard() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
               }}>
-                <Users className="h-6 w-6" style={{
+                <Users className="h-5 w-5 sm:h-6 sm:w-6" style={{
                   color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }} />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Recruitment & Onboarding Pipeline</h1>
-                <p className="text-gray-600 text-sm mb-1">Overview of recruitment activities and candidate pipeline</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Recruitment & Onboarding Pipeline</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Overview of recruitment activities and candidate pipeline</p>
                 <p className="text-gray-500 text-xs">Talent Acquisition Pipeline</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
-                  <Briefcase className="h-3 w-3" />
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <Briefcase className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Active Jobs</span>
                 </div>
-                <p className="text-sm font-semibold text-gray-900">{loading ? "..." : metrics.activeJobs}</p>
+                <p className="text-xs sm:text-sm font-semibold text-gray-900">{loading ? "..." : metrics.activeJobs}</p>
               </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
-                  <Calendar className="h-3 w-3" />
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <Calendar className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Today</span>
                 </div>
-                <p className="text-sm font-semibold text-gray-900">{new Date().toLocaleDateString('en-US', { 
+                <p className="text-xs sm:text-sm font-semibold text-gray-900">{new Date().toLocaleDateString('en-US', { 
                   month: 'short', 
                   day: 'numeric' 
                 })}</p>

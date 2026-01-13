@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiEdit, FiCalendar, FiClock } from 'react-icons/fi';
+import { FiPlus, FiEdit, FiCalendar, FiClock, FiFileText, FiCheckCircle } from 'react-icons/fi';
 import api from '../../api';
 import useToast from '../../utils/useToast';
 import Toast from '../../components/Toast';
@@ -225,36 +225,149 @@ const DailyUpdates = () => {
 
   return (
     <>
-      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        {/* Header */}
-        <div className="bg-white rounded-xl border border-black shadow-sm p-6">
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header matching Dashboard */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                <FiEdit className="w-6 h-6 text-gray-700" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiEdit className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Daily Updates</h1>
-                <p className="text-gray-600 text-sm">Track your daily work progress</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Daily Updates</h1>
+                <p className="text-gray-600 text-sm mb-1">Track your daily work progress and productivity</p>
+                <p className="text-gray-500 text-xs">Work Progress Tracking</p>
               </div>
             </div>
-            {canAdd && (
-              <button
-                onClick={handleNewUpdate}
-                className="text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-              >
-                <FiPlus size={16} />
-                New Update
-              </button>
-            )}
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiEdit className="h-3 w-3" />
+                  <span className="text-xs font-medium">Updates</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{updates.length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Performance Indicators matching Dashboard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Updates</p>
+                <p className="text-2xl font-bold text-gray-900">{updates.length}</p>
+                <p className="text-gray-400 text-xs mt-1">All entries</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiEdit className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Draft Updates</p>
+                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => u.status === 'Draft').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Pending submission</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Submitted</p>
+                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => u.status === 'Submitted').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Completed entries</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCheckCircle className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">This Week</p>
+                <p className="text-2xl font-bold text-gray-900">{updates.filter(u => {
+                  const updateDate = new Date(u.date);
+                  const now = new Date();
+                  const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+                  return updateDate >= weekStart;
+                }).length}</p>
+                <p className="text-gray-400 text-xs mt-1">Recent activity</p>
+              </div>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiCalendar className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Employee Selection */}
-        <div className="bg-white rounded-xl border border-black shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiEdit className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Employee Selection</h3>
+              </div>
+              {canAdd && (
+                <button
+                  onClick={handleNewUpdate}
+                  className="text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+                  style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                  onMouseEnter={(e) => {
+                    const hoverColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                    e.target.style.backgroundColor = hoverColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                  }}
+                >
+                  <FiPlus className="w-4 h-4" />
+                  New Update
+                </button>
+              )}
+            </div>
+          </div>
+          
+          <div className="p-5">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
             {isAdmin() ? (
@@ -302,6 +415,7 @@ const DailyUpdates = () => {
                 })()}
               </div>
             )}
+          </div>
           </div>
         </div>
 
@@ -432,8 +546,28 @@ const DailyUpdates = () => {
         )}
 
         {/* Updates List */}
-        <div className="bg-white rounded-2xl border border-black p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">My Daily Updates</h2>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+          }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiEdit className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">My Daily Updates</h2>
+                  <p className="text-gray-600">Track and manage your daily work progress</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6">
           
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
@@ -623,6 +757,7 @@ const DailyUpdates = () => {
                 })}
               </div>
             )}
+          </div>
           </div>
         </div>
       </div>
