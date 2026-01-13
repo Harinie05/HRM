@@ -198,7 +198,9 @@ export default function EmployeeReporting() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-gray-100 border border-black rounded-2xl flex items-center justify-center">
-              <FiUsers className="w-8 h-8 text-black" />
+              <FiUsers className="w-8 h-8" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-1">
@@ -249,7 +251,9 @@ export default function EmployeeReporting() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-5 h-5 text-black" />
+                  <FiUsers className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Organizational Level Assignment</h3>
               </div>
@@ -286,7 +290,9 @@ export default function EmployeeReporting() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-black" />
+                  <FiUser className="w-5 h-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Select Reporting Manager</h3>
               </div>

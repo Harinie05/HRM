@@ -376,46 +376,96 @@ const LocumConsultants = () => {
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <div className="p-4 sm:p-6">
             {/* Tab Navigation */}
-            <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-black mb-6">
-              {(isAdmin() || hasPermission('view_consultants')) && (
-                <button
-                  onClick={() => setActiveTab('list')}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                    activeTab === 'list'
-                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <User className="inline mr-2" size={16} />
-                  Consultant List
-                </button>
-              )}
-              {(isAdmin() || hasPermission('view_availability')) && (
-                <button
-                  onClick={() => setActiveTab('availability')}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                    activeTab === 'availability'
-                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <Calendar className="inline mr-2" size={16} />
-                  Availability
-                </button>
-              )}
-              {(isAdmin() || hasPermission('view_payouts')) && (
-                <button
-                  onClick={() => setActiveTab('payouts')}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
-                    activeTab === 'payouts'
-                      ? 'bg-white text-gray-900 shadow-sm border border-gray-300'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <DollarSign className="inline mr-2" size={16} />
-                  Payouts
-                </button>
-              )}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Consultant Management</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                  {(isAdmin() || hasPermission('view_consultants')) && (
+                    <button
+                      onClick={() => setActiveTab('list')}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        activeTab === 'list' 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: activeTab === 'list' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: activeTab === 'list' ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeTab !== 'list') {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeTab !== 'list') {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      Consultant List
+                    </button>
+                  )}
+                  {(isAdmin() || hasPermission('view_availability')) && (
+                    <button
+                      onClick={() => setActiveTab('availability')}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        activeTab === 'availability' 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: activeTab === 'availability' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: activeTab === 'availability' ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeTab !== 'availability') {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeTab !== 'availability') {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      Availability
+                    </button>
+                  )}
+                  {(isAdmin() || hasPermission('view_payouts')) && (
+                    <button
+                      onClick={() => setActiveTab('payouts')}
+                      className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                        activeTab === 'payouts' 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: activeTab === 'payouts' ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: activeTab === 'payouts' ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeTab !== 'payouts') {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeTab !== 'payouts') {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      Payouts
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Tab Content */}
@@ -492,7 +542,7 @@ const LocumConsultants = () => {
                 </div>
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -515,7 +565,7 @@ const LocumConsultants = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white">
                     {filteredConsultants.length === 0 ? (
                       <tr>
                         <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
@@ -576,7 +626,7 @@ const LocumConsultants = () => {
                               {canEditConsultant && (
                                 <button
                                   onClick={() => handleEdit(consultant)}
-                                  className="text-blue-600 hover:text-blue-900"
+                                  className="text-yellow-600 hover:text-yellow-700"
                                 >
                                   <Edit size={16} />
                                 </button>
@@ -584,7 +634,7 @@ const LocumConsultants = () => {
                               {canDeleteConsultant && (
                                 <button
                                   onClick={() => handleDelete(consultant.id)}
-                                  className="text-red-600 hover:text-red-900"
+                                  className="text-red-600 hover:text-red-700"
                                   title="Deactivate Consultant"
                                 >
                                   <Trash2 size={16} />
@@ -710,7 +760,7 @@ const LocumConsultants = () => {
                 </div>
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full">
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Consultant</th>
@@ -719,7 +769,7 @@ const LocumConsultants = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white">
                       {availability.length === 0 ? (
                         <tr>
                           <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
@@ -821,7 +871,7 @@ const LocumConsultants = () => {
                 </div>
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full">
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Consultant</th>
@@ -833,7 +883,7 @@ const LocumConsultants = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white">
                       {payouts.length === 0 ? (
                         <tr>
                           <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
@@ -874,7 +924,16 @@ const LocumConsultants = () => {
                                 {payout.payout_status === 'Pending' && canProcessPayroll && (
                                   <button
                                     onClick={() => handleProcessPayroll(payout.id)}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs"
+                                    className="text-white px-3 py-1 rounded text-xs"
+                                    style={{
+                                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                    }}
                                   >
                                     Process Payroll
                                   </button>
@@ -884,19 +943,19 @@ const LocumConsultants = () => {
                                     {canGeneratePayslip && (
                                       <button
                                         onClick={() => handleGeneratePayslip(payout.id)}
-                                        className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                        className="p-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
                                         title="Generate Payslip"
                                       >
-                                        <FileText size={12} />
+                                        <FileText size={16} />
                                       </button>
                                     )}
                                     {canSendPayslipEmail && (
                                       <button
                                         onClick={() => handleEmailPayslip(payout.id)}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+                                        className="p-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
                                         title="Email Payslip"
                                       >
-                                        <Send size={12} />
+                                        <Send size={16} />
                                       </button>
                                     )}
                                   </>
@@ -959,7 +1018,16 @@ const LocumConsultants = () => {
                             {payout.payout_status === 'Pending' && canProcessPayroll && (
                               <button
                                 onClick={() => handleProcessPayroll(payout.id)}
-                                className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm text-white rounded-md transition-colors"
+                                style={{
+                                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                                }}
                               >
                                 Process Payroll
                               </button>
@@ -969,7 +1037,7 @@ const LocumConsultants = () => {
                                 {canGeneratePayslip && (
                                   <button
                                     onClick={() => handleGeneratePayslip(payout.id)}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors"
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded-md transition-colors"
                                     title="Generate Payslip"
                                   >
                                     <FileText size={14} />
@@ -979,7 +1047,7 @@ const LocumConsultants = () => {
                                 {canSendPayslipEmail && (
                                   <button
                                     onClick={() => handleEmailPayslip(payout.id)}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors"
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-md transition-colors"
                                     title="Email Payslip"
                                   >
                                     <Send size={14} />

@@ -214,9 +214,9 @@ export default function Recruitment() {
   // ========================================================================
   return (
     <Layout>
-      <div className="p-6">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex items-center justify-between">
@@ -234,15 +234,31 @@ export default function Recruitment() {
                 <p className="text-gray-500 text-xs">{jobs.length} Active Jobs • Real-time Updates</p>
               </div>
             </div>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiPlay className="h-3 w-3" />
+                  <span className="text-xs font-medium">Published</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiPause className="h-3 w-3" />
+                  <span className="text-xs font-medium">Drafts</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{jobs.filter(j => j.publish_status?.trim() !== 'Published').length}</p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Enhanced Search */}
-        <div className="mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
           <div className="relative max-w-md mx-auto">
-            <div className="bg-white border border-gray-200 rounded-xl p-1">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-1">
               <div className="flex items-center space-x-2 px-3 py-2">
-                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center shadow-sm">
                   <FiSearch className="w-3 h-3 text-gray-600" />
                 </div>
                 <input
@@ -253,11 +269,11 @@ export default function Recruitment() {
                   className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
                 />
                 <div className="flex items-center space-x-1">
-                  <div className="w-px h-4 bg-gray-200"></div>
+                  <div className="w-px h-4 bg-gray-300"></div>
                   <button 
                     onClick={() => setShowFilters(!showFilters)}
                     className={`p-1 rounded-md transition-colors ${
-                      showFilters ? 'bg-gray-100 text-gray-600' : 'hover:bg-gray-100'
+                      showFilters ? 'bg-white text-gray-600 shadow-sm' : 'hover:bg-white hover:shadow-sm'
                     }`}
                   >
                     <FiFilter className={`w-3 h-3 transition-colors ${
@@ -270,52 +286,72 @@ export default function Recruitment() {
           </div>
         </div>
 
-        {/* STATS CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+        {/* Key Performance Indicators */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Jobs</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Jobs</p>
                 <p className="text-2xl font-bold text-gray-900">{jobs.length}</p>
+                <p className="text-gray-400 text-xs mt-1">Active positions</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiUsers className="text-gray-600" size={20} />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUsers className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Published</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Published</p>
                 <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Live positions</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiPlay className="text-gray-600" size={20} />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiPlay className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Drafts</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Drafts</p>
                 <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.publish_status?.trim() !== 'Published').length}</p>
+                <p className="text-gray-400 text-xs mt-1">In preparation</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiPause className="text-gray-600" size={20} />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiPause className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Closed</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Closed</p>
                 <p className="text-2xl font-bold text-gray-900">{jobs.filter(j => j.status?.trim() === 'Inactive').length}</p>
+                <p className="text-gray-400 text-xs mt-1">Completed</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center">
-                <FiPause className="text-red-600" size={20} />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiPause className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>
@@ -323,74 +359,96 @@ export default function Recruitment() {
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="mb-6">
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <select
-                  value={filters.department}
-                  onChange={(e) => setFilters({...filters, department: e.target.value})}
-                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
-                >
-                  <option value="">All Departments</option>
-                  {departments.map(dept => (
-                    <option key={dept} value={dept}>{dept}</option>
-                  ))}
-                </select>
-                
-                <select
-                  value={filters.status}
-                  onChange={(e) => setFilters({...filters, status: e.target.value})}
-                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
-                >
-                  <option value="">All Status</option>
-                  <option value="Draft">Draft</option>
-                  <option value="Posted">Published</option>
-                </select>
-                
-                <select
-                  value={filters.jobType}
-                  onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                  className="border border-black rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all"
-                >
-                  <option value="">All Job Types</option>
-                  {jobTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-                
-                <button
-                  onClick={clearFilters}
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="px-4 py-2 text-white border border-black rounded-xl transition-colors"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                >
-                  Clear Filters
-                </button>
-              </div>
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <select
+                value={filters.department}
+                onChange={(e) => setFilters({...filters, department: e.target.value})}
+                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              >
+                <option value="">All Departments</option>
+                {departments.map(dept => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+              
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters({...filters, status: e.target.value})}
+                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              >
+                <option value="">All Status</option>
+                <option value="Draft">Draft</option>
+                <option value="Posted">Published</option>
+              </select>
+              
+              <select
+                value={filters.jobType}
+                onChange={(e) => setFilters({...filters, jobType: e.target.value})}
+                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              >
+                <option value="">All Job Types</option>
+                {jobTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 text-white border border-gray-200 rounded-xl transition-colors"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
         )}
 
         {/* JOB TABLE */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="text-gray-600 mt-2">Loading jobs...</p>
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+              }}>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{
+                  borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}></div>
+              </div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">Loading Jobs</h4>
+              <p className="text-gray-600">Please wait while we fetch the latest job postings</p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FiUsers className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+              }}>
+                <FiUsers className="w-8 h-8" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-              <p className="text-gray-600">No jobs found matching your criteria</p>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">No Jobs Found</h4>
+              <p className="text-gray-600 mb-4">No jobs match your current search criteria</p>
               <button
                 onClick={clearFilters}
-                style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="mt-2 text-white transition-colors"
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #6b7280)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                className="text-white px-4 py-2 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
               >
                 Clear filters
               </button>
@@ -398,6 +456,7 @@ export default function Recruitment() {
           ) : (
             <>
               {/* Desktop Table View */}
+            <div className="p-6">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
@@ -457,7 +516,7 @@ export default function Recruitment() {
                           <div className="flex items-center justify-center space-x-2">
                             <button
                               onClick={() => openView(job)}
-                              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                               title="View Job"
                             >
                               <FiEye size={16} />
@@ -466,7 +525,7 @@ export default function Recruitment() {
                             {hasPermission('edit_job_requisition') && (
                               <button
                                 onClick={() => openEdit(job)}
-                                className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                className="p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition-colors"
                                 title="Edit Job"
                               >
                                 <FiEdit size={16} />
@@ -476,7 +535,7 @@ export default function Recruitment() {
                             {canViewCandidates && (
                               <button
                                 onClick={() => window.location.href = `/screening?job=${job.id}`}
-                                className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                                className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors"
                                 title="Screen Candidates"
                               >
                                 <FiUsers size={16} />
@@ -489,7 +548,7 @@ export default function Recruitment() {
                                   onClick={() =>
                                     setOpenLinkMenu(openLinkMenu === job.id ? null : job.id)
                                   }
-                                  className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                  className="p-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
                                   title="Job Links"
                                 >
                                   <FiLink size={16} />
@@ -536,12 +595,22 @@ export default function Recruitment() {
                                 onClick={() => togglePublish(job)}
                                 className={`p-2 rounded-lg transition-colors ${
                                   job.publish_status?.trim() === "Published"
-                                    ? "text-gray-500 hover:text-red-600 hover:bg-red-50"
-                                    : "text-gray-500 hover:text-green-600 hover:bg-green-50"
+                                    ? "text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    : "text-green-600 hover:text-green-700 hover:bg-green-50"
                                 }`}
                                 title={job.publish_status?.trim() === "Published" ? "Unpublish" : "Publish"}
                               >
                                 {job.publish_status?.trim() === "Published" ? <FiPause size={16} /> : <FiPlay size={16} />}
+                              </button>
+                            )}
+
+                            {hasPermission('delete_job_requisition') && (
+                              <button
+                                onClick={() => deleteJob(job)}
+                                className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete Job"
+                              >
+                                <FiTrash2 size={16} />
                               </button>
                             )}
                           </div>
@@ -783,6 +852,7 @@ export default function Recruitment() {
                   ))}
                 </div>
               </div>
+            </div>
             </>
           )}
         </div>

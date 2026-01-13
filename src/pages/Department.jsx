@@ -552,7 +552,7 @@ export default function Departments() {
                           <p className="text-xs text-gray-500">Department</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                      <div className="flex items-center space-x-1 opacity-100 transition-opacity flex-shrink-0">
                         {canEdit && (
                           <button
                             onClick={() => {
@@ -560,7 +560,7 @@ export default function Departments() {
                               setEditName(dept.name);
                               setEditDesc(dept.description || "");
                             }}
-                            className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -571,7 +571,7 @@ export default function Departments() {
                         {canDelete && (
                           <button
                             onClick={() => deleteDepartment(dept.id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

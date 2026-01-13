@@ -445,24 +445,40 @@ export default function Offer() {
   return (
     <>
       <Layout>
-      <div className="p-4 sm:p-6">
-        {/* Header */}
-        <div className="bg-white rounded-2xl mb-6 p-4 sm:p-6 border border-black">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto sm:mx-0">
-                <FiFileText className="w-6 h-6 sm:w-7 sm:h-7 text-gray-600" />
+      <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiFileText className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Offer & Pre-Onboarding</h1>
-                <p className="text-gray-600 text-sm sm:text-base font-medium">Manage job offers, background verification, and onboarding process</p>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mt-2 gap-2 sm:gap-0">
-                  <div className="flex items-center justify-center sm:justify-start space-x-2">
-                    <span className="text-xs text-gray-500 font-medium">{candidates.length} Selected Candidates</span>
-                  </div>
-                  <div className="hidden sm:block w-px h-3 bg-gray-300 rounded-full"></div>
-                  <span className="text-xs text-gray-600 font-semibold text-center sm:text-left">Real-time Updates</span>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Offer & Pre-Onboarding</h1>
+                <p className="text-gray-600 text-sm mb-1">Manage job offers, background verification, and onboarding process</p>
+                <p className="text-gray-500 text-xs">{candidates.length} Selected Candidates • Real-time Updates</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiUser className="h-3 w-3" />
+                  <span className="text-xs font-medium">Candidates</span>
                 </div>
+                <p className="text-sm font-semibold text-gray-900">{candidates.length}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <FiFileText className="h-3 w-3" />
+                  <span className="text-xs font-medium">Offers</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{offers.length}</p>
               </div>
             </div>
           </div>
@@ -470,19 +486,38 @@ export default function Offer() {
 
         {/* ==================== SENT OFFERS TABLE ==================== */}
         {offers.length > 0 && canViewOffersSent && (
-          <div className="mb-10">
-            <div className="bg-white rounded-2xl border border-black">
-              <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Offers Sent</h2>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full self-start sm:self-auto">{offers.length} offers</span>
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100" style={{
+              background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
+            }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl" style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
+                    <FiFileText className="h-6 w-6" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Offers Sent</h2>
+                    <p className="text-gray-600">Track and manage job offers throughout the hiring process</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}>
+                  <span className="font-semibold text-sm">{offers.length} Active Offers</span>
                 </div>
               </div>
+            </div>
 
               {/* Desktop Table View */}
+            <div className="p-6">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-black">
+                  <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
@@ -491,7 +526,7 @@ export default function Offer() {
                     </tr>
                   </thead>
 
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {offers.map((o) => (
                       <tr key={o.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
@@ -916,25 +951,52 @@ export default function Offer() {
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
         {canViewSelectedCandidates && (
-        <div className="bg-white rounded-2xl border border-black">
-          <div className="px-6 py-4 border-b border-gray-100">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100" style={{
+            background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05)`
+          }}>
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Selected Candidates</h2>
-              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{candidates.length} candidates</span>
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FiUser className="h-6 w-6" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Selected Candidates</h2>
+                  <p className="text-gray-600">Candidates ready for offer generation and onboarding</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}>
+                <span className="font-semibold text-sm">{candidates.length} Candidates</span>
+              </div>
             </div>
           </div>
 
-          {candidates.length === 0 ? (
-            <div className="text-center py-12">
-              <FiUser className="mx-auto text-muted mb-4" size={48} />
-              <p className="" style={{color: 'var(--text-secondary, #374151)'}}>No selected candidates found</p>
-            </div>
-          ) : (
+          <div className="p-6">
+            {candidates.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`
+                }}>
+                  <FiUser className="h-8 w-8" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">No Selected Candidates</h4>
+                <p className="text-gray-600">Candidates will appear here once they are selected from the screening process</p>
+              </div>
+            ) : (
             <>
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 border-b border-black">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
@@ -943,7 +1005,7 @@ export default function Offer() {
                   </tr>
                 </thead>
 
-                <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                   {candidates.map((c) => (
                     <tr key={c.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
@@ -1008,9 +1070,9 @@ export default function Offer() {
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                  </tbody>
+                </table>
+              </div>
 
             {/* Mobile Card View */}
             <div className="md:hidden">
@@ -1073,8 +1135,9 @@ export default function Offer() {
                 </div>
               ))}
             </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
         )}
 

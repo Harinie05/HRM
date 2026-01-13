@@ -377,11 +377,17 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">System Status</p>
-                <p className="text-2xl font-bold text-green-600">Operational</p>
+                <p className="text-2xl font-bold" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}>Operational</p>
                 <p className="text-gray-400 text-xs mt-1">All systems running</p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg">
-                <Shield className="h-6 w-6 text-emerald-600" />
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Shield className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
             </div>
           </div>

@@ -453,54 +453,49 @@ export default function Onboarding() {
     <>
       <Layout>
         <div className="p-6">
-          {/* Header */}
-          <div className="bg-white rounded-2xl mb-6 p-6 border border-black">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <FiUser className="w-7 h-7 text-gray-600" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">Onboarding</h1>
-                  <p className="text-gray-600 text-base font-medium">Manage employee onboarding process and documentation</p>
-                  <div className="flex items-center space-x-3 mt-2">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs text-gray-500 font-medium">{candidates.filter(c => 
-                        searchTerm === "" || 
-                        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
-                      ).length} Onboarded Candidates</span>
-                    </div>
-                    <div className="w-px h-3 bg-gray-300 rounded-full"></div>
-                    <span className="text-xs text-gray-600 font-semibold">Real-time Updates</span>
-                  </div>
-                </div>
+        {/* Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FiUser className="h-6 w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-            </div>
-          </div>
-
-        {/* Search Section */}
-        <div className="mb-6">
-          <div className="relative max-w-md mx-auto">
-            <div className="bg-white border border-black rounded-xl p-1">
-              <div className="flex items-center space-x-2 px-3 py-2">
-                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
-                  <FiSearch className="w-3 h-3 text-gray-600" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search candidates..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
-                />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Onboarding</h1>
+                <p className="text-gray-600 text-sm mb-1">Manage employee onboarding process and documentation</p>
+                <p className="text-gray-500 text-xs">{candidates.length} Onboarded Candidates • Real-time Updates</p>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Enhanced Search and Filter */}
+        <div className="mb-6">
+          <div className="relative max-w-md mx-auto">
+            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search candidates..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              style={{
+                focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}
+            />
+          </div>
+        </div>
+
         {/* Onboarded Candidates Cards */}
-        <div className="bg-white rounded-2xl border border-black p-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Onboarded Candidates</h2>
             <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
@@ -527,7 +522,7 @@ export default function Onboarding() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {candidates
                 .filter(c => 
                   searchTerm === "" || 
@@ -535,10 +530,13 @@ export default function Onboarding() {
                   c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((c) => (
-                <div key={c.id} className="bg-white rounded-xl shadow-sm border border-black p-4 hover:shadow-md transition-shadow">
+                <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all duration-200">
                   <div className="flex items-start space-x-3">
                     {/* Avatar */}
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-semibold text-lg flex-shrink-0" style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`,
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}>
                       {c.name?.charAt(0)?.toUpperCase() || 'C'}
                     </div>
                     
@@ -571,7 +569,7 @@ export default function Onboarding() {
                       {/* Action Buttons */}
                       <div className="mt-3 space-y-2">
                         <button
-                          className="w-full text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
+                          className="w-full text-xs font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           onClick={() => {
                             if (!canViewOnboardingDocuments) {
                               showToast("You don't have permission to view documents", "error");
@@ -585,7 +583,7 @@ export default function Onboarding() {
                         </button>
                         {canAddDocumentCollected && (
                         <button
-                          className="w-full text-xs text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center"
+                          className="w-full text-xs font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-50"
                           onClick={() => {
                             setSelectedCandidate(c);
                             setShowOriginalDocsModal(true);
