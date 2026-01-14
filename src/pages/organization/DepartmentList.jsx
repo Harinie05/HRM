@@ -70,9 +70,9 @@ export default function OrgDepartments() {
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border-0 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
@@ -103,7 +103,7 @@ export default function OrgDepartments() {
             placeholder="Search departments..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+            className="pl-10 pr-4 py-2 w-full border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
             style={{
               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }}
@@ -112,7 +112,7 @@ export default function OrgDepartments() {
 
         {/* Create Department Form */}
         {showCreateDept && (
-          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          <div className="bg-gray-50 rounded-xl p-6 border-0">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Department</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -121,7 +121,7 @@ export default function OrgDepartments() {
                   type="text"
                   value={newDept.name}
                   onChange={(e) => setNewDept({...newDept, name: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -134,7 +134,7 @@ export default function OrgDepartments() {
                   type="text"
                   value={newDept.location}
                   onChange={(e) => setNewDept({...newDept, location: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -147,7 +147,7 @@ export default function OrgDepartments() {
                   type="text"
                   value={newDept.head}
                   onChange={(e) => setNewDept({...newDept, head: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -160,7 +160,7 @@ export default function OrgDepartments() {
                   value={newDept.description}
                   onChange={(e) => setNewDept({...newDept, description: e.target.value})}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                  className="w-full px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -218,7 +218,7 @@ export default function OrgDepartments() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDepartments.map((dept, index) => (
-              <div key={dept.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+              <div key={dept.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
                     backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`

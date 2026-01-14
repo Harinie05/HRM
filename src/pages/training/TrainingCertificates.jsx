@@ -151,9 +151,9 @@ export default function TrainingCertificates() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Header */}
-        <div className="p-6 border-b border-black">
+        <div className="p-6 border-0">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Certificates</h3>
             {(hasPermission('generate_training_certificate') || isAdmin()) && (
@@ -178,7 +178,7 @@ export default function TrainingCertificates() {
               placeholder="Search certificates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
         </div>
@@ -204,40 +204,40 @@ export default function TrainingCertificates() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Program</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Certificate ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Issued Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Expiry Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Training Program</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Certificate ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Issued Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Expiry Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {filteredCertificates.map((certificate) => {
                       const isExpired = certificate.expiry_date && new Date(certificate.expiry_date) < new Date();
                       const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                       
                       return (
-                        <tr key={certificate.id} className="hover:bg-gray-50 border-b border-black">
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <tr key={certificate.id} className="hover:bg-gray-50 border-0">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm font-medium text-gray-900">{certificate.employee_name}</div>
                           </td>
-                          <td className="px-6 py-4 border-r border-black">
+                          <td className="px-6 py-4 border-0">
                             <div className="text-sm text-gray-900">{certificate.program_title}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm text-gray-900 font-mono">{certificate.certificate_number}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm text-gray-900">{new Date(certificate.issued_date).toLocaleDateString()}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm text-gray-900">
                               {certificate.expiry_date ? new Date(certificate.expiry_date).toLocaleDateString() : 'No expiry'}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               isExpired ? 'bg-red-100 text-red-800' :
                               isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
@@ -273,7 +273,7 @@ export default function TrainingCertificates() {
                   const isExpiringSoon = certificate.expiry_date && !isExpired && new Date(certificate.expiry_date) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                   
                   return (
-                    <div key={certificate.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                    <div key={certificate.id} className="p-4 border-b-0 last:border-b-0">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{certificate.employee_name}</h4>
@@ -338,7 +338,7 @@ export default function TrainingCertificates() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+            <div className="px-6 py-4 border-b-0 flex-shrink-0">
               <h3 className="text-lg font-semibold text-gray-900">Generate Training Certificate</h3>
               <p className="text-sm text-gray-500 mt-1">Create a certificate for completed training</p>
             </div>
@@ -349,7 +349,7 @@ export default function TrainingCertificates() {
                   <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value, employee_id: ""})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -365,7 +365,7 @@ export default function TrainingCertificates() {
                   <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     required
                     disabled={!formData.training_id}
                   >
@@ -391,7 +391,7 @@ export default function TrainingCertificates() {
                     max="100"
                     value={formData.score}
                     onChange={(e) => setFormData({...formData, score: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all duration-200 bg-white"
                     placeholder="Final score"
                     required
                   />
@@ -415,7 +415,7 @@ export default function TrainingCertificates() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-black font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border-0 rounded-lg text-black font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -440,3 +440,5 @@ export default function TrainingCertificates() {
     </div>
   );
 }
+
+

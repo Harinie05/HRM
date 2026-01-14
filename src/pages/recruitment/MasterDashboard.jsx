@@ -141,7 +141,7 @@ export default function MasterDashboard() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -160,14 +160,14 @@ export default function MasterDashboard() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <Briefcase className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Active Jobs</span>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-gray-900">{loading ? "..." : metrics.activeJobs}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <Calendar className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Today</span>
@@ -183,7 +183,7 @@ export default function MasterDashboard() {
 
         {/* Key Performance Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Job Requisitions</p>
@@ -200,7 +200,7 @@ export default function MasterDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Applications</p>
@@ -217,7 +217,7 @@ export default function MasterDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Onboarded</p>
@@ -234,7 +234,7 @@ export default function MasterDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
@@ -254,7 +254,7 @@ export default function MasterDashboard() {
 
         {/* Secondary Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Selected</p>
@@ -271,7 +271,7 @@ export default function MasterDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
@@ -290,8 +290,8 @@ export default function MasterDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100" style={{
+        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+          <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -330,7 +330,7 @@ export default function MasterDashboard() {
               ].map((action, index) => {
                 const IconComponent = action.icon;
                 return (
-                  <div key={index} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer" onClick={() => window.location.href = action.href}>
+                  <div key={index} className="bg-white rounded-xl p-6 border-0 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer" onClick={() => window.location.href = action.href}>
                     <div className="flex items-center gap-4">
                       <div className="p-3 rounded-xl transition-all duration-300" style={{
                         backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
@@ -354,8 +354,8 @@ export default function MasterDashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Recruitment Pipeline Summary */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-5 border-b border-gray-100">
+          <div className="bg-white rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg" style={{
@@ -430,8 +430,8 @@ export default function MasterDashboard() {
           </div>
 
           {/* Job Status Summary */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-5 border-b border-gray-100">
+          <div className="bg-white rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-5 border-b-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg" style={{

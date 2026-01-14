@@ -291,9 +291,9 @@ export default function TrainingRequests() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Header */}
-        <div className="p-6 border-b border-black">
+        <div className="p-6 border-0">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Requests</h3>
             {(hasPermission('add_training_request') || isAdmin()) && (
@@ -319,13 +319,13 @@ export default function TrainingRequests() {
                 placeholder="Search requests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+                className="pl-10 pr-4 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">All Status</option>
               {statuses.map(status => (
@@ -348,15 +348,15 @@ export default function TrainingRequests() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Requested</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Priority</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Requested Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Employee</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Training Requested</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Priority</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Requested Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {filteredRequests.length === 0 ? (
                       <tr>
                         <td colSpan="6" className="px-6 py-12 text-center">
@@ -380,17 +380,17 @@ export default function TrainingRequests() {
                       </tr>
                     ) : (
                       filteredRequests.map((request) => (
-                        <tr key={request.id} className="hover:bg-gray-50 border-b border-black">
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <tr key={request.id} className="hover:bg-gray-50 border-0">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm font-medium text-gray-900">{getEmployeeName(request.employee_id)}</div>
                           </td>
-                          <td className="px-6 py-4 border-r border-black">
+                          <td className="px-6 py-4 border-0">
                             <div className="text-sm text-gray-900">{request.requested_training}</div>
                             {request.justification && (
                               <div className="text-sm text-gray-500 truncate max-w-xs">{request.justification}</div>
                             )}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               request.priority === "Urgent" ? "bg-red-100 text-red-800" :
                               request.priority === "High" ? "bg-orange-100 text-orange-800" :
@@ -400,7 +400,7 @@ export default function TrainingRequests() {
                               {request.priority}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               request.status === "HR Approved" || request.status === "Approved" ? "bg-green-100 text-green-800" :
                               request.status === "Manager Approved" ? "bg-blue-100 text-blue-800" :
@@ -410,7 +410,7 @@ export default function TrainingRequests() {
                               {request.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                          <td className="px-6 py-4 whitespace-nowrap border-0">
                             <div className="text-sm text-gray-900">
                               {new Date(request.created_at).toLocaleDateString()}
                             </div>
@@ -467,7 +467,7 @@ export default function TrainingRequests() {
                   </div>
                 ) : (
                   filteredRequests.map((request) => (
-                    <div key={request.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                    <div key={request.id} className="p-4 border-b-0 last:border-b-0">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{getEmployeeName(request.employee_id)}</h4>
@@ -541,7 +541,7 @@ export default function TrainingRequests() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+            <div className="px-6 py-4 border-b-0 flex-shrink-0">
               <h3 className="text-lg font-semibold text-gray-900">New Training Request</h3>
               <p className="text-sm text-gray-500 mt-1">Submit a request for training approval</p>
             </div>
@@ -553,7 +553,7 @@ export default function TrainingRequests() {
                     <select
                       value={formData.employee_id}
                       onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       required
                     >
                       <option value="">Select Employee</option>
@@ -564,7 +564,7 @@ export default function TrainingRequests() {
                       ))}
                     </select>
                   ) : (
-                    <div className="w-full px-3 py-2 border border-black rounded-lg bg-gray-50 text-gray-700">
+                    <div className="w-full px-3 py-2 border-0 rounded-lg bg-gray-50 text-gray-700">
                       {(() => {
                         const currentUserId = localStorage.getItem('user_id');
                         const currentUserEmployee = employees.find(emp => {
@@ -590,7 +590,7 @@ export default function TrainingRequests() {
                         requested_training: program ? program.title : formData.requested_training
                       });
                     }}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                   >
                     <option value="">Select from Available Programs</option>
                     {programs.map(program => (
@@ -606,7 +606,7 @@ export default function TrainingRequests() {
                     type="text"
                     value={formData.requested_training}
                     onChange={(e) => setFormData({...formData, requested_training: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     placeholder="Enter training name or description"
                     required
                   />
@@ -616,7 +616,7 @@ export default function TrainingRequests() {
                   <textarea
                     value={formData.justification}
                     onChange={(e) => setFormData({...formData, justification: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
                     rows="2"
                     placeholder="Explain why this training is needed"
                   />
@@ -626,7 +626,7 @@ export default function TrainingRequests() {
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     {priorities.map(priority => (
@@ -640,7 +640,7 @@ export default function TrainingRequests() {
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border-0 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -738,7 +738,7 @@ export default function TrainingRequests() {
                 <select
                   value={approvalData.action}
                   onChange={(e) => setApprovalData({...approvalData, action: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select Action</option>
@@ -751,7 +751,7 @@ export default function TrainingRequests() {
                 <textarea
                   value={approvalData.comment}
                   onChange={(e) => setApprovalData({...approvalData, comment: e.target.value})}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows="3"
                   placeholder="Add your comments (optional)"
                 />
@@ -760,7 +760,7 @@ export default function TrainingRequests() {
                 <button
                   type="button"
                   onClick={() => setShowApprovalModal(false)}
-                  className="flex-1 px-4 py-2 border border-black rounded-lg text-secondary hover:bg-content"
+                  className="flex-1 px-4 py-2 border-0 rounded-lg text-secondary hover:bg-content"
                 >
                   Cancel
                 </button>
@@ -780,3 +780,5 @@ export default function TrainingRequests() {
     </div>
   );
 }
+
+

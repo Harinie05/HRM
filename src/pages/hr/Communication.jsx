@@ -20,7 +20,7 @@ export default function Communication() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -553,7 +553,7 @@ export default function Communication() {
   return (
     <div className="space-y-6">
       {/* Letter Creation Form */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Create HR Letter</h3>
         </div>
@@ -571,7 +571,7 @@ export default function Communication() {
                     <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -581,7 +581,7 @@ export default function Communication() {
                       ))}
                     </select>
                   ) : (
-                    <div className="w-full px-3 py-2 border border-black rounded-md bg-gray-50 text-gray-700">
+                    <div className="w-full px-3 py-2  rounded-md bg-gray-50 text-gray-700">
                       {(() => {
                         const currentUserId = localStorage.getItem('user_id');
                         const currentUserEmployee = employees.find(emp => {
@@ -600,7 +600,7 @@ export default function Communication() {
                   <select 
                     value={formData.letterType}
                     onChange={(e) => setFormData({...formData, letterType: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Type</option>
                     <option value="offer">Offer Letter</option>
@@ -619,7 +619,7 @@ export default function Communication() {
                   <select 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Priority</option>
                     <option value="low">Low</option>
@@ -634,7 +634,7 @@ export default function Communication() {
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Letter subject"
                   />
                 </div>
@@ -644,7 +644,7 @@ export default function Communication() {
                     value={formData.content}
                     onChange={(e) => setFormData({...formData, content: e.target.value})}
                     rows={6}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Letter content..."
                   />
                 </div>
@@ -653,7 +653,7 @@ export default function Communication() {
                 <button 
                   type="button"
                   onClick={handleSaveDraft}
-                  className="w-full sm:w-auto px-6 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full sm:w-auto px-6 py-2  text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   Save as Draft
                 </button>
@@ -661,7 +661,7 @@ export default function Communication() {
                   <button 
                     type="button"
                     onClick={handlePrint}
-                    className="w-full sm:w-auto px-6 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
+                    className="w-full sm:w-auto px-6 py-2  text-green-600 rounded-md hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
                   >
                     Print
                   </button>
@@ -686,7 +686,7 @@ export default function Communication() {
       </div>
 
       {/* Letters History */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -712,7 +712,7 @@ export default function Communication() {
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -784,7 +784,7 @@ export default function Communication() {
                             {canEdit && letter.status === 'Draft' && (
                               <button
                                 onClick={() => handleEditLetter(letter.id)}
-                                className="p-1 text-blue-600 hover:text-blue-900"
+                                className="p-1 text-green-600 hover:text-green-900"
                                 title="Edit & Send"
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -833,7 +833,7 @@ export default function Communication() {
             </div>
           ) : (
             (showDeleted ? deletedLetters : letters).map((letter) => (
-              <div key={letter.id} className={`p-4 border-b border-gray-200 hover:bg-gray-50 ${showDeleted ? 'bg-red-50' : ''}`}>
+              <div key={letter.id} className={`p-4 border-b-0 hover:bg-gray-50 ${showDeleted ? 'bg-red-50' : ''}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{letter.name}</div>
@@ -893,7 +893,7 @@ export default function Communication() {
                       {canEdit && letter.status === 'Draft' && (
                         <button
                           onClick={() => handleEditLetter(letter.id)}
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                          className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -959,7 +959,7 @@ export default function Communication() {
                   <select
                     value={selectedLetter.letter_type}
                     onChange={(e) => setSelectedLetter({...selectedLetter, letter_type: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="offer">Offer Letter</option>
                     <option value="appointment">Appointment Letter</option>
@@ -983,7 +983,7 @@ export default function Communication() {
                     type="text"
                     value={selectedLetter.subject}
                     onChange={(e) => setSelectedLetter({...selectedLetter, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
               </div>
@@ -991,7 +991,7 @@ export default function Communication() {
               <div>
                 <label className="block text-sm font-medium text-secondary mb-1">Content</label>
                 {modalMode === 'view' ? (
-                  <div className="text-sm text-primary whitespace-pre-line border border-gray-300 rounded-md p-3 min-h-[200px]">
+                  <div className="text-sm text-primary whitespace-pre-line  rounded-md p-3 min-h-[200px]">
                     {selectedLetter.content}
                   </div>
                 ) : (
@@ -999,7 +999,7 @@ export default function Communication() {
                     value={selectedLetter.content}
                     onChange={(e) => setSelectedLetter({...selectedLetter, content: e.target.value})}
                     rows={8}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
               </div>
@@ -1034,3 +1034,4 @@ export default function Communication() {
     </div>
   );
 }
+

@@ -16,7 +16,7 @@ export default function Insurance() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -190,7 +190,7 @@ export default function Insurance() {
   return (
     <div className="space-y-6">
       {/* Insurance Policy Form */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Add Insurance Policy(Optional)</h3>
         </div>
@@ -207,7 +207,7 @@ export default function Insurance() {
                   <select 
                     value={formData.employeeId}
                     onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -224,7 +224,7 @@ export default function Insurance() {
                     type="text"
                     value={formData.policyType}
                     onChange={(e) => setFormData({...formData, policyType: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="e.g., Medical, Life, Accident"
                     required
                   />
@@ -235,7 +235,7 @@ export default function Insurance() {
                     type="text"
                     value={formData.policyNumber}
                     onChange={(e) => setFormData({...formData, policyNumber: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Policy number"
                     required
                   />
@@ -246,7 +246,7 @@ export default function Insurance() {
                     type="text"
                     value={formData.provider}
                     onChange={(e) => setFormData({...formData, provider: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Insurance provider"
                     required
                   />
@@ -257,7 +257,7 @@ export default function Insurance() {
                     type="number"
                     value={formData.coverageAmount}
                     onChange={(e) => setFormData({...formData, coverageAmount: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Coverage amount"
                     required
                   />
@@ -268,7 +268,7 @@ export default function Insurance() {
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     required
                   />
                 </div>
@@ -278,7 +278,7 @@ export default function Insurance() {
                     type="date"
                     value={formData.expiryDate}
                     onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     required
                   />
                 </div>
@@ -303,14 +303,14 @@ export default function Insurance() {
       </div>
 
       {/* Policies List */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Insurance Policies</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -353,7 +353,7 @@ export default function Insurance() {
                       {canDelete && (
                         <button
                           onClick={() => handleDelete(policy.id)}
-                          className="text-gray-600 hover:text-gray-900 border border-gray-300 px-2 py-1 rounded text-xs sm:text-sm"
+                          className="text-gray-600 hover:text-gray-900  px-2 py-1 rounded text-xs sm:text-sm"
                         >
                           Delete
                         </button>
@@ -374,7 +374,7 @@ export default function Insurance() {
             </div>
           ) : (
             policies.map((policy) => (
-              <div key={policy.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+              <div key={policy.id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{policy.name}</div>
@@ -430,3 +430,4 @@ export default function Insurance() {
     </div>
   );
 }
+

@@ -142,7 +142,7 @@ export default function ATS() {
     <Layout>
       <div className="p-4 sm:p-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -164,8 +164,8 @@ export default function ATS() {
         </div>
 
         {/* Jobs List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm mb-6">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -177,7 +177,7 @@ export default function ATS() {
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900">Active Job Positions</h2>
               </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-3 border-0 shadow-sm">
                 <span className="text-sm font-semibold text-gray-900">{jobs.length}</span>
                 <span className="text-xs text-gray-500 ml-1">positions</span>
               </div>
@@ -297,7 +297,7 @@ export default function ATS() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50/80 border-b border-gray-200">
+                  <thead className="bg-gray-50/80 border-b-0">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
@@ -369,7 +369,7 @@ export default function ATS() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {filteredCandidates.map((candidate) => (
-                  <div key={candidate.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div key={candidate.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{candidate.name}</div>
@@ -433,8 +433,8 @@ export default function ATS() {
         {/* Move Candidate Modal */}
         {showMoveModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-            <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-100">
+            <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border-0">
+              <div className="px-6 py-4 border-b-0">
                 <h2 className="text-xl font-semibold text-gray-900">
                   Move Candidate: {selectedCandidate?.name}
                 </h2>
@@ -444,7 +444,7 @@ export default function ATS() {
               </div>
 
               <div className="p-6">
-                <div className="border border-gray-200 rounded-xl p-4 space-y-6">
+                <div className="border-0 rounded-xl p-4 space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Action *</label>
                     <select
@@ -571,3 +571,4 @@ export default function ATS() {
     </Layout>
   );
 }
+

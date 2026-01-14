@@ -112,7 +112,7 @@ export default function AuditLogs() {
         <strong className="text-gray-700">{title}:</strong>
         <div className="mt-1 space-y-1">
           {Object.entries(data).map(([key, value]) => (
-            <div key={key} className="flex justify-between py-1 border-b border-gray-100">
+            <div key={key} className="flex justify-between py-1 border-b-0">
               <span className="font-medium text-gray-600">{formatFieldName(key)}:</span>
               <span className="text-gray-800 max-w-xs text-right break-words">{formatValue(value)}</span>
             </div>
@@ -209,7 +209,7 @@ export default function AuditLogs() {
 
         {/* Audit Logs Table */}
         <div className="bg-white rounded-xl border border-black shadow-lg overflow-hidden">
-          <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b-0">
             <h3 className="text-lg font-semibold text-gray-900">Audit Trail</h3>
           </div>
           
@@ -308,7 +308,7 @@ export default function AuditLogs() {
               {/* Mobile Card View */}
               <div className="lg:hidden">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div key={log.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-center justify-between mb-3">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(log.action)}`}>
                         {log.action}
@@ -365,7 +365,7 @@ export default function AuditLogs() {
           
           {/* Pagination */}
           {pagination.pages > 1 && (
-            <div className="px-4 sm:px-6 py-3 border-t border-gray-200 bg-gray-50">
+            <div className="px-4 sm:px-6 py-3 border-t-0 bg-gray-50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="text-sm text-gray-700 text-center sm:text-left">
                   Showing page {pagination.page} of {pagination.pages} ({pagination.total} total records)
@@ -396,7 +396,7 @@ export default function AuditLogs() {
       {showModal && selectedLog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-6 border-b-0">
               <h3 className="text-lg font-semibold text-gray-900">Audit Log Details</h3>
               <button
                 onClick={closeModal}
@@ -434,7 +434,7 @@ export default function AuditLogs() {
                   </div>
                 </div>
                 
-                <div className="border-t border-gray-200 pt-4">
+                <div className="border-t-0 pt-4">
                   {selectedLog.action.includes('CREATE') && selectedLog.new_values && 
                     renderDataDetails(selectedLog.new_values, 'Created Data')
                   }

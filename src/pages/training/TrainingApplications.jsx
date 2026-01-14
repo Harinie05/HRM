@@ -165,24 +165,37 @@ export default function TrainingApplications() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <button 
-          onClick={() => navigate("/training/programs")}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Training Applications</h1>
-          <p className="text-gray-600">{program?.title}</p>
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigate("/training/programs")}
+            className="p-2 hover:bg-white/50 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+            }}>
+              <User className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+              }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Training Applications</h1>
+              <p className="text-gray-600 text-xs sm:text-sm truncate">{program?.title}</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Program Info */}
       {program && (
-        <div className="bg-white rounded-lg border border-black p-6">
+        <div className="bg-white rounded-lg border-0 p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <h3 className="font-medium text-gray-900">Program Details</h3>
@@ -232,13 +245,13 @@ export default function TrainingApplications() {
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-black p-6">
+      <div className="bg-white rounded-lg border-0 p-6">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-medium text-gray-900">Applications</h3>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
@@ -249,7 +262,7 @@ export default function TrainingApplications() {
       </div>
 
       {/* Applications Table */}
-      <div className="bg-white rounded-lg border border-black overflow-hidden">
+      <div className="bg-white rounded-lg border-0 overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -258,7 +271,7 @@ export default function TrainingApplications() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left border-b border-black">
+                <th className="px-6 py-3 text-left border-0">
                   <input
                     type="checkbox"
                     checked={selectedApplications.length === filteredApplications.length && filteredApplications.length > 0}
@@ -266,14 +279,14 @@ export default function TrainingApplications() {
                     className="rounded border-gray-300"
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-b border-black">Applicant</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-b border-black">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-b border-black">Applied Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-b border-black">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-b border-black">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Applicant</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Contact</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Applied Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border-0">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-black">
+            <tbody className="divide-y divide-gray-100">
               {filteredApplications.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center">
@@ -287,7 +300,7 @@ export default function TrainingApplications() {
               ) : (
                 filteredApplications.map((application) => (
                   <tr key={application.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 border-r border-black">
+                    <td className="px-6 py-4 border-0">
                       <input
                         type="checkbox"
                         checked={selectedApplications.includes(application.id)}
@@ -295,7 +308,7 @@ export default function TrainingApplications() {
                         className="rounded border-gray-300"
                       />
                     </td>
-                    <td className="px-6 py-4 border-r border-black">
+                    <td className="px-6 py-4 border-0">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                           <User className="w-5 h-5 text-blue-600" />
@@ -306,7 +319,7 @@ export default function TrainingApplications() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 border-r border-black">
+                    <td className="px-6 py-4 border-0">
                       <div className="text-sm text-gray-900 flex items-center gap-1">
                         <Mail className="w-4 h-4" />
                         {application.email}
@@ -318,13 +331,13 @@ export default function TrainingApplications() {
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 border-r border-black">
+                    <td className="px-6 py-4 border-0">
                       <div className="text-sm text-gray-900 flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {new Date(application.applied_at).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4 border-r border-black">
+                    <td className="px-6 py-4 border-0">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(application.status)}`}>
                         {getStatusIcon(application.status)}
                         {application.status}
@@ -365,7 +378,7 @@ export default function TrainingApplications() {
       {showEmailModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
+            <div className="px-6 py-4 border-b-0">
               <h3 className="text-lg font-semibold text-gray-900">Send Email to Selected Candidates</h3>
               <p className="text-sm text-gray-600 mt-1">
                 Sending to {selectedApplications.length} candidate(s)
@@ -400,7 +413,7 @@ export default function TrainingApplications() {
               </div>
             </div>
             
-            <div className="px-6 py-4 border-t border-gray-200 flex gap-3">
+            <div className="px-6 py-4 border-t-0 flex gap-3">
               <button
                 onClick={() => setShowEmailModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"

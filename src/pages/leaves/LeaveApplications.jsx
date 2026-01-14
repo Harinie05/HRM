@@ -13,7 +13,7 @@ export default function LeaveApplications() {
     return (
       <div className="">
         {/* Header */}
-        <div className="p-4 sm:p-8 border-b border-gray-100">
+        <div className="p-4 sm:p-8 border-b-0">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
@@ -319,7 +319,7 @@ export default function LeaveApplications() {
   return (
     <div className="">
       {/* Header */}
-      <div className="p-4 sm:p-8 border-b border-gray-100">
+      <div className="p-4 sm:p-8 border-b-0">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto sm:mx-0">
@@ -362,7 +362,7 @@ export default function LeaveApplications() {
 
       {/* Filters */}
       {hasPermission("view_leave_applications") && (
-        <div className="p-4 sm:p-8 border-b border-gray-100">
+        <div className="p-4 sm:p-8 border-b-0">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -515,7 +515,7 @@ export default function LeaveApplications() {
               </div>
             ) : (
               filteredApplications.map((app, index) => (
-                <div key={app.id} className="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <div key={app.id} className="p-4 border-b-0 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(app.employee_id).code}</div>
@@ -949,3 +949,4 @@ export default function LeaveApplications() {
     </div>
   );
 }
+

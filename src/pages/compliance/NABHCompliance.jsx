@@ -16,7 +16,7 @@ export default function NABHCompliance() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view NABH Compliance.</p>
         </div>
@@ -345,12 +345,12 @@ export default function NABHCompliance() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-xl shadow-sm border-0 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <form onSubmit={handleSubmit} className="space-y-8">
           {canAdd ? (
             <>
           {/* Basic Employee Information */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Employee Information</h3>
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -378,7 +378,7 @@ export default function NABHCompliance() {
                       setForm({ ...form, employee_id: selectedId });
                     }
                   }}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select Employee ID</option>
                   {employees && employees.length > 0 ? (
@@ -418,7 +418,7 @@ export default function NABHCompliance() {
                       setForm({ ...form, employee_name: selectedName });
                     }
                   }}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select Employee Name</option>
                   {employees && employees.length > 0 ? (
@@ -440,7 +440,7 @@ export default function NABHCompliance() {
                   name="department"
                   value={form.department}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
                   placeholder="Auto-filled from employee selection"
                   readOnly
                 />
@@ -453,7 +453,7 @@ export default function NABHCompliance() {
                   name="designation"
                   value={form.designation}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter Designation"
                 />
               </div>
@@ -465,14 +465,14 @@ export default function NABHCompliance() {
                   name="joining_date"
                   value={form.joining_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           {/* Qualification & Documentation */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Qualification & Documentation</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -495,7 +495,7 @@ export default function NABHCompliance() {
                   name="qualification_documents"
                   value={form.qualification_documents}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="List qualification documents"
                 />
               </div>
@@ -542,7 +542,7 @@ export default function NABHCompliance() {
           </div>
 
           {/* Medical Fitness & Credentialing */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Medical Fitness & Credentialing</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -565,7 +565,7 @@ export default function NABHCompliance() {
                   name="medical_fitness_date"
                   value={form.medical_fitness_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -576,7 +576,7 @@ export default function NABHCompliance() {
                   name="medical_fitness_validity"
                   value={form.medical_fitness_validity}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -600,7 +600,7 @@ export default function NABHCompliance() {
                   name="credentialing_date"
                   value={form.credentialing_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -611,14 +611,14 @@ export default function NABHCompliance() {
                   name="credentialing_validity"
                   value={form.credentialing_validity}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           {/* Training Requirements */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Training Requirements</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -641,7 +641,7 @@ export default function NABHCompliance() {
                   name="orientation_date"
                   value={form.orientation_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -665,7 +665,7 @@ export default function NABHCompliance() {
                   name="fire_safety_date"
                   value={form.fire_safety_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -689,7 +689,7 @@ export default function NABHCompliance() {
                   name="infection_control_date"
                   value={form.infection_control_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -713,14 +713,14 @@ export default function NABHCompliance() {
                   name="patient_safety_date"
                   value={form.patient_safety_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           {/* Performance & Monitoring */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Performance & Monitoring</h3>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
@@ -743,7 +743,7 @@ export default function NABHCompliance() {
                   name="last_appraisal_date"
                   value={form.last_appraisal_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -754,7 +754,7 @@ export default function NABHCompliance() {
                   name="next_appraisal_due"
                   value={form.next_appraisal_due}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -778,14 +778,14 @@ export default function NABHCompliance() {
                   name="competency_date"
                   value={form.competency_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           {/* Compliance Status */}
-          <div className="bg-white p-6 rounded-lg border border-black">
+          <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-lg border-0 hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold mb-4">Compliance Status</h3>
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -794,7 +794,7 @@ export default function NABHCompliance() {
                   name="overall_compliance_status"
                   value={form.overall_compliance_status}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="Pending">Pending</option>
                   <option value="Compliant">Compliant</option>
@@ -811,7 +811,7 @@ export default function NABHCompliance() {
                   name="last_audit_date"
                   value={form.last_audit_date}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -822,7 +822,7 @@ export default function NABHCompliance() {
                   name="next_audit_due"
                   value={form.next_audit_due}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -832,7 +832,7 @@ export default function NABHCompliance() {
                   name="remarks"
                   value={form.remarks}
                   onChange={handleChange}
-                  className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
                   placeholder="Enter compliance remarks or notes"
                 />
               </div>
@@ -868,7 +868,7 @@ export default function NABHCompliance() {
             <button
               type="submit"
               style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-              className="px-8 py-3 text-white rounded-lg border border-black transition-colors text-lg"
+              className="px-8 py-3 text-white rounded-lg border-0 transition-colors text-lg"
               onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
             >
@@ -896,8 +896,8 @@ export default function NABHCompliance() {
                     onClick={() => setShowDeleted(!showDeleted)}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
                       showDeleted 
-                        ? 'bg-gray-800 text-white border-black hover:bg-gray-900' 
-                        : 'bg-white text-gray-800 border-black hover:bg-gray-50'
+                        ? 'bg-gray-800 text-white border-gray-200 hover:bg-gray-900' 
+                        : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50'
                     }`}
                   >
                     {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -909,30 +909,30 @@ export default function NABHCompliance() {
             <div className="overflow-x-auto">
               {/* Desktop Table View */}
               <div className="hidden md:block">
-                <table className="w-full border border-black">
+                <table className="w-full border-0">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Department</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Compliance %</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Last Audit</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Next Audit</th>
-                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Employee</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Department</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Compliance %</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Status</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Last Audit</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Next Audit</th>
+                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Deleted At</th>}
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-black">
                     {(showDeleted ? deletedComplianceRecords : complianceRecords).map((record, index) => (
-                      <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
-                        <td className="px-4 py-2 text-sm border-r border-black">
+                      <tr key={index} className={`hover:bg-gray-50 border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                        <td className="px-4 py-2 text-sm border-r-0">
                           <div>
                             <div className="font-medium">{record.employee_name}</div>
                             <div className="text-gray-500 text-xs">{record.employee_id}</div>
                           </div>
                         </td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{record.department}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">
+                        <td className="px-4 py-2 text-sm border-r-0">{record.department}</td>
+                        <td className="px-4 py-2 text-sm border-r-0">
                           <div className="flex items-center space-x-2">
                             <span className="font-medium">{record.compliance_percentage}%</span>
                             <div className="w-16 bg-gray-200 rounded-full h-2">
@@ -946,7 +946,7 @@ export default function NABHCompliance() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-2 text-sm border-r border-black">
+                        <td className="px-4 py-2 text-sm border-r-0">
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             record.overall_compliance_status === 'Compliant' ? 'bg-green-100 text-green-800' :
                             record.overall_compliance_status === 'Non-Compliant' ? 'bg-red-100 text-red-800' :
@@ -956,10 +956,10 @@ export default function NABHCompliance() {
                             {record.overall_compliance_status}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{record.last_audit_date || 'N/A'}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{record.next_audit_due || 'N/A'}</td>
+                        <td className="px-4 py-2 text-sm border-r-0">{record.last_audit_date || 'N/A'}</td>
+                        <td className="px-4 py-2 text-sm border-r-0">{record.next_audit_due || 'N/A'}</td>
                         {showDeleted && (
-                          <td className="px-4 py-2 text-sm border-r border-black">
+                          <td className="px-4 py-2 text-sm border-r-0">
                             {record.deleted_at ? new Date(record.deleted_at).toLocaleDateString() : 'N/A'}
                           </td>
                         )}
@@ -997,7 +997,7 @@ export default function NABHCompliance() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {(showDeleted ? deletedComplianceRecords : complianceRecords).map((record, index) => (
-                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                  <div key={index} className={`p-4 border-b-0 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{record.employee_name}</h4>
@@ -1083,3 +1083,5 @@ export default function NABHCompliance() {
     </div>
   );
 }
+
+

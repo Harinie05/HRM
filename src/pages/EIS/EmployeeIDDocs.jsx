@@ -108,7 +108,7 @@ export default function EmployeeIDDocs() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -153,7 +153,7 @@ export default function EmployeeIDDocs() {
 
         {/* Upload Section */}
         {canAdd && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white rounded-xl border-0 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-4">
               <FiUpload className="text-gray-600" />
               <h3 className="text-lg font-semibold text-gray-900">Upload New Document</h3>
@@ -163,7 +163,7 @@ export default function EmployeeIDDocs() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
                 <select
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                 >
@@ -187,7 +187,7 @@ export default function EmployeeIDDocs() {
                 <input 
                   type="file" 
                   accept=".pdf,.jpg,.jpeg,.png"
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   onChange={(e) => setFile(e.target.files[0])} 
                 />
               </div>
@@ -196,7 +196,7 @@ export default function EmployeeIDDocs() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date (Optional)</label>
                 <input 
                   type="date"
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
                 />
@@ -229,10 +229,10 @@ export default function EmployeeIDDocs() {
         )}
 
         {/* Documents Table */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 border-b-0">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Document Type</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">File Name</th>
@@ -263,7 +263,7 @@ export default function EmployeeIDDocs() {
                     }`}>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center mr-3">
+                          <div className="w-8 h-8 bg-gray-100 border-0 rounded-lg flex items-center justify-center mr-3">
                             <FiFileText className="w-4 h-4 text-gray-600" />
                           </div>
                           <div className="font-medium text-gray-900">{d.document_type}</div>
@@ -286,7 +286,7 @@ export default function EmployeeIDDocs() {
                         )}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-200 ${
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border-0 ${
                           d.status === "Verified" 
                             ? "bg-gray-100 text-black"
                             : d.status === "Rejected"
@@ -350,3 +350,4 @@ export default function EmployeeIDDocs() {
     </Layout>
   );
 }
+

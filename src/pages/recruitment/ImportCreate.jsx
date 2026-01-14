@@ -137,10 +137,10 @@ export default function ImportCandidates() {
           {/* CARDS GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {candidates.map((c) => (
-              <div key={c.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
+              <div key={c.id} className="bg-white rounded-xl shadow-sm border-0 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start space-x-3">
                   {/* Avatar */}
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 border border-gray-200" style={{
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 border-0" style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}>
                     {c.name?.charAt(0)?.toUpperCase() || 'C'}
@@ -169,7 +169,7 @@ export default function ImportCandidates() {
                         <a
                           href={c.resume_url}
                           target="_blank"
-                          className="inline-flex items-center text-xs font-medium px-2 py-1 rounded border border-gray-200 transition-colors"
+                          className="inline-flex items-center text-xs font-medium px-2 py-1 rounded border-0 transition-colors"
                           style={{
                             color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
@@ -207,7 +207,7 @@ export default function ImportCandidates() {
         {/* MODAL FORM */}
         {showForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-            <div className="bg-white w-full max-w-lg sm:max-w-xl p-4 sm:p-6 rounded-xl shadow-xl border border-gray-200 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white w-full max-w-lg sm:max-w-xl p-4 sm:p-6 rounded-xl shadow-xl border-0 max-h-[90vh] overflow-y-auto">
 
               <h2 className="text-lg sm:text-xl font-semibold mb-4">Add Candidate</h2>
 
@@ -215,7 +215,7 @@ export default function ImportCandidates() {
 
                 {/* Job selection */}
                 <select
-                  className="border border-gray-200 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  className="border-0 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -233,7 +233,7 @@ export default function ImportCandidates() {
                 <input
                   type="text"
                   placeholder="Candidate Name"
-                  className="border border-gray-200 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
+                  className="border-0 p-2 rounded w-full text-sm sm:text-base focus:outline-none focus:ring-2"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -287,7 +287,7 @@ export default function ImportCandidates() {
 
               <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
                 <button
-                  className="px-4 py-2 bg-gray-300 rounded-lg text-sm sm:text-base border border-gray-200 hover:bg-gray-400"
+                  className="px-4 py-2 bg-gray-300 rounded-lg text-sm sm:text-base border-0 hover:bg-gray-400"
                   onClick={() => setShowForm(false)}
                 >
                   Close
@@ -317,3 +317,4 @@ export default function ImportCandidates() {
     </div>
   );
 }
+

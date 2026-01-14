@@ -454,7 +454,7 @@ export default function Onboarding() {
       <Layout>
         <div className="p-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -486,7 +486,7 @@ export default function Onboarding() {
               placeholder="Search candidates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -495,7 +495,7 @@ export default function Onboarding() {
         </div>
 
         {/* Onboarded Candidates Cards */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-xl border-0 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Onboarded Candidates</h2>
             <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
@@ -530,7 +530,7 @@ export default function Onboarding() {
                   c.job_title.toLowerCase().includes(searchTerm.toLowerCase())
                 )
                 .map((c) => (
-                <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all duration-200">
+                <div key={c.id} className="bg-white rounded-xl border-0 p-4 hover:shadow-md transition-all duration-200">
                   <div className="flex items-start space-x-3">
                     {/* Avatar */}
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center font-semibold text-lg flex-shrink-0" style={{
@@ -1278,3 +1278,4 @@ export default function Onboarding() {
     </>
   );
 }
+

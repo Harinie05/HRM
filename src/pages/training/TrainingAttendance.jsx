@@ -221,9 +221,9 @@ export default function TrainingAttendance() {
   return (
     <div className="space-y-6">
 
-      <div className="rounded-lg shadow-sm border border-black" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="rounded-lg shadow-sm border-0" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         {/* Header */}
-        <div className="p-6 border-b border-black">
+        <div className="p-6 border-0">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-gray-900">Training Attendance & Assessment</h3>
             {(hasPermission('mark_training_attendance') || isAdmin()) && (
@@ -261,27 +261,27 @@ export default function TrainingAttendance() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Candidate</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Training Program</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Session Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Attendance</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Assessment Score</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Candidate</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Training Program</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Session Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Attendance</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Assessment Score</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-0">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {attendanceRecords.map((record) => (
-                      <tr key={record.id} className="hover:bg-gray-50 border-b border-black">
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                      <tr key={record.id} className="hover:bg-gray-50 border-0">
+                        <td className="px-6 py-4 whitespace-nowrap border-0">
                           <div className="text-sm font-medium text-gray-900">{record.employee_name}</div>
                         </td>
-                        <td className="px-6 py-4 border-r border-black">
+                        <td className="px-6 py-4 border-0">
                           <div className="text-sm text-gray-900">{record.program_title}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-0">
                           <div className="text-sm text-gray-900">{new Date(record.session_date).toLocaleDateString()}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-0">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             record.status === 'Present' ? 'bg-green-100 text-green-800' :
                             record.status === 'Absent' ? 'bg-red-100 text-red-800' :
@@ -290,7 +290,7 @@ export default function TrainingAttendance() {
                             {record.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-0">
                           <div className="text-sm text-gray-900">
                             {record.assessment_score ? `${record.assessment_score}%` : 'N/A'}
                           </div>
@@ -348,7 +348,7 @@ export default function TrainingAttendance() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {attendanceRecords.map((record) => (
-                  <div key={record.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                  <div key={record.id} className="p-4 border-b-0 last:border-b-0">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{record.employee_name}</h4>
@@ -431,7 +431,7 @@ export default function TrainingAttendance() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+            <div className="px-6 py-4 border-b-0 flex-shrink-0">
               <h3 className="text-lg font-semibold text-gray-900">{editingRecord ? 'Update' : 'Mark'} Training Attendance</h3>
               <p className="text-sm text-gray-500 mt-1">Record attendance and assessment scores</p>
             </div>
@@ -442,7 +442,7 @@ export default function TrainingAttendance() {
                   <select
                     value={formData.training_id}
                     onChange={(e) => setFormData({...formData, training_id: e.target.value, employee_id: "", attendance: {}, assessments: {}})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                   >
                     <option value="">Select Training Program</option>
@@ -458,7 +458,7 @@ export default function TrainingAttendance() {
                   <select
                     value={formData.employee_id}
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     required
                     disabled={!formData.training_id}
                   >
@@ -481,7 +481,7 @@ export default function TrainingAttendance() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Training Days Attendance</label>
-                      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border-0 rounded-lg p-3">
                         {trainingDays.map(day => (
                           <label key={day.date} className="flex items-center cursor-pointer">
                             <input
@@ -505,7 +505,7 @@ export default function TrainingAttendance() {
                           max="100"
                           value={formData.assessments.assessment1 || ''}
                           onChange={(e) => handleAssessmentChange('assessment1', e.target.value)}
-                          className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                           placeholder="Assessment 1"
                         />
                       </div>
@@ -517,7 +517,7 @@ export default function TrainingAttendance() {
                           max="100"
                           value={formData.assessments.assessment2 || ''}
                           onChange={(e) => handleAssessmentChange('assessment2', e.target.value)}
-                          className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                          className="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                           placeholder="Assessment 2"
                         />
                       </div>
@@ -539,7 +539,7 @@ export default function TrainingAttendance() {
                   setShowModal(false);
                   setEditingRecord(null);
                 }}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border-0 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -564,3 +564,5 @@ export default function TrainingAttendance() {
     </div>
   );
 }
+
+

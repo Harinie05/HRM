@@ -144,7 +144,7 @@ export default function CandidateScreening() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -168,7 +168,7 @@ export default function CandidateScreening() {
         </div>
 
         {/* ACTIONS */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl border-0 p-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <button
@@ -219,7 +219,7 @@ export default function CandidateScreening() {
         </div>
 
         {/* APPLICATIONS TABLE */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border-0 overflow-hidden">
           {applications.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               No applications found for this job
@@ -229,7 +229,7 @@ export default function CandidateScreening() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-100 text-gray-600 text-sm border-b border-gray-200">
+                  <thead className="bg-gray-100 text-gray-600 text-sm border-b-0">
                     <tr>
                       <th className="p-3 text-left">
                         {canSelectCandidates && (
@@ -327,7 +327,7 @@ export default function CandidateScreening() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {applications.map((app) => (
-                  <div key={app.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div key={app.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start gap-3 flex-1">
                         {canSelectCandidates && (
@@ -485,3 +485,4 @@ export default function CandidateScreening() {
     </Layout>
   );
 }
+

@@ -500,7 +500,7 @@ export default function Roles() {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view Roles.</p>
           </div>
@@ -709,7 +709,7 @@ export default function Roles() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -730,7 +730,7 @@ export default function Roles() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -739,7 +739,7 @@ export default function Roles() {
                 </div>
                 <p className="text-sm font-semibold text-gray-900">{roles.length}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
@@ -754,7 +754,7 @@ export default function Roles() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Roles</p>
@@ -773,7 +773,7 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Permissions</p>
@@ -792,7 +792,7 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
@@ -811,7 +811,7 @@ export default function Roles() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">System Status</p>
@@ -834,8 +834,8 @@ export default function Roles() {
         </div>
 
         {/* Role Management Section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -860,7 +860,7 @@ export default function Roles() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -879,7 +879,7 @@ export default function Roles() {
                   placeholder="Search name or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -911,7 +911,7 @@ export default function Roles() {
         </div>
 
         {/* Role List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {filteredRoles.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -926,7 +926,7 @@ export default function Roles() {
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredRoles.map((role, index) => (
-                  <div key={role.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
+                  <div key={role.id} className="bg-white border-0 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
@@ -986,7 +986,7 @@ export default function Roles() {
                         </p>
                       </div>
                       
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="bg-gray-50 rounded-lg p-3 border-0">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-xs text-gray-600">Permissions</span>
                           <span className="text-sm font-bold text-gray-900">{role.permissions.length}</span>
@@ -1011,7 +1011,7 @@ export default function Roles() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border border-gray-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border-0">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Role</h3>
@@ -1035,7 +1035,7 @@ export default function Roles() {
                 {/* Left Side - Role Information */}
                 <div className="space-y-4">
                   {/* Preset Roles Section */}
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  <div className="bg-gray-50 rounded-xl p-4 border-0">
                     <h4 className="text-sm font-semibold text-gray-800 mb-3">Quick Start - Preset Roles</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {PRESET_ROLES.map((preset, index) => (
@@ -1043,7 +1043,7 @@ export default function Roles() {
                           key={index}
                           type="button"
                           onClick={() => applyPresetRole(preset)}
-                          className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                          className="text-left p-3 bg-white border-0 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
                         >
                           <div className="font-medium text-sm text-gray-900 group-hover:text-blue-700">
                             {preset.name}
@@ -1168,7 +1168,7 @@ export default function Roles() {
                     ) : (
                       <>
                         {moduleFilter ? (
-                          <div className="mb-4 pb-2 border-b border-gray-200">
+                          <div className="mb-4 pb-2 border-b-0">
                             <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(moduleFilter)}</h4>
                             <div className="space-y-2 mt-3">
                               {getFilteredPermissions(permissionSearch, moduleFilter).map((p) => (
@@ -3056,7 +3056,7 @@ export default function Roles() {
                 {/* Left Side - Role Information */}
                 <div className="space-y-4">
                   {/* Preset Roles Section */}
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  <div className="bg-gray-50 rounded-xl p-4 border-0">
                     <h4 className="text-sm font-semibold text-gray-800 mb-3">Quick Start - Preset Roles</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {PRESET_ROLES.map((preset, index) => (
@@ -3064,7 +3064,7 @@ export default function Roles() {
                           key={index}
                           type="button"
                           onClick={() => applyPresetRoleEdit(preset)}
-                          className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                          className="text-left p-3 bg-white border-0 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
                         >
                           <div className="font-medium text-sm text-gray-900 group-hover:text-blue-700">
                             {preset.name}
@@ -3181,7 +3181,7 @@ export default function Roles() {
                   
                   <div className="max-h-96 overflow-y-auto border border-gray-300 rounded-lg p-4 space-y-2">
                     {editModuleFilter && (
-                      <div className="mb-4 pb-2 border-b border-gray-200">
+                      <div className="mb-4 pb-2 border-b-0">
                         <h4 className="text-sm font-semibold text-gray-800">{getModuleHeading(editModuleFilter)}</h4>
                       </div>
                     )}
@@ -5213,4 +5213,5 @@ export default function Roles() {
     </Layout>
   );
 }
+
 

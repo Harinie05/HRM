@@ -79,7 +79,7 @@ export default function OrganizationLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching User Management */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -100,7 +100,7 @@ export default function OrganizationLayout() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"/>
@@ -114,8 +114,8 @@ export default function OrganizationLayout() {
         </div>
 
         {/* Organization Management Section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -136,7 +136,7 @@ export default function OrganizationLayout() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <span className="text-sm text-gray-600 whitespace-nowrap">Setup</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                   {visibleTabs.map((tabItem) => {
                     return (
                       <button

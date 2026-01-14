@@ -21,7 +21,6 @@ export default function StatutoryRules() {
     tds_percent: "10"
   });
 
-  // Permission checks
   const canView = isAdmin() || hasPermission("view_statutory_rules");
   const canEdit = isAdmin() || hasPermission("edit_statutory_rule");
 
@@ -43,7 +42,7 @@ export default function StatutoryRules() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view statutory rules.</p>
         </div>
@@ -98,37 +97,37 @@ export default function StatutoryRules() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-black overflow-hidden">
-      {/* Header */}
-      <div className="p-6 border-b border-black">
+    <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+      <div className="p-5 border-b-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <FileText className="w-5 h-5 text-gray-600" />
+          <div className="p-2 rounded-lg" style={{
+            backgroundColor: `${colors.primary}20`
+          }}>
+            <FileText className="h-5 w-5" style={{ color: colors.primary }} />
           </div>
           <div>
-            <h2 className="text-lg font-medium text-gray-900">Statutory Rules Configuration</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Statutory Rules Configuration</h2>
             <p className="text-sm text-gray-600">Configure PF, ESI, Professional Tax and TDS rules</p>
           </div>
         </div>
       </div>
 
-      {/* Form */}
       <div className="p-6">
-        <div className="space-y-6">
-        {/* PF Section */}
-        <div className="border border-black rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="space-y-4">
+        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 mb-5">
             <input
               type="checkbox"
               checked={form.pf_enabled}
               onChange={(e) => setForm({ ...form, pf_enabled: e.target.checked })}
-              className="w-5 h-5 text-gray-600 rounded focus:ring-gray-500"
+              className="w-5 h-5 rounded focus:ring-2"
+              style={{ accentColor: colors.primary }}
             />
-            <h3 className="text-lg font-semibold text-gray-900">Provident Fund (PF)</h3>
+            <h3 className="text-base font-semibold text-gray-900">Provident Fund (PF)</h3>
           </div>
           
           {form.pf_enabled && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee PF %</label>
                 <input
@@ -136,7 +135,9 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.pf_percent}
                   onChange={(e) => setForm({ ...form, pf_percent: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
               </div>
               <div>
@@ -144,7 +145,9 @@ export default function StatutoryRules() {
                 <select
                   value={form.pf_apply_on}
                   onChange={(e) => setForm({ ...form, pf_apply_on: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 >
                   <option value="Basic">Basic Salary</option>
                   <option value="Gross">Gross Salary</option>
@@ -154,29 +157,31 @@ export default function StatutoryRules() {
           )}
         </div>
 
-        {/* ESI Section */}
-        <div className="border border-black rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 mb-5">
             <input
               type="checkbox"
               checked={form.esi_enabled}
               onChange={(e) => setForm({ ...form, esi_enabled: e.target.checked })}
-              className="w-5 h-5 text-gray-600 rounded focus:ring-gray-500"
+              className="w-5 h-5 rounded focus:ring-2"
+              style={{ accentColor: colors.primary }}
             />
-            <h3 className="text-lg font-semibold text-gray-900">Employee State Insurance (ESI)</h3>
+            <h3 className="text-base font-semibold text-gray-900">Employee State Insurance (ESI)</h3>
           </div>
           
           {form.esi_enabled && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Threshold Amount (₹)</label>
                 <input
                   type="number"
                   value={form.esi_threshold}
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
-                <p className="text-xs text-gray-500 mt-1">Salary &gt; threshold → ESI auto = 0</p>
+                <p className="text-xs text-gray-500 mt-1.5">Salary &gt; threshold → ESI auto = 0</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ESI %</label>
@@ -185,54 +190,58 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.esi_percent}
                   onChange={(e) => setForm({ ...form, esi_percent: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Professional Tax Section */}
-        <div className="border border-black rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 mb-5">
             <input
               type="checkbox"
               checked={form.pt_enabled}
               onChange={(e) => setForm({ ...form, pt_enabled: e.target.checked })}
-              className="w-5 h-5 text-gray-600 rounded focus:ring-gray-500"
+              className="w-5 h-5 rounded focus:ring-2"
+              style={{ accentColor: colors.primary }}
             />
-            <h3 className="text-lg font-semibold text-gray-900">Professional Tax (PT)</h3>
+            <h3 className="text-base font-semibold text-gray-900">Professional Tax (PT)</h3>
           </div>
           
           {form.pt_enabled && (
-            <div className="ml-7">
+            <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Monthly PT Amount (₹)</label>
                 <input
                   type="number"
                   value={form.pt_amount}
                   onChange={(e) => setForm({ ...form, pt_amount: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* TDS Section */}
-        <div className="border border-black rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="bg-gradient-to-br from-gray-50 to-white border-0 rounded-xl p-6 hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 mb-5">
             <input
               type="checkbox"
               checked={form.tds_enabled}
               onChange={(e) => setForm({ ...form, tds_enabled: e.target.checked })}
-              className="w-5 h-5 text-gray-600 rounded focus:ring-gray-500"
+              className="w-5 h-5 rounded focus:ring-2"
+              style={{ accentColor: colors.primary }}
             />
-            <h3 className="text-lg font-semibold text-gray-900">Tax Deducted at Source (TDS)</h3>
+            <h3 className="text-base font-semibold text-gray-900">Tax Deducted at Source (TDS)</h3>
           </div>
           
           {form.tds_enabled && (
-            <div className="ml-7">
+            <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">TDS Flat % (for test)</label>
                 <input
@@ -240,7 +249,9 @@ export default function StatutoryRules() {
                   step="0.01"
                   value={form.tds_percent}
                   onChange={(e) => setForm({ ...form, tds_percent: e.target.value })}
-                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
+                  onFocus={(e) => e.target.style.borderColor = colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = ''}
                 />
               </div>
             </div>
@@ -248,14 +259,13 @@ export default function StatutoryRules() {
         </div>
       </div>
 
-      {/* Submit Button - Only show if user has edit permission */}
       {canEdit && (
-        <div className="mt-8 flex justify-center sm:justify-end">
+        <div className="mt-6 flex justify-center sm:justify-end">
           <button
             onClick={submit}
             onMouseEnter={(e) => e.target.style.backgroundColor = colors.secondary}
             onMouseLeave={(e) => e.target.style.backgroundColor = colors.primary}
-            className="px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2 text-sm border border-black w-full sm:w-auto justify-center text-white"
+            className="px-8 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 text-sm w-full sm:w-auto justify-center text-white shadow-sm hover:shadow-md"
             style={{ backgroundColor: colors.primary }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,3 +285,4 @@ export default function StatutoryRules() {
     </div>
   );
 }
+

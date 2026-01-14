@@ -105,7 +105,7 @@ export default function EmployeeCertifications() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -167,11 +167,11 @@ export default function EmployeeCertifications() {
         </div>
 
         {/* Certifications Table */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 border-b-0">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Certification</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Issued By</th>
@@ -281,7 +281,7 @@ export default function EmployeeCertifications() {
               </div>
             ) : (
               certs.map((c) => (
-                <div key={c.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div key={c.id} className="p-4 border-b-0 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3" style={{
@@ -356,9 +356,9 @@ export default function EmployeeCertifications() {
 
         {showForm && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiAward className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -370,7 +370,7 @@ export default function EmployeeCertifications() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Certification Name *</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., AWS Certified Solutions Architect"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -380,7 +380,7 @@ export default function EmployeeCertifications() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Issued By</label>
                   <input
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     placeholder="e.g., Amazon Web Services"
                     value={form.issued_by}
                     onChange={(e) => setForm({ ...form, issued_by: e.target.value })}
@@ -391,7 +391,7 @@ export default function EmployeeCertifications() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     value={form.expiry}
                     onChange={(e) => setForm({ ...form, expiry: e.target.value })}
                   />
@@ -405,17 +405,17 @@ export default function EmployeeCertifications() {
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setForm({ ...form, file: e.target.files[0] })}
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t-0">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 border-0 rounded-xl hover:bg-gray-200 transition-colors font-medium"
                 >
                   Cancel
                 </button>

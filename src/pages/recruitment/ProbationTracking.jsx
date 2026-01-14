@@ -159,7 +159,7 @@ const ProbationTracking = () => {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex items-center justify-between">
@@ -201,7 +201,7 @@ const ProbationTracking = () => {
 
 
         {/* Tabs and Table */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border-0 overflow-hidden">
           <div className="p-4 sm:p-6">
 
 

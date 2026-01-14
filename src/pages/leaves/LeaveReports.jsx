@@ -13,7 +13,7 @@ export default function LeaveReports() {
     return (
       <div className="p-6 space-y-6">
         {/* Header with gradient background matching Organization setup */}
-        <div className="p-8 border-b border-gray-100">
+        <div className="p-8 border-b-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -268,7 +268,7 @@ export default function LeaveReports() {
   return (
     <div className="p-6 space-y-6">
       {/* Header with gradient background matching Organization setup */}
-      <div className="p-8 border-b border-gray-100">
+      <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -303,7 +303,7 @@ export default function LeaveReports() {
 
       {/* Filters */}
       {hasPermission("view_leave_reports") && (
-        <div className="p-4 sm:p-8 border-b border-gray-100">
+        <div className="p-4 sm:p-8 border-b-0">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1 max-w-full sm:max-w-md">
               <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -483,7 +483,7 @@ export default function LeaveReports() {
               departmentData.map((dept, index) => {
                 const approvalRate = dept.total > 0 ? ((dept.approved / dept.total) * 100).toFixed(1) : 0;
                 return (
-                  <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div key={index} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <div className="text-sm font-semibold text-gray-900">{getEmployeeInfo(dept.employee_id).code}</div>
@@ -541,4 +541,5 @@ export default function LeaveReports() {
     </div>
   );
 }
+
 

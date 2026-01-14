@@ -30,7 +30,7 @@ export default function Departments() {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view Departments.</p>
           </div>
@@ -142,7 +142,7 @@ export default function Departments() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -163,7 +163,7 @@ export default function Departments() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
@@ -172,7 +172,7 @@ export default function Departments() {
                 </div>
                 <p className="text-sm font-semibold text-gray-900">{departments.length}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -187,7 +187,7 @@ export default function Departments() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Departments</p>
@@ -206,7 +206,7 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Staff</p>
@@ -225,7 +225,7 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Filtered Results</p>
@@ -244,7 +244,7 @@ export default function Departments() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Avg Headcount</p>
@@ -265,8 +265,8 @@ export default function Departments() {
         </div>
 
         {/* Department Analytics Section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100" style={{
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -303,7 +303,7 @@ export default function Departments() {
               {departments.map((dept, index) => {
                 const headcount = getDepartmentHeadcount(dept.name);
                 return (
-                  <div key={dept.id} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div key={dept.id} className="bg-white rounded-xl p-4 border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg transition-all duration-300" style={{
@@ -356,8 +356,8 @@ export default function Departments() {
         </div>
 
         {/* Department Management Section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -382,7 +382,7 @@ export default function Departments() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -394,7 +394,7 @@ export default function Departments() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">Filter</span>
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
                     <button 
                       onClick={() => setFilter("all")}
                       className={`px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
@@ -487,7 +487,7 @@ export default function Departments() {
                     placeholder="Search name or description..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="pl-10 pr-4 py-2 w-full border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -520,7 +520,7 @@ export default function Departments() {
         </div>
 
         {/* Department List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {filteredDepartments.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -535,7 +535,7 @@ export default function Departments() {
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredDepartments.map((dept, index) => (
-                  <div key={dept.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
+                  <div key={dept.id} className="bg-white border-0 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{
@@ -594,7 +594,7 @@ export default function Departments() {
                         </p>
                       </div>
                       
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="bg-gray-50 rounded-lg p-3 border-0">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-xs text-gray-600">Staff Count</span>
                           <span className="text-sm font-bold text-gray-900">{getDepartmentHeadcount(dept.name)}</span>
@@ -619,7 +619,7 @@ export default function Departments() {
       {/* Create Modal */}
       {showCreateModal && canAdd && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border-0">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Create Department</h3>
@@ -645,7 +645,7 @@ export default function Departments() {
                     placeholder="Enter department name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -659,7 +659,7 @@ export default function Departments() {
                     value={desc}
                     onChange={(e) => setDesc(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                    className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -674,14 +674,14 @@ export default function Departments() {
                     setName("");
                     setDesc("");
                   }}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border border-gray-200"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border-0"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={addDepartment}
                   disabled={loading || !name.trim()}
-                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200"
+                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed border-0"
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -708,7 +708,7 @@ export default function Departments() {
       {/* Edit Modal */}
       {editing && canEdit && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border-0">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-medium text-gray-900">Edit Department</h3>
@@ -729,7 +729,7 @@ export default function Departments() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -742,7 +742,7 @@ export default function Departments() {
                     value={editDesc}
                     onChange={(e) => setEditDesc(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
+                    className="w-full px-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm resize-none"
                     style={{
                       focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                     }}
@@ -753,7 +753,7 @@ export default function Departments() {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setEditing(null)}
-                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border border-gray-200"
+                  className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors text-sm border-0"
                 >
                   Cancel
                 </button>
@@ -782,7 +782,7 @@ export default function Departments() {
                       showToast("Update failed", 'error');
                     }
                   }}
-                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm border border-gray-200"
+                  className="flex-1 px-4 py-3 text-white rounded-lg font-medium transition-colors text-sm border-0"
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}

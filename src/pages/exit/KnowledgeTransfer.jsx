@@ -230,7 +230,7 @@ export default function KnowledgeTransfer() {
   return (
     <div className="p-6 space-y-6">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
         background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
       }}>
         <div className="flex items-center gap-3 sm:gap-4">
@@ -251,8 +251,8 @@ export default function KnowledgeTransfer() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -289,8 +289,8 @@ export default function KnowledgeTransfer() {
         {/* KT Details */}
         <div className="lg:col-span-2">
           {selectedExit && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-gray-100">
+            <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+              <div className="p-5 border-b-0">
                 <div className="flex justify-between items-center gap-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="p-2 rounded-lg" style={{
@@ -361,7 +361,7 @@ export default function KnowledgeTransfer() {
                     </div>
 
                     {formData.kt_items.map((item, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                      <div key={index} className="border-0 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-3">
                           <h5 className="font-medium text-sm sm:text-base">KT Item {index + 1}</h5>
                           {formData.kt_items.length > 1 && (
@@ -453,7 +453,7 @@ export default function KnowledgeTransfer() {
 
               {ktData && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border-0">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div><strong>KT Period:</strong> {ktData.start_date} to {ktData.end_date}</div>
                       <div><strong>Overall Status:</strong> {ktData.overall_status}</div>
@@ -467,7 +467,7 @@ export default function KnowledgeTransfer() {
                     {ktData.kt_items && ktData.kt_items.length > 0 ? (
                       <div className="space-y-2 sm:space-y-3">
                         {ktData.kt_items.map(item => (
-                          <div key={item.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                          <div key={item.id} className="border-0 rounded-lg p-3 sm:p-4">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-2">
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(item.status)}

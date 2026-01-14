@@ -24,3 +24,4 @@ export default function ComplianceTabs({ tab, setTab }) {
     </div>
   );
 }
+

@@ -167,9 +167,9 @@ export default function AttendancePermission() {
     <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
 
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -187,7 +187,7 @@ export default function AttendancePermission() {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Requests</p>
@@ -204,7 +204,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
@@ -221,7 +221,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
@@ -238,7 +238,7 @@ export default function AttendancePermission() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
@@ -259,8 +259,8 @@ export default function AttendancePermission() {
         </div>
 
       {/* Apply Permission */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-5 border-b border-gray-100">
+      <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="p-5 border-b-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
@@ -283,7 +283,7 @@ export default function AttendancePermission() {
               <select
                 value={form.employee_id}
                 onChange={e => setForm({ ...form, employee_id: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -300,7 +300,7 @@ export default function AttendancePermission() {
           ) : (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Employee</label>
-              <div className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm">
+              <div className="w-full px-4 py-2 border-0 rounded-lg bg-gray-50 text-gray-700 text-sm">
                 Employee: {employees.find(emp => emp.id == form.employee_id)?.name || 'Current User'}
               </div>
             </div>
@@ -312,7 +312,7 @@ export default function AttendancePermission() {
               type="date"
               value={form.date}
               onChange={e => setForm({ ...form, date: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -324,7 +324,7 @@ export default function AttendancePermission() {
             <select
               value={form.request_type}
               onChange={e => setForm({ ...form, request_type: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -345,7 +345,7 @@ export default function AttendancePermission() {
                   type="time"
                   value={form.from_time}
                   onChange={e => setForm({ ...form, from_time: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -357,7 +357,7 @@ export default function AttendancePermission() {
                   type="time"
                   value={form.to_time}
                   onChange={e => setForm({ ...form, to_time: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                   style={{
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -372,7 +372,7 @@ export default function AttendancePermission() {
               placeholder="Reason for permission request..."
               value={form.reason}
               onChange={e => setForm({ ...form, reason: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+              className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
               style={{
                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -401,8 +401,8 @@ export default function AttendancePermission() {
       </div>
 
       {/* Requests List */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100" style={{
+      <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+        <div className="p-6 border-b-0" style={{
           background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
         }}>
           <div className="flex items-center justify-between">
@@ -464,7 +464,7 @@ export default function AttendancePermission() {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
+                      <div className="bg-gray-50 rounded-lg p-2 border-0">
                         <div className="flex justify-between items-start mb-1">
                           <span className="text-xs text-gray-600">Reason</span>
                           <span className="text-xs font-medium text-gray-900 text-right break-words">
@@ -498,7 +498,7 @@ export default function AttendancePermission() {
                           </button>
                           <button
                             onClick={() => updateStatus(r.id, "reject")}
-                            className="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 text-xs"
+                            className="flex-1 bg-white hover:bg-gray-100 text-gray-700 border-0 px-3 py-1.5 rounded-lg font-medium flex items-center justify-center gap-1 text-xs"
                           >
                             <FiXCircle className="w-3 h-3" />
                             Reject

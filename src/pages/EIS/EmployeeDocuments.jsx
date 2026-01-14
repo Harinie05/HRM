@@ -145,7 +145,7 @@ export default function EmployeeDocuments() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -207,7 +207,7 @@ export default function EmployeeDocuments() {
         </div>
 
         {/* Documents List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           <div className="p-6">
             {docs.length === 0 ? (
               <div className="text-center py-12">
@@ -220,7 +220,7 @@ export default function EmployeeDocuments() {
                 {docs.map((d) => (
                   <div 
                     key={d.id} 
-                    className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
+                    className="border-0 rounded-xl p-4 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
                     onClick={() => {
                       const token = localStorage.getItem('access_token');
                       if (!token) {
@@ -231,7 +231,7 @@ export default function EmployeeDocuments() {
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border border-gray-200 ${
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border-0 ${
                         d.category === 'Education' ? 'bg-gray-100 text-black' :
                         d.category === 'Experience' ? 'bg-gray-100 text-black' :
                         d.category === 'Medical' ? 'bg-gray-100 text-black' :
@@ -263,7 +263,7 @@ export default function EmployeeDocuments() {
                     
                     <div className="flex items-center justify-between mt-3">
                       {d.status && (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium border border-gray-200 ${
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium border-0 ${
                           d.status === "Uploaded" 
                             ? "bg-gray-100 text-black"
                             : "bg-gray-100 text-black"
@@ -288,3 +288,4 @@ export default function EmployeeDocuments() {
     </Layout>
   );
 }
+

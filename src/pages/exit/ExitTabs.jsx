@@ -23,3 +23,4 @@ export default function ExitTabs({ tab, setTab }) {
     </div>
   );
 }
+

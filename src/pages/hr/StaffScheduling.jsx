@@ -16,7 +16,7 @@ export default function StaffScheduling() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -268,7 +268,7 @@ export default function StaffScheduling() {
 
   return (
     <div className="space-y-6">
-      <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 border border-black">
+      <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 ">
         {['manage', 'records'].map((tab) => (
           <button
             key={tab}
@@ -289,12 +289,12 @@ export default function StaffScheduling() {
       {activeTab === 'manage' && (
         <div className="space-y-6">
           {!canAdd ? (
-            <div className="bg-white rounded-lg border border-black p-6 text-center">
+            <div className="bg-white rounded-lg  p-6 text-center">
               <p className="text-gray-500">You don't have permission to manage staff schedules.</p>
             </div>
           ) : (
             <>
-              <div className="bg-white rounded-lg border border-black p-6">
+              <div className="bg-white rounded-lg  p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
                   {editingLoad ? 'Edit Patient Load' : 'Record Patient Load'}
                 </h3>
@@ -304,7 +304,7 @@ export default function StaffScheduling() {
                 <select
                   value={patientLoadForm.department_id}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, department_id: e.target.value, custom_department: ''})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   required
                 >
                   <option value="">Select Department</option>
@@ -319,7 +319,7 @@ export default function StaffScheduling() {
                     placeholder="Enter department name"
                     value={patientLoadForm.custom_department}
                     onChange={(e) => setPatientLoadForm({...patientLoadForm, custom_department: e.target.value})}
-                    className="border border-black rounded-md px-3 py-2 w-full mt-2"
+                    className=" rounded-md px-3 py-2 w-full mt-2"
                     required
                   />
                 )}
@@ -330,7 +330,7 @@ export default function StaffScheduling() {
                   type="date"
                   value={patientLoadForm.date}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, date: e.target.value})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   required
                 />
               </div>
@@ -339,7 +339,7 @@ export default function StaffScheduling() {
                 <select
                   value={patientLoadForm.shift}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, shift: e.target.value})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                 >
                   <option value="Morning">Morning</option>
                   <option value="Evening">Evening</option>
@@ -353,7 +353,7 @@ export default function StaffScheduling() {
                   placeholder="Enter total patient count"
                   value={patientLoadForm.total_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, total_patients: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -364,7 +364,7 @@ export default function StaffScheduling() {
                   placeholder="Enter critical patient count"
                   value={patientLoadForm.critical_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, critical_patients: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -375,7 +375,7 @@ export default function StaffScheduling() {
                   placeholder="Enter ICU patient count"
                   value={patientLoadForm.icu_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, icu_patients: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -386,7 +386,7 @@ export default function StaffScheduling() {
                   placeholder="Enter OPD patient count"
                   value={patientLoadForm.opd_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, opd_patients: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -397,7 +397,7 @@ export default function StaffScheduling() {
                   placeholder="Enter emergency patient count"
                   value={patientLoadForm.emergency_patients}
                   onChange={(e) => setPatientLoadForm({...patientLoadForm, emergency_patients: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -418,7 +418,7 @@ export default function StaffScheduling() {
             </form>
           </div>
 
-          <div className="bg-white rounded-lg border border-black p-6">
+          <div className="bg-white rounded-lg  p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               {editingAllocation ? 'Edit Staff Allocation' : 'Create Staff Allocation'}
             </h3>
@@ -428,7 +428,7 @@ export default function StaffScheduling() {
                 <select
                   value={allocationForm.department_id}
                   onChange={(e) => setAllocationForm({...allocationForm, department_id: e.target.value, custom_department: ''})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   required
                 >
                   <option value="">Select Department</option>
@@ -443,7 +443,7 @@ export default function StaffScheduling() {
                     placeholder="Enter department name"
                     value={allocationForm.custom_department}
                     onChange={(e) => setAllocationForm({...allocationForm, custom_department: e.target.value})}
-                    className="border border-black rounded-md px-3 py-2 w-full mt-2"
+                    className=" rounded-md px-3 py-2 w-full mt-2"
                     required
                   />
                 )}
@@ -454,7 +454,7 @@ export default function StaffScheduling() {
                   type="date"
                   value={allocationForm.date}
                   onChange={(e) => setAllocationForm({...allocationForm, date: e.target.value})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   required
                 />
               </div>
@@ -463,7 +463,7 @@ export default function StaffScheduling() {
                 <select
                   value={allocationForm.shift}
                   onChange={(e) => setAllocationForm({...allocationForm, shift: e.target.value})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                 >
                   <option value="Morning">Morning</option>
                   <option value="Evening">Evening</option>
@@ -477,7 +477,7 @@ export default function StaffScheduling() {
                   placeholder="How many nurses needed?"
                   value={allocationForm.required_nurses}
                   onChange={(e) => setAllocationForm({...allocationForm, required_nurses: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -488,7 +488,7 @@ export default function StaffScheduling() {
                   placeholder="How many nurses assigned?"
                   value={allocationForm.allocated_nurses}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_nurses: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -499,7 +499,7 @@ export default function StaffScheduling() {
                   placeholder="How many doctors needed?"
                   value={allocationForm.required_doctors}
                   onChange={(e) => setAllocationForm({...allocationForm, required_doctors: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -510,7 +510,7 @@ export default function StaffScheduling() {
                   placeholder="How many doctors assigned?"
                   value={allocationForm.allocated_doctors}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_doctors: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -521,7 +521,7 @@ export default function StaffScheduling() {
                   placeholder="How many support staff needed?"
                   value={allocationForm.required_support_staff}
                   onChange={(e) => setAllocationForm({...allocationForm, required_support_staff: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -532,7 +532,7 @@ export default function StaffScheduling() {
                   placeholder="How many support staff assigned?"
                   value={allocationForm.allocated_support_staff}
                   onChange={(e) => setAllocationForm({...allocationForm, allocated_support_staff: parseInt(e.target.value) || 0})}
-                  className="border border-black rounded-md px-3 py-2 w-full"
+                  className=" rounded-md px-3 py-2 w-full"
                   min="0"
                 />
               </div>
@@ -560,7 +560,7 @@ export default function StaffScheduling() {
       {activeTab === 'records' && (
         <div className="space-y-6">
           {/* Patient Loads Table */}
-          <div className="bg-white rounded-lg border border-black">
+          <div className="bg-white rounded-lg ">
             <div className="px-6 py-4 border-b border-black">
               <h3 className="text-lg font-medium text-gray-900">Patient Loads</h3>
             </div>
@@ -592,7 +592,7 @@ export default function StaffScheduling() {
                           {canEdit && (
                             <button
                               onClick={() => handleEditLoad(load)}
-                              className="text-blue-600 hover:text-blue-900 p-1"
+                              className="text-green-600 hover:text-green-900 p-1"
                               title="Edit"
                             >
                               <Edit className="w-4 h-4" />
@@ -617,7 +617,7 @@ export default function StaffScheduling() {
           </div>
 
           {/* Staff Allocations Table */}
-          <div className="bg-white rounded-lg border border-black">
+          <div className="bg-white rounded-lg ">
             <div className="px-6 py-4 border-b border-black">
               <h3 className="text-lg font-medium text-gray-900">Staff Allocations</h3>
             </div>
@@ -659,7 +659,7 @@ export default function StaffScheduling() {
                           {canEdit && (
                             <button
                               onClick={() => handleEditAllocation(allocation)}
-                              className="text-blue-600 hover:text-blue-900 p-1"
+                              className="text-green-600 hover:text-green-900 p-1"
                               title="Edit"
                             >
                               <Edit className="w-4 h-4" />

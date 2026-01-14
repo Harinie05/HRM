@@ -91,7 +91,7 @@ export default function TrainingProgramApplication() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Program Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+        <div className="bg-white rounded-lg shadow-sm border-0 p-8 mb-8">
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{program.title}</h1>
             <p className="text-lg text-gray-600">{program.description}</p>
@@ -142,7 +142,7 @@ export default function TrainingProgramApplication() {
         </div>
 
         {/* Application Form */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-lg shadow-sm border-0 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Apply for this Program</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">

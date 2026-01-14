@@ -309,19 +309,19 @@ const PayrollDashboard = () => {
             <div className="bg-white rounded-2xl border border-black shadow-sm p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Salary Components Breakdown</h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">Basic Salary</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.basic?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.basic?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">HRA</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.hra?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.hra?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">Allowances</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.salaryComponents?.allowances?.amount || 0) / 100000).toFixed(1)}L ({payrollData.salaryComponents?.allowances?.percentage || 0}%)
@@ -339,19 +339,19 @@ const PayrollDashboard = () => {
             <div className="bg-white rounded-2xl border border-black shadow-sm p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Deductions Breakdown</h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">PF Contribution</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.pf?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.pf?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">TDS</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.tds?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.tds?.percentage || 0}%)
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="flex justify-between items-center py-3 border-b-0">
                   <span className="text-gray-600 font-medium">ESI</span>
                   <span className="font-semibold text-gray-900">
                     ₹{((payrollData.deductionComponents?.esi?.amount || 0) / 100000).toFixed(1)}L ({payrollData.deductionComponents?.esi?.percentage || 0}%)
@@ -426,3 +426,4 @@ const PayrollDashboard = () => {
 };
 
 export default PayrollDashboard;
+

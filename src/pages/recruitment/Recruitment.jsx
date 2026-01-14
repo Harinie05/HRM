@@ -216,7 +216,7 @@ export default function Recruitment() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -235,14 +235,14 @@ export default function Recruitment() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <FiPlay className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Published</span>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-gray-900">{jobs.filter(j => j.publish_status?.trim() === 'Published').length}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <FiPause className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Drafts</span>
@@ -254,9 +254,9 @@ export default function Recruitment() {
         </div>
 
         {/* Enhanced Search */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white rounded-2xl border-0 shadow-sm p-6">
           <div className="relative max-w-md mx-auto">
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-1">
+            <div className="bg-gray-50 border-0 rounded-xl p-1">
               <div className="flex items-center space-x-2 px-3 py-2">
                 <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center shadow-sm">
                   <FiSearch className="w-3 h-3 text-gray-600" />
@@ -288,7 +288,7 @@ export default function Recruitment() {
 
         {/* Key Performance Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Jobs</p>
@@ -305,7 +305,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Published</p>
@@ -322,7 +322,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Drafts</p>
@@ -339,7 +339,7 @@ export default function Recruitment() {
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Closed</p>
@@ -359,12 +359,12 @@ export default function Recruitment() {
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+          <div className="bg-white border-0 rounded-2xl shadow-sm p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <select
                 value={filters.department}
                 onChange={(e) => setFilters({...filters, department: e.target.value})}
-                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               >
                 <option value="">All Departments</option>
                 {departments.map(dept => (
@@ -375,7 +375,7 @@ export default function Recruitment() {
               <select
                 value={filters.status}
                 onChange={(e) => setFilters({...filters, status: e.target.value})}
-                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               >
                 <option value="">All Status</option>
                 <option value="Draft">Draft</option>
@@ -385,7 +385,7 @@ export default function Recruitment() {
               <select
                 value={filters.jobType}
                 onChange={(e) => setFilters({...filters, jobType: e.target.value})}
-                className="border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               >
                 <option value="">All Job Types</option>
                 {jobTypes.map(type => (
@@ -395,7 +395,7 @@ export default function Recruitment() {
               
               <button
                 onClick={clearFilters}
-                className="px-4 py-2 text-white border border-gray-200 rounded-xl transition-colors"
+                className="px-4 py-2 text-white border-0 rounded-xl transition-colors"
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -413,7 +413,7 @@ export default function Recruitment() {
         )}
 
         {/* JOB TABLE */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{
@@ -459,7 +459,7 @@ export default function Recruitment() {
             <div className="p-6">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className="bg-gray-50 border-b-0">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Details</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
@@ -557,7 +557,7 @@ export default function Recruitment() {
                                 {openLinkMenu === job.id && (
                                   <div className="absolute right-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
                                     <button
-                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
+                                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b-0"
                                       onClick={() => {
                                         const publicLink = `${window.location.origin}/apply/${job.id}`;
                                         setGeneratedLinks(prev => ({
@@ -663,7 +663,7 @@ export default function Recruitment() {
               <div className="md:hidden">
                 <div className="p-4 space-y-4">
                   {filteredJobs.map((job) => (
-                    <div key={job.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                    <div key={job.id} className="bg-white border-0 rounded-xl p-4 shadow-sm">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-900 text-sm">{job.title}</h3>
@@ -753,7 +753,7 @@ export default function Recruitment() {
                             {openLinkMenu === job.id && (
                               <div className="absolute left-0 mt-2 w-64 bg-white border border-black rounded-xl shadow-lg z-50">
                                 <button
-                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b border-gray-200"
+                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm border-b-0"
                                   onClick={() => {
                                     const publicLink = `${window.location.origin}/apply/${job.id}`;
                                     setGeneratedLinks(prev => ({

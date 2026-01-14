@@ -103,8 +103,12 @@ export default function GoalsKPI() {
       {/* Header - READ ONLY Notice */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
-            <TrendingUp className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center border-0" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <TrendingUp className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+            }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Goals & KPI (AUTO - READ ONLY)</h2>
@@ -118,12 +122,12 @@ export default function GoalsKPI() {
       </div>
 
       {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
         <div className="flex items-start gap-3">
-          <Calculator className="w-5 h-5 text-blue-600 mt-0.5" />
+          <Calculator className="w-5 h-5 text-green-600 mt-0.5" />
           <div>
             <h3 className="text-sm font-medium text-blue-900">Automated KPI Calculation</h3>
-            <p className="text-sm text-blue-700 mt-1">
+            <p className="text-sm text-green-700 mt-1">
               KPI scores are automatically calculated from Work Assignments completion status. 
               Target is locked at 100%, and progress is derived from assignment weightage and completion percentages.
             </p>
@@ -132,15 +136,15 @@ export default function GoalsKPI() {
       </div>
 
       {/* KPI Dashboard */}
-      <div className="bg-white rounded-2xl shadow-lg border border-black">
-        <div className="px-4 sm:px-6 py-4 border-b border-black rounded-t-2xl bg-gray-50">
+      <div className="bg-white rounded-2xl shadow-lg border-0">
+        <div className="px-4 sm:px-6 py-4 border-0 rounded-t-2xl bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900">Employee KPI Dashboard</h3>
           <p className="text-sm text-gray-600">Real-time performance scores based on work assignment completion</p>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-100">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -151,7 +155,7 @@ export default function GoalsKPI() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Total Assignments</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-100">
               {kpiData.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
@@ -178,7 +182,7 @@ export default function GoalsKPI() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="w-24 bg-gray-200 rounded-full h-3 mr-3 border border-black">
+                        <div className="w-24 bg-gray-200 rounded-full h-3 mr-3 border-0">
                           <div
                             className={`h-3 rounded-full transition-all duration-300 ${getProgressColor(employee.calculated_score || 0)}`}
                             style={{ width: `${Math.min(100, employee.calculated_score || 0)}%` }}
@@ -212,7 +216,7 @@ export default function GoalsKPI() {
             </div>
           ) : (
             kpiData.map((employee) => (
-              <div key={employee.employee_id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+              <div key={employee.employee_id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{employee.employee_name}</div>
@@ -237,7 +241,7 @@ export default function GoalsKPI() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-900">Progress:</span>
                     <div className="flex items-center">
-                      <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 border border-black">
+                      <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 border-0">
                         <div
                           className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(employee.calculated_score || 0)}`}
                           style={{ width: `${Math.min(100, employee.calculated_score || 0)}%` }}
@@ -261,20 +265,20 @@ export default function GoalsKPI() {
 
       {/* Assignment Details */}
       {kpiData.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-black">
-          <div className="px-4 sm:px-6 py-4 border-b border-black rounded-t-2xl bg-gray-50">
+        <div className="bg-white rounded-2xl shadow-lg border-0">
+          <div className="px-4 sm:px-6 py-4 border-0 rounded-t-2xl bg-gray-50">
             <h3 className="text-lg font-semibold text-gray-900">Assignment Breakdown</h3>
             <p className="text-sm text-gray-600">Detailed view of work assignments contributing to KPI scores</p>
           </div>
           
           <div className="p-6 space-y-6">
             {kpiData.map((employee) => (
-              <div key={employee.employee_id} className="border border-gray-200 rounded-lg p-4">
+              <div key={employee.employee_id} className="border-0 rounded-lg p-4">
                 <h4 className="font-medium text-gray-900 mb-3">{employee.employee_name}</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200">
+                      <tr className="border-b-0">
                         <th className="text-left py-2">Assignment</th>
                         <th className="text-left py-2">Category</th>
                         <th className="text-left py-2">Weightage</th>
@@ -283,7 +287,7 @@ export default function GoalsKPI() {
                     </thead>
                     <tbody>
                       {employee.assignments.map((assignment) => (
-                        <tr key={assignment.id} className="border-b border-gray-100">
+                        <tr key={assignment.id} className="border-b-0">
                           <td className="py-2">{assignment.title}</td>
                           <td className="py-2">{assignment.category}</td>
                           <td className="py-2">{assignment.weightage_percentage}%</td>
@@ -307,3 +311,6 @@ export default function GoalsKPI() {
     </div>
   );
 }
+
+
+

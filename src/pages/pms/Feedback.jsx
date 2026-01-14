@@ -288,8 +288,12 @@ export default function Feedback() {
       {/* Header with Give Feedback Button */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
-            <MessageCircle className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <MessageCircle className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+            }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Feedback</h2>
@@ -300,7 +304,10 @@ export default function Feedback() {
           {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_feedback') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(true)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -308,14 +315,17 @@ export default function Feedback() {
           {showDeleted && (hasPermission('show_deleted_feedback') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(false)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
           )}
           <button
             onClick={() => setShowForm(true)}
-            className="text-white px-4 py-2 rounded-lg border border-black flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
+            className="text-white px-4 py-2 rounded-lg  flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
             style={{
               backgroundColor: 'var(--primary-color)',
               display: (hasPermission('give_feedback') || isAdmin()) ? 'flex' : 'none'
@@ -331,8 +341,8 @@ export default function Feedback() {
 
       {/* Add Feedback Form */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-sm border border-black">
-          <div className="px-4 sm:px-6 py-4 border-b border-black">
+        <div className="bg-white rounded-lg shadow-sm ">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900">{editingFeedback ? 'Edit Feedback' : 'Give Feedback'}</h3>
           </div>
           <form onSubmit={handleSubmit} className="p-4 sm:p-6">
@@ -342,7 +352,7 @@ export default function Feedback() {
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value, customType: e.target.value === "Other" ? formData.customType : ""})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {feedbackTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -354,7 +364,7 @@ export default function Feedback() {
                     value={formData.customType}
                     onChange={(e) => setFormData({...formData, customType: e.target.value})}
                     placeholder="Enter custom feedback type"
-                    className="w-full mt-2 px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full mt-2 px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     required
                   />
                 )}
@@ -365,7 +375,7 @@ export default function Feedback() {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {categories.map(category => (
                     <option key={category} value={category}>{category}</option>
@@ -378,7 +388,7 @@ export default function Feedback() {
                 <select
                   value={formData.fromEmployee}
                   onChange={(e) => setFormData({...formData, fromEmployee: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -393,7 +403,7 @@ export default function Feedback() {
                 <select
                   value={formData.toEmployee}
                   onChange={(e) => setFormData({...formData, toEmployee: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -408,7 +418,7 @@ export default function Feedback() {
                 <select
                   value={formData.rating}
                   onChange={(e) => setFormData({...formData, rating: parseInt(e.target.value)})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {[1, 2, 3, 4, 5].map(rating => (
                     <option key={rating} value={rating}>{rating} Star{rating > 1 ? 's' : ''}</option>
@@ -421,7 +431,7 @@ export default function Feedback() {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -435,7 +445,7 @@ export default function Feedback() {
                   value={formData.feedback}
                   onChange={(e) => setFormData({...formData, feedback: e.target.value})}
                   rows={4}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Provide detailed feedback..."
                   required
                 />
@@ -447,7 +457,7 @@ export default function Feedback() {
                   value={formData.strengths}
                   onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="List key strengths..."
                 />
               </div>
@@ -458,7 +468,7 @@ export default function Feedback() {
                   value={formData.improvements}
                   onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Suggest areas for improvement..."
                 />
               </div>
@@ -469,7 +479,7 @@ export default function Feedback() {
                   value={formData.goals}
                   onChange={(e) => setFormData({...formData, goals: e.target.value})}
                   rows={2}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Suggest future goals and development areas..."
                 />
               </div>
@@ -480,7 +490,7 @@ export default function Feedback() {
                     type="checkbox"
                     checked={formData.isAnonymous}
                     onChange={(e) => setFormData({...formData, isAnonymous: e.target.checked})}
-                    className="mr-2 border border-black"
+                    className="mr-2 "
                   />
                   <span className="text-sm text-gray-700">Submit as anonymous feedback</span>
                 </label>
@@ -491,13 +501,13 @@ export default function Feedback() {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="w-full sm:w-auto px-4 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 py-2  text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                className="w-full sm:w-auto px-4 py-2 text-white rounded-md  text-sm sm:text-base transition-colors"
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
@@ -514,8 +524,8 @@ export default function Feedback() {
       {/* View Feedback Modal */}
       {showViewModal && viewFeedback && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-black">
-            <div className="px-4 sm:px-6 py-4 border-b border-black">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto ">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Feedback Details</h3>
             </div>
             <div className="p-4 sm:p-6 space-y-4">
@@ -544,32 +554,32 @@ export default function Feedback() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Feedback Comments</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewFeedback.comments || 'No comments provided'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewFeedback.comments || 'No comments provided'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Strengths</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewFeedback.strengths || 'No strengths mentioned'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewFeedback.strengths || 'No strengths mentioned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Areas for Improvement</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewFeedback.improvements || 'No improvements mentioned'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewFeedback.improvements || 'No improvements mentioned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Future Goals</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewFeedback.goals || 'No goals mentioned'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewFeedback.goals || 'No goals mentioned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Date</label>
                 <p className="text-sm text-gray-900">{viewFeedback.created_at ? new Date(viewFeedback.created_at).toLocaleDateString() : 'N/A'}</p>
               </div>
             </div>
-            <div className="px-4 sm:px-6 py-4 border-t border-black flex justify-end">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex justify-end">
               <button
                 onClick={() => {
                   setShowViewModal(false);
                   setViewFeedback(null);
                 }}
-                className="px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                className="px-4 py-2 text-white rounded-md  text-sm sm:text-base transition-colors"
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
@@ -584,15 +594,15 @@ export default function Feedback() {
       )}
 
       {/* Feedback List */}
-      <div className="bg-white rounded-lg shadow-sm border border-black">
-        <div className="px-4 sm:px-6 py-4 border-b border-black">
+      <div className="bg-white rounded-lg shadow-sm ">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Feedback History</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
-            <thead className="bg-gray-50 border-b border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">From/To</th>
@@ -627,7 +637,7 @@ export default function Feedback() {
                         (hasPermission('restore_feedback') || isAdmin()) && (
                         <button
                           onClick={() => handleRestore(feedback.id)}
-                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                          className="p-1 sm:p-2 text-blue-600 hover:text-blue-900 hover:bg-green-50 rounded-lg "
                           title="Restore Feedback"
                         >
                           <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -637,7 +647,7 @@ export default function Feedback() {
                         <>
                           <button 
                             onClick={() => handleView(feedback)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg " 
                             title="View Details"
                             style={{ display: (hasPermission('view_feedback') || isAdmin()) ? 'inline-block' : 'none' }}
                           >
@@ -646,7 +656,7 @@ export default function Feedback() {
                           {(hasPermission('edit_feedback') || isAdmin()) && (
                           <button 
                             onClick={() => handleEdit(feedback)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg" 
                             title="Edit"
                           >
                             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -655,7 +665,7 @@ export default function Feedback() {
                           {(hasPermission('delete_feedback') || isAdmin()) && (
                           <button
                             onClick={() => handleDelete(feedback.id)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            className="p-1 sm:p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg"
                             title="Delete"
                           >
                             <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -705,7 +715,7 @@ export default function Feedback() {
                   (hasPermission('restore_feedback') || isAdmin()) && (
                     <button
                       onClick={() => handleRestore(feedback.id)}
-                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md  hover:bg-green-100"
                     >
                       <MessageSquare className="w-3 h-3" />
                       Restore
@@ -716,7 +726,7 @@ export default function Feedback() {
                     {(hasPermission('view_feedback') || isAdmin()) && (
                       <button 
                         onClick={() => handleView(feedback)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Eye className="w-3 h-3" />
                         View
@@ -725,7 +735,7 @@ export default function Feedback() {
                     {(hasPermission('edit_feedback') || isAdmin()) && (
                       <button 
                         onClick={() => handleEdit(feedback)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Edit className="w-3 h-3" />
                         Edit
@@ -734,7 +744,7 @@ export default function Feedback() {
                     {(hasPermission('delete_feedback') || isAdmin()) && (
                       <button
                         onClick={() => handleDelete(feedback.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Trash2 className="w-3 h-3" />
                         Delete

@@ -69,34 +69,43 @@ export default function TrainingLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header with gradient background */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-black">
-                  <BookOpen className="w-8 h-8 text-gray-700" />
-                </div>
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Training & Development</h1>
-                  <p className="text-gray-600 text-base sm:text-lg mb-1">Manage training programs, schedules, and employee development</p>
-                  <p className="text-gray-500 text-sm">Employee Learning & Development</p>
-                </div>
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+              }}>
+                <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                }} />
               </div>
-              <div className="text-left sm:text-right">
-                <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="text-sm font-medium">{tabs.length} Modules</span>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Training & Development</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage training programs, schedules, and employee development</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Employee Learning & Development</p>
+              </div>
+            </div>
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <BookOpen className="h-3 w-3" />
+                  <span className="text-xs font-medium">Modules</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">Training components</p>
+                <p className="text-sm font-semibold text-gray-900">{tabs.length}</p>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
             {/* Content */}
             <div className="p-4 sm:p-6">
               {/* Tab Navigation */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
                 <span className="text-sm text-gray-600">Modules</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                   {tabs.map((tab) => (
                     <button
                       key={tab.name}
@@ -143,3 +152,5 @@ export default function TrainingLayout() {
     </Layout>
   );
 }
+
+

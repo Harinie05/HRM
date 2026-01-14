@@ -97,7 +97,7 @@ export default function JobApply() {
       <div className="w-full max-w-2xl">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="text-center">
@@ -113,7 +113,7 @@ export default function JobApply() {
               {job.department}
             </p>
 
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <div className="bg-gray-50 rounded-xl p-6 border-0">
               <h2 className="text-xl font-semibold mb-3 text-gray-900">
                 Job Description
               </h2>
@@ -125,7 +125,7 @@ export default function JobApply() {
         </div>
 
         {/* APPLICATION FORM */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl border-0 p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
               Apply for this job
@@ -138,7 +138,7 @@ export default function JobApply() {
               placeholder="Full Name"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              className="w-full px-4 py-3 bg-white text-black border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 bg-white text-black border-0 rounded-xl focus:ring-2 focus:border-transparent transition-all"
               style={{
                 focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
               }}
@@ -177,7 +177,7 @@ export default function JobApply() {
             />
 
             {/* Resume Upload */}
-            <div className="border-t border-gray-200 pt-6">
+            <div className="border-t-0 pt-6">
               <label className="block mb-2 text-sm font-medium text-gray-900">
                 Upload Resume (PDF / DOC) *
               </label>
@@ -200,7 +200,7 @@ export default function JobApply() {
 
           <button
             onClick={submitApplication}
-            className="mt-8 w-full font-semibold py-4 px-6 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+            className="mt-8 w-full font-semibold py-4 px-6 rounded-xl border-0 hover:bg-gray-50 transition-colors"
             style={{
               backgroundColor: 'white',
               color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
@@ -221,3 +221,4 @@ export default function JobApply() {
     </div>
   );
 }
+

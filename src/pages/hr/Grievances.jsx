@@ -17,7 +17,7 @@ export default function Grievances() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -234,7 +234,7 @@ export default function Grievances() {
   return (
     <div className="space-y-6">
       {/* Grievance Form */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Submit Grievance</h3>
         </div>
@@ -252,7 +252,7 @@ export default function Grievances() {
                     <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -262,7 +262,7 @@ export default function Grievances() {
                       ))}
                     </select>
                   ) : (
-                    <div className="w-full px-3 py-2 border border-black rounded-md bg-gray-50 text-gray-700">
+                    <div className="w-full px-3 py-2  rounded-md bg-gray-50 text-gray-700">
                       {(() => {
                         const currentUserId = localStorage.getItem('user_id');
                         const currentUserEmployee = employees.find(emp => {
@@ -281,7 +281,7 @@ export default function Grievances() {
                   <select 
                     value={formData.grievanceType}
                     onChange={(e) => setFormData({...formData, grievanceType: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Type</option>
                     <option value="harassment">Harassment</option>
@@ -299,7 +299,7 @@ export default function Grievances() {
                   <select 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Priority</option>
                     <option value="low">Low</option>
@@ -314,7 +314,7 @@ export default function Grievances() {
                     type="date"
                     value={formData.dateOccurred}
                     onChange={(e) => setFormData({...formData, dateOccurred: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-2">
@@ -323,7 +323,7 @@ export default function Grievances() {
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Brief subject of the grievance"
                   />
                 </div>
@@ -333,7 +333,7 @@ export default function Grievances() {
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     rows={4}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Detailed description of the grievance..."
                   />
                 </div>
@@ -358,14 +358,14 @@ export default function Grievances() {
       </div>
 
       {/* Grievances List */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Grievances Management</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -414,7 +414,7 @@ export default function Grievances() {
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         <button
                           onClick={() => handleView(grievance.id)}
-                          className="p-1 text-gray-600 hover:text-gray-900 border border-gray-300 rounded"
+                          className="p-1 text-gray-600 hover:text-gray-900  rounded"
                           title="View Details"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -436,7 +436,7 @@ export default function Grievances() {
                         {canResolve && grievance.status !== 'Resolved' && (
                           <button
                             onClick={() => handleCompleteInvestigation(grievance.id)}
-                            className="p-1 text-green-600 hover:text-green-900 border border-green-300 rounded"
+                            className="p-1 text-green-600 hover:text-green-900  rounded"
                             title="Complete Investigation"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -461,7 +461,7 @@ export default function Grievances() {
             </div>
           ) : (
             grievances.map((grievance) => (
-              <div key={grievance.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+              <div key={grievance.id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{grievance.employee_name || 'Unknown'}</div>
@@ -595,3 +595,4 @@ export default function Grievances() {
     </div>
   );
 }
+

@@ -289,8 +289,12 @@ export default function Appraisal() {
       {/* Header with Create Appraisal Button */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
-            <ClipboardCheck className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <ClipboardCheck className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+            }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Appraisal</h2>
@@ -301,7 +305,10 @@ export default function Appraisal() {
           {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_appraisals') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(true)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -309,14 +316,17 @@ export default function Appraisal() {
           {showDeleted && (hasPermission('show_deleted_appraisals') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(false)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
           )}
           <button
             onClick={() => setShowForm(true)}
-            className="text-white px-4 py-2 rounded-lg border border-black flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
+            className="text-white px-4 py-2 rounded-lg  flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
             style={{
               backgroundColor: 'var(--primary-color)',
               display: (hasPermission('add_appraisal') || isAdmin()) ? 'flex' : 'none'
@@ -332,8 +342,8 @@ export default function Appraisal() {
 
       {/* Add Appraisal Form */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-sm border border-black">
-          <div className="px-4 sm:px-6 py-4 border-b border-black">
+        <div className="bg-white rounded-lg shadow-sm ">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900">{editingAppraisal ? 'Edit Performance Appraisal' : 'Create Performance Appraisal'}</h3>
           </div>
           <form onSubmit={handleSubmit} className="p-4 sm:p-6">
@@ -351,7 +361,7 @@ export default function Appraisal() {
                       position: selectedEmp?.position || ""
                     });
                   }}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -368,7 +378,7 @@ export default function Appraisal() {
                   value={formData.reviewPeriod}
                   onChange={(e) => setFormData({...formData, reviewPeriod: e.target.value})}
                   placeholder="e.g., 2024 Annual Review, Q4 2024"
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -378,7 +388,7 @@ export default function Appraisal() {
                 <select
                   value={formData.appraiser}
                   onChange={(e) => setFormData({...formData, appraiser: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 >
                   <option value="">Select Appraiser</option>
@@ -393,7 +403,7 @@ export default function Appraisal() {
                 <select
                   value={formData.reviewType}
                   onChange={(e) => setFormData({...formData, reviewType: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {reviewTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -406,7 +416,7 @@ export default function Appraisal() {
                 <select
                   value={formData.overallRating}
                   onChange={(e) => setFormData({...formData, overallRating: parseInt(e.target.value)})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {ratings.map(rating => (
                     <option key={rating} value={rating}>{rating} - {rating === 5 ? 'Excellent' : rating === 4 ? 'Good' : rating === 3 ? 'Average' : rating === 2 ? 'Below Average' : 'Poor'}</option>
@@ -422,7 +432,7 @@ export default function Appraisal() {
                   max="100"
                   value={formData.performanceScore}
                   onChange={(e) => setFormData({...formData, performanceScore: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 />
               </div>
 
@@ -432,7 +442,7 @@ export default function Appraisal() {
                   value={formData.strengths}
                   onChange={(e) => setFormData({...formData, strengths: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="List key strengths and achievements..."
                 />
               </div>
@@ -443,7 +453,7 @@ export default function Appraisal() {
                   value={formData.improvements}
                   onChange={(e) => setFormData({...formData, improvements: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Identify areas that need improvement..."
                 />
               </div>
@@ -454,7 +464,7 @@ export default function Appraisal() {
                   value={formData.developmentPlan}
                   onChange={(e) => setFormData({...formData, developmentPlan: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Outline development plan and training needs..."
                 />
               </div>
@@ -465,7 +475,7 @@ export default function Appraisal() {
                   value={formData.comments}
                   onChange={(e) => setFormData({...formData, comments: e.target.value})}
                   rows={4}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Additional comments and observations..."
                 />
               </div>
@@ -476,7 +486,7 @@ export default function Appraisal() {
                   value={formData.recommendations}
                   onChange={(e) => setFormData({...formData, recommendations: e.target.value})}
                   rows={2}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   placeholder="Recommendations for promotion, role changes, etc..."
                 />
               </div>
@@ -486,7 +496,7 @@ export default function Appraisal() {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -499,7 +509,7 @@ export default function Appraisal() {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="w-full sm:w-auto px-4 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 py-2  text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
               >
                 Cancel
               </button>
@@ -522,8 +532,8 @@ export default function Appraisal() {
       {/* View Appraisal Modal */}
       {showViewModal && viewAppraisal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-black">
-            <div className="px-4 sm:px-6 py-4 border-b border-black">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto ">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Appraisal Details</h3>
             </div>
             <div className="p-4 sm:p-6 space-y-4">
@@ -562,32 +572,32 @@ export default function Appraisal() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Recommendations</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewAppraisal.recommendation || 'No recommendations provided'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewAppraisal.recommendation || 'No recommendations provided'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Key Strengths</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewAppraisal.strengths || 'No strengths mentioned'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewAppraisal.strengths || 'No strengths mentioned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Areas for Improvement</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewAppraisal.improvements || 'No improvements mentioned'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewAppraisal.improvements || 'No improvements mentioned'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Development Plan</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewAppraisal.development_plan || 'No development plan provided'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewAppraisal.development_plan || 'No development plan provided'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Comments</label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-black">{viewAppraisal.comments || 'No comments provided'}</p>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded ">{viewAppraisal.comments || 'No comments provided'}</p>
               </div>
             </div>
-            <div className="px-4 sm:px-6 py-4 border-t border-black flex justify-end">
+            <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex justify-end">
               <button
                 onClick={() => {
                   setShowViewModal(false);
                   setViewAppraisal(null);
                 }}
-                className="px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                className="px-4 py-2 text-white rounded-md  text-sm sm:text-base transition-colors"
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
@@ -602,15 +612,15 @@ export default function Appraisal() {
       )}
 
       {/* Appraisals List */}
-      <div className="bg-white rounded-lg shadow-sm border border-black">
-        <div className="px-4 sm:px-6 py-4 border-b border-black">
+      <div className="bg-white rounded-lg shadow-sm ">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Performance Appraisals</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
-            <thead className="bg-gray-50 border-b border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Review Period</th>
@@ -653,7 +663,7 @@ export default function Appraisal() {
                         (hasPermission('restore_appraisal') || isAdmin()) && (
                         <button
                           onClick={() => handleRestore(appraisal.id)}
-                          className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                          className="p-1 sm:p-2 text-blue-600 hover:text-blue-900 hover:bg-green-50 rounded-lg "
                           title="Restore Appraisal"
                         >
                           <Award className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -663,7 +673,7 @@ export default function Appraisal() {
                         <>
                           <button 
                             onClick={() => handleView(appraisal)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            className="p-1 sm:p-2 text-blue-600 hover:text-blue-900 hover:bg-gray-50 rounded-lg " 
                             title="View Details"
                             style={{ display: (hasPermission('view_appraisals') || isAdmin()) ? 'inline-block' : 'none' }}
                           >
@@ -672,7 +682,7 @@ export default function Appraisal() {
                           {(hasPermission('edit_appraisal') || isAdmin()) && (
                           <button 
                             onClick={() => handleEdit(appraisal)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300" 
+                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg" 
                             title="Edit"
                           >
                             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -681,7 +691,7 @@ export default function Appraisal() {
                           {(hasPermission('delete_appraisal') || isAdmin()) && (
                           <button
                             onClick={() => handleDelete(appraisal.id)}
-                            className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                            className="p-1 sm:p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg"
                             title="Delete"
                           >
                             <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -738,7 +748,7 @@ export default function Appraisal() {
                     (hasPermission('restore_appraisal') || isAdmin()) && (
                     <button
                       onClick={() => handleRestore(appraisal.id)}
-                      className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
                     >
                       <Award className="w-4 h-4" />
                       Restore
@@ -748,7 +758,7 @@ export default function Appraisal() {
                     <>
                       <button
                         onClick={() => handleView(appraisal)}
-                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                        className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
                         style={{ display: (hasPermission('view_appraisals') || isAdmin()) ? 'flex' : 'none' }}
                       >
                         <Eye className="w-4 h-4" />
@@ -757,7 +767,7 @@ export default function Appraisal() {
                       {(hasPermission('edit_appraisal') || isAdmin()) && (
                         <button
                           onClick={() => handleEdit(appraisal)}
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-900 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                          className="flex items-center gap-1 text-green-600 hover:text-green-900 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors text-sm"
                         >
                           <Edit className="w-4 h-4" />
                           Edit

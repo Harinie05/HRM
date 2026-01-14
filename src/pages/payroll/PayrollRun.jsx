@@ -34,7 +34,7 @@ export default function PayrollRun() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view payroll runs.</p>
         </div>
@@ -506,7 +506,7 @@ export default function PayrollRun() {
               </div>
             ) : (
               filteredRuns.map((run, index) => (
-                <div key={index} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div key={index} className="p-4 border-b-0 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-medium text-gray-900">{run.employee_name}</div>
@@ -607,7 +607,7 @@ export default function PayrollRun() {
                 />
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-4 border-0">
                 <p className="text-sm text-gray-600 mb-2">Employees with salary structures: <span className="font-medium">{activeEmployeesCount}</span></p>
                 <p className="text-xs text-gray-500">Payroll will be processed for employees linked to salary structures.</p>
                 {validationChecked && validationResult && (

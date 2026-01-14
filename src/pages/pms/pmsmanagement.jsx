@@ -61,38 +61,48 @@ export default function PMSManagement() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header with reduced size and proper padding */}
-        <div className="bg-white rounded-3xl border-2 border-black shadow-sm p-6 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center border-2 border-black">
-                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Performance Management System</h1>
-                  <p className="text-gray-600 text-sm sm:text-base mb-1">Automated PMS driven by Work Assignments</p>
-                  <p className="text-gray-500 text-xs">Performance Management</p>
-                </div>
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+              }}>
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-              <div className="text-left sm:text-right">
-                <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
-                    <span className="text-xs font-medium">Modules</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Performance Management System</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Automated PMS driven by Work Assignments</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Performance Management</p>
+              </div>
+            </div>
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">Modules</span>
                 </div>
+                <p className="text-sm font-semibold text-gray-900">{tabs.length}</p>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-2xl border border-black overflow-hidden">
+          <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
             {/* Content */}
             <div className="p-4 sm:p-6">
               {/* Tab Navigation */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
                 <span className="text-sm text-gray-600">Modules</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
                   {tabs.map((tabName) => (
                     <button
                       key={tabName}
@@ -144,3 +154,4 @@ export default function PMSManagement() {
     </Layout>
   );
 }
+

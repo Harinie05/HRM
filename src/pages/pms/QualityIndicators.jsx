@@ -313,12 +313,27 @@ const QualityIndicators = () => {
       {activeTab === 'manage' && (
         <div>
           <div className="mb-6 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <h2 className="text-lg font-semibold">Quality Indicators</h2>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+              }}>
+                <TrendingUp className="w-5 h-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+                }} />
+              </div>
+              <div>
+                <h2 className="text-lg font-medium text-gray-900">Quality Indicators</h2>
+                <p className="text-sm text-gray-600">Define and track quality performance metrics</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
               {!showDeleted && deletedCount > 0 && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
                 <button
                   onClick={() => setShowDeleted(true)}
-                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                  className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
+                  style={{ backgroundColor: 'var(--primary-color)' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Show Deleted ({deletedCount})
                 </button>
@@ -326,7 +341,10 @@ const QualityIndicators = () => {
               {showDeleted && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
                 <button
                   onClick={() => setShowDeleted(false)}
-                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                  className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
+                  style={{ backgroundColor: 'var(--primary-color)' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Hide Deleted
                 </button>
@@ -334,8 +352,13 @@ const QualityIndicators = () => {
             </div>
             <button
               onClick={() => setShowIndicatorForm(true)}
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
-              style={{ display: (hasPermission('add_quality_indicator') || isAdmin()) ? 'flex' : 'none' }}
+              className="text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)',
+                display: (hasPermission('add_quality_indicator') || isAdmin()) ? 'flex' : 'none'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               Add Quality Indicator
@@ -344,7 +367,7 @@ const QualityIndicators = () => {
 
           {/* Quality Indicators Form */}
           {showIndicatorForm && (
-            <div className="bg-white p-6 rounded-lg border border-black mb-6">
+            <div className="bg-white p-6 rounded-lg  mb-6">
               <h3 className="text-lg font-medium mb-4">
                 {editingIndicator ? 'Edit Quality Indicator' : 'Add Quality Indicator'}
               </h3>
@@ -355,7 +378,7 @@ const QualityIndicators = () => {
                     type="text"
                     value={indicatorForm.kpi_name}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_name: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   />
                 </div>
@@ -364,7 +387,7 @@ const QualityIndicators = () => {
                   <select
                     value={indicatorForm.kpi_category}
                     onChange={(e) => setIndicatorForm({...indicatorForm, kpi_category: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   >
                     {categories.map(cat => (
@@ -377,7 +400,7 @@ const QualityIndicators = () => {
                   <textarea
                     value={indicatorForm.description}
                     onChange={(e) => setIndicatorForm({...indicatorForm, description: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     rows="2"
                   />
                 </div>
@@ -388,7 +411,7 @@ const QualityIndicators = () => {
                     step="0.01"
                     value={indicatorForm.target_value}
                     onChange={(e) => setIndicatorForm({...indicatorForm, target_value: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   />
                 </div>
@@ -397,7 +420,7 @@ const QualityIndicators = () => {
                   <select
                     value={indicatorForm.unit_of_measure}
                     onChange={(e) => setIndicatorForm({...indicatorForm, unit_of_measure: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   >
                     {units.map(unit => (
@@ -410,7 +433,7 @@ const QualityIndicators = () => {
                   <select
                     value={indicatorForm.frequency}
                     onChange={(e) => setIndicatorForm({...indicatorForm, frequency: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   >
                     {frequencies.map(freq => (
@@ -424,7 +447,7 @@ const QualityIndicators = () => {
                     type="text"
                     value={indicatorForm.department}
                     onChange={(e) => setIndicatorForm({...indicatorForm, department: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     placeholder="Enter department name"
                   />
                 </div>
@@ -432,14 +455,17 @@ const QualityIndicators = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black"
+                    className="text-white px-4 py-2 rounded-md transition-colors"
+                    style={{ backgroundColor: 'var(--primary-color)' }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                   >
                     {loading ? 'Saving...' : editingIndicator ? 'Update' : 'Save'}
                   </button>
                   <button
                     type="button"
                     onClick={resetIndicatorForm}
-                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 border border-gray-300"
+                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 "
                   >
                     Cancel
                   </button>
@@ -449,7 +475,7 @@ const QualityIndicators = () => {
           )}
 
           {/* Quality Indicators Table */}
-          <div className="bg-white rounded-lg border border-black overflow-hidden">
+          <div className="bg-white rounded-lg  overflow-hidden">
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <table className="min-w-full divide-y divide-gray-200">
@@ -505,7 +531,7 @@ const QualityIndicators = () => {
                               {(hasPermission('edit_quality_indicator') || isAdmin()) && (
                               <button
                                 onClick={() => editIndicator(indicator)}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-green-600 hover:text-green-900"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
@@ -568,7 +594,7 @@ const QualityIndicators = () => {
                       (hasPermission('restore_quality_indicator') || isAdmin()) && (
                         <button
                           onClick={() => restoreIndicator(indicator.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md  hover:bg-green-100"
                         >
                           <TrendingUp className="w-3 h-3" />
                           Restore
@@ -579,7 +605,7 @@ const QualityIndicators = () => {
                         {(hasPermission('edit_quality_indicator') || isAdmin()) && (
                           <button
                             onClick={() => editIndicator(indicator)}
-                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                           >
                             <Edit className="w-3 h-3" />
                             Edit
@@ -588,7 +614,7 @@ const QualityIndicators = () => {
                         {(hasPermission('delete_quality_indicator') || isAdmin()) && (
                           <button
                             onClick={() => deleteIndicator(indicator.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                           >
                             <Trash2 className="w-3 h-3" />
                             Delete
@@ -613,7 +639,10 @@ const QualityIndicators = () => {
               {!showDeleted && deletedRecordsCount > 0 && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
                 <button
                   onClick={() => setShowDeleted(true)}
-                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                  className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
+                  style={{ backgroundColor: 'var(--primary-color)' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Show Deleted ({deletedRecordsCount})
                 </button>
@@ -621,7 +650,10 @@ const QualityIndicators = () => {
               {showDeleted && (hasPermission('show_deleted_quality_indicators') || isAdmin()) && (
                 <button
                   onClick={() => setShowDeleted(false)}
-                  className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700 text-sm whitespace-nowrap"
+                  className="text-white px-3 py-1 rounded-md text-sm whitespace-nowrap transition-colors"
+                  style={{ backgroundColor: 'var(--primary-color)' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
                 >
                   Hide Deleted
                 </button>
@@ -629,8 +661,13 @@ const QualityIndicators = () => {
             </div>
             <button
               onClick={() => setShowRecordForm(true)}
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black flex items-center gap-2"
-              style={{ display: (hasPermission('measure_quality_metrics') || isAdmin()) ? 'flex' : 'none' }}
+              className="text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)',
+                display: (hasPermission('measure_quality_metrics') || isAdmin()) ? 'flex' : 'none'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               <Plus className="w-4 h-4" />
               Add KPI Record
@@ -639,7 +676,7 @@ const QualityIndicators = () => {
 
           {/* KPI Records Form */}
           {showRecordForm && (
-            <div className="bg-white p-6 rounded-lg border border-black mb-6">
+            <div className="bg-white p-6 rounded-lg  mb-6">
               <h3 className="text-lg font-medium mb-4">
                 {editingRecord ? 'Edit KPI Record' : 'Add KPI Record'}
               </h3>
@@ -649,7 +686,7 @@ const QualityIndicators = () => {
                   <select
                     value={recordForm.quality_indicator_id}
                     onChange={(e) => setRecordForm({...recordForm, quality_indicator_id: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   >
                     <option value="">Select KPI</option>
@@ -666,7 +703,7 @@ const QualityIndicators = () => {
                     type="date"
                     value={recordForm.recorded_date}
                     onChange={(e) => setRecordForm({...recordForm, recorded_date: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   />
                 </div>
@@ -677,7 +714,7 @@ const QualityIndicators = () => {
                     step="0.01"
                     value={recordForm.actual_value}
                     onChange={(e) => setRecordForm({...recordForm, actual_value: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   />
                 </div>
@@ -687,7 +724,7 @@ const QualityIndicators = () => {
                     type="text"
                     value={recordForm.recorded_by}
                     onChange={(e) => setRecordForm({...recordForm, recorded_by: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     required
                   />
                 </div>
@@ -696,7 +733,7 @@ const QualityIndicators = () => {
                   <textarea
                     value={recordForm.remarks}
                     onChange={(e) => setRecordForm({...recordForm, remarks: e.target.value})}
-                    className="w-full p-2 border border-black rounded-md"
+                    className="w-full p-2  rounded-md"
                     rows="2"
                   />
                 </div>
@@ -704,14 +741,14 @@ const QualityIndicators = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 border border-black"
+                    className="text-white px-4 py-2 rounded-md hover:bg-gray-800 "
                   >
                     {loading ? 'Saving...' : editingRecord ? 'Update' : 'Save'}
                   </button>
                   <button
                     type="button"
                     onClick={resetRecordForm}
-                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 border border-gray-300"
+                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 "
                   >
                     Cancel
                   </button>
@@ -721,7 +758,7 @@ const QualityIndicators = () => {
           )}
 
           {/* KPI Records Table */}
-          <div className="bg-white rounded-lg border border-black overflow-hidden">
+          <div className="bg-white rounded-lg  overflow-hidden">
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <table className="min-w-full divide-y divide-gray-200">
@@ -784,7 +821,7 @@ const QualityIndicators = () => {
                               {(hasPermission('measure_quality_metrics') || isAdmin()) && (
                               <button
                                 onClick={() => editRecord(record)}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-green-600 hover:text-green-900"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
@@ -853,7 +890,7 @@ const QualityIndicators = () => {
                       (hasPermission('measure_quality_metrics') || isAdmin()) && (
                         <button
                           onClick={() => restoreRecord(record.id)}
-                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md  hover:bg-green-100"
                         >
                           <TrendingUp className="w-3 h-3" />
                           Restore
@@ -864,7 +901,7 @@ const QualityIndicators = () => {
                         {(hasPermission('measure_quality_metrics') || isAdmin()) && (
                           <button
                             onClick={() => editRecord(record)}
-                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                           >
                             <Edit className="w-3 h-3" />
                             Edit
@@ -873,7 +910,7 @@ const QualityIndicators = () => {
                         {(hasPermission('measure_quality_metrics') || isAdmin()) && (
                           <button
                             onClick={() => deleteRecord(record.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                            className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                           >
                             <Trash2 className="w-3 h-3" />
                             Delete

@@ -53,7 +53,7 @@ const LocumConsultants = () => {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view Consultants.</p>
           </div>
@@ -347,7 +347,7 @@ const LocumConsultants = () => {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -366,20 +366,20 @@ const LocumConsultants = () => {
               </div>
             </div>
             <div className="text-center lg:text-right">
-              <div className="inline-flex items-center gap-2 text-gray-600 px-3 py-1 border border-gray-200 rounded-lg">
+              <div className="inline-flex items-center gap-2 text-gray-600 px-3 py-1 border-0 rounded-lg">
                 <span className="text-xs sm:text-sm font-medium">{consultants.length} Consultants</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border-0 overflow-hidden">
           <div className="p-4 sm:p-6">
             {/* Tab Navigation */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Consultant Management</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200">
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0">
                   {(isAdmin() || hasPermission('view_consultants')) && (
                     <button
                       onClick={() => setActiveTab('list')}
@@ -494,7 +494,7 @@ const LocumConsultants = () => {
                 </div>
                 
                 {/* Filters */}
-                <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+                <div className="bg-gray-50 rounded-lg p-4 mb-6 border-0">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>

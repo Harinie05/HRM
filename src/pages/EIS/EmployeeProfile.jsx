@@ -193,7 +193,7 @@ export default function EmployeeProfile() {
     <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-8" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -233,7 +233,7 @@ export default function EmployeeProfile() {
               </div>
             </div>
             <div className="text-center sm:text-right flex-shrink-0">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
+              <div className="bg-white rounded-lg p-3 border-0 shadow-sm text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Status</span>
                 </div>
@@ -246,12 +246,12 @@ export default function EmployeeProfile() {
 
       <div className="p-4 sm:p-6 space-y-6">
         {/* Action Buttons */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
           <div className="flex items-center justify-center sm:justify-end gap-3">
             {(isAdmin() || hasPermission("edit_profile")) && (
               <button
                 onClick={() => setShowEditModal(true)}
-                className="flex items-center gap-2 px-4 sm:px-6 py-3 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-gray-200"
+                className="flex items-center gap-2 px-4 sm:px-6 py-3 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border-0"
                 style={{
                   backgroundColor: 'var(--primary-color, #4575b5)'
                 }}
@@ -270,7 +270,7 @@ export default function EmployeeProfile() {
             {(isAdmin() || hasPermission("view_documents")) && (
               <Link
                 to={`/eis/${employee.application_id}/documents`}
-                className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border border-gray-200"
+                className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl border-0"
               >
                 <FiEye size={16} />
                 <span className="hidden sm:inline">View Documents</span>
@@ -281,8 +281,8 @@ export default function EmployeeProfile() {
         </div>
 
         {/* Employment Details */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 flex items-center px-6">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b-0 flex items-center px-6">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
@@ -294,7 +294,7 @@ export default function EmployeeProfile() {
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiMail className="text-gray-600 w-4 h-4" />
                 </div>
@@ -303,7 +303,7 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base truncate">{employee.candidate_email || 'N/A'}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiMapPin className="text-gray-600 w-4 h-4" />
                 </div>
@@ -312,7 +312,7 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_location}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiUsers className="text-gray-600 w-4 h-4" />
                 </div>
@@ -321,7 +321,7 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.reporting_manager}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiClock className="text-gray-600 w-4 h-4" />
                 </div>
@@ -330,7 +330,7 @@ export default function EmployeeProfile() {
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{employee.work_shift}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="flex items-start gap-3 p-4 bg-white rounded-xl border-0">
                 <div className="p-2 bg-gray-100 rounded-lg mt-0.5">
                   <FiCalendar className="text-gray-600 w-4 h-4" />
                 </div>
@@ -347,8 +347,8 @@ export default function EmployeeProfile() {
         <EmployeeProbation employeeId={employee.application_id.toString().replace('user_', '')} employee={employee} />
 
         {/* Employee Information Modules */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200 flex items-center px-6">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b-0 flex items-center px-6">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
             }}>
@@ -362,7 +362,7 @@ export default function EmployeeProfile() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               <Link
                 to={`/eis/${employee.application_id}/education`}
-                className="group p-4 sm:p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-4 sm:p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -377,7 +377,7 @@ export default function EmployeeProfile() {
             
               <Link
                 to={`/eis/${employee.application_id}/experience`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -392,7 +392,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/skills`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -407,7 +407,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/certifications`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -422,7 +422,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/family`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -437,7 +437,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/medical`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -452,7 +452,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/id-docs`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -467,7 +467,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/salary`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -482,7 +482,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/bank-details`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -497,7 +497,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/reporting`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -512,7 +512,7 @@ export default function EmployeeProfile() {
               
               <Link
                 to={`/eis/${employee.application_id}/exit`}
-                className="group p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -531,7 +531,7 @@ export default function EmployeeProfile() {
         {/* Edit Profile Modal */}
         {showEditModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -550,7 +550,7 @@ export default function EmployeeProfile() {
                     type="text"
                     value={editForm.work_location}
                     onChange={(e) => setEditForm({...editForm, work_location: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter work location"
                   />
                 </div>
@@ -561,7 +561,7 @@ export default function EmployeeProfile() {
                     type="text"
                     value={editForm.reporting_manager}
                     onChange={(e) => setEditForm({...editForm, reporting_manager: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter reporting manager"
                   />
                 </div>
@@ -572,7 +572,7 @@ export default function EmployeeProfile() {
                     type="date"
                     value={editForm.joining_date}
                     onChange={(e) => setEditForm({...editForm, joining_date: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -581,7 +581,7 @@ export default function EmployeeProfile() {
                   <select
                     value={editForm.work_shift}
                     onChange={(e) => setEditForm({...editForm, work_shift: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="General">General</option>
                     <option value="Morning">Morning</option>
@@ -596,7 +596,7 @@ export default function EmployeeProfile() {
                   <select
                     value={editForm.probation_period}
                     onChange={(e) => setEditForm({...editForm, probation_period: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="1 Month">1 Month</option>
                     <option value="2 Months">2 Months</option>
@@ -610,7 +610,7 @@ export default function EmployeeProfile() {
               <div className="flex justify-end gap-3 mt-6">
                 <button 
                   onClick={() => setShowEditModal(false)}
-                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border border-gray-200"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border-0"
                 >
                   Cancel
                 </button>
@@ -666,7 +666,7 @@ export default function EmployeeProfile() {
                       showToast('Failed to update profile', 'error');
                     }
                   }}
-                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg border border-gray-200"
+                  className="px-6 py-3 text-white rounded-xl transition-colors font-medium shadow-lg border-0"
                   style={{
                     backgroundColor: 'var(--primary-color, #4575b5)'
                   }}
@@ -687,7 +687,7 @@ export default function EmployeeProfile() {
         {/* Photo Upload Modal */}
         {showPhotoUpload && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-xl border-0 shadow-2xl p-6 w-full max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                   <FiCamera className="text-gray-600 w-5 h-5" />
@@ -724,7 +724,7 @@ export default function EmployeeProfile() {
                       setPreviewUrl(URL.createObjectURL(file));
                     }
                   }}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                 />
               </div>
               
@@ -795,3 +795,4 @@ export default function EmployeeProfile() {
     </Layout>
   );
 }
+

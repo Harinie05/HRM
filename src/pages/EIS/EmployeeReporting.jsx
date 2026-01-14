@@ -174,7 +174,7 @@ export default function EmployeeReporting() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -216,7 +216,7 @@ export default function EmployeeReporting() {
             Back to Profile
           </button>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           <div className="p-6">
 
           <div className="space-y-6">
@@ -236,7 +236,7 @@ export default function EmployeeReporting() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Select Organizational Level *</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.employee_level_id}
                     onChange={(e) => handleLevelChange(e.target.value)}
                   >
@@ -253,7 +253,7 @@ export default function EmployeeReporting() {
                   <label className="block text-sm font-medium text-secondary mb-2">Assignment Date</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.reporting_start_date}
                     onChange={(e) => setForm({ ...form, reporting_start_date: e.target.value })}
                   />
@@ -264,7 +264,7 @@ export default function EmployeeReporting() {
             {/* Manager Selection */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiUser className="w-5 h-5" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
@@ -282,7 +282,7 @@ export default function EmployeeReporting() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Assigned to *</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.reporting_manager_id}
                     onChange={(e) => setForm({ ...form, reporting_manager_id: e.target.value })}
                   >
@@ -310,7 +310,7 @@ export default function EmployeeReporting() {
                       : 'Alternative Manager (Optional)'}
                   </label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.alternative_manager_id}
                     onChange={(e) => setForm({ ...form, alternative_manager_id: e.target.value })}
                   >
@@ -336,10 +336,10 @@ export default function EmployeeReporting() {
 
             {/* Simple Reporting Summary */}
             {form.reporting_manager_id && (
-              <div className="bg-gray-100 border border-gray-200 rounded-lg p-6">
+              <div className="bg-gray-100 border-0 rounded-lg p-6">
                 <h4 className="font-semibold text-gray-900 mb-4">Reporting Structure</h4>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 border border-gray-200 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-blue-100 border-0 rounded-full flex items-center justify-center">
                     <FiUsers className="text-blue-600 text-sm" />
                   </div>
                   <div>
@@ -356,7 +356,7 @@ export default function EmployeeReporting() {
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-end mt-8 pt-6 border-t-0">
             {(canAdd || canEdit) && (
               <button
                 onClick={submit}

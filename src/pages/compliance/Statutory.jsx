@@ -17,7 +17,7 @@ export default function Statutory() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view Statutory Rules.</p>
         </div>
@@ -341,7 +341,7 @@ export default function Statutory() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
@@ -358,7 +358,7 @@ export default function Statutory() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total PF</p>
@@ -375,7 +375,7 @@ export default function Statutory() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total ESI</p>
@@ -392,7 +392,7 @@ export default function Statutory() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
@@ -411,8 +411,8 @@ export default function Statutory() {
       </div>
 
       {/* Form Section */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-5 border-b border-gray-100">
+      <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="p-5 border-b-0">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -773,8 +773,8 @@ export default function Statutory() {
 
       {/* Records Table */}
       {(calculations.length > 0 || deletedCalculations.length > 0) && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -824,15 +824,15 @@ export default function Statutory() {
                 <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Basic Salary</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">PF</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">ESI</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">PT</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Total</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Period</th>
-                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Deleted At</th>}
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Employee</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Basic Salary</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">PF</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">ESI</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">PT</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Total</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Period</th>
+                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Deleted At</th>}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -900,7 +900,7 @@ export default function Statutory() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
-                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
+                  <div key={index} className={`p-4 border-b-0 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{calc.employee_name}</h4>
@@ -981,3 +981,4 @@ export default function Statutory() {
     </div>
   );
 }
+

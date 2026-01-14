@@ -35,7 +35,7 @@ export default function EmployeeListPage() {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view the Employee Directory.</p>
           </div>
@@ -329,7 +329,7 @@ export default function EmployeeListPage() {
     <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-8" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-8" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -348,7 +348,7 @@ export default function EmployeeListPage() {
               </div>
             </div>
             <div className="text-center sm:text-right flex-shrink-0">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm text-center">
+              <div className="bg-white rounded-lg p-3 border-0 shadow-sm text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
                   <span className="text-xs font-medium">Employees</span>
                 </div>
@@ -361,9 +361,9 @@ export default function EmployeeListPage() {
 
       <div className="p-4 sm:p-6">
         {/* Search and Actions */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-xl border-0 shadow-sm p-4 mb-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 text-sm text-gray-600 border border-gray-200">
+            <div className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 text-sm text-gray-600 border-0">
               Total: {employees.length}
             </div>
           </div>
@@ -374,7 +374,7 @@ export default function EmployeeListPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="px-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -390,7 +390,7 @@ export default function EmployeeListPage() {
               <input
                 type="text"
                 placeholder="Search employees..."
-                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-white border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
                 style={{
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -400,7 +400,7 @@ export default function EmployeeListPage() {
               {canCreate && (
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-white rounded-lg transition-colors border border-gray-200"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-white rounded-lg transition-colors border-0"
                   style={{
                     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
@@ -421,7 +421,7 @@ export default function EmployeeListPage() {
         </div>
 
         {/* Employee Cards */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto" style={{
             scrollbarWidth: 'none',
@@ -431,7 +431,7 @@ export default function EmployeeListPage() {
             e.target.style.setProperty('-ms-overflow-style', 'none');
           }}>
             <table className="min-w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 border-b-0">
                 <tr>
                   <th className="px-3 sm:px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Employee Code
@@ -528,7 +528,7 @@ export default function EmployeeListPage() {
           <div className="md:hidden p-4">
             <div className="space-y-4">
               {employees.map((employee) => (
-                <div key={employee.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                <div key={employee.id} className="bg-white border-0 rounded-xl p-4 shadow-sm">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
@@ -604,7 +604,7 @@ export default function EmployeeListPage() {
       {/* Create Employee Code Modal */}
       {showCreateForm && canCreate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl border-0 shadow-sm p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center mb-6">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
                 <Plus className="w-5 h-5 text-indigo-600" />

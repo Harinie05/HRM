@@ -419,7 +419,7 @@ export default function Dashboard() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header - Reduced Size */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-gray-200 shadow-sm p-4" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border-0 shadow-sm p-4" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -437,14 +437,14 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 border-0 shadow-sm">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
                   <Globe className="h-3 w-3" />
                   <span className="text-xs font-medium">Compliance</span>
                 </div>
                 <p className="text-xs font-semibold text-gray-900">NABH Standard</p>
               </div>
-              <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 border-0 shadow-sm">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
                   <Calendar className="h-3 w-3" />
                   <span className="text-xs font-medium">Today</span>
@@ -460,7 +460,7 @@ export default function Dashboard() {
 
         {/* Key Performance Indicators - Smaller Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-lg p-3 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Employees</p>
@@ -480,7 +480,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-lg p-3 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Departments</p>
@@ -504,7 +504,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-lg p-3 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Roles</p>
@@ -528,7 +528,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-lg p-3 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Status</p>
@@ -558,8 +558,8 @@ export default function Dashboard() {
         {/* Charts Section - Enhanced Compact */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Employee Growth Chart */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-2 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-2 border-b-0">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -610,8 +610,8 @@ export default function Dashboard() {
           </div>
 
           {/* Department Distribution */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-2 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-2 border-b-0">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
@@ -651,8 +651,8 @@ export default function Dashboard() {
         {/* Additional Charts - Enhanced Compact */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Attendance Metrics */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-2 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-2 border-b-0">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -693,8 +693,8 @@ export default function Dashboard() {
           </div>
 
           {/* Weekly Performance */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-2 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-2 border-b-0">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}20`
@@ -739,8 +739,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
           {/* Audit Logs Summary */}
           {hasPermission("view_audit_log") && (
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-3 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-3 border-b-0">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -798,7 +798,7 @@ export default function Dashboard() {
               </div>
               
               {auditSummary.top_actions.length > 0 && (
-                <div className="bg-gray-50 rounded p-2 border border-gray-200">
+                <div className="bg-gray-50 rounded p-2 border-0">
                   <p className="text-xs text-gray-700 font-medium mb-2">Top Actions</p>
                   <div className="space-y-1">
                     {auditSummary.top_actions.slice(0, 3).map((action, index) => (
@@ -834,8 +834,8 @@ export default function Dashboard() {
 
           {/* Document Alerts */}
           {hasPermission("view_documents_alerts") && (
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="p-3 border-b border-gray-100">
+          <div className="bg-white rounded-lg border-0 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="p-3 border-b-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-1 bg-red-100 rounded">
@@ -921,8 +921,8 @@ export default function Dashboard() {
         </div>
 
         {/* Product Overview */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100" style={{
+        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+          <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -958,7 +958,7 @@ export default function Dashboard() {
                 return (
                   <div 
                     key={index} 
-                    className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer"
+                    className="bg-white rounded-xl p-6 border-0 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer"
                     onClick={() => handleModuleNavigation(module.title)}
                   >
                     <div className="flex items-start justify-between mb-4">
@@ -1009,8 +1009,8 @@ export default function Dashboard() {
         </div>
 
         {/* Holiday Gallery Section - Enhanced */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-100" style={{
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-4 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -1170,7 +1170,7 @@ export default function Dashboard() {
             <div className="p-4 border-t border-gray-100" style={{
               background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}02, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}02)`
             }}>
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-4 border-0 shadow-sm">
                 <div className="flex justify-between items-center mb-4">
                   <button 
                     onClick={prevMonth} 
@@ -1237,7 +1237,7 @@ export default function Dashboard() {
                     return (
                       <div
                         key={day}
-                        className={`h-12 p-1 border border-gray-200 rounded relative transition-all duration-200 ${
+                        className={`h-12 p-1 border-0 rounded relative transition-all duration-200 ${
                           holiday 
                             ? "hover:shadow-md cursor-pointer" 
                             : isToday
@@ -1314,7 +1314,7 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl border border-black max-w-4xl w-full max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between p-6 border-b-0 bg-gray-50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-red-100 rounded-lg">
                   <Bell className="h-6 w-6 text-red-600" />
@@ -1462,7 +1462,7 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between p-6 border-t-0 bg-gray-50">
               <div className="text-sm text-gray-600">
                 Last updated: {new Date().toLocaleString()}
               </div>
@@ -1482,3 +1482,4 @@ export default function Dashboard() {
     </Layout>
   );
 }
+

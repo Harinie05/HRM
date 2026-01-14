@@ -15,7 +15,7 @@ export default function Assets() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -253,7 +253,7 @@ export default function Assets() {
   return (
     <div className="space-y-6">
       {/* Asset Assignment Form */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Asset Assignment</h3>
         </div>
@@ -271,7 +271,7 @@ export default function Assets() {
                     <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -281,7 +281,7 @@ export default function Assets() {
                       ))}
                     </select>
                   ) : (
-                    <div className="w-full px-3 py-2 border border-black rounded-md bg-gray-50 text-gray-700">
+                    <div className="w-full px-3 py-2  rounded-md bg-gray-50 text-gray-700">
                       {(() => {
                         const currentUserId = localStorage.getItem('user_id');
                         const currentUserEmployee = employees.find(emp => {
@@ -300,7 +300,7 @@ export default function Assets() {
                   <select 
                     value={formData.assetType}
                     onChange={(e) => setFormData({...formData, assetType: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Type</option>
                     <option value="laptop">Laptop</option>
@@ -323,7 +323,7 @@ export default function Assets() {
                     type="text"
                     value={formData.assetName}
                     onChange={(e) => setFormData({...formData, assetName: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Asset name"
                   />
                 </div>
@@ -333,7 +333,7 @@ export default function Assets() {
                     type="text"
                     value={formData.assetId}
                     onChange={(e) => setFormData({...formData, assetId: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Unique asset ID"
                   />
                 </div>
@@ -343,7 +343,7 @@ export default function Assets() {
                     type="text"
                     value={formData.brand}
                     onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Brand name"
                   />
                 </div>
@@ -353,7 +353,7 @@ export default function Assets() {
                     type="text"
                     value={formData.model}
                     onChange={(e) => setFormData({...formData, model: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Model number"
                   />
                 </div>
@@ -363,7 +363,7 @@ export default function Assets() {
                     type="text"
                     value={formData.serialNumber}
                     onChange={(e) => setFormData({...formData, serialNumber: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Serial number"
                   />
                 </div>
@@ -373,7 +373,7 @@ export default function Assets() {
                     type="date"
                     value={formData.assignedDate}
                     onChange={(e) => setFormData({...formData, assignedDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
                 <div>
@@ -381,7 +381,7 @@ export default function Assets() {
                   <select 
                     value={formData.condition}
                     onChange={(e) => setFormData({...formData, condition: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Condition</option>
                     <option value="new">New</option>
@@ -398,7 +398,7 @@ export default function Assets() {
                     value={formData.remarks}
                     onChange={(e) => setFormData({...formData, remarks: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                     placeholder="Additional remarks or special instructions..."
                   />
                 </div>
@@ -424,14 +424,14 @@ export default function Assets() {
 
       {/* Pending Assets */}
       {pendingAssets.length > 0 && (
-        <div className="rounded-lg shadow-sm border border-black bg-white">
+        <div className="rounded-lg shadow-sm  bg-white">
           <div className="px-6 py-4 border-b border-black">
             <h3 className="text-lg font-semibold text-gray-900">Pending Asset Approvals</h3>
           </div>
           
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 border border-black">
+            <table className="min-w-full divide-y divide-gray-200 ">
               <thead className="bg-gray-50 border-b border-black">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -503,7 +503,7 @@ export default function Assets() {
           {/* Mobile Card View */}
           <div className="md:hidden">
             {pendingAssets.map((asset) => (
-              <div key={asset.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+              <div key={asset.id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{asset.name}</div>
@@ -570,14 +570,14 @@ export default function Assets() {
       )}
 
       {/* Assets List */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">All Assets</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -631,7 +631,7 @@ export default function Assets() {
             </div>
           ) : (
             assets.map((asset) => (
-              <div key={asset.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+              <div key={asset.id} className="p-4 border-b-0 hover:bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <div className="text-sm font-medium text-gray-900">{asset.name}</div>
@@ -673,3 +673,4 @@ export default function Assets() {
     </div>
   );
 }
+

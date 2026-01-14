@@ -211,7 +211,7 @@ export default function ClearanceWorkflow() {
   return (
     <div className="p-6 space-y-6">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
         background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
       }}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -234,7 +234,7 @@ export default function ClearanceWorkflow() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved Resignations</p>
@@ -251,7 +251,7 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Clearance</p>
@@ -268,7 +268,7 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Clearance Completed</p>
@@ -285,7 +285,7 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Interviews Done</p>
@@ -305,8 +305,8 @@ export default function ClearanceWorkflow() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm border-0 overflow-hidden">
+          <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -384,10 +384,10 @@ export default function ClearanceWorkflow() {
         </div>
 
         {/* Clearance Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border-0 overflow-hidden">
           {selectedExit ? (
             <>
-              <div className="p-5 border-b border-gray-100">
+              <div className="p-5 border-b-0">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="p-2 rounded-lg" style={{
@@ -442,7 +442,7 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={clearance.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                        <div key={clearance.id} className="border-0 rounded-xl p-4 hover:shadow-md transition-all duration-200">
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-4 flex-1 min-w-0">
                               <div className="p-3 rounded-xl" style={{
@@ -548,7 +548,7 @@ export default function ClearanceWorkflow() {
                 </div>
 
                 {/* Exit Interview Status */}
-                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border-0">
                   <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-base">
                     <AlertCircle className="h-5 w-5" style={{
                       color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
@@ -589,7 +589,7 @@ export default function ClearanceWorkflow() {
       {/* Exit Interview Form Modal */}
       {showInterviewForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border-0">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900">Exit Interview</h3>
               <button
@@ -602,7 +602,7 @@ export default function ClearanceWorkflow() {
               </button>
             </div>
             
-            <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <div className="mb-6 p-4 bg-gray-50 rounded-xl border-0">
               <p className="text-gray-900 font-medium">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
               <p className="text-gray-600 text-sm">Code: {selectedExit.employee_code || 'N/A'}</p>
             </div>
@@ -681,3 +681,4 @@ export default function ClearanceWorkflow() {
     </div>
   );
 }
+

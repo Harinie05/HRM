@@ -108,7 +108,7 @@ export default function DocumentUpload() {
       <div className="max-w-4xl mx-auto px-4 py-6">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6 mb-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-6 mb-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="text-center">
@@ -130,7 +130,7 @@ export default function DocumentUpload() {
         </div>
 
         {/* Instructions */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-2xl border-0 shadow-sm p-4 mb-6">
           <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
             <span className="text-sm mr-2">📋</span>
             Upload Instructions
@@ -158,7 +158,7 @@ export default function DocumentUpload() {
         {/* Document Upload Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           {requiredDocs.map((doc) => (
-            <div key={doc.key} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow">
+            <div key={doc.key} className="bg-white rounded-xl border-0 shadow-sm p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center">
                   <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
@@ -217,7 +217,7 @@ export default function DocumentUpload() {
         </div>
 
         {/* Other Documents Section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-xl border-0 shadow-sm p-4 mb-6">
           <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
             <span className="text-sm mr-2">📋</span>
             Other Documents (Optional)
@@ -261,7 +261,7 @@ export default function DocumentUpload() {
         </div>
 
         {/* Submit Section */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white rounded-2xl border-0 shadow-sm p-6">
           <div className="text-center">
             <div className="mb-4">
               <p className="text-lg font-bold text-gray-900 mb-2">
@@ -316,7 +316,7 @@ export default function DocumentUpload() {
         </div>
 
         {/* Footer */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 mt-6 text-center">
+        <div className="bg-white rounded-2xl border-0 shadow-sm p-4 mt-6 text-center">
           <p className="text-sm text-gray-700 mb-2">
             Need help? Contact HR at <strong className="text-gray-900">hr@nutryah.com</strong>
           </p>
@@ -330,3 +330,4 @@ export default function DocumentUpload() {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Plus, Edit, Trash2, CheckCircle, Clock, XCircle, ClipboardList } from "lucide-react";
 import api from "../../api";
 import useToast from "../../utils/useToast";
 import Toast from "../../components/Toast";
@@ -287,12 +287,29 @@ export default function WorkAssignments() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <h2 className="text-lg sm:text-xl font-bold">Work Assignments</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <ClipboardList className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+            }} />
+          </div>
+          <div>
+            <h2 className="text-lg font-medium text-gray-900">Work Assignments</h2>
+            <p className="text-sm text-gray-600">Manage and track employee work assignments</p>
+          </div>
+        </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {!showDeleted && deletedCount > 0 && (
             <button
               onClick={() => setShowDeleted(true)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -300,7 +317,12 @@ export default function WorkAssignments() {
           {showDeleted && (
             <button
               onClick={() => setShowDeleted(false)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors"
+              style={{
+                backgroundColor: 'var(--primary-color)'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
@@ -386,7 +408,7 @@ export default function WorkAssignments() {
                         });
                         setShowStatusModal(true);
                       }}
-                      className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 border border-blue-600 rounded hover:bg-blue-50"
+                      className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1  rounded hover:bg-blue-50"
                     >
                       Update Status
                     </button>
@@ -440,7 +462,7 @@ export default function WorkAssignments() {
                       });
                       setShowStatusModal(true);
                     }}
-                    className="w-full text-blue-600 hover:text-blue-800 text-sm px-3 py-2 border border-blue-600 rounded hover:bg-blue-50 transition-colors"
+                    className="w-full text-blue-600 hover:text-blue-800 text-sm px-3 py-2  rounded hover:bg-blue-50 transition-colors"
                   >
                     Update Status
                   </button>
@@ -493,7 +515,7 @@ export default function WorkAssignments() {
                       {assignment.deleted_at ? (
                         <button
                           onClick={() => handleRestore(assignment.id)}
-                          className="text-green-600 hover:text-green-800 text-sm px-2 py-1 border border-green-600 rounded hover:bg-green-50"
+                          className="text-green-600 hover:text-green-800 text-sm px-2 py-1  rounded hover:bg-green-50"
                         >
                           Restore
                         </button>
@@ -501,7 +523,7 @@ export default function WorkAssignments() {
                         (hasPermission('delete_work_assignment') || isAdmin()) && (
                           <button
                             onClick={() => handleDelete(assignment.id)}
-                            className="text-red-600 hover:text-red-800 text-sm px-2 py-1 border border-red-600 rounded hover:bg-red-50"
+                            className="text-red-600 hover:text-red-800 text-sm px-2 py-1  rounded hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -561,13 +583,13 @@ export default function WorkAssignments() {
                 placeholder="Assignment Title"
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Operational">Operational</option>
                 <option value="Admin">Admin</option>
@@ -579,13 +601,13 @@ export default function WorkAssignments() {
                 placeholder="Weightage %"
                 value={formData.weightage_percentage}
                 onChange={(e) => setFormData({...formData, weightage_percentage: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
               <select
                 value={formData.frequency}
                 onChange={(e) => setFormData({...formData, frequency: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
@@ -595,7 +617,7 @@ export default function WorkAssignments() {
               <select
                 value={formData.review_cycle_id}
                 onChange={(e) => setFormData({...formData, review_cycle_id: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select Review Cycle</option>
@@ -606,7 +628,7 @@ export default function WorkAssignments() {
               <select
                 value={formData.assigned_employee_id}
                 onChange={(e) => setFormData({...formData, assigned_employee_id: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
                 <option value="">Select Employee</option>
@@ -642,7 +664,7 @@ export default function WorkAssignments() {
               <select
                 value={statusData.completion_status}
                 onChange={(e) => setStatusData({...statusData, completion_status: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3  rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Not Completed">Not Completed</option>
                 <option value="Partially Completed">Partially Completed</option>
@@ -652,7 +674,7 @@ export default function WorkAssignments() {
                 placeholder="Remarks (optional)"
                 value={statusData.remarks}
                 onChange={(e) => setStatusData({...statusData, remarks: e.target.value})}
-                className="w-full p-3 border border-black rounded-lg h-20 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full p-3  rounded-lg h-20 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">

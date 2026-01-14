@@ -283,7 +283,7 @@ const AttritionDashboard = () => {
                 </thead>
                 <tbody style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                   {departments.map((dept, index) => (
-                    <tr key={index} className="border-b border-gray-100" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
+                    <tr key={index} className="border-b-0" style={{borderColor: 'var(--border-color, #e2e8f0)'}}>
                       <td className="p-3 text-primary">{dept.name}</td>
                       <td className="p-3 text-primary">{dept.employees}</td>
                       <td className="p-3 text-primary">{dept.attrition}</td>
@@ -335,3 +335,4 @@ const AttritionDashboard = () => {
 };
 
 export default AttritionDashboard;
+

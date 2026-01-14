@@ -52,3 +52,4 @@ export default function OrgTabs({ tab, setTab }) {
     </div>
   );
 }
+

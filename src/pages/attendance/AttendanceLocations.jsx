@@ -28,7 +28,7 @@ export default function AttendanceLocations() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header matching Dashboard */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex items-center justify-between">
@@ -47,7 +47,7 @@ export default function AttendanceLocations() {
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-2 text-gray-600 mb-1">
                   <FiMapPin className="h-3 w-3" />
                   <span className="text-xs font-medium">Locations</span>
@@ -60,7 +60,7 @@ export default function AttendanceLocations() {
 
         {/* Key Performance Indicators matching Dashboard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Locations</p>
@@ -77,7 +77,7 @@ export default function AttendanceLocations() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Locations</p>
@@ -94,7 +94,7 @@ export default function AttendanceLocations() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Grace Time</p>
@@ -111,7 +111,7 @@ export default function AttendanceLocations() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">OT Rules</p>
@@ -130,8 +130,8 @@ export default function AttendanceLocations() {
         </div>
 
         {/* Locations List matching Dashboard */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100" style={{
+        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+          <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -167,7 +167,7 @@ export default function AttendanceLocations() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {locations.map((location, index) => (
-                  <div key={location.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+                  <div key={location.id} className="bg-white rounded-xl p-6 border-0 shadow-sm hover:shadow-md transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-3 rounded-xl transition-all duration-300" style={{
@@ -191,7 +191,7 @@ export default function AttendanceLocations() {
                     </div>
                     
                     <div className="space-y-3">
-                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="bg-gray-50 rounded-lg p-3 border-0">
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-xs text-gray-600">Grace Time</span>
                           <span className="text-sm font-bold text-gray-900 text-right">
@@ -224,4 +224,5 @@ export default function AttendanceLocations() {
     </Layout>
   );
 }
+
 

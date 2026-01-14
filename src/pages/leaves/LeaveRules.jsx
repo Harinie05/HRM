@@ -13,7 +13,7 @@ export default function LeaveRules() {
     return (
       <div className="">
         {/* Header */}
-        <div className="p-8 border-b border-gray-100">
+        <div className="p-8 border-b-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -160,7 +160,7 @@ export default function LeaveRules() {
   return (
     <div className="">
       {/* Header */}
-      <div className="p-8 border-b border-gray-100">
+      <div className="p-8 border-b-0">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -190,7 +190,7 @@ export default function LeaveRules() {
 
       {/* Search */}
       {hasPermission("view_leave_rules") && (
-        <div className="p-8 border-b border-gray-100">
+        <div className="p-8 border-b-0">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Status</span>
@@ -351,7 +351,7 @@ export default function LeaveRules() {
               </div>
             ) : (
               filteredRules.map((rule, index) => (
-                <div key={rule.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div key={rule.id} className="p-4 border-b-0 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-semibold text-gray-900">{rule.accrual_frequency}</div>
@@ -444,7 +444,7 @@ export default function LeaveRules() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl shadow-2xl border border-black w-full max-w-lg">
-            <div className="p-8 border-b border-gray-100">
+            <div className="p-8 border-b-0">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 {editingRule ? "Edit Leave Rule" : "Add Leave Rule"}
               </h3>
@@ -544,3 +544,4 @@ export default function LeaveRules() {
     </div>
   );
 }
+

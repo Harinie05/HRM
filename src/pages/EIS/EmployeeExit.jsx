@@ -71,7 +71,7 @@ export default function EmployeeExit() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -113,14 +113,14 @@ export default function EmployeeExit() {
             Back to Profile
           </button>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           <div className="p-6">
 
           <div className="space-y-6">
             {/* Resignation Details */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiCalendar className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Resignation Details</h3>
@@ -130,7 +130,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Resignation Date *</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.resignation_date}
                     onChange={(e) => setForm({ ...form, resignation_date: e.target.value })}
                   />
@@ -139,7 +139,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Last Working Date *</label>
                   <input
                     type="date"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.last_working_day}
                     onChange={(e) => setForm({ ...form, last_working_day: e.target.value })}
                   />
@@ -148,7 +148,7 @@ export default function EmployeeExit() {
                   <label className="block text-sm font-medium text-secondary mb-2">Notice Period (Days)</label>
                   <input
                     type="number"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.notice_period}
                     onChange={(e) => setForm({ ...form, notice_period: e.target.value })}
                   />
@@ -157,7 +157,7 @@ export default function EmployeeExit() {
               <div className="mt-4">
                 <label className="block text-sm font-medium text-secondary mb-2">Reason for Leaving</label>
                 <textarea
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   rows="3"
                   placeholder="Reason for resignation..."
                   value={form.reason}
@@ -168,7 +168,7 @@ export default function EmployeeExit() {
                 <label className="block text-sm font-medium text-secondary mb-2">Exit Interview Date</label>
                 <input
                   type="date"
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   value={form.exit_interview_date}
                   onChange={(e) => setForm({ ...form, exit_interview_date: e.target.value })}
                 />
@@ -178,7 +178,7 @@ export default function EmployeeExit() {
             {/* Handover Status */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiFileText className="w-5 h-5 text-black" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Handover & Status</h3>
@@ -187,7 +187,7 @@ export default function EmployeeExit() {
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Handover Status</label>
                   <select
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.handover_status}
                     onChange={(e) => setForm({ ...form, handover_status: e.target.value })}
                   >
@@ -204,7 +204,7 @@ export default function EmployeeExit() {
                       type="file"
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={(e) => setFile(e.target.files[0])}
-                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                      className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     />
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export default function EmployeeExit() {
 
             {/* Exit Status Summary */}
             {form.resignation_date && (
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-6 border-0">
                 <h4 className="font-semibold text-gray-900 mb-4">Exit Process Status</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
@@ -230,7 +230,7 @@ export default function EmployeeExit() {
                   </div>
                   <div>
                     <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Handover Status:</span>
-                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border border-gray-200 ${
+                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium border-0 ${
                       form.handover_status === 'Completed' ? 'bg-gray-100 text-black' :
                       form.handover_status === 'In Progress' ? 'bg-gray-100 text-black' :
                       'bg-gray-100 text-black'
@@ -251,7 +251,7 @@ export default function EmployeeExit() {
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-end mt-8 pt-6 border-t-0">
             {(canAdd || canEdit) && (
               <button
                 onClick={submit}

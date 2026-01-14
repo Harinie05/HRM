@@ -17,7 +17,7 @@ export default function LabourRegister() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view Labour Register.</p>
         </div>
@@ -342,7 +342,7 @@ export default function LabourRegister() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
@@ -359,7 +359,7 @@ export default function LabourRegister() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active</p>
@@ -376,7 +376,7 @@ export default function LabourRegister() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
@@ -393,7 +393,7 @@ export default function LabourRegister() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-0 shadow-sm hover:shadow-lg transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
@@ -412,8 +412,8 @@ export default function LabourRegister() {
       </div>
 
       {/* Form Section */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="p-5 border-b border-gray-100">
+      <div className="bg-white rounded-xl border-0 shadow-sm">
+        <div className="p-5 border-b-0">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -457,7 +457,7 @@ export default function LabourRegister() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees && employees.length > 0 ? (
@@ -498,7 +498,7 @@ export default function LabourRegister() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees && employees.length > 0 ? (
@@ -527,7 +527,7 @@ export default function LabourRegister() {
                 setShowCustomRegisterType(value === 'Other');
                 setForm({ ...form, register_type: value, custom_register_type: value === 'Other' ? form.custom_register_type : '' });
               }}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Register Type</option>
               <option value="Form I - Muster Roll">Form I - Muster Roll</option>
@@ -556,7 +556,7 @@ export default function LabourRegister() {
                 name="custom_register_type"
                 value={form.custom_register_type || ''}
                 onChange={handleChange}
-                className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter custom register type"
               />
             </div>
@@ -570,7 +570,7 @@ export default function LabourRegister() {
               name="register_number"
               value={form.register_number}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Register Number"
             />
           </div>
@@ -583,7 +583,7 @@ export default function LabourRegister() {
               name="issue_date"
               value={form.issue_date}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -595,7 +595,7 @@ export default function LabourRegister() {
               name="expiry_date"
               value={form.expiry_date}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -607,7 +607,7 @@ export default function LabourRegister() {
               name="issuing_authority"
               value={form.issuing_authority}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Issuing Authority"
             />
           </div>
@@ -619,7 +619,7 @@ export default function LabourRegister() {
               name="compliance_status"
               value={form.compliance_status}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -635,7 +635,7 @@ export default function LabourRegister() {
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -661,7 +661,7 @@ export default function LabourRegister() {
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -675,7 +675,7 @@ export default function LabourRegister() {
               name="remarks"
               value={form.remarks}
               onChange={handleChange}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
               placeholder="Enter any additional remarks or notes"
             />
           </div>
@@ -686,7 +686,7 @@ export default function LabourRegister() {
               <button
                 type="submit"
                 style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+                className="px-6 py-2 text-white rounded-lg border-0 transition-colors"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
               >
@@ -698,7 +698,7 @@ export default function LabourRegister() {
                 type="button"
                 onClick={cancelEdit}
                 style={{ backgroundColor: 'var(--secondary-color, #474e71)' }}
-                className="px-6 py-2 text-white rounded-lg border border-black transition-colors"
+                className="px-6 py-2 text-white rounded-lg border-0 transition-colors"
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
               >
@@ -712,8 +712,8 @@ export default function LabourRegister() {
 
       {/* Records Table */}
       {(registers.length > 0 || deletedRegisters.length > 0) && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -754,13 +754,13 @@ export default function LabourRegister() {
                 <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee ID</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee Name</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Register Type</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Month/Year</th>
-                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Deleted At</th>}
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Employee ID</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Employee Name</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Register Type</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Status</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Month/Year</th>
+                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Deleted At</th>}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -831,7 +831,7 @@ export default function LabourRegister() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {(showDeleted ? deletedRegisters : registers).map((register, index) => (
-                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
+                  <div key={index} className={`p-4 border-b-0 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{register.employee_name}</h4>
@@ -909,3 +909,5 @@ export default function LabourRegister() {
     </div>
   );
 }
+
+

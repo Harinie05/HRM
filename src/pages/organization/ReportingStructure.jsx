@@ -226,9 +226,9 @@ export default function ReportingStructure() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border-0 overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
             backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -253,7 +253,7 @@ export default function ReportingStructure() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+            className="px-3 py-2 border-0 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-sm"
             style={{
               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
             }}
@@ -276,7 +276,7 @@ export default function ReportingStructure() {
                   setShowCreateLevel(!showCreateLevel);
                   setEditingLevel(null);
                 }}
-                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border border-gray-200"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-xl transition-colors text-sm font-medium border-0"
                 style={{
                   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
@@ -388,7 +388,7 @@ export default function ReportingStructure() {
               </div>
             ) : (
               levels.map((level) => (
-                <div key={level.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                <div key={level.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
@@ -587,7 +587,7 @@ export default function ReportingStructure() {
               </div>
             ) : (
               hierarchy.map((rule) => (
-                <div key={rule.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                <div key={rule.id} className="bg-white rounded-xl border-0 p-6 hover:shadow-md transition-all duration-200">
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{
                       backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`

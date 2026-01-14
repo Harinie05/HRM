@@ -36,7 +36,7 @@ export default function PayrollReports() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view payroll reports.</p>
         </div>
@@ -493,3 +493,4 @@ export default function PayrollReports() {
     </div>
   );
 }
+

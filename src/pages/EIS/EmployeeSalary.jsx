@@ -96,7 +96,7 @@ export default function EmployeeSalary() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -139,14 +139,14 @@ export default function EmployeeSalary() {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           <div className="p-6">
 
           <div className="space-y-6">
             {/* CTC Section */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiDollarSign className="w-5 h-5" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
@@ -157,7 +157,7 @@ export default function EmployeeSalary() {
                 <label className="block text-sm font-medium text-secondary mb-2">Annual CTC (₹)</label>
                 <input
                   type="number"
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                   placeholder="e.g., 1200000"
                   value={form.ctc}
                   onChange={(e) => setForm({ ...form, ctc: e.target.value })}
@@ -168,7 +168,7 @@ export default function EmployeeSalary() {
             {/* Salary Breakdown */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiPieChart className="w-5 h-5" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
@@ -182,7 +182,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.basic_percent}
                     onChange={(e) => setForm({ ...form, basic_percent: e.target.value })}
                   />
@@ -193,7 +193,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.hra_percent}
                     onChange={(e) => setForm({ ...form, hra_percent: e.target.value })}
                   />
@@ -204,7 +204,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.allowances_percent}
                     onChange={(e) => setForm({ ...form, allowances_percent: e.target.value })}
                   />
@@ -215,7 +215,7 @@ export default function EmployeeSalary() {
                     type="number"
                     min="0"
                     max="100"
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
                     value={form.special_percent}
                     onChange={(e) => setForm({ ...form, special_percent: e.target.value })}
                   />
@@ -226,7 +226,7 @@ export default function EmployeeSalary() {
             {/* Compliance & Benefits */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-100 border-0 rounded-xl flex items-center justify-center">
                   <FiShield className="w-5 h-5" style={{
                     color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }} />
@@ -239,7 +239,7 @@ export default function EmployeeSalary() {
                     type="checkbox"
                     checked={form.pf_eligible}
                     onChange={(e) => setForm({ ...form, pf_eligible: e.target.checked })}
-                    className="rounded border border-gray-200 text-gray-600 focus:ring-gray-500"
+                    className="rounded border-0 text-gray-600 focus:ring-gray-500"
                   />
                   <span className="text-sm text-secondary">Provident Fund (PF) Eligible</span>
                 </label>
@@ -248,7 +248,7 @@ export default function EmployeeSalary() {
                     type="checkbox"
                     checked={form.esi_eligible}
                     onChange={(e) => setForm({ ...form, esi_eligible: e.target.checked })}
-                    className="rounded border border-gray-200 text-gray-600 focus:ring-gray-500"
+                    className="rounded border-0 text-gray-600 focus:ring-gray-500"
                   />
                   <span className="text-sm text-secondary">Employee State Insurance (ESI) Eligible</span>
                 </label>
@@ -259,7 +259,7 @@ export default function EmployeeSalary() {
             {form.ctc && (
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Breakdown Preview</h3>
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <div className="bg-gray-50 rounded-lg p-6 border-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex justify-between">
                       <span className="" style={{color: 'var(--text-secondary, #374151)'}}>Basic Salary:</span>
@@ -278,7 +278,7 @@ export default function EmployeeSalary() {
                       <span className="font-medium">₹{Math.round((form.ctc * form.special_percent) / 100).toLocaleString()}</span>
                     </div>
                   </div>
-                  <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="mt-4 pt-4 border-t-0">
                     <div className="flex justify-between text-lg font-semibold text-gray-900">
                       <span>Total CTC:</span>
                       <span>₹{parseInt(form.ctc).toLocaleString()}</span>
@@ -289,7 +289,7 @@ export default function EmployeeSalary() {
             )}
           </div>
 
-          <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-end mt-8 pt-6 border-t-0">
             {(canAdd || canEdit) && (
               <button
                 onClick={submit}
@@ -315,3 +315,4 @@ export default function EmployeeSalary() {
     </Layout>
   );
 }
+

@@ -44,7 +44,7 @@ export default function Payslips() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view salary slips.</p>
         </div>
@@ -693,7 +693,7 @@ export default function Payslips() {
               </div>
             ) : (
               filteredPayslips.map((payslip) => (
-                <div key={payslip.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div key={payslip.id} className="p-4 border-b-0 hover:bg-gray-50">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-sm font-medium text-gray-900">{payslip.employee_name}</div>
@@ -967,7 +967,7 @@ export default function Payslips() {
                 </button>
                 <button
                   onClick={() => setShowViewModal(false)}
-                  className="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50"
+                  className="px-4 py-2 border-0 rounded-lg text-gray-600 hover:bg-gray-50"
                 >
                   Close
                 </button>

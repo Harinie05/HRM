@@ -447,7 +447,7 @@ export default function Offer() {
       <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
           background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
         }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -466,14 +466,14 @@ export default function Offer() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <FiUser className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Candidates</span>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-gray-900">{candidates.length}</p>
               </div>
-              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <FiFileText className="h-2 w-2 sm:h-3 sm:w-3" />
                   <span className="text-xs font-medium">Offers</span>
@@ -486,8 +486,8 @@ export default function Offer() {
 
         {/* ==================== SENT OFFERS TABLE ==================== */}
         {offers.length > 0 && canViewOffersSent && (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-gray-100" style={{
+          <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+            <div className="p-6 border-b-0" style={{
               background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05)`
             }}>
               <div className="flex items-center justify-between">
@@ -517,7 +517,7 @@ export default function Offer() {
             <div className="p-6">
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className="bg-gray-50 border-b-0">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
@@ -746,7 +746,7 @@ export default function Offer() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {offers.map((o) => (
-                  <div key={o.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                  <div key={o.id} className="p-4 border-b-0 hover:bg-gray-50">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start gap-3 flex-1">
                         <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
@@ -951,8 +951,8 @@ export default function Offer() {
 
         {/* ==================== SELECTED CANDIDATES ==================== */}
         {canViewSelectedCandidates && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100" style={{
+        <div className="bg-white rounded-2xl border-0 shadow-sm overflow-hidden">
+          <div className="p-6 border-b-0" style={{
             background: `linear-gradient(135deg, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}05, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05)`
           }}>
             <div className="flex items-center justify-between">
@@ -996,7 +996,7 @@ export default function Offer() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className="bg-gray-50 border-b-0">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
@@ -1077,7 +1077,7 @@ export default function Offer() {
             {/* Mobile Card View */}
             <div className="md:hidden">
               {candidates.map((c) => (
-                <div key={c.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                <div key={c.id} className="p-4 border-b-0 hover:bg-gray-50">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-start gap-3 flex-1">
                       <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
@@ -2048,3 +2048,4 @@ export default function Offer() {
     </>
   );
 }
+

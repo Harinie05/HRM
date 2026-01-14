@@ -283,8 +283,12 @@ export default function ReviewCycle() {
       {/* Header with Create Review Cycle Button */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300">
-            <RefreshCw className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'}20`
+          }}>
+            <RefreshCw className="w-5 h-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#2862e9'
+            }} />
           </div>
           <div>
             <h2 className="text-lg font-medium text-gray-900">Review Cycle</h2>
@@ -295,7 +299,10 @@ export default function ReviewCycle() {
           {!showDeleted && deletedCount > 0 && (hasPermission('view_deleted_review_cycles') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(true)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Show Deleted ({deletedCount})
             </button>
@@ -303,7 +310,10 @@ export default function ReviewCycle() {
           {showDeleted && (hasPermission('view_deleted_review_cycles') || isAdmin()) && (
             <button
               onClick={() => setShowDeleted(false)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap"
+              className="text-white px-4 py-2 rounded-lg transition-colors text-sm whitespace-nowrap"
+              style={{ backgroundColor: 'var(--primary-color)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color)'}
             >
               Hide Deleted
             </button>
@@ -311,7 +321,7 @@ export default function ReviewCycle() {
           {(hasPermission('create_review_cycle') || isAdmin()) && (
             <button
               onClick={() => setShowForm(true)}
-              className="text-white px-4 py-2 rounded-lg border border-black flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
+              className="text-white px-4 py-2 rounded-lg  flex items-center gap-2 text-sm sm:text-base w-fit transition-colors"
               style={{
                 backgroundColor: 'var(--primary-color)'
               }}
@@ -327,8 +337,8 @@ export default function ReviewCycle() {
 
       {/* Add Review Cycle Form */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-sm border border-black">
-          <div className="px-4 sm:px-6 py-4 border-b border-black">
+        <div className="bg-white rounded-lg shadow-sm ">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900">{editingCycle ? 'Edit Review Cycle' : 'Create New Review Cycle'}</h3>
           </div>
           <form onSubmit={handleSubmit} className="p-4 sm:p-6">
@@ -339,7 +349,7 @@ export default function ReviewCycle() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -349,7 +359,7 @@ export default function ReviewCycle() {
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {reviewTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -363,7 +373,7 @@ export default function ReviewCycle() {
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   rows={3}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -374,7 +384,7 @@ export default function ReviewCycle() {
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -385,7 +395,7 @@ export default function ReviewCycle() {
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                   required
                 />
               </div>
@@ -395,7 +405,7 @@ export default function ReviewCycle() {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
+                  className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -408,13 +418,13 @@ export default function ReviewCycle() {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="w-full sm:w-auto px-4 py-2 border border-black text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
+                className="w-full sm:w-auto px-4 py-2  text-gray-700 rounded-md hover:bg-gray-50 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-4 py-2 text-white rounded-md border border-black text-sm sm:text-base transition-colors"
+                className="w-full sm:w-auto px-4 py-2 text-white rounded-md  text-sm sm:text-base transition-colors"
                 style={{
                   backgroundColor: 'var(--primary-color)'
                 }}
@@ -429,15 +439,15 @@ export default function ReviewCycle() {
       )}
 
       {/* Review Cycles List */}
-      <div className="bg-white rounded-lg shadow-sm border border-black">
-        <div className="px-4 sm:px-6 py-4 border-b border-black">
+      <div className="bg-white rounded-lg shadow-sm ">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900">Review Cycles</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
-            <thead className="bg-gray-50 border-b border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Cycle Name</th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
@@ -469,7 +479,7 @@ export default function ReviewCycle() {
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="w-16 sm:w-full bg-gray-200 rounded-full h-2 mr-2 border border-black">
+                      <div className="w-16 sm:w-full bg-gray-200 rounded-full h-2 mr-2 ">
                         <div
                           className="h-2 bg-gray-500 rounded-full"
                           style={{ width: `${cycle.progress_percentage || 0}%` }}
@@ -491,7 +501,7 @@ export default function ReviewCycle() {
                         (hasPermission('restore_review_cycle') || isAdmin()) && (
                           <button
                             onClick={() => handleRestore(cycle.id)}
-                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg border border-green-300"
+                            className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg "
                             title="Restore Cycle"
                           >
                             <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -502,7 +512,7 @@ export default function ReviewCycle() {
                           {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
                             <button
                               onClick={() => handleStatusChange(cycle.id, "Completed")}
-                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg "
                               title="Complete Cycle"
                             >
                               <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -511,7 +521,7 @@ export default function ReviewCycle() {
                           {(hasPermission('edit_review_cycle') || isAdmin()) && (
                             <button 
                               onClick={() => handleEdit(cycle)}
-                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                              className="p-1 sm:p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg"
                             >
                               <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
@@ -519,7 +529,7 @@ export default function ReviewCycle() {
                           {(hasPermission('delete_review_cycle') || isAdmin()) && (
                             <button
                               onClick={() => handleDelete(cycle.id)}
-                              className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-300"
+                              className="p-1 sm:p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg"
                             >
                               <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
@@ -563,7 +573,7 @@ export default function ReviewCycle() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-600">Progress:</span>
                   <div className="flex items-center">
-                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 border border-black">
+                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2 ">
                       <div
                         className="h-2 bg-gray-500 rounded-full"
                         style={{ width: `${cycle.progress_percentage || 0}%` }}
@@ -579,7 +589,7 @@ export default function ReviewCycle() {
                   (hasPermission('restore_review_cycle') || isAdmin()) && (
                     <button
                       onClick={() => handleRestore(cycle.id)}
-                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-300 hover:bg-green-100"
+                      className="flex items-center gap-1 px-3 py-1 text-xs bg-green-50 text-green-700 rounded-md  hover:bg-green-100"
                     >
                       <RefreshCw className="w-3 h-3" />
                       Restore
@@ -590,7 +600,7 @@ export default function ReviewCycle() {
                     {cycle.status === "Active" && (hasPermission('close_review_cycle') || isAdmin()) && (
                       <button
                         onClick={() => handleStatusChange(cycle.id, "Completed")}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Pause className="w-3 h-3" />
                         Complete
@@ -599,7 +609,7 @@ export default function ReviewCycle() {
                     {(hasPermission('edit_review_cycle') || isAdmin()) && (
                       <button 
                         onClick={() => handleEdit(cycle)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Edit className="w-3 h-3" />
                         Edit
@@ -608,7 +618,7 @@ export default function ReviewCycle() {
                     {(hasPermission('delete_review_cycle') || isAdmin()) && (
                       <button
                         onClick={() => handleDelete(cycle.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100"
+                        className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-50 text-gray-700 rounded-md  hover:bg-gray-100"
                       >
                         <Trash2 className="w-3 h-3" />
                         Delete

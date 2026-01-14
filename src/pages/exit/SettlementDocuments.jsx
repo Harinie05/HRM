@@ -412,7 +412,7 @@ export default function SettlementDocuments() {
   return (
     <div className="p-6 space-y-6">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
         background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
       }}>
         <div className="flex items-center gap-3 sm:gap-4">
@@ -433,7 +433,7 @@ export default function SettlementDocuments() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Ready for Settlement</p>
@@ -450,7 +450,7 @@ export default function SettlementDocuments() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Settlements Completed</p>
@@ -467,7 +467,7 @@ export default function SettlementDocuments() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Settlements</p>
@@ -484,7 +484,7 @@ export default function SettlementDocuments() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Fully Processed</p>
@@ -512,8 +512,8 @@ export default function SettlementDocuments() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+          <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -568,7 +568,7 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Settlement Details */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
           {selectedExit ? (
             <>
               <div className="flex justify-between items-center gap-3 mb-4">
@@ -589,7 +589,7 @@ export default function SettlementDocuments() {
               {settlement ? (
                 <div className="space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-xl border-0 shadow-sm">
                     <h4 className="font-semibold mb-4 text-gray-900 text-base flex items-center gap-2">
                       <DollarSign className="h-5 w-5" style={{
                         color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
@@ -679,13 +679,13 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Payment Status */}
-                  <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm">
+                  <div className="p-4 border-0 rounded-xl bg-white shadow-sm">
                     <div className="flex justify-between items-center mb-3">
                       <span className="font-semibold text-gray-900 text-base">Payment Status:</span>
                       <span className={`px-3 py-1.5 text-sm font-medium rounded-lg ${
                         settlement.payment_status === 'Approved' ? 'bg-green-100 text-green-800 border border-green-200' :
                         settlement.payment_status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
-                        'bg-gray-100 text-gray-800 border border-gray-200'
+                        'bg-gray-100 text-gray-800 border-0'
                       }`}>
                         {settlement.payment_status}
                       </span>
@@ -705,7 +705,7 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-3 rounded-lg border-0">
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -731,7 +731,7 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Experience Letter */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
           {selectedExit ? (
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
@@ -765,7 +765,7 @@ export default function SettlementDocuments() {
                 <div className="space-y-3 sm:space-y-4">
                   {/* Editable Form or Letter Preview */}
                   {isEditingLetter ? (
-                    <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-200 shadow-sm">
+                    <div className="bg-gray-50 p-4 rounded-xl space-y-3 border-0 shadow-sm">
                       <h4 className="font-semibold mb-3 text-base">Edit Experience Letter Details</h4>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -962,3 +962,4 @@ export default function SettlementDocuments() {
     </div>
   );
 }
+

@@ -42,7 +42,7 @@ export default function TrainingPrograms() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600">You do not have permission to view training programs.</p>
         </div>
@@ -200,7 +200,7 @@ export default function TrainingPrograms() {
     <div className="space-y-6">
 
       {/* Filters */}
-      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">Training Programs</h3>
           {canAdd && (
@@ -226,13 +226,13 @@ export default function TrainingPrograms() {
               placeholder="Search programs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
+              className="pl-10 pr-4 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="border-0 rounded-lg hover:border-gray-300 transition-colors px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">All Status</option>
             {statuses.map(status => (
@@ -243,7 +243,7 @@ export default function TrainingPrograms() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
+      <div className="bg-white bg-gradient-to-br from-gray-50 to-white rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -255,15 +255,15 @@ export default function TrainingPrograms() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Program</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Trainer</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Dates</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Program</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Trainer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Dates</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-0">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-black">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {filteredPrograms.length === 0 ? (
                     <tr>
                       <td colSpan="6" className="px-6 py-12 text-center">
@@ -292,20 +292,20 @@ export default function TrainingPrograms() {
                     </tr>
                   ) : (
                     filteredPrograms.map((program) => (
-                      <tr key={program.id} className="hover:bg-gray-50 border-b border-black">
-                        <td className="px-6 py-4 border-r border-black">
+                      <tr key={program.id} className="hover:bg-gray-50 border-b-0">
+                        <td className="px-6 py-4 border-r-0">
                           <div className="text-sm font-medium text-gray-900">{program.title}</div>
                           <div className="text-sm text-gray-500 truncate max-w-xs">{program.description}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-r-0">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             {program.type}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-r-0">
                           <div className="text-sm text-gray-900">{program.trainer || 'TBD'}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-r-0">
                           <div className="text-sm text-gray-900">
                             {program.startDate && program.endDate ? 
                               `${program.startDate} to ${program.endDate}` : 
@@ -313,7 +313,7 @@ export default function TrainingPrograms() {
                             }
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap border-r border-black">
+                        <td className="px-6 py-4 whitespace-nowrap border-r-0">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             program.status === "Published" ? "bg-green-100 text-green-800" :
                             program.status === "Draft" ? "bg-yellow-100 text-yellow-800" :
@@ -438,7 +438,7 @@ export default function TrainingPrograms() {
                 </div>
               ) : (
                 filteredPrograms.map((program) => (
-                  <div key={program.id} className="p-4 border-b border-gray-200 last:border-b-0">
+                  <div key={program.id} className="p-4 border-b-0 last:border-b-0">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{program.title}</h4>
@@ -519,7 +519,7 @@ export default function TrainingPrograms() {
             </div>
             
             {/* Stats Footer */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-black">
+            <div className="px-6 py-4 bg-gray-50 border-t-0">
               <div className="flex justify-between items-center text-sm text-gray-600">
                 <span>Total Programs: {(programs || []).length}</span>
                 <span>Published: {(programs || []).filter(p => p.status === 'Published').length}</span>
@@ -534,7 +534,7 @@ export default function TrainingPrograms() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+            <div className="px-6 py-4 border-b-0 flex-shrink-0">
               <h3 className="text-lg font-semibold text-gray-900">
                 {editingProgram ? 'Edit Training Program' : 'New Training Program'}
               </h3>
@@ -548,7 +548,7 @@ export default function TrainingPrograms() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                    className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     placeholder="Enter program title"
                     required
                   />
@@ -558,7 +558,7 @@ export default function TrainingPrograms() {
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
+                    className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
                     rows="2"
                     placeholder="Describe the training program"
                   />
@@ -569,7 +569,7 @@ export default function TrainingPrograms() {
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({...formData, category: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       required
                     >
                       <option value="">Select Category</option>
@@ -584,7 +584,7 @@ export default function TrainingPrograms() {
                       type="number"
                       value={formData.duration_hours}
                       onChange={(e) => setFormData({...formData, duration_hours: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Hours"
                       min="1"
                     />
@@ -597,7 +597,7 @@ export default function TrainingPrograms() {
                       type="date"
                       value={formData.startDate}
                       onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     />
                   </div>
                   <div>
@@ -606,7 +606,7 @@ export default function TrainingPrograms() {
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                     />
                   </div>
                 </div>
@@ -616,7 +616,7 @@ export default function TrainingPrograms() {
                     <select
                       value={formData.type}
                       onChange={(e) => setFormData({...formData, type: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       required
                     >
                       <option value="">Select Type</option>
@@ -631,7 +631,7 @@ export default function TrainingPrograms() {
                       type="number"
                       value={formData.max_participants}
                       onChange={(e) => setFormData({...formData, max_participants: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Unlimited"
                       min="1"
                     />
@@ -644,7 +644,7 @@ export default function TrainingPrograms() {
                       type="text"
                       value={formData.trainer}
                       onChange={(e) => setFormData({...formData, trainer: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Trainer name"
                     />
                   </div>
@@ -654,7 +654,7 @@ export default function TrainingPrograms() {
                       type="text"
                       value={formData.department}
                       onChange={(e) => setFormData({...formData, department: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                      className="w-full px-3 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                       placeholder="Target department"
                     />
                   </div>
@@ -665,7 +665,7 @@ export default function TrainingPrograms() {
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="flex-1 px-4 py-2 border border-black rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+                className="flex-1 px-4 py-2 border-0 rounded-lg hover:border-gray-300 transition-colors text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
               >
                 Cancel
               </button>
@@ -690,3 +690,4 @@ export default function TrainingPrograms() {
     </div>
   );
 }
+

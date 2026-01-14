@@ -16,7 +16,7 @@ export default function Lifecycle() {
   if (!canView) {
     return (
       <div className="p-6 text-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔒</span>
           </div>
@@ -311,7 +311,7 @@ export default function Lifecycle() {
     <div className="space-y-6">
       {/* Enhanced Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
-        <div className="bg-white rounded-xl p-3 sm:p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-3 sm:p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Promotions</p>
@@ -324,7 +324,7 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Transfers</p>
@@ -337,7 +337,7 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Pending</p>
@@ -350,7 +350,7 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Demotions</p>
@@ -363,7 +363,7 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Resignations</p>
@@ -376,7 +376,7 @@ export default function Lifecycle() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-black shadow-sm">
+        <div className="bg-white rounded-xl p-4  shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Terminations</p>
@@ -392,7 +392,7 @@ export default function Lifecycle() {
       </div>
 
       {/* Enhanced Action Form */}
-      <div className="rounded-2xl shadow-lg border border-black bg-white">
+      <div className="rounded-2xl shadow-lg  bg-white">
         <div className="px-6 py-4 border-b border-black rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gray-100 rounded-xl">
@@ -417,7 +417,7 @@ export default function Lifecycle() {
                     <select 
                       value={formData.employeeId}
                       onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                      className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
                       <option value="">Select Employee</option>
                       {employees.map((emp) => (
@@ -427,7 +427,7 @@ export default function Lifecycle() {
                       ))}
                     </select>
                   ) : (
-                    <div className="w-full px-3 py-2 border border-black rounded-md bg-gray-50 text-gray-700">
+                    <div className="w-full px-3 py-2  rounded-md bg-gray-50 text-gray-700">
                       {(() => {
                         const currentUserId = localStorage.getItem('user_id');
                         const currentUserEmployee = employees.find(emp => {
@@ -446,7 +446,7 @@ export default function Lifecycle() {
                   <select 
                     value={formData.actionType}
                     onChange={(e) => setFormData({...formData, actionType: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     <option value="">Select Action</option>
                     <option value="promotion">Promotion</option>
@@ -462,7 +462,7 @@ export default function Lifecycle() {
                     type="date"
                     value={formData.effectiveDate}
                     onChange={(e) => setFormData({...formData, effectiveDate: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
                 <div>
@@ -471,7 +471,7 @@ export default function Lifecycle() {
                     type="text"
                     value={formData.currentRole}
                     onChange={(e) => setFormData({...formData, currentRole: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Current designation"
                   />
                 </div>
@@ -481,7 +481,7 @@ export default function Lifecycle() {
                     type="text"
                     value={formData.newRole}
                     onChange={(e) => setFormData({...formData, newRole: e.target.value})}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="New designation"
                   />
                 </div>
@@ -491,7 +491,7 @@ export default function Lifecycle() {
                     value={formData.reason}
                     onChange={(e) => setFormData({...formData, reason: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-full px-3 py-2  rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     placeholder="Reason for this action"
                   />
                 </div>
@@ -517,14 +517,14 @@ export default function Lifecycle() {
 
       {/* Pending Actions */}
       {pendingActions.length > 0 && (
-        <div className="rounded-lg shadow-sm border border-black bg-white">
+        <div className="rounded-lg shadow-sm  bg-white">
           <div className="px-6 py-4 border-b border-black">
             <h3 className="text-lg font-semibold text-gray-900">Pending Action Approvals</h3>
           </div>
           
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 border border-black">
+            <table className="min-w-full divide-y divide-gray-200 ">
               <thead className="bg-gray-50 border-b border-black">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -568,7 +568,7 @@ export default function Lifecycle() {
                         </button>
                         <button
                           onClick={() => handleApproval(action.id, false)}
-                          className="inline-flex items-center px-3 py-1 border border-black text-sm leading-4 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          className="inline-flex items-center px-3 py-1  text-sm leading-4 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -587,7 +587,7 @@ export default function Lifecycle() {
           {/* Mobile Card View */}
           <div className="md:hidden p-4 space-y-4">
             {pendingActions.map((action) => (
-              <div key={action.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div key={action.id} className="bg-gray-50 rounded-lg p-4 border-0">
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h4 className="font-medium text-gray-900">{action.name}</h4>
@@ -636,7 +636,7 @@ export default function Lifecycle() {
                     </button>
                     <button
                       onClick={() => handleApproval(action.id, false)}
-                      className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-black text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      className="flex-1 inline-flex items-center justify-center px-3 py-2  text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                     >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -652,14 +652,14 @@ export default function Lifecycle() {
       )}
 
       {/* Actions History */}
-      <div className="rounded-lg shadow-sm border border-black bg-white">
+      <div className="rounded-lg shadow-sm  bg-white">
         <div className="px-6 py-4 border-b border-black">
           <h3 className="text-lg font-semibold text-gray-900">Approved Actions</h3>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 border border-black">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50 border-b border-black">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Employee</th>
@@ -712,7 +712,7 @@ export default function Lifecycle() {
           ) : (
             <div className="space-y-4">
               {actions.map((action) => (
-                <div key={action.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div key={action.id} className="bg-gray-50 rounded-lg p-4 border-0">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h4 className="font-medium text-gray-900">{action.name || action.employee_name}</h4>
@@ -801,3 +801,4 @@ export default function Lifecycle() {
     </div>
   );
 }
+

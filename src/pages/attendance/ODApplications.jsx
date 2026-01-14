@@ -23,7 +23,7 @@ export default function ODApplications() {
     return (
       <Layout>
         <div className="p-6 text-center">
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md mx-auto">
+          <div className="bg-white rounded-2xl border-0 p-8 max-w-md mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
             <p className="text-gray-600">You do not have permission to view OD applications.</p>
           </div>
@@ -184,9 +184,9 @@ export default function ODApplications() {
     <Layout>
       <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Key Performance Indicators matching Dashboard */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -204,7 +204,7 @@ export default function ODApplications() {
           
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Applications</p>
@@ -221,7 +221,7 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
@@ -238,7 +238,7 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved</p>
@@ -255,7 +255,7 @@ export default function ODApplications() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Rejected</p>
@@ -276,8 +276,8 @@ export default function ODApplications() {
         </div>
 
         {/* Applications Management */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
+        <div className="bg-white rounded-xl border-0 shadow-sm">
+          <div className="p-5 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -406,7 +406,7 @@ export default function ODApplications() {
                                 {canRejectOd && (
                                   <button 
                                     onClick={() => handleReject(app.id)}
-                                    className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-2 py-1 rounded text-xs"
+                                    className="bg-white hover:bg-gray-100 text-gray-700 border-0 px-2 py-1 rounded text-xs"
                                     title="Reject"
                                   >
                                     Reject
@@ -441,7 +441,7 @@ export default function ODApplications() {
                 applications.map((app) => {
                   const employee = employees.find(emp => emp.id === app.employee_id);
                   return (
-                    <div key={app.id} className="p-4 border-b border-gray-200 hover:bg-gray-50">
+                    <div key={app.id} className="p-4 border-b-0 hover:bg-gray-50">
                       <div className="flex items-center justify-between mb-3">
                         <div className="font-medium text-gray-900">
                           {employee?.name || `Employee ${app.employee_id}`}
@@ -491,7 +491,7 @@ export default function ODApplications() {
                           {canRejectOd && (
                             <button 
                               onClick={() => handleReject(app.id)}
-                              className="flex items-center gap-1 px-3 py-1 text-sm bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 rounded"
+                              className="flex items-center gap-1 px-3 py-1 text-sm bg-white hover:bg-gray-100 text-gray-700 border-0 rounded"
                             >
                               Reject
                             </button>
@@ -509,7 +509,7 @@ export default function ODApplications() {
       {/* Apply OD Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl border-0 shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Apply for OD</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -633,3 +633,4 @@ export default function ODApplications() {
     </Layout>
   );
 }
+
