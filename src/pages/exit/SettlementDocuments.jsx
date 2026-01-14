@@ -410,54 +410,85 @@ export default function SettlementDocuments() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-4 border border-black">
+    <div className="p-6 space-y-6">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <DollarSign className="h-5 w-5 sm:h-6 sm:w-6" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} />
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Settlement & Documents</h1>
+            <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage F&F settlements & experience letters</p>
+            <p className="text-gray-500 text-xs hidden sm:block">Exit Management</p>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Ready for Settlement</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{exits.length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Ready for Settlement</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
+              <p className="text-gray-400 text-xs mt-1">Interviews completed</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <CheckCircle className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <CheckCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Settlements Completed</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {exits.filter(e => e.final_settlement_status === 'Completed').length}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Settlements Completed</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.final_settlement_status === 'Completed').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Processed</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <DollarSign className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <DollarSign className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Pending Settlements</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Settlements</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Awaiting action</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <Clock className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Clock className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Fully Processed</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Fully Processed</p>
+              <p className="text-2xl font-bold text-gray-900">
                 {exits.filter(e => {
                   const handover = e.handover_status || 'Pending';
                   const clearance = e.clearance_status || 'Pending';
@@ -466,31 +497,47 @@ export default function SettlementDocuments() {
                   return handover === 'Completed' && clearance === 'Completed' && assets === 'Completed' && settlement === 'Completed';
                 }).length}
               </p>
+              <p className="text-gray-400 text-xs mt-1">Complete exits</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <FileText className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl border border-black overflow-hidden">
-          <div className="p-3 sm:p-4 border-b border-black bg-gray-50">
-            <h3 className="text-base sm:text-lg font-bold text-gray-900">Ready for Settlement</h3>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">Employees with completed exit interviews</p>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <CheckCircle className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Ready for Settlement</h3>
+                <p className="text-gray-600 text-sm">Employees with completed exit interviews</p>
+              </div>
+            </div>
           </div>
           
-          <div className="p-3 sm:p-4">
-            <div className="space-y-2 sm:space-y-3">
+          <div className="p-5">
+            <div className="space-y-3">
               {exits.length === 0 ? (
-                <div className="text-center py-6 sm:py-8">
-                  <div className="text-gray-500 mb-3">
-                    <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 mx-auto" />
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2">No employees ready for settlement</h4>
-                  <p className="text-xs sm:text-sm text-gray-600">Complete exit interviews first.</p>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No employees ready</h4>
+                  <p className="text-gray-600 text-sm">Complete exit interviews first.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -500,11 +547,13 @@ export default function SettlementDocuments() {
                     <div
                       key={exit.id}
                       onClick={() => setSelectedExit(exit)}
-                      className={`p-2 sm:p-3 border border-black rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
-                        isSelected 
-                          ? 'bg-gray-100 shadow-md' 
-                          : 'bg-white hover:bg-gray-50'
+                      className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                        isSelected ? 'shadow-md' : 'bg-white hover:bg-gray-50'
                       }`}
+                      style={{
+                        backgroundColor: isSelected ? `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10` : 'white',
+                        borderColor: isSelected ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : '#e5e7eb'
+                      }}
                     >
                       <div className="font-semibold text-gray-900 text-sm sm:text-base truncate">{exit.employee_name || `Employee #${exit.employee_id}`}</div>
                       <div className="text-xs sm:text-sm text-gray-600 mt-1">Code: {exit.employee_code || 'N/A'}</div>
@@ -519,18 +568,18 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Settlement Details */}
-        <div className="bg-white rounded-xl border border-black p-3 sm:p-4">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
           {selectedExit ? (
             <>
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
-                <h3 className="text-base sm:text-lg font-medium text-gray-900">F&F Settlement</h3>
+              <div className="flex justify-between items-center gap-3 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">F&F Settlement</h3>
                 {!settlement && canCalculate && (
                   <button
                     onClick={handleCalculateSettlement}
-                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                    className="px-2 sm:px-3 py-1 text-white text-xs sm:text-sm rounded-lg border border-black whitespace-nowrap"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                    style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                    className="px-3 py-2 text-white text-sm rounded-xl font-medium whitespace-nowrap transition-all duration-200"
+                    onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                   >
                     Calculate Settlement
                   </button>
@@ -538,88 +587,105 @@ export default function SettlementDocuments() {
               </div>
 
               {settlement ? (
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-gray-50 p-2 sm:p-3 rounded-lg border border-black">
-                    <h4 className="font-medium mb-2 sm:mb-3 text-gray-900 text-sm sm:text-base">Settlement Breakdown</h4>
+                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <h4 className="font-semibold mb-4 text-gray-900 text-base flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" style={{
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }} />
+                      Settlement Breakdown
+                    </h4>
                     
                     {/* Earnings Section */}
-                    <div className="mb-3 sm:mb-4">
-                      <h5 className="text-xs sm:text-sm font-medium text-green-700 mb-2">EARNINGS</h5>
-                      <div className="space-y-1 text-xs sm:text-sm">
-                        <div className="flex justify-between">
-                          <span>Pending Salary:</span>
-                          <span className="font-medium">₹{settlement.breakdown.pending_salary.toLocaleString()}</span>
+                    <div className="mb-4 bg-white rounded-lg p-3 border border-green-100">
+                      <h5 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        EARNINGS
+                      </h5>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">Pending Salary:</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.pending_salary.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Leave Encashment:</span>
-                          <span className="font-medium">₹{settlement.breakdown.leave_encashment.toLocaleString()}</span>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">Leave Encashment:</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.leave_encashment.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Bonus:</span>
-                          <span className="font-medium">₹{settlement.breakdown.bonus.toLocaleString()}</span>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">Bonus:</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.bonus.toLocaleString()}</span>
                         </div>
-                        <hr className="my-2" />
-                        <div className="flex justify-between font-semibold text-green-600">
-                          <span>Total Earnings:</span>
-                          <span>₹{settlement.gross_amount.toLocaleString()}</span>
+                        <div className="border-t border-green-200 mt-2 pt-2">
+                          <div className="flex justify-between items-center font-semibold text-green-700">
+                            <span>Total Earnings:</span>
+                            <span className="text-lg">₹{settlement.gross_amount.toLocaleString()}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
                     {/* Deductions Section */}
-                    <div className="mb-3 sm:mb-4">
-                      <h5 className="text-xs sm:text-sm font-medium text-red-700 mb-2">DEDUCTIONS</h5>
-                      <div className="space-y-1 text-xs sm:text-sm">
-                        <div className="flex justify-between">
-                          <span>TDS (10%):</span>
-                          <span className="font-medium">₹{settlement.breakdown.tds.toLocaleString()}</span>
+                    <div className="mb-4 bg-white rounded-lg p-3 border border-red-100">
+                      <h5 className="text-sm font-semibold text-red-700 mb-3 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                        DEDUCTIONS
+                      </h5>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">TDS (10%):</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.tds.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>PF (12%):</span>
-                          <span className="font-medium">₹{settlement.breakdown.pf.toLocaleString()}</span>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">PF (12%):</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.pf.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Professional Tax:</span>
-                          <span className="font-medium">₹{settlement.breakdown.professional_tax.toLocaleString()}</span>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-600">Professional Tax:</span>
+                          <span className="font-semibold text-gray-900">₹{settlement.breakdown.professional_tax.toLocaleString()}</span>
                         </div>
                         {settlement.breakdown.advance_recovery > 0 && (
-                          <div className="flex justify-between">
-                            <span>Advance Recovery:</span>
-                            <span className="font-medium">₹{settlement.breakdown.advance_recovery.toLocaleString()}</span>
+                          <div className="flex justify-between items-center py-1">
+                            <span className="text-gray-600">Advance Recovery:</span>
+                            <span className="font-semibold text-gray-900">₹{settlement.breakdown.advance_recovery.toLocaleString()}</span>
                           </div>
                         )}
                         {settlement.breakdown.loan_recovery > 0 && (
-                          <div className="flex justify-between">
-                            <span>Loan Recovery:</span>
-                            <span className="font-medium">₹{settlement.breakdown.loan_recovery.toLocaleString()}</span>
+                          <div className="flex justify-between items-center py-1">
+                            <span className="text-gray-600">Loan Recovery:</span>
+                            <span className="font-semibold text-gray-900">₹{settlement.breakdown.loan_recovery.toLocaleString()}</span>
                           </div>
                         )}
-                        <hr className="my-2" />
-                        <div className="flex justify-between font-semibold text-red-600">
-                          <span>Total Deductions:</span>
-                          <span>₹{settlement.total_deductions.toLocaleString()}</span>
+                        <div className="border-t border-red-200 mt-2 pt-2">
+                          <div className="flex justify-between items-center font-semibold text-red-700">
+                            <span>Total Deductions:</span>
+                            <span className="text-lg">₹{settlement.total_deductions.toLocaleString()}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
                     {/* Net Payable */}
-                    <div className="bg-white p-2 sm:p-3 rounded-lg border border-black">
-                      <div className="flex justify-between text-sm sm:text-lg font-bold text-gray-900">
-                        <span>NET PAYABLE:</span>
-                        <span>₹{settlement.net_payable.toLocaleString()}</span>
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border-2 shadow-md" style={{
+                      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}>
+                      <div className="flex justify-between items-center">
+                        <span className="text-base font-bold text-gray-700">NET PAYABLE:</span>
+                        <span className="text-2xl font-bold" style={{
+                          color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                        }}>₹{settlement.net_payable.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Payment Status */}
-                  <div className="p-2 sm:p-3 border border-black rounded-lg">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
-                      <span className="font-medium text-gray-900 text-sm sm:text-base">Payment Status:</span>
-                      <span className={`px-2 py-1 text-xs rounded-lg border border-black self-start sm:self-auto ${
-                        settlement.payment_status === 'Approved' ? 'bg-gray-200 text-gray-900' :
-                        settlement.payment_status === 'Pending' ? 'bg-gray-100 text-gray-800' :
-                        'bg-gray-100 text-gray-800'
+                  <div className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-gray-900 text-base">Payment Status:</span>
+                      <span className={`px-3 py-1.5 text-sm font-medium rounded-lg ${
+                        settlement.payment_status === 'Approved' ? 'bg-green-100 text-green-800 border border-green-200' :
+                        settlement.payment_status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
+                        'bg-gray-100 text-gray-800 border border-gray-200'
                       }`}>
                         {settlement.payment_status}
                       </span>
@@ -628,10 +694,10 @@ export default function SettlementDocuments() {
                     {settlement.payment_status === 'Pending' && canApprove && (
                       <button
                         onClick={handleApproveSettlement}
-                        style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                        className="mt-3 w-full text-white py-2 rounded-lg border border-black text-sm"
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                        style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                        className="w-full text-white py-2.5 rounded-xl font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                        onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                       >
                         Approve Settlement
                       </button>
@@ -639,7 +705,7 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-xs sm:text-sm text-gray-600 space-y-1">
+                  <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -665,7 +731,7 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Experience Letter */}
-        <div className="bg-white rounded-xl border border-black p-3 sm:p-4">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
           {selectedExit ? (
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
@@ -699,17 +765,17 @@ export default function SettlementDocuments() {
                 <div className="space-y-3 sm:space-y-4">
                   {/* Editable Form or Letter Preview */}
                   {isEditingLetter ? (
-                    <div className="bg-content p-3 sm:p-4 rounded-lg space-y-2 sm:space-y-3 border border-black">
-                      <h4 className="font-medium mb-2 sm:mb-3 text-sm sm:text-base">Edit Experience Letter Details</h4>
+                    <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-200 shadow-sm">
+                      <h4 className="font-semibold mb-3 text-base">Edit Experience Letter Details</h4>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Name</label>
                           <input
                             type="text"
                             value={experienceLetter.employee_name}
                             onChange={(e) => updateLetterField('employee_name', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -718,7 +784,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.employee_code}
                             onChange={(e) => updateLetterField('employee_code', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -727,7 +793,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.company_name}
                             onChange={(e) => updateLetterField('company_name', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -736,7 +802,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.designation}
                             onChange={(e) => updateLetterField('designation', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -745,7 +811,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.department}
                             onChange={(e) => updateLetterField('department', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -754,7 +820,7 @@ export default function SettlementDocuments() {
                             type="date"
                             value={experienceLetter.joining_date}
                             onChange={(e) => updateLetterField('joining_date', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -763,7 +829,7 @@ export default function SettlementDocuments() {
                             type="date"
                             value={experienceLetter.last_working_day}
                             onChange={(e) => updateLetterField('last_working_day', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -772,7 +838,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.place || 'Bangalore'}
                             onChange={(e) => updateLetterField('place', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -781,7 +847,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.issued_by}
                             onChange={(e) => updateLetterField('issued_by', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                         <div>
@@ -790,7 +856,7 @@ export default function SettlementDocuments() {
                             type="text"
                             value={experienceLetter.authorized_signatory || 'HR Manager'}
                             onChange={(e) => updateLetterField('authorized_signatory', e.target.value)}
-                            className="w-full border border-black rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                           />
                         </div>
                       </div>
@@ -809,7 +875,7 @@ export default function SettlementDocuments() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-content p-3 sm:p-4 rounded-lg text-xs sm:text-sm border border-black">
+                    <div className="bg-content p-3 sm:p-4 rounded-lg text-xs sm:text-sm border border-gray-300">
                       <div className="text-center font-bold mb-3 sm:mb-4 text-sm sm:text-lg">EXPERIENCE CERTIFICATE</div>
                       <div className="space-y-2 sm:space-y-3 leading-relaxed">
                         <p>This is to certify that <strong>{experienceLetter.employee_name}</strong> (Employee Code: <strong>{experienceLetter.employee_code}</strong>) was employed with <strong>{experienceLetter.company_name}</strong> as <strong>{experienceLetter.designation}</strong> in the <strong>{experienceLetter.department}</strong>.</p>
@@ -841,7 +907,7 @@ export default function SettlementDocuments() {
                   )}
 
                   {/* Letter Status */}
-                  <div className="p-3 sm:p-4 border border-black rounded-lg">
+                  <div className="p-3 sm:p-4 border border-gray-300 rounded-lg">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
                       <span className="font-medium text-sm sm:text-base">Status:</span>
                       <span className={`px-2 py-1 text-xs rounded-full self-start sm:self-auto ${

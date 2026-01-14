@@ -209,62 +209,95 @@ export default function ClearanceWorkflow() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 border border-black">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Approved Resignations</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{exits.length}</p>
+    <div className="p-6 space-y-6">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
-            <div className="p-3 bg-gray-100 rounded-xl border border-black">
-              <User className="h-6 w-6 text-gray-500" />
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Clearance Workflow</h1>
+              <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage department clearances & exit interviews</p>
+              <p className="text-gray-500 text-xs hidden sm:block">Exit Management</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved Resignations</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
+              <p className="text-gray-400 text-xs mt-1">Ready for clearance</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <User className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-6 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Pending Clearance</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {exits.filter(e => {
-                  // This is just for display, we'll use actual clearance data when exit is selected
-                  return true; // Show all as pending for now in stats
-                }).length}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Clearance</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
+              <p className="text-gray-400 text-xs mt-1">In progress</p>
             </div>
-            <div className="p-3 bg-gray-100 rounded-xl border border-black">
-              <Clock className="h-6 w-6 text-gray-500" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Clock className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-6 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Clearance Completed</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {exits.filter(e => e.clearance_status === 'Completed').length}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Clearance Completed</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.clearance_status === 'Completed').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Fully cleared</p>
             </div>
-            <div className="p-3 bg-gray-100 rounded-xl border border-black">
-              <CheckCircle className="h-6 w-6 text-gray-500" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <CheckCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-6 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Interviews Done</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {exits.filter(e => e.exit_interview_completed).length}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Interviews Done</p>
+              <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.exit_interview_completed).length}</p>
+              <p className="text-gray-400 text-xs mt-1">Completed</p>
             </div>
-            <div className="p-3 bg-gray-100 rounded-xl border border-black">
-              <AlertCircle className="h-6 w-6 text-gray-500" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <AlertCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
@@ -272,21 +305,32 @@ export default function ClearanceWorkflow() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
-          <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900">Approved Resignations</h3>
-            <p className="text-gray-600 text-xs sm:text-sm mt-1">Select an employee to manage clearance process</p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <User className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Approved Resignations</h3>
+                <p className="text-gray-600 text-sm">Select an employee to manage clearance process</p>
+              </div>
+            </div>
           </div>
           
-          <div className="p-4 sm:p-6">
-            <div className="space-y-3 sm:space-y-4">
+          <div className="p-5">
+            <div className="space-y-3">
               {exits.length === 0 ? (
-                <div className="text-center py-8 sm:py-12">
-                  <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                    <User className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-500" />
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <User className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No approved resignations found</h4>
-                  <p className="text-gray-600 text-xs sm:text-sm">Resignations will appear here once clearance processes have started.</p>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No approved resignations found</h4>
+                  <p className="text-gray-600 text-sm">Resignations will appear here once clearance processes have started.</p>
                 </div>
               ) : (
                 exits.map((exit) => {
@@ -297,11 +341,15 @@ export default function ClearanceWorkflow() {
                     <div
                       key={exit.id}
                       onClick={() => setSelectedExit(exit)}
-                      className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         isSelected 
-                          ? 'border-gray-900 bg-gray-50 shadow-md' 
-                          : 'border-gray-300 hover:border-gray-400 bg-white'
+                          ? 'border-gray-900 bg-blue-50 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-400 bg-white'
                       }`}
+                      style={{
+                        backgroundColor: isSelected ? `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10` : 'white',
+                        borderColor: isSelected ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : '#e5e7eb'
+                      }}
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1 min-w-0">
@@ -336,36 +384,45 @@ export default function ClearanceWorkflow() {
         </div>
 
         {/* Clearance Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-black overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           {selectedExit ? (
             <>
-              <div className="p-4 sm:p-6 border-b border-black bg-gray-50">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                  <div className="min-w-0">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">Clearance Status</h3>
-                    <p className="text-gray-600 text-xs sm:text-sm mt-1 truncate">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
+              <div className="p-5 border-b border-gray-100">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="p-2 rounded-lg" style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <CheckCircle className="h-5 w-5" style={{
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">Clearance Status</h3>
+                      <p className="text-gray-600 text-sm truncate">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
+                    </div>
                   </div>
                   {!selectedExit.exit_interview_completed && areAllClearancesCompleted() && canConductInterview && (
                     <button
                       onClick={() => setShowInterviewForm(true)}
-                      style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                      className="px-3 sm:px-4 py-2 text-white text-xs sm:text-sm rounded-xl border border-black font-semibold transition-all duration-200 whitespace-nowrap"
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                      style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                      className="px-4 py-2 text-white text-sm rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                     >
                       Conduct Exit Interview
                     </button>
                   )}
                   {!areAllClearancesCompleted() && (
-                    <div className="text-xs sm:text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg border border-black">
-                      Complete all clearances to conduct interview
+                    <div className="text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg">
+                      Complete all clearances first
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="p-4 sm:p-6">
-                <div className="grid grid-cols-1 gap-3 sm:gap-4">
+              <div className="p-5">
+                <div className="grid grid-cols-1 gap-4">
                   {clearances.length > 0 ? (
                     clearances.filter(clearance => {
                       // Only show clearances for departments the user has permission for
@@ -385,38 +442,42 @@ export default function ClearanceWorkflow() {
                       );
                       
                       return (
-                        <div key={clearance.id} className="border border-black rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-200">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                              <div className="p-2 sm:p-3 rounded-xl bg-gray-100 border border-black flex-shrink-0">
-                                <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+                        <div key={clearance.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                              <div className="p-3 rounded-xl" style={{
+                                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}15`
+                              }}>
+                                <IconComponent className="h-5 w-5" style={{
+                                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                                }} />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-gray-900 text-sm sm:text-base">{clearance.department}</div>
-                                <div className="text-xs sm:text-sm text-gray-600 mt-1">{clearance.description}</div>
+                                <div className="font-semibold text-gray-900 text-base">{clearance.department}</div>
+                                <div className="text-sm text-gray-600 mt-1">{clearance.description}</div>
                               </div>
                             </div>
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                              <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${
-                                clearance.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
-                                'bg-green-100 text-green-800 border-green-200'
+                            <div className="flex items-center gap-3">
+                              <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                                clearance.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-green-100 text-green-800'
                               }`}>
                                 {clearance.status}
                               </span>
                               {clearance.status === 'Pending' && canManage && (
                                 <button
                                   onClick={() => handleApproveClearance(clearance.id)}
-                                  style={{ backgroundColor: 'var(--primary-color, #2862e9)', borderColor: 'var(--primary-color, #2862e9)' }}
-                                  className="text-white text-xs sm:text-sm px-3 sm:px-4 py-2 border rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
-                                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
+                                  style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                                  className="text-white text-sm px-4 py-2 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+                                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                                 >
                                   Mark Completed
                                 </button>
                               )}
                               {clearance.status === 'Completed' && (
                                 <div className="text-green-600">
-                                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+                                  <CheckCircle className="h-5 w-5" />
                                 </div>
                               )}
                             </div>
@@ -487,9 +548,11 @@ export default function ClearanceWorkflow() {
                 </div>
 
                 {/* Exit Interview Status */}
-                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-xl border border-black">
-                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
-                    <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-base">
+                    <AlertCircle className="h-5 w-5" style={{
+                      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }} />
                     Exit Interview Status
                   </h4>
                   {selectedExit.exit_interview_completed ? (
@@ -512,12 +575,12 @@ export default function ClearanceWorkflow() {
               </div>
             </>
           ) : (
-            <div className="p-8 sm:p-12 text-center">
-              <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-                <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-500" />
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-gray-400" />
               </div>
-              <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Select an Employee</h4>
-              <p className="text-gray-600 text-xs sm:text-sm">Choose an employee from the left to view and manage their clearance details</p>
+              <h4 className="text-lg font-medium text-gray-900 mb-2">Select an Employee</h4>
+              <p className="text-gray-600 text-sm">Choose an employee from the left to view and manage their clearance details</p>
             </div>
           )}
         </div>
@@ -525,36 +588,38 @@ export default function ClearanceWorkflow() {
 
       {/* Exit Interview Form Modal */}
       {showInterviewForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-black">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Exit Interview</h3>
+              <h3 className="text-xl font-bold text-gray-900">Exit Interview</h3>
               <button
                 onClick={() => setShowInterviewForm(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
-            <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-black">
+            <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
               <p className="text-gray-900 font-medium">{selectedExit.employee_name || `Employee #${selectedExit.employee_id}`}</p>
               <p className="text-gray-600 text-sm">Code: {selectedExit.employee_code || 'N/A'}</p>
             </div>
             
             <form onSubmit={handleExitInterview} className="space-y-4">
-              {/* Rating */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Overall Workplace Experience Rating (1-5)
                 </label>
                 <select
                   required
                   value={interviewForm.rating}
                   onChange={(e) => setInterviewForm({...interviewForm, rating: e.target.value})}
-                  className="w-full border border-black rounded-xl p-3 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:border-transparent transition-all duration-200"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
                 >
                   <option value="">Select Rating</option>
                   <option value="1">1 - Very Poor</option>
@@ -565,50 +630,47 @@ export default function ClearanceWorkflow() {
                 </select>
               </div>
 
-              {/* Feedback */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Feedback & Comments
                 </label>
                 <textarea
                   required
                   value={interviewForm.feedback}
                   onChange={(e) => setInterviewForm({...interviewForm, feedback: e.target.value})}
-                  className="w-full border border-black rounded-xl p-3 h-24 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+                  className="w-full border border-gray-300 rounded-lg p-3 h-24 focus:ring-2 focus:border-transparent transition-all duration-200"
                   placeholder="Please share your feedback about the workplace, management, colleagues, etc."
                 />
               </div>
 
-              {/* Suggestions */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Suggestions for Improvement
                 </label>
                 <textarea
                   value={interviewForm.suggestions}
                   onChange={(e) => setInterviewForm({...interviewForm, suggestions: e.target.value})}
-                  className="w-full border border-black rounded-xl p-3 h-24 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+                  className="w-full border border-gray-300 rounded-lg p-3 h-24 focus:ring-2 focus:border-transparent transition-all duration-200"
                   placeholder="Any suggestions to improve the workplace or processes"
                 />
               </div>
 
-              {/* Buttons */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="submit"
-                  style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                  className="flex-1 text-white px-6 py-3 rounded-xl border border-black font-semibold transition-all duration-200"
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                >
-                  Complete Interview
-                </button>
+              <div className="flex gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowInterviewForm(false)}
-                  className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl border border-black hover:bg-gray-200 font-semibold transition-all duration-200"
+                  className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 font-medium transition-all duration-200"
                 >
                   Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                  className="flex-1 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200"
+                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                >
+                  Complete Interview
                 </button>
               </div>
             </form>

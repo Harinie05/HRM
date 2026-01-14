@@ -8,9 +8,9 @@ export default function OrgTabs({ tab, setTab }) {
     { name: "Department", permission: "view_department" },
     { name: "Designation", permission: "view_designation" },
     { name: "Reporting Structure", permission: "view_reporting_levels" }, // Updated to use new permission
-    { name: "Grades / Pay Structure", permission: null }, // No permission check for now
+   
     { name: "Holiday Calendar", permission: "view_holiday" },
-    { name: "Rules & Policies", permission: null } // No permission check for now
+   
   ];
 
   // Filter tabs based on permissions

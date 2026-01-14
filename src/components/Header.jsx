@@ -280,15 +280,15 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       
       if (status.missed_checkout_yesterday) {
         const userConfirmed = window.confirm(
-          `You have missed yesterday's punch out (${status.yesterday_date}). Add regularization?`
+          `You missed yesterday's checkout (${status.yesterday_date}). Do you want to continue with today's check-in? Click OK to proceed, or Cancel to add regularization first.`
         );
         
-        if (userConfirmed) {
-          // Navigate to attendance page with regularization tab
-          navigate('/attendance?tab=regularization&date=' + status.yesterday_date);
+        if (!userConfirmed) {
+          // User wants to add regularization - show message and stop
+          alert('Please contact HR to add regularization for the missed checkout before checking in.');
           return;
         }
-        // If user clicks "No", continue with normal check-in
+        // If user clicks OK, continue with normal check-in
       }
     } catch (err) {
       console.error('Status check failed:', err);
@@ -358,10 +358,41 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
       const currentTime = new Date().toTimeString().split(' ')[0];
       const ipAddress = await getClientIP();
       
+      // First check current status
+      const statusRes = await api.get(`/api/attendance/punches/check-status/${userInfo.id}`);
+      const status = statusRes.data;
+      
+      if (!status.checked_in) {
+        alert('You need to check in first before checking out.');
+        setAttendanceStatus('not_checked_in');
+        return;
+      }
+      
+      if (status.checked_out) {
+        alert('You have already checked out for today.');
+        setAttendanceStatus('checked_out');
+        return;
+      }
+      
+      // Get today's punch record - try multiple search methods
       const res = await api.get('/api/attendance/punches/');
-      const todayLog = res.data.find(log => 
+      let todayLog = res.data.find(log => 
         log.employee_id == userInfo.id && log.date === currentDate && !log.out_time
       );
+      
+      // If not found, try searching by employee_code
+      if (!todayLog && userInfo.employee_code) {
+        todayLog = res.data.find(log => 
+          log.employee_code === userInfo.employee_code && log.date === currentDate && !log.out_time
+        );
+      }
+      
+      // If still not found, try searching with string comparison
+      if (!todayLog) {
+        todayLog = res.data.find(log => 
+          String(log.employee_id) === String(userInfo.id) && log.date === currentDate && !log.out_time
+        );
+      }
       
       if (todayLog) {
         const updateData = {
@@ -375,14 +406,12 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
           ip_address: ipAddress
         };
         
-        console.log('Sending update data:', updateData); // Debug log
+        console.log('Sending update data:', updateData);
         
         await api.put(`/api/attendance/punches/${todayLog.id}/`, updateData);
         
-        // Immediately set status to checked_out
         setAttendanceStatus('checked_out');
         
-        // Show success notification
         const notification = document.createElement('div');
         notification.className = 'fixed top-20 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
         notification.innerHTML = `<div class="text-sm font-semibold">Swipe Out Successful!</div>`;
@@ -390,7 +419,13 @@ export default function Header({ isSidebarCollapsed, onMobileMenuToggle }) {
         setTimeout(() => notification.remove(), 3000);
         
       } else {
-        alert('No active check-in found for today.');
+        // If no record found, check if user is actually checked in
+        if (status.checked_in) {
+          alert('Unable to find your check-in record. Please contact HR.');
+        } else {
+          alert('You need to check in first before checking out.');
+          setAttendanceStatus('not_checked_in');
+        }
       }
     } catch (err) {
       console.error('Swipe out failed:', err);

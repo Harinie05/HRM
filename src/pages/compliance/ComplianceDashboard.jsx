@@ -33,52 +33,93 @@ const ComplianceDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Shield className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-600">Overall Compliance</p>
-              <p className="text-2xl font-semibold text-green-900">95%</p>
+    <div className="p-6 space-y-6">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <Shield className="h-5 w-5 sm:h-6 sm:w-6" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} />
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Compliance Dashboard</h1>
+            <p className="text-gray-600 text-xs sm:text-sm mb-1">Monitor & manage organizational compliance</p>
+            <p className="text-gray-500 text-xs hidden sm:block">Compliance Management</p>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Overall Compliance</p>
+              <p className="text-2xl font-bold text-gray-900">95%</p>
+              <p className="text-gray-400 text-xs mt-1">Excellent status</p>
+            </div>
+            <div className="p-3 rounded-lg bg-green-100">
+              <Shield className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-blue-600">Active Policies</p>
-              <p className="text-2xl font-semibold text-blue-900">12</p>
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active Policies</p>
+              <p className="text-2xl font-bold text-gray-900">12</p>
+              <p className="text-gray-400 text-xs mt-1">In effect</p>
+            </div>
+            <div className="p-3 rounded-lg bg-blue-100">
+              <FileText className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <Clock className="h-8 w-8 text-orange-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-orange-600">Pending Actions</p>
-              <p className="text-2xl font-semibold text-orange-900">3</p>
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Actions</p>
+              <p className="text-2xl font-bold text-gray-900">3</p>
+              <p className="text-gray-400 text-xs mt-1">Requires attention</p>
+            </div>
+            <div className="p-3 rounded-lg bg-orange-100">
+              <Clock className="h-6 w-6 text-orange-600" />
             </div>
           </div>
         </div>
-        <div className="bg-content rounded-lg p-4">
-          <div className="flex items-center">
-            <AlertTriangle className="h-8 w-8 text-red-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-red-600">Overdue Items</p>
-              <p className="text-2xl font-semibold text-red-900">1</p>
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Overdue Items</p>
+              <p className="text-2xl font-bold text-gray-900">1</p>
+              <p className="text-gray-400 text-xs mt-1">Immediate action</p>
+            </div>
+            <div className="p-3 rounded-lg bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Statutory Compliance */}
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <h3 className="text-lg font-semibold mb-4">Statutory Compliance Status</h3>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <FileText className="h-5 w-5" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Statutory Compliance Status</h3>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">PF Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
@@ -86,7 +127,7 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-secondary">Last filed: Dec 2024</div>
             <div className="text-sm text-secondary">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">ESI Compliance</span>
               <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Compliant</span>
@@ -94,7 +135,7 @@ const ComplianceDashboard = () => {
             <div className="text-sm text-secondary">Last filed: Dec 2024</div>
             <div className="text-sm text-secondary">Next due: Jan 15, 2025</div>
           </div>
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold">Professional Tax</span>
               <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Due Soon</span>
@@ -107,7 +148,7 @@ const ComplianceDashboard = () => {
 
       {/* Labour Law Compliance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">Labour Law Registers</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -129,7 +170,7 @@ const ComplianceDashboard = () => {
           </div>
         </div>
 
-        <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
           <h3 className="text-lg font-semibold mb-4">NABH Compliance (Healthcare)</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -153,7 +194,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Compliance Calendar */}
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Upcoming Compliance Deadlines</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 border-l-4 border-red-500 bg-red-50">
@@ -188,7 +229,7 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* Action Items */}
-      <div className="rounded-xl shadow-sm border p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
         <h3 className="text-lg font-semibold mb-4">Immediate Action Required</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 border-l-4 border-red-500 bg-red-50">

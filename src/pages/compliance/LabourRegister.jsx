@@ -340,7 +340,96 @@ export default function LabourRegister() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
+              <p className="text-2xl font-bold text-gray-900">{registers.length}</p>
+              <p className="text-gray-400 text-xs mt-1">Active records</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Active</p>
+              <p className="text-2xl font-bold text-gray-900">{registers.filter(r => r.compliance_status === 'Active').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Compliant</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <CheckCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending</p>
+              <p className="text-2xl font-bold text-gray-900">{registers.filter(r => r.compliance_status === 'Pending').length}</p>
+              <p className="text-gray-400 text-xs mt-1">To review</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <AlertTriangle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
+              <p className="text-2xl font-bold text-gray-900">{new Set(registers.map(r => r.employee_id)).size}</p>
+              <p className="text-gray-400 text-xs mt-1">Unique count</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Users className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Form Section */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-5 w-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Add Labour Register Entry</h2>
+              <p className="text-sm text-gray-600">Maintain employee records and labour law compliance</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6">
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mb-8">
           {/* Employee ID */}
           <div>
@@ -618,52 +707,69 @@ export default function LabourRegister() {
             )}
           </div>
         </form>
+        </div>
+      </div>
 
-        {/* Display existing registers */}
-        {(registers.length > 0 || deletedRegisters.length > 0) && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {showDeleted ? 'Deleted Labour Registers' : 'Existing Labour Registers'}
-              </h3>
-              <div className="flex gap-2">
-                {canViewDeleted && (
-                  <button
-                    onClick={() => setShowDeleted(!showDeleted)}
-                    className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
-                      showDeleted 
-                        ? 'bg-gray-800 text-white border-black hover:bg-gray-900' 
-                        : 'bg-white text-gray-800 border-black hover:bg-gray-50'
-                    }`}
-                  >
-                    {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
-                    {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? registers.length : deletedRegisters.length})
-                  </button>
-                )}
+      {/* Records Table */}
+      {(registers.length > 0 || deletedRegisters.length > 0) && (
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FileText className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {showDeleted ? 'Deleted Records' : 'Existing Labour Registers'}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {(showDeleted ? deletedRegisters : registers).length} records found
+                  </p>
+                </div>
               </div>
+              {canViewDeleted && (
+                <button
+                  onClick={() => setShowDeleted(!showDeleted)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors text-sm font-medium"
+                  style={{
+                    backgroundColor: showDeleted ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'white',
+                    color: showDeleted ? 'white' : '#374151',
+                    borderColor: '#e5e7eb'
+                  }}
+                >
+                  {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? registers.length : deletedRegisters.length})
+                </button>
+              )}
             </div>
+          </div>
             <div className="overflow-x-auto">
               {/* Desktop Table View */}
               <div className="hidden md:block">
-                <table className="w-full border border-black">
+                <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee ID</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee Name</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Register Type</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Status</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Month/Year</th>
-                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee ID</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee Name</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Register Type</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Month/Year</th>
+                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Deleted At</th>}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {(showDeleted ? deletedRegisters : registers).map((register, index) => (
-                      <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
-                        <td className="px-4 py-2 text-sm border-r border-black">{register.employee_id}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{register.employee_name}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{register.register_type}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">
+                      <tr key={index} className={`hover:bg-gray-50 transition-colors duration-150 ${showDeleted ? 'bg-red-50' : ''}`}>
+                        <td className="px-4 py-3 text-sm text-gray-900">{register.employee_id}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{register.employee_name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{register.register_type}</td>
+                        <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             register.compliance_status === 'Active' ? 'bg-green-100 text-green-800' :
                             register.compliance_status === 'Expired' ? 'bg-red-100 text-red-800' :
@@ -674,13 +780,13 @@ export default function LabourRegister() {
                             {register.compliance_status}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{register.month}/{register.year}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{register.month}/{register.year}</td>
                         {showDeleted && (
-                          <td className="px-4 py-2 text-sm border-r border-black">
+                          <td className="px-4 py-3 text-sm text-gray-900">
                             {register.deleted_at ? new Date(register.deleted_at).toLocaleDateString() : 'N/A'}
                           </td>
                         )}
-                        <td className="px-4 py-2 text-sm">
+                        <td className="px-4 py-3">
                           <div className="flex gap-2">
                             {showDeleted ? (
                               canRestore && (
@@ -725,7 +831,7 @@ export default function LabourRegister() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {(showDeleted ? deletedRegisters : registers).map((register, index) => (
-                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{register.employee_name}</h4>
@@ -798,8 +904,7 @@ export default function LabourRegister() {
               </div>
             </div>
           </div>
-        )}
-      </div>
+      )}
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );

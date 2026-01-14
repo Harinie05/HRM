@@ -228,56 +228,98 @@ export default function KnowledgeTransfer() {
   if (loading) return <div className="p-8">Loading...</div>;
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Knowledge Transfer</h2>
-          <p className="text-gray-600 text-sm sm:text-base">Manage knowledge transfer for exiting employees</p>
+    <div className="p-6 space-y-6">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+      }}>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{
+            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
+            <Check className="h-5 w-5 sm:h-6 sm:w-6" style={{
+              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+            }} />
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Knowledge Transfer</h1>
+            <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage knowledge transfer for exiting employees</p>
+            <p className="text-gray-500 text-xs hidden sm:block">Exit Management</p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-lg border border-black p-3 sm:p-4">
-          <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Pending Exits</h3>
-          <div className="space-y-2">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <AlertCircle className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Pending Exits</h3>
+            </div>
+          </div>
+          <div className="p-5">
+            <div className="space-y-3">
             {exits.map(exit => (
               <div
                 key={exit.id}
                 onClick={() => handleExitSelect(exit)}
-                className={`p-2 sm:p-3 rounded cursor-pointer border transition-all duration-200 ${
-                  selectedExit?.id === exit.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
+                className={`p-3 rounded-xl cursor-pointer border transition-all duration-200 hover:shadow-md ${
+                  selectedExit?.id === exit.id ? 'bg-blue-50 shadow-md' : 'bg-white hover:bg-gray-50'
                 }`}
+                style={{
+                  backgroundColor: selectedExit?.id === exit.id ? `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10` : 'white',
+                  borderColor: selectedExit?.id === exit.id ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : '#e5e7eb'
+                }}
               >
-                <div className="font-medium text-sm sm:text-base truncate">{exit.employee_name}</div>
-                <div className="text-xs sm:text-sm text-gray-600">Code: {exit.employee_code}</div>
+                <div className="font-medium text-base truncate">{exit.employee_name}</div>
+                <div className="text-sm text-gray-600">Code: {exit.employee_code}</div>
               </div>
             ))}
+          </div>
           </div>
         </div>
 
         {/* KT Details */}
         <div className="lg:col-span-2">
           {selectedExit && (
-            <div className="bg-white rounded-lg border border-black p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
-                <div className="min-w-0">
-                  <h3 className="text-base sm:text-lg font-semibold truncate">{selectedExit.employee_name}</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm">Code: {selectedExit.employee_code}</p>
-                  <p className="text-gray-600 text-xs sm:text-sm">Last Working Day: {selectedExit.last_working_day}</p>
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-gray-100">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="p-2 rounded-lg" style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
+                      <Check className="h-5 w-5" style={{
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                      }} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{selectedExit.employee_name}</h3>
+                      <p className="text-gray-600 text-sm">Code: {selectedExit.employee_code} • Last Working: {selectedExit.last_working_day}</p>
+                    </div>
+                  </div>
+                  {!ktData && !showCreateForm && canCreate && (
+                    <button
+                      onClick={() => setShowCreateForm(true)}
+                      style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                      className="px-4 py-2 text-white rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200"
+                      onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
+                    >
+                      Create KT Plan
+                    </button>
+                  )}
                 </div>
-                {!ktData && !showCreateForm && canCreate && (
-                  <button
-                    onClick={() => setShowCreateForm(true)}
-                    style={{ backgroundColor: 'var(--primary-color, #2862e9)' }}
-                    className="px-3 sm:px-4 py-2 text-white rounded-lg text-sm whitespace-nowrap"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--secondary-color, #474e71)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--primary-color, #2862e9)'}
-                  >
-                    Create KT Plan
-                  </button>
-                )}
               </div>
+
+              <div className="p-5">
 
               {showCreateForm && (
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
@@ -288,7 +330,7 @@ export default function KnowledgeTransfer() {
                         type="date"
                         value={formData.start_date}
                         onChange={(e) => setFormData({...formData, start_date: e.target.value})}
-                        className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                         required
                       />
                     </div>
@@ -298,7 +340,7 @@ export default function KnowledgeTransfer() {
                         type="date"
                         value={formData.end_date}
                         onChange={(e) => setFormData({...formData, end_date: e.target.value})}
-                        className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                         required
                       />
                     </div>
@@ -319,7 +361,7 @@ export default function KnowledgeTransfer() {
                     </div>
 
                     {formData.kt_items.map((item, index) => (
-                      <div key={index} className="border border-black rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+                      <div key={index} className="border border-gray-200 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-3">
                           <h5 className="font-medium text-sm sm:text-base">KT Item {index + 1}</h5>
                           {formData.kt_items.length > 1 && (
@@ -339,7 +381,7 @@ export default function KnowledgeTransfer() {
                             <select
                               value={item.knowledge_area}
                               onChange={(e) => updateKTItem(index, 'knowledge_area', e.target.value)}
-                              className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                               required
                             >
                               <option value="">Select Area</option>
@@ -353,7 +395,7 @@ export default function KnowledgeTransfer() {
                             <select
                               value={item.to_employee_id}
                               onChange={(e) => updateKTItem(index, 'to_employee_id', e.target.value)}
-                              className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                               required
                             >
                               <option value="">Select Employee</option>
@@ -369,7 +411,7 @@ export default function KnowledgeTransfer() {
                           <textarea
                             value={item.description}
                             onChange={(e) => updateKTItem(index, 'description', e.target.value)}
-                            className="w-full border border-black rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                             rows="2"
                             placeholder="Describe what needs to be transferred..."
                           />
@@ -383,7 +425,7 @@ export default function KnowledgeTransfer() {
                     <textarea
                       value={formData.remarks}
                       onChange={(e) => setFormData({...formData, remarks: e.target.value})}
-                      className="w-full border border-black rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                       rows="3"
                     />
                   </div>
@@ -411,7 +453,7 @@ export default function KnowledgeTransfer() {
 
               {ktData && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-black">
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div><strong>KT Period:</strong> {ktData.start_date} to {ktData.end_date}</div>
                       <div><strong>Overall Status:</strong> {ktData.overall_status}</div>
@@ -425,7 +467,7 @@ export default function KnowledgeTransfer() {
                     {ktData.kt_items && ktData.kt_items.length > 0 ? (
                       <div className="space-y-2 sm:space-y-3">
                         {ktData.kt_items.map(item => (
-                          <div key={item.id} className="border border-black rounded-lg p-3 sm:p-4">
+                          <div key={item.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-2">
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(item.status)}
@@ -500,6 +542,7 @@ export default function KnowledgeTransfer() {
                   )}
                 </div>
               )}
+            </div>
             </div>
           )}
         </div>

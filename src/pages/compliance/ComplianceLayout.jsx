@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { Shield } from "lucide-react";
 import Layout from "../../components/Layout";
-import { ResponsiveContainer, ResponsiveHeader, ResponsiveTabs, ResponsiveCard } from "../../components/ResponsiveUtils";
 import Statutory from "./Statutory";
 import LabourRegister from "./LabourRegister";
 import LeaveCompliance from "./LeaveCompliance";
@@ -11,31 +9,27 @@ import { hasPermission, isAdmin } from "../../utils/permissions";
 import api from "../../api";
 
 export default function ComplianceLayout() {
-  const location = useLocation();
-  
-  const canViewStatutory = isAdmin() || hasPermission('view_statutory_calculations');
-  const canViewLabour = isAdmin() || hasPermission('view_labour_register');
-  const canViewLeave = isAdmin() || hasPermission('view_leave_compliance');
-  const canViewNABH = isAdmin() || hasPermission('view_nabh_compliance');
+  const allTabs = [
+    { name: "Statutory Rules", permission: "view_statutory_calculations" },
+    { name: "Labour Register", permission: "view_labour_register" },
+    { name: "Leave Compliance", permission: "view_leave_compliance" },
+    { name: "NABH Compliance", permission: "view_nabh_compliance" }
+  ];
 
-  const tabs = [
-    canViewStatutory && "Statutory Rules",
-    canViewLabour && "Labour Register", 
-    canViewLeave && "Leave Compliance",
-    canViewNABH && "NABH Compliance"
-  ].filter(Boolean);
-  
-  const initialTab = location.state?.tab || "Statutory Rules";
-  const validInitialTab = tabs.includes(initialTab) ? initialTab : tabs[0];
-  const [tab, setTab] = useState(validInitialTab);
+  const tabs = allTabs.filter(tab => isAdmin() || hasPermission(tab.permission)).map(tab => tab.name);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [brandingColors, setBrandingColors] = useState({ primary: '#2862e9', secondary: '#474e71' });
 
-  // Fetch branding colors
   useEffect(() => {
     const fetchBrandingColors = async () => {
       try {
         const tenantCode = localStorage.getItem('tenant_code');
         if (tenantCode) {
           const response = await api.get(`/auth/branding/${tenantCode}`);
+          setBrandingColors({
+            primary: response.data.primary_color || '#2862e9',
+            secondary: response.data.secondary_color || '#474e71'
+          });
           document.documentElement.style.setProperty('--primary-color', response.data.primary_color || '#2862e9');
           document.documentElement.style.setProperty('--secondary-color', response.data.secondary_color || '#474e71');
         }
@@ -46,139 +40,133 @@ export default function ComplianceLayout() {
     fetchBrandingColors();
   }, []);
 
+  if (tabs.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+            <p className="text-gray-500">You don't have permission to access any compliance management features.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const renderTabContent = () => {
+    switch(activeTab) {
+      case "Statutory Rules":
+        return tabs.includes("Statutory Rules") ? <Statutory /> : null;
+      case "Labour Register":
+        return tabs.includes("Labour Register") ? <LabourRegister /> : null;
+      case "Leave Compliance":
+        return tabs.includes("Leave Compliance") ? <LeaveCompliance /> : null;
+      case "NABH Compliance":
+        return tabs.includes("NABH Compliance") ? <NABHCompliance /> : null;
+      default:
+        return tabs.includes(tabs[0]) ? <Statutory /> : null;
+    }
+  };
+
   return (
     <Layout>
-      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        <ResponsiveContainer>
-          {/* Header */}
-          <ResponsiveHeader
-            title="Compliance Management"
-            subtitle="Manage statutory compliance, labour laws, and regulatory requirements"
-            icon={Shield}
-            actions={
-              <div className="text-left lg:text-right">
-                  <div className="bg-gray-100 rounded-xl p-3 border border-black text-center">
-                    <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
-                      <span className="text-xs font-medium">Modules</span>
-                    </div>
-                    <p className="text-lg font-bold text-gray-900">{tabs.length}</p>
-                  </div>
+      <div className="p-6 space-y-6">
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <Shield className="h-5 w-5 sm:h-6 sm:w-6" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
               </div>
-            }
-          />
-
-          <ResponsiveCard>
-            {/* Tab Navigation */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
-              <span className="text-sm text-gray-600">Modules</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto scrollbar-hide border border-black" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                {tabs.map((tabName) => (
-                  <button
-                    key={tabName}
-                    onClick={() => setTab(tabName)}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
-                      tab === tabName 
-                        ? "bg-white text-gray-900 shadow-sm" 
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                    style={tab === tabName ? {
-                      backgroundColor: 'var(--primary-color, #2862e9)',
-                      color: 'white'
-                    } : {}}
-                    onMouseEnter={(e) => {
-                      if (tab !== tabName) {
-                        e.target.style.backgroundColor = 'var(--secondary-color, #474e71)';
-                        e.target.style.color = 'white';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (tab !== tabName) {
-                        e.target.style.backgroundColor = '';
-                        e.target.style.color = '';
-                      }
-                    }}
-                  >
-                    {tabName}
-                  </button>
-                ))}
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Compliance Management</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage statutory compliance, labour laws, and regulatory requirements</p>
+                <p className="text-gray-500 text-xs hidden sm:block">Statutory & Regulatory Compliance</p>
               </div>
             </div>
-            {/* Scroll indicator */}
-            <div className="flex justify-center mb-6">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+            <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">Modules</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900">{tabs.length}</p>
+              </div>
             </div>
+          </div>
+        </div>
 
-            {/* Tab Content */}
-            <div className="min-h-0">
-              {tab === "Statutory Rules" && canViewStatutory && (
-                <div>
-                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h2 className="text-base sm:text-lg font-medium text-gray-900">Statutory Rules</h2>
-                      <p className="text-xs sm:text-sm text-gray-600">Manage PF, ESI, Professional Tax, and TDS calculations</p>
-                    </div>
-                  </div>
-                  <Statutory />
+        {/* Compliance Management Section */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <Shield className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
                 </div>
-              )}
-              {tab === "Labour Register" && canViewLabour && (
-                <div>
-                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h2 className="text-base sm:text-lg font-medium text-gray-900">Labour Register</h2>
-                      <p className="text-xs sm:text-sm text-gray-600">Maintain employee records and labour law compliance</p>
-                    </div>
-                  </div>
-                  <LabourRegister />
-                </div>
-              )}
-              {tab === "Leave Compliance" && canViewLeave && (
-                <div>
-                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h2 className="text-base sm:text-lg font-medium text-gray-900">Leave Compliance</h2>
-                      <p className="text-xs sm:text-sm text-gray-600">Monitor leave policies and statutory leave requirements</p>
-                    </div>
-                  </div>
-                  <LeaveCompliance />
-                </div>
-              )}
-              {tab === "NABH Compliance" && canViewNABH && (
-                <div>
-                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h2 className="text-base sm:text-lg font-medium text-gray-900">NABH Compliance</h2>
-                      <p className="text-xs sm:text-sm text-gray-600">Ensure healthcare accreditation and quality standards</p>
-                    </div>
-                  </div>
-                  <NABHCompliance />
-                </div>
-              )}
+                <h3 className="text-lg font-semibold text-gray-900">Compliance Modules</h3>
+              </div>
             </div>
-          </ResponsiveCard>
-        </ResponsiveContainer>
+          </div>
+          
+          <div className="p-4 sm:p-5 space-y-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <span className="text-sm text-gray-600 whitespace-nowrap">Compliance Management</span>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border border-gray-200 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                  {tabs.map((tabName) => (
+                    <button
+                      key={tabName}
+                      onClick={() => setActiveTab(tabName)}
+                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
+                        activeTab === tabName 
+                          ? "bg-white text-gray-900 shadow-sm" 
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      style={{
+                        backgroundColor: activeTab === tabName ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'transparent',
+                        color: activeTab === tabName ? 'white' : '#6b7280'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (activeTab !== tabName) {
+                          e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                          e.target.style.color = 'white';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (activeTab !== tabName) {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#6b7280';
+                        }
+                      }}
+                    >
+                      {tabName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {renderTabContent()}
       </div>
     </Layout>
   );

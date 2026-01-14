@@ -339,7 +339,96 @@ export default function Statutory() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl shadow-sm border border-black p-6" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Records</p>
+              <p className="text-2xl font-bold text-gray-900">{calculations.length}</p>
+              <p className="text-gray-400 text-xs mt-1">Active records</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total PF</p>
+              <p className="text-2xl font-bold text-gray-900">₹{calculations.reduce((sum, c) => sum + (c.pf_amount || 0), 0).toFixed(0)}</p>
+              <p className="text-gray-400 text-xs mt-1">This period</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <DollarSign className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total ESI</p>
+              <p className="text-2xl font-bold text-gray-900">₹{calculations.reduce((sum, c) => sum + (c.esi_amount || 0), 0).toFixed(0)}</p>
+              <p className="text-gray-400 text-xs mt-1">This period</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Calculator className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Employees</p>
+              <p className="text-2xl font-bold text-gray-900">{new Set(calculations.map(c => c.employee_id)).size}</p>
+              <p className="text-gray-400 text-xs mt-1">Unique count</p>
+            </div>
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Users className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Form Section */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Calculator className="h-5 w-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Calculate Statutory Deductions</h2>
+              <p className="text-sm text-gray-600">Enter employee details to calculate PF, ESI, PT, and TDS</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6">
         {/* Statutory Rules Display */}
         {statutoryRules && (
           <div className="bg-blue-50 p-4 rounded-lg mb-6">
@@ -679,67 +768,94 @@ export default function Statutory() {
           </div>
         </form>
 
-        {/* Display existing calculations */}
-        {(calculations.length > 0 || deletedCalculations.length > 0) && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {showDeleted ? 'Deleted Statutory Deduction History' : 'Statutory Deduction History'}
-              </h3>
-              <div className="flex gap-2">
-                {canViewDeleted && (
-                  <button
-                    onClick={() => setShowDeleted(!showDeleted)}
-                    className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2 ${
-                      showDeleted 
-                        ? 'bg-gray-800 text-white border-black hover:bg-gray-900' 
-                        : 'bg-white text-gray-800 border-black hover:bg-gray-50'
-                    }`}
-                  >
-                    {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
-                    {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? calculations.length : deletedCalculations.length})
-                  </button>
-                )}
+        </div>
+      </div>
+
+      {/* Records Table */}
+      {(calculations.length > 0 || deletedCalculations.length > 0) && (
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <FileText className="h-5 w-5" style={{
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {showDeleted ? 'Deleted Records' : 'Statutory Deduction History'}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {(showDeleted ? deletedCalculations : calculations).length} records found
+                  </p>
+                </div>
               </div>
+              {canViewDeleted && (
+                <button
+                  onClick={() => setShowDeleted(!showDeleted)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors text-sm font-medium"
+                  style={{
+                    backgroundColor: showDeleted ? getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' : 'white',
+                    color: showDeleted ? 'white' : '#374151',
+                    borderColor: '#e5e7eb'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!showDeleted) {
+                      e.target.style.backgroundColor = '#f9fafb';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!showDeleted) {
+                      e.target.style.backgroundColor = 'white';
+                    }
+                  }}
+                >
+                  {showDeleted ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showDeleted ? 'Show Active' : 'Show Deleted'} ({showDeleted ? calculations.length : deletedCalculations.length})
+                </button>
+              )}
             </div>
-            <div className="overflow-x-auto">
+          </div>
               {/* Desktop Table View */}
-              <div className="hidden md:block">
-                <table className="w-full border border-black">
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Employee</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Basic Salary</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PF</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">ESI</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">PT</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Total</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Period</th>
-                      {showDeleted && <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Deleted At</th>}
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-black">Actions</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Basic Salary</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">PF</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">ESI</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">PT</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Total</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Period</th>
+                      {showDeleted && <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Deleted At</th>}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-black">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
-                      <tr key={index} className={`hover:bg-gray-50 border-b border-black ${showDeleted ? 'bg-red-50' : ''}`}>
-                        <td className="px-4 py-2 text-sm border-r border-black">
+                      <tr key={index} className={`hover:bg-gray-50 transition-colors duration-150 ${showDeleted ? 'bg-red-50' : ''}`}>
+                        <td className="px-4 py-3">
                           <div>
-                            <div className="font-medium">{calc.employee_name}</div>
-                            <div className="text-gray-500 text-xs">{calc.employee_id}</div>
+                            <div className="font-semibold text-gray-900">{calc.employee_name}</div>
+                            <div className="text-sm text-gray-600">{calc.employee_id}</div>
                           </div>
                         </td>
-                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.basic_salary}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pf_amount}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.esi_amount}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">₹{calc.pt_amount}</td>
-                        <td className="px-4 py-2 text-sm font-semibold border-r border-black">₹{calc.total_deductions}</td>
-                        <td className="px-4 py-2 text-sm border-r border-black">{calc.month}/{calc.year}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">₹{calc.basic_salary}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">₹{calc.pf_amount}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">₹{calc.esi_amount}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">₹{calc.pt_amount}</td>
+                        <td className="px-4 py-3 text-sm font-semibold text-gray-900">₹{calc.total_deductions}</td>
+                        <td className="px-4 py-3 text-sm text-gray-900">{calc.month}/{calc.year}</td>
                         {showDeleted && (
-                          <td className="px-4 py-2 text-sm border-r border-black">
+                          <td className="px-4 py-3 text-sm text-gray-900">
                             {calc.deleted_at ? new Date(calc.deleted_at).toLocaleDateString() : 'N/A'}
                           </td>
                         )}
-                        <td className="px-4 py-2 text-sm">
+                        <td className="px-4 py-3">
                           <div className="flex gap-2">
                             {showDeleted ? (
                               canRestore && (
@@ -784,7 +900,7 @@ export default function Statutory() {
               {/* Mobile Card View */}
               <div className="md:hidden">
                 {(showDeleted ? deletedCalculations : calculations).map((calc, index) => (
-                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 ${showDeleted ? 'bg-red-50' : ''}`}>
+                  <div key={index} className={`p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors ${showDeleted ? 'bg-red-50' : ''}`}>
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{calc.employee_name}</h4>
@@ -860,9 +976,7 @@ export default function Statutory() {
                 ))}
               </div>
             </div>
-          </div>
         )}
-      </div>
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );

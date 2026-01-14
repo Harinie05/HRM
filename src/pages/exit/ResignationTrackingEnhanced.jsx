@@ -186,89 +186,141 @@ const ResignationTracking = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Total Resignations</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Resignations</p>
+              <p className="text-2xl font-bold text-gray-900">{resignations.length}</p>
+              <p className="text-gray-400 text-xs mt-1">All cases</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <FileText className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">In Progress</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">In Progress</p>
+              <p className="text-2xl font-bold text-gray-900">{resignations.filter(r => calculateOverallStatus(r) === 'In Progress').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Active cases</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <Clock className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Clock className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Completed</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
+              <p className="text-2xl font-bold text-gray-900">{resignations.filter(r => calculateOverallStatus(r) === 'Completed').length}</p>
+              <p className="text-gray-400 text-xs mt-1">Closed cases</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <CheckCircle className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <CheckCircle className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-4 border border-black">
+        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Initiated</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Initiated</p>
+              <p className="text-2xl font-bold text-gray-900">{resignations.filter(r => calculateOverallStatus(r) === 'Initiated').length}</p>
+              <p className="text-gray-400 text-xs mt-1">New cases</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg border border-gray-300">
-              <Users className="h-5 w-5 text-gray-600" />
+            <div className="p-3 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <Users className="h-6 w-6" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="rounded-xl border border-black p-4" style={{ backgroundColor: 'var(--card-bg, #ffffff)' }}>
-        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-1">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
-              <input
-                type="text"
-                placeholder="Search by employee name, code, or reason..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-black rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full transition-all duration-200"
-              />
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <FileText className="h-5 w-5" style={{
+                  color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Resignation Management</h3>
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-black rounded-xl px-4 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
-            >
-              <option value="All">All Status</option>
-              <option value="Initiated">Initiated</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-            </select>
           </div>
-          {canApply && (
-            <button 
-              onClick={() => setShowApplyForm(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-700 border border-black transition-all duration-200"
-            >
-              <Plus className="w-4 h-4" />
-              Apply Resignation
-            </button>
-          )}
+        </div>
+        
+        <div className="p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-1">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <input
+                  type="text"
+                  placeholder="Search by employee name, code, or reason..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent w-full text-sm"
+                  style={{
+                    focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                  }}
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                style={{
+                  focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+              >
+                <option value="All">All Status</option>
+                <option value="Initiated">Initiated</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            {canApply && (
+              <button 
+                onClick={() => setShowApplyForm(true)}
+                className="inline-flex items-center justify-center gap-2 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+                style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5';
+                }}
+              >
+                <Plus className="w-4 h-4" />
+                Apply Resignation
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -362,26 +414,37 @@ const ResignationTracking = () => {
       )}
 
       {/* Resignations Table */}
-      <div className="bg-white rounded-xl border border-black overflow-hidden">
-        <div className="p-4 border-b border-black bg-gray-50">
-          <h2 className="text-lg font-bold text-gray-900">Resignation List ({filteredResignations.length})</h2>
-          <p className="text-sm text-gray-600 mt-1">Track and manage employee resignations</p>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg" style={{
+              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
+              <FileText className="h-5 w-5" style={{
+                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Resignation List</h2>
+              <p className="text-sm text-gray-600">{filteredResignations.length} resignations found</p>
+            </div>
+          </div>
         </div>
         
         {/* Desktop Table View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full border-collapse">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Employee</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Last Working Day</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Notice Period</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Overall Status</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Reason</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b border-black">Actions</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Employee</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Last Working Day</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Notice Period</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Overall Status</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Reason</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-black">
+            <tbody className="bg-white divide-y divide-gray-200">
               {filteredResignations.map((resignation) => {
                 const overallStatus = calculateOverallStatus(resignation);
                 return (
@@ -402,10 +465,10 @@ const ResignationTracking = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-lg text-xs font-medium border border-black ${getStatusColor(overallStatus)}`}>
+                      <span className={`px-3 py-1 rounded-lg text-xs font-medium ${getStatusColor(overallStatus)}`}>
                         {overallStatus}
                       </span>
-                      <div className="text-xs text-gray-600 mt-1 space-y-1">
+                      <div className="text-xs text-gray-500 mt-1 space-y-1">
                         <div>H: {resignation.handover_status || 'Pending'}</div>
                         <div>C: {resignation.clearance_status || 'Pending'}</div>
                       </div>
@@ -422,7 +485,10 @@ const ResignationTracking = () => {
                         {canManageHandover && (
                           <select 
                             onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                             value={resignation.handover_status || 'Pending'}
                           >
                             <option value="Pending">Handover Pending</option>
@@ -434,7 +500,10 @@ const ResignationTracking = () => {
                         {canManageClearance && (
                           <select 
                             onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                             value={resignation.clearance_status || 'Pending'}
                           >
                             <option value="Pending">Clearance Pending</option>
@@ -446,7 +515,10 @@ const ResignationTracking = () => {
                         {canManageAssets && (
                           <select 
                             onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                             value={resignation.asset_return_status || 'Pending'}
                           >
                             <option value="Pending">Assets Pending</option>
@@ -457,7 +529,10 @@ const ResignationTracking = () => {
                         {canManageSettlement && (
                           <select 
                             onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                            className="border border-black rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200"
+                            className="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            style={{
+                              focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                             value={resignation.final_settlement_status || 'Pending'}
                           >
                             <option value="Pending">Settlement Pending</option>
@@ -482,7 +557,7 @@ const ResignationTracking = () => {
           {filteredResignations.map((resignation) => {
             const overallStatus = calculateOverallStatus(resignation);
             return (
-              <div key={resignation.id} className="p-4 border-b border-black last:border-b-0">
+              <div key={resignation.id} className="p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors">
                 <div className="space-y-3">
                   {/* Employee Info */}
                   <div className="flex justify-between items-start">
@@ -490,7 +565,7 @@ const ResignationTracking = () => {
                       <h3 className="font-semibold text-gray-900">{resignation.employee_name}</h3>
                       <p className="text-sm text-gray-600">{resignation.employee_code}</p>
                     </div>
-                    <span className={`px-2 py-1 rounded-lg text-xs font-medium border border-black ${getStatusColor(overallStatus)}`}>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-medium ${getStatusColor(overallStatus)}`}>
                       {overallStatus}
                     </span>
                   </div>
@@ -539,11 +614,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Handover Status</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
-                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           value={resignation.handover_status || 'Pending'}
-                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
-                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Handover Pending</option>
                           <option value="In Progress">Handover In Progress</option>
@@ -557,11 +632,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Clearance Status</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
-                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           value={resignation.clearance_status || 'Pending'}
-                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
-                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Clearance Pending</option>
                           <option value="In Progress">Clearance In Progress</option>
@@ -575,11 +650,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Asset Return</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
-                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           value={resignation.asset_return_status || 'Pending'}
-                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
-                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Assets Pending</option>
                           <option value="Completed">Assets Returned</option>
@@ -592,11 +667,11 @@ const ResignationTracking = () => {
                         <label className="block text-xs text-gray-600 mb-1">Final Settlement</label>
                         <select 
                           onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          style={{ borderColor: 'var(--primary-color, #2862e9)' }}
-                          className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          style={{
+                            focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                          }}
                           value={resignation.final_settlement_status || 'Pending'}
-                          onFocus={(e) => e.target.style.borderColor = 'var(--secondary-color, #474e71)'}
-                          onBlur={(e) => e.target.style.borderColor = 'var(--primary-color, #2862e9)'}
                         >
                           <option value="Pending">Settlement Pending</option>
                           <option value="Completed">Settlement Done</option>
@@ -617,14 +692,14 @@ const ResignationTracking = () => {
         </div>
           
         {filteredResignations.length === 0 && (
-          <div className="text-center py-12">
-            <div className=" mb-4" style={{color: 'var(--text-muted, #6b7280)'}}>
-              <FileText className="w-12 h-12 mx-auto" />
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-primary mb-2">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               {statusFilter !== 'All' || searchTerm ? 'No resignations match your filters' : 'No resignations found'}
             </h3>
-            <p className="" style={{color: 'var(--text-muted, #6b7280)'}}>
+            <p className="text-gray-500 text-sm">
               {statusFilter !== 'All' || searchTerm ? 'Try adjusting your search criteria' : 'Start by applying a resignation'}
             </p>
           </div>

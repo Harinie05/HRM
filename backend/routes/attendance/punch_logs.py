@@ -165,12 +165,7 @@ def create_punch(
                     setattr(yesterday_punch, 'status', 'Auto Checkout')
                     db.commit()
             
-            # Return alert for missed checkout
-            return {
-                "alert": "missed_checkout",
-                "message": "You haven't checked out yesterday. It has been automatically processed. Please apply for regularization if needed.",
-                "yesterday_date": yesterday
-            }
+            # Continue to create today's punch record (don't return here)
         
         # Normal punch processing
         if existing_punch:
