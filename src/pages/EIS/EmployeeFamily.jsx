@@ -125,9 +125,14 @@ export default function EmployeeFamily() {
     <Layout>
       {/* Hero Header matching Department */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 border relative overflow-hidden" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0" style={{
@@ -186,7 +191,14 @@ export default function EmployeeFamily() {
         </div>
 
         {/* Family Table */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
@@ -360,7 +372,9 @@ export default function EmployeeFamily() {
 
         {showForm && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl border border-black shadow-2xl p-6 w-full max-w-md">
+            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md border" style={{
+              borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+            }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-gray-100 border border-black rounded-xl flex items-center justify-center">
                   <FiUsers className="text-black w-5 h-5" />
@@ -373,8 +387,12 @@ export default function EmployeeFamily() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Enter full name"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -383,8 +401,12 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Relationship *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                  <select
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     value={form.relationship}
                     onChange={(e) => setForm({ ...form, relationship: e.target.value })}
                   >
@@ -402,9 +424,13 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="number"
-                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Age"
                     value={form.age}
                     onChange={(e) => setForm({ ...form, age: e.target.value })}
@@ -413,8 +439,12 @@ export default function EmployeeFamily() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-2 border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Phone number"
                     value={form.contact}
                     onChange={(e) => setForm({ ...form, contact: e.target.value })}
@@ -422,12 +452,15 @@ export default function EmployeeFamily() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="checkbox"
                     id="dependent"
                     checked={form.dependent}
                     onChange={(e) => setForm({ ...form, dependent: e.target.checked })}
-                    className="rounded border border-black text-gray-600 focus:ring-gray-500"
+                    className="rounded text-gray-600 focus:ring-gray-500"
+                    style={{
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   />
                   <label htmlFor="dependent" className="text-sm text-gray-600">
                     Is this person a dependent?
@@ -438,7 +471,10 @@ export default function EmployeeFamily() {
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t-0">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 text-gray-700 bg-gray-100 border border-black rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors font-medium border"
+                  style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}40`
+                  }}
                 >
                   Cancel
                 </button>
@@ -466,4 +502,14 @@ export default function EmployeeFamily() {
     </Layout>
   );
 }
+
+<style jsx>{`
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
 

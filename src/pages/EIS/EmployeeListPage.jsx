@@ -327,11 +327,18 @@ export default function EmployeeListPage() {
 
   return (
     <Layout>
+      <div className="overflow-x-hidden">
       {/* Hero Section */}
       <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-8" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-8 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 min-w-0 flex-1">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mx-auto sm:mx-0 flex-shrink-0" style={{
@@ -356,12 +363,21 @@ export default function EmployeeListPage() {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </div>
 
       <div className="p-4 sm:p-6">
         {/* Search and Actions */}
-        <div className="bg-white rounded-xl border-0 shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 mb-6 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="flex items-center gap-4 mb-4">
             <div className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 text-sm text-gray-600 border-0">
               Total: {employees.length}
@@ -418,10 +434,19 @@ export default function EmployeeListPage() {
               )}
             </div>
           </div>
+          </div>
         </div>
 
         {/* Employee Cards */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto" style={{
             scrollbarWidth: 'none',
@@ -528,7 +553,15 @@ export default function EmployeeListPage() {
           <div className="md:hidden p-4">
             <div className="space-y-4">
               {employees.map((employee) => (
-                <div key={employee.id} className="bg-white border-0 rounded-xl p-4 shadow-sm">
+                <div key={employee.id} className="bg-white rounded-xl p-4 shadow-sm relative overflow-hidden" style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
+                  <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                    transform: 'translate(30%, -30%)'
+                  }}></div>
+                  <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
@@ -586,6 +619,7 @@ export default function EmployeeListPage() {
                       </button>
                     )}
                   </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -598,6 +632,7 @@ export default function EmployeeListPage() {
               <p className="text-gray-500">Get started by creating your first employee profile.</p>
             </div>
           )}
+          </div>
         </div>
       </div>
 
@@ -615,10 +650,14 @@ export default function EmployeeListPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.selectedDepartment}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedDepartment: e.target.value, selectedRole: '', selectedUser: '' }))}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                 >
                   <option value="">Select Department</option>
                   {departments.map((dept) => (
@@ -629,10 +668,14 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.selectedRole}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedRole: e.target.value, selectedUser: '' }))}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                 >
                   <option value="">Select Role</option>
                   {roles.map((role) => (
@@ -643,10 +686,14 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">User</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={formData.selectedUser}
                   onChange={(e) => setFormData(prev => ({ ...prev, selectedUser: e.target.value }))}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                 >
                   <option value="">Select User</option>
                   {getFilteredUsers().map((user) => (
@@ -658,11 +705,15 @@ export default function EmployeeListPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee Code</label>
                 <div className="flex gap-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="text"
                     value={formData.employeeCode}
                     onChange={(e) => setFormData(prev => ({ ...prev, employeeCode: e.target.value }))}
-                    className="flex-1 px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="flex-1 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                     placeholder="Enter manually or click Generate"
                   />
                   <button
@@ -677,22 +728,30 @@ export default function EmployeeListPage() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Designation</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   value={formData.designation}
                   onChange={(e) => setFormData(prev => ({ ...prev, designation: e.target.value }))}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                   placeholder="Enter designation"
                 />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="date"
                   value={formData.joiningDate}
                   onChange={(e) => setFormData(prev => ({ ...prev, joiningDate: e.target.value }))}
-                  className="w-full px-4 py-3 bg-white border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                 />
               </div>
             </div>
@@ -730,10 +789,22 @@ export default function EmployeeListPage() {
       )}
       
       <Toast toast={toast} hideToast={hideToast} />
+      </div>
     </Layout>
   );
 }
+
+
+
+
 <style jsx>{`
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
   .overflow-x-auto::-webkit-scrollbar {
     display: none;
   }

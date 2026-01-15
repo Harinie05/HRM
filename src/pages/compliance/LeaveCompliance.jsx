@@ -352,7 +352,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Employee ID <span className="text-red-500">*</span>
             </label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_id"
               value={form.employee_id}
@@ -373,7 +373,7 @@ export default function LeaveCompliance() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees && employees.length > 0 ? (
@@ -393,7 +393,7 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Employee Name <span className="text-red-500">*</span>
             </label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_name"
               value={form.employee_name}
@@ -414,7 +414,7 @@ export default function LeaveCompliance() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees && employees.length > 0 ? (
@@ -434,13 +434,13 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Total Working Days <span className="text-red-500">*</span>
             </label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               required
               name="total_working_days"
               value={form.total_working_days}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Total Working Days"
               min="0"
               max="31"
@@ -452,13 +452,13 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Actual Working Days <span className="text-red-500">*</span>
             </label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               required
               name="actual_working_days"
               value={form.actual_working_days}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Actual Working Days"
               min="0"
               max="31"
@@ -470,13 +470,13 @@ export default function LeaveCompliance() {
             <label className="block text-sm font-medium mb-1">
               Total Leaves Taken <span className="text-red-500">*</span>
             </label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               required
               name="leaves_taken"
               value={form.leaves_taken}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Total Leaves Taken"
               min="0"
             />
@@ -485,12 +485,12 @@ export default function LeaveCompliance() {
           {/* Paid Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Paid Leaves</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="paid_leaves"
               value={form.paid_leaves}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Paid Leaves"
               min="0"
             />
@@ -499,12 +499,12 @@ export default function LeaveCompliance() {
           {/* Unpaid Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Unpaid Leaves</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="unpaid_leaves"
               value={form.unpaid_leaves}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Unpaid Leaves"
               min="0"
             />
@@ -513,12 +513,12 @@ export default function LeaveCompliance() {
           {/* Sick Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Sick Leaves</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="sick_leaves"
               value={form.sick_leaves}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Sick Leaves"
               min="0"
             />
@@ -527,12 +527,12 @@ export default function LeaveCompliance() {
           {/* Casual Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Casual Leaves</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="casual_leaves"
               value={form.casual_leaves}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Casual Leaves"
               min="0"
             />
@@ -541,12 +541,12 @@ export default function LeaveCompliance() {
           {/* Earned Leaves */}
           <div>
             <label className="block text-sm font-medium mb-1">Earned Leaves</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="earned_leaves"
               value={form.earned_leaves}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Earned Leaves"
               min="0"
             />
@@ -555,12 +555,12 @@ export default function LeaveCompliance() {
           {/* Overtime Hours */}
           <div>
             <label className="block text-sm font-medium mb-1">Overtime Hours</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="overtime_hours"
               value={form.overtime_hours}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Overtime Hours"
               min="0"
               step="0.5"
@@ -570,11 +570,11 @@ export default function LeaveCompliance() {
           {/* Month */}
           <div>
             <label className="block text-sm font-medium mb-1">Month</label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="month"
               value={form.month}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Month</option>
               <option value="01">January</option>
@@ -595,12 +595,12 @@ export default function LeaveCompliance() {
           {/* Year */}
           <div>
             <label className="block text-sm font-medium mb-1">Year</label>
-            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               type="number"
               name="year"
               value={form.year}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter Year"
               min="2020"
               max="2030"
@@ -610,11 +610,11 @@ export default function LeaveCompliance() {
           {/* Remarks */}
           <div className="col-span-2">
             <label className="block text-sm font-medium mb-1">Remarks</label>
-            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               name="remarks"
               value={form.remarks}
               onChange={handleChange}
-              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
               placeholder="Enter any compliance notes or remarks"
             />
           </div>
@@ -842,5 +842,7 @@ export default function LeaveCompliance() {
     </div>
   );
 }
+
+
 
 

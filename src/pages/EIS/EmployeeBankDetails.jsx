@@ -93,9 +93,14 @@ export default function EmployeeBankDetails() {
     <Layout>
       {/* Hero Header matching EmployeeEducation */}
       <div className="p-6 space-y-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-6 border relative overflow-hidden" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0" style={{
@@ -135,8 +140,15 @@ export default function EmployeeBankDetails() {
             Back to Profile
           </button>
         </div>
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
-          <div className="p-6">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-6 relative z-10">
 
           <div className="space-y-6">
             {/* Bank Information */}
@@ -152,8 +164,12 @@ export default function EmployeeBankDetails() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Bank Name *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="e.g., State Bank of India"
                     value={form.bank_name}
                     onChange={(e) => setForm({ ...form, bank_name: e.target.value })}
@@ -161,8 +177,12 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Branch Name *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Branch location"
                     value={form.branch_name}
                     onChange={(e) => setForm({ ...form, branch_name: e.target.value })}
@@ -184,8 +204,12 @@ export default function EmployeeBankDetails() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Holder Name *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Full name as per bank records"
                     value={form.account_holder_name}
                     onChange={(e) => setForm({ ...form, account_holder_name: e.target.value })}
@@ -193,8 +217,12 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Type</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <select
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     value={form.account_type}
                     onChange={(e) => setForm({ ...form, account_type: e.target.value })}
                   >
@@ -205,8 +233,12 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">Account Number *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="Bank account number"
                     value={form.account_number}
                     onChange={(e) => setForm({ ...form, account_number: e.target.value })}
@@ -214,8 +246,12 @@ export default function EmployeeBankDetails() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">IFSC Code *</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors"
+                  <input
+                    className="w-full px-4 py-3 bg-white rounded-xl focus:outline-none focus:ring-2 transition-colors"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                     placeholder="e.g., SBIN0001234"
                     value={form.ifsc_code}
                     onChange={(e) => setForm({ ...form, ifsc_code: e.target.value.toUpperCase() })}
@@ -226,7 +262,14 @@ export default function EmployeeBankDetails() {
 
             {/* Summary */}
             {form.bank_name && form.account_number && (
-              <div className="bg-gray-50 rounded-lg p-4 border-0">
+              <div className="bg-gray-50 rounded-lg p-4 border relative overflow-hidden" style={{
+                background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+                borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+              }}>
+                <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-gray-900">Bank Details Summary</h4>
                   {bankData?.verification_status && (
@@ -242,7 +285,7 @@ export default function EmployeeBankDetails() {
                     </div>
                   )}
                 </div>
-                <div className="text-sm text-gray-800 space-y-1">
+                <div className="text-sm text-gray-800 space-y-1 relative z-10">
                   <p><span className="font-medium">Bank:</span> {form.bank_name}</p>
                   <p><span className="font-medium">Account:</span> {form.account_number}</p>
                   <p><span className="font-medium">IFSC:</span> {form.ifsc_code}</p>
@@ -331,3 +374,13 @@ export default function EmployeeBankDetails() {
     </Layout>
   );
 }
+
+<style jsx>{`
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>

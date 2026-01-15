@@ -130,24 +130,22 @@ export default function StatutoryRules() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee PF %</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   step="0.01"
                   value={form.pf_percent}
                   onChange={(e) => setForm({ ...form, pf_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Apply on</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select
                   value={form.pf_apply_on}
                   onChange={(e) => setForm({ ...form, pf_apply_on: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 >
                   <option value="Basic">Basic Salary</option>
                   <option value="Gross">Gross Salary</option>
@@ -173,26 +171,24 @@ export default function StatutoryRules() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-8 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Threshold Amount (₹)</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   value={form.esi_threshold}
                   onChange={(e) => setForm({ ...form, esi_threshold: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 />
                 <p className="text-xs text-gray-500 mt-1.5">Salary &gt; threshold → ESI auto = 0</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Employee ESI %</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   step="0.01"
                   value={form.esi_percent}
                   onChange={(e) => setForm({ ...form, esi_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 />
               </div>
             </div>
@@ -215,13 +211,12 @@ export default function StatutoryRules() {
             <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Monthly PT Amount (₹)</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   value={form.pt_amount}
                   onChange={(e) => setForm({ ...form, pt_amount: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 />
               </div>
             </div>
@@ -244,14 +239,13 @@ export default function StatutoryRules() {
             <div className="ml-8 mt-4">
               <div className="w-full sm:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">TDS Flat % (for test)</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="number"
                   step="0.01"
                   value={form.tds_percent}
                   onChange={(e) => setForm({ ...form, tds_percent: e.target.value })}
-                  className="w-full px-4 py-2.5 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white hover:border-gray-300 transition-colors"
-                  onFocus={(e) => e.target.style.borderColor = colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = ''}
+                  className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-sm bg-white transition-colors"
+                  style={{ borderColor: colors.primary }}
                 />
               </div>
             </div>

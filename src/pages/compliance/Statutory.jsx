@@ -448,7 +448,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Employee ID <span className="text-red-500">*</span>
             </label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_id"
               value={form.employee_id}
@@ -469,7 +469,7 @@ export default function Statutory() {
                   setForm({ ...form, employee_id: selectedId });
                 }
               }}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee ID</option>
               {employees && employees.length > 0 ? (
@@ -489,7 +489,7 @@ export default function Statutory() {
             <label className="block text-sm font-medium mb-1">
               Employee Name <span className="text-red-500">*</span>
             </label>
-            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
               required
               name="employee_name"
               value={form.employee_name}
@@ -510,7 +510,7 @@ export default function Statutory() {
                   setForm({ ...form, employee_name: selectedName });
                 }
               }}
-              className="w-full border border-black rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Employee Name</option>
               {employees && employees.length > 0 ? (
@@ -981,4 +981,6 @@ export default function Statutory() {
     </div>
   );
 }
+
+
 

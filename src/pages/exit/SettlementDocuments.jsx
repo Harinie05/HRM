@@ -411,64 +411,21 @@ export default function SettlementDocuments() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Hero Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
-      }}>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{
-            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-          }}>
-            <DollarSign className="h-5 w-5 sm:h-6 sm:w-6" style={{
-              color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-            }} />
-          </div>
-          <div>
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Settlement & Documents</h1>
-            <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage F&F settlements & experience letters</p>
-            <p className="text-gray-500 text-xs hidden sm:block">Exit Management</p>
-          </div>
-        </div>
-      </div>
-
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Ready for Settlement</p>
-              <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
-              <p className="text-gray-400 text-xs mt-1">Interviews completed</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <CheckCircle className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Settlements Completed</p>
-              <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.final_settlement_status === 'Completed').length}</p>
-              <p className="text-gray-400 text-xs mt-1">Processed</p>
-            </div>
-            <div className="p-3 rounded-lg" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <DollarSign className="h-6 w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Settlements</p>
               <p className="text-2xl font-bold text-gray-900">{exits.filter(e => (e.final_settlement_status || 'Pending') === 'Pending').length}</p>
@@ -484,8 +441,19 @@ export default function SettlementDocuments() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Fully Processed</p>
               <p className="text-2xl font-bold text-gray-900">
@@ -512,7 +480,18 @@ export default function SettlementDocuments() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           <div className="p-5 border-b-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
@@ -568,7 +547,18 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Settlement Details */}
-        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
+        <div className="bg-white rounded-xl border shadow-sm p-4 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {selectedExit ? (
             <>
               <div className="flex justify-between items-center gap-3 mb-4">
@@ -589,7 +579,9 @@ export default function SettlementDocuments() {
               {settlement ? (
                 <div className="space-y-4">
                   {/* Settlement Breakdown */}
-                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-xl border-0 shadow-sm">
+                  <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 rounded-xl border shadow-sm" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <h4 className="font-semibold mb-4 text-gray-900 text-base flex items-center gap-2">
                       <DollarSign className="h-5 w-5" style={{
                         color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
@@ -679,7 +671,9 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Payment Status */}
-                  <div className="p-4 border-0 rounded-xl bg-white shadow-sm">
+                  <div className="p-4 border rounded-xl bg-white shadow-sm" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="flex justify-between items-center mb-3">
                       <span className="font-semibold text-gray-900 text-base">Payment Status:</span>
                       <span className={`px-3 py-1.5 text-sm font-medium rounded-lg ${
@@ -705,7 +699,9 @@ export default function SettlementDocuments() {
                   </div>
 
                   {/* Settlement Details */}
-                  <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-3 rounded-lg border-0">
+                  <div className="text-sm text-gray-600 space-y-2 bg-gray-50 p-3 rounded-lg border" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div><strong>Calculated On:</strong> {settlement.calculated_on}</div>
                     <div><strong>Calculated By:</strong> {settlement.calculated_by}</div>
                     <div><strong>Payment Mode:</strong> {settlement.payment_mode}</div>
@@ -731,7 +727,18 @@ export default function SettlementDocuments() {
         </div>
 
         {/* Experience Letter */}
-        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
+        <div className="bg-white rounded-xl border shadow-sm p-4 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {selectedExit ? (
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-3 sm:mb-4">
@@ -765,98 +772,140 @@ export default function SettlementDocuments() {
                 <div className="space-y-3 sm:space-y-4">
                   {/* Editable Form or Letter Preview */}
                   {isEditingLetter ? (
-                    <div className="bg-gray-50 p-4 rounded-xl space-y-3 border-0 shadow-sm">
+                    <div className="bg-gray-50 p-4 rounded-xl space-y-3 border shadow-sm" style={{
+                      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                    }}>
                       <h4 className="font-semibold mb-3 text-base">Edit Experience Letter Details</h4>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Name</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.employee_name}
                             onChange={(e) => updateLetterField('employee_name', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Employee Code</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.employee_code}
                             onChange={(e) => updateLetterField('employee_code', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Company Name</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.company_name}
                             onChange={(e) => updateLetterField('company_name', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Designation</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.designation}
                             onChange={(e) => updateLetterField('designation', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Department</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.department}
                             onChange={(e) => updateLetterField('department', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Joining Date</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="date"
                             value={experienceLetter.joining_date}
                             onChange={(e) => updateLetterField('joining_date', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Last Working Day</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="date"
                             value={experienceLetter.last_working_day}
                             onChange={(e) => updateLetterField('last_working_day', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Place</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.place || 'Bangalore'}
                             onChange={(e) => updateLetterField('place', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Issued By</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.issued_by}
                             onChange={(e) => updateLetterField('issued_by', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-medium mb-1">Authorized Signatory</label>
-                          <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                          <input
                             type="text"
                             value={experienceLetter.authorized_signatory || 'HR Manager'}
                             onChange={(e) => updateLetterField('authorized_signatory', e.target.value)}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                            className="w-full border rounded px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:border-transparent"
+                            style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                            }}
                           />
                         </div>
                       </div>
@@ -907,7 +956,9 @@ export default function SettlementDocuments() {
                   )}
 
                   {/* Letter Status */}
-                  <div className="p-3 sm:p-4 border border-gray-300 rounded-lg">
+                  <div className="p-3 sm:p-4 border rounded-lg" style={{
+                    borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                  }}>
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
                       <span className="font-medium text-sm sm:text-base">Status:</span>
                       <span className={`px-2 py-1 text-xs rounded-full self-start sm:self-auto ${
@@ -962,4 +1013,5 @@ export default function SettlementDocuments() {
     </div>
   );
 }
+
 

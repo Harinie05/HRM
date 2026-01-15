@@ -129,7 +129,14 @@ const EmployeeProbation = ({ employeeId, employee }) => {
   const daysRemaining = getDaysRemaining();
 
   return (
-    <div className="bg-white p-4 rounded-xl border-0 shadow-sm">
+    <div className="bg-white p-4 rounded-xl shadow-sm border relative" style={{
+      background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+      borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+    }}>
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+        transform: 'translate(30%, -30%)'
+      }}></div>
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-base font-semibold text-gray-900">Probation Period</h3>
         {!probation && (isAdmin() || hasPermission("add_probation")) && (
@@ -242,21 +249,29 @@ const EmployeeProbation = ({ employeeId, employee }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date of Joining *</label>
-              <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <input
                 type="date"
                 required
                 value={formData.date_of_joining}
                 onChange={(e) => setFormData({ ...formData, date_of_joining: e.target.value })}
-                className="w-full p-2 border border-black rounded-md"
+                className="w-full p-2 rounded-md"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Probation Period *</label>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select
                 required
                 value={formData.probation_months}
                 onChange={(e) => setFormData({ ...formData, probation_months: parseInt(e.target.value) })}
-                className="w-full p-2 border border-black rounded-md"
+                className="w-full p-2 rounded-md"
+                style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                }}
               >
                 <option value={3}>3 Months</option>
                 <option value={6}>6 Months</option>
@@ -266,11 +281,15 @@ const EmployeeProbation = ({ employeeId, employee }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-            <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+            <textarea
               value={formData.remarks}
               onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
               rows={3}
-              className="w-full p-2 border border-black rounded-md"
+              className="w-full p-2 rounded-md"
+              style={{
+                backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+              }}
             />
           </div>
           <div className="flex gap-2">
@@ -317,16 +336,22 @@ const EmployeeProbation = ({ employeeId, employee }) => {
       {/* Extend Probation Modal */}
       {showExtendModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl border-0 shadow-sm w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-sm w-full max-w-md border" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 border-b-2 border-black pb-3">Extend Probation Period</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2">Extension Period *</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={extensionMonths}
                     onChange={(e) => setExtensionMonths(parseInt(e.target.value))}
-                    className="w-full border-2 border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`
+                    }}
                   >
                     <option value={1}>1 Month</option>
                     <option value={2}>2 Months</option>
@@ -368,6 +393,16 @@ const EmployeeProbation = ({ employeeId, employee }) => {
       <Toast toast={toast} hideToast={hideToast} />
     </div>
   );
-};
+}
+
+<style jsx>{`
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>;
 
 export default EmployeeProbation;

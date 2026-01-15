@@ -193,9 +193,15 @@ export default function EmployeeProfile() {
     <Layout>
       {/* Hero Section */}
       <div className="mb-4 p-4 sm:p-6">
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-8" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl shadow-sm p-4 sm:p-8 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 min-w-0 flex-1">
               <div 
@@ -241,12 +247,21 @@ export default function EmployeeProfile() {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </div>
 
       <div className="p-4 sm:p-6 space-y-6">
         {/* Action Buttons */}
-        <div className="bg-white rounded-xl border-0 shadow-sm p-4">
+        <div className="bg-white rounded-xl shadow-sm p-4 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="flex items-center justify-center sm:justify-end gap-3">
             {(isAdmin() || hasPermission("edit_profile")) && (
               <button
@@ -278,10 +293,19 @@ export default function EmployeeProfile() {
               </Link>
             )}
           </div>
+          </div>
         </div>
 
         {/* Employment Details */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b-0 flex items-center px-6">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -341,13 +365,22 @@ export default function EmployeeProfile() {
               </div>
             </div>
           </div>
+          </div>
         </div>
 
         {/* Probation Tracking */}
         <EmployeeProbation employeeId={employee.application_id.toString().replace('user_', '')} employee={employee} />
 
         {/* Employee Information Modules */}
-        <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="relative z-10">
           <div className="h-16 bg-gradient-to-r from-indigo-50 to-blue-50 border-b-0 flex items-center px-6">
             <div className="p-2 rounded-lg" style={{
               backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -362,8 +395,17 @@ export default function EmployeeProfile() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               <Link
                 to={`/eis/${employee.application_id}/education`}
-                className="group p-4 sm:p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-4 sm:p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -373,12 +415,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Education</div>
                 <div className="text-xs text-gray-600">Academic Details</div>
+                </div>
               </Link>
             
               <Link
                 to={`/eis/${employee.application_id}/experience`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -388,12 +440,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Experience</div>
                 <div className="text-xs text-gray-600">Work History</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/skills`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -403,12 +465,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Skills</div>
                 <div className="text-xs text-gray-600">Technical Skills</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/certifications`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -418,12 +490,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Certifications</div>
                 <div className="text-xs text-gray-600">Professional Certs</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/family`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -433,12 +515,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Family</div>
                 <div className="text-xs text-gray-600">Family Details</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/medical`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -448,12 +540,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Medical</div>
                 <div className="text-xs text-gray-600">Health Records</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/id-docs`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -463,12 +565,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">ID Documents</div>
                 <div className="text-xs text-gray-600">Identity Docs</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/salary`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -478,12 +590,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Salary</div>
                 <div className="text-xs text-gray-600">Compensation</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/bank-details`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -493,12 +615,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Bank Details</div>
                 <div className="text-xs text-gray-600">Banking Info</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/reporting`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -508,12 +640,22 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Reporting</div>
                 <div className="text-xs text-gray-600">Manager & Hierarchy</div>
+                </div>
               </Link>
               
               <Link
                 to={`/eis/${employee.application_id}/exit`}
-                className="group p-6 border-0 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50"
+                className="group p-6 rounded-xl hover:shadow-lg transition-all duration-300 text-center bg-white hover:bg-gray-50 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+                  border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}
               >
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+                  backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+                  transform: 'translate(30%, -30%)'
+                }}></div>
+                <div className="relative z-10">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors" style={{
                   backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
                 }}>
@@ -523,8 +665,10 @@ export default function EmployeeProfile() {
                 </div>
                 <div className="font-semibold text-gray-900 mb-1">Exit</div>
                 <div className="text-xs text-gray-600">Exit Process</div>
+                </div>
               </Link>
             </div>
+          </div>
           </div>
         </div>
 
@@ -546,42 +690,58 @@ export default function EmployeeProfile() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Location</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="text"
                     value={editForm.work_location}
                     onChange={(e) => setEditForm({...editForm, work_location: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                     placeholder="Enter work location"
                   />
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Reporting Manager</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="text"
                     value={editForm.reporting_manager}
                     onChange={(e) => setEditForm({...editForm, reporting_manager: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                     placeholder="Enter reporting manager"
                   />
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Joining Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="date"
                     value={editForm.joining_date}
                     onChange={(e) => setEditForm({...editForm, joining_date: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                   />
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Work Shift</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={editForm.work_shift}
                     onChange={(e) => setEditForm({...editForm, work_shift: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                   >
                     <option value="General">General</option>
                     <option value="Morning">Morning</option>
@@ -593,10 +753,14 @@ export default function EmployeeProfile() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Probation Period</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <select
                     value={editForm.probation_period}
                     onChange={(e) => setEditForm({...editForm, probation_period: e.target.value})}
-                    className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                      border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                    }}
                   >
                     <option value="1 Month">1 Month</option>
                     <option value="2 Months">2 Months</option>
@@ -714,7 +878,7 @@ export default function EmployeeProfile() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select Photo
                 </label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                <input
                   type="file" 
                   accept="image/*"
                   onChange={(e) => {
@@ -724,7 +888,11 @@ export default function EmployeeProfile() {
                       setPreviewUrl(URL.createObjectURL(file));
                     }
                   }}
-                  className="w-full px-4 py-3 bg-white border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10`,
+                    border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}`
+                  }}
                 />
               </div>
               
@@ -795,4 +963,14 @@ export default function EmployeeProfile() {
     </Layout>
   );
 }
+
+<style jsx>{`
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
 

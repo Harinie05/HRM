@@ -210,32 +210,21 @@ export default function ClearanceWorkflow() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Hero Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-        background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
-      }}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
-              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
-            }}>
-              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6" style={{
-                color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
-              }} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 truncate">Clearance Workflow</h1>
-              <p className="text-gray-600 text-xs sm:text-sm mb-1">Manage department clearances & exit interviews</p>
-              <p className="text-gray-500 text-xs hidden sm:block">Exit Management</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Approved Resignations</p>
               <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
@@ -251,8 +240,19 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Pending Clearance</p>
               <p className="text-2xl font-bold text-gray-900">{exits.length}</p>
@@ -268,8 +268,19 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Clearance Completed</p>
               <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.clearance_status === 'Completed').length}</p>
@@ -285,8 +296,19 @@ export default function ClearanceWorkflow() {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Interviews Done</p>
               <p className="text-2xl font-bold text-gray-900">{exits.filter(e => e.exit_interview_completed).length}</p>
@@ -305,8 +327,19 @@ export default function ClearanceWorkflow() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Exit List */}
-        <div className="bg-white rounded-xl shadow-sm border-0 overflow-hidden">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="p-5 border-b-0 relative z-10">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg" style={{
                 backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
@@ -322,7 +355,7 @@ export default function ClearanceWorkflow() {
             </div>
           </div>
           
-          <div className="p-5">
+          <div className="p-5 relative z-10">
             <div className="space-y-3">
               {exits.length === 0 ? (
                 <div className="text-center py-12">
@@ -384,10 +417,21 @@ export default function ClearanceWorkflow() {
         </div>
 
         {/* Clearance Details */}
-        <div className="bg-white rounded-xl shadow-sm border-0 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden relative" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
           {selectedExit ? (
             <>
-              <div className="p-5 border-b-0">
+              <div className="p-5 border-b-0 relative z-10">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="p-2 rounded-lg" style={{
@@ -421,7 +465,7 @@ export default function ClearanceWorkflow() {
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 relative z-10">
                 <div className="grid grid-cols-1 gap-4">
                   {clearances.length > 0 ? (
                     clearances.filter(clearance => {
@@ -681,4 +725,5 @@ export default function ClearanceWorkflow() {
     </div>
   );
 }
+
 

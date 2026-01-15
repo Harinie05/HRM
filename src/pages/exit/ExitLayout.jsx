@@ -78,9 +78,14 @@ export default function ExitLayout() {
     <Layout>
       <div className="p-6 space-y-6">
         {/* Hero Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl border-0 shadow-sm p-4 sm:p-6" style={{
-          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`
+        <div className="rounded-2xl shadow-sm p-4 sm:p-6 relative overflow-hidden border" style={{
+          background: `linear-gradient(to right, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}10, ${getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}10)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
         }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{
@@ -97,7 +102,9 @@ export default function ExitLayout() {
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3 flex-shrink-0">
-              <div className="bg-white rounded-lg p-2 sm:p-3 border-0 shadow-sm">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border shadow-sm" style={{
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+              }}>
                 <div className="flex items-center gap-1 sm:gap-2 text-gray-600 mb-1">
                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -112,8 +119,17 @@ export default function ExitLayout() {
         </div>
 
         {/* Exit Management Section */}
-        <div className="bg-white rounded-xl border-0 shadow-sm">
-          <div className="p-5 border-b-0">
+        <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(30%, -30%)'
+          }}></div>
+          <div className="p-5 border-b" style={{
+            borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+          }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg" style={{
@@ -132,7 +148,11 @@ export default function ExitLayout() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <span className="text-sm text-gray-600 whitespace-nowrap">Exit Management</span>
-                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border-0 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+                <div className="flex items-center bg-gray-100 rounded-full p-1 overflow-x-auto border scrollbar-hide" style={{
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none', 
+                  borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+                }}>
                   {tabs.map((tabName) => (
                     <button
                       key={tabName}

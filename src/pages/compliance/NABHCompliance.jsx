@@ -357,7 +357,7 @@ export default function NABHCompliance() {
                 <label className="block text-sm font-medium mb-1">
                   Employee ID <span className="text-red-500">*</span>
                 </label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   required
                   name="employee_id"
                   value={form.employee_id}
@@ -378,7 +378,7 @@ export default function NABHCompliance() {
                       setForm({ ...form, employee_id: selectedId });
                     }
                   }}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select Employee ID</option>
                   {employees && employees.length > 0 ? (
@@ -397,7 +397,7 @@ export default function NABHCompliance() {
                 <label className="block text-sm font-medium mb-1">
                   Employee Name <span className="text-red-500">*</span>
                 </label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   required
                   name="employee_name"
                   value={form.employee_name}
@@ -418,7 +418,7 @@ export default function NABHCompliance() {
                       setForm({ ...form, employee_name: selectedName });
                     }
                   }}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select Employee Name</option>
                   {employees && employees.length > 0 ? (
@@ -435,12 +435,12 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Department</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="text"
                   name="department"
                   value={form.department}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-100"
                   placeholder="Auto-filled from employee selection"
                   readOnly
                 />
@@ -448,24 +448,24 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Designation</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="text"
                   name="designation"
                   value={form.designation}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter Designation"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">Joining Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="joining_date"
                   value={form.joining_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -477,7 +477,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="staff_qualification_verified"
                     checked={form.staff_qualification_verified}
@@ -490,19 +490,19 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Qualification Documents</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="text"
                   name="qualification_documents"
                   value={form.qualification_documents}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="List qualification documents"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="background_verification"
                     checked={form.background_verification}
@@ -515,7 +515,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="police_verification"
                     checked={form.police_verification}
@@ -528,7 +528,7 @@ export default function NABHCompliance() {
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="reference_check"
                     checked={form.reference_check}
@@ -547,7 +547,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="medical_fitness_done"
                     checked={form.medical_fitness_done}
@@ -560,29 +560,29 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Medical Fitness Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="medical_fitness_date"
                   value={form.medical_fitness_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">Medical Fitness Validity</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="medical_fitness_validity"
                   value={form.medical_fitness_validity}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="credentialing_done"
                     checked={form.credentialing_done}
@@ -595,23 +595,23 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Credentialing Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="credentialing_date"
                   value={form.credentialing_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">Credentialing Validity</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="credentialing_validity"
                   value={form.credentialing_validity}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -623,7 +623,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="orientation_training_done"
                     checked={form.orientation_training_done}
@@ -636,18 +636,18 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Orientation Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="orientation_date"
                   value={form.orientation_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="fire_safety_training_done"
                     checked={form.fire_safety_training_done}
@@ -660,18 +660,18 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Fire Safety Training Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="fire_safety_date"
                   value={form.fire_safety_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="infection_control_training"
                     checked={form.infection_control_training}
@@ -684,18 +684,18 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Infection Control Training Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="infection_control_date"
                   value={form.infection_control_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="patient_safety_training"
                     checked={form.patient_safety_training}
@@ -708,12 +708,12 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Patient Safety Training Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="patient_safety_date"
                   value={form.patient_safety_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -725,7 +725,7 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="performance_monitoring_done"
                     checked={form.performance_monitoring_done}
@@ -738,29 +738,29 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Last Appraisal Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="last_appraisal_date"
                   value={form.last_appraisal_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">Next Appraisal Due</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="next_appraisal_due"
                   value={form.next_appraisal_due}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="flex items-center space-x-2">
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                     type="checkbox"
                     name="competency_assessment"
                     checked={form.competency_assessment}
@@ -773,12 +773,12 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Competency Assessment Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="competency_date"
                   value={form.competency_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -790,11 +790,11 @@ export default function NABHCompliance() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-1">Overall Compliance Status</label>
-                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   name="overall_compliance_status"
                   value={form.overall_compliance_status}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="Pending">Pending</option>
                   <option value="Compliant">Compliant</option>
@@ -806,33 +806,33 @@ export default function NABHCompliance() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">Last Audit Date</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="last_audit_date"
                   value={form.last_audit_date}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">Next Audit Due</label>
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   type="date"
                   name="next_audit_due"
                   value={form.next_audit_due}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium mb-1">Remarks</label>
-                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`, border: `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}`}} 
                   name="remarks"
                   value={form.remarks}
                   onChange={handleChange}
-                  className="w-full border-0 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
+                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24"
                   placeholder="Enter compliance remarks or notes"
                 />
               </div>
@@ -1083,5 +1083,7 @@ export default function NABHCompliance() {
     </div>
   );
 }
+
+
 
 

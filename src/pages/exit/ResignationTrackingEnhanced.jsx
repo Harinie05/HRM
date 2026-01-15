@@ -186,8 +186,19 @@ const ResignationTracking = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
+          <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(40%, -40%)'
+          }}></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+            transform: 'translate(-40%, 40%)'
+          }}></div>
+          <div className="flex items-center justify-between relative z-10">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Total Resignations</p>
               <p className="text-2xl font-bold text-gray-900">{resignations.length}</p>
@@ -203,7 +214,10 @@ const ResignationTracking = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">In Progress</p>
@@ -220,7 +234,10 @@ const ResignationTracking = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Completed</p>
@@ -237,7 +254,10 @@ const ResignationTracking = () => {
           </div>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border-0 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white rounded-xl p-5 border shadow-sm hover:shadow-md transition-all duration-200" style={{
+          background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}05 100%)`,
+          borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+        }}>
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Initiated</p>
@@ -256,7 +276,18 @@ const ResignationTracking = () => {
       </div>
 
       {/* Controls */}
-      <div className="bg-white rounded-xl border-0 shadow-sm">
+      <div className="bg-white rounded-xl border shadow-sm relative overflow-hidden" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(-40%, 40%)'
+        }}></div>
         <div className="p-5 border-b-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -277,22 +308,26 @@ const ResignationTracking = () => {
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-1">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                <input
                   type="text"
                   placeholder="Search by employee name, code, or reason..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent w-full text-sm"
+                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent w-full text-sm"
                   style={{
+                    backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                     focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                   }}
                 />
               </div>
-              <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className=" rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
+                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:border-transparent text-sm"
                 style={{
+                  backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                  borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                   focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                 }}
               >
@@ -344,10 +379,14 @@ const ResignationTracking = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-secondary mb-2">Employee</label>
-                  <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                  <select
                     value={formData.employee_id} 
                     onChange={(e) => setFormData({...formData, employee_id: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:border-transparent transition-all duration-200"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     required
                   >
                     <option value="">Select Employee ({employees.length} available)</option>
@@ -361,21 +400,29 @@ const ResignationTracking = () => {
                 
                 <div>
                   <label className="block text-sm font-semibold text-secondary mb-2">Resignation Date</label>
-                  <input style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <input
                     type="date"
                     value={formData.resignation_date}
                     onChange={(e) => setFormData({...formData, resignation_date: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:border-transparent transition-all duration-200"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     required
                   />
                 </div>
                 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-secondary mb-2">Reason for Resignation</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={formData.reason}
                     onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:border-transparent transition-all duration-200"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     placeholder="Please provide reason for resignation"
                     rows="3"
                   />
@@ -383,10 +430,14 @@ const ResignationTracking = () => {
                 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-secondary mb-2">Additional Notes</label>
-                  <textarea style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}} 
+                  <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                    className="w-full border border-black rounded-xl px-4 py-3 bg-white focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:border-transparent transition-all duration-200"
+                    style={{
+                      backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
+                    }}
                     placeholder="Any additional notes or comments"
                     rows="2"
                   />
@@ -396,14 +447,17 @@ const ResignationTracking = () => {
               <div className="flex gap-4 pt-4">
                 <button 
                   type="submit" 
-                  className="flex-1 bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 font-semibold transition-all duration-200 border border-black"
+                  className="flex-1 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200"
+                  style={{ backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color') || '#474e71'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}
                 >
                   Apply Resignation
                 </button>
                 <button 
                   type="button" 
                   onClick={() => setShowApplyForm(false)}
-                  className="flex-1 bg-white text-black px-6 py-3 rounded-xl hover:bg-gray-100 font-semibold transition-all duration-200 border border-black"
+                  className="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 font-semibold transition-all duration-200"
                 >
                   Cancel
                 </button>
@@ -414,7 +468,18 @@ const ResignationTracking = () => {
       )}
 
       {/* Resignations Table */}
-      <div className="bg-white rounded-xl border-0 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border shadow-sm overflow-hidden relative" style={{
+        background: `linear-gradient(135deg, white 0%, ${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}03 100%)`,
+        borderColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'}20`
+      }}>
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(40%, -40%)'
+        }}></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-10" style={{
+          backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
+          transform: 'translate(-40%, 40%)'
+        }}></div>
         <div className="p-5 border-b-0">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg" style={{
@@ -483,10 +548,12 @@ const ResignationTracking = () => {
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-2">
                         {canManageHandover && (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                          <select
                             onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                            className=" rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            className="border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                             value={resignation.handover_status || 'Pending'}
@@ -498,10 +565,12 @@ const ResignationTracking = () => {
                         )}
                         
                         {canManageClearance && (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                          <select
                             onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                            className=" rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            className="border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                             value={resignation.clearance_status || 'Pending'}
@@ -513,10 +582,12 @@ const ResignationTracking = () => {
                         )}
                         
                         {canManageAssets && (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                          <select
                             onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                            className=" rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            className="border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                             value={resignation.asset_return_status || 'Pending'}
@@ -527,10 +598,12 @@ const ResignationTracking = () => {
                         )}
                         
                         {canManageSettlement && (
-                          <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                          <select
                             onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                            className=" rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
+                            className="border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
                             style={{
+                              backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                              borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                               focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                             }}
                             value={resignation.final_settlement_status || 'Pending'}
@@ -612,10 +685,12 @@ const ResignationTracking = () => {
                     {canManageHandover && (
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">Handover Status</label>
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                        <select
                           onChange={(e) => updateStatus(resignation.id, 'handover_status', e.target.value)}
-                          className="w-full border-0 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           value={resignation.handover_status || 'Pending'}
@@ -630,10 +705,12 @@ const ResignationTracking = () => {
                     {canManageClearance && (
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">Clearance Status</label>
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                        <select
                           onChange={(e) => updateStatus(resignation.id, 'clearance_status', e.target.value)}
-                          className="w-full border-0 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           value={resignation.clearance_status || 'Pending'}
@@ -648,10 +725,12 @@ const ResignationTracking = () => {
                     {canManageAssets && (
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">Asset Return</label>
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                        <select
                           onChange={(e) => updateStatus(resignation.id, 'asset_return_status', e.target.value)}
-                          className="w-full border-0 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           value={resignation.asset_return_status || 'Pending'}
@@ -665,10 +744,12 @@ const ResignationTracking = () => {
                     {canManageSettlement && (
                       <div>
                         <label className="block text-xs text-gray-600 mb-1">Final Settlement</label>
-                        <select style={{backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`}}  
+                        <select
                           onChange={(e) => updateStatus(resignation.id, 'final_settlement', e.target.value)}
-                          className="w-full border-0 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
                           style={{
+                            backgroundColor: `${getComputedStyle(document.documentElement).getPropertyValue('--primary-color')}10`,
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5',
                             focusRingColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4575b5'
                           }}
                           value={resignation.final_settlement_status || 'Pending'}
@@ -711,4 +792,5 @@ const ResignationTracking = () => {
 };
 
 export default ResignationTracking;
+
 
